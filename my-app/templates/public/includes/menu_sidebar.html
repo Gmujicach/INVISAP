@@ -1,10 +1,11 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
-  <div class="app-brand demo">
-    <a href="{{ url_for('inicio') }}" class="app-brand-link">
-      <span class="app-brand-logo demo">
+  <div class="app-brand demo" style="justify-content: flex-start; padding-left: 1.2rem;">
+    <a href="{{ url_for('inicio') }}" class="app-brand-link" style="justify-content: flex-start; width: 100%;">
+      <span class="app-brand-logo demo" style="line-height: 0; display: flex; align-items: center;">
         <img
-          src="{{ url_for('static', filename ='assets/img/logo.png') }}"
-          alt="Logo" />
+          src="{{ url_for('static', filename ='assets/img/NUEVO LOGO GOBERNACION DE LARA JUNIO 2025.png') }}"
+          alt="Logo" 
+          style="max-height: 48px; max-width: 160px; object-fit: contain; width: auto; height: auto;" />
       </span>
     </a>
 
@@ -28,7 +29,7 @@
       class="menu-item {% if request.path == '/lista-de-empleados' %} active{% endif %}">
       <a href="/lista-de-empleados" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Boxicons">Lista de Empleados</div>
+        <div data-i18n="Boxicons">Listar Publicaciones</div>
       </a>
     </li>
     <li
