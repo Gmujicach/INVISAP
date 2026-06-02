@@ -1,24 +1,21 @@
 {% extends 'public/base_cpanel.html' %}
-<!--Cambiando el title-->
-{% block title %}Crud con Python 🐍 | Registrar Nuevo Empleado{% endblock %}
-<!---->
+{% block title %}Crud con Python 🐍 | Actualizar Publicación{% endblock %}
 {% block customCSS %}
 <link
   rel="stylesheet"
   href="{{ url_for('static', filename ='assets/css/file.css') }}" />
 {% endblock %}
 
-<!--Inicio del block-->
 {% block body %}
 <div class="card" style="border-radius: 0px !important">
-  {% if respuestaEmpleado|length %}
+  {% if publicacion %}
   <div class="row justify-content-center mb-2">
     <div class="col-md-12">
       <h3 class="text-center mt-5 mb-3">
-        <a href="/lista-de-empleados">
+        <a href="/lista-de-publicaciones">
           <i class="bi bi-arrow-left-circle"></i>
         </a>
-        ACTUALIZAR DATOS DEL EMPLEADOS
+        ACTUALIZAR DATOS DE LA PUBLICACIÓN
       </h3>
       <hr />
     </div>
@@ -29,149 +26,73 @@
       <form
         class="form-horizontal mx-auto"
         method="POST"
-        action="{{ url_for('actualizarEmpleado', id = respuestaEmpleado.id_empleado ) }}"
-        autocomplete="off"
-        enctype="multipart/form-data">
+        action="{{ url_for('actualizarPublicacion', id = publicacion.id_publicaciones ) }}"
+        autocomplete="off">
         <input
           type="text"
           class="form-control"
-          name="id_empleado"
-          value="{{ respuestaEmpleado.id_empleado }}"
+          name="id_publicaciones"
+          value="{{ publicacion.id_publicaciones }}"
           required
           hidden />
 
         <div class="card-body">
           <div class="row">
             <div class="col-md-6">
-              <label for="nombre_empleado" class="form-label">
-                Nombre del empleado
+              <label for="titulo_publicacion" class="form-label">
+                Título de la publicación
               </label>
               <input
                 type="text"
-                name="nombre_empleado"
-                value="{{ respuestaEmpleado.nombre_empleado }}"
+                name="titulo_publicacion"
+                value="{{ publicacion.titulo_publicacion }}"
                 class="form-control"
+                maxlength="30"
                 required />
             </div>
             <div class="col-md-6">
-              <label for="apellido_empleado" class="form-label">
-                Apellido del empleado
+              <label for="nombre_responsable" class="form-label">
+                Nombre del responsable
               </label>
               <input
                 class="form-control"
                 type="text"
-                name="apellido_empleado"
-                value="{{ respuestaEmpleado.apellido_empleado }}"
+                name="nombre_responsable"
+                value="{{ publicacion.nombre_responsable }}"
+                maxlength="30"
                 required />
             </div>
           </div>
 
           <div class="row mt-2">
             <div class="col-md-6">
-              <label for="sexo_empleado" class="form-label">
-                Sexo del empleado
+              <label for="fecha_publicacion" class="form-label">
+                Fecha de publicación
               </label>
-              {% with tipo_sexo = {"1": "Masculino", "2": "Femenino"} %}
-              <select class="form-select" name="sexo_empleado">
-                {% for clave, valor in tipo_sexo.items() %} {% if clave ==
-                respuestaEmpleado.sexo_empleado|string %}
-                <option value="{{ clave }}" selected>{{ valor }}</option>
-                {% else %}
-                <option value="{{ clave }}">{{ valor }}</option>
-                {% endif %} {% endfor %}
-              </select>
-              {% endwith %}
+              <input
+                class="form-control"
+                type="datetime-local"
+                name="fecha_publicacion"
+                value="{{ publicacion.fecha_publicacion }}"
+                required />
             </div>
-
             <div class="col-md-6">
-              <label for="telefono_empleado" class="form-label">
-                Telefono del empleado
+              <label for="tipo_publicacion" class="form-label">
+                Tipo de publicación
               </label>
               <input
                 class="form-control"
                 type="text"
-                name="telefono_empleado"
-                value="{{ respuestaEmpleado.telefono_empleado }}"
+                name="tipo_publicacion"
+                value="{{ publicacion.tipo_publicacion }}"
+                maxlength="30"
                 required />
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-6">
-              <label for="email_empleado" class="form-label">
-                Email del empleado
-              </label>
-              <input
-                class="form-control"
-                type="email"
-                name="email_empleado"
-                value="{{ respuestaEmpleado.email_empleado }}"
-                required />
-            </div>
-            <div class="col-md-6">
-              <label for="profesion_empleado" class="form-label">
-                Profesión del empleado
-              </label>
-              <input
-                class="form-control"
-                type="text"
-                name="profesion_empleado"
-                value="{{ respuestaEmpleado.profesion_empleado }}"
-                required />
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-6">
-              <label for="salario_empleado" class="form-label">
-                Salario del empleado
-              </label>
-              <input
-                class="form-control"
-                type="text"
-                name="salario_empleado"
-                value="{{ respuestaEmpleado.salario_empleado }}"
-                id="salario_empleado"
-                required />
-            </div>
-            <div class="col-md-6">
-              <label for="" class="form-label"> FOTO DEL EMPLEADO </label>
-              <br />
-              <img
-                src="/static/fotos_empleados/{{ respuestaEmpleado.foto_empleado }}"
-                style="width: 150px"
-                alt="{{ respuestaEmpleado.nombre_empleado }}" />
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6">
-              <label for="" class="form-label">
-                ACTUALIZAR LA FOTO DEL EMPLEADO
-              </label>
-              <div class="avatar-upload">
-                <div class="avatar-edit">
-                  <input
-                    type="file"
-                    name="foto_empleado"
-                    id="imageUpload"
-                    accept=".png, .jpg, .jpeg" />
-                  <label for="imageUpload"><i class="bi bi-pen"></i></label>
-                </div>
-                <div class="avatar-preview">
-                  {% set url_avatar= url_for('static', filename
-                  ='assets/img/avatar.png') %}
-                  <div
-                    id="imagePreview"
-                    style="background-image: url('{{ url_avatar }}')"></div>
-                </div>
-              </div>
             </div>
           </div>
 
           <div class="mb-3 mt-4 text-center">
             <button type="submit" class="btn rounded-pill btn-primary">
-              Guardar registro ahora
+              Modificar
               <i class="bi bi-arrow-clockwise"></i>
             </button>
           </div>
@@ -182,12 +103,13 @@
   {% else %}
   <div class="row justify-content-center mb-2">
     <div class="col-md-12">
-      <h3 class="text-center">No existe el empleado</h3>
+      <h3 class="text-center">No existe la publicación</h3>
     </div>
   </div>
-
   {% endif %}
 </div>
-{% endblock %} {% block customJS %}
+{% endblock %} 
+
+{% block customJS %}
 <script src="{{ url_for('static', filename ='assets/customJS/file.js') }}"></script>
 {% endblock %}

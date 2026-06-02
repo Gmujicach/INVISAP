@@ -1,6 +1,6 @@
 {% extends 'public/base_cpanel.html' %}
 <!--Cambiando el title-->
-{% block title %}Crud con Python 🐍 | Registrar Empleado{% endblock %}
+{% block title %}Crud con Python 🐍 | Registrar Publicación{% endblock %}
 <!---->
 {% block customCSS %}
 <link
@@ -13,7 +13,7 @@
 <div class="card" style="border-radius: 0px !important">
   <div class="row justify-content-center mb-2">
     <div class="col-md-12">
-      <h3 class="text-center mt-5 mb-3">REGISTRAR NUEVO EMPLEADO</h3>
+      <h3 class="text-center mt-5 mb-3">REGISTRAR NUEVA PUBLICACIÓN</h3>
       <hr />
     </div>
   </div>
@@ -23,123 +23,63 @@
       <form
         class="form-horizontal mx-auto"
         method="POST"
-        action="/form-registrar-empleado"
-        autocomplete="off"
-        enctype="multipart/form-data">
+        action="/form-registrar-publicacion"
+        autocomplete="off">
         <div class="card-body">
+          
           <div class="row">
             <div class="col-md-6">
-              <label for="nombre_empleado" class="form-label">
-                Nombre del empleado
+              <label for="titulo_publicacion" class="form-label">
+                Título de la publicación
               </label>
               <input
                 type="text"
-                name="nombre_empleado"
+                name="titulo_publicacion"
                 class="form-control"
+                maxlength="30"
                 required />
             </div>
             <div class="col-md-6">
-              <label for="apellido_empleado" class="form-label">
-                Apellido del empleado
+              <label for="nombre_responsable" class="form-label">
+                Nombre del responsable
               </label>
               <input
                 class="form-control"
                 type="text"
-                name="apellido_empleado"
+                name="nombre_responsable"
+                maxlength="30"
                 required />
             </div>
           </div>
 
           <div class="row mt-2">
             <div class="col-md-6">
-              <label for="sexo_empleado" class="form-label">
-                Sexo del empleado
+              <label for="fecha_publicacion" class="form-label">
+                Fecha de publicación
               </label>
-              <select
-                class="form-select"
-                name="sexo_empleado"
-                aria-label="Default select example">
-                <option selected>Seleccione</option>
-                <option value="1">Masculino</option>
-                <option value="2">Femenino</option>
-              </select>
+              <input
+                class="form-control"
+                type="datetime-local"
+                name="fecha_publicacion"
+                required />
             </div>
             <div class="col-md-6">
-              <label for="telefono_empleado" class="form-label">
-                Telefono del empleado
+              <label for="tipo_publicacion" class="form-label">
+                Tipo de publicación
               </label>
               <input
                 class="form-control"
                 type="text"
-                name="telefono_empleado"
+                name="tipo_publicacion"
+                maxlength="30"
+                placeholder="Ej. Informativa, Técnica, Prensa"
                 required />
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-6">
-              <label for="email_empleado" class="form-label">
-                Email del empleado
-              </label>
-              <input
-                class="form-control"
-                type="email"
-                name="email_empleado"
-                required />
-            </div>
-            <div class="col-md-6">
-              <label for="profesion_empleado" class="form-label">
-                Profesión del empleado
-              </label>
-              <input
-                class="form-control"
-                type="text"
-                name="profesion_empleado"
-                required />
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-6">
-              <label for="salario_empleado" class="form-label">
-                Salario del empleado
-              </label>
-              <input
-                class="form-control"
-                type="text"
-                name="salario_empleado"
-                id="salario_empleado"
-                required />
-            </div>
-            <div class="col-md-6">
-              <label for="" class="form-label">
-                CARGAR IMAGEN DEL EMPLEADO
-              </label>
-              <div class="avatar-upload">
-                <div class="avatar-edit">
-                  <input
-                    type="file"
-                    name="foto_empleado"
-                    id="imageUpload"
-                    accept=".png, .jpg, .jpeg" />
-                  <label for="imageUpload"><i class="bi bi-pen"></i></label>
-                </div>
-                <div class="avatar-preview">
-                  <div class="avatar-preview">
-                    {% set url_avatar= url_for('static', filename
-                    ='assets/img/avatar.png') %}
-                    <div
-                      id="imagePreview"
-                      style="background-image: url('{{ url_avatar }}')"></div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 
           <div class="mb-3 mt-4 text-center">
             <button type="submit" class="btn rounded-pill btn-primary">
-              Guardar registro ahora
+              Registrar
               <i class="bi bi-arrow-clockwise"></i>
             </button>
           </div>
@@ -148,6 +88,8 @@
     </div>
   </div>
 </div>
-{% endblock %} {% block customJS %}
+{% endblock %} 
+
+{% block customJS %}
 <script src="{{ url_for('static', filename ='assets/customJS/file.js') }}"></script>
 {% endblock %}
