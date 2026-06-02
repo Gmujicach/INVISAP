@@ -9,50 +9,50 @@ from controllers.funciones_home import *
 PATH_URL = "public/empleados"
 
 
-@app.route('/registrar-empleado', methods=['GET'])
-def viewFormEmpleado():
+@app.route('/registrar-solicitud', methods=['GET'])
+def viewFormSolicitud():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL}/form_empleado.html')
+        return render_template(f'{PATH_URL}/form_solicitud.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
 
 
-@app.route('/form-registrar-empleado', methods=['POST'])
-def formEmpleado():
+@app.route('/form-registrar-solicitud', methods=['POST'])
+def formSolicitud():
     if 'conectado' in session:
-        if 'foto_empleado' in request.files:
-            foto_perfil = request.files['foto_empleado']
-            resultado = procesar_form_empleado(request.form, foto_perfil)
+        if 'foto_solicitud' in request.files:
+            foto_perfil = request.files['foto_solicitud']
+            resultado = procesar_form_solicitud(request.form, foto_perfil)
             if resultado:
-                return redirect(url_for('lista_empleados'))
+                return redirect(url_for('lista_solicitudes'))
             else:
-                flash('El empleado NO fue registrado.', 'error')
-                return render_template(f'{PATH_URL}/form_empleado.html')
+                flash('La solicitud NO fue registrada.', 'error')
+                return render_template(f'{PATH_URL}/form_solicitud.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
 
 
-@app.route('/lista-de-empleados', methods=['GET'])
-def lista_empleados():
+@app.route('/lista-de-solicitudes', methods=['GET'])
+def lista_solicitudes():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL}/lista_empleados.html', empleados=sql_lista_empleadosBD())
+        return render_template(f'{PATH_URL}/lista_solicitudes.html', solicitudes=sql_lista_solicitudesBD())
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
 
 
-@app.route("/detalles-empleado/", methods=['GET'])
-@app.route("/detalles-empleado/<int:idEmpleado>", methods=['GET'])
-def detalleEmpleado(idEmpleado=None):
+@app.route("/detalles-solicitud/", methods=['GET'])
+@app.route("/detalles-solicitud/<int:idSolicitud>", methods=['GET'])
+def detalleSolicitud(idSolicitud=None):
     if 'conectado' in session:
-        # Verificamos si el parámetro idEmpleado es None o no está presente en la URL
-        if idEmpleado is None:
+        # Verificamos si el parámetro idSolicitud es None o no está presente en la URL
+        if idSolicitud is None:
             return redirect(url_for('inicio'))
         else:
-            detalle_empleado = sql_detalles_empleadosBD(idEmpleado) or []
-            return render_template(f'{PATH_URL}/detalles_empleado.html', detalle_empleado=detalle_empleado)
+            detalle_solicitud = sql_detalles_solicitudesBD(idSolicitud) or []
+            return render_template(f'{PATH_URL}/detalles_solicitud.html', detalle_solicitud=detalle_solicitud)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
