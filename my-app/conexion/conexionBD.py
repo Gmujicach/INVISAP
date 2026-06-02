@@ -10,7 +10,11 @@ def connectionBD():
         connection = mysql.connector.connect(
             host="localhost",
             user="root",
+<<<<<<< HEAD
+            passwd="12345",
+=======
             passwd="1234",
+>>>>>>> b12dc502853617a3acf176525441c589ee190976
             database="crud_python",
             charset='utf8mb4',
             collation='utf8mb4_unicode_ci',
