@@ -5,6 +5,7 @@ from mysql.connector.errors import Error
 
 # Importando cenexión a BD
 from controllers.funciones_home import *
+from controllers.funciones_solicitud import *
 
 PATH_URL = "public/empleados"
 
@@ -20,18 +21,22 @@ def viewFormSolicitud():
 
 @app.route('/form-registrar-solicitud', methods=['POST'])
 def formSolicitud():
-    if 'conectado' in session:
-        if 'foto_solicitud' in request.files:
-            foto_perfil = request.files['foto_solicitud']
-            resultado = procesar_form_solicitud(request.form, foto_perfil)
-            if resultado:
-                return redirect(url_for('lista_solicitudes'))
-            else:
-                flash('La solicitud NO fue registrada.', 'error')
-                return render_template(f'{PATH_URL}/form_solicitud.html')
-    else:
+    # Verificar sesión
+    if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
+
+    # Aceptar envío con o sin archivo 'foto_solicitud'
+    foto_perfil = None
+    if 'foto_solicitud' in request.files and request.files['foto_solicitud'].filename != '':
+        foto_perfil = request.files['foto_solicitud']
+
+    resultado = procesar_form_solicitud(request.form, foto_perfil)
+    if resultado:
+        return redirect(url_for('lista_solicitudes'))
+    else:
+        flash('La solicitud NO fue registrada.', 'error')
+        return render_template(f'{PATH_URL}/form_solicitud.html')
 
 
 @app.route('/lista-de-solicitudes', methods=['GET'])
