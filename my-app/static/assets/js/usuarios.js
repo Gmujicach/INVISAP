@@ -1,8 +1,7 @@
 /**
- * FEATURE: USUARIOS - CONTROLADOR DE DASHBOARD
- * Sistema Invilara - Patrón MVC
+ * VIEW-CONTROLLED: USUARIOS
+ * Encargado de la interacción del usuario y renderizado de componentes.
  */
-
 function openDashboard(htmlContent) {
     const panel = document.getElementById('moduleDashboard');
     const overlay = document.getElementById('dashboardOverlay');
@@ -19,16 +18,14 @@ function closeDashboard() {
 }
 
 function eliminarUsuario(id) {
-    if (confirm("¿Estas seguro que deseas eliminar el Usuario?")) {
+    if (confirm("¿Está seguro que desea eliminar este usuario de Invilara?")) {
         window.location.href = `/borrar-usuario/${id}`;
     }
 }
 
 function triggerUsuariosDashboard() {
-    // El Modelo es proveído por el servidor en window.resp_usuariosBD
     const usuarios = window.resp_usuariosBD || [];
     
-    // Generación dinámica de la Vista (Listado)
     let rowsHtml = usuarios.length > 0 
         ? usuarios.map(u => `
             <tr>
