@@ -10,7 +10,7 @@
 <div class="card" style="border-radius: 0px !important">
   <div class="row justify-content-center mb-2">
     <div class="col-md-12">
-      <h3 class="text-center mt-5 mb-3">REGISTRAR NUEVA GERENCIA</h3>
+      <h3 class="text-center mt-5 mb-3">REGISTRAR GERENCIA</h3>
       <hr />
     </div>
   </div>
@@ -20,7 +20,7 @@
       <form
         class="form-horizontal mx-auto"
         method="POST"
-        action="/form-registrar-gerencia"
+        action="/form-registrar-gerencias"
         autocomplete="off">
         <div class="card-body">
           
@@ -38,7 +38,7 @@
             </div>
             <div class="col-md-6">
               <label for="id_solicitud" class="form-label">
-                ID de la Solicitud (Vínculo)
+                ID de la Solicitud
               </label>
               <input
                 type="number"
@@ -68,7 +68,7 @@
           <div class="row">
             <div class="col-md-6">
               <label for="nombre_gerante" class="form-label">
-                Nombre del Gerente
+                Nombre y Apellido
               </label>
               <input
                 type="text"
@@ -79,7 +79,7 @@
             </div>
             <div class="col-md-6">
               <label for="cedula_gerante" class="form-label">
-                Cédula del Gerente
+                Cédula
               </label>
               <input
                 type="text"
@@ -103,22 +103,27 @@
                 required />
             </div>
             <div class="col-md-6">
-              <label for="telefono_gerente" class="form-label">
-                Teléfono del Gerente
-              </label>
-              <input
-                type="text"
-                name="telefono_gerente"
-                class="form-control"
-                maxlength="20"
-                required />
-            </div>
-          </div>
+  <label for="telefono_gerente" class="form-label">Teléfono(s)</label>
+  
+  <div id="contenedor-telefonos">
+    <div class="input-group mb-2">
+      <input
+        type="text"
+        name="telefono_gerente[]"
+        class="form-control"
+        maxlength="20"
+        required />
+      <button class="btn btn-outline-primary" type="button" id="btn-agregar-telefono">
+        +
+      </button>
+    </div>
+  </div>
+</div>
 
           <div class="row mt-2">
             <div class="col-md-12">
               <label for="direccion_gerente" class="form-label">
-                Dirección Particular del Gerente
+                Dirección del Gerente
               </label>
               <input
                 type="text"
@@ -144,4 +149,5 @@
 
 {% block customJS %}
 <script src="{{ url_for('static', filename ='assets/customJS/file.js') }}"></script>
+<script src="{{ url_for('static', filename ='assets/js/gerencias.js') }}"></script>
 {% endblock %}

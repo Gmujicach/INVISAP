@@ -68,10 +68,10 @@
       </a>
     </li>
     <li
-      class="menu-item {% if request.path == '/gestionar-gerencias' %} active {% endif %}">
-      <a href="/gestionar-gerencias" class="menu-link">
-        <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Tables">Gestionar Gerencias</div>
+      class="menu-item {% if request.path == '/registrar-gerencias' %} active {% endif %}">
+      <a href="{{ url_for('viewFormGerencias') }}" class="menu-link">
+        <i class="menu-icon bi bi-person-bounding-box"></i>
+        <div data-i18n="Basic">Gerencias</div>
       </a>
     </li>
     <li
