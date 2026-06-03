@@ -103,6 +103,49 @@ def usuarios():
     else:
         return redirect(url_for('inicioCpanel'))
 
+@app.route('/registrar-usuario', methods=['GET'])
+def viewFormUsuario():
+    if 'conectado' in session:
+        return render_template('public/usuarios/form_usuario.html')
+    else:
+        return redirect(url_for('inicio'))
+
+@app.route('/form-registrar-usuario', methods=['POST'])
+def formUsuario():
+    if 'conectado' in session:
+        if registrarUsuarioBD(request.form):
+            flash('El usuario fue registrado correctamente.', 'success')
+            return redirect(url_for('usuarios'))
+        else:
+            flash('Error al registrar el usuario.', 'error')
+            return render_template('public/usuarios/form_usuario.html')
+    else:
+        return redirect(url_for('inicio'))
+
+@app.route('/editar-usuario/<string:id>', methods=['GET'])
+def viewEditarUsuario(id):
+    if 'conectado' in session:
+        usuario = buscarUsuarioUnico(id)
+        if usuario:
+            return render_template('public/usuarios/form_usuario_update.html', usuario=usuario)
+        else:
+            flash('El usuario no existe.', 'error')
+            return redirect(url_for('usuarios'))
+    else:
+        return redirect(url_for('inicio'))
+
+@app.route('/actualizar-usuario', methods=['POST'])
+def actualizarUsuario():
+    if 'conectado' in session:
+        if actualizarUsuarioBD(request.form):
+            flash('El usuario fue actualizado correctamente.', 'success')
+            return redirect(url_for('usuarios'))
+        else:
+            flash('Error al actualizar el usuario.', 'error')
+            return redirect(url_for('usuarios'))
+    else:
+        return redirect(url_for('inicio'))
+
 
 @app.route('/borrar-usuario/<string:id>', methods=['GET'])
 def borrarUsuario(id):

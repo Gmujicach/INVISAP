@@ -33,6 +33,13 @@
       </a>
     </li>
     <li
+      class="menu-item {% if request.path == '/gestionar-gerencias' %} active {% endif %}">
+      <a href="/gestionar-gerencias" class="menu-link">
+        <i class="menu-icon bi bi-person-lines-fill"></i>
+        <div data-i18n="Tables">Gerencias</div>
+      </a>
+    </li>
+    <li
       class="menu-item {% if request.path == '/lista-de-empleados' %} active{% endif %}">
       <a href="/lista-de-empleados" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
