@@ -19,6 +19,13 @@
   <div class="menu-inner-shadow"></div>
   <ul class="menu-inner py-5">
     <li
+      class="menu-item {% if request.path == '/solicitante' %} active {% endif %}">
+      <a href="/solicitante" class="menu-link">
+        <i class="menu-icon bi bi-person-lines-fill"></i>
+        <div data-i18n="Tables">Solicitante</div>
+      </a>
+    </li>
+    <li
       class="menu-item {% if request.path == '/registrar-solicitud' %} active {% endif %}">
       <a href="{{ url_for('viewFormSolicitud') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
@@ -36,7 +43,7 @@
       class="menu-item {% if request.path == '/descargar-informe-empleados' %} active {% endif %}">
       <a href="/descargar-informe-empleados" class="menu-link">
         <i class="menu-icon bi bi-file-earmark-spreadsheet-fill"></i>
-        <div data-i18n="Tables">Reportes exel</div>
+        <div data-i18n="Tables">Reportes Excel</div>
       </a>
     </li>
     <li class="menu-item {% if request.path == '/descargar-informe-publicaciones' %} active {% endif %}">
@@ -49,7 +56,7 @@
       class="menu-item {% if request.path == '/lista-de-usuarios' %} active {% endif %}">
       <a href="/lista-de-usuarios" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Tables">Lista de Usuarios</div>
+        <div data-i18n="Tables">Usuarios</div>
       </a>
     </li>
     <li
