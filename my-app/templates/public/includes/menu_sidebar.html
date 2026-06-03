@@ -3,9 +3,9 @@
     <a href="{{ url_for('inicio') }}" class="app-brand-link" style="justify-content: center; width: 100%;">
       <span class="app-brand-logo demo" style="line-height: 0; display: flex; align-items: center; justify-content: center;">
         <img
-          src="{{ url_for('static', filename ='assets/img/NUEVO LOGO GOBERNACION DE LARA JUNIO 2025.png') }}"
+          src="{{ url_for('static', filename ='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}"
           alt="Logo" 
-          style="max-height: 120px; max-width: 150px; object-fit: contain; width: auto; height: auto;" />
+          style="max-height: 200px; max-width: 200px; object-fit: contain; width: auto; height: auto;" />
       </span>
     </a>
 
@@ -30,6 +30,13 @@
       <a href="{{ url_for('viewFormSolicitud') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
         <div data-i18n="Basic">Registrar Solicitud</div>
+      </a>
+    </li>
+    <li
+      class="menu-item {% if request.path == '/registrar-mortadela' %} active {% endif %}">
+      <a href="{{ url_for('viewFormMortadela') }}" class="menu-link">
+        <i class="menu-icon bi bi-person-bounding-box"></i>
+        <div data-i18n="Basic">Registrar Mortadela</div>
       </a>
     </li>
     <li
