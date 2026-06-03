@@ -25,6 +25,14 @@ def viewFormMortadela():
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
+    
+@app.route('/registrar-contratacion', methods=['GET'])
+def viewFormContratacion():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL}/form_contratacion.html')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
 
 @app.route('/form-registrar-solicitud', methods=['POST'])
 def formSolicitud():

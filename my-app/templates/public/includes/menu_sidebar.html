@@ -17,14 +17,7 @@
   </div>
 
   <div class="menu-inner-shadow"></div>
-  <ul class="menu-inner py-5">
-    <li
-      class="menu-item {% if request.path == '/solicitante' %} active {% endif %}">
-      <a href="/solicitante" class="menu-link">
-        <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Tables">Solicitante</div>
-      </a>
-    </li>
+  <ul class="menu-inner py-5">    
     <li
       class="menu-item {% if request.path == '/registrar-solicitud' %} active {% endif %}">
       <a href="{{ url_for('viewFormSolicitud') }}" class="menu-link">
@@ -37,6 +30,13 @@
       <a href="{{ url_for('viewFormMortadela') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
         <div data-i18n="Basic">Registrar Mortadela</div>
+      </a>
+    </li>
+    <li
+      class="menu-item {% if request.path == '/registrar-contratacion' %} active {% endif %}">
+      <a href="{{ url_for('viewFormContratacion') }}" class="menu-link">
+        <i class="menu-icon bi bi-person-bounding-box"></i>
+        <div data-i18n="Basic">Gestionar Contratación</div>
       </a>
     </li>
     <li
