@@ -137,25 +137,28 @@
         <div data-i18n="Tables">Bitacora</div>
       </a>
     </li>
-    <li
-      class="menu-item {% if request.path == '/descargar-informe-empleados' %} active {% endif %}">
-      <a href="/descargar-informe-empleados" class="menu-link">
-        <i class="menu-icon bi bi-file-earmark-spreadsheet-fill"></i>
-        <div data-i18n="Tables">Reportes Excel</div>
+    <li class="menu-item {% if request.path in ['/descargar-informe-empleados', '/descargar-informe-publicaciones', '/reportes-estadisticos'] %} active open {% endif %}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon bi bi-bar-chart-line-fill"></i>
+        <div data-i18n="Reports">Reportes</div>
       </a>
-    </li>
-    <li class="menu-item {% if request.path == '/descargar-informe-publicaciones' %} active {% endif %}">
-      <a href="/descargar-informe-publicaciones" class="menu-link">
-        <i class="menu-icon bi bi-file-earmark-pdf-fill"></i>
-        <div data-i18n="Tables">Reportes PDF</div>
-      </a>
-    </li>
-    <li
-      class="menu-item {% if request.path == '/mi-perfil' %} active {% endif %}">
-      <a href="/mi-perfil" class="menu-link">
-        <i class="menu-icon bi bi-person-fill-gear"></i>
-        <div data-i18n="Tables">Mi Perfil</div>
-      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {% if request.path == '/descargar-informe-empleados' %} active {% endif %}">
+          <a href="/descargar-informe-empleados" class="menu-link">
+            <div data-i18n="Excel">Reportes Excel</div>
+          </a>
+        </li>
+        <li class="menu-item {% if request.path == '/descargar-informe-publicaciones' %} active {% endif %}">
+          <a href="/descargar-informe-publicaciones" class="menu-link">
+            <div data-i18n="PDF">Reportes PDF</div>
+          </a>
+        </li>
+        <li class="menu-item {% if request.path == '/reportes-estadisticos' %} active {% endif %}">
+          <a href="/reportes-estadisticos" class="menu-link">
+            <div data-i18n="Stats">Reportes Estadísticos</div>
+          </a>
+        </li>
+      </ul>
     </li>
     <li class="menu-item">
       <a href="{{ url_for('cerraSesion') }}" class="menu-link">
