@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte General - INVILARA</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm 15mm;
+            @bottom-right {
+                content: "Página " counter(page) " de " counter(pages);
+                font-size: 9pt;
+                color: #666666;
+            }
+            @bottom-left {
+                content: "INVILARA — Gobernación del Estado Lara";
+                font-size: 9pt;
+                color: #666666;
+            }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            color: #333333;
+            margin: 0;
+            line-height: 1.5;
+        }
+        .header {
+            border-bottom: 3px solid #0f2c59;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+        .header-title {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #0f2c59;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .header-subtitle {
+            font-size: 11pt;
+            color: #555555;
+            margin: 6px 0 0 0;
+            font-weight: bold;
+        }
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .report-table th {
+            background-color: #0f2c59;
+            color: #ffffff;
+            font-weight: bold;
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 10pt;
+            border: 1px solid #0f2c59;
+        }
+        .report-table td {
+            padding: 9px 12px;
+            font-size: 9.5pt;
+            border: 1px solid #e2e8f0;
+        }
+        .report-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 7px;
+            background-color: #e2e8f0;
+            color: #1e293b;
+            border-radius: 4px;
+            font-size: 8.5pt;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="header-title">Reporte General de Publicaciones</h1>
+        <p class="header-subtitle">Instituto de Vialidad del Estado Lara (INVILARA)</p>
+    </div>
+
+    <div style="margin-bottom: 20px; font-size: 10pt;">
+        <strong>Filtro:</strong> Todos los registros activos en la plataforma.
+    </div>
+
+    <table class="report-table">
+        <thead>
+            <tr>
+                <th style="width: 8%;">#</th>
+                <th style="width: 42%;">Título de la Publicación</th>
+                <th style="width: 25%;">Responsable</th>
+                <th style="width: 15%;">Fecha</th>
+                <th style="width: 10%;">Tipo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pub in publicaciones %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ pub.titulo_publicacion }}</td>
+                <td>{{ pub.nombre_responsable }}</td>
+                <td>{{ pub.fecha_publicacion }}</td>
+                <td><span class="badge">{{ pub.tipo_publicacion }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

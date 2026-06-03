@@ -5,54 +5,59 @@ from mysql.connector.errors import Error
 
 # Importando cenexión a BD
 from controllers.funciones_home import *
+from controllers.funciones_solicitud import *
 
 PATH_URL = "public/empleados"
 
 
-@app.route('/registrar-empleado', methods=['GET'])
-def viewFormEmpleado():
+@app.route('/registrar-solicitud', methods=['GET'])
+def viewFormSolicitud():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL}/form_empleado.html')
+        return render_template(f'{PATH_URL}/form_solicitud.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
 
 
-@app.route('/form-registrar-empleado', methods=['POST'])
-def formEmpleado():
+@app.route('/form-registrar-solicitud', methods=['POST'])
+def formSolicitud():
+    # Verificar sesión
+    if 'conectado' not in session:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+    # Aceptar envío con o sin archivo 'foto_solicitud'
+    foto_perfil = None
+    if 'foto_solicitud' in request.files and request.files['foto_solicitud'].filename != '':
+        foto_perfil = request.files['foto_solicitud']
+
+    resultado = procesar_form_solicitud(request.form, foto_perfil)
+    if resultado:
+        return redirect(url_for('lista_solicitudes'))
+    else:
+        flash('La solicitud NO fue registrada.', 'error')
+        return render_template(f'{PATH_URL}/form_solicitud.html')
+
+
+@app.route('/lista-de-solicitudes', methods=['GET'])
+def lista_solicitudes():
     if 'conectado' in session:
-        if 'foto_empleado' in request.files:
-            foto_perfil = request.files['foto_empleado']
-            resultado = procesar_form_empleado(request.form, foto_perfil)
-            if resultado:
-                return redirect(url_for('lista_empleados'))
-            else:
-                flash('El empleado NO fue registrado.', 'error')
-                return render_template(f'{PATH_URL}/form_empleado.html')
+        return render_template(f'{PATH_URL}/lista_solicitudes.html', solicitudes=sql_lista_solicitudesBD())
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
 
 
-@app.route('/lista-de-empleados', methods=['GET'])
-def lista_empleados():
+@app.route("/detalles-solicitud/", methods=['GET'])
+@app.route("/detalles-solicitud/<int:idSolicitud>", methods=['GET'])
+def detalleSolicitud(idSolicitud=None):
     if 'conectado' in session:
-        return render_template(f'{PATH_URL}/lista_empleados.html', empleados=sql_lista_empleadosBD())
-    else:
-        flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
-
-
-@app.route("/detalles-empleado/", methods=['GET'])
-@app.route("/detalles-empleado/<int:idEmpleado>", methods=['GET'])
-def detalleEmpleado(idEmpleado=None):
-    if 'conectado' in session:
-        # Verificamos si el parámetro idEmpleado es None o no está presente en la URL
-        if idEmpleado is None:
+        # Verificamos si el parámetro idSolicitud es None o no está presente en la URL
+        if idSolicitud is None:
             return redirect(url_for('inicio'))
         else:
-            detalle_empleado = sql_detalles_empleadosBD(idEmpleado) or []
-            return render_template(f'{PATH_URL}/detalles_empleado.html', detalle_empleado=detalle_empleado)
+            detalle_solicitud = sql_detalles_solicitudesBD(idSolicitud) or []
+            return render_template(f'{PATH_URL}/detalles_solicitud.html', detalle_solicitud=detalle_solicitud)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
@@ -97,6 +102,49 @@ def usuarios():
         return render_template('public/usuarios/lista_usuarios.html', resp_usuariosBD=resp_usuariosBD)
     else:
         return redirect(url_for('inicioCpanel'))
+
+@app.route('/registrar-usuario', methods=['GET'])
+def viewFormUsuario():
+    if 'conectado' in session:
+        return render_template('public/usuarios/form_usuario.html')
+    else:
+        return redirect(url_for('inicio'))
+
+@app.route('/form-registrar-usuario', methods=['POST'])
+def formUsuario():
+    if 'conectado' in session:
+        if registrarUsuarioBD(request.form):
+            flash('El usuario fue registrado correctamente.', 'success')
+            return redirect(url_for('usuarios'))
+        else:
+            flash('Error al registrar el usuario.', 'error')
+            return render_template('public/usuarios/form_usuario.html')
+    else:
+        return redirect(url_for('inicio'))
+
+@app.route('/editar-usuario/<string:id>', methods=['GET'])
+def viewEditarUsuario(id):
+    if 'conectado' in session:
+        usuario = buscarUsuarioUnico(id)
+        if usuario:
+            return render_template('public/usuarios/form_usuario_update.html', usuario=usuario)
+        else:
+            flash('El usuario no existe.', 'error')
+            return redirect(url_for('usuarios'))
+    else:
+        return redirect(url_for('inicio'))
+
+@app.route('/actualizar-usuario', methods=['POST'])
+def actualizarUsuario():
+    if 'conectado' in session:
+        if actualizarUsuarioBD(request.form):
+            flash('El usuario fue actualizado correctamente.', 'success')
+            return redirect(url_for('usuarios'))
+        else:
+            flash('Error al actualizar el usuario.', 'error')
+            return redirect(url_for('usuarios'))
+    else:
+        return redirect(url_for('inicio'))
 
 
 @app.route('/borrar-usuario/<string:id>', methods=['GET'])

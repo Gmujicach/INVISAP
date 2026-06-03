@@ -1,6 +1,7 @@
 
 # Para subir archivo tipo foto al servidor
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash
 import uuid  # Modulo de python para crear un string
 
 from conexion.conexionBD import connectionBD  # Conexión a BD
@@ -343,6 +344,62 @@ def lista_usuariosBD():
         print(f"Error en lista_usuariosBD : {e}")
         return []
 
+def registrarUsuarioBD(dataForm):
+    try:
+        name_surname = dataForm.get('name_surname')
+        email_user = dataForm.get('email_user')
+        pass_user = dataForm.get('pass_user')
+        
+        if not name_surname or not email_user or not pass_user:
+            return 0
+
+        nueva_password = generate_password_hash(pass_user, method='scrypt')
+        
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                sql = "INSERT INTO users (name_surname, email_user, pass_user) VALUES (%s, %s, %s)"
+                valores = (name_surname, email_user, nueva_password)
+                cursor.execute(sql, valores)
+                conexion_MySQLdb.commit()
+                return cursor.rowcount
+    except Exception as e:
+        print(f"Error en registrarUsuarioBD: {e}")
+        return 0
+
+def buscarUsuarioUnico(id_usuario):
+    try:
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                querySQL = "SELECT id, name_surname, email_user FROM users WHERE id = %s"
+                cursor.execute(querySQL, (id_usuario,))
+                return cursor.fetchone()
+    except Exception as e:
+        print(f"Error en buscarUsuarioUnico: {e}")
+        return None
+
+def actualizarUsuarioBD(dataForm):
+    try:
+        id_user = dataForm.get('id_user')
+        name_surname = dataForm.get('name_surname')
+        email_user = dataForm.get('email_user')
+        pass_user = dataForm.get('pass_user')
+
+        with connectionBD() as conexion_MySQLdb:
+            with conexion_MySQLdb.cursor(dictionary=True) as cursor:
+                if pass_user:
+                    nueva_password = generate_password_hash(pass_user, method='scrypt')
+                    sql = "UPDATE users SET name_surname = %s, email_user = %s, pass_user = %s WHERE id = %s"
+                    valores = (name_surname, email_user, nueva_password, id_user)
+                else:
+                    sql = "UPDATE users SET name_surname = %s, email_user = %s WHERE id = %s"
+                    valores = (name_surname, email_user, id_user)
+                
+                cursor.execute(sql, valores)
+                conexion_MySQLdb.commit()
+                return cursor.rowcount
+    except Exception as e:
+        print(f"Error en actualizarUsuarioBD: {e}")
+        return 0
 
 # Eliminar uEmpleado
 def eliminarEmpleado(id_empleado, foto_empleado):

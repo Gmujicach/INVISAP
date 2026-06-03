@@ -1,0 +1,220 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Crud con Python 🐍 | Registrar Solicitud{% endblock %}
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+{% endblock %}
+
+{% block body %}
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12">
+      <h3 class="text-center mt-5 mb-3">REGISTRAR NUEVA SOLICITUD</h3>
+      <hr />
+    </div>
+  </div>
+
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-10">
+      <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-solicitud" autocomplete="off">
+        
+        <div class="card-body pt-0">
+          
+          <div class="d-flex justify-content-end mb-4">
+            <div style="width: 280px;">
+              <label for="tipo_solicitud" class="form-label text-muted mb-1" style="font-size: 0.9rem;">
+                Tipo de solicitante
+              </label>
+              <select class="form-select shadow-sm" name="tipo_solicitud" id="tipo_solicitud" required>
+                <option value="" selected disabled>Seleccione...</option>
+                <option value="Comunidad">Comunidad</option>
+                <option value="Institucion">Institución</option>
+                <option value="Particular">Particular</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="seccion_comunidad" class="dinamic-section" style="display: none;">
+            <h5 class="text-primary border-bottom pb-2 mb-3">Datos de la Comunidad</h5>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Nombre de la Comunidad</label>
+                <input type="text" name="com_nombre" class="form-control" maxlength="50" required disabled />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">RIF</label>
+                <div class="input-group flex-nowrap">
+                  <select class="form-select" name="com_rif_letra" style="max-width: 80px;" required disabled>
+                    <option value="J" selected>J</option>
+                    <option value="V">V</option>
+                    <option value="E">E</option>
+                    <option value="G">G</option>
+                    <option value="C">C</option>
+                  </select>
+                  <input type="text" name="com_rif_numero" class="form-control" placeholder="123456789" required disabled />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Tipo</label>
+                <input type="text" name="com_tipo" class="form-control" maxlength="50" required disabled />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label class="form-label">Municipio</label>
+                <input type="text" name="com_municipio" class="form-control" maxlength="50" required disabled />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Parroquia</label>
+                <input type="text" name="com_parroquia" class="form-control" maxlength="50" required disabled />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Ámbito</label>
+                <input type="text" name="com_ambito" class="form-control" maxlength="30" required disabled />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label class="form-label">Representante</label>
+                <input type="text" name="com_representante" class="form-control" maxlength="50" required disabled />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Cédula del Representante</label>
+                <input type="text" name="com_cedula" class="form-control" required disabled />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Teléfono</label>
+                <input type="text" name="com_telefono" class="form-control" maxlength="50" required disabled />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-7">
+                <label class="form-label">Correo Electrónico</label>
+                <input type="email" name="com_correo" class="form-control" maxlength="50" required disabled />
+              </div>
+            </div>
+          </div>
+
+          <div id="seccion_institucion" class="dinamic-section" style="display: none;">
+            <h5 class="text-primary border-bottom pb-2 mb-3">Datos de la Institución</h5>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Nombre de la Institución</label>
+                <input type="text" name="inst_nombre" class="form-control" maxlength="30" required disabled />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Dirección Institución</label>
+                <input type="text" name="inst_direccion" class="form-control" maxlength="45" required disabled />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Correo Institución</label>
+                <input type="email" name="inst_correo" class="form-control" maxlength="30" required disabled />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Teléfono Institución</label>
+                <input type="text" name="inst_telefono" class="form-control" maxlength="12" required disabled />
+              </div>
+            </div>
+
+            <h6 class="mt-3">Datos del Director</h6>
+            <div class="row mb-3">
+              <div class="col-md-5">
+                <label class="form-label">Nombre del Director</label>
+                <input type="text" name="inst_director_nombre" class="form-control" maxlength="50" required disabled />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Cédula</label>
+                <input type="number" name="inst_director_cedula" class="form-control" required disabled />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Teléfono</label>
+                <input type="text" name="inst_director_telefono" class="form-control" maxlength="12" required disabled />
+              </div>
+            </div>
+          </div>
+
+          <div id="seccion_particular" class="dinamic-section" style="display: none;">
+            <h5 class="text-primary border-bottom pb-2 mb-3">Datos del Particular</h5>
+            
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <label class="form-label">Nombre del solicitante</label>
+                <input type="text" name="part_nombre" class="form-control" maxlength="30" required disabled />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Cédula</label>
+                <input type="number" name="part_cedula" class="form-control" required disabled />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Correo electrónico</label>
+                <input type="email" name="part_correo" class="form-control" maxlength="30" required disabled />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Teléfono</label>
+                <input type="text" name="part_telefono" class="form-control" maxlength="12" required disabled />
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label class="form-label">Dirección</label>
+                <textarea class="form-control" name="part_direccion" maxlength="100" rows="1" style="resize: both;" required disabled></textarea>
+              </div>
+            </div>
+          </div>
+
+          <h5 class="text-secondary border-bottom pb-2 mt-4 mb-3">Detalles de la Solicitud</h5>
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label for="estatus" class="form-label">Estatus de la solicitud</label>
+              <select class="form-select" name="estatus" required>
+                <option value="" selected disabled>Seleccione...</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="En Proceso">En Proceso</option>
+                <option value="Completado">Completado</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="fecha" class="form-label">Fecha y Hora</label>
+              <input class="form-control" type="datetime-local" name="fecha" required />
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-7">
+              <label for="problematica" class="form-label">Problemática</label>
+              <textarea class="form-control" name="problematica" maxlength="100" rows="1" style="resize: both;" required></textarea>
+            </div>
+          </div>
+
+          <div class="mb-3 mt-4 text-center">
+            <button type="submit" class="btn rounded-pill btn-primary">
+              Registrar
+              <i class="bi bi-arrow-clockwise"></i>
+            </button>
+          </div>
+          
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %} 
+
+{% block customJS %}
+<script src="{{ url_for('static', filename ='../static/assets/js/form-solicitud.js') }}"></script>
+<script>
+  
+</script>
+{% endblock %}
