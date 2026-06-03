@@ -9,6 +9,8 @@
   <head>
     {% include 'public/includes/head.html' %}
     <!---->
+    <!-- Assets de Arquitectura MVC por Feature -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/usuarios.css') }}">
     {% block customCSS %} {% endblock %}
     <style>
       /* Estilos para el acceso rápido a Mi Perfil */
@@ -41,6 +43,15 @@
     {% include 'public/includes/pre_loader.html' %}
     <!---->
     {% include 'public/includes/navbar.html' %}
+
+    <!-- Contenedores para el Dashboard Deslizante -->
+    <div id="dashboardOverlay" class="dashboard-overlay" onclick="closeDashboard()"></div>
+    <div id="moduleDashboard" class="module-dashboard-panel">
+      <div id="dashboardInjectedContent" class="dashboard-grid">
+        <!-- El contenido se inyecta dinámicamente -->
+      </div>
+    </div>
+
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
         <!-- Acceso persistente a Mi Perfil -->
@@ -62,6 +73,9 @@
               {% endblock %}
             </div>
 
+            <!-- Inyección del Modelo (Data) para consumo del Controlador JS -->
+            <script>window.resp_usuariosBD = {{ resp_usuariosBD | tojson | safe if resp_usuariosBD else '[]' }};</script>
+
             <div class="content-backdrop fade"></div>
           </div>
         </div>
@@ -71,6 +85,7 @@
     </div>
 
     {% include 'public/includes/js.html' %}
+    <script src="{{ url_for('static', filename='assets/js/usuarios.js') }}"></script>
     <!--Custom JS-->
     {% block customJS %} {% endblock %}
   </body>

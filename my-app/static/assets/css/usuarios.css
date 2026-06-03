@@ -1,0 +1,60 @@
+/* ==========================================
+   FEATURE: USUARIOS - DASHBOARD ANIMATION
+   Screaming Architecture: Vista de UI
+   ========================================== */
+
+   .dashboard-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1070;
+    display: none;
+    backdrop-filter: blur(3px);
+  }
+  
+  .module-dashboard-panel {
+    position: fixed;
+    top: 0;
+    left: 260px; /* Alineado al ancho del Sidebar */
+    width: 0;
+    height: 100vh;
+    background: #f4f7f6;
+    z-index: 1080;
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* Animación de despliegue hacia la derecha */
+    transition: width 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
+    border-left: 1px solid #d9dee3;
+  }
+  
+  .module-dashboard-panel.open {
+    width: calc(100vw - 260px);
+  }
+  
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr; /* MVC: Separación visual Registro | Listado */
+    gap: 25px;
+    padding: 30px;
+    min-width: 950px;
+  }
+  
+  .dashboard-section {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-top: 5px solid #08b324;
+  }
+  
+  .btn-icon-only {
+    padding: 8px;
+    line-height: 0;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+  }
