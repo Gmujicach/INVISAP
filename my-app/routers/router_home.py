@@ -7,7 +7,7 @@ from mysql.connector.errors import Error
 from controllers.funciones_home import *
 from controllers.funciones_solicitud import *
 
-PATH_URL = "public/empleados"
+PATH_URL = "public/solicitudes"
 
 
 @app.route('/registrar-solicitud', methods=['GET'])
