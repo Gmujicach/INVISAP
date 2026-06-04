@@ -13,7 +13,7 @@ def listar_usuarios():
     # El Controlador pide datos al Modelo
     usuarios = modelo_usuario.listar_todos()
     # El Controlador entrega los datos a la Vista
-    return render_template('vista/usuarios/lista_usuarios.html', resp_usuariosBD=usuarios)
+    return render_template('usuarios/lista_usuarios.html', resp_usuariosBD=usuarios)
 
 @app.route('/saved-register', methods=['POST'])
 def registrar_usuario():

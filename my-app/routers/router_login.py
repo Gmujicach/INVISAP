@@ -10,13 +10,13 @@ from werkzeug.security import check_password_hash
 
 # Importando controllers para el modulo de login
 from controllers.funciones_login import *
-PATH_URL_LOGIN = "vista/login"
+PATH_URL_LOGIN = "login"
 
 
 @app.route('/', methods=['GET'])
 def inicio():
     if 'conectado' in session:
-        return render_template('vista/base_cpanel.html', dataLogin=dataLoginSesion())
+        return render_template('base_cpanel.html', dataLogin=dataLoginSesion())
     else:
         return render_template(f'{PATH_URL_LOGIN}/base_login.html')
 
@@ -24,7 +24,7 @@ def inicio():
 @app.route('/mi-perfil', methods=['GET'])
 def perfil():
     if 'conectado' in session:
-        return render_template(f'vista/perfil/perfil.html', info_perfil_session=info_perfil_session())
+        return render_template(f'perfil/perfil.html', info_perfil_session=info_perfil_session())
     else:
         return redirect(url_for('inicio'))
 

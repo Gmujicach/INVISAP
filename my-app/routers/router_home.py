@@ -9,9 +9,9 @@ from controllers.UserController import user_bp # Import the user blueprint
 from controllers.funciones_solicitud import *
 from controllers.EmpleadoController import empleado_bp
 
-PATH_URL = "vista/solicitudes"
-PATH_URLG = "vista/gerencias"
-PATH_URL_INF = "vista/inf_avance_obra"
+PATH_URL = "solicitudes"
+PATH_URLG = "gerencias"
+PATH_URL_INF = "inf_avance_obra"
 
 
 # Register blueprints
