@@ -7,6 +7,7 @@ from mysql.connector.errors import Error
 from controllers.funciones_home import *
 from controllers.UserController import user_bp # Import the user blueprint
 from controllers.funciones_solicitud import *
+from controllers.EmpleadoController import empleado_bp
 
 PATH_URL = "public/solicitudes"
 PATH_URLG = "public/gerencias"
@@ -15,6 +16,7 @@ PATH_URLG = "public/inf_avance_obra"
 
 # Register blueprints
 app.register_blueprint(user_bp)
+app.register_blueprint(empleado_bp)
 
 @app.route('/registrar-solicitud', methods=['GET'])
 def viewFormSolicitud():

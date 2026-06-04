@@ -1,0 +1,43 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Gestionar Empleados{% endblock %}
+{% block body %}
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5>Lista de Empleados</h5>
+    <a href="{{ url_for('empleado_bp.create_form') }}" class="btn btn-primary">Nuevo Empleado</a>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Salario</th>
+            <th>Foto</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in empleados %}
+          <tr>
+            <td>{{ e.nombre_empleado }} {{ e.apellido_empleado }}</td>
+            <td>{{ e.email_empleado }}</td>
+            <td>{{ e.salario_empleado }}</td>
+            <td>{% if e.foto_empleado %}<img src="{{ url_for('static', filename='fotos_empleados/' ~ e.foto_empleado) }}" alt="foto" style="height:40px;border-radius:4px">{% endif %}</td>
+            <td>
+              <a href="{{ url_for('empleado_bp.edit_form', id_empleado=e.id) }}" class="btn btn-sm btn-info">Editar</a>
+              <a href="{{ url_for('empleado_bp.delete_empleado', id_empleado=e.id, foto=e.foto_empleado) }}" class="btn btn-sm btn-danger" onclick="return confirm('Eliminar empleado?')">Eliminar</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='assets/js/empleados_validation.js') }}"></script>
+{% endblock %}

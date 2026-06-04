@@ -1,0 +1,36 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Crear Empleado{% endblock %}
+{% block body %}
+<div class="card">
+  <div class="card-header"><h5>Crear Empleado</h5></div>
+  <div class="card-body">
+    <form action="{{ url_for('empleado_bp.create_empleado') }}" method="post" enctype="multipart/form-data" id="formEmpleado">
+      <div class="mb-3">
+        <label>Nombre</label>
+        <input name="nombre_empleado" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label>Apellido</label>
+        <input name="apellido_empleado" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label>Email</label>
+        <input name="email_empleado" type="email" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label>Salario</label>
+        <input name="salario_empleado" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label>Foto</label>
+        <input type="file" name="foto_empleado" class="form-control">
+      </div>
+      <button class="btn btn-success">Guardar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='assets/js/empleados_validation.js') }}"></script>
+{% endblock %}
