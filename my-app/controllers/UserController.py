@@ -2,7 +2,7 @@ from flask import render_template, request, flash, redirect, url_for, session, B
 from models.model_usuarios import UsuarioModel
 
 # Blueprint for user management
-user_bp = Blueprint('user_bp', __name__, template_folder='../vista/public/usuarios')
+user_bp = Blueprint('user_bp', __name__, template_folder='../vista/usuarios')
 
 # instantiate model
 user_model = UsuarioModel()
@@ -14,7 +14,7 @@ def list_users():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
     users_data = user_model.listar_todos()
-    return render_template('public/usuarios/lista_usuarios.html', resp_usuariosBD=users_data)
+    return render_template('vista/usuarios/lista_usuarios.html', resp_usuariosBD=users_data)
 
 
 @user_bp.route('/users/register', methods=['GET'])
@@ -22,7 +22,7 @@ def show_register_form():
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
-    return render_template('public/usuarios/form_user.html')
+    return render_template('vista/usuarios/form_user.html')
 
 
 @user_bp.route('/users/register', methods=['POST'])
@@ -46,7 +46,7 @@ def register_user():
         return redirect(url_for('user_bp.list_users'))
     else:
         flash('Error al registrar el usuario. Verifique los datos.', 'error')
-        return render_template('public/usuarios/form_user.html', name_surname=name_surname, email_user=email_user)
+        return render_template('vista/usuarios/form_user.html', name_surname=name_surname, email_user=email_user)
 
 
 @user_bp.route('/users/edit/<int:user_id>', methods=['GET'])
@@ -57,7 +57,7 @@ def show_edit_form(user_id):
 
     user = user_model.buscar_por_id(user_id)
     if user:
-        return render_template('public/usuarios/form_user_update.html', usuario=user)
+        return render_template('vista/usuarios/form_user_update.html', usuario=user)
     else:
         flash('El usuario no existe.', 'error')
         return redirect(url_for('user_bp.list_users'))

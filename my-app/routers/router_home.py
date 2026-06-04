@@ -9,9 +9,9 @@ from controllers.UserController import user_bp # Import the user blueprint
 from controllers.funciones_solicitud import *
 from controllers.EmpleadoController import empleado_bp
 
-PATH_URL = "public/solicitudes"
-PATH_URLG = "public/gerencias"
-PATH_URLG = "public/inf_avance_obra"
+PATH_URL = "vista/solicitudes"
+PATH_URLG = "vista/gerencias"
+PATH_URL_INF = "vista/inf_avance_obra"
 
 
 # Register blueprints
@@ -53,7 +53,7 @@ def viewFormGerencias():
 @app.route('/inf_avance_obra', methods=['GET'])
 def viewFormInforme_avan_obras():
     if 'conectado' in session:
-        return render_template(f'{PATH_URLG}/inf_avance_obra.html')
+        return render_template(f'{PATH_URL_INF}/inf_avance_obra.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
