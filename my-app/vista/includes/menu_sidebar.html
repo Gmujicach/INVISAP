@@ -64,7 +64,7 @@
       class="menu-item {% if request.path == '/empleados' %} active{% endif %}">
       <a href="/empleados" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Boxicons">Empleados</div>
+        <div data-i18n="Boxicons">Gestionar Empleados</div>
       </a>
     </li>
     <li
@@ -130,12 +130,24 @@
         <div data-i18n="Boxicons">Gestionar Publicaciones</div>
       </a>
     </li>
-    <li
-      class="menu-item {% if request.path == '/lista-de-usuarios' %} active {% endif %}">
-      <a href="javascript:void(0);" onclick="triggerUsuariosDashboard()" class="menu-link">
-        <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Tables">Usuarios</div>
+    {# Nuevo módulo de Usuarios con submenú #}
+    <li class="menu-item {% if request.path in ['/users/register', '/users'] %} active open {% endif %}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon bi bi-people-fill"></i> {# Icono de personas para usuarios #}
+        <div data-i18n="Users">Usuarios</div>
       </a>
+      <ul class="menu-sub">
+        <li class="menu-item {% if request.path == '/users/register' %} active {% endif %}">
+          <a href="{{ url_for('user_bp.show_register_form') }}" class="menu-link">
+            <div data-i18n="Register Users">Registrar Usuarios</div>
+          </a>
+        </li>
+        <li class="menu-item {% if request.path == '/users' %} active {% endif %}">
+          <a href="{{ url_for('user_bp.list_users') }}" class="menu-link">
+            <div data-i18n="List Users">Listar Usuarios</div>
+          </a>
+        </li>
+      </ul>
     </li>
     <li
       class="menu-item {% if request.path == '/bitacora' %} active {% endif %}">
@@ -169,6 +181,7 @@
     </li>
     <li class="menu-item">
       <a href="{{ url_for('cerraSesion') }}" class="menu-link">
+      <a href="{{ url_for('login_bp.logout') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
         <div data-i18n="Tables">Salir</div>
       </a>
