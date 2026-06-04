@@ -9,6 +9,7 @@ from controllers.funciones_solicitud import *
 
 PATH_URL = "public/solicitudes"
 PATH_URLG = "public/gerencias"
+PATH_URLG = "public/inf_avance_obra"
 
 
 @app.route('/registrar-solicitud', methods=['GET'])
@@ -39,6 +40,14 @@ def viewFormContratacion():
 def viewFormGerencias():
     if 'conectado' in session:
         return render_template(f'{PATH_URLG}/form_gerencia.html')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/inf_avance_obra', methods=['GET'])
+def viewFormInforme_avan_obras():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URLG}/inf_avance_obra.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
