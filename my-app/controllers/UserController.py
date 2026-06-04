@@ -2,7 +2,7 @@ from flask import render_template, request, flash, redirect, url_for, session, B
 from models.model_usuarios import UsuarioModel
 
 # Blueprint for user management
-user_bp = Blueprint('user_bp', __name__, template_folder='../templates/public/usuarios')
+user_bp = Blueprint('user_bp', __name__, template_folder='../vista/public/usuarios')
 
 # instantiate model
 user_model = UsuarioModel()
