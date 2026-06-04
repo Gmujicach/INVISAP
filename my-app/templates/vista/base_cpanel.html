@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="../assets/"
+  data-template="vertical-menu-template-free">
+  <head>
+    {% include 'vista/includes/head.html' %}
+    <!---->
+    <!-- Assets de Arquitectura MVC por Feature -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/usuarios.css') }}">
+    {% block customCSS %} {% endblock %}
+    <style>
+      /* Estilos para el acceso rápido a Mi Perfil */
+      .corner-profile-container {
+        position: fixed;
+        top: 5px;
+        right: 85px;
+        z-index: 1100; /* Asegura que esté por encima del sidebar */
+      }
+      .profile-link-fixed {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 16px;
+        background-color: #fff;
+        border-radius: 50px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        color: #697a8d;
+        text-decoration: none;
+        font-weight: 400;
+        transition: all 0.3s ease;
+      }
+      .profile-link-fixed:hover, .profile-link-fixed.active {
+        background-color: #08b324;
+        color: #fff !important;
+      }
+    </style>
+  </head>
+  <body>
+    {% include 'vista/includes/pre_loader.html' %}
+    <!---->
+    {% include 'vista/includes/navbar.html' %}
+
+    <!-- Contenedores para el Dashboard Deslizante -->
+    <div id="dashboardOverlay" class="dashboard-overlay" onclick="closeDashboard()"></div>
+    <div id="moduleDashboard" class="module-dashboard-panel">
+      <div id="dashboardInjectedContent" class="dashboard-grid">
+        <!-- El contenido se inyecta dinámicamente -->
+      </div>
+    </div>
+
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Acceso persistente a Mi Perfil -->
+        <div class="corner-profile-container">
+          <a href="/mi-perfil" class="profile-link-fixed {% if request.path == '/mi-perfil' %} active {% endif %}">
+            <i class="bi bi-person-fill-gear"></i>
+            <span>Mi Perfil</span>
+          </a>
+        </div>
+
+        {% include 'vista/includes/menu_sidebar.html' %}
+        <div class="layout-page">
+          <div class="content-wrapper">
+            <div class="container-xxl flex-grow-1 container-p-y">
+              {% include 'vista/includes/messages.html' %}
+              <!---->
+              {% block body %}
+              <!--fin del bloque-->
+              {% endblock %}
+            </div>
+
+            <!-- Inyección del Modelo (Data) para consumo del Controlador JS -->
+            <script>window.resp_usuariosBD = {{ resp_usuariosBD | tojson | safe if resp_usuariosBD else '[]' }};</script>
+
+            <div class="content-backdrop fade"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+
+    {% include 'vista/includes/js.html' %}
+    <script src="{{ url_for('static', filename='assets/js/usuarios.js') }}"></script>
+    <!--Custom JS-->
+    {% block customJS %} {% endblock %}
+  </body>
+</html>
