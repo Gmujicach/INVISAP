@@ -5,12 +5,16 @@ from mysql.connector.errors import Error
 
 # Importando cenexión a BD
 from controllers.funciones_home import *
+from controllers.UserController import user_bp # Import the user blueprint
 from controllers.funciones_solicitud import *
 
 PATH_URL = "public/solicitudes"
 PATH_URLG = "public/gerencias"
 PATH_URLG = "public/inf_avance_obra"
 
+
+# Register blueprints
+app.register_blueprint(user_bp)
 
 @app.route('/registrar-solicitud', methods=['GET'])
 def viewFormSolicitud():
@@ -64,7 +68,14 @@ def formSolicitud():
     if 'foto_solicitud' in request.files and request.files['foto_solicitud'].filename != '':
         foto_perfil = request.files['foto_solicitud']
 
-    resultado = procesar_form_solicitud(request.form, foto_perfil)
+    # usar la función de creación de solicitante
+    resultado = None
+    try:
+        from controllers.funciones_solicitud import crear_solicitante
+        resultado = crear_solicitante(request.form)
+    except Exception:
+        resultado = 0
+
     if resultado:
         return redirect(url_for('lista_solicitudes'))
     else:
@@ -75,7 +86,8 @@ def formSolicitud():
 @app.route('/lista-de-solicitudes', methods=['GET'])
 def lista_solicitudes():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL}/lista_solicitudes.html', solicitudes=sql_lista_solicitudesBD())
+        from controllers.funciones_solicitud import obtener_solicitantes
+        return render_template(f'{PATH_URL}/lista_solicitudes.html', solicitudes=obtener_solicitantes())
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
@@ -89,7 +101,8 @@ def detalleSolicitud(idSolicitud=None):
         if idSolicitud is None:
             return redirect(url_for('inicio'))
         else:
-            detalle_solicitud = sql_detalles_solicitudesBD(idSolicitud) or []
+            from controllers.funciones_solicitud import obtener_solicitante_por_id
+            detalle_solicitud = obtener_solicitante_por_id(idSolicitud) or []
             return render_template(f'{PATH_URL}/detalles_solicitud.html', detalle_solicitud=detalle_solicitud)
     else:
         flash('Primero debes iniciar sesión.', 'error')
@@ -126,66 +139,6 @@ def actualizarEmpleado():
     resultData = procesar_actualizacion_form(request)
     if resultData:
         return redirect(url_for('lista_empleados'))
-
-
-@app.route("/lista-de-usuarios", methods=['GET'])
-def usuarios():
-    if 'conectado' in session:
-        resp_usuariosBD = lista_usuariosBD()
-        return render_template('public/usuarios/lista_usuarios.html', resp_usuariosBD=resp_usuariosBD)
-    else:
-        return redirect(url_for('inicioCpanel'))
-
-@app.route('/registrar-usuario', methods=['GET'])
-def viewFormUsuario():
-    if 'conectado' in session:
-        return render_template('public/usuarios/form_usuario.html')
-    else:
-        return redirect(url_for('inicio'))
-
-@app.route('/form-registrar-usuario', methods=['POST'])
-def formUsuario():
-    if 'conectado' in session:
-        if registrarUsuarioBD(request.form):
-            flash('El usuario fue registrado correctamente.', 'success')
-            return redirect(url_for('usuarios'))
-        else:
-            flash('Error al registrar el usuario.', 'error')
-            return render_template('public/usuarios/form_usuario.html')
-    else:
-        return redirect(url_for('inicio'))
-
-@app.route('/editar-usuario/<string:id>', methods=['GET'])
-def viewEditarUsuario(id):
-    if 'conectado' in session:
-        usuario = buscarUsuarioUnico(id)
-        if usuario:
-            return render_template('public/usuarios/form_usuario_update.html', usuario=usuario)
-        else:
-            flash('El usuario no existe.', 'error')
-            return redirect(url_for('usuarios'))
-    else:
-        return redirect(url_for('inicio'))
-
-@app.route('/actualizar-usuario', methods=['POST'])
-def actualizarUsuario():
-    if 'conectado' in session:
-        if actualizarUsuarioBD(request.form):
-            flash('El usuario fue actualizado correctamente.', 'success')
-            return redirect(url_for('usuarios'))
-        else:
-            flash('Error al actualizar el usuario.', 'error')
-            return redirect(url_for('usuarios'))
-    else:
-        return redirect(url_for('inicio'))
-
-
-@app.route('/borrar-usuario/<string:id>', methods=['GET'])
-def borrarUsuario(id):
-    resp = eliminarUsuario(id)
-    if resp:
-        flash('El Usuario fue eliminado correctamente', 'success')
-        return redirect(url_for('usuarios'))
 
 
 @app.route('/borrar-empleado/<string:id_empleado>/<string:foto_empleado>', methods=['GET'])

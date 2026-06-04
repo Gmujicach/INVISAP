@@ -1,0 +1,49 @@
+{% extends 'public/base_cpanel.html' %}
+{% block title %}Registrar Usuario{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header bg-primary">
+        <h4 class="text-white mb-0">Registrar Nuevo Usuario</h4>
+      </div>
+      <div class="card-body mt-4">
+        <form action="{{ url_for('user_bp.register_user') }}" method="POST">
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label class="form-label">Nombre y Apellido</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                <input type="text" name="name_surname" class="form-control" placeholder="Ej: Juan Pérez" required>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Correo Electrónico</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="email" name="email_user" class="form-control" placeholder="correo@ejemplo.com" required>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Contraseña</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                <input type="password" name="pass_user" class="form-control" placeholder="********" required>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-3">
+            <button type="submit" class="btn btn-success px-5">
+              <i class="bi bi-save"></i> Guardar Usuario
+            </button>
+            <a href="{{ url_for('user_bp.list_users') }}" class="btn btn-secondary">
+              Cancelar
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
