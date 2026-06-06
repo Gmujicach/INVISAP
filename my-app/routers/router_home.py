@@ -28,6 +28,15 @@ def viewFormSolicitud():
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
+    
+
+@app.route('/registrar-publicaciones', methods=['GET'])
+def viewFormPublicaciones():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_PUB}/form_publicaciones.html')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
 
 @app.route('/registrar-maquinaria', methods=['GET'])
 @app.route('/maquinaria', methods=['GET'])

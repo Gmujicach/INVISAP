@@ -1,6 +1,10 @@
 {% extends 'base_cpanel.html' %}
 {% block title %}Registrar Usuario{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/usuarios.css') }}">
+{% endblock %}
+
 {% block body %}
 <div class="row justify-content-center">
   <div class="col-md-15">
@@ -26,23 +30,25 @@
               </div>
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Contraseña</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                <input type="password" name="pass_user" class="form-control" placeholder="8-12 caracteres, letras y al menos un carácter especial" required>
-                <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
-                  <span class="password-eye" aria-hidden="true">
-                    <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                      <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                      <g class="eye">
-                        <circle cy="12" cx="12" r="4" fill="currentColor" />
-                        <circle cy="11" cx="13" r="1" fill="#000" />
-                      </g>
-                    </svg>
-                  </span>
-                  <span class="sr-only visually-hidden">Mostrar contraseña</span>
-                </button>
+              <div class="form-group password-field">
+                <label class="form-label" for="pass_user">Contraseña</label>
+                <div class="input-group">
+                  <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
+                    <span class="password-eye is-closed" aria-hidden="true">
+                      <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <g class="eye">
+                          <circle class="eye-sclera" cy="12" cx="12" r="4" fill="currentColor" />
+                          <circle class="eye-pupil" cy="12" cx="12" r="1.5" fill="#000" />
+                        </g>
+                      </svg>
+                    </span>
+                    <span class="sr-only visually-hidden">Mostrar contraseña</span>
+                  </button>
+                  <input id="pass_user" type="password" name="pass_user" class="form-control" placeholder="8-12 caracteres, letras y al menos un carácter especial" required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}">
+                  <div id="pass_user_feedback" class="invalid-feedback" aria-live="polite"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -59,4 +65,8 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/usuarios.js') }}"></script>
 {% endblock %}

@@ -18,7 +18,13 @@ def connectionBD():
     }
 
     try:
-        connection = mysql.connector.connect(**db_config)
+        connection = mysql.connector.connect(
+            host=os.getenv('DB_HOST', 'localhost'),
+            user=os.getenv('DB_USER', 'root'),
+            password=os.getenv('DB_PASSWORD', '1234'),
+            database=os.getenv('DB_NAME', 'crud_python'),
+            charset='utf8mb4'
+        )
         if connection.is_connected():
             return connection
         raise Error('No se pudo establecer la conexión a la base de datos')
