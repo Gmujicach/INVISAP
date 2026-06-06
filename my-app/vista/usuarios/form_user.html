@@ -28,21 +28,21 @@
             <div class="col-md-6 mb-3">
               <div class="form-group password-field">
                 <label class="form-label" for="pass_user">Contraseña</label>
-                <div class="password-input-wrapper">
-                  <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
+                <div class="password-input-wrapper position-relative">
+                  <input id="pass_user" type="password" name="pass_user" class="form-control password-reveal-input" placeholder="8-12 caracteres, letras y al menos un carácter especial" required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}">
+                  <button type="button" class="btn btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
                     <span class="password-eye" aria-hidden="true">
                       <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                         <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                         <g class="eye">
                           <circle cy="12" cx="12" r="4" fill="currentColor" />
-                          <circle cy="11" cx="13" r="1" fill="#000" />
+                          <circle class="eye-pupil" cy="12" cx="12" r="1.5" fill="#000" />
                         </g>
                       </svg>
                     </span>
                     <span class="sr-only visually-hidden">Mostrar contraseña</span>
                   </button>
-                  <input id="pass_user" type="password" name="pass_user" class="form-control password-reveal-input" placeholder="8-12 caracteres, letras y al menos un carácter especial" required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}">
                   <div id="pass_user_feedback" class="invalid-feedback" aria-live="polite"></div>
                 </div>
               </div>
@@ -61,4 +61,70 @@
     </div>
   </div>
 </div>
+
+<style>
+  .password-input-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  /* Espacio para el ojo dentro del input */
+  .password-reveal-input {
+    padding-right: 45px !important;
+  }
+  /* Posiciona el botón fijo sobre el input */
+  .btn-password-toggle {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    height: 38px; /* Altura estándar de input Bootstrap */
+    border: none;
+    background: transparent !important;
+    z-index: 5;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none !important;
+  }
+  .button-password-svg {
+    width: 22px;
+    height: 22px;
+    color: #6c757d;
+  }
+  .btn-password-toggle:hover .button-password-svg {
+    color: #0d6efd;
+  }
+  .eye-pupil {
+    transition: transform 0.05s linear;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.querySelector('.btn-password-toggle');
+    const passwordInput = document.getElementById('pass_user');
+    const pupil = document.querySelector('.eye-pupil');
+
+    // Funcionalidad de Mostrar/Ocultar
+    toggleBtn.addEventListener('click', () => {
+      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+    });
+
+    // Ojo que sigue al cursor
+    document.addEventListener('mousemove', (e) => {
+      if (!pupil) return;
+      const rect = pupil.getBoundingClientRect();
+      const eyeCenterX = rect.left + rect.width / 2;
+      const eyeCenterY = rect.top + rect.height / 2;
+      const dx = e.clientX - eyeCenterX;
+      const dy = e.clientY - eyeCenterY;
+      const angle = Math.atan2(dy, dx);
+      const distance = Math.min(1.8, Math.sqrt(dx*dx + dy*dy) / 50);
+      const moveX = Math.cos(angle) * distance;
+      const moveY = Math.sin(angle) * distance;
+      pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
+    });
+  });
+</script>
 {% endblock %}
