@@ -124,10 +124,10 @@
       </a>
     </li>
     <li
-      class="menu-item {% if request.path == '/lista-de-empleados' %} active{% endif %}">
-      <a href="/lista-de-empleados" class="menu-link">
-        <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Boxicons">Gestionar Publicaciones</div>
+      class="menu-item {% if request.path == '/registrar-publicaciones' %} active {% endif %}">
+      <a href="{{ url_for('viewFormPublicaciones') }}" class="menu-link">
+        <i class="menu-icon bi bi-person-bounding-box"></i>
+        <div data-i18n="Basic">Registrar Publicaciones</div>
       </a>
     </li>
     {# Nuevo módulo de Usuarios con submenú #}
