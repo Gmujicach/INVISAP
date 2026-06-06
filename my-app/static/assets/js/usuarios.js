@@ -133,30 +133,38 @@ function injectPasswordRevealStyles() {
       transform: translateY(110%) scaleY(.25);
       opacity: 0.35;
     }
-    .password-eye .password-pupil {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: .45rem;
-      height: .45rem;
-      background: #111;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
+    .password-eye .eye {
       transition: transform .08s ease;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
-    }
-    .password-eye.eye-blink::before {
-      transform: translateY(0) scaleY(.2);
-    }
-    .password-eye.eye-blink::after {
-      transform: translateY(0) scaleY(.2);
     }
     .password-eye.open {
       transform: scale(1.02);
       border-color: #0b6b2f;
     }
-    .password-eye.eye-blink {
-      animation: password-eye-blink .24s ease-in-out;
+    .password-eye.open .lid--upper {
+      transform: translateY(-3px) scaleY(.55);
+    }
+    .password-eye.open .lid--lower {
+      transform: translateY(3px) scaleY(.55);
+    }
+    .password-eye.eye-blink::before {
+      transform: translateY(0) scaleY(.18);
+    }
+    .password-eye.eye-blink::after {
+      transform: translateY(0) scaleY(.18);
+    }
+    .password-eye.eye-blink .eye {
+      transform: translate(0, 2px);
+    }
+    .button-password-svg {
+      width: 1.4rem;
+      height: 1rem;
+    }
+    .password-eye .lid {
+      transition: transform .18s ease;
+      transform-origin: center;
+    }
+    .password-eye .eye {
+      transition: transform .08s ease;
     }
     @keyframes password-eye-blink {
       0%,100% { transform: scaleY(1); }
@@ -166,26 +174,20 @@ function injectPasswordRevealStyles() {
   document.head.appendChild(style);
 }
 
-function setPasswordPupilPosition(eye, mouseEvent) {
-  const pupil = eye.querySelector('.password-pupil');
-  if (!pupil) return;
+function setPasswordEyePosition(eye, mouseEvent) {
+  const eyeGroup = eye.querySelector('.eye');
+  if (!eyeGroup) return;
   const rect = eye.getBoundingClientRect();
   const centerX = rect.left + rect.width / 2;
   const centerY = rect.top + rect.height / 2;
   const deltaX = mouseEvent.clientX - centerX;
   const deltaY = mouseEvent.clientY - centerY;
-  const maxDistance = Math.min(rect.width, rect.height) * 0.18;
+  const maxDistance = Math.min(rect.width, rect.height) * 0.14;
   const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
   const ratio = distance > maxDistance ? maxDistance / distance : 1;
-  const moveX = deltaX * ratio;
-  const moveY = deltaY * ratio;
-  pupil.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
-}
-
-function resetPasswordPupil(eye) {
-  const pupil = eye.querySelector('.password-pupil');
-  if (!pupil) return;
-  pupil.style.transform = 'translate(-50%, -50%)';
+  const moveX = Math.round(deltaX * ratio);
+  const moveY = Math.round(deltaY * ratio);
+  eyeGroup.setAttribute('transform', `translate(${moveX} ${moveY})`);
 }
 
 function blinkPasswordEye(eye) {
@@ -206,7 +208,19 @@ function installPasswordReveal(passwordInput) {
     toggleButton.className = 'btn btn-outline-secondary btn-password-toggle';
     toggleButton.setAttribute('aria-label', 'Mostrar contraseña');
     toggleButton.tabIndex = -1;
-    toggleButton.innerHTML = '<span class="password-eye" aria-hidden="true"><span class="password-pupil"></span></span>';
+    toggleButton.innerHTML = `
+      <span class="password-eye" aria-hidden="true">
+        <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <g class="eye">
+            <circle cy="12" cx="12" r="4" fill="currentColor" />
+            <circle cy="11" cx="13" r="1" fill="#000" />
+          </g>
+        </svg>
+      </span>
+      <span class="sr-only">Mostrar contraseña</span>
+    `;
     inputGroup.appendChild(toggleButton);
   }
 
@@ -230,7 +244,7 @@ function ensurePasswordEyeFollowListener() {
   if (passwordEyeFollowInitialized) return;
   passwordEyeFollowInitialized = true;
   document.addEventListener('mousemove', function (event) {
-    passwordEyes.forEach(eye => setPasswordPupilPosition(eye, event));
+    passwordEyes.forEach(eye => setPasswordEyePosition(eye, event));
   });
 }
 
