@@ -12,11 +12,26 @@
       </div>
       <div class="mb-3">
         <label>Apellido</label>
-        <input name="apellido_empleado" class="form-control" value="{{ empleado.apellido_empleado }}" required>
+        <input type="text" name="apellido_empleado" class="form-control" value="{{ empleado.apellido_empleado }}" required>
+      </div>
+      <div class="mb-3">
+        <label>Sexo</label>
+        <select name="sexo_empleado" class="form-select" required>
+          <option value="1" {% if empleado.sexo_empleado == 1 %}selected{% endif %}>Masculino</option>
+          <option value="2" {% if empleado.sexo_empleado == 2 %}selected{% endif %}>Femenino</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label>Teléfono</label>
+        <input type="text" name="telefono_empleado" class="form-control" value="{{ empleado.telefono_empleado }}" required>
       </div>
       <div class="mb-3">
         <label>Email</label>
         <input name="email_empleado" type="email" class="form-control" value="{{ empleado.email_empleado }}" required>
+      </div>
+      <div class="mb-3">
+        <label>Profesión</label>
+        <input type="text" name="profesion_empleado" class="form-control" value="{{ empleado.profesion_empleado }}" required>
       </div>
       <div class="mb-3">
         <label>Salario</label>

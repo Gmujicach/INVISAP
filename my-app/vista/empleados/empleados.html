@@ -1,53 +1,37 @@
 {% extends 'base_cpanel.html' %}
 {% block title %}Gestionar Empleados{% endblock %}
+
+{% block customCSS %}
+<!-- Reutilizamos los estilos del dashboard de usuarios -->
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/usuarios.css') }}">
+{% endblock %}
+
 {% block body %}
-<div class="card">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <h5>Lista de Empleados</h5>
-    <a href="{{ url_for('empleado_bp.create_form') }}" class="btn btn-primary">Nuevo Empleado</a>
-  </div>
-  <div class="card-body">
-    <div class="table-responsive">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Salario</th>
-            <th>Foto</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for e in empleados %}
-          <tr>
-            <td>{{ e.nombre_empleado }} {{ e.apellido_empleado }}</td>
-            <td>{{ e.email_empleado }}</td>
-            <td>{{ e.salario_empleado }}</td>
-            <td>{% if e.foto_empleado %}<img src="{{ url_for('static', filename='fotos_empleados/' ~ e.foto_empleado) }}" alt="foto" style="height:40px;border-radius:4px">{% endif %}</td>
-            <td>
-              <a href="{{ url_for('empleado_bp.edit_form', id_empleado=e.id) }}" class="btn rounded-pill btn-warning me-2">
-                <i class="bi bi-pencil"></i>
-              </a>
-              {% if e.foto_empleado %}
-                <a href="{{ url_for('empleado_bp.delete_empleado', id_empleado=e.id, foto=e.foto_empleado) }}" class="btn rounded-pill btn-danger" onclick="return confirm('Eliminar empleado?');">
-                  <i class="bi bi-trash3"></i>
-                </a>
-              {% else %}
-                <a href="{{ url_for('empleado_bp.delete_empleado', id_empleado=e.id) }}" class="btn rounded-pill btn-danger" onclick="return confirm('Eliminar empleado?');">
-                  <i class="bi bi-trash3"></i>
-                </a>
-              {% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+<div class="container-fluid p-0">
+    <!-- Contenedor de carga mientras se activa el dashboard -->
+    <div class="text-center mt-5">
+        <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+        <h5 class="mt-3 fw-semibold">Cargando Gestión de Empleados...</h5>
+        <p class="text-muted">Iniciando panel interactivo.</p>
     </div>
-  </div>
 </div>
 {% endblock %}
 
 {% block customJS %}
-<script src="{{ url_for('static', filename='assets/js/empleados_validation.js') }}"></script>
+<!-- Cargamos la lógica de usuarios para heredar las funciones openDashboard/closeDashboard -->
+<script src="{{ url_for('static', filename='assets/js/usuarios.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/js/empleados.js') }}"></script>
+<script>
+    // Inyectamos los datos de empleados a la ventana global para JS
+    window.resp_empleadosBD = {{ empleados | tojson | safe }};
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Disparamos el dashboard automáticamente al cargar la vista
+        if (typeof triggerEmpleadosDashboard === 'function') {
+            triggerEmpleadosDashboard();
+        }
+    });
+</script>
 {% endblock %}
