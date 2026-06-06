@@ -70,10 +70,7 @@ function triggerUsuariosDashboard() {
 }
 
 
-function blinkPasswordEye(eye) {
-  eye.classList.add('eye-blink');
-  setTimeout(() => eye.classList.remove('eye-blink'), 240);
-}
+// no auto-blink: la animación de cierre se gestiona solo al hacer click
 
 function installPasswordReveal(passwordInput) {
   const inputGroup = passwordInput.closest('.input-group, .password-input-wrapper');
@@ -104,8 +101,6 @@ function installPasswordReveal(passwordInput) {
   const eye = toggleButton.querySelector('.password-eye');
   if (!eye) return;
 
-  setupPasswordEyeBlink(eye);
-
   toggleButton.addEventListener('click', function () {
     const willShow = passwordInput.type === 'password';
     // animar cierre de párpados al hacer click
@@ -117,18 +112,12 @@ function installPasswordReveal(passwordInput) {
       eye.classList.toggle('open', willShow);
       // quitar clase de cierre para permitir la animación inversa
       eye.classList.remove('closing');
-      blinkPasswordEye(eye);
     }, 220);
   });
 }
 
 
-function setupPasswordEyeBlink(eye) {
-  if (eye._blinkInterval) return;
-  eye._blinkInterval = setInterval(() => {
-    blinkPasswordEye(eye);
-  }, 5000 + Math.floor(Math.random() * 6000));
-}
+// setupPasswordEyeBlink removed: no blinking automático
 
 document.addEventListener('DOMContentLoaded', function () {
   const forms = document.querySelectorAll('form');
