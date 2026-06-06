@@ -56,7 +56,7 @@
       <div class="layout-container">
         <!-- Acceso persistente a Mi Perfil -->
         <div class="corner-profile-container">
-          <a href="/mi-perfil" class="profile-link-fixed {% if request.path == '/mi-perfil' %} active {% endif %}">
+          <a href="{{ url_for('login_bp.perfil') }}" class="profile-link-fixed {% if request.path == '/mi-perfil' %} active {% endif %}">
             <i class="bi bi-person-fill-gear"></i>
             <span>Mi Perfil</span>
           </a>

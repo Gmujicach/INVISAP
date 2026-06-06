@@ -30,7 +30,7 @@
             <div class="mb-3 form-password-toggle">
               <div class="d-flex justify-content-between">
                 <label class="form-label" for="password">Clave</label>
-                <a href="{{ url_for('cpanelRecoveryPassUser') }}">
+                <a href="{{ url_for('login_bp.cpanelRecoveryPassUser') }}">
                   <small>Olvidó su Clave?</small>
                 </a>
               </div>
@@ -67,7 +67,7 @@
           </form>
 
           <p class="text-center">
-            <a href="./register-user">
+            <a href="{{ url_for('login_bp.cpanelRegisterUser') }}">
               <span>Crear mi cuenta</span>
             </a>
           </p>

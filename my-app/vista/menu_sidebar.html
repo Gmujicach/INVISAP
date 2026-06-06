@@ -89,6 +89,27 @@
       </a>
     </li>
     <li
+      class="menu-item {% if request.path == '/Gestionar-Contrataciones' %} active{% endif %}">
+      <a href="/Gestionar-Contrataciones" class="menu-link">
+        <i class="menu-icon bi bi-person-lines-fill"></i>
+        <div data-i18n="Boxicons">Gestionar Contrataciones</div>
+      </a>
+    </li>
+    <li
+      class="menu-item {% if request.path == '/Gestionar-Contrataciones' %} active{% endif %}">
+      <a href="/Gestionar-Contrataciones" class="menu-link">
+        <i class="menu-icon bi bi-person-lines-fill"></i>
+        <div data-i18n="Boxicons">Gestionar Contrataciones</div>
+      </a>
+    </li>
+    <li
+      class="menu-item {% if request.path == '/empresa' %} active{% endif %}">
+      <a href="/empresa" class="menu-link">
+        <i class="menu-icon bi bi-person-lines-fill"></i>
+        <div data-i18n="Boxicons">Empresa</div>
+      </a>
+    </li>
+    <li
       class="menu-item {% if request.path == '/registrar-obras' %} active {% endif %}">
       <a href="{{ url_for('viewFormGestionarObras') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>

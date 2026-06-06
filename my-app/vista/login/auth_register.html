@@ -20,7 +20,7 @@
 
           <form
             class="mb-3"
-            action="{{ url_for('cpanelResgisterUserBD') }}"
+            action="{{ url_for('login_bp.cpanelResgisterUserBD') }}"
             method="POST">
             <div class="mb-3">
               <label for="name_surname" class="form-label">
@@ -75,7 +75,7 @@
 
           <div class="text-center">
             <a
-              href="{{ url_for('inicio') }}"
+              href="{{ url_for('login_bp.inicio') }}"
               class="d-flex align-items-center justify-content-center">
               <i class="bx bx-chevron-left scaleX-n1-rtl bx-sm"></i>
               volver
