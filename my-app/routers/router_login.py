@@ -105,12 +105,21 @@ def loginCliente():
             email_user = str(request.form['email_user'])
             pass_user = str(request.form['pass_user'])
 
-            # Comprobando si existe una cuenta
-            conexion_MySQLdb = connectionBD()
-            cursor = conexion_MySQLdb.cursor(dictionary=True)
-            cursor.execute(
-                "SELECT * FROM users WHERE email_user = %s", [email_user])
-            account = cursor.fetchone()
+            try:
+                # Comprobando si existe una cuenta
+                conexion_MySQLdb = connectionBD()
+                cursor = conexion_MySQLdb.cursor(dictionary=True)
+                try:
+                    cursor.execute(
+                        "SELECT * FROM users WHERE email_user = %s", [email_user])
+                    account = cursor.fetchone()
+                finally:
+                    cursor.close()
+                    conexion_MySQLdb.close()
+            except Exception as db_error:
+                flash('No se puede conectar con la base de datos. Verifique la configuración del servidor.', 'error')
+                print(f"Error de conexión en loginCliente: {db_error}")
+                return render_template(f'{PATH_URL_LOGIN}/base_login.html')
 
             if account:
                 if check_password_hash(account['pass_user'], pass_user):
