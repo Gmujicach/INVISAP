@@ -1,6 +1,6 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
   <div class="app-brand demo" style="justify-content: center; padding-left: 0;">
-    <a href="{{ url_for('inicio') }}" class="app-brand-link" style="justify-content: center; width: 100%;">
+    <a href="{{ url_for('login_bp.inicio') }}" class="app-brand-link" style="justify-content: center; width: 100%;">
       <span class="app-brand-logo demo" style="line-height: 0; display: flex; align-items: center; justify-content: center;">
         <img
           src="{{ url_for('static', filename ='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}"
@@ -41,21 +41,21 @@
     </li>
     <li
       class="menu-item {% if request.path == '/gestionar-gravedad' %} active {% endif %}">
-      <a href="/gestionar-gravedad" class="menu-link">
+      <a href="{{ url_for('viewFormGravedad') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Tables">Gestionar Gravedad</div>
       </a>
     </li>
     <li
       class="menu-item {% if request.path == '/priorizar-solicitudes' %} active {% endif %}">
-      <a href="/priorizar-solicitudes" class="menu-link">
+      <a href="{{ url_for('viewPriorizarSolicitudes') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Tables">Priorizar Solicitudes</div>
       </a>
     </li>
     <li
       class="menu-item {% if request.path == '/gestionar-prioridad' %} active {% endif %}">
-      <a href="/gestionar-prioridad" class="menu-link">
+      <a href="{{ url_for('viewFormPrioridad') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Tables">Gestionar Prioridad</div>
       </a>
@@ -69,35 +69,35 @@
     </li>
     <li
       class="menu-item {% if request.path == '/registrar-gerencias' %} active {% endif %}">
-      <a href="{{ url_for('viewFormGerencias') }}" class="menu-link">
+      <a href="{{ url_for('viewFormGerencia') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
         <div data-i18n="Basic">Gerencias</div>
       </a>
     </li>
     <li
       class="menu-item {% if request.path == '/maquinaria' or request.path == '/registrar-maquinaria' %} active {% endif %}">
-      <a href="/maquinaria" class="menu-link">
+      <a href="{{ url_for('viewFormMaquinaria') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Tables">Maquinaria</div>
       </a>
     </li>
     <li
       class="menu-item {% if request.path == '/gestionar-proyectos' %} active {% endif %}">
-      <a href="/gestionar-proyectos" class="menu-link">
+      <a href="{{ url_for('viewFormProyectos') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Tables">Gestionar Proyectos</div>
       </a>
     </li>
     <li
       class="menu-item {% if request.path == '/Gestionar-Contrataciones' %} active{% endif %}">
-      <a href="/Gestionar-Contrataciones" class="menu-link">
+      <a href="{{ url_for('viewFormContratacion') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Boxicons">Gestionar Contrataciones</div>
       </a>
     </li>
     <li
       class="menu-item {% if request.path == '/empresa' %} active{% endif %}">
-      <a href="/empresa" class="menu-link">
+      <a href="{{ url_for('viewFormEmpresa') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Boxicons">Empresa</div>
       </a>
@@ -111,7 +111,7 @@
     </li>
     <li
       class="menu-item {% if request.path == '/inspectores' %} active{% endif %}">
-      <a href="/inspectores" class="menu-link">
+      <a href="{{ url_for('viewFormInspectores') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Boxicons">Inspectores</div>
       </a>
@@ -158,7 +158,7 @@
     </li>
     <li
       class="menu-item {% if request.path == '/bitacora' %} active {% endif %}">
-      <a href="/bitacora" class="menu-link">
+      <a href="{{ url_for('viewBitacora') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Tables">Bitacora</div>
       </a>
@@ -170,17 +170,17 @@
       </a>
       <ul class="menu-sub">
         <li class="menu-item {% if request.path == '/descargar-informe-empleados' %} active {% endif %}">
-          <a href="/descargar-informe-empleados" class="menu-link">
+          <a href="{{ url_for('generarReporteExcel') }}" class="menu-link">
             <div data-i18n="Excel">Reportes Excel</div>
           </a>
         </li>
         <li class="menu-item {% if request.path == '/descargar-informe-publicaciones' %} active {% endif %}">
-          <a href="/descargar-informe-publicaciones" class="menu-link">
+          <a href="{{ url_for('generarReportePDF') }}" class="menu-link">
             <div data-i18n="PDF">Reportes PDF</div>
           </a>
         </li>
         <li class="menu-item {% if request.path == '/reportes-estadisticos' %} active {% endif %}">
-          <a href="/reportes-estadisticos" class="menu-link">
+          <a href="{{ url_for('viewReportesEstadisticos') }}" class="menu-link">
             <div data-i18n="Stats">Reportes Estadísticos</div>
           </a>
         </li>
