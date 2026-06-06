@@ -100,51 +100,60 @@ function injectPasswordRevealStyles() {
       overflow: hidden;
       transition: border-color .2s ease, background .2s ease, transform .2s ease;
     }
-    .password-eye i {
-      position: relative;
-      z-index: 2;
-      font-size: .95rem;
-      line-height: 0.9rem;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 1px;
-      color: #333;
-      transition: transform .12s ease, color .12s ease;
-    }
-    .password-eye.open i {
-      transform: scale(1.02) translateY(-1px);
-      color: #0b6b2f;
-    }
-    .password-eye::before {
+    .password-eye::before,
+    .password-eye::after {
       content: '';
       position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 130%;
-      height: 40%;
-      background: rgba(0,0,0,.14);
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      opacity: .9;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: #5b5b5b;
+      transition: transform .18s ease, opacity .18s ease;
+      pointer-events: none;
+    }
+    .password-eye::before {
+      top: 0;
+      border-bottom-left-radius: 999px;
+      border-bottom-right-radius: 999px;
+      transform-origin: center bottom;
+      transform: translateY(0) scaleY(1);
+    }
+    .password-eye::after {
+      bottom: 0;
+      border-top-left-radius: 999px;
+      border-top-right-radius: 999px;
+      transform-origin: center top;
+      transform: translateY(0) scaleY(1);
     }
     .password-eye.open::before {
-      opacity: 0;
+      transform: translateY(-110%) scaleY(.25);
+      opacity: 0.35;
     }
-    .password-eye.open {
-      transform: scale(1.02);
-      border-color: #0b6b2f;
+    .password-eye.open::after {
+      transform: translateY(110%) scaleY(.25);
+      opacity: 0.35;
     }
-    .password-pupil {
+    .password-eye .password-pupil {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: .4rem;
-      height: .4rem;
+      width: .45rem;
+      height: .45rem;
       background: #111;
       border-radius: 50%;
       transform: translate(-50%, -50%);
       transition: transform .08s ease;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
+    }
+    .password-eye.eye-blink::before {
+      transform: translateY(0) scaleY(.2);
+    }
+    .password-eye.eye-blink::after {
+      transform: translateY(0) scaleY(.2);
+    }
+    .password-eye.open {
+      transform: scale(1.02);
+      border-color: #0b6b2f;
     }
     .password-eye.eye-blink {
       animation: password-eye-blink .24s ease-in-out;
@@ -197,13 +206,12 @@ function installPasswordReveal(passwordInput) {
     toggleButton.className = 'btn btn-outline-secondary btn-password-toggle';
     toggleButton.setAttribute('aria-label', 'Mostrar contraseña');
     toggleButton.tabIndex = -1;
-    toggleButton.innerHTML = '<span class="password-eye" aria-hidden="true"><i class="bi bi-eye-slash"></i><span class="password-pupil"></span></span>';
+    toggleButton.innerHTML = '<span class="password-eye" aria-hidden="true"><span class="password-pupil"></span></span>';
     inputGroup.appendChild(toggleButton);
   }
 
   const eye = toggleButton.querySelector('.password-eye');
   if (!eye) return;
-  const iconEl = eye.querySelector('i.bi');
 
   passwordEyes.push(eye);
   ensurePasswordEyeFollowListener();
@@ -214,7 +222,6 @@ function installPasswordReveal(passwordInput) {
     passwordInput.type = showPassword ? 'text' : 'password';
     toggleButton.setAttribute('aria-label', showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
     eye.classList.toggle('open', showPassword);
-    if (iconEl) iconEl.className = showPassword ? 'bi bi-eye' : 'bi bi-eye-slash';
     blinkPasswordEye(eye);
   });
 }
