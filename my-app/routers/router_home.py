@@ -10,8 +10,11 @@ from controllers.funciones_solicitud import *
 from controllers.EmpleadoController import empleado_bp
 
 PATH_URL = "solicitudes"
+PATH_URL_CONTRAT = "contratacion"
 PATH_URLG = "gerencias"
 PATH_URL_INF = "inf_avance_obra"
+PATH_URL_PROY = "proyectos"
+PATH_URL_GEST_OBR = "obras"
 
 
 # Register blueprints
@@ -26,6 +29,16 @@ def viewFormSolicitud():
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
 
+@app.route('/registrar-maquinaria', methods=['GET'])
+@app.route('/maquinaria', methods=['GET'])
+def viewFormMaquinaria():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_PROY}/form_maquinaria.html')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))    
+
+
 @app.route('/registrar-mortadela', methods=['GET'])
 def viewFormMortadela():
     if 'conectado' in session:
@@ -34,10 +47,20 @@ def viewFormMortadela():
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
     
+    
+@app.route('/gestionar-obras', methods=['GET'])
+def viewFormGestionarObras():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_GEST_OBR}/form_gestionar_obras.html')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+    
+    
 @app.route('/registrar-contratacion', methods=['GET'])
 def viewFormContratacion():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL}/form_contratacion.html')
+        return render_template(f'{PATH_URL_CONTRAT}/form_contratacion.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))

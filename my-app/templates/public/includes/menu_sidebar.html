@@ -75,7 +75,7 @@
       </a>
     </li>
     <li
-      class="menu-item {% if request.path == '/maquinaria' %} active {% endif %}">
+      class="menu-item {% if request.path == '/registrar-maquinaria' %} active {% endif %}">
       <a href="/maquinaria" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Tables">Maquinaria</div>
@@ -89,13 +89,6 @@
       </a>
     </li>
     <li
-      class="menu-item {% if request.path == '/Gestionar-Contrataciones' %} active{% endif %}">
-      <a href="/Gestionar-Contrataciones" class="menu-link">
-        <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Boxicons">Gestionar Contrataciones</div>
-      </a>
-    </li>
-    <li
       class="menu-item {% if request.path == '/empresa' %} active{% endif %}">
       <a href="/empresa" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
@@ -103,10 +96,10 @@
       </a>
     </li>
     <li
-      class="menu-item {% if request.path == '/gestionar-obras' %} active {% endif %}">
-      <a href="/gestionar-obras" class="menu-link">
-        <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Tables">Gestionar Obras</div>
+      class="menu-item {% if request.path == '/registrar-obras' %} active {% endif %}">
+      <a href="{{ url_for('viewFormGestionarObras') }}" class="menu-link">
+        <i class="menu-icon bi bi-person-bounding-box"></i>
+        <div data-i18n="Basic">Gestionar Obras</div>
       </a>
     </li>
     <li
