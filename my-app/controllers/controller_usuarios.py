@@ -8,7 +8,7 @@ modelo_usuario = UsuarioModel()
 @app.route('/lista-de-usuarios', methods=['GET'])
 def listar_usuarios():
     if 'conectado' not in session:
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
     
     # El Controlador pide datos al Modelo
     usuarios = modelo_usuario.listar_todos()

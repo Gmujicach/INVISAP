@@ -11,7 +11,7 @@ model = EmpleadoModel()
 def list_empleados():
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
     empleados = model.all()
     return render_template('empleados.html', empleados=empleados)
 
@@ -20,7 +20,7 @@ def list_empleados():
 def create_form():
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
     return render_template('form_empleado.html')
 
 
@@ -28,7 +28,7 @@ def create_form():
 def create_empleado():
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
     file = request.files.get('foto_empleado')
     res = model.create(request.form, file)
     if res:
@@ -42,7 +42,7 @@ def create_empleado():
 def edit_form(id_empleado):
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
     empleado = model.get(id_empleado)
     if not empleado:
         flash('Empleado no encontrado', 'error')
@@ -54,7 +54,7 @@ def edit_form(id_empleado):
 def update_empleado():
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
     file = request.files.get('foto_empleado')
     res = model.update(request.form, file)
     if res:
@@ -69,7 +69,7 @@ def update_empleado():
 def delete_empleado(id_empleado, foto=None):
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
     res = model.delete(id_empleado, foto)
     if res:
         flash('Empleado eliminado correctamente', 'success')

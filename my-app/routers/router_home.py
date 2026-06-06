@@ -16,6 +16,8 @@ PATH_URL_RES = "respaldo"
 PATH_URL_INF = "inf_avance_obra"
 PATH_URL_PROY = "proyectos"
 PATH_URL_GEST_OBR = "obras"
+PATH_URL_PUB = "publicaciones"
+PATH_URL_IA = "ia"
 
 
 # Register blueprints
@@ -28,8 +30,7 @@ def viewFormSolicitud():
         return render_template(f'{PATH_URL}/form_solicitud.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
-    
+        return redirect(url_for('login_bp.inicio'))
 
 @app.route('/registrar-publicaciones', methods=['GET'])
 def viewFormPublicaciones():
@@ -37,7 +38,7 @@ def viewFormPublicaciones():
         return render_template(f'{PATH_URL_PUB}/form_publicaciones.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
 
 @app.route('/administrar-respaldos', methods=['GET'])
 def viewFormRespaldos():
@@ -45,7 +46,7 @@ def viewFormRespaldos():
         return render_template(f'{PATH_URL_RES}/form_respaldo.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
 
 @app.route('/registrar-maquinaria', methods=['GET'])
 @app.route('/maquinaria', methods=['GET'])
@@ -54,7 +55,7 @@ def viewFormMaquinaria():
         return render_template(f'{PATH_URL_PROY}/form_maquinaria.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))    
+        return redirect(url_for('login_bp.inicio'))    
 
 
 @app.route('/registrar-mortadela', methods=['GET'])
@@ -63,7 +64,7 @@ def viewFormMortadela():
         return render_template(f'{PATH_URL}/form_mortadela.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
     
     
 @app.route('/gestionar-obras', methods=['GET'])
@@ -72,24 +73,104 @@ def viewFormGestionarObras():
         return render_template(f'{PATH_URL_GEST_OBR}/form_gestionar_obras.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
     
+
+@app.route('/gestionar-gravedad', methods=['GET'])
+def viewFormGravedad():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_IA}/form_gestionar_gravedad.html')
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
     
+@app.route('/priorizar-solicitudes', methods=['GET'])
+def viewPriorizarSolicitudes():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_IA}/form_priorizar_solicitudes.html')
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+@app.route('/gestionar-prioridad', methods=['GET'])
+def viewFormPrioridad():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_IA}/form_gestionar_prioridad.html')
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+
+@app.route('/gestionar-proyectos', methods=['GET'])
+def viewFormProyectos():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_PROY}/form_maquinaria.html', empresas=[])
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+
+@app.route('/empresa', methods=['GET'])
+def viewFormEmpresa():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_CONTRAT}/form_contratacion.html', empresas=[])
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+
+@app.route('/inspectores', methods=['GET'])
+def viewFormInspectores():
+    if 'conectado' in session:
+        return render_template('placeholder.html', title='Inspectores', message='Esta página está en desarrollo.', note='Contacto al administrador para habilitar esta función.')
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+
 @app.route('/registrar-contratacion', methods=['GET'])
 def viewFormContratacion():
     if 'conectado' in session:
         return render_template(f'{PATH_URL_CONTRAT}/form_contratacion.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
 
 @app.route('/registrar-gerencias', methods=['GET'])
-def viewFormGerencias():
+def viewFormGerencia():
     if 'conectado' in session:
         return render_template(f'{PATH_URLG}/form_gerencia.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
+
+
+@app.route('/bitacora', methods=['GET'])
+def viewBitacora():
+    if 'conectado' in session:
+        return render_template('placeholder.html', title='Bitacora', message='Esta página está en desarrollo.', note='Contacto al administrador para habilitar esta función.')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+
+@app.route('/descargar-informe-publicaciones', methods=['GET'])
+def generarReportePDF():
+    if 'conectado' in session:
+        return render_template('placeholder.html', title='Reporte PDF', message='Generación de PDF no está implementada aún.', note='Favor contacte al administrador para habilitar esta función.')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+
+@app.route('/reportes-estadisticos', methods=['GET'])
+def viewReportesEstadisticos():
+    if 'conectado' in session:
+        return render_template('placeholder.html', title='Reportes Estadísticos', message='Esta página está en desarrollo.', note='Contacto al administrador para habilitar esta función.')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
 
 @app.route('/inf_avance_obra', methods=['GET'])
 def viewFormInforme_avan_obras():
@@ -97,14 +178,14 @@ def viewFormInforme_avan_obras():
         return render_template(f'{PATH_URL_INF}/inf_avance_obra.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
 
 @app.route('/form-registrar-solicitud', methods=['POST'])
 def formSolicitud():
     # Verificar sesión
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
 
     # Aceptar envío con o sin archivo 'foto_solicitud'
     foto_perfil = None
@@ -133,7 +214,7 @@ def lista_solicitudes():
         return render_template(f'{PATH_URL}/lista_solicitudes.html', solicitudes=obtener_solicitantes())
     else:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
 
 
 @app.route("/detalles-solicitud/", methods=['GET'])
@@ -142,14 +223,14 @@ def detalleSolicitud(idSolicitud=None):
     if 'conectado' in session:
         # Verificamos si el parámetro idSolicitud es None o no está presente en la URL
         if idSolicitud is None:
-            return redirect(url_for('inicio'))
+            return redirect(url_for('login_bp.inicio'))
         else:
             from controllers.funciones_solicitud import obtener_solicitante_por_id
             detalle_solicitud = obtener_solicitante_por_id(idSolicitud) or []
             return render_template(f'{PATH_URL}/detalles_solicitud.html', detalle_solicitud=detalle_solicitud)
     else:
         flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
 
 
 # Buscadon de empleados
@@ -170,32 +251,21 @@ def viewEditarEmpleado(id):
             return render_template(f'{PATH_URL}/form_empleado_update.html', respuestaEmpleado=respuestaEmpleado)
         else:
             flash('El empleado no existe.', 'error')
-            return redirect(url_for('inicio'))
+            return redirect(url_for('login_bp.inicio'))
     else:
         flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
 
 
-# Recibir formulario para actulizar informacion de empleado
-@app.route('/actualizar-empleado', methods=['POST'])
-def actualizarEmpleado():
-    resultData = procesar_actualizacion_form(request)
-    if resultData:
-        return redirect(url_for('lista_empleados'))
 
 
-@app.route('/borrar-empleado/<string:id_empleado>/<string:foto_empleado>', methods=['GET'])
-def borrarEmpleado(id_empleado, foto_empleado):
-    resp = eliminarEmpleado(id_empleado, foto_empleado)
-    if resp:
-        flash('El Empleado fue eliminado correctamente', 'success')
-        return redirect(url_for('lista_empleados'))
 
-
-@app.route("/descargar-informe-empleados/", methods=['GET'])
-def reporteBD():
+@app.route('/descargar-informe-empleados', methods=['GET'])
+@app.route('/descargar-informe-empleados/', methods=['GET'])
+def generarReporteExcel():
     if 'conectado' in session:
-        return generarReporteExcel()
+        from controllers.funciones_home import generarReporteExcel as generar_reporte_excel
+        return generar_reporte_excel()
     else:
         flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))

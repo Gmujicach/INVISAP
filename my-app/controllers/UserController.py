@@ -12,7 +12,7 @@ user_model = UsuarioModel()
 def list_users():
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
     users_data = user_model.listar_todos()
     return render_template('usuarios/lista_usuarios.html', resp_usuariosBD=users_data)
 
@@ -21,7 +21,7 @@ def list_users():
 def show_register_form():
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
     return render_template('usuarios/form_user.html')
 
 
@@ -29,7 +29,7 @@ def show_register_form():
 def register_user():
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
 
     name_surname = request.form.get('name_surname')
     email_user = request.form.get('email_user')
@@ -53,7 +53,7 @@ def register_user():
 def show_edit_form(user_id):
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
 
     user = user_model.buscar_por_id(user_id)
     if user:
@@ -67,7 +67,7 @@ def show_edit_form(user_id):
 def update_user():
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
 
     user_id = request.form.get('id_user')
     name_surname = request.form.get('name_surname')
@@ -85,7 +85,7 @@ def update_user():
 def delete_user(user_id):
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('inicio'))
+        return redirect(url_for('login_bp.inicio'))
 
     if user_model.eliminar(user_id):
         flash('El usuario fue eliminado correctamente.', 'success')

@@ -1,0 +1,20 @@
+{% extends 'base_cpanel.html' %}
+
+{% block title %}Página en Desarrollo{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title">{{ title }}</h3>
+      <p class="card-text">{{ message }}</p>
+      {% if note %}
+      <div class="alert alert-warning mt-3" role="alert">
+        {{ note }}
+      </div>
+      {% endif %}
+      <a href="{{ url_for('login_bp.inicio') }}" class="btn btn-primary mt-3">Volver al inicio</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
