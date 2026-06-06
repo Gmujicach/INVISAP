@@ -47,3 +47,7 @@
   </div>
 </div>
 {% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='assets/js/usuarios_validation.js') }}"></script>
+{% endblock %}
