@@ -270,7 +270,7 @@ function setupPasswordEyeBlink(eye) {
 document.addEventListener('DOMContentLoaded', function () {
   injectPasswordRevealStyles();
   const forms = document.querySelectorAll('form');
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*[^A-Za-z0-9]).{8,12}$/;
+  const passwordRegex = /^(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}$/;
 
   forms.forEach(form => {
     const passwordInput = form.querySelector('input[name="pass_user"]');
@@ -279,9 +279,7 @@ document.addEventListener('DOMContentLoaded', function () {
     installPasswordReveal(passwordInput);
     passwordInput.setAttribute('minlength', '8');
     passwordInput.setAttribute('maxlength', '12');
-    passwordInput.setAttribute('autocomplete', 'new-password');
-
-    const feedbackId = passwordInput.name + '_feedback';
+    passwordInput.setAttribute('pattern', '(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}');
     let feedback = document.getElementById(feedbackId);
     if (!feedback) {
       feedback = document.createElement('div');
@@ -310,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
       if (!passwordRegex.test(value)) {
-        showPasswordError('La clave debe tener entre 8 y 12 caracteres, incluir letras y al menos un símbolo.');
+        showPasswordError('La clave debe tener entre 8 y 12 caracteres, incluir letras y al menos un carácter especial.');
       } else {
         clearPasswordError();
       }
