@@ -47,6 +47,13 @@
       </a>
     </li>
     <li
+      class="menu-item {% if request.path == '/priorizar-solicitudes' %} active {% endif %}">
+      <a href="/priorizar-solicitudes" class="menu-link">
+        <i class="menu-icon bi bi-person-lines-fill"></i>
+        <div data-i18n="Tables">Priorizar Solicitudes</div>
+      </a>
+    </li>
+    <li
       class="menu-item {% if request.path == '/gestionar-prioridad' %} active {% endif %}">
       <a href="/gestionar-prioridad" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
@@ -54,8 +61,8 @@
       </a>
     </li>
     <li
-      class="menu-item {% if request.path == '/empleados' %} active{% endif %}">
-      <a href="/empleados" class="menu-link">
+      class="menu-item {% if request.path.startswith('/empleados') %} active{% endif %}">
+      <a href="{{ url_for('empleado_bp.list_empleados') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Boxicons">Gestionar Empleados</div>
       </a>
@@ -68,8 +75,8 @@
       </a>
     </li>
     <li
-      class="menu-item {% if request.path == '/maquinaria' or request.path == '/registrar-maquinaria' %} active {% endif %}">
-      <a href="{{ url_for('viewFormMaquinaria') }}" class="menu-link">
+      class="menu-item {% if request.path == '/maquinaria' %} active {% endif %}">
+      <a href="/maquinaria" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Tables">Maquinaria</div>
       </a>
@@ -89,6 +96,13 @@
       </a>
     </li>
     <li
+      class="menu-item {% if request.path == '/Gestionar-Contrataciones' %} active{% endif %}">
+      <a href="/Gestionar-Contrataciones" class="menu-link">
+        <i class="menu-icon bi bi-person-lines-fill"></i>
+        <div data-i18n="Boxicons">Gestionar Contrataciones</div>
+      </a>
+    </li>
+    <li
       class="menu-item {% if request.path == '/empresa' %} active{% endif %}">
       <a href="/empresa" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
@@ -96,10 +110,10 @@
       </a>
     </li>
     <li
-      class="menu-item {% if request.path == '/gestionar-obras' %} active {% endif %}">
+      class="menu-item {% if request.path == '/registrar-obras' %} active {% endif %}">
       <a href="{{ url_for('viewFormGestionarObras') }}" class="menu-link">
-        <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Tables">Gestionar Obras</div>
+        <i class="menu-icon bi bi-person-bounding-box"></i>
+        <div data-i18n="Basic">Gestionar Obras</div>
       </a>
     </li>
     <li
@@ -117,14 +131,13 @@
       </a>
     </li>
     <li
-      class="menu-item {% if request.path == '/lista-de-empleados' %} active{% endif %}">
-      <a href="/lista-de-empleados" class="menu-link">
-        <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Boxicons">Gestionar Publicaciones</div>
+      class="menu-item {% if request.path == '/registrar-publicaciones' %} active {% endif %}">
+      <a href="{{ url_for('viewFormPublicaciones') }}" class="menu-link">
+        <i class="menu-icon bi bi-person-bounding-box"></i>
+        <div data-i18n="Basic">Registrar Publicaciones</div>
       </a>
     </li>
-
-      <li
+    <li
       class="menu-item {% if request.path == '/administrar-respaldos' %} active {% endif %}">
       <a href="{{ url_for('viewFormRespaldos') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
@@ -181,7 +194,7 @@
       </ul>
     </li>
     <li class="menu-item">
-      <a href="{{ url_for('cerraSesion') }}" class="menu-link">
+      <a href="{{ url_for('login_bp.logout') }}" class="menu-link">
         <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
         <div data-i18n="Tables">Salir</div>
       </a>
