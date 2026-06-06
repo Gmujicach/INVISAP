@@ -145,12 +145,12 @@
       </a>
       <ul class="menu-sub">
         <li class="menu-item {% if request.path == '/users/register' %} active {% endif %}">
-          <a href="{{ url_for('user_bp.show_register_form') }}" class="menu-link">
+          <a href="{{ url_for('user_bp.show_form_user') }}" class="menu-link">
             <div data-i18n="Register Users">Registrar Usuarios</div>
           </a>
         </li>
         <li class="menu-item {% if request.path == '/users' %} active {% endif %}">
-          <a href="{{ url_for('user_bp.list_users') }}" class="menu-link">
+          <a href="{{ url_for('user_bp.lista_usuarios') }}" class="menu-link">
             <div data-i18n="List Users">Listar Usuarios</div>
           </a>
         </li>
