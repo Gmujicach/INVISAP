@@ -100,6 +100,22 @@ function injectPasswordRevealStyles() {
       overflow: hidden;
       transition: border-color .2s ease, background .2s ease, transform .2s ease;
     }
+    .password-eye i {
+      position: relative;
+      z-index: 2;
+      font-size: .95rem;
+      line-height: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 1px;
+      color: #333;
+      transition: transform .12s ease, color .12s ease;
+    }
+    .password-eye.open i {
+      transform: scale(1.02) translateY(-1px);
+      color: #0b6b2f;
+    }
     .password-eye::before {
       content: '';
       position: absolute;
@@ -114,6 +130,10 @@ function injectPasswordRevealStyles() {
     }
     .password-eye.open::before {
       opacity: 0;
+    }
+    .password-eye.open {
+      transform: scale(1.02);
+      border-color: #0b6b2f;
     }
     .password-pupil {
       position: absolute;
@@ -175,11 +195,13 @@ function installPasswordReveal(passwordInput) {
     toggleButton.setAttribute('aria-label', 'Mostrar contraseña');
     toggleButton.tabIndex = -1;
     toggleButton.innerHTML = '<span class="password-eye" aria-hidden="true"><span class="password-pupil"></span></span>';
+      toggleButton.innerHTML = '<span class="password-eye" aria-hidden="true"><i class="bi bi-eye"></i><span class="password-pupil"></span></span>';
     inputGroup.appendChild(toggleButton);
   }
 
   const eye = toggleButton.querySelector('.password-eye');
   if (!eye) return;
+  const iconEl = eye.querySelector('i.bi');
 
   toggleButton.addEventListener('mousemove', function (event) {
     setPasswordPupilPosition(eye, event);
@@ -194,8 +216,29 @@ function installPasswordReveal(passwordInput) {
     passwordInput.type = isHidden ? 'text' : 'password';
     toggleButton.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
     eye.classList.toggle('open', isHidden);
+    if (iconEl) iconEl.className = isHidden ? 'bi bi-eye-slash' : 'bi bi-eye';
     blinkPasswordEye(eye);
   });
+  // enable global follow and blinking for a natural appearance
+  try { attachGlobalFollow(eye, toggleButton); } catch (e) { /* noop */ }
+}
+
+// Track mouse globally while hovering the eye so the pupil can follow cursor anywhere on the page
+function attachGlobalFollow(eye, toggleButton) {
+  let moveHandler = (e) => setPasswordPupilPosition(eye, e);
+  toggleButton.addEventListener('mouseenter', function () {
+    document.addEventListener('mousemove', moveHandler);
+    // small immediate follow
+    setPasswordPupilPosition(eye, { clientX: window.event ? window.event.clientX : 0, clientY: window.event ? window.event.clientY : 0 });
+  });
+  toggleButton.addEventListener('mouseleave', function () {
+    document.removeEventListener('mousemove', moveHandler);
+    resetPasswordPupil(eye);
+  });
+  // random blink loop for a natural feel
+  const intervalId = setInterval(() => blinkPasswordEye(eye), 5000 + Math.floor(Math.random() * 8000));
+  // store on element so it can be cleared if needed
+  eye._blinkInterval = intervalId;
 }
 
 document.addEventListener('DOMContentLoaded', function () {
