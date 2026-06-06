@@ -72,10 +72,11 @@
 
 .password-input-wrapper {
   position: relative;
+  overflow: hidden; /* evita que el ojo se salga del contenedor */
 }
 
 .password-input-wrapper .form-control {
-  padding-right: 4.25rem;
+  padding-right: 3.8rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   border-radius: 0.6rem;
 }
@@ -84,22 +85,23 @@
 .btn-password-toggle {
   position: absolute;
   top: 50%;
-  right: 0.85rem;
+  right: 0.5rem; /* más pegado al interior del input */
   transform: translateY(-50%);
   width: auto;
   height: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.25rem;
+  padding: 0.15rem;
   border: 0;
-  background: transparent;
+  background: transparent; /* sin fondo cuadrado */
   color: rgba(55,70,79,0.75);
-  border-radius: 0.5rem;
-  box-shadow: none;
+  border-radius: 0.25rem;
+  box-shadow: none; /* sin sombra que rompa el flujo */
   cursor: pointer;
-  transition: transform 0.15s ease, color 0.15s ease;
+  transition: transform 0.12s ease, color 0.12s ease;
   z-index: 2;
+  pointer-events: auto;
 }
 
 .password-toggle-button:hover,
@@ -116,7 +118,7 @@
 }
 
 .password-eye {
-  position: relative;
+  position: relative; /* relativo al botón (que está dentro del input) */
   display: inline-flex;
   width: 1.45rem;
   height: 0.95rem;
@@ -125,7 +127,7 @@
   border: 0;
   border-radius: 999px;
   background: transparent;
-  overflow: visible;
+  overflow: hidden; /* asegurar que no sobresalga */
   transition: transform 0.12s ease;
 }
 
@@ -133,7 +135,7 @@
 .password-eye .eye circle { fill: currentColor; opacity: 0.95; }
 
 .password-eye.open {
-  transform: scale(1.03);
+  transform: none; /* mantener estático cuando está abierto */
   color: #0b6b2f;
 }
 
