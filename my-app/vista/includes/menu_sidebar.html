@@ -123,6 +123,14 @@
         <div data-i18n="Boxicons">Gestionar Publicaciones</div>
       </a>
     </li>
+
+      <li
+      class="menu-item {% if request.path == '/administrar-respaldos' %} active {% endif %}">
+      <a href="{{ url_for('viewFormRespaldos') }}" class="menu-link">
+        <i class="menu-icon bi bi-person-lines-fill"></i>
+        <div data-i18n="Tables">Administrar Respaldos</div>
+      </a>
+    </li>
     {# Nuevo módulo de Usuarios con submenú #}
     <li class="menu-item {% if request.path in ['/users/register', '/users'] %} active open {% endif %}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">

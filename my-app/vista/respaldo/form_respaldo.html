@@ -1,0 +1,102 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}Crud con Python 🐍 | Administracion de Respaldos {% endblock %}
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+{% endblock %}
+
+{% block body %}
+<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
+  <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+    <h5 class="mb-0 text-primary fw-bold">LISTADO DE RESPALDOS</h5>
+    
+    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario" aria-expanded="false" aria-controls="contenedorFormulario">
+      <i class="bx bx-plus"></i> Gerenerar Respaldo
+    </button>
+  </div>
+  
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Fecha Creación</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for respaldos in respaldos %}
+          <tr>
+            <td>{{ respaldos.id_respaldos }}</td>
+            <td>{{ respaldos.fecha_respaldo }}</td>
+            <td class="text-center">
+              <a href="#" class="btn btn-outline-info btn-sm" title="Ver detalle"><i class="bx bx-show"></i></a>
+              <a href="#" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
+              <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar"><i class="bx bx-trash"></i></a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="8" class="text-center text-muted py-4">No hay Respaldos en el sistema.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="collapse mt-3" id="contenedorFormulario">
+  <div class="card shadow-sm" style="border-radius: 0px !important">
+    <div class="row justify-content-center mb-2">
+      <div class="col-md-12">
+        <h4 class="text-center mt-5 mb-3 text-secondary">Generar nuevo Respaldos</h4>
+        <hr class="w-75 mx-auto"/>
+      </div>
+    </div>
+
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-10">
+        <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-empresa" autocomplete="off">
+          <div class="card-body pt-0">
+            
+            <div class="row mb-3 mt-3">
+            <div class="row mb-3">
+                <div class="col-md-6">
+                <label for="fecha_respaldo" class="form-label">Fecha Respaldo</label>
+                <input type="date" class="form-control" name="fecha_respaldo" id="fecha_respaldo" maxlength="100" required />
+              </div>              
+            </div>
+            
+
+            <!--<div class="row mb-4">
+              <div class="col-md-6">
+                <label for="fecha_creada" class="form-label">Fecha Creada</label>
+                <input type="date" class="form-control" name="fecha_creada" id="fecha_creada" required />
+              </div>
+              <div class="col-md-6">
+                <label for="fecha_actualizacion" class="form-label">Fecha Actualización</label>
+                <input type="date" class="form-control" name="fecha_actualizacion" id="fecha_actualizacion" />
+              </div>
+            </div> -->
+
+            <div class="mb-3 text-center">
+              <button type="submit" class="btn rounded-pill btn-primary px-5 me-2">
+                Generar Respaldo
+                <i class="bx bx-save ms-1"></i>
+              </button>
+              <button class="btn rounded-pill btn-outline-secondary px-4" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario">
+                Cancelar
+              </button>
+            </div>
+            
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
+
+{% block customJS %}
+{% endblock %}

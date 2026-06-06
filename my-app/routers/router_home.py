@@ -12,6 +12,7 @@ from controllers.EmpleadoController import empleado_bp
 PATH_URL = "solicitudes"
 PATH_URL_CONTRAT = "contratacion"
 PATH_URLG = "gerencias"
+PATH_URL_RES = "respaldo"
 PATH_URL_INF = "inf_avance_obra"
 PATH_URL_PROY = "proyectos"
 PATH_URL_GEST_OBR = "obras"
@@ -34,6 +35,14 @@ def viewFormSolicitud():
 def viewFormPublicaciones():
     if 'conectado' in session:
         return render_template(f'{PATH_URL_PUB}/form_publicaciones.html')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+
+@app.route('/administrar-respaldos', methods=['GET'])
+def viewFormRespaldos():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_RES}/form_respaldo.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
