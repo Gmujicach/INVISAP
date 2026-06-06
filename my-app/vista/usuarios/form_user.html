@@ -29,7 +29,6 @@
               <div class="form-group password-field">
                 <label class="form-label" for="pass_user">Contraseña</label>
                 <div class="password-input-wrapper">
-                  <input id="pass_user" type="password" name="pass_user" class="form-control password-reveal-input" placeholder="8-12 caracteres, letras y al menos un carácter especial" required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}">
                   <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
                     <span class="password-eye" aria-hidden="true">
                       <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -43,6 +42,7 @@
                     </span>
                     <span class="sr-only visually-hidden">Mostrar contraseña</span>
                   </button>
+                  <input id="pass_user" type="password" name="pass_user" class="form-control password-reveal-input" placeholder="8-12 caracteres, letras y al menos un carácter especial" required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}">
                   <div id="pass_user_feedback" class="invalid-feedback" aria-live="polite"></div>
                 </div>
               </div>
