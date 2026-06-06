@@ -25,7 +25,7 @@
 <script src="{{ url_for('static', filename='assets/js/empleados.js') }}"></script>
 <script>
     // Inyectamos los datos de empleados a la ventana global para JS
-    window.resp_empleadosBD = {{ empleados | tojson | safe }};
+    window.resp_empleadosBD = {{ resp_empleadosBD | tojson | safe }};
     
     document.addEventListener('DOMContentLoaded', function() {
         // Disparamos el dashboard automáticamente al cargar la vista
