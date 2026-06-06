@@ -74,7 +74,7 @@
             </div>
 
             <!-- Inyección del Modelo (Data) para consumo del Controlador JS -->
-            <script>window.resp_usuariosBD = {{ resp_usuariosBD | tojson | safe if resp_usuariosBD else '[]' }};</script>
+            <script>window.resp_usuariosBD = {{ resp_usuariosBD|default([])|tojson|safe }};</script>
 
             <div class="content-backdrop fade"></div>
           </div>
