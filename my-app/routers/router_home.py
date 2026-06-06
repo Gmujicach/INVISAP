@@ -12,6 +12,7 @@ from controllers.EmpleadoController import empleado_bp
 PATH_URL = "solicitudes"
 PATH_URLG = "gerencias"
 PATH_URL_INF = "inf_avance_obra"
+PATH_URL_PUB = "publicaciones"
 
 
 # Register blueprints
@@ -22,6 +23,15 @@ app.register_blueprint(empleado_bp)
 def viewFormSolicitud():
     if 'conectado' in session:
         return render_template(f'{PATH_URL}/form_solicitud.html')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('inicio'))
+    
+
+@app.route('/registrar-publicaciones', methods=['GET'])
+def viewFormPublicaciones():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_PUB}/form_publicaciones.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('inicio'))
