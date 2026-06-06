@@ -70,29 +70,10 @@ function triggerUsuariosDashboard() {
 }
 
 
-function setPasswordEyePosition(eye, mouseEvent) {
-  const eyeGroup = eye.querySelector('.eye');
-  if (!eyeGroup) return;
-  const rect = eye.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height / 2;
-  const deltaX = mouseEvent.clientX - centerX;
-  const deltaY = mouseEvent.clientY - centerY;
-  const maxDistance = Math.min(rect.width, rect.height) * 0.14;
-  const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-  const ratio = distance > maxDistance ? maxDistance / distance : 1;
-  const moveX = Math.round(deltaX * ratio);
-  const moveY = Math.round(deltaY * ratio);
-  eyeGroup.setAttribute('transform', `translate(${moveX} ${moveY})`);
-}
-
 function blinkPasswordEye(eye) {
   eye.classList.add('eye-blink');
   setTimeout(() => eye.classList.remove('eye-blink'), 240);
 }
-
-const passwordEyes = [];
-let passwordEyeFollowInitialized = false;
 
 function installPasswordReveal(passwordInput) {
   const inputGroup = passwordInput.closest('.input-group, .password-input-wrapper');
@@ -123,26 +104,24 @@ function installPasswordReveal(passwordInput) {
   const eye = toggleButton.querySelector('.password-eye');
   if (!eye) return;
 
-  passwordEyes.push(eye);
-  ensurePasswordEyeFollowListener();
   setupPasswordEyeBlink(eye);
 
   toggleButton.addEventListener('click', function () {
-    const showPassword = passwordInput.type === 'password';
-    passwordInput.type = showPassword ? 'text' : 'password';
-    toggleButton.setAttribute('aria-label', showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
-    eye.classList.toggle('open', showPassword);
-    blinkPasswordEye(eye);
+    const willShow = passwordInput.type === 'password';
+    // animar cierre de párpados al hacer click
+    eye.classList.add('closing');
+    // espera la animación y luego alterna el tipo
+    setTimeout(() => {
+      passwordInput.type = willShow ? 'text' : 'password';
+      toggleButton.setAttribute('aria-label', willShow ? 'Ocultar contraseña' : 'Mostrar contraseña');
+      eye.classList.toggle('open', willShow);
+      // quitar clase de cierre para permitir la animación inversa
+      eye.classList.remove('closing');
+      blinkPasswordEye(eye);
+    }, 220);
   });
 }
 
-function ensurePasswordEyeFollowListener() {
-  if (passwordEyeFollowInitialized) return;
-  passwordEyeFollowInitialized = true;
-  document.addEventListener('mousemove', function (event) {
-    passwordEyes.forEach(eye => setPasswordEyePosition(eye, event));
-  });
-}
 
 function setupPasswordEyeBlink(eye) {
   if (eye._blinkInterval) return;

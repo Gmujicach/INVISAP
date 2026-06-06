@@ -145,6 +145,19 @@
   height: 0.9rem;
 }
 
+/* Animación de cierre de párpados al hacer click */
+.password-eye.closing .lid--upper {
+  transform: translateY(6px) scaleY(0.14) !important;
+}
+.password-eye.closing .lid--lower {
+  transform: translateY(-6px) scaleY(0.14) !important;
+}
+
+/* transición suave al cerrar/abrir */
+.password-eye .lid {
+  transition: transform 0.22s cubic-bezier(.2,.8,.2,1);
+}
+
 .password-field .invalid-feedback {
   margin-top: 0.35rem;
 }
