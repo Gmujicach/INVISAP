@@ -64,6 +64,7 @@ def update_empleado():
     return redirect(url_for('empleado_bp.list_empleados'))
 
 
+@empleado_bp.route('/delete/<int:id_empleado>', methods=['GET'])
 @empleado_bp.route('/delete/<int:id_empleado>/<path:foto>', methods=['GET'])
 def delete_empleado(id_empleado, foto=None):
     if 'conectado' not in session:
