@@ -6,6 +6,7 @@ empleado_bp = Blueprint('empleado_bp', __name__, template_folder='../vista/emple
 model = EmpleadoModel()
 
 
+@empleado_bp.route('', methods=['GET'])
 @empleado_bp.route('/', methods=['GET'])
 def list_empleados():
     if 'conectado' not in session:
