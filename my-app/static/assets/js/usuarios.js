@@ -80,7 +80,7 @@ function injectPasswordRevealStyles() {
       justify-content: center;
       min-width: 3rem;
       width: auto;
-      padding: .375rem .65rem;
+      padding: .3rem .5rem;
       border-left: 0;
       border-top-right-radius: .375rem;
       border-bottom-right-radius: .375rem;
@@ -90,11 +90,20 @@ function injectPasswordRevealStyles() {
     .input-group .btn-password-toggle {
       border-left: 0;
       margin-left: -1px;
+      padding-left: .4rem;
+      padding-right: .4rem;
     }
     .btn-password-toggle .password-eye {
       display: block;
-      width: 1.4rem;
-      height: 1rem;
+      width: 1.75rem;
+      height: 1.15rem;
+      min-width: 1.75rem;
+      min-height: 1.15rem;
+    }
+    .button-password-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
     .btn-password-toggle:hover {
       background: rgba(0, 0, 0, .04);
@@ -102,12 +111,12 @@ function injectPasswordRevealStyles() {
     .password-eye {
       position: relative;
       display: inline-flex;
-      width: 1.4rem;
-      height: 0.95rem;
+      width: 1.75rem;
+      height: 1.15rem;
       border: 2px solid #5b5b5b;
       border-radius: 999px;
       background: radial-gradient(circle at 50% 45%, #ffffff 46%, #eef2f5 100%);
-      overflow: hidden;
+      overflow: visible;
       transition: border-color .2s ease, background .2s ease, transform .2s ease;
     }
     .password-eye::before,
