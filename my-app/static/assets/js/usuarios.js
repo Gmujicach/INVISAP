@@ -79,12 +79,22 @@ function injectPasswordRevealStyles() {
       align-items: center;
       justify-content: center;
       min-width: 3rem;
-      width: 3rem;
+      width: auto;
+      padding: .375rem .65rem;
       border-left: 0;
       border-top-right-radius: .375rem;
       border-bottom-right-radius: .375rem;
       background: transparent;
       color: #495057;
+    }
+    .input-group .btn-password-toggle {
+      border-left: 0;
+      margin-left: -1px;
+    }
+    .btn-password-toggle .password-eye {
+      display: block;
+      width: 1.4rem;
+      height: 1rem;
     }
     .btn-password-toggle:hover {
       background: rgba(0, 0, 0, .04);
@@ -280,6 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
     passwordInput.setAttribute('minlength', '8');
     passwordInput.setAttribute('maxlength', '12');
     passwordInput.setAttribute('pattern', '(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}');
+    const feedbackId = `${passwordInput.name}_feedback`;
     let feedback = document.getElementById(feedbackId);
     if (!feedback) {
       feedback = document.createElement('div');
