@@ -28,21 +28,21 @@
             <div class="col-md-6 mb-3">
               <div class="form-group password-field">
                 <label class="form-label" for="pass_user">Contraseña</label>
-                <div class="password-input-wrapper position-relative">
-                  <input id="pass_user" type="password" name="pass_user" class="form-control password-reveal-input" placeholder="8-12 caracteres, letras y al menos un carácter especial" required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}">
-                  <button type="button" class="btn btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
-                    <span class="password-eye" aria-hidden="true">
+                <div class="input-group">
+                  <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
+                    <span class="password-eye is-closed" aria-hidden="true">
                       <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                         <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                         <g class="eye">
-                          <circle cy="12" cx="12" r="4" fill="currentColor" />
+                          <circle class="eye-sclera" cy="12" cx="12" r="4" fill="currentColor" />
                           <circle class="eye-pupil" cy="12" cx="12" r="1.5" fill="#000" />
                         </g>
                       </svg>
                     </span>
                     <span class="sr-only visually-hidden">Mostrar contraseña</span>
                   </button>
+                  <input id="pass_user" type="password" name="pass_user" class="form-control" placeholder="8-12 caracteres, letras y al menos un carácter especial" required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}">
                   <div id="pass_user_feedback" class="invalid-feedback" aria-live="polite"></div>
                 </div>
               </div>
@@ -63,40 +63,62 @@
 </div>
 
 <style>
-  .password-input-wrapper {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-  }
-  /* Espacio para el ojo dentro del input */
-  .password-reveal-input {
-    padding-right: 45px !important;
-  }
-  /* Posiciona el botón fijo sobre el input */
+  /* Estilos para que el botón del ojo se vea igual a los iconos de los otros inputs */
   .btn-password-toggle {
-    position: absolute;
-    right: 5px;
-    top: 0;
-    height: 38px; /* Altura estándar de input Bootstrap */
-    border: none;
-    background: transparent !important;
-    z-index: 5;
-    padding: 0 10px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    box-shadow: none !important;
+    background-color: #e9ecef !important;
+    border: 1px solid #ced4da !important;
+    color: #495057 !important;
+    padding: 0 12px;
+    border-radius: 0.375rem 0 0 0.375rem !important;
   }
+
   .button-password-svg {
     width: 22px;
     height: 22px;
-    color: #6c757d;
   }
-  .btn-password-toggle:hover .button-password-svg {
-    color: #0d6efd;
+
+  /* Animación de parpadeo (solo cuando está abierto) */
+  @keyframes eye-blink {
+    0%, 88%, 100% { transform: scaleY(1); }
+    92%, 96% { transform: scaleY(0.1); }
   }
+
+  .button-password-svg .lid {
+    transform-origin: center;
+    transition: transform 0.3s ease;
+  }
+
+  .password-eye.is-open .lid {
+    animation: eye-blink 5s infinite;
+  }
+
+  /* Estado "Cerrado" (Contraseña oculta) */
+  .password-eye.is-closed .eye-pupil,
+  .password-eye.is-closed .eye-sclera {
+    visibility: hidden;
+  }
+
+  .password-eye.is-closed .lid--upper {
+    transform: translateY(3px) scaleY(0.1);
+  }
+
+  .password-eye.is-closed .lid--lower {
+    transform: translateY(-3px) scaleY(0.1);
+  }
+
   .eye-pupil {
     transition: transform 0.05s linear;
+  }
+
+  /* Corregir visualización de feedback en input-group */
+  .input-group .invalid-feedback {
+    width: 100%;
+    display: none;
+  }
+  .input-group .form-control.is-invalid ~ .invalid-feedback {
+    display: block;
   }
 </style>
 
@@ -104,16 +126,27 @@
   document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.querySelector('.btn-password-toggle');
     const passwordInput = document.getElementById('pass_user');
+    const eyeSpan = document.querySelector('.password-eye');
     const pupil = document.querySelector('.eye-pupil');
 
     // Funcionalidad de Mostrar/Ocultar
     toggleBtn.addEventListener('click', () => {
-      passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+      const isHidden = passwordInput.type === 'password';
+      passwordInput.type = isHidden ? 'text' : 'password';
+      
+      // Cambiar visual del ojo: si mostramos texto, abrimos el ojo.
+      if (isHidden) {
+        eyeSpan.classList.replace('is-closed', 'is-open');
+      } else {
+        eyeSpan.classList.replace('is-open', 'is-closed');
+      }
     });
 
     // Ojo que sigue al cursor
     document.addEventListener('mousemove', (e) => {
-      if (!pupil) return;
+      // Solo seguir el cursor si el ojo está abierto
+      if (!pupil || eyeSpan.classList.contains('is-closed')) return;
+
       const rect = pupil.getBoundingClientRect();
       const eyeCenterX = rect.left + rect.width / 2;
       const eyeCenterY = rect.top + rect.height / 2;
