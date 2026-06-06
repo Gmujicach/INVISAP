@@ -142,3 +142,4 @@ cython_debug/
 .history
 my-app/conexion/conexionBD.py
 my-app/conexion/conexionBD.py
+my-app/conexion/conexionBD.py
