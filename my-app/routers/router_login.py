@@ -79,13 +79,13 @@ def actualizarPerfil():
             elif respuesta == 0:
                 flash(
                     'La contraseña actual esta incorrecta, por favor verifique.', 'error')
-                return redirect(url_for('perfil'))
+                return redirect(url_for('login_bp.perfil'))
             elif respuesta == 2:
                 flash('Ambas claves deben se igual, por favor verifique.', 'error')
-                return redirect(url_for('perfil'))
+                return redirect(url_for('login_bp.perfil'))
             elif respuesta == 3:
                 flash('La Clave actual es obligatoria.', 'error')
-                return redirect(url_for('perfil'))
+                return redirect(url_for('login_bp.perfil'))
         else:
             flash('primero debes iniciar sesión.', 'error')
             return redirect(url_for('login_bp.inicio'))

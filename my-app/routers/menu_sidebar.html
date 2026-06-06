@@ -89,6 +89,27 @@
       </a>
     </li>
     <li
+      class="menu-item {% if request.path == '/Gestionar-Contrataciones' %} active{% endif %}">
+      <a href="/Gestionar-Contrataciones" class="menu-link">
+        <i class="menu-icon bi bi-person-lines-fill"></i>
+        <div data-i18n="Boxicons">Gestionar Contrataciones</div>
+      </a>
+    </li>
+    <li
+      class="menu-item {% if request.path == '/Gestionar-Contrataciones' %} active{% endif %}">
+      <a href="/Gestionar-Contrataciones" class="menu-link">
+        <i class="menu-icon bi bi-person-lines-fill"></i>
+        <div data-i18n="Boxicons">Gestionar Contrataciones</div>
+      </a>
+    </li>
+    <li
+      class="menu-item {% if request.path == '/empresa' %} active{% endif %}">
+      <a href="/empresa" class="menu-link">
+        <i class="menu-icon bi bi-person-lines-fill"></i>
+        <div data-i18n="Boxicons">Empresa</div>
+      </a>
+    </li>
+    <li
       class="menu-item {% if request.path == '/registrar-obras' %} active {% endif %}">
       <a href="{{ url_for('viewFormGestionarObras') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
@@ -131,12 +152,12 @@
       </a>
       <ul class="menu-sub">
         <li class="menu-item {% if request.path == '/users/register' %} active {% endif %}">
-          <a href="{{ url_for('user_bp.show_form_user') }}" class="menu-link">
+          <a href="{{ url_for('user_bp.show_register_form') }}" class="menu-link">
             <div data-i18n="Register Users">Registrar Usuarios</div>
           </a>
         </li>
         <li class="menu-item {% if request.path == '/users' %} active {% endif %}">
-          <a href="{{ url_for('user_bp.lista_usuarios') }}" class="menu-link">
+          <a href="{{ url_for('user_bp.list_users') }}" class="menu-link">
             <div data-i18n="List Users">Listar Usuarios</div>
           </a>
         </li>
