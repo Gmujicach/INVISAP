@@ -69,141 +69,6 @@ function triggerUsuariosDashboard() {
     openDashboard(content);
 }
 
-function injectPasswordRevealStyles() {
-  if (document.getElementById('password-reveal-styles')) return;
-  const style = document.createElement('style');
-  style.id = 'password-reveal-styles';
-  style.textContent = `
-    .btn-password-toggle {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 3rem;
-      width: auto;
-      padding: .3rem .5rem;
-      border-left: 0;
-      border-top-right-radius: .375rem;
-      border-bottom-right-radius: .375rem;
-      background: transparent;
-      color: #495057;
-    }
-    .input-group .btn-password-toggle {
-      border-left: 0;
-      margin-left: -1px;
-      padding-left: .4rem;
-      padding-right: .4rem;
-    }
-    .btn-password-toggle .password-eye {
-      display: block;
-      width: 1.75rem;
-      height: 1.15rem;
-      min-width: 1.75rem;
-      min-height: 1.15rem;
-    }
-    .button-password-svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    .btn-password-toggle:hover {
-      background: rgba(0, 0, 0, .04);
-    }
-    .password-eye {
-      position: relative;
-      display: inline-flex;
-      width: 1.75rem;
-      height: 1.15rem;
-      border: 2px solid #5b5b5b;
-      border-radius: 999px;
-      background: radial-gradient(circle at 50% 45%, #ffffff 46%, #eef2f5 100%);
-      overflow: visible;
-      transition: border-color .2s ease, background .2s ease, transform .2s ease;
-    }
-    .password-eye::before,
-    .password-eye::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      width: 100%;
-      height: 50%;
-      background: #5b5b5b;
-      transition: transform .18s ease, opacity .18s ease;
-      pointer-events: none;
-    }
-    .password-eye::before {
-      top: 0;
-      border-bottom-left-radius: 999px;
-      border-bottom-right-radius: 999px;
-      transform-origin: center bottom;
-      transform: translateY(0) scaleY(1);
-    }
-    .password-eye::after {
-      bottom: 0;
-      border-top-left-radius: 999px;
-      border-top-right-radius: 999px;
-      transform-origin: center top;
-      transform: translateY(0) scaleY(1);
-    }
-    .password-eye.open::before {
-      transform: translateY(-110%) scaleY(.25);
-      opacity: 0.35;
-    }
-    .password-eye.open::after {
-      transform: translateY(110%) scaleY(.25);
-      opacity: 0.35;
-    }
-    .password-eye .eye {
-      transition: transform .08s ease;
-    }
-    .password-eye.open {
-      transform: scale(1.02);
-      border-color: #0b6b2f;
-    }
-    .password-eye.open .lid--upper {
-      transform: translateY(-3px) scaleY(.55);
-    }
-    .password-eye.open .lid--lower {
-      transform: translateY(3px) scaleY(.55);
-    }
-    .password-eye.eye-blink::before {
-      transform: translateY(0) scaleY(.18);
-    }
-    .sr-only,
-    .visually-hidden {
-      position: absolute !important;
-      width: 1px !important;
-      height: 1px !important;
-      padding: 0 !important;
-      margin: -1px !important;
-      overflow: hidden !important;
-      clip: rect(0, 0, 0, 0) !important;
-      white-space: nowrap !important;
-      border: 0 !important;
-    }
-    .password-eye.eye-blink::after {
-      transform: translateY(0) scaleY(.18);
-    }
-    .password-eye.eye-blink .eye {
-      transform: translate(0, 2px);
-    }
-    .button-password-svg {
-      width: 1.4rem;
-      height: 1rem;
-    }
-    .password-eye .lid {
-      transition: transform .18s ease;
-      transform-origin: center;
-    }
-    .password-eye .eye {
-      transition: transform .08s ease;
-    }
-    @keyframes password-eye-blink {
-      0%,100% { transform: scaleY(1); }
-      50% { transform: scaleY(.14); }
-    }
-  `;
-  document.head.appendChild(style);
-}
 
 function setPasswordEyePosition(eye, mouseEvent) {
   const eyeGroup = eye.querySelector('.eye');
@@ -230,7 +95,7 @@ const passwordEyes = [];
 let passwordEyeFollowInitialized = false;
 
 function installPasswordReveal(passwordInput) {
-  const inputGroup = passwordInput.closest('.input-group');
+  const inputGroup = passwordInput.closest('.input-group, .password-input-wrapper');
   if (!inputGroup) return;
   let toggleButton = inputGroup.querySelector('.btn-password-toggle');
   if (!toggleButton) {
@@ -287,7 +152,6 @@ function setupPasswordEyeBlink(eye) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  injectPasswordRevealStyles();
   const forms = document.querySelectorAll('form');
   const passwordRegex = /^(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}$/;
 
