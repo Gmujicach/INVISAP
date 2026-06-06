@@ -69,7 +69,137 @@ function triggerUsuariosDashboard() {
     openDashboard(content);
 }
 
+function injectPasswordRevealStyles() {
+  if (document.getElementById('password-reveal-styles')) return;
+  const style = document.createElement('style');
+  style.id = 'password-reveal-styles';
+  style.textContent = `
+    .btn-password-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 3rem;
+      width: 3rem;
+      border-left: 0;
+      border-top-right-radius: .375rem;
+      border-bottom-right-radius: .375rem;
+      background: transparent;
+      color: #495057;
+    }
+    .btn-password-toggle:hover {
+      background: rgba(0, 0, 0, .04);
+    }
+    .password-eye {
+      position: relative;
+      display: inline-flex;
+      width: 1.4rem;
+      height: 0.95rem;
+      border: 2px solid #5b5b5b;
+      border-radius: 999px;
+      background: radial-gradient(circle at 50% 45%, #ffffff 46%, #eef2f5 100%);
+      overflow: hidden;
+      transition: border-color .2s ease, background .2s ease, transform .2s ease;
+    }
+    .password-eye::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 130%;
+      height: 40%;
+      background: rgba(0,0,0,.14);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      opacity: .9;
+    }
+    .password-eye.open::before {
+      opacity: 0;
+    }
+    .password-pupil {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: .4rem;
+      height: .4rem;
+      background: #111;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: transform .08s ease;
+    }
+    .password-eye.eye-blink {
+      animation: password-eye-blink .24s ease-in-out;
+    }
+    @keyframes password-eye-blink {
+      0%,100% { transform: scaleY(1); }
+      50% { transform: scaleY(.14); }
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+function setPasswordPupilPosition(eye, mouseEvent) {
+  const pupil = eye.querySelector('.password-pupil');
+  if (!pupil) return;
+  const rect = eye.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const deltaX = mouseEvent.clientX - centerX;
+  const deltaY = mouseEvent.clientY - centerY;
+  const maxDistance = Math.min(rect.width, rect.height) * 0.18;
+  const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+  const ratio = distance > maxDistance ? maxDistance / distance : 1;
+  const moveX = deltaX * ratio;
+  const moveY = deltaY * ratio;
+  pupil.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
+}
+
+function resetPasswordPupil(eye) {
+  const pupil = eye.querySelector('.password-pupil');
+  if (!pupil) return;
+  pupil.style.transform = 'translate(-50%, -50%)';
+}
+
+function blinkPasswordEye(eye) {
+  eye.classList.add('eye-blink');
+  setTimeout(() => eye.classList.remove('eye-blink'), 240);
+}
+
+function installPasswordReveal(passwordInput) {
+  const inputGroup = passwordInput.closest('.input-group');
+  if (!inputGroup) return;
+  let toggleButton = inputGroup.querySelector('.btn-password-toggle');
+  if (!toggleButton) {
+    toggleButton = document.createElement('button');
+    toggleButton.type = 'button';
+    toggleButton.className = 'btn btn-outline-secondary btn-password-toggle';
+    toggleButton.setAttribute('aria-label', 'Mostrar contraseña');
+    toggleButton.tabIndex = -1;
+    toggleButton.innerHTML = '<span class="password-eye" aria-hidden="true"><span class="password-pupil"></span></span>';
+    inputGroup.appendChild(toggleButton);
+  }
+
+  const eye = toggleButton.querySelector('.password-eye');
+  if (!eye) return;
+
+  toggleButton.addEventListener('mousemove', function (event) {
+    setPasswordPupilPosition(eye, event);
+  });
+
+  toggleButton.addEventListener('mouseleave', function () {
+    resetPasswordPupil(eye);
+  });
+
+  toggleButton.addEventListener('click', function () {
+    const isHidden = passwordInput.type === 'password';
+    passwordInput.type = isHidden ? 'text' : 'password';
+    toggleButton.setAttribute('aria-label', isHidden ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    eye.classList.toggle('open', isHidden);
+    blinkPasswordEye(eye);
+  });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
+  injectPasswordRevealStyles();
   const forms = document.querySelectorAll('form');
   const passwordRegex = /^(?=.*[A-Za-z])(?=.*[^A-Za-z0-9]).{8,12}$/;
 
@@ -77,6 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const passwordInput = form.querySelector('input[name="pass_user"]');
     if (!passwordInput) return;
 
+    installPasswordReveal(passwordInput);
     passwordInput.setAttribute('minlength', '8');
     passwordInput.setAttribute('maxlength', '12');
     passwordInput.setAttribute('autocomplete', 'new-password');
