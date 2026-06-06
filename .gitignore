@@ -141,3 +141,5 @@ cython_debug/
 # Ignore all local history of files
 .history
 my-app/conexion/conexionBD.py
+my-app/conexion/conexionBD.py
+my-app/conexion/conexionBD.py
