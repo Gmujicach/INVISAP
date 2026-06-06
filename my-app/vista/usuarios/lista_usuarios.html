@@ -28,6 +28,11 @@
             <td>{{ usuario.created_user}}</td>
             <td>
               <button
+                class="btn rounded-pill btn-warning me-2"
+                onclick="editarUsuario('{{ usuario.id }}');">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button
                 class="btn rounded-pill btn-danger"
                 onclick="eliminarUsuario('{{ usuario.id }}');">
                 <i class="bi bi-trash3"></i>
@@ -55,6 +60,12 @@
 <!--Script Custom-->
 {% block customJS %}
 <script>
+  function editarUsuario(id) {
+    if (id) {
+      window.location.href = `/users/edit/${id}`;
+    }
+  }
+
   function eliminarUsuario(id) {
     if (confirm("¿Estas seguro que deseas eliminar el Usuario?")) {
       let url = `/borrar-usuario/${id}`;
