@@ -26,8 +26,18 @@
             <td>{{ e.salario_empleado }}</td>
             <td>{% if e.foto_empleado %}<img src="{{ url_for('static', filename='fotos_empleados/' ~ e.foto_empleado) }}" alt="foto" style="height:40px;border-radius:4px">{% endif %}</td>
             <td>
-              <a href="{{ url_for('empleado_bp.edit_form', id_empleado=e.id) }}" class="btn btn-sm btn-info">Editar</a>
-              <a href="{{ url_for('empleado_bp.delete_empleado', id_empleado=e.id, foto=e.foto_empleado) }}" class="btn btn-sm btn-danger" onclick="return confirm('Eliminar empleado?')">Eliminar</a>
+              <a href="{{ url_for('empleado_bp.edit_form', id_empleado=e.id) }}" class="btn rounded-pill btn-warning me-2">
+                <i class="bi bi-pencil"></i>
+              </a>
+              {% if e.foto_empleado %}
+                <a href="{{ url_for('empleado_bp.delete_empleado', id_empleado=e.id, foto=e.foto_empleado) }}" class="btn rounded-pill btn-danger" onclick="return confirm('Eliminar empleado?');">
+                  <i class="bi bi-trash3"></i>
+                </a>
+              {% else %}
+                <a href="{{ url_for('empleado_bp.delete_empleado', id_empleado=e.id) }}" class="btn rounded-pill btn-danger" onclick="return confirm('Eliminar empleado?');">
+                  <i class="bi bi-trash3"></i>
+                </a>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}

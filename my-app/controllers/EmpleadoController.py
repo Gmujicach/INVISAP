@@ -6,6 +6,7 @@ empleado_bp = Blueprint('empleado_bp', __name__, template_folder='../vista/emple
 model = EmpleadoModel()
 
 
+@empleado_bp.route('', methods=['GET'])
 @empleado_bp.route('/', methods=['GET'])
 def list_empleados():
     if 'conectado' not in session:
@@ -63,6 +64,7 @@ def update_empleado():
     return redirect(url_for('empleado_bp.list_empleados'))
 
 
+@empleado_bp.route('/delete/<int:id_empleado>', methods=['GET'])
 @empleado_bp.route('/delete/<int:id_empleado>/<path:foto>', methods=['GET'])
 def delete_empleado(id_empleado, foto=None):
     if 'conectado' not in session:

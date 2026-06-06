@@ -1,4 +1,4 @@
-/**
+﻿/**
  * VIEW-CONTROLLED: USUARIOS
  * Encargado de la interacción del usuario y renderizado de componentes.
  */
@@ -68,3 +68,115 @@ function triggerUsuariosDashboard() {
     `;
     openDashboard(content);
 }
+
+
+// no auto-blink: la animación de cierre se gestiona solo al hacer click
+
+function installPasswordReveal(passwordInput) {
+  const inputGroup = passwordInput.closest('.input-group, .password-input-wrapper');
+  if (!inputGroup) return;
+  let toggleButton = inputGroup.querySelector('.btn-password-toggle');
+  if (!toggleButton) {
+    toggleButton = document.createElement('button');
+    toggleButton.type = 'button';
+    toggleButton.className = 'btn btn-outline-secondary btn-password-toggle';
+    toggleButton.setAttribute('aria-label', 'Mostrar contraseña');
+    toggleButton.tabIndex = -1;
+    toggleButton.innerHTML = `
+      <span class="password-eye" aria-hidden="true">
+        <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <g class="eye">
+            <circle cy="12" cx="12" r="4" fill="currentColor" />
+            <circle cy="11" cx="13" r="1" fill="#000" />
+          </g>
+        </svg>
+      </span>
+      <span class="sr-only visually-hidden">Mostrar contraseña</span>
+    `;
+    inputGroup.appendChild(toggleButton);
+  }
+
+  const eye = toggleButton.querySelector('.password-eye');
+  if (!eye) return;
+
+  toggleButton.addEventListener('click', function () {
+    const willShow = passwordInput.type === 'password';
+    // animar cierre de párpados al hacer click
+    eye.classList.add('closing');
+    // espera la animación y luego alterna el tipo
+    setTimeout(() => {
+      passwordInput.type = willShow ? 'text' : 'password';
+      toggleButton.setAttribute('aria-label', willShow ? 'Ocultar contraseña' : 'Mostrar contraseña');
+      eye.classList.toggle('open', willShow);
+      // quitar clase de cierre para permitir la animación inversa
+      eye.classList.remove('closing');
+    }, 220);
+  });
+}
+
+
+// setupPasswordEyeBlink removed: no blinking automático
+
+document.addEventListener('DOMContentLoaded', function () {
+  const forms = document.querySelectorAll('form');
+  const passwordRegex = /^(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}$/;
+
+  forms.forEach(form => {
+    const passwordInput = form.querySelector('input[name="pass_user"]');
+    if (!passwordInput) return;
+
+    installPasswordReveal(passwordInput);
+    passwordInput.setAttribute('minlength', '8');
+    passwordInput.setAttribute('maxlength', '12');
+    passwordInput.setAttribute('pattern', '(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}');
+    const feedbackId = `${passwordInput.name}_feedback`;
+    let feedback = document.getElementById(feedbackId);
+    if (!feedback) {
+      feedback = document.createElement('div');
+      feedback.id = feedbackId;
+      feedback.className = 'invalid-feedback';
+      passwordInput.parentNode.appendChild(feedback);
+    }
+
+    function showPasswordError(message) {
+      passwordInput.classList.add('is-invalid');
+      passwordInput.classList.remove('is-valid');
+      feedback.textContent = message;
+    }
+
+    function clearPasswordError() {
+      passwordInput.classList.remove('is-invalid');
+      passwordInput.classList.add('is-valid');
+      feedback.textContent = '';
+    }
+
+    passwordInput.addEventListener('input', function () {
+      const value = passwordInput.value;
+      if (!value) {
+        passwordInput.classList.remove('is-valid', 'is-invalid');
+        feedback.textContent = '';
+        return;
+      }
+      if (!passwordRegex.test(value)) {
+        showPasswordError('La clave debe tener entre 8 y 12 caracteres, incluir letras y al menos un carácter especial.');
+      } else {
+        clearPasswordError();
+      }
+    });
+
+    form.addEventListener('submit', function (event) {
+      const value = passwordInput.value;
+      if (!value && passwordInput.hasAttribute('required')) {
+        showPasswordError('La contraseña es obligatoria.');
+        event.preventDefault();
+        return;
+      }
+      if (value && !passwordRegex.test(value)) {
+        showPasswordError('La clave debe tener entre 8 y 12 caracteres, incluir letras y al menos un símbolo.');
+        event.preventDefault();
+      }
+    });
+  });
+});

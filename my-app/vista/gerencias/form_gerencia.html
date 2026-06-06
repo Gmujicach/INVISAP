@@ -24,46 +24,6 @@
         autocomplete="off">
         <div class="card-body">
           
-          <div class="row">
-            <div class="col-md-6">
-              <label for="nombre_gerencia" class="form-label">
-                Nombre de la Gerencia
-              </label>
-              <input
-                type="text"
-                name="nombre_gerencia"
-                class="form-control"
-                maxlength="50"
-                required />
-            </div>
-            <div class="col-md-6">
-              <label for="id_solicitud" class="form-label">
-                ID de la Solicitud
-              </label>
-              <input
-                type="number"
-                name="id_solicitud"
-                class="form-control"
-                required />
-            </div>
-          </div>
-
-          <div class="row mt-2">
-            <div class="col-md-12">
-              <label for="direccion_gerencia" class="form-label">
-                Dirección de la Gerencia
-              </label>
-              <input
-                type="text"
-                name="direccion_gerencia"
-                class="form-control"
-                maxlength="100"
-                required />
-            </div>
-          </div>
-
-          <hr class="mt-4 mb-3" />
-          <h5 class="text-secondary mb-3">Datos del Gerente</h5>
 
           <div class="row">
             <div class="col-md-6">
@@ -77,6 +37,19 @@
                 maxlength="50"
                 required />
             </div>
+
+            <div class="col-md-5">
+              <label for="nombre_gerencia" class="form-label">
+                Nombre de la Gerencia
+              </label>
+              <input
+                type="text"
+                name="nombre_gerencia"
+                class="form-control"
+                maxlength="50"
+                required />
+            </div>
+
             <div class="col-md-6">
               <label for="cedula_gerante" class="form-label">
                 Cédula
@@ -90,7 +63,7 @@
             </div>
           </div>
 
-          <div class="row mt-2">
+          <div class="row">
             <div class="col-md-6">
               <label for="correo_gerente" class="form-label">
                 Correo Electrónico
@@ -102,7 +75,7 @@
                 maxlength="50"
                 required />
             </div>
-            <div class="col-md-6">
+            <div class="col-md-5">
   <label for="telefono_gerente" class="form-label">Teléfono(s)</label>
   
   <div id="contenedor-telefonos">
@@ -140,6 +113,61 @@
               <i class="bi bi-arrow-clockwise"></i>
             </button>
           </div>
+
+
+<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
+  <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+    <h5 class="mb-0 text-primary fw-bold">GERENCIAS REGISTRADAS</h5>
+  </div>
+  
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Nombre y Apellido</th>
+            <th>Nombre Gerencia</th>
+            <th>Cédula</th>
+            <th>Correo</th>
+            <th>Teléfono(s)</th>
+            <th>Dirección Gerente</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for gerencia in gerencia %}
+          <tr>
+            <td>{{ gerencia.id_gerencia }}</td>
+            <td>{{ gerencia.nombre }}</td>
+            <td>{{ gerencia.nombre_gerencia }}</td>
+            <td><span class="badge bg-info">{{ gerencia.cedula }}</span></td>
+            <td>{{ gerencia.correo }}</td>
+            <td>{{ gerencia.telefono }}</td>
+            <td>{{ gerencia.direccion }}</td>
+            <td class="text-center">
+              <a href="#" class="btn btn-outline-info btn-sm" title="Ver detalle"><i class="bx bx-show"></i></a>
+              <a href="#" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
+              <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar"><i class="bx bx-trash"></i></a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="8" class="text-center text-muted py-4">No hay Gerencias registradas en el sistema.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+     </div>
+     </div>
+     </div>        
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
         </div>
       </form>
     </div>

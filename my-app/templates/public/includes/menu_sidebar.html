@@ -61,8 +61,8 @@
       </a>
     </li>
     <li
-      class="menu-item {% if request.path == '/empleados' %} active{% endif %}">
-      <a href="/empleados" class="menu-link">
+      class="menu-item {% if request.path.startswith('/empleados') %} active{% endif %}">
+      <a href="{{ url_for('empleado_bp.list_empleados') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Boxicons">Gestionar Empleados</div>
       </a>
