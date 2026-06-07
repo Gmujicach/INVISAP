@@ -1,0 +1,197 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}Crud con Python 🐍 | Gestión de Empresas{% endblock %}
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+<style>
+  /* Ajuste estético para equilibrar los botones en la cabecera */
+  .header-buttons .btn {
+    padding: 0.45rem 0.9rem;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
+  <div class="card-header bg-white border-bottom py-3">
+    <div class="row align-items-center">
+      <div class="col-md-4 text-start">
+        <h5 class="mb-0 text-primary fw-bold">GESTIÓN DE PROYECTO</h5>
+      </div>
+      
+      <div class="col-md-5 d-flex justify-content-center header-buttons">
+        <button class="btn btn-sm text-white border-0 fw-semibold" 
+                type="button" 
+                data-bs-toggle="modal" 
+                data-bs-target="#modalSolicitudes"
+                style="background-color: #F9A800; transition: background 0.3s ease; box-shadow: 0 2px 4px rgba(249, 168, 0, 0.2);"
+                onmouseover="this.style.backgroundColor='#d89300'"
+                onmouseout="this.style.backgroundColor='#F9A800'">
+          <i class="bx bx-list-ul me-1 fs-6 align-middle"></i> 
+          <span class="align-middle">Lista de Solicitudes</span>
+        </button>
+      </div>
+
+      <div class="col-md-3 text-end">
+        <button class="btn btn-primary btn-sm px-3" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario" aria-expanded="false" aria-controls="contenedorFormulario">
+          <i class="bx bx-plus"></i> Registrar Proyecto
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Fecha de Planificación</th>
+            <th>Descripción Tecnica</th>
+            <th>Inspecciones Previas</th>
+            <th>Codigo del Proyecto</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for empresa in empresas %}
+          <tr>
+            <td>{{ empresa.id_empresa }}</td>
+            <td>{{ empresa.nombre }}</td>
+            <td>{{ empresa.rut }}</td>
+            <td><span class="badge bg-info">{{ empresa.tipo_contrato }}</span></td>
+            <td>{{ empresa.correo }}</td>
+            <td class="text-center">
+              <a href="#" class="btn btn-outline-info btn-sm" title="Ver detalle"><i class="bx bx-show"></i></a>
+              <a href="#" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
+              <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar"><i class="bx bx-trash"></i></a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" class="text-center text-muted py-4">NO SE ENCUENTRAN PROYECTOS GESTIONADOS</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalSolicitudes" tabindex="-1" aria-labelledby="modalSolicitudesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable"> <div class="modal-content" style="border-radius: 0px !important;">
+      
+      <div class="modal-header bg-light">
+        <div>
+          <h5 class="modal-title fw-bold text-secondary" id="modalSolicitudesLabel">
+            <i class="bx bx-transfer me-1 text-warning"></i> Historial de Solicitudes en Espera
+          </h5>
+          <small class="text-muted">Vista preliminar de transacciones técnicas de inspección</small>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="d-flex justify-content-end mb-3">
+          <span class="badge text-warning px-3 py-1 rounded fw-bold" style="background-color: #fff3cd; font-size: 0.75rem;">SOLO VISTA</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover align-middle table-sm">
+            <thead class="table-dark text-uppercase" style="font-size: 0.8rem;">
+              <tr>
+                <th>ID</th>
+                <th>Fecha Envío</th>
+                <th>Inspector</th>
+                <th>Requerimiento Técnico</th>
+                <th>Estado Transacción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="fw-bold text-primary">#0011</td>
+                <td>09:14 AM</td>
+                <td>el chompi</td>
+                <td>Rehabilitación Vial Troncal 5</td>
+                <td><span class="badge bg-success" style="font-size: 0.7rem;">Procesado</span></td>
+              </tr>
+              <tr>
+                <td class="fw-bold text-primary">reytreicing</td>
+                <td>ayer</td>
+                <td>goku notifica que:</td>
+                <td>Inspección de Falla de Borde</td>
+                <td><span class="badge bg-warning text-dark" style="font-size: 0.7rem;">Pendiente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="collapse mt-3" id="contenedorFormulario">
+  <div class="card shadow-sm" style="border-radius: 0px !important">
+    <div class="row justify-content-center mb-2">
+      <div class="col-md-12">
+        <h4 class="text-center mt-5 mb-3 text-secondary">Generar un nuevo Proyecto</h4>
+        <hr class="w-75 mx-auto"/>
+      </div>
+    </div>
+
+    <div class="row justify-content-center mb-4">
+      <div class="col-md-10">
+        <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-solicitudes" autocomplete="off">
+          <div class="card-body pt-0">
+            
+            <div class="row mb-3 mt-3">
+              <div class="col-md-6">
+                <label for="fecha_p" class="form-label fw-semibold text-secondary">Fecha de Planificación</label>
+                <div class="input-group input-group-merge shadow-sm">
+                  <span class="input-group-text bg-white border-end-0 text-muted">
+                    <i class="bx bx-calendar fs-5"></i>
+                  </span>
+                  <input type="date" class="form-control border-start-0 ps-0" name="fecha_p" id="fecha_p" required />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="observaciones" class="form-label">Descripción Tecnica</label>
+                <input type="text" class="form-control" name="observaciones" id="observaciones" maxlength="255" placeholder="Motivos y problematicas" />
+              </div>
+            </div>
+        
+            <div class="row mb-3 mt-3">
+              <div class="col-md-6">
+                <label for="inspeccion_p" class="form-label">Inspecciones Previas</label>
+                <input type="text" class="form-control" name="inspeccion_p" id="inspeccion_p" maxlength="255" placeholder="Ej: holans" required />
+              </div>
+            
+              <div class="col-md-6">
+                <label for="Codigo_p" class="form-label">Codigo del Proyecto</label>
+                <input type="text" class="form-control" name="Codigo_p" id="Codigo_p" maxlength="255" placeholder="Ej: 000202011121" required />
+              </div>
+            </div>
+
+            <div class="mb-3 text-center">
+              <button type="submit" class="btn rounded-pill btn-primary px-5 me-2">
+                Registrar <i class="bx bx-save ms-1"></i>
+              </button>
+              <button class="btn rounded-pill btn-outline-secondary px-4" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario">
+                Cancelar
+              </button>
+            </div>
+            
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
+
+{% block customJS %}
+{% endblock %}

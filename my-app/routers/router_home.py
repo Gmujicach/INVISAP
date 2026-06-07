@@ -8,6 +8,7 @@ from controllers.funciones_home import *
 from controllers.UserController import user_bp # Import the user blueprint
 from controllers.funciones_solicitud import *
 from controllers.EmpleadoController import empleado_bp
+from controllers.controller_reportes import reporte_bp
 
 PATH_URL = "solicitudes"
 PATH_URL_CONTRAT = "contratacion"
@@ -18,11 +19,13 @@ PATH_URL_PROY = "proyectos"
 PATH_URL_GEST_OBR = "obras"
 PATH_URL_PUB = "publicaciones"
 PATH_URL_IA = "ia"
+PATH_URL_EMPLEADOS = "empleados"
 
 
 # Register blueprints
 app.register_blueprint(user_bp)
 app.register_blueprint(empleado_bp)
+app.register_blueprint(reporte_bp)
 
 @app.route('/registrar-solicitud', methods=['GET'])
 def viewFormSolicitud():
@@ -157,7 +160,7 @@ def viewBitacora():
 @app.route('/descargar-informe-publicaciones', methods=['GET'])
 def generarReportePDF():
     if 'conectado' in session:
-        return render_template('placeholder.html', title='Reporte PDF', message='Generación de PDF no está implementada aún.', note='Favor contacte al administrador para habilitar esta función.')
+        return render_template('reportes/reportePDF.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -166,7 +169,7 @@ def generarReportePDF():
 @app.route('/reportes-estadisticos', methods=['GET'])
 def viewReportesEstadisticos():
     if 'conectado' in session:
-        return render_template('placeholder.html', title='Reportes Estadísticos', message='Esta página está en desarrollo.', note='Contacto al administrador para habilitar esta función.')
+        return render_template('reportes/reporteEstadistico.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -254,18 +257,4 @@ def viewEditarEmpleado(id):
             return redirect(url_for('login_bp.inicio'))
     else:
         flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-
-
-
-
-
-@app.route('/descargar-informe-empleados', methods=['GET'])
-@app.route('/descargar-informe-empleados/', methods=['GET'])
-def generarReporteExcel():
-    if 'conectado' in session:
-        from controllers.funciones_home import generarReporteExcel as generar_reporte_excel
-        return generar_reporte_excel()
-    else:
-        flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))

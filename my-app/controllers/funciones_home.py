@@ -180,58 +180,6 @@ def empleadosReporte():
         return None
 
 
-def generarReporteExcel():
-    dataEmpleados = empleadosReporte()
-    wb = openpyxl.Workbook()
-    hoja = wb.active
-
-    # Agregar la fila de encabezado con los títulos
-    cabeceraExcel = ("Nombre", "Apellido", "Sexo",
-                     "Telefono", "Email", "Profesión", "Salario", "Fecha de Ingreso")
-
-    hoja.append(cabeceraExcel)
-
-    # Formato para números en moneda colombiana y sin decimales
-    formato_moneda_colombiana = '#,##0'
-
-    # Agregar los registros a la hoja
-    for registro in dataEmpleados:
-        nombre_empleado = registro['nombre_empleado']
-        apellido_empleado = registro['apellido_empleado']
-        sexo_empleado = registro['sexo_empleado']
-        telefono_empleado = registro['telefono_empleado']
-        email_empleado = registro['email_empleado']
-        profesion_empleado = registro['profesion_empleado']
-        salario_empleado = registro['salario_empleado']
-        fecha_registro = registro['fecha_registro']
-
-        # Agregar los valores a la hoja
-        hoja.append((nombre_empleado, apellido_empleado, sexo_empleado, telefono_empleado, email_empleado, profesion_empleado,
-                     salario_empleado, fecha_registro))
-
-        # Itera a través de las filas y aplica el formato a la columna G
-        for fila_num in range(2, hoja.max_row + 1):
-            columna = 7  # Columna G
-            celda = hoja.cell(row=fila_num, column=columna)
-            celda.number_format = formato_moneda_colombiana
-
-    fecha_actual = datetime.datetime.now()
-    archivoExcel = f"Reporte_empleados_{fecha_actual.strftime('%Y_%m_%d')}.xlsx"
-    carpeta_descarga = "../static/downloads-excel"
-    ruta_descarga = os.path.join(os.path.dirname(
-        os.path.abspath(__file__)), carpeta_descarga)
-
-    if not os.path.exists(ruta_descarga):
-        os.makedirs(ruta_descarga)
-        # Dando permisos a la carpeta
-        os.chmod(ruta_descarga, 0o755)
-
-    ruta_archivo = os.path.join(ruta_descarga, archivoExcel)
-    wb.save(ruta_archivo)
-
-    # Enviar el archivo como respuesta HTTP
-    return send_file(ruta_archivo, as_attachment=True)
-
 
 def buscarEmpleadoBD(search):
     try:

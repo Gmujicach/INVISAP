@@ -2,7 +2,7 @@
 {% block title %}Registrar Usuario{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/usuarios.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='my-app/static/css/usuarios.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -16,7 +16,7 @@
         <form action="{{ url_for('user_bp.register_user') }}" method="POST">
           <div class="row">
             <div class="col-md-12 mb-3">
-              <label class="form-label">Nombre y apellido</label>
+              <label class="form-label">Nombre y Apellido</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-person"></i></span>
                 <input type="text" name="name_surname" class="form-control" placeholder="Ej: Juan Pérez" required>
@@ -32,15 +32,15 @@
             <div class="col-md-6 mb-3">
               <div class="form-group password-field">
                 <label class="form-label" for="pass_user">Contraseña</label>
-                <div class="input-group">
+                <div class="input-group input-group-merge">
                   <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
                     <span class="password-eye is-closed" aria-hidden="true">
                       <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <g class="eye">
-                          <circle class="eye-sclera" cy="12" cx="12" r="4" fill="currentColor" />
-                          <circle class="eye-pupil" cy="12" cx="12" r="1.5" fill="#000" />
+                        <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                        <g class="eye-content">
+                          <circle cy="12" cx="12" r="4" fill="currentColor" opacity="0.9" />
+                          <circle cy="11.5" cx="13" r="1" fill="black" />
                         </g>
                       </svg>
                     </span>

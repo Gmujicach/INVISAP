@@ -83,19 +83,19 @@ function installPasswordReveal(passwordInput) {
     toggleButton.setAttribute('aria-label', 'Mostrar contraseña');
     toggleButton.tabIndex = -1;
     toggleButton.innerHTML = `
-      <span class="password-eye" aria-hidden="true">
+      <span class="password-eye is-closed" aria-hidden="true">
         <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          <g class="eye">
-            <circle cy="12" cx="12" r="4" fill="currentColor" />
-            <circle cy="11" cx="13" r="1" fill="#000" />
+          <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          <g class="eye-content">
+            <circle cy="12" cx="12" r="4" fill="currentColor" opacity="0.9" />
+            <circle cy="11.5" cx="13" r="1" fill="black" />
           </g>
         </svg>
       </span>
       <span class="sr-only visually-hidden">Mostrar contraseña</span>
     `;
-    inputGroup.appendChild(toggleButton);
+    inputGroup.insertBefore(toggleButton, passwordInput); // Insertar antes del input
   }
 
   const eye = toggleButton.querySelector('.password-eye');
@@ -103,19 +103,35 @@ function installPasswordReveal(passwordInput) {
 
   toggleButton.addEventListener('click', function () {
     const willShow = passwordInput.type === 'password';
-    // animar cierre de párpados al hacer click
-    eye.classList.add('closing');
-    // espera la animación y luego alterna el tipo
-    setTimeout(() => {
-      passwordInput.type = willShow ? 'text' : 'password';
-      toggleButton.setAttribute('aria-label', willShow ? 'Ocultar contraseña' : 'Mostrar contraseña');
-      eye.classList.toggle('open', willShow);
-      // quitar clase de cierre para permitir la animación inversa
-      eye.classList.remove('closing');
-    }, 220);
+    
+    // Toggle instantáneo para evitar lag en el formulario
+    passwordInput.type = willShow ? 'text' : 'password';
+    toggleButton.setAttribute('aria-label', willShow ? 'Ocultar contraseña' : 'Mostrar contraseña');
+    eye.classList.toggle('open', willShow);
+    eye.classList.toggle('is-closed', !willShow);
   });
 }
 
+// Función para que el ojo siga el cursor
+document.addEventListener('mousemove', (e) => {
+  const eyeContents = document.querySelectorAll('.eye-content');
+  eyeContents.forEach(content => {
+    const rect = content.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    const dx = e.clientX - centerX;
+    const dy = e.clientY - centerY;
+    const angle = Math.atan2(dy, dx);
+    
+    // Limitamos el movimiento a un radio pequeño
+    const distance = Math.min(2.5, Math.hypot(dx, dy) / 40);
+    const x = Math.cos(angle) * distance;
+    const y = Math.sin(angle) * distance;
+    
+    content.style.transform = `translate(${x}px, ${y}px)`;
+  });
+});
 
 // setupPasswordEyeBlink removed: no blinking automático
 
