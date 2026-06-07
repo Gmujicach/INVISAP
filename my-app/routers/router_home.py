@@ -18,6 +18,7 @@ PATH_URL_PROY = "proyectos"
 PATH_URL_GEST_OBR = "obras"
 PATH_URL_PUB = "publicaciones"
 PATH_URL_IA = "ia"
+PATH_URL_EMPLEADOS = "empleados"
 
 
 # Register blueprints
