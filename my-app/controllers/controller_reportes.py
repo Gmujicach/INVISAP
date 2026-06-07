@@ -7,7 +7,6 @@ from models.model_reportes import ReporteModel
 reporte_bp = Blueprint('reporte_bp', __name__)
 modelo_reporte = ReporteModel()
 
-@reporte_bp.route('/reporte-excel', methods=['GET', 'POST'])
 @reporte_bp.route('/descargar-informe-empleados', methods=['GET', 'POST'])
 def generarReporteExcel():
     if 'conectado' not in session:
