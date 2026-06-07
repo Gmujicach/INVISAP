@@ -8,7 +8,6 @@ reporte_bp = Blueprint('reporte_bp', __name__)
 modelo_reporte = ReporteModel()
 
 @reporte_bp.route('/reporte-excel', methods=['GET', 'POST'])
-@reporte_bp.route('/descargar-informe-empleados', methods=['GET', 'POST'])
 def generarReporteExcel():
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
@@ -61,18 +60,17 @@ def generarReporteExcel():
 
 @reporte_bp.route('/descargar-informe-publicaciones', methods=['GET'])
 def generarReportePDF():
-    if 'conectado' not in session:
+    if 'conectado' in session:
+        # Aquí puedes usar modelo_reporte.obtener_publicaciones_reporte() más adelante
+        return render_template('reportes/reportePDF.html')
+    else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
-
-    data_publicaciones = modelo_reporte.obtener_publicaciones_reporte()
-    return render_template('reportes/reportePDF.html', publicaciones=data_publicaciones)
 
 @reporte_bp.route('/reportes-estadisticos', methods=['GET'])
 def viewReportesEstadisticos():
-    if 'conectado' not in session:
+    if 'conectado' in session:
+        return render_template('reportes/reporteEstadistico.html')
+    else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
-
-    data_stats = modelo_reporte.obtener_estadisticas_generales()
-    return render_template('reportes/reporteEstadistico.html', estadisticas=data_stats)

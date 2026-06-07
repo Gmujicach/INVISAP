@@ -170,17 +170,17 @@
       </a>
       <ul class="menu-sub">
         <li class="menu-item {% if request.path == '/descargar-informe-empleados' or request.path == '/descargar-informe-empleados/' %} active {% endif %}">
-          <a href="{{ url_for('generarReporteExcel') }}" class="menu-link">
+          <a href="{{ url_for('reporte_bp.generarReporteExcel') }}" class="menu-link">
             <div data-i18n="Excel">Reportes Excel</div>
           </a>
         </li>
         <li class="menu-item {% if request.path == '/descargar-informe-publicaciones' %} active {% endif %}">
-          <a href="{{ url_for('generarReportePDF') }}" class="menu-link">
+          <a href="{{ url_for('reporte_bp.generarReportePDF') }}" class="menu-link">
             <div data-i18n="PDF">Reportes PDF</div>
           </a>
         </li>
         <li class="menu-item {% if request.path == '/reportes-estadisticos' %} active {% endif %}">
-          <a href="{{ url_for('viewReportesEstadisticos') }}" class="menu-link">
+          <a href="{{ url_for('reporte_bp.viewReportesEstadisticos') }}" class="menu-link">
             <div data-i18n="Stats">Reportes Estadísticos</div>
           </a>
         </li>

@@ -157,24 +157,6 @@ def viewBitacora():
         return redirect(url_for('login_bp.inicio'))
 
 
-@app.route('/descargar-informe-publicaciones', methods=['GET'])
-def generarReportePDF():
-    if 'conectado' in session:
-        return render_template('reportes/reportePDF.html')
-    else:
-        flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-
-
-@app.route('/reportes-estadisticos', methods=['GET'])
-def viewReportesEstadisticos():
-    if 'conectado' in session:
-        return render_template('reportes/reporteEstadistico.html')
-    else:
-        flash('primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-
-
 @app.route('/inf_avance_obra', methods=['GET'])
 def viewFormInforme_avan_obras():
     if 'conectado' in session:
