@@ -1,165 +1,57 @@
-/* ==========================================
-   FEATURE: USUARIOS - DASHBOARD ANIMATION
-   Screaming Architecture: Vista de UI
-   ========================================== */
-
-   .dashboard-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.3);
-    z-index: 1070;
-    display: none;
-    backdrop-filter: blur(3px);
-  }
-  
-  .module-dashboard-panel {
-    position: fixed;
-    top: 0;
-    left: 260px; /* Alineado al ancho del Sidebar */
-    width: 0;
-    height: 100vh;
-    background: #f4f7f6;
-    z-index: 1080;
-    overflow-x: hidden;
-    overflow-y: auto;
-    /* Animación de despliegue hacia la derecha */
-    transition: width 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.1);
-    border-left: 1px solid #d9dee3;
-  }
-  
-  .module-dashboard-panel.open {
-    width: calc(100vw - 260px);
-  }
-  
-  .dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr; /* MVC: Separación visual Registro | Listado */
-    gap: 25px;
-    padding: 30px;
-    min-width: 950px;
-  }
-  
-  .dashboard-section {
-    background: white;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    border-top: 5px solid #08b324;
-  }
-  
-  .btn-icon-only {
-    padding: 8px;
-    line-height: 0;
-    border-radius: 8px;
-    display: inline-flex;
-    align-items: center;
-  }
-
-.password-field {
-  position: relative;
-}
-
-.password-field label {
-  display: block;
-  margin-bottom: 0.6rem;
-  font-weight: 600;
-  color: #343a40;
-}
-
-.password-input-wrapper {
-  position: relative;
-  overflow: hidden; /* evita que el ojo se salga del contenedor */
-}
-
-.password-input-wrapper .form-control {
-  padding-right: 3.8rem;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-  border-radius: 0.6rem;
-}
-
-.password-toggle-button,
+/* Estilos para que el botón del ojo sea idéntico a input-group-text */
 .btn-password-toggle {
-  position: absolute;
-  top: 50%;
-  right: 0.5rem; /* más pegado al interior del input */
-  transform: translateY(-50%);
-  width: auto;
-  height: auto;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0.15rem;
-  border: 0;
-  background: transparent; /* sin fondo cuadrado */
-  color: rgba(55,70,79,0.75);
-  border-radius: 0.25rem;
-  box-shadow: none; /* sin sombra que rompa el flujo */
+  background-color: #eee !important;
+  border: 1px solid #ced4da !important;
+  color: #495057 !important;
+  padding: 0 12px;
+  border-radius: 0.375rem 0 0 0.375rem !important; /* Redondeado solo a la izquierda */
+  border-right: none !important;
   cursor: pointer;
-  transition: transform 0.12s ease, color 0.12s ease;
-  z-index: 2;
-  pointer-events: auto;
 }
 
-.password-toggle-button:hover,
-.btn-password-toggle:hover {
-  color: #0b6b2f;
-  transform: translateY(-50%) scale(1.06);
-  background: transparent;
+#pass_user {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
 }
 
-.password-toggle-button:focus-visible,
-.btn-password-toggle:focus-visible {
-  outline: 2px solid rgba(11, 107, 47, 0.18);
-  outline-offset: 2px;
-}
-
-.password-eye {
-  position: relative; /* relativo al botón (que está dentro del input) */
-  display: inline-flex;
-  width: 1.45rem;
-  height: 0.95rem;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  border-radius: 999px;
-  background: transparent;
-  overflow: hidden; /* asegurar que no sobresalga */
-  transition: transform 0.12s ease;
-}
-
-.password-eye .lid { stroke-opacity: 0.85; }
-.password-eye .eye circle { fill: currentColor; opacity: 0.95; }
-
-.password-eye.open {
-  transform: none; /* mantener estático cuando está abierto */
-  color: #0b6b2f;
-}
-
-.password-eye.eye-blink .eye { transform: translateY(2px); }
-
-.password-eye .button-password-svg,
 .button-password-svg {
-  width: 1.25rem;
-  height: 0.9rem;
+  width: 22px;
+  height: 22px;
 }
 
-/* Animación de cierre de párpados al hacer click */
-.password-eye.closing .lid--upper {
-  transform: translateY(6px) scaleY(0.14) !important;
-}
-.password-eye.closing .lid--lower {
-  transform: translateY(-6px) scaleY(0.14) !important;
+.button-password-svg .lid {
+  transform-origin: center;
+  transition: transform 0.25s ease-in-out;
+  stroke: currentColor;
 }
 
-/* transición suave al cerrar/abrir */
-.password-eye .lid {
-  transition: transform 0.22s cubic-bezier(.2,.8,.2,1);
+/* Cuando el ojo está "abierto" (la contraseña es visible), cerramos los párpados visualmente */
+.password-eye.open .lid--upper {
+  transform: translateY(3.5px) scaleY(0.2);
+}
+.password-eye.open .lid--lower {
+  transform: translateY(-3.5px) scaleY(0.2);
 }
 
-.password-field .invalid-feedback {
-  margin-top: 0.35rem;
+/* Ocultamos el contenido del ojo cuando está cerrado */
+.password-eye.open .eye-content {
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.eye-content {
+  transition: opacity 0.3s, transform 0.1s linear;
+  transform-origin: center;
+}
+
+/* Corregir visualización de feedback en input-group */
+.input-group .invalid-feedback {
+  width: 100%;
+  display: none;
+}
+
+.input-group .form-control.is-invalid ~ .invalid-feedback {
+  display: block;
 }
