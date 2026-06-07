@@ -62,7 +62,7 @@
     </li>
     <li
       class="menu-item {% if request.path.startswith('/empleados') %} active{% endif %}">
-      <a href="{{ url_for('my-app/vista/empleados/empleados.html') }}" class="menu-link">
+      <a href="{{ url_for('empleado_bp.list_empleados') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Boxicons">Gestionar Empleados</div>
       </a>
