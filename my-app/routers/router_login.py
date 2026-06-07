@@ -129,17 +129,17 @@ def loginCliente():
                     session['name_surname'] = account['name_surname']
                     session['email_user'] = account['email_user']
 
-                    flash('la sesión fue correcta.', 'success')
+                    flash('Inicio de sesion exitoso :).', 'success')
                     return redirect(url_for('login_bp.inicio'))
                 else:
                     # La cuenta no existe o el nombre de usuario/contraseña es incorrecto
-                    flash('datos incorrectos por favor revise.', 'error')
+                    flash('Credenciales incorrectas, por favor verifique usuario y contraseña.', 'error')
                     return render_template(f'{PATH_URL_LOGIN}/base_login.html')
             else:
-                flash('el usuario no existe, por favor verifique.', 'error')
+                flash('El usuario no existe, por favor verifique.', 'error')
                 return render_template(f'{PATH_URL_LOGIN}/base_login.html')
         else:
-            flash('primero debes iniciar sesión.', 'error')
+            flash('Primero debes iniciar sesión.', 'error')
             return render_template(f'{PATH_URL_LOGIN}/base_login.html')
 
 
@@ -152,8 +152,8 @@ def logout():
             session.pop('id', None)
             session.pop('name_surname', None)
             session.pop('email_user', None)
-            flash('tu sesión fue cerrada correctamente.', 'success')
+            flash('Tu sesión fue cerrada correctamente.', 'success')
             return redirect(url_for('login_bp.inicio'))
         else:
-            flash('recuerde debe iniciar sesión.', 'error')
+            flash('Recuerde debe iniciar sesión.', 'error')
             return render_template(f'{PATH_URL_LOGIN}/base_login.html')
