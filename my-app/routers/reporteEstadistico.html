@@ -1,0 +1,107 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}Reportes Estadísticos | INVILARA{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+  <div class="col-md-11">
+    <div class="card shadow border-0">
+      <div class="card-header bg-primary py-4 px-5">
+        <h4 class="text-white mb-0 fw-bold">
+          <i class="bi bi-graph-up-arrow me-2"></i> Análisis Estadístico
+        </h4>
+      </div>
+      <div class="card-body mt-4 p-5">
+        <form action="{{ url_for('reporte_bp.viewReportesEstadisticos') }}" method="POST">
+          <div class="row justify-content-center">
+            
+            <div class="col-md-12 text-center mb-5">
+              <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm fw-bold">
+                <i class="bi bi-arrow-repeat me-2"></i> GENERAR REPORTE
+              </button>
+            </div>
+
+            <div class="col-md-10 mb-5">
+              <label class="form-label fw-bold text-dark fs-5">Filtro de Datos</label>
+              <div class="input-group input-group-lg shadow-sm">
+                <span class="input-group-text bg-light border-end-0 text-primary"><i class="bi bi-search"></i></span>
+                <input type="text" name="filtro_busqueda" class="form-control border-start-0" 
+                       placeholder="Módulo a analizar (ej: solicitudes). Vacío para análisis global.">
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-md-6 mb-4">
+                  <div class="card border p-3">
+                    <h5 class="text-center fw-bold mb-3">Histograma de Frecuencias</h5>
+                    <canvas id="histogramChart"></canvas>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                  <div class="card border p-3">
+                    <h5 class="text-center fw-bold mb-3">Polígono de Frecuencias</h5>
+                    <canvas id="polygonChart"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          
+          <div class="text-center mt-5">
+            <hr class="w-75 mx-auto mb-4">
+            <a href="{{ url_for('login_bp.inicio') }}" class="btn btn-secondary px-5">
+              <i class="bi bi-arrow-left me-1"></i> Volver al Inicio
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const labels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
+  const dataValues = [12, 19, 3, 5, 2, 3];
+
+  const ctxHistogram = document.getElementById('histogramChart').getContext('2d');
+  new Chart(ctxHistogram, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Frecuencia Absoluta',
+        data: dataValues,
+        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+        barPercentage: 1.0,
+        categoryPercentage: 1.0
+      }]
+    },
+    options: { scales: { y: { beginAtZero: true } } }
+  });
+
+  const ctxPolygon = document.getElementById('polygonChart').getContext('2d');
+  new Chart(ctxPolygon, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Tendencia de Datos',
+        data: dataValues,
+        fill: true,
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        tension: 0.1,
+        pointRadius: 5,
+        pointBackgroundColor: 'rgba(75, 192, 192, 1)'
+      }]
+    },
+    options: { scales: { y: { beginAtZero: true } } }
+  });
+</script>
+{% endblock %}

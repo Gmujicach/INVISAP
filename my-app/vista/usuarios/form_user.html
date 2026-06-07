@@ -30,26 +30,23 @@
               </div>
             </div>
             <div class="col-md-6 mb-3">
-              <div class="form-group password-field">
-                <label class="form-label" for="pass_user">Contraseña</label>
-                <div class="input-group input-group-merge">
-                  <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
-                    <span class="password-eye is-closed" aria-hidden="true">
-                      <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <g class="eye-content">
-                          <circle cy="12" cx="12" r="4" fill="currentColor" opacity="0.9" />
-                          <circle cy="11.5" cx="13" r="1" fill="black" />
-                        </g>
-                      </svg>
-                    </span>
-                    <span class="sr-only visually-hidden">Mostrar contraseña</span>
-                  </button>
-                  <input id="pass_user" type="password" name="pass_user" class="form-control" placeholder="8-12 caracteres, letras y al menos un carácter especial" required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}">
-                  <div id="pass_user_feedback" class="invalid-feedback" aria-live="polite"></div>
-                </div>
+              <label class="form-label" for="pass_user">Contraseña</label>
+              <div class="input-group input-group-merge">
+                <input id="pass_user" type="password" name="pass_user" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}">
+                <span class="input-group-text cursor-pointer btn-password-toggle">
+                  <span class="password-eye is-closed" aria-hidden="true">
+                    <svg class="button-password-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      <g class="eye-pupil"> <!-- Cambiado a eye-pupil para coincidir con el script -->
+                        <circle cy="12" cx="12" r="4" fill="currentColor" opacity="0.9" />
+                        <circle cy="11.5" cx="13" r="1" fill="black" />
+                      </g>
+                    </svg>
+                  </span>
+                </span>
               </div>
+              <div id="pass_user_feedback" class="invalid-feedback" aria-live="polite"></div>
             </div>
           </div>
           <div class="text-center mt-3">
