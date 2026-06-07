@@ -1,4 +1,4 @@
-﻿/**
+﻿﻿/**
  * VIEW-CONTROLLED: USUARIOS
  * Encargado de la interacción del usuario y renderizado de componentes.
  */
@@ -19,7 +19,7 @@ function closeDashboard() {
 
 function eliminarUsuario(id) {
     if (confirm("¿Está seguro que desea eliminar este usuario de Invilara?")) {
-        window.location.href = `/borrar-usuario/${id}`;
+        window.location.href = `/users/delete/${id}`;
     }
 }
 
@@ -33,7 +33,7 @@ function triggerUsuariosDashboard() {
               <td>${u.email_user}</td>
               <td class="text-center">
                 <div class="d-flex justify-content-center gap-2">
-                  <a href="/buscar-usuario/${u.id}" class="btn btn-warning btn-icon-only" title="Modificar">
+                  <a href="/users/edit/${u.id}" class="btn btn-warning btn-icon-only" title="Modificar">
                     <i class="bi bi-pencil-square text-white"></i>
                   </a>
                   <button type="button" onclick="eliminarUsuario('${u.id}')" class="btn btn-danger btn-icon-only" title="Eliminar">
