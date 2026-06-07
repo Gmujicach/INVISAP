@@ -8,6 +8,7 @@ from controllers.funciones_home import *
 from controllers.UserController import user_bp # Import the user blueprint
 from controllers.funciones_solicitud import *
 from controllers.EmpleadoController import empleado_bp
+from controllers.controller_reportes import reporte_bp
 
 PATH_URL = "solicitudes"
 PATH_URL_CONTRAT = "contratacion"
@@ -24,6 +25,7 @@ PATH_URL_EMPLEADOS = "empleados"
 # Register blueprints
 app.register_blueprint(user_bp)
 app.register_blueprint(empleado_bp)
+app.register_blueprint(reporte_bp)
 
 @app.route('/registrar-solicitud', methods=['GET'])
 def viewFormSolicitud():
@@ -255,22 +257,4 @@ def viewEditarEmpleado(id):
             return redirect(url_for('login_bp.inicio'))
     else:
         flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-
-
-
-
-
-@app.route('/descargar-informe-empleados', methods=['GET', 'POST'])
-@app.route('/descargar-informe-empleados/', methods=['GET', 'POST'])
-def generarReporteExcel():
-    if 'conectado' in session:
-        if request.method == 'POST':
-            # Lógica para procesar el filtro y descargar el Excel
-            from controllers.funciones_home import generarReporteExcel as generar_reporte_excel
-            return generar_reporte_excel()
-        # Mostrar la interfaz gráfica si es una petición GET
-        return render_template('reporte/reporteExcel.html')
-    else:
-        flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
