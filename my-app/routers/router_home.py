@@ -261,12 +261,16 @@ def viewEditarEmpleado(id):
 
 
 
-@app.route('/descargar-informe-empleados', methods=['GET'])
-@app.route('/descargar-informe-empleados/', methods=['GET'])
+@app.route('/descargar-informe-empleados', methods=['GET', 'POST'])
+@app.route('/descargar-informe-empleados/', methods=['GET', 'POST'])
 def generarReporteExcel():
     if 'conectado' in session:
-        from controllers.funciones_home import generarReporteExcel as generar_reporte_excel
-        return generar_reporte_excel()
+        if request.method == 'POST':
+            # Lógica para procesar el filtro y descargar el Excel
+            from controllers.funciones_home import generarReporteExcel as generar_reporte_excel
+            return generar_reporte_excel()
+        # Mostrar la interfaz gráfica si es una petición GET
+        return render_template('reporte/reporteExcel.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
