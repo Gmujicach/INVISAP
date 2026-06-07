@@ -8,7 +8,8 @@ from controllers.funciones_home import *
 from controllers.UserController import user_bp # Import the user blueprint
 from controllers.funciones_solicitud import *
 from controllers.EmpleadoController import empleado_bp
-from controllers.controller_reportes import reporte_bp
+from controllers.controller_reportesExcel import reporte_excel_bp
+from controllers.controller_reportesPDF import reporte_pdf_bp
 
 PATH_URL = "solicitudes"
 PATH_URL_CONTRAT = "contratacion"
@@ -25,7 +26,8 @@ PATH_URL_EMPLEADOS = "empleados"
 # Register blueprints
 app.register_blueprint(user_bp)
 app.register_blueprint(empleado_bp)
-app.register_blueprint(reporte_bp)
+app.register_blueprint(reporte_excel_bp)
+app.register_blueprint(reporte_pdf_bp)
 
 @app.route('/registrar-solicitud', methods=['GET'])
 def viewFormSolicitud():
