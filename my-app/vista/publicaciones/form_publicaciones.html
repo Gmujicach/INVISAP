@@ -7,10 +7,10 @@
 {% block body %}
 <div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
   <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
-    <h5 class="mb-0 text-primary fw-bold">EMPRESAS REGISTRADAS</h5>
+    <h5 class="mb-0 text-primary fw-bold">PUBLICACIONES REGISTRADAS</h5>
     
     <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario" aria-expanded="false" aria-controls="contenedorFormulario">
-      <i class="bx bx-plus"></i> Añadir Empresa
+      <i class="bx bx-plus"></i> Añadir Publicaciones
     </button>
   </div>
   
@@ -20,12 +20,10 @@
         <thead class="table-light">
           <tr>
             <th>#</th>
-            <th>Empresa</th>
-            <th>Rif Empresa</th>
-            <th>Tipo Contrato</th>
-            <th>Correo Empresa</th>
-            <th>Fecha Creada</th>
-            <th>Fecha Actualización</th>
+            <th>Fecha Publicacion</th>
+            <th>Nombre Responsable</th>
+            <th>Titulo Publicacion</th>
+            <th>Tipo Publicacion</th>
             <th class="text-center">Acciones</th>
           </tr>
         </thead>
@@ -47,7 +45,7 @@
           </tr>
           {% else %}
           <tr>
-            <td colspan="8" class="text-center text-muted py-4">No hay empresas registradas en el sistema.</td>
+            <td colspan="8" class="text-center text-muted py-4">No hay Publicaciones registradas en el sistema.</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -60,7 +58,7 @@
   <div class="card shadow-sm" style="border-radius: 0px !important">
     <div class="row justify-content-center mb-2">
       <div class="col-md-12">
-        <h4 class="text-center mt-5 mb-3 text-secondary">REGISTRAR NUEVA EMPRESA</h4>
+        <h4 class="text-center mt-5 mb-3 text-secondary">REGISTRAR NUEVA PUBLICACION</h4>
         <hr class="w-75 mx-auto"/>
       </div>
     </div>
@@ -72,44 +70,36 @@
             
             <div class="row mb-3 mt-3">
               <div class="col-md-6">
-                <label for="nombre_empresa" class="form-label">Nombre de la Empresa</label>
+                <label for="nombre_empresa" class="form-label">Fecha Publicacion</label>
                 <input type="text" class="form-control" name="nombre_empresa" id="nombre_empresa" maxlength="100" placeholder="Ej: Tech Solutions C.A." required />
               </div>
               <div class="col-md-6">
-                <label for="rut_empresa" class="form-label">Rif Empresa</label>
+                <label for="rut_empresa" class="form-label">Nombre Responsable</label>
                 <input type="text" class="form-control" name="rut_empresa" id="rut_empresa" maxlength="20" placeholder="Ej: 12345678-9" required />
               </div>
             </div>
 
             <div class="row mb-3 mt-3">
               <div class="col-md-6">
-                <label for="descripcion_empresa" class="form-label">Descripcion de la Empresa</label>
+                <label for="descripcion_empresa" class="form-label">Titulo Publicacion</label>
                 <input type="text" class="form-control" name="descripcion_empresa" id="descripcion_empresa" maxlength="255" placeholder="Ej: Tech Solutions C.A." required />
               </div>
-              <div class="col-md-6">
-                <label for="tlf_empresa" class="form-label">Telefono Empresa</label>
-                <input type="text" class="form-control" name="tlf_empresa" id="tlf_empresa" maxlength="12" placeholder="Ej: 0412-1234567" required />
+  <div class="col-md-6">
+                <label for="rut_empresa" class="form-label">Tipo Publicacion</label>
+              <select class="form-select shadow-sm" name="tipo_solicitud" id="tipo_solicitud" required>
+                <option value="" selected disabled>Seleccione...</option>
+                <option value="Comunidad">Informativa</option>
+                <option value="Institucion">Periodismo</option>
+                <option value="Particular">Avance</option>
+              </select>
               </div>
-            </div>
 
-            <div class="row mb-3 mt-3">
-              <div class="col-md-6">
-                <label for="domicilio_fiscal" class="form-label">Domicilio Fiscal</label>
-                <input type="text" class="form-control" name="domicilio_fiscal" id="domicilio_fiscal" maxlength="255" placeholder="Ej: Tech Solutions C.A." required />
-              </div>
               <div class="col-md-6">
                 <label for="observaciones" class="form-label">Observaciones</label>
                 <input type="text" class="form-control" name="observaciones" id="observaciones" maxlength="255" placeholder="Ej: Tech Solutions C.A." />
               </div>
             </div>
 
-            <div class="row mb-3">
-                <div class="col-md-6">
-                <label for="correo_empresa" class="form-label">Correo Empresa</label>
-                <input type="email" class="form-control" name="correo_empresa" id="correo_empresa" maxlength="100" placeholder="contacto@empresa.com" required />
-              </div>              
-            </div>
-            
 
             <!--<div class="row mb-4">
               <div class="col-md-6">
