@@ -56,4 +56,4 @@ def generarReporteExcel():
 
         return send_file(ruta_archivo, as_attachment=True)
 
-    return render_template('reporteExcel.html')
+    return render_template('reportes/reporteExcel.html')

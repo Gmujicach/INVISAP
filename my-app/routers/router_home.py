@@ -160,7 +160,7 @@ def viewBitacora():
 @app.route('/descargar-informe-publicaciones', methods=['GET'])
 def generarReportePDF():
     if 'conectado' in session:
-        return render_template('placeholder.html', title='Reporte PDF', message='Generación de PDF no está implementada aún.', note='Favor contacte al administrador para habilitar esta función.')
+        return render_template('reportes/reportePDF.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -169,7 +169,7 @@ def generarReportePDF():
 @app.route('/reportes-estadisticos', methods=['GET'])
 def viewReportesEstadisticos():
     if 'conectado' in session:
-        return render_template('placeholder.html', title='Reportes Estadísticos', message='Esta página está en desarrollo.', note='Contacto al administrador para habilitar esta función.')
+        return render_template('reportes/reporteEstadistico.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
