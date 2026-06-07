@@ -1,3 +1,6 @@
+my-app/conexion/conexionBD.py
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -136,9 +139,3 @@ cython_debug/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-
-### VisualStudioCode Patch ###
-# Ignore all local history of files
-.history
-my-app/conexion/conexionBD.py
-/my-app/conexion
