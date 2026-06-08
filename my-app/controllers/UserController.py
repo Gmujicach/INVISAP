@@ -31,14 +31,18 @@ def register_user():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-    name_surname = request.form.get('name_surname')
-    email_user = request.form.get('email_user')
+    name_surname = request.form.get('nombre')
+    email_user = request.form.get('correo')
     pass_user = request.form.get('pass_user')
+    cedula = request.form.get('cedula_usuario')
+    rol = request.form.get('rol')
 
     result = user_model.incluir({
-        'name_surname': name_surname,
-        'email_user': email_user,
-        'pass_user': pass_user
+        'nombre': name_surname,
+        'correo': email_user,
+        'pass_user': pass_user,
+        'cedula_usuario': cedula,
+        'rol': rol
     })
 
     if result:

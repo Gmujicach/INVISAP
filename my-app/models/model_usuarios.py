@@ -10,7 +10,7 @@ class UsuarioModel:
         conexion = connectionBD()
         cursor = conexion.cursor(dictionary=True)
         try:
-            querySQL = "SELECT id, name_surname, email_user, created_user FROM users"
+            querySQL = "SELECT id_usuarios, cedula_usuario, nombre, correo, rol FROM usuarios"
             cursor.execute(querySQL)
             return cursor.fetchall()
         finally:
@@ -18,11 +18,13 @@ class UsuarioModel:
             conexion.close()
 
     def incluir(self, data):
-        name_surname = data.get('name_surname')
-        email_user = data.get('email_user')
+        nombre = data.get('nombre')
+        correo = data.get('correo')
         pass_user = data.get('pass_user')
+        cedula = data.get('cedula_usuario')
+        rol = data.get('rol', 'Usuario')
 
-        if not (name_surname and email_user and pass_user):
+        if not (nombre and correo and pass_user and cedula):
             return 0
 
         hashed_pass = generate_password_hash(pass_user)
@@ -30,8 +32,8 @@ class UsuarioModel:
         conexion = connectionBD()
         cursor = conexion.cursor()
         try:
-            sql = "INSERT INTO users (name_surname, email_user, pass_user) VALUES (%s, %s, %s)"
-            cursor.execute(sql, (name_surname, email_user, hashed_pass))
+            sql = "INSERT INTO usuarios (nombre, correo, contraseña, cedula_usuario, rol) VALUES (%s, %s, %s, %s, %s)"
+            cursor.execute(sql, (nombre, correo, hashed_pass, cedula, rol))
             conexion.commit()
             return cursor.rowcount
         finally:
@@ -42,7 +44,7 @@ class UsuarioModel:
         conexion = connectionBD()
         cursor = conexion.cursor()
         try:
-            sql = "DELETE FROM users WHERE id=%s"
+            sql = "DELETE FROM usuarios WHERE id_usuarios=%s"
             cursor.execute(sql, (id_usuario,))
             conexion.commit()
             return cursor.rowcount
@@ -54,23 +56,23 @@ class UsuarioModel:
         conexion = connectionBD()
         cursor = conexion.cursor(dictionary=True)
         try:
-            sql = "SELECT id, name_surname, email_user FROM users WHERE id = %s"
+            sql = "SELECT id_usuarios, nombre, correo, cedula_usuario, rol FROM usuarios WHERE id_usuarios = %s"
             cursor.execute(sql, (id_usuario,))
             return cursor.fetchone()
         finally:
             cursor.close()
             conexion.close()
 
-    def actualizar(self, id_user, name, email, password=None):
+    def actualizar(self, id_user, name, email, cedula, rol, password=None):
         conexion = connectionBD()
         cursor = conexion.cursor()
         try:
             if password:
-                sql = "UPDATE users SET name_surname=%s, email_user=%s, pass_user=%s WHERE id=%s"
-                cursor.execute(sql, (name, email, generate_password_hash(password), id_user))
+                sql = "UPDATE usuarios SET nombre=%s, correo=%s, cedula_usuario=%s, rol=%s, contraseña=%s WHERE id_usuarios=%s"
+                cursor.execute(sql, (name, email, cedula, rol, generate_password_hash(password), id_user))
             else:
-                sql = "UPDATE users SET name_surname=%s, email_user=%s WHERE id=%s"
-                cursor.execute(sql, (name, email, id_user))
+                sql = "UPDATE usuarios SET nombre=%s, correo=%s, cedula_usuario=%s, rol=%s WHERE id_usuarios=%s"
+                cursor.execute(sql, (name, email, cedula, rol, id_user))
             conexion.commit()
             return cursor.rowcount
         finally:

@@ -19,15 +19,29 @@
               <label class="form-label">Nombre y Apellido</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                <input type="text" name="name_surname" class="form-control" placeholder="Ej: Juan Pérez" required>
+                <input type="text" name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required>
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Cédula</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                <input type="text" name="cedula_usuario" class="form-control" placeholder="Ej: 12345678" required maxlength="10">
               </div>
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Correo Electrónico</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                <input type="email" name="email_user" class="form-control" placeholder="correo@ejemplo.com" required>
+                <input type="email" name="correo" class="form-control" placeholder="correo@ejemplo.com" required>
               </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Rol</label>
+              <select name="rol" class="form-control" required>
+                <option value="Usuario">Usuario</option>
+                <option value="Administrador">Administrador</option>
+              </select>
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label" for="pass_user">Contraseña</label>

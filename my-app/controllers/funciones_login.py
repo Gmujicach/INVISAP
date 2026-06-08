@@ -14,9 +14,9 @@ import re
 from werkzeug.security import generate_password_hash
 
 
-def recibeInsertRegisterUser(name_surname, email_user, pass_user):
+def recibeInsertRegisterUser(name_surname, email_user, pass_user, cedula, rol='Usuario'):
     respuestaValidar = validarDataRegisterLogin(
-        name_surname, email_user, pass_user)
+        name_surname, email_user, pass_user, cedula)
 
     if (respuestaValidar):
         nueva_password = generate_password_hash(pass_user)
@@ -24,8 +24,8 @@ def recibeInsertRegisterUser(name_surname, email_user, pass_user):
             conexion_MySQLdb = connectionBD()
             mycursor = conexion_MySQLdb.cursor()
             try:
-                sql = "INSERT INTO users(name_surname, email_user, pass_user) VALUES (%s, %s, %s)"
-                valores = (name_surname, email_user, nueva_password)
+                sql = "INSERT INTO usuarios(nombre, correo, contraseña, cedula_usuario, rol) VALUES (%s, %s, %s, %s, %s)"
+                valores = (name_surname, email_user, nueva_password, cedula, rol)
                 mycursor.execute(sql, valores)
                 conexion_MySQLdb.commit()
                 resultado_insert = mycursor.rowcount
@@ -41,13 +41,13 @@ def recibeInsertRegisterUser(name_surname, email_user, pass_user):
 
 
 # Validando la data del Registros para el login
-def validarDataRegisterLogin(name_surname, email_user, pass_user):
+def validarDataRegisterLogin(name_surname, email_user, pass_user, cedula):
     try:
         conexion_MySQLdb = connectionBD()
         cursor = conexion_MySQLdb.cursor(dictionary=True)
         try:
-            querySQL = "SELECT * FROM users WHERE email_user = %s"
-            cursor.execute(querySQL, (email_user,))
+            querySQL = "SELECT * FROM usuarios WHERE correo = %s OR cedula_usuario = %s"
+            cursor.execute(querySQL, (email_user, cedula))
             userBD = cursor.fetchone()  # Obtener la primera fila de resultados
 
             if userBD is not None:
@@ -56,7 +56,7 @@ def validarDataRegisterLogin(name_surname, email_user, pass_user):
             elif not re.match(r'[^@]+@[^@]+\.[^@]+', email_user):
                 flash('el Correo es invalido', 'error')
                 return False
-            elif not name_surname or not email_user or not pass_user:
+            elif not name_surname or not email_user or not pass_user or not cedula:
                 flash('por favor llene los campos del formulario.', 'error')
                 return False
             else:
@@ -75,7 +75,7 @@ def info_perfil_session():
         conexion_MySQLdb = connectionBD()
         cursor = conexion_MySQLdb.cursor(dictionary=True)
         try:
-            querySQL = "SELECT name_surname, email_user FROM users WHERE id = %s"
+            querySQL = "SELECT nombre, correo FROM usuarios WHERE id_usuarios = %s"
             cursor.execute(querySQL, (session['id'],))
             info_perfil = cursor.fetchall()
             return info_perfil
@@ -102,11 +102,11 @@ def procesar_update_perfil(data_form):
     conexion_MySQLdb = connectionBD()
     cursor = conexion_MySQLdb.cursor(dictionary=True)
     try:
-        querySQL = """SELECT * FROM users WHERE email_user = %s LIMIT 1"""
+        querySQL = """SELECT * FROM usuarios WHERE correo = %s LIMIT 1"""
         cursor.execute(querySQL, (email_user,))
         account = cursor.fetchone()
         if account:
-            if check_password_hash(account['pass_user'], pass_actual):
+            if check_password_hash(account['contraseña'], pass_actual):
                 # Verificar si new_pass_user y repetir_pass_user están vacías
                 if not new_pass_user or not repetir_pass_user:
                     return updatePefilSinPass(id_user, name_surname)
@@ -120,11 +120,11 @@ def procesar_update_perfil(data_form):
                             cursor_upd = conexion_upd.cursor()
                             try:
                                 querySQL = """
-                                    UPDATE users
+                                    UPDATE usuarios
                                     SET 
-                                        name_surname = %s,
-                                        pass_user = %s
-                                    WHERE id = %s
+                                        nombre = %s,
+                                        contraseña = %s
+                                    WHERE id_usuarios = %s
                                 """
                                 params = (name_surname, nueva_password, id_user)
                                 cursor_upd.execute(querySQL, params)
@@ -149,10 +149,10 @@ def updatePefilSinPass(id_user, name_surname):
         cursor = conexion_MySQLdb.cursor()
         try:
             querySQL = """
-                UPDATE users
+                UPDATE usuarios
                 SET 
-                    name_surname = %s
-                WHERE id = %s
+                    nombre = %s
+                WHERE id_usuarios = %s
             """
             params = (name_surname, id_user)
             cursor.execute(querySQL, params)

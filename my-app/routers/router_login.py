@@ -100,9 +100,9 @@ def loginCliente():
     if 'conectado' in session:
         return redirect(url_for('login_bp.inicio'))
     else:
-        if request.method == 'POST' and 'email_user' in request.form and 'pass_user' in request.form:
+        if request.method == 'POST' and 'nombre' in request.form and 'pass_user' in request.form:
 
-            email_user = str(request.form['email_user'])
+            nombre_usuario = str(request.form['nombre'])
             pass_user = str(request.form['pass_user'])
 
             try:
@@ -111,7 +111,7 @@ def loginCliente():
                 cursor = conexion_MySQLdb.cursor(dictionary=True)
                 try:
                     cursor.execute(
-                        "SELECT * FROM users WHERE email_user = %s", [email_user])
+                        "SELECT * FROM usuarios WHERE nombre = %s", [nombre_usuario])
                     account = cursor.fetchone()
                 finally:
                     cursor.close()
@@ -122,12 +122,12 @@ def loginCliente():
                 return render_template(f'{PATH_URL_LOGIN}/base_login.html')
 
             if account:
-                if check_password_hash(account['pass_user'], pass_user):
+                if check_password_hash(account['contraseña'], pass_user):
                     # Crear datos de sesión, para poder acceder a estos datos en otras rutas
                     session['conectado'] = True
-                    session['id'] = account['id']
-                    session['name_surname'] = account['name_surname']
-                    session['email_user'] = account['email_user']
+                    session['id'] = account['id_usuarios']
+                    session['name_surname'] = account['nombre']
+                    session['email_user'] = account['correo']
 
                     flash('Inicio de sesion exitoso :).', 'success')
                     return redirect(url_for('login_bp.inicio'))
@@ -142,6 +142,28 @@ def loginCliente():
             flash('Primero debes iniciar sesión.', 'error')
             return render_template(f'{PATH_URL_LOGIN}/base_login.html')
 
+@login_bp.route('/recuperar-clave', methods=['POST'])
+def recuperarClave():
+    correo = request.form.get('email_user')
+    if correo:
+        conexion = connectionBD()
+        cursor = conexion.cursor(dictionary=True)
+        cursor.execute("SELECT nombre, correo FROM usuarios WHERE correo = %s", [correo])
+        user = cursor.fetchone()
+        cursor.close()
+        conexion.close()
+
+        if user:
+            # Aquí iría la lógica para enviar el correo real (SMTP)
+            # Por ahora simulamos la validación
+            flash(f'Se ha enviado un enlace de recuperación a {correo}.', 'success')
+            return redirect(url_for('login_bp.inicio'))
+        else:
+            flash('El correo no está registrado en el sistema.', 'error')
+            return redirect(url_for('login_bp.cpanelRecoveryPassUser'))
+    else:
+        flash('Por favor ingrese su correo electrónico.', 'error')
+        return redirect(url_for('login_bp.cpanelRecoveryPassUser'))
 
 @login_bp.route('/closed-session',  methods=['GET'])
 def logout():
