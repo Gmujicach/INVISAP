@@ -33,29 +33,29 @@ def recibeInsertRegisterUser(nombre, correo, pass_user, cedula, rol='Usuario'):
                 mycursor.close()
                 conexion_MySQLdb.close()
         except Exception as e:
-            print(f"Error en el Insert users: {e}")
-            return []
+            print(f"Error en el Insert usuarios: {e}")
+            return 0
     else:
         return False
 
 
 # Validando la data del Registros para el login
-def validarDataRegisterLogin(name_surname, email_user, pass_user, cedula):
+def validarDataRegisterLogin(nombre, correo, pass_user, cedula):
     try:
         conexion_MySQLdb = connectionBD()
         cursor = conexion_MySQLdb.cursor(dictionary=True)
         try:
             querySQL = "SELECT * FROM usuarios WHERE correo = %s OR cedula_usuario = %s"
-            cursor.execute(querySQL, (email_user, cedula))
+            cursor.execute(querySQL, (correo, cedula))
             userBD = cursor.fetchone()  # Obtener la primera fila de resultados
 
             if userBD is not None:
                 flash('el registro no fue procesado ya existe la cuenta', 'error')
                 return False
-            elif not re.match(r'[^@]+@[^@]+\.[^@]+', email_user):
+            elif not re.match(r'[^@]+@[^@]+\.[^@]+', correo):
                 flash('el Correo es invalido', 'error')
                 return False
-            elif not name_surname or not email_user or not pass_user or not cedula:
+            elif not nombre or not correo or not pass_user or not cedula:
                 flash('por favor llene los campos del formulario.', 'error')
                 return False
             else:
