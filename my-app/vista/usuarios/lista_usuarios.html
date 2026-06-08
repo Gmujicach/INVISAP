@@ -68,7 +68,7 @@
 
   function eliminarUsuario(id) {
     if (confirm("¿Estas seguro que deseas eliminar el Usuario?")) {
-      let url = `/borrar-usuario/${id}`;
+      let url = `/users/delete/${id}`;
       if (url) {
         window.location.href = url;
       }

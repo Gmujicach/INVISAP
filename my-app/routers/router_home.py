@@ -8,7 +8,8 @@ from controllers.funciones_home import *
 from controllers.UserController import user_bp # Import the user blueprint
 from controllers.funciones_solicitud import *
 from controllers.EmpleadoController import empleado_bp
-from controllers.controller_reportes import reporte_bp
+from controllers.controller_reportesExcel import reporte_excel_bp
+from controllers.controller_reportesPDF import reporte_pdf_bp
 
 PATH_URL = "solicitudes"
 PATH_URL_CONTRAT = "contratacion"
@@ -20,12 +21,16 @@ PATH_URL_GEST_OBR = "obras"
 PATH_URL_PUB = "publicaciones"
 PATH_URL_IA = "ia"
 PATH_URL_EMPLEADOS = "empleados"
+PATH_URL_REPORTE_EXCEL = "reportes"
+PATH_URL_REPORTE_PDF = "reportes"
+PATH_URL_REPORTE_ESTADISTICO = "reportes"
 
 
 # Register blueprints
 app.register_blueprint(user_bp)
 app.register_blueprint(empleado_bp)
-app.register_blueprint(reporte_bp)
+app.register_blueprint(reporte_excel_bp)
+app.register_blueprint(reporte_pdf_bp)
 
 @app.route('/registrar-solicitud', methods=['GET'])
 def viewFormSolicitud():
@@ -107,7 +112,7 @@ def viewFormPrioridad():
 @app.route('/gestionar-proyectos', methods=['GET'])
 def viewFormProyectos():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL_PROY}/form_maquinaria.html', empresas=[])
+        return render_template(f'{PATH_URL_PROY}/proyectos.html')
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -217,6 +222,13 @@ def detalleSolicitud(idSolicitud=None):
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
+@app.route('/empleados', methods=['GET'])
+def viewFormEmpleados():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_EMPLEADOS}/empleados.html')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
 
 # Buscadon de empleados
 @app.route("/buscando-empleado", methods=['POST'])
@@ -239,4 +251,28 @@ def viewEditarEmpleado(id):
             return redirect(url_for('login_bp.inicio'))
     else:
         flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+@app.route('/reportes/reporte-excel', methods=['GET'])
+def viewFormReportesExcel():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_REPORTE_EXCEL}/reporteExcel.html')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    
+@app.route('/reportes/reporte-pdf', methods=['GET'])
+def viewFormReportesPDF():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_REPORTE_PDF}/reportePDF.html')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    
+@app.route('/reportes/reporte-estadistico', methods=['GET'])
+def viewFormReportesEstadisticos():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_REPORTE_ESTADISTICO}/reporteEstadistico.html')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))

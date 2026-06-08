@@ -61,8 +61,8 @@
       </a>
     </li>
     <li
-      class="menu-item {% if request.path.startswith('/empleados') %} active{% endif %}">
-      <a href="{{ url_for('empleado_bp.list_empleados') }}" class="menu-link">
+      class="menu-item {% if request.path == '/empleados' %} active{% endif %}">
+      <a href="{{ url_for('viewFormEmpleados') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Boxicons">Gestionar Empleados</div>
       </a>
@@ -169,18 +169,18 @@
         <div data-i18n="Reports">Reportes</div>
       </a>
       <ul class="menu-sub">
-        <li class="menu-item {% if request.path == '/descargar-informe-empleados' or request.path == '/descargar-informe-empleados/' %} active {% endif %}">
-          <a href="{{ url_for('reporte_bp.generarReporteExcel') }}" class="menu-link">
+        <li class="menu-item {% if request.path == '/reportes/reporte-excel' %} active {% endif %}">
+          <a href="{{ url_for('viewFormReportesExcel') }}" class="menu-link">
             <div data-i18n="Excel">Reportes Excel</div>
           </a>
         </li>
-        <li class="menu-item {% if request.path == '/descargar-informe-publicaciones' %} active {% endif %}">
-          <a href="{{ url_for('reporte_bp.generarReportePDF') }}" class="menu-link">
+        <li class="menu-item {% if request.path == '/reportes/reporte-pdf' %} active {% endif %}">
+          <a href="{{ url_for('viewFormReportesPDF') }}" class="menu-link">
             <div data-i18n="PDF">Reportes PDF</div>
           </a>
         </li>
-        <li class="menu-item {% if request.path == '/reportes-estadisticos' %} active {% endif %}">
-          <a href="{{ url_for('reporte_bp.viewReportesEstadisticos') }}" class="menu-link">
+        <li class="menu-item {% if request.path == '/reportes/reporte-estadistico' %} active {% endif %}">
+          <a href="{{ url_for('viewFormReportesEstadisticos') }}" class="menu-link">
             <div data-i18n="Stats">Reportes Estadísticos</div>
           </a>
         </li>
