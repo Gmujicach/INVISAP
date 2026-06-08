@@ -112,7 +112,7 @@ def viewFormPrioridad():
 @app.route('/gestionar-proyectos', methods=['GET'])
 def viewFormProyectos():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL_PROY}/form_maquinaria.html', empresas=[])
+        return render_template(f'{PATH_URL_PROY}/proyectos.html', empresas=[])
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
