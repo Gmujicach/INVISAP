@@ -11,20 +11,14 @@ def connectionBD():
         'host': os.getenv('DB_HOST', 'localhost'),
         'user': os.getenv('DB_USER', 'root'),
         'password': os.getenv('DB_PASSWORD', ''),
-        'database': os.getenv('DB_NAME', 'crud_python'),
+        'database': os.getenv('DB_NAME', 'invilara'),
         'charset': 'utf8mb4',
         'use_unicode': True,
         'auth_plugin': os.getenv('DB_AUTH_PLUGIN', 'mysql_native_password')
     }
 
     try:
-        connection = mysql.connector.connect(
-            host=os.getenv('DB_HOST', 'localhost'),
-            user=os.getenv('DB_USER', 'root'),
-            password=os.getenv('DB_PASSWORD', ''),
-            database=os.getenv('DB_NAME', 'crud_python'),
-            charset='utf8mb4'
-        )
+        connection = mysql.connector.connect(**db_config)
         if connection.is_connected():
             return connection
         raise Error('No se pudo establecer la conexión a la base de datos')
@@ -46,13 +40,7 @@ def connectionBD_invilara():
     }
 
     try:
-        connection = mysql.connector.connect(
-            host=os.getenv('DB_HOST', 'localhost'),
-            user=os.getenv('DB_USER', 'root'),
-            password=os.getenv('DB_PASSWORD', ''),
-            database=os.getenv('DB_NAME', 'invilara'),
-            charset='utf8mb4'
-        )
+        connection = mysql.connector.connect(**db_config)
         if connection.is_connected():
             return connection
         raise Error('No se pudo establecer la conexión a la base de datos')
