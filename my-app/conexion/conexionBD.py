@@ -1,5 +1,3 @@
-
-
 import os
 import mysql.connector
 from mysql.connector import Error
@@ -28,22 +26,11 @@ def connectionBD():
 
 
 def connectionBD_invilara():
-    """Return a new MySQL connection. Reads configuration from env vars with sane defaults."""
-    db_config = {
-        'host': os.getenv('DB_HOST', 'localhost'),
-        'user': os.getenv('DB_USER', 'root'),
-        'password': os.getenv('DB_PASSWORD', ''),
-        'database': os.getenv('DB_NAME', 'invilara'),
-        'charset': 'utf8mb4',
-        'use_unicode': True,
-        'auth_plugin': os.getenv('DB_AUTH_PLUGIN', 'mysql_native_password')
-    }
-
+    """Wrapper para connectionBD que retorna None en caso de error para compatibilidad con modelos."""
     try:
-        connection = mysql.connector.connect(**db_config)
+        connection = connectionBD()
         if connection.is_connected():
             return connection
-        raise Error('No se pudo establecer la conexión a la base de datos')
-    except Error as error:
-        raise Error(f"Error al conectar con la base de datos: {error}") from error
-    
+    except Exception as e:
+        print(f"Error en la conexión a la base de datos: {e}")
+        return None
