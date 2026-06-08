@@ -73,11 +73,14 @@ class SolicitudModel:
         if not solicitante_data['rif'] and not solicitante_data['cedula']:
             return None
 
-        search_sql = "SELECT id_comunidad FROM solicitante WHERE rif = %s OR cedula = %s LIMIT 1"
+        # CORRECCIÓN: Cambiado 'id_comunidad' por 'id_solicitante'
+        search_sql = "SELECT id_solicitante FROM solicitante WHERE rif = %s OR cedula = %s LIMIT 1"
         cursor.execute(search_sql, (solicitante_data['rif'], solicitante_data['cedula']))
         result = cursor.fetchone()
+        
         if result:
-            return result['id_comunidad'] if isinstance(result, dict) else result[0]
+            # CORRECCIÓN: Retornar 'id_solicitante'
+            return result['id_solicitante'] if isinstance(result, dict) else result[0]
 
         insert_sql = """INSERT INTO solicitante \
             (nombre_solicitante, parroquia, municipio, ambito, rif, cedula, correo)\
@@ -102,10 +105,11 @@ class SolicitudModel:
                 print("No se pudo conectar a la base de datos invilara")
                 return []
             cursor = conexion.cursor(dictionary=True)
+            # CORRECCIÓN: Actualizar la condición del JOIN
             sql = """
             SELECT gs.*, s.nombre_solicitante, s.rif, s.cedula, s.correo
             FROM gestionar_solicitudes gs
-            LEFT JOIN solicitante s ON gs.solicitante_id_comunidad = s.id_comunidad
+            LEFT JOIN solicitante s ON gs.solicitante_id_solicitante = s.id_solicitante
             ORDER BY gs.id_solicitud DESC
             """
             cursor.execute(sql)
@@ -131,14 +135,21 @@ class SolicitudModel:
                 print("No se pudo conectar a la base de datos invilara")
                 return None
             cursor = conexion.cursor(dictionary=True)
+            
+            # 1. EL DATO QUE FALTABA: Agregar el "WHERE gs.id_solicitud = %s"
             sql = """
             SELECT gs.*, s.nombre_solicitante, s.rif, s.cedula, s.correo
             FROM gestionar_solicitudes gs
-            LEFT JOIN solicitante s ON gs.solicitante_id_comunidad = s.id_comunidad
+            LEFT JOIN solicitante s ON gs.solicitante_id_solicitante = s.id_solicitante
             WHERE gs.id_solicitud = %s
             """
+            
+            # 2. Pasar el parámetro (id_solicitud,) en la ejecución
             cursor.execute(sql, (id_solicitud,))
+            
+            # 3. Retornar fetchone() porque es un único registro
             return cursor.fetchone()
+            
         except Exception as e:
             print(f"Error al obtener solicitud por id: {e}")
             return None
@@ -173,8 +184,9 @@ class SolicitudModel:
                 print("No se pudo crear o encontrar el solicitante")
                 return False
 
+            # CORRECCIÓN: Cambiado 'solicitante_id_comunidad' por 'solicitante_id_solicitante'
             insert_sql = """INSERT INTO gestionar_solicitudes \
-                (fecha, telefono_solicitante, direccion_solicitante, tipo_solicitud, estatus_solicitud, problematica, tipo_solicitante, solicitante_id_comunidad)\
+                (fecha, telefono_solicitante, direccion_solicitante, tipo_solicitud, estatus_solicitud, problematica, tipo_solicitante, solicitante_id_solicitante)\
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
             cursor.execute(insert_sql, (
                 solicitud_data['fecha'],
