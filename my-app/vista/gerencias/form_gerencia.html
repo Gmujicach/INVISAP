@@ -25,7 +25,7 @@
         <div class="card-body">
           
 
-          <div class="row">
+        <!--  <div class="row">
             <div class="col-md-6">
               <label for="nombre_gerante" class="form-label">
                 Nombre y Apellido
@@ -38,19 +38,13 @@
                 required />
             </div>
 
-            <div class="col-md-5">
-              <label for="nombre_gerencia" class="form-label">
-                Nombre de la Gerencia
-              </label>
-              <input
-                type="text"
-                name="nombre_gerencia"
-                class="form-control"
-                maxlength="50"
-                required />
-            </div>
-
-            <div class="col-md-6">
+-->
+          <div class="row">
+          <div class="col-md-4">
+          <label for="nombre_gerencia" class="form-label">Nombre de la Gerencia</label>
+          <input type="text" name="nombre_gerencia" class="form-control" maxlength="50" required />
+          </div>
+        <!--    <div class="col-md-6">
               <label for="cedula_gerante" class="form-label">
                 Cédula
               </label>
@@ -61,9 +55,9 @@
                 maxlength="15"
                 required />
             </div>
-          </div>
+          </div> -->
 
-          <div class="row">
+        <!--  <div class="row">
             <div class="col-md-6">
               <label for="correo_gerente" class="form-label">
                 Correo Electrónico
@@ -92,21 +86,19 @@
     </div>
   </div>
 </div>
-
-          <div class="row mt-2">
-            <div class="col-md-12">
-              <label for="direccion_gerente" class="form-label">
-                Dirección del Gerente
-              </label>
-              <input
-                type="text"
-                name="direccion_gerente"
-                class="form-control"
-                maxlength="100"
-                required />
-            </div>
-          </div>
-
+-->
+          
+        <div class="col-md-4">
+        <label for="direccion_gerencia" class="form-label">Dirección de Gerencia</label>
+        <input type="text" name="direccion_gerencia" class="form-control" maxlength="100" required />
+        </div>
+          
+        <div class="col-md-4">
+        <label for="informe_avance_obra_id_informe" class="form-label">Informe de Avanze de Obra</label>
+        <input type="text" name="informe_avance_obra_id_informe" class="form-control" maxlength="100" required />
+        </div>
+        </div>
+        
           <div class="mb-3 mt-4 text-center">
             <button type="submit" class="btn rounded-pill btn-primary">
               Registrar Gerencia
@@ -126,25 +118,19 @@
         <thead class="table-light">
           <tr>
             <th>#</th>
-            <th>Nombre y Apellido</th>
             <th>Nombre Gerencia</th>
-            <th>Cédula</th>
-            <th>Correo</th>
-            <th>Teléfono(s)</th>
             <th>Dirección Gerente</th>
+            <th>Informe de Avanze de Obra</th>
             <th class="text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {% for gerencia in gerencia %}
           <tr>
-            <td>{{ gerencia.id_gerencia }}</td>
-            <td>{{ gerencia.nombre }}</td>
+            <td>{{ gerencia.id_gerencias }}</td>
             <td>{{ gerencia.nombre_gerencia }}</td>
-            <td><span class="badge bg-info">{{ gerencia.cedula }}</span></td>
-            <td>{{ gerencia.correo }}</td>
-            <td>{{ gerencia.telefono }}</td>
             <td>{{ gerencia.direccion }}</td>
+            <td>{{ gerencia.informe_avance_obra_id_informe }}</td>
             <td class="text-center">
               <a href="#" class="btn btn-outline-info btn-sm" title="Ver detalle"><i class="bx bx-show"></i></a>
               <a href="#" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
