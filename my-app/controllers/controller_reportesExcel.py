@@ -4,7 +4,8 @@ import os
 import datetime
 from models.model_reportesExcel import ReporteExcelModel
 
-reporte_excel_bp = Blueprint('reporte_excel_bp', __name__)
+# Definimos el blueprint especificando la carpeta de vistas para que Flask encuentre reporteExcel.html
+reporte_excel_bp = Blueprint('reporte_excel_bp', __name__, template_folder='../vista')
 modelo_reporte = ReporteExcelModel()
 
 @reporte_excel_bp.route('/reporte-excel', methods=['GET', 'POST'])
@@ -46,8 +47,9 @@ def generarReporteExcel():
 
         filename = f"Reporte_Invilara_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
         
-        # Carpeta de descargas
-        folder_path = os.path.join(os.getcwd(), 'my-app', 'static', 'downloads-excel')
+        # Carpeta de descargas (usando ruta absoluta relativa a este archivo)
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        folder_path = os.path.normpath(os.path.join(base_dir, '..', 'static', 'downloads-excel'))
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)
 
