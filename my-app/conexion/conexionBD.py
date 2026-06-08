@@ -34,28 +34,25 @@ def connectionBD():
 
 
 def connectionBD_invilara():
-    """Return a new MySQL connection. Reads configuration from env vars with sane defaults."""
-    db_config = {
-        'host': os.getenv('DB_HOST', 'localhost'),
-        'user': os.getenv('DB_USER', 'root'),
-        'password': os.getenv('DB_PASSWORD', 'balto04*'),
-        'database': os.getenv('DB_NAME', 'invilara'),
-        'charset': 'utf8mb4',
-        'use_unicode': True,
-        'auth_plugin': os.getenv('DB_AUTH_PLUGIN', 'mysql_native_password')
-    }
-
+    # 1. Declaramos la variable de conexión inicializada en None
+    connection = None
     try:
+        # 2. Intentamos establecer la conexión con el conector de MySQL
         connection = mysql.connector.connect(
             host=os.getenv('DB_HOST', 'localhost'),
             user=os.getenv('DB_USER', 'root'),
-            password=os.getenv('DB_PASSWORD', 'balto04*'),
-            database=os.getenv('DB_NAME', 'invilara'),
-            charset='utf8mb4'
+            password=os.getenv('DB_PASSWORD', 'balto04*'), # Asegúrate de que esta sea tu clave
+            database='invilara', # Apuntando al nombre de la BD en tu .sql
+            charset='utf8mb4'               # Puerto por defecto de MySQL
         )
+        
+        # 3. Verificamos si la conexión fue exitosa
         if connection.is_connected():
+            print("Conexión exitosa a la base de datos Invilara.")
             return connection
-        raise Error('No se pudo establecer la conexión a la base de datos')
-    except Error as error:
-        raise Error(f"Error al conectar con la base de datos: {error}") from error
+            
+    except Error as e:
+        # 4. Capturamos cualquier error (ej. credenciales inválidas o servicio apagado)
+        print(f"Error al conectar a MySQL: {e}")
+        return None
     

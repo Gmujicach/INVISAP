@@ -73,6 +73,7 @@ CREATE TABLE IF NOT EXISTS `gerencias` (
   `direccion_gerencia` VARCHAR(45) NOT NULL,
   `informe_avance_obra_id_informe` INT NOT NULL,
   PRIMARY KEY (`id_gerencias`, `informe_avance_obra_id_informe`),
+  UNIQUE INDEX `id_gerencias_UNIQUE` (`id_gerencias` ASC) VISIBLE,
   UNIQUE INDEX `nombre_gerencia_UNIQUE` (`nombre_gerencia` ASC) VISIBLE,
   INDEX `fk_gerencias_informe_avance_obra1_idx` (`informe_avance_obra_id_informe` ASC) VISIBLE,
   CONSTRAINT `fk_gerencias_informe_avance_obra1`
@@ -114,6 +115,7 @@ CREATE TABLE IF NOT EXISTS `gestionar_proyectos` (
   `maquinaria_id_maquinaria` INT NOT NULL,
   `gerencias_id_gerencias` INT NOT NULL,
   PRIMARY KEY (`id_proyectos`, `maquinaria_id_maquinaria`, `gerencias_id_gerencias`),
+  UNIQUE INDEX `id_proy_maq_UNIQUE` (`id_proyectos` ASC, `maquinaria_id_maquinaria` ASC) VISIBLE,
   UNIQUE INDEX `codigo_proyecto_UNIQUE` (`codigo_proyecto` ASC) VISIBLE,
   INDEX `fk_gestionar_proyectos_maquinaria_idx` (`maquinaria_id_maquinaria` ASC) VISIBLE,
   INDEX `fk_gestionar_proyectos_gerencias1_idx` (`gerencias_id_gerencias` ASC) VISIBLE,
@@ -167,6 +169,7 @@ CREATE TABLE IF NOT EXISTS `gestionar_obra` (
   `porcentaje_avance_obra` INT NOT NULL,
   `inspectores_id_inspector` INT NOT NULL,
   PRIMARY KEY (`id_inspeccion`, `inspectores_id_inspector`),
+  UNIQUE INDEX `id_inspeccion_UNIQUE` (`id_inspeccion` ASC) VISIBLE,
   INDEX `fk_gestionar_obra_inspectores1_idx` (`inspectores_id_inspector` ASC) VISIBLE,
   CONSTRAINT `fk_gestionar_obra_inspectores1`
     FOREIGN KEY (`inspectores_id_inspector`)
@@ -193,6 +196,7 @@ CREATE TABLE IF NOT EXISTS `empresa` (
   `gestionar_proyectos_maquinaria_id_maquinaria` INT NOT NULL,
   `gestionar_obra_id_inspeccion` INT NOT NULL,
   PRIMARY KEY (`rif`, `gestionar_proyectos_id_proyectos`, `gestionar_proyectos_maquinaria_id_maquinaria`, `gestionar_obra_id_inspeccion`),
+  UNIQUE INDEX `rif_proy_maq_UNIQUE` (`rif` ASC, `gestionar_proyectos_id_proyectos` ASC, `gestionar_proyectos_maquinaria_id_maquinaria` ASC) VISIBLE,
   UNIQUE INDEX `rif_UNIQUE` (`rif` ASC) VISIBLE,
   INDEX `fk_empresa_gestionar_proyectos1_idx` (`gestionar_proyectos_id_proyectos` ASC, `gestionar_proyectos_maquinaria_id_maquinaria` ASC) VISIBLE,
   INDEX `fk_empresa_gestionar_obra1_idx` (`gestionar_obra_id_inspeccion` ASC) VISIBLE,
@@ -267,6 +271,7 @@ CREATE TABLE IF NOT EXISTS `gestionar_solicitudes` (
   `tipo_solicitante` VARCHAR(45) NOT NULL,
   `solicitante_id_comunidad` INT NOT NULL,
   PRIMARY KEY (`id_solicitud`, `solicitante_id_comunidad`),
+  UNIQUE INDEX `id_solicitud_UNIQUE` (`id_solicitud` ASC) VISIBLE,
   INDEX `fk_gestionar_solicitudes_solicitante1_idx` (`solicitante_id_comunidad` ASC) VISIBLE,
   CONSTRAINT `fk_gestionar_solicitudes_solicitante1`
     FOREIGN KEY (`solicitante_id_comunidad`)
