@@ -3,6 +3,9 @@ from flask import session, flash
 
 # Importando conexion a BD
 from conexion.conexionBD import connectionBD
+
+# Importando conexion a BD invilara
+from conexion.conexionBD import connectionBD_invilara
 # Para  validar contraseña
 from werkzeug.security import check_password_hash
 
