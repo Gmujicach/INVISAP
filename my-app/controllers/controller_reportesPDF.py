@@ -1,9 +1,18 @@
+import sys
+import os
 from flask import Blueprint, render_template, request, session, redirect, url_for, flash, Response
+
+# Configuración de ruta local para la librería fpdf2
+base_dir = os.path.dirname(os.path.abspath(__file__))
+lib_path = os.path.normpath(os.path.join(base_dir, '..', 'lib_pdf'))
+if lib_path not in sys.path:
+    sys.path.append(lib_path)
+
 from models.model_reportesPDF import ReportePDFModel
 from fpdf import FPDF
 import datetime
 
-reporte_pdf_bp = Blueprint('reporte_pdf_bp', __name__)
+reporte_pdf_bp = Blueprint('reporte_pdf_bp', __name__, template_folder='../vista')
 modelo_reporte = ReportePDFModel()
 
 class PDF(FPDF):
