@@ -24,21 +24,30 @@
             method="POST">
             <div class="mb-3">
               <label for="name_surname" class="form-label">
-                Nombre y apellido
+                Nombre Completo
               </label>
               <input
                 type="text"
                 class="form-control"
-                name="name_surname"
+                name="nombre"
                 required
                 autofocus />
             </div>
             <div class="mb-3">
-              <label for="email_user" class="form-label">Email</label>
+              <label for="cedula_usuario" class="form-label">Cédula</label>
+              <input
+                type="text"
+                class="form-control"
+                name="cedula_usuario"
+                maxlength="10"
+                required />
+            </div>
+            <div class="mb-3">
+              <label for="email_user" class="form-label">Correo Electrónico</label>
               <input
                 type="email"
                 class="form-control"
-                name="email_user"
+                name="correo"
                 required />
             </div>
             <div class="mb-3 form-password-toggle">

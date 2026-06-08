@@ -14,9 +14,8 @@ import re
 from werkzeug.security import generate_password_hash
 
 
-def recibeInsertRegisterUser(name_surname, email_user, pass_user, cedula, rol='Usuario'):
-    respuestaValidar = validarDataRegisterLogin(
-        name_surname, email_user, pass_user, cedula)
+def recibeInsertRegisterUser(nombre, correo, pass_user, cedula, rol='Usuario'):
+    respuestaValidar = validarDataRegisterLogin(nombre, correo, pass_user, cedula)
 
     if (respuestaValidar):
         nueva_password = generate_password_hash(pass_user)
@@ -24,8 +23,8 @@ def recibeInsertRegisterUser(name_surname, email_user, pass_user, cedula, rol='U
             conexion_MySQLdb = connectionBD()
             mycursor = conexion_MySQLdb.cursor()
             try:
-                sql = "INSERT INTO usuarios(nombre, correo, contraseña, cedula_usuario, rol) VALUES (%s, %s, %s, %s, %s)"
-                valores = (name_surname, email_user, nueva_password, cedula, rol)
+                sql = "INSERT INTO usuarios (nombre, correo, contraseña, cedula_usuario, rol) VALUES (%s, %s, %s, %s, %s)"
+                valores = (nombre, correo, nueva_password, cedula, rol)
                 mycursor.execute(sql, valores)
                 conexion_MySQLdb.commit()
                 resultado_insert = mycursor.rowcount

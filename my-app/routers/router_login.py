@@ -50,13 +50,15 @@ def cpanelRecoveryPassUser():
 # Crear cuenta de usuario
 @login_bp.route('/saved-register', methods=['POST'])
 def cpanelResgisterUserBD():
-    if request.method == 'POST' and 'name_surname' in request.form and 'pass_user' in request.form:
-        name_surname = request.form['name_surname']
-        email_user = request.form['email_user']
+    if request.method == 'POST' and 'nombre' in request.form and 'pass_user' in request.form:
+        nombre = request.form['nombre']
+        correo = request.form['correo']
+        cedula = request.form['cedula_usuario']
         pass_user = request.form['pass_user']
+        rol = 'Usuario' # Rol por defecto para registros externos
 
         resultData = recibeInsertRegisterUser(
-            name_surname, email_user, pass_user)
+            nombre, correo, pass_user, cedula, rol)
         if (resultData != 0):
             flash('la cuenta fue creada correctamente.', 'success')
             return redirect(url_for('login_bp.inicio'))

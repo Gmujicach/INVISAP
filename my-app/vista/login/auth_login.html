@@ -18,12 +18,12 @@
             action="{{ url_for('login_bp.loginCliente') }}"
             method="POST">
             <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
+              <label for="nombre" class="form-label">Usuario</label>
               <input
-                type="email"
+                type="text"
                 class="form-control"
-                name="email_user"
-                placeholder="Escribe tu email"
+                name="nombre"
+                placeholder="Escribe tu nombre de usuario"
                 autofocus
                 required />
             </div>
