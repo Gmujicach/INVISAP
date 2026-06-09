@@ -32,7 +32,7 @@ class UsuarioModel:
         conexion = connectionBD()
         cursor = conexion.cursor()
         try:
-            sql = "INSERT INTO usuarios (nombre, correo, contraseña, cedula_usuario, rol) VALUES (%s, %s, %s, %s, %s)"
+            sql = "INSERT INTO usuarios (nombre, correo, contrasena, cedula_usuario, rol) VALUES (%s, %s, %s, %s, %s)"
             cursor.execute(sql, (nombre, correo, hashed_pass, cedula, rol))
             conexion.commit()
             return cursor.rowcount
@@ -68,7 +68,7 @@ class UsuarioModel:
         cursor = conexion.cursor()
         try:
             if password:
-                sql = "UPDATE usuarios SET nombre=%s, correo=%s, cedula_usuario=%s, rol=%s, contraseña=%s WHERE id_usuarios=%s"
+                sql = "UPDATE usuarios SET nombre=%s, correo=%s, cedula_usuario=%s, rol=%s, contrasena=%s WHERE id_usuarios=%s"
                 cursor.execute(sql, (name, email, cedula, rol, generate_password_hash(password), id_user))
             else:
                 sql = "UPDATE usuarios SET nombre=%s, correo=%s, cedula_usuario=%s, rol=%s WHERE id_usuarios=%s"

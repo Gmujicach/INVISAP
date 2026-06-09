@@ -20,21 +20,28 @@
   <ul class="menu-inner py-5">    
     <li
       class="menu-item {% if request.path == '/registrar-solicitud' %} active {% endif %}">
-      <a href="{{ url_for('viewFormSolicitud') }}" class="menu-link">
+      <a href="{{ url_for('home_bp.viewFormSolicitud') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
         <div data-i18n="Basic">Registrar Solicitud</div>
       </a>
     </li>
     <li
+      class="menu-item {% if request.path == '/lista-de-solicitudes' %} active {% endif %}">
+      <a href="{{ url_for('lista_solicitudes') }}" class="menu-link">
+        <i class="menu-icon bi bi-list-task"></i>
+        <div data-i18n="Basic">Lista de Solicitudes</div>
+      </a>
+    </li>
+    <li
       class="menu-item {% if request.path == '/registrar-mortadela' %} active {% endif %}">
-      <a href="{{ url_for('viewFormMortadela') }}" class="menu-link">
+      <a href="{{ url_for('home_bp.viewFormMortadela') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
         <div data-i18n="Basic">Registrar Mortadela</div>
       </a>
     </li>
     <li
       class="menu-item {% if request.path == '/registrar-contratacion' %} active {% endif %}">
-      <a href="{{ url_for('viewFormContratacion') }}" class="menu-link">
+      <a href="{{ url_for('home_bp.viewFormContratacion') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
         <div data-i18n="Basic">Gestionar Contratación</div>
       </a>
@@ -69,7 +76,7 @@
     </li>
     <li
       class="menu-item {% if request.path == '/registrar-gerencias' %} active {% endif %}">
-      <a href="{{ url_for('viewFormGerencias') }}" class="menu-link">
+      <a href="{{ url_for('home_bp.viewFormGerencia') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
         <div data-i18n="Basic">Gerencias</div>
       </a>
@@ -111,7 +118,7 @@
     </li>
     <li
       class="menu-item {% if request.path == '/registrar-obras' %} active {% endif %}">
-      <a href="{{ url_for('viewFormGestionarObras') }}" class="menu-link">
+      <a href="{{ url_for('home_bp.viewFormGestionarObras') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
         <div data-i18n="Basic">Gestionar Obras</div>
       </a>
@@ -125,21 +132,21 @@
     </li>
     <li
       class="menu-item {% if request.path == '/inf_avance_obra' %} active {% endif %}">
-      <a href="{{ url_for('viewFormInforme_avan_obras') }}" class="menu-link">
+      <a href="{{ url_for('home_bp.viewFormInforme_avan_obras') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Tables">Informe Avance de Obra</div>
       </a>
     </li>
     <li
       class="menu-item {% if request.path == '/registrar-publicaciones' %} active {% endif %}">
-      <a href="{{ url_for('viewFormPublicaciones') }}" class="menu-link">
+      <a href="{{ url_for('home_bp.viewFormPublicaciones') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
         <div data-i18n="Basic">Registrar Publicaciones</div>
       </a>
     </li>
     <li
       class="menu-item {% if request.path == '/administrar-respaldos' %} active {% endif %}">
-      <a href="{{ url_for('viewFormRespaldos') }}" class="menu-link">
+      <a href="{{ url_for('home_bp.viewFormRespaldos') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Tables">Administrar Respaldos</div>
       </a>

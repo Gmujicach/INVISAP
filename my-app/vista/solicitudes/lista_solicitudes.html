@@ -1,0 +1,88 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | Lista de Solicitudes{% endblock %}
+{% block body %}
+
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12 mb-4">
+      <h3 class="text-center mt-5 mb-3">LISTA DE SOLICITUDES</h3>
+      <hr />
+    </div>
+
+    <div class="row justify-content-between align-items-center px-3">
+      <div class="col-md-6 mt-2 py-2">
+        <input
+          type="search"
+          id="search"
+          class="form-control border-0 shadow-none"
+          placeholder="Buscar solicitud..."
+          onkeyup="buscadorTable('tbl_solicitudes')" />
+      </div>
+      <div class="col-md-3 text-end mt-2">
+        <a href="{{ url_for('home_bp.viewFormSolicitud') }}" class="btn btn-success btn-sm">
+          <i class="bi bi-plus-circle"></i> Nueva Solicitud
+        </a>
+      </div>
+    </div>
+
+    <div class="row justify-content-center mb-4 mt-2">
+      <div class="table-responsive text-nowrap table-hover">
+        <table
+          id="tbl_solicitudes"
+          class="table table-striped table-bordered"
+          cellspacing="0"
+          width="100%">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Solicitante</th>
+              <th>Tipo Solicitud</th>
+              <th>Estatus</th>
+              <th>Problemática</th>
+              <th>Fecha</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if solicitudes %}
+              {% for s in solicitudes %}
+              <tr id="solicitud_{{ s.id_solicitud }}">
+                <td>{{ loop.index }}</td>
+                <td>{{ s.nombre_solicitante or '—' }}</td>
+                <td>{{ s.tipo_solicitud }}</td>
+                <td>
+                  {% if s.estatus_solicitud == 'Pendiente' %}
+                    <span class="badge bg-warning text-dark">{{ s.estatus_solicitud }}</span>
+                  {% elif s.estatus_solicitud == 'Procesada' %}
+                    <span class="badge bg-success">{{ s.estatus_solicitud }}</span>
+                  {% else %}
+                    <span class="badge bg-secondary">{{ s.estatus_solicitud }}</span>
+                  {% endif %}
+                </td>
+                <td style="max-width:200px; white-space:normal;">{{ s.problematica }}</td>
+                <td>{{ s.fecha }}</td>
+                <td width="10px">
+                  <a
+                    href="/detalles-solicitud/{{ s.id_solicitud }}"
+                    type="button"
+                    class="btn btn-info btn-sm"
+                    title="Ver detalles">
+                    <i class="bi bi-eye"></i> Ver
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="7" class="text-center text-muted py-4">No hay solicitudes registradas.</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

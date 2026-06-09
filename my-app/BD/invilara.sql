@@ -401,12 +401,11 @@ CREATE TABLE IF NOT EXISTS `usuarios` (
   `id_usuarios` INT NOT NULL AUTO_INCREMENT,
   `cedula_usuario` VARCHAR(10) NOT NULL,
   `nombre` VARCHAR(45) NOT NULL,
-  `contraseña` VARCHAR(8) NOT NULL,
+  `contrasena` VARCHAR(255) NOT NULL,
   `correo` VARCHAR(45) NOT NULL,
   `rol` VARCHAR(30) NOT NULL,
   PRIMARY KEY (`id_usuarios`),
-  UNIQUE INDEX `cedula_usuario_UNIQUE` (`cedula_usuario` ASC) VISIBLE,
-  UNIQUE INDEX `contraseña_UNIQUE` (`contraseña` ASC) VISIBLE)
+  UNIQUE INDEX `cedula_usuario_UNIQUE` (`cedula_usuario` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 

@@ -1,0 +1,83 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | Detalles de la Solicitud{% endblock %}
+{% block body %}
+
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12 mb-4">
+      <h3 class="text-center mt-5 mb-3">DETALLES DE LA SOLICITUD</h3>
+      <hr />
+    </div>
+
+    <div class="col-md-10 mb-4">
+      {% if detalle_solicitud %}
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 text-white"><i class="bi bi-file-earmark-text"></i> Solicitud #{{ detalle_solicitud.id_solicitud }}</h5>
+          <span class="badge bg-light text-dark">{{ detalle_solicitud.fecha }}</span>
+        </div>
+        <div class="card-body">
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <h6 class="text-muted border-bottom pb-2">Información del Solicitante</h6>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Nombre/Comunidad:</strong> {{ detalle_solicitud.nombre_solicitante or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Tipo de Solicitante:</strong> {{ detalle_solicitud.tipo_solicitante or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Cédula:</strong> {{ detalle_solicitud.cedula or 'N/A' }}</li>
+                <li class="list-group-item"><strong>RIF:</strong> {{ detalle_solicitud.rif or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Teléfono:</strong> {{ detalle_solicitud.telefono_solicitante or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Correo:</strong> {{ detalle_solicitud.correo or 'N/A' }}</li>
+              </ul>
+            </div>
+            
+            <div class="col-md-6">
+              <h6 class="text-muted border-bottom pb-2">Ubicación y Estatus</h6>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Dirección:</strong> {{ detalle_solicitud.direccion_solicitante or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Municipio:</strong> {{ detalle_solicitud.municipio or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Parroquia:</strong> {{ detalle_solicitud.parroquia or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Ámbito:</strong> {{ detalle_solicitud.ambito or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Tipo Solicitud:</strong> {{ detalle_solicitud.tipo_solicitud or 'N/A' }}</li>
+                <li class="list-group-item">
+                  <strong>Estatus:</strong> 
+                  {% if detalle_solicitud.estatus_solicitud == 'Pendiente' %}
+                    <span class="badge bg-warning text-dark">{{ detalle_solicitud.estatus_solicitud }}</span>
+                  {% elif detalle_solicitud.estatus_solicitud == 'Procesada' %}
+                    <span class="badge bg-success">{{ detalle_solicitud.estatus_solicitud }}</span>
+                  {% else %}
+                    <span class="badge bg-secondary">{{ detalle_solicitud.estatus_solicitud }}</span>
+                  {% endif %}
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row mt-4">
+            <div class="col-12">
+              <h6 class="text-muted border-bottom pb-2">Problemática Planteada</h6>
+              <div class="p-3 bg-light rounded" style="min-height: 80px;">
+                {{ detalle_solicitud.problematica or 'No se registró descripción de la problemática.' }}
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="card-footer bg-white text-end">
+          <a href="{{ url_for('lista_solicitudes') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver a la Lista</a>
+          <!-- Si deseas añadir un botón para actualizar el estatus puedes hacerlo aquí -->
+        </div>
+      </div>
+      {% else %}
+      <div class="alert alert-warning text-center">
+        No se encontraron los datos de la solicitud especificada.
+      </div>
+      <div class="text-center mt-3">
+          <a href="{{ url_for('lista_solicitudes') }}" class="btn btn-secondary">Volver a la Lista</a>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

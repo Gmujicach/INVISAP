@@ -109,7 +109,7 @@ class SolicitudModel:
             sql = """
             SELECT gs.*, s.nombre_solicitante, s.rif, s.cedula, s.correo
             FROM gestionar_solicitudes gs
-            LEFT JOIN solicitante s ON gs.solicitante_id_solicitante = s.id_solicitante
+            LEFT JOIN solicitante s ON gs.solicitante_id_comunidad = s.id_solicitante
             ORDER BY gs.id_solicitud DESC
             """
             cursor.execute(sql)
@@ -138,9 +138,9 @@ class SolicitudModel:
             
             # 1. EL DATO QUE FALTABA: Agregar el "WHERE gs.id_solicitud = %s"
             sql = """
-            SELECT gs.*, s.nombre_solicitante, s.rif, s.cedula, s.correo
+            SELECT gs.*, s.*
             FROM gestionar_solicitudes gs
-            LEFT JOIN solicitante s ON gs.solicitante_id_solicitante = s.id_solicitante
+            LEFT JOIN solicitante s ON gs.solicitante_id_comunidad = s.id_solicitante
             WHERE gs.id_solicitud = %s
             """
             
@@ -184,16 +184,16 @@ class SolicitudModel:
                 print("No se pudo crear o encontrar el solicitante")
                 return False
 
-            # CORRECCIÓN: Cambiado 'solicitante_id_comunidad' por 'solicitante_id_solicitante'
+            # Nombre correcto de la FK en la tabla gestionar_solicitudes
             insert_sql = """INSERT INTO gestionar_solicitudes \
-                (fecha, telefono_solicitante, direccion_solicitante, tipo_solicitud, estatus_solicitud, problematica, tipo_solicitante, solicitante_id_solicitante)\
+                (fecha, telefono_solicitante, direccion_solicitante, tipo_solicitud, estatus_solicitud, problematica, tipo_solicitante, solicitante_id_comunidad)\
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
             cursor.execute(insert_sql, (
                 solicitud_data['fecha'],
                 solicitud_data['telefono_solicitante'],
                 solicitud_data['direccion_solicitante'],
                 solicitud_data['tipo_solicitud'],
-                solicitud_data['estatus_solicitud'],
+                "PENDIENTE",
                 solicitud_data['problematica'],
                 solicitud_data['tipo_solicitante'],
                 solicitante_id

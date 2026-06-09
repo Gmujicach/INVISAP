@@ -23,7 +23,7 @@ def recibeInsertRegisterUser(nombre, correo, pass_user, cedula, rol='Usuario'):
             conexion_MySQLdb = connectionBD()
             mycursor = conexion_MySQLdb.cursor()
             try:
-                sql = "INSERT INTO usuarios (nombre, correo, contraseña, cedula_usuario, rol) VALUES (%s, %s, %s, %s, %s)"
+                sql = "INSERT INTO usuarios (nombre, correo, contrasena, cedula_usuario, rol) VALUES (%s, %s, %s, %s, %s)"
                 valores = (nombre, correo, nueva_password, cedula, rol)
                 mycursor.execute(sql, valores)
                 conexion_MySQLdb.commit()
@@ -105,7 +105,7 @@ def procesar_update_perfil(data_form):
         cursor.execute(querySQL, (email_user,))
         account = cursor.fetchone()
         if account:
-            if check_password_hash(account['contraseña'], pass_actual):
+            if check_password_hash(account['contrasena'], pass_actual):
                 # Verificar si new_pass_user y repetir_pass_user están vacías
                 if not new_pass_user or not repetir_pass_user:
                     return updatePefilSinPass(id_user, name_surname)
@@ -122,7 +122,7 @@ def procesar_update_perfil(data_form):
                                     UPDATE usuarios
                                     SET 
                                         nombre = %s,
-                                        contraseña = %s
+                                        contrasena = %s
                                     WHERE id_usuarios = %s
                                 """
                                 params = (name_surname, nueva_password, id_user)

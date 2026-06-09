@@ -124,7 +124,7 @@ def loginCliente():
                 return render_template(f'{PATH_URL_LOGIN}/base_login.html')
 
             if account:
-                if check_password_hash(account['contraseña'], pass_user):
+                if check_password_hash(account['contrasena'], pass_user):
                     # Crear datos de sesión, para poder acceder a estos datos en otras rutas
                     session['conectado'] = True
                     session['id'] = account['id_usuarios']

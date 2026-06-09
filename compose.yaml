@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  # ── Base de datos MySQL ────────────────────────────────────────────────────
+  db:
+    image: docker.io/library/mysql:8.0
+    container_name: invisap_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: invilara
+      MYSQL_USER: invisap
+      MYSQL_PASSWORD: invisap_pass
+    volumes:
+      - invisap_db_data:/var/lib/mysql
+      - ./my-app/BD/invilara.sql:/docker-entrypoint-initdb.d/01_invilara.sql:ro
+    ports:
+      - "3307:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot_password"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ── Aplicación Flask ───────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Containerfile
+    container_name: invisap_app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_USER: invisap
+      DB_PASSWORD: invisap_pass
+      DB_NAME: invilara
+      DB_AUTH_PLUGIN: mysql_native_password
+    ports:
+      - "5600:5600"
+
+  # ── phpMyAdmin ─────────────────────────────────────────────────────────────
+  phpmyadmin:
+    image: docker.io/library/phpmyadmin:latest
+    container_name: invisap_phpmyadmin
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: root_password
+      UPLOAD_LIMIT: 50M
+    ports:
+      - "8081:80"
+
+volumes:
+  invisap_db_data:
