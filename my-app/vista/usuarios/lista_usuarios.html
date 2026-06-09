@@ -14,27 +14,31 @@
       <table class="table table-hover">
         <thead>
           <tr style="background-color: #ddd">
-            <th>Usuario</th>
-            <th>Email</th>
-            <th>Fecha de creaci&oacute;n</th>
+            <th>Nombre y Apellido</th>
+            <th>C&eacute;dula</th>
+            <th>Correo Electr&oacute;nico</th>
+            <th>Rol</th>
             <th>Accci&oacute;n</th>
           </tr>
         </thead>
         <tbody>
           {% for usuario in resp_usuariosBD %}
           <tr>
-            <td>{{ usuario.name_surname}}</td>
-            <td>{{ usuario.email_user}}</td>
-            <td>{{ usuario.created_user}}</td>
+            <td>{{ usuario.nombre }}</td>
+            <td>{{ usuario.cedula_usuario }}</td>
+            <td>{{ usuario.correo }}</td>
+            <td>{{ usuario.rol }}</td>
             <td>
               <button
                 class="btn rounded-pill btn-warning me-2"
-                onclick="editarUsuario('{{ usuario.id }}');">
+                onclick="editarUsuario('{{ usuario.id_usuarios }}');"
+                {% if usuario.rol == 'Super Usuario' %}disabled title="Protegido por seguridad"{% endif %}>
                 <i class="bi bi-pencil"></i>
               </button>
               <button
                 class="btn rounded-pill btn-danger"
-                onclick="eliminarUsuario('{{ usuario.id }}');">
+                onclick="eliminarUsuario('{{ usuario.id_usuarios }}');"
+                {% if usuario.rol == 'Super Usuario' %}disabled title="Protegido por seguridad"{% endif %}>
                 <i class="bi bi-trash3"></i>
               </button>
             </td>

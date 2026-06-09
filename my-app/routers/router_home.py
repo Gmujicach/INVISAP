@@ -23,7 +23,8 @@ PATH_URL_PROY = "proyectos"
 PATH_URL_GEST_OBR = "obras"
 PATH_URL_PUB = "publicaciones"
 PATH_URL_IA = "ia"
-PATH_URL_EMPLEADOS = "empleados"
+PATH_URL_REG_EMPLEADOS = "registrar-empleado"
+PATH_URL_LIST_EMPLEADOS = "empleados"
 PATH_URL_REPORTE_EXCEL = "reportes"
 PATH_URL_REPORTE_PDF = "reportes"
 PATH_URL_REPORTE_ESTADISTICO = "reportes"
@@ -116,10 +117,10 @@ def viewFormProyectos():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-@home_bp.route('/empresa', methods=['GET'])
-def viewFormEmpresa():
+@home_bp.route('/registrar-contratacion', methods=['GET'])
+def viewFormContratacion():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL_CONTRAT}/form_contratacion.html', empresas=[])
+        return render_template(f'{PATH_URL_CONTRAT}/form_contratacion.html')
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -130,14 +131,6 @@ def viewFormInspectores():
         return render_template('placeholder.html', title='Inspectores', message='Esta página está en desarrollo.', note='Contacto al administrador para habilitar esta función.')
     else:
         flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-
-@home_bp.route('/registrar-contratacion', methods=['GET'])
-def viewFormContratacion():
-    if 'conectado' in session:
-        return render_template(f'{PATH_URL_CONTRAT}/form_contratacion.html')
-    else:
-        flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
 @home_bp.route('/registrar-gerencias', methods=['GET'])
@@ -216,10 +209,18 @@ def detalleSolicitud(idSolicitud=None):
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-@app.route('/empleados', methods=['GET'])
-def viewFormEmpleados():
+@app.route('/registrar-empleado', methods=['GET'])
+def viewFormRegistrarEmpleados():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL_EMPLEADOS}/empleados.html')
+        return render_template(f'{PATH_URL_REG_EMPLEADOS}/form_empleado.html')
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    
+@app.route('/empleados', methods=['GET'])
+def viewFormListarEmpleados():
+    if 'conectado' in session:
+        return render_template(f'{PATH_URL_LIST_EMPLEADOS}/empleados.html')
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))

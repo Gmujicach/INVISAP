@@ -10,15 +10,30 @@
       </div>
       <div class="card-body mt-4">
         <form action="{{ url_for('user_bp.update_user') }}" method="POST">
-          <input type="hidden" name="id_user" value="{{ usuario.id }}">
+          <input type="hidden" name="id_user" value="{{ usuario.id_usuarios }}">
           <div class="row">
             <div class="col-md-12 mb-3">
               <label class="form-label">Nombre y Apellido</label>
-              <input type="text" name="name_surname" class="form-control" value="{{ usuario.name_surname }}" required>
+              <input type="text" name="nombre" class="form-control" value="{{ usuario.nombre }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Cédula</label>
+              <input type="text" name="cedula_usuario" class="form-control" value="{{ usuario.cedula_usuario }}" required maxlength="10">
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Correo Electrónico</label>
-              <input type="email" name="email_user" class="form-control" value="{{ usuario.email_user }}" required>
+              <input type="email" name="correo" class="form-control" value="{{ usuario.correo }}" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Rol</label>
+              <select name="rol" class="form-control" required>
+                <option value="Super Usuario" {% if usuario.rol == 'Super Usuario' %}selected{% endif %}>Super Usuario</option>
+                <option value="Administrador" {% if usuario.rol == 'Administrador' %}selected{% endif %}>Administrador</option>
+                <option value="Recepcionista" {% if usuario.rol == 'Recepcionista' %}selected{% endif %}>Recepcionista</option>
+                <option value="Gerente" {% if usuario.rol == 'Gerente' %}selected{% endif %}>Gerente</option>
+                <option value="Presidente" {% if usuario.rol == 'Presidente' %}selected{% endif %}>Presidente</option>
+                <option value="Asistente" {% if usuario.rol == 'Asistente' %}selected{% endif %}>Asistente</option>
+              </select>
             </div>
             <div class="col-md-6 mb-3">
               <label class="form-label">Nueva Contraseña <small>(Opcional)</small></label>

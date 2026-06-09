@@ -1,8 +1,8 @@
 {% extends 'base_cpanel.html' %}
-{% block title %}Crear Empleado{% endblock %}
+{% block title %}Registrar Empleado{% endblock %}
 {% block body %}
 <div class="card">
-  <div class="card-header"><h5>Crear Empleado</h5></div>
+  <div class="card-header"><h5>Registrar Empleado</h5></div>
   <div class="card-body">
     <form action="{{ url_for('empleado_bp.create_empleado') }}" method="post" enctype="multipart/form-data" id="formEmpleado">
       <div class="mb-3">
@@ -14,11 +14,15 @@
         <input type="text" name="apellido_empleado" class="form-control" required>
       </div>
       <div class="mb-3">
-        <label>Sexo</label>
-        <select name="sexo_empleado" class="form-select" required>
-          <option value="1">Masculino</option>
-          <option value="2">Femenino</option>
-        </select>
+        <label class="form-label d-block">Sexo</label>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="sexo_empleado" id="sexo_masculino" value="1" required>
+          <label class="form-check-label" for="sexo_masculino">Masculino</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="sexo_empleado" id="sexo_femenino" value="2" required>
+          <label class="form-check-label" for="sexo_femenino">Femenino</label>
+        </div>
       </div>
       <div class="mb-3">
         <label>Teléfono</label>

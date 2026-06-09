@@ -131,7 +131,7 @@ def loginCliente():
                     session['name_surname'] = account['nombre']
                     session['email_user'] = account['correo']
 
-                    flash('Inicio de sesion exitoso :).', 'success')
+                    flash('Inicio de sesion exitoso :)', 'success')
                     return redirect(url_for('login_bp.inicio'))
                 else:
                     # La cuenta no existe o el nombre de usuario/contraseña es incorrecto

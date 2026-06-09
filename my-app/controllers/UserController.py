@@ -74,11 +74,20 @@ def update_user():
         return redirect(url_for('login_bp.inicio'))
 
     user_id = request.form.get('id_user')
-    name_surname = request.form.get('name_surname')
-    email_user = request.form.get('email_user')
+    
+    # Medida de seguridad: No permitir modificar al Super Usuario
+    user_to_update = user_model.buscar_por_id(user_id)
+    if user_to_update and user_to_update['rol'] == 'Super Usuario':
+        flash('El Super Usuario no puede ser modificado por razones de seguridad.', 'error')
+        return redirect(url_for('user_bp.list_users'))
+
+    nombre = request.form.get('nombre')
+    correo = request.form.get('correo')
+    cedula = request.form.get('cedula_usuario')
+    rol = request.form.get('rol')
     new_password = request.form.get('pass_user')
 
-    if user_model.actualizar(user_id, name_surname, email_user, new_password if new_password else None):
+    if user_model.actualizar(user_id, nombre, correo, cedula, rol, new_password if new_password else None):
         flash('El usuario fue actualizado correctamente.', 'success')
     else:
         flash('Error al actualizar el usuario.', 'error')
@@ -90,6 +99,12 @@ def delete_user(user_id):
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+
+    # Medida de seguridad: No permitir eliminar al Super Usuario
+    user_to_delete = user_model.buscar_por_id(user_id)
+    if user_to_delete and user_to_delete['rol'] == 'Super Usuario':
+        flash('El Super Usuario no puede ser eliminado por razones de seguridad.', 'error')
+        return redirect(url_for('user_bp.list_users'))
 
     if user_model.eliminar(user_id):
         flash('El usuario fue eliminado correctamente.', 'success')

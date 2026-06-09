@@ -67,12 +67,23 @@
         <div data-i18n="Tables">Gestionar Prioridad</div>
       </a>
     </li>
-    <li
-      class="menu-item {% if request.path == '/empleados' %} active{% endif %}">
-      <a href="{{ url_for('viewFormEmpleados') }}" class="menu-link">
-        <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Boxicons">Gestionar Empleados</div>
+    <li class="menu-item {% if request.path in ['/registrar-empleado', '/empleados'] %} active open {% endif %}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon bi bi-person-badge-fill"></i>
+        <div data-i18n="Employees">Gestionar Empleados</div>
       </a>
+      <ul class="menu-sub">
+        <li class="menu-item {% if request.path == '/registrar-empleado' %} active {% endif %}">
+          <a href="{{ url_for('viewFormRegistrarEmpleados') }}" class="menu-link">
+            <div data-i18n="Register Employees">Registrar Empleados</div>
+          </a>
+        </li>
+        <li class="menu-item {% if request.path == '/empleados' %} active {% endif %}">
+          <a href="{{ url_for('viewFormListarEmpleados') }}" class="menu-link">
+            <div data-i18n="List Employees">Listar Empleados</div>
+          </a>
+        </li>
+      </ul>
     </li>
     <li
       class="menu-item {% if request.path == '/registrar-gerencias' %} active {% endif %}">
@@ -93,20 +104,6 @@
       <a href="{{ url_for('home_bp.viewFormProyectos') }}" class="menu-link">
         <i class="menu-icon bi bi-person-lines-fill"></i>
         <div data-i18n="Tables">Gestionar Proyectos</div>
-      </a>
-    </li>
-    <li
-      class="menu-item {% if request.path == '/Gestionar-Contrataciones' %} active{% endif %}">
-      <a href="{{ url_for('home_bp.viewFormContratacion') }}" class="menu-link">
-        <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Boxicons">Gestionar Contrataciones</div>
-      </a>
-    </li>
-    <li
-      class="menu-item {% if request.path == '/empresa' %} active{% endif %}">
-      <a href="{{ url_for('home_bp.viewFormEmpresa') }}" class="menu-link">
-        <i class="menu-icon bi bi-person-lines-fill"></i>
-        <div data-i18n="Boxicons">Empresa</div>
       </a>
     </li>
     <li
@@ -170,7 +167,7 @@
         <div data-i18n="Tables">Bitacora</div>
       </a>
     </li>
-    <li class="menu-item {% if request.path in ['/descargar-informe-empleados', '/descargar-informe-publicaciones', '/reportes-estadisticos'] %} active open {% endif %}">
+    <li class="menu-item {% if request.path in ['/reportes', '/descargar-informe-publicaciones', '/reportes-estadisticos'] %} active open {% endif %}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon bi bi-bar-chart-line-fill"></i>
         <div data-i18n="Reports">Reportes</div>
