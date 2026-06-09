@@ -40,7 +40,7 @@
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Nombre de la Comunidad</label>
-                <input type="text" name="com_nombre" class="form-control bg-white" maxlength="50" required disabled />
+                <input type="text" name="com_nombre" class="form-control bg-white" minlength="5" maxlength="50" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\.,-]+$" title="Solo caracteres alfanuméricos, espacios, puntos o guiones" required disabled />
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-semibold">RIF</label>
@@ -52,7 +52,7 @@
                     <option value="G">G</option>
                     <option value="C">C</option>
                   </select>
-                  <input type="text" name="com_rif_numero" class="form-control bg-white" placeholder="Ej. 123456789" required disabled />
+                  <input type="text" name="com_rif_numero" class="form-control bg-white" placeholder="Ej. 123456789" required minlength="8" maxlength="9" pattern="^[0-9]{8,9}$" title="Ingrese entre 8 y 9 dígitos numéricos" oninput="this.value = this.value.replace(/[^0-9]/g, '')" disabled />
                 </div>
               </div>
             </div>
@@ -81,22 +81,22 @@
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Ámbito</label>
-                <input type="text" name="com_ambito" class="form-control bg-white" maxlength="30" required disabled />
+                <input type="text" name="com_ambito" class="form-control bg-white" minlength="3" maxlength="30" required disabled />
               </div>
             </div>
 
             <div class="row mb-3">
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Representante</label>
-                <input type="text" name="com_representante" class="form-control bg-white" maxlength="50" required disabled />
+                <input type="text" name="com_representante" class="form-control bg-white" minlength="3" maxlength="50" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Ingrese solo letras y espacios" required disabled />
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Cédula del Representante</label>
-                <input type="text" name="com_cedula" class="form-control bg-white" required disabled />
+                <input type="text" name="com_cedula" class="form-control bg-white" required minlength="7" maxlength="8" pattern="^[0-9]{7,8}$" title="Debe contener 7 u 8 números sin letras ni guiones" oninput="this.value = this.value.replace(/[^0-9]/g, '')" disabled />
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Teléfono</label>
-                <input type="text" name="com_telefono" class="form-control bg-white" maxlength="50" required disabled />
+                <input type="telf" name="com_telefono" class="form-control bg-white" required minlength="11" maxlength="12" pattern="^(0414|0424|0412|0416|0426|0251)-?[0-9]{7}$" title="Formato válido: 04121234567 o 0412-1234567" disabled />
               </div>
             </div>
 
@@ -114,22 +114,22 @@
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Nombre de la Institución</label>
-                <input type="text" name="inst_nombre" class="form-control bg-white" maxlength="30" required disabled />
+                <input type="text" name="inst_nombre" class="form-control bg-white" minlength="4" maxlength="50" pattern="^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s\.,-]+$" title="Solo caracteres alfanuméricos permitidos" required disabled />
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Dirección Institución</label>
-                <input type="text" name="inst_direccion" class="form-control bg-white" maxlength="45" required disabled />
+                <input type="text" name="inst_direccion" class="form-control bg-white" minlength="10" maxlength="100" required disabled />
               </div>
             </div>
 
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Correo Institución</label>
-                <input type="email" name="inst_correo" class="form-control bg-white" maxlength="30" required disabled />
+                <input type="email" name="inst_correo" class="form-control bg-white" maxlength="50" required disabled />
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Teléfono Institución</label>
-                <input type="text" name="inst_telefono" class="form-control bg-white" maxlength="12" required disabled />
+                <input type="text" name="inst_telefono" class="form-control bg-white" required minlength="11" maxlength="12" pattern="^(0414|0424|0412|0416|0426|0251)-?[0-9]{7}$" title="Formato válido: 04121234567 o 0412-1234567" disabled />
               </div>
             </div>
 
@@ -137,15 +137,15 @@
             <div class="row mb-3">
               <div class="col-md-5">
                 <label class="form-label fw-semibold">Nombre del Director</label>
-                <input type="text" name="inst_director_nombre" class="form-control bg-white" maxlength="50" required disabled />
+                <input type="text" name="inst_director_nombre" class="form-control bg-white" minlength="3" maxlength="50" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Ingrese solo letras y espacios" required disabled />
               </div>
               <div class="col-md-3">
                 <label class="form-label fw-semibold">Cédula</label>
-                <input type="text" name="inst_director_cedula" class="form-control bg-white" required disabled />
+                <input type="text" name="inst_director_cedula" class="form-control bg-white" required minlength="7" maxlength="8" pattern="^[0-9]{7,8}$" title="Debe contener 7 u 8 números" oninput="this.value = this.value.replace(/[^0-9]/g, '')" disabled />
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Teléfono</label>
-                <input type="text" name="inst_director_telefono" class="form-control bg-white" maxlength="12" required disabled />
+                <input type="text" name="inst_director_telefono" class="form-control bg-white" required minlength="11" maxlength="12" pattern="^(0414|0424|0412|0416|0426|0251)-?[0-9]{7}$" title="Formato válido: 04121234567 o 0412-1234567" disabled />
               </div>
             </div>
           </div>
@@ -156,34 +156,33 @@
             <div class="row mb-3">
               <div class="col-md-8">
                 <label class="form-label fw-semibold">Nombre del Solicitante</label>
-                <input type="text" name="part_nombre" class="form-control bg-white" maxlength="30" required disabled />
+                <input type="text" name="part_nombre" class="form-control bg-white" minlength="3" maxlength="50" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Ingrese solo letras y espacios" required disabled />
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Cédula</label>
-                <input type="text" name="part_cedula" class="form-control bg-white" required disabled />
+                <input type="text" name="part_cedula" class="form-control bg-white" required minlength="7" maxlength="8" pattern="^[0-9]{7,8}$" title="Debe contener 7 u 8 números" oninput="this.value = this.value.replace(/[^0-9]/g, '')" disabled />
               </div>
             </div>
 
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Correo Electrónico</label>
-                <input type="email" name="part_correo" class="form-control bg-white" maxlength="30" required disabled />
+                <input type="email" name="part_correo" class="form-control bg-white" maxlength="50" required disabled />
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Teléfono</label>
-                <input type="text" name="part_telefono" class="form-control bg-white" maxlength="12" required disabled />
+                <input type="text" name="part_telefono" class="form-control bg-white" required minlength="11" maxlength="12" pattern="^(0414|0424|0412|0416|0426|0251)-?[0-9]{7}$" title="Formato válido: 04121234567 o 0412-1234567" disabled />
               </div>
             </div>
             
             <div class="row mb-3">
               <div class="col-md-12">
                 <label class="form-label fw-semibold">Dirección</label>
-                <textarea class="form-control bg-white" name="part_direccion" maxlength="100" rows="2" style="resize: none;" required disabled></textarea>
+                <textarea class="form-control bg-white" name="part_direccion" minlength="10" maxlength="100" rows="2" style="resize: none;" required disabled></textarea>
               </div>
             </div>
           </div>
 
-          <!-- SECCIÓN COMPARTIDA: DETALLES DE LA SOLICITUD -->
           <div id="seccion_detalles" class="mt-5 p-4 rounded" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
             <h5 class="text-secondary border-bottom pb-2 mb-4"><i class="bi bi-card-text"></i> Detalles de la Solicitud</h5>
             <div class="row mb-3">
@@ -206,7 +205,7 @@
             <div class="row mb-3">
               <div class="col-md-12">
                 <label for="problematica" class="form-label fw-semibold">Problemática</label>
-                <textarea class="form-control bg-white" name="problematica" maxlength="500" rows="3" style="resize: none;" required placeholder="Describa la problemática de forma clara y concisa..."></textarea>
+                <textarea class="form-control bg-white" name="problematica" minlength="20" maxlength="500" rows="3" style="resize: none;" required placeholder="Describa la problemática de forma clara y concisa (Mínimo 20 caracteres)..."></textarea>
               </div>
             </div>
           </div>
@@ -227,7 +226,6 @@
 {% block customJS %}
 <script src="{{ url_for('static', filename ='../static/assets/js/form-solicitud.js') }}"></script>
 <script>
-  // Diccionario de Municipios y Parroquias del Estado Lara
   const laraData = {
     "Iribarren": ["Aguedo Felipe Alvarado", "Buena Vista", "Catedral", "Concepción", "El Cují", "Juares", "Guerrera Ana Soto (Juan de Villegas)", "Santa Rosa", "Tamaca", "Unión"],
     "Palavecino": ["Cabudare", "José Gregorio Bastidas", "Agua Viva"],
@@ -243,18 +241,12 @@
   function actualizarParroquias() {
     const municipioSelect = document.getElementById('com_municipio');
     const parroquiaSelect = document.getElementById('com_parroquia');
-    
-    // Obtener municipio seleccionado
     const municipio = municipioSelect.value;
     
-    // Limpiar opciones anteriores
     parroquiaSelect.innerHTML = '<option value="" selected disabled>Seleccione Parroquia...</option>';
     
     if (municipio && laraData[municipio]) {
-      // Habilitar si hay opciones
       parroquiaSelect.disabled = false;
-      
-      // Llenar nuevas opciones
       laraData[municipio].sort().forEach(parroquia => {
         const option = document.createElement('option');
         option.value = parroquia;
@@ -266,12 +258,7 @@
     }
   }
 
-  // Ejecutar el script externo (asumiendo que maneja el select de tipo_solicitud)
-  // Pero me aseguraré de que cuando "Comunidad" se seleccione, o cuando el documento inicie, el comportamiento sea correcto.
   document.addEventListener('DOMContentLoaded', function() {
-    const tipoSelect = document.getElementById('tipo_solicitud');
-    
-    // Configurar datepicker a la hora actual
     const now = new Date();
     const tzoffset = (new Date()).getTimezoneOffset() * 60000;
     const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 16);
