@@ -20,9 +20,9 @@ USE `invilara` ;
 -- -----------------------------------------------------
 -- Table `solicitante`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `solicitante` ;
+DROP TABLE IF EXISTS `solicitante`;
 
-CREATE TABLE IF NOT EXISTS `solicitante` (
+CREATE TABLE IF NOT EXISTS `solicitante`(
   `id_solicitante` INT NOT NULL AUTO_INCREMENT,
   `nombre_solicitante` VARCHAR(90) NOT NULL,
   `parroquia` VARCHAR(45) NOT NULL,

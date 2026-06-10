@@ -92,11 +92,11 @@
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Cédula del Representante</label>
-                <input type="text" name="com_cedula" class="form-control bg-white" required disabled />
+                <input type="text" name="com_cedula" class="form-control bg-white" required minlength="6" maxlength="9" pattern="(?=.*[^\d])(?=.*[^\d]).{6,9}" />
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Teléfono</label>
-                <input type="text" name="com_telefono" class="form-control bg-white" maxlength="50" required disabled />
+                <input type="text" name="com_telefono" class="form-control bg-white" required minlength="9" maxlength="12" pattern="(?=.*[0-9])(?=.*[0-9]).{10,12}"/>
               </div>
             </div>
 
@@ -225,10 +225,12 @@
 {% endblock %} 
 
 {% block customJS %}
-<script src="{{ url_for('static', filename ='../static/assets/js/form-solicitud.js') }}"></script>
+<script src="{{ url_for('static', filename='js/solicitud.js') }}"></script>
+
 <script>
-  // Diccionario de Municipios y Parroquias del Estado Lara
+  // 2. Diccionario de Municipios y Parroquias del Estado Lara
   const laraData = {
+    // ... (mantén todo tu código de laraData exactamente igual)
     "Iribarren": ["Aguedo Felipe Alvarado", "Buena Vista", "Catedral", "Concepción", "El Cují", "Juares", "Guerrera Ana Soto (Juan de Villegas)", "Santa Rosa", "Tamaca", "Unión"],
     "Palavecino": ["Cabudare", "José Gregorio Bastidas", "Agua Viva"],
     "Jiménez": ["Cuicas", "Tintorero", "San Miguel", "Quíbor", "Coronel Mariano Peraza", "Paraíso de San José", "Cabo José Bernardo Dorante", "Coronel Mariano Peraza"],
@@ -244,17 +246,11 @@
     const municipioSelect = document.getElementById('com_municipio');
     const parroquiaSelect = document.getElementById('com_parroquia');
     
-    // Obtener municipio seleccionado
     const municipio = municipioSelect.value;
-    
-    // Limpiar opciones anteriores
     parroquiaSelect.innerHTML = '<option value="" selected disabled>Seleccione Parroquia...</option>';
     
     if (municipio && laraData[municipio]) {
-      // Habilitar si hay opciones
       parroquiaSelect.disabled = false;
-      
-      // Llenar nuevas opciones
       laraData[municipio].sort().forEach(parroquia => {
         const option = document.createElement('option');
         option.value = parroquia;
@@ -266,8 +262,7 @@
     }
   }
 
-  // Ejecutar el script externo (asumiendo que maneja el select de tipo_solicitud)
-  // Pero me aseguraré de que cuando "Comunidad" se seleccione, o cuando el documento inicie, el comportamiento sea correcto.
+  // 3. Configuración inicial al cargar el DOM
   document.addEventListener('DOMContentLoaded', function() {
     const tipoSelect = document.getElementById('tipo_solicitud');
     
