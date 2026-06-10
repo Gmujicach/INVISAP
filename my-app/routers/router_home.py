@@ -11,6 +11,11 @@ from controllers.EmpleadoController import empleado_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
 
+##Gerencias
+from controllers.gerenciasController import gerencia_bp
+from app import app
+app.register_blueprint(gerencia_bp)
+
 # Crear Blueprint para manejar las rutas de home con la carpeta de vistas correcta
 home_bp = Blueprint('home_bp', __name__, template_folder='../vista')
 
@@ -133,13 +138,80 @@ def viewFormInspectores():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
+
+
+## Gerencias
 @home_bp.route('/registrar-gerencias', methods=['GET'])
 def viewFormGerencia():
     if 'conectado' in session:
-        return render_template(f'{PATH_URLG}/form_gerencia.html')
+        from models.model_gerencias import GerenciaModel
+        modelo = GerenciaModel()
+        # lista de informes
+        informes = modelo.obtener_informes_disponibles()
+        # lista informe a vista
+        return render_template(f'{PATH_URLG}/form_gerencia.html', informes=informes)
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+
+# Ruta para procesar el formulario
+@app.route('/form-registrar-gerencias', methods=['POST'])
+def procesar_registro():
+    from controllers.gerenciasController import procesar_registro_gerencia
+    if procesar_registro_gerencia(request.form):
+        flash('Registro exitoso', 'success')
+        return redirect(url_for('lista_gerencias'))
+    return "Error al registrar"
+
+
+@app.route('/lista-gerencias', methods=['GET'])
+def lista_gerencias():
+    if 'conectado' in session:
+        from controllers.gerenciasController import obtener_todas_las_gerencias
+        return render_template(f'{PATH_URLG}/lista_gerencias.html', gerencias=obtener_todas_las_gerencias())
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+@app.route('/edi-gerencias/<int:id_gerencia>', methods=['GET'])
+def viewEditarGerencia(id_gerencia):
+    if 'conectado' in session:
+        from controllers.gerenciasController import obtener_gerencia_por_id
+        from models.model_gerencias import GerenciaModel # Importa el modelo
+        
+        gerencia = obtener_gerencia_por_id(id_gerencia)
+        informes = GerenciaModel().obtener_informes_disponibles() # Obtenemos la lista
+        
+        if gerencia:
+            return render_template(f'{PATH_URLG}/edi_gerencias.html', gerencia=gerencia, informes=informes)
+        else:
+            flash('La gerencia no existe.', 'error')
+            return redirect(url_for('lista_gerencias'))
+    return redirect(url_for('login_bp.inicio'))
+
+@app.route('/update-gerencia', methods=['POST'])
+def update_gerencia():
+    from controllers.gerenciasController import update_gerencia
+    if update_gerencia(request.form):
+        flash('Actualizado correctamente', 'success')
+    else:
+        flash('Error al actualizar', 'error')
+    return redirect(url_for('lista_gerencias'))
+
+@app.route('/eliminar-gerencia/<int:id_gerencia>', methods=['GET'])
+def eliminar_gerencia(id_gerencia):
+    if 'conectado' in session:
+        from controllers.gerenciasController import eliminar_gerencia_por_id
+        if eliminar_gerencia_por_id(id_gerencia):
+            flash('Gerencia eliminada correctamente.', 'success')
+        else:
+            flash('Error al intentar eliminar la gerencia.', 'error')
+        return redirect(url_for('lista_gerencias'))
+    else:
+        return redirect(url_for('login_bp.inicio'))
+
+
+
 
 @home_bp.route('/bitacora', methods=['GET'])
 def viewBitacora():

@@ -1,0 +1,61 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | lista gerencias{% endblock %}
+{% block body %}
+
+<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
+  <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+    <h5 class="mb-0 text-primary fw-bold">GERENCIAS REGISTRADAS</h5>
+  </div>
+  
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Nombre Gerencia</th>
+            <th>Dirección Gerente</th>
+            <th>Informe de Avanze de Obra</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+  <tbody>
+  {% for g in gerencias %}
+  <tr>
+    <td>{{ g.id_gerencias }}</td>
+    <td>{{ g.nombre_gerencia }}</td>
+    <td>{{ g.direccion_gerencia }}</td>
+    <td>{{ g.informe_avance_obra_id_informe }} - {{ g.tipo_obras }}</td>
+    <td class="text-center">
+      <a href="/edi-gerencias/{{ g.id_gerencias }}" 
+          class="btn rounded-pill btn-warning me-2" 
+          title="Editar">
+           <i class="bi bi-pencil"></i>
+      </a>
+      <a href="{{ url_for('eliminar_gerencia', id_gerencia=g.id_gerencias) }}" 
+        class="btn rounded-pill btn-danger" 
+        title="Eliminar"
+        onclick="return confirm('¿Estás seguro de que deseas eliminar la gerencia: {{ g.nombre_gerencia }}? Esta acción no se puede deshacer.');">
+         <i class="bi bi-trash3"></i>
+      </a>
+    </td>
+  </tr>
+  {% else %}
+  <tr>
+    <td colspan="5" class="text-center text-muted py-4">No hay Gerencias registradas en el sistema.</td>
+  </tr>
+  {% endfor %}
+</tbody>
+      </table>
+     </div>
+     </div>
+     </div>        
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
