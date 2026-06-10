@@ -32,13 +32,7 @@
         <div data-i18n="Basic">Lista de Solicitudes</div>
       </a>
     </li>
-    <li
-      class="menu-item {% if request.path == '/registrar-mortadela' %} active {% endif %}">
-      <a href="{{ url_for('home_bp.viewFormMortadela') }}" class="menu-link">
-        <i class="menu-icon bi bi-person-bounding-box"></i>
-        <div data-i18n="Basic">Registrar Mortadela</div>
-      </a>
-    </li>
+    
     <li
       class="menu-item {% if request.path == '/registrar-contratacion' %} active {% endif %}">
       <a href="{{ url_for('home_bp.viewFormContratacion') }}" class="menu-link">
@@ -85,13 +79,30 @@
         </li>
       </ul>
     </li>
-    <li
+
+    <li class="menu-item">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon bi bi-bar-chart-line-fill"></i>
+        <div data-i18n="Gerencias">Gestionar Gerencias</div>
+      </a>
+      <ul class="menu-sub">
+        <li
       class="menu-item {% if request.path == '/registrar-gerencias' %} active {% endif %}">
       <a href="{{ url_for('home_bp.viewFormGerencia') }}" class="menu-link">
-        <i class="menu-icon bi bi-person-bounding-box"></i>
-        <div data-i18n="Basic">Gerencias</div>
+        <div data-i18n="Basic">Registrar Gerencias</div>
       </a>
     </li>
+    <li
+        class="menu-item {% if request.path == '/lista-gerencias' %} active {% endif %}">
+        <a href="{{ url_for('lista_gerencias') }}" class="menu-link">
+        <i class="menu-icon bi bi-list-task"></i>
+        <div data-i18n="Basic">Listar Gerencias</div>
+        </a>
+    </li>
+      </ul>
+    </li>
+
+
     <li
       class="menu-item {% if request.path == '/maquinaria' or request.path == '/registrar-maquinaria' %} active {% endif %}">
       <a href="{{ url_for('home_bp.viewFormMaquinaria') }}" class="menu-link">

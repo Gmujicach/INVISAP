@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `invilara`
 --
+CREATE DATABASE IF NOT EXISTS `invilara` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE `invilara`;
 
 -- --------------------------------------------------------
 

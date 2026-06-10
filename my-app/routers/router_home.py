@@ -10,6 +10,7 @@ from controllers.funciones_solicitud import *
 from controllers.EmpleadoController import empleado_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
+from controllers.gerenciasController import gerencia_bp
 
 # Crear Blueprint para manejar las rutas de home con la carpeta de vistas correcta
 home_bp = Blueprint('home_bp', __name__, template_folder='../vista')
@@ -133,6 +134,8 @@ def viewFormInspectores():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
+##Gerencias
+
 @home_bp.route('/registrar-gerencias', methods=['GET'])
 def viewFormGerencia():
     if 'conectado' in session:
@@ -140,6 +143,17 @@ def viewFormGerencia():
     else:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+
+@app.route('/lista-gerencias', methods=['GET'])
+def lista_gerencias():
+    if 'conectado' in session:
+        from controllers.gerenciasCrontroller import obtener_gerencias
+        return render_template(f'{PATH_URLG}/lista_gerencias.html', gerencias=obtener_gerencias())
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))        
+
+
 
 @home_bp.route('/bitacora', methods=['GET'])
 def viewBitacora():

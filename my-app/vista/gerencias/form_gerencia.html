@@ -1,5 +1,5 @@
 {% extends 'base_cpanel.html' %}
-{% block title %}Crud con Python 🐍 | Registrar Gerencia{% endblock %}
+{% block title %}INVISAP | Registrar Gerencia{% endblock %}
 {% block customCSS %}
 <link
   rel="stylesheet"
@@ -17,94 +17,30 @@
 
   <div class="row justify-content-center mb-2">
     <div class="col-md-10">
-      <form
-        class="form-horizontal mx-auto"
-        method="POST"
-        action="/form-registrar-gerencias"
-        autocomplete="off">
-        <div class="card-body">
-          
-
-        <!--  <div class="row">
-            <div class="col-md-6">
-              <label for="nombre_gerante" class="form-label">
-                Nombre y Apellido
-              </label>
-              <input
-                type="text"
-                name="nombre_gerante"
-                class="form-control"
-                maxlength="50"
-                required />
+ <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-gerencias" autocomplete="off">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="nombre_gerencia" class="form-label">Nombre de la Gerencia</label>
+                <input type="text" name="nombre_gerencia" class="form-control" maxlength="50" required />
             </div>
-
--->
-          <div class="row">
-          <div class="col-md-4">
-          <label for="nombre_gerencia" class="form-label">Nombre de la Gerencia</label>
-          <input type="text" name="nombre_gerencia" class="form-control" maxlength="50" required />
-          </div>
-        <!--    <div class="col-md-6">
-              <label for="cedula_gerante" class="form-label">
-                Cédula
-              </label>
-              <input
-                type="text"
-                name="cedula_gerante"
-                class="form-control"
-                maxlength="15"
-                required />
+            <div class="col-md-4">
+                <label for="direccion_gerencia" class="form-label">Dirección de Gerencia</label>
+                <input type="text" name="direccion_gerencia" class="form-control" maxlength="100" required />
             </div>
-          </div> -->
-
-        <!--  <div class="row">
-            <div class="col-md-6">
-              <label for="correo_gerente" class="form-label">
-                Correo Electrónico
-              </label>
-              <input
-                type="email"
-                name="correo_gerente"
-                class="form-control"
-                maxlength="50"
-                required />
+            <div class="col-md-4">
+                <label for="informe_avance_obra_id_informe" class="form-label">Informe de Avance</label>
+                <input type="text" name="informe_avance_obra_id_informe" class="form-control" maxlength="100" required />
             </div>
-            <div class="col-md-5">
-  <label for="telefono_gerente" class="form-label">Teléfono(s)</label>
-  
-  <div id="contenedor-telefonos">
-    <div class="input-group mb-2">
-      <input
-        type="text"
-        name="telefono_gerente[]"
-        class="form-control"
-        maxlength="20"
-        required />
-      <button class="btn btn-outline-primary" type="button" id="btn-agregar-telefono">
-        +
-      </button>
-    </div>
-  </div>
-</div>
--->
-          
-        <div class="col-md-4">
-        <label for="direccion_gerencia" class="form-label">Dirección de Gerencia</label>
-        <input type="text" name="direccion_gerencia" class="form-control" maxlength="100" required />
         </div>
-          
-        <div class="col-md-4">
-        <label for="informe_avance_obra_id_informe" class="form-label">Informe de Avanze de Obra</label>
-        <input type="text" name="informe_avance_obra_id_informe" class="form-control" maxlength="100" required />
-        </div>
-        </div>
-        
-          <div class="mb-3 mt-4 text-center">
+        <div class="text-center mt-4">
             <button type="submit" class="btn rounded-pill btn-primary">
-              Registrar Gerencia
-              <i class="bi bi-arrow-clockwise"></i>
+                Registrar Gerencia <i class="bi bi-arrow-clockwise"></i>
             </button>
-          </div>
+        </div>
+    </div>
+</form>
+    </div>
 
 
 <div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
