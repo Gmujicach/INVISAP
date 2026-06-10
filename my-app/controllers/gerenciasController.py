@@ -1,27 +1,29 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, session
+# my-app/controllers/funciones_solicitud.py
 from models.model_gerencias import GerenciaModel
 
-gerencia_bp = Blueprint('gerencia_bp', __name__)
 
-@gerencia_bp.route('/registrar-gerencias', methods=['GET'])
-def gestionar_gerencias():
-    if 'conectado' in session:
-        modelo = GerenciaModel()
-        lista = modelo.obtener_todas_las_gerencias()
-        return render_template('gerencias/lista_gerencias.html', gerencias=lista)
-    return redirect(url_for('login_bp.inicio'))
+def obtener_gerencias():
+    """
+    Devuelve todas las solicitudes registradas en la base de datos invilara.
+    """
+    modelo = GerenciaModel()
+    return modelo.obtener_todas_las_Gerencias()
 
-@gerencia_bp.route('/form-registrar-gerencias', methods=['POST'])
-def procesar_registro():
-    print("ESTADO DE LA SESIÓN:", session) # Esto es vital
-    
-    if 'conectado' in session:
-        print("¡USUARIO LOGUEADO! Intentando guardar...")
-        datos = request.form
-        modelo = GerenciaModel()
-        if modelo.registrar_gerencias(datos):
-            return "GUARDADO CON ÉXITO"
-        else:
-            return "ERROR EN EL MODELO"
-    else:
-        return "ERROR: ¡LA SESIÓN NO ESTÁ ACTIVA! No puedes registrar."
+
+def crear_gerencia(datos_formulario):
+    """
+    Crea el solicitante o lo recupera y registra la solicitud en invilara.
+    """
+    if not datos_formulario.get('tipo_gerencia') or not datos_formulario.get('problematica'):
+        return False
+
+    modelo = GerenciaModel()
+    return modelo.crear_nueva_gerencia(datos_formulario)
+
+
+def obtener_gerencia_por_id(id_gerencia):
+    """
+    Recupera los datos de una solicitud por su identificador.
+    """
+    modelo = GerenciaModel()
+    return modelo.obtener_gerencia_por_id(id_gerencia)
