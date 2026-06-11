@@ -1,0 +1,52 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}Modificar Gerencia{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header bg-info">
+        <h4 class="text-white mb-0">Actualizar Datos de Gerencia</h4>
+      </div>
+      <div class="card-body mt-4">
+        <form action="{{ url_for('update_gerencia') }}" method="POST">
+          <input type="hidden" name="id_gerencias" value="{{ gerencia.id_gerencias }}">
+          <div class="row">
+            <div class="col-md-12 mb-3">
+             <label for="nombre_gerencia" class="form-label">Nombre de la Gerencia</label>
+              <input type="text" class="form-control" name="nombre_gerencia" value="{{ gerencia.nombre_gerencia }}" required>
+             </div>
+  
+              <div class="col-md-6 mb-3">
+                <label for="direccion_gerencia" class="form-label">Dirección de Gerencia</label>
+                <input type="text" class="form-control" name="direccion_gerencia" value="{{ gerencia.direccion_gerencia }}" required>
+              </div>
+            <div class="col-md-6 mb-3">
+              <label for="informe_avance_obra_id_informe" class="form-label">Seleccionar Informe</label>
+              <select name="informe_avance_obra_id_informe" class="form-control" required>
+              {% for inf in informes %}
+              <option value="{{ inf.id_informe }}" 
+              {% if inf.id_informe == gerencia.informe_avance_obra_id_informe %}selected{% endif %}>
+              {% if inf.id_informe == gerencia.informe_avance_obra_id_informe %}
+                ACTUAL: 
+               {% endif %}
+               ID: {{ inf.id_informe }} - {{ inf.tipo_obras }}
+               </option>
+               {% endfor %}
+                </select>
+          </div>
+          </div>
+          <div class="text-center mt-3">
+            <button type="submit" class="btn btn-info px-5">
+              <i class="bi bi-arrow-repeat"></i> Modificar Gerencia
+            </button>
+            <a href="{{ url_for('lista_gerencias') }}" class="btn btn-secondary">
+               Volver
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
