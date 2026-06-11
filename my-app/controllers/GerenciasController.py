@@ -3,12 +3,8 @@
 from flask import Blueprint, request, redirect, url_for, flash
 
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session
-
+ 
 from models.model_gerencias import GerenciaModel
-from conexion.conexionBD import connectionBD_invilara
-
-gerencia_bp = Blueprint('gerencia_bp', __name__)
-
 
 @gerencia_bp.route('/registrar-gerencias', methods=['GET'])
 def gestionar_gerencias():
@@ -17,8 +13,6 @@ def gestionar_gerencias():
         lista = modelo.obtener_todas_las_gerencias()
         return render_template('gerencias/lista_gerencias.html', gerencias=lista)
     return redirect(url_for('login_bp.inicio'))
-
-
 
 def crear_gerencia(datos_formulario):
     """
