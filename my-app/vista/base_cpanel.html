@@ -10,6 +10,7 @@
     {% include 'home/head.html' %}
     <!---->
     <!-- Assets de Arquitectura MVC por Feature -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reportesEstadisticos.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/usuarios.css') }}">
     {% block customCSS %} {% endblock %}
     <style>
