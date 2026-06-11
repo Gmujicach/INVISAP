@@ -1,0 +1,36 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | Editar Solicitud{% endblock %}
+
+{% block body %}
+<div class="card shadow-sm" style="border-radius: 8px !important; max-width: 800px; margin: auto;">
+  <div class="card-body">
+    <h3 class="text-center text-primary mt-3 mb-4">
+      <i class="bi bi-pencil-square"></i> EDITAR SOLICITUD #{{ solicitud.id_solicitud }}
+    </h3>
+    <hr />
+
+    <form method="POST" action="/update-solicitud">
+      <input type="hidden" name="id_solicitud" value="{{ solicitud.id_solicitud }}">
+
+      <div class="mb-3">
+        <label for="estatus_solicitud" class="form-label fw-semibold">Estatus de la solicitud</label>
+        <select class="form-select" name="estatus_solicitud" required>
+          <option value="Pendiente" {% if solicitud.estatus_solicitud == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+          <option value="En Proceso" {% if solicitud.estatus_solicitud == 'En Proceso' %}selected{% endif %}>En Proceso</option>
+          <option value="Completada" {% if solicitud.estatus_solicitud == 'Completada' %}selected{% endif %}>Completada</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label for="problematica" class="form-label fw-semibold">Problemática</label>
+        <textarea class="form-control" name="problematica" rows="4" required>{{ solicitud.problematica }}</textarea>
+      </div>
+
+      <div class="text-center">
+        <a href="{{ url_for('lista_solicitudes') }}" class="btn btn-secondary me-2">Cancelar</a>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar Cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

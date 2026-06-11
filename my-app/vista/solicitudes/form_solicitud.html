@@ -25,7 +25,7 @@
               <label for="tipo_solicitud" class="form-label text-dark fw-semibold mb-1">
                 <i class="bi bi-person-badge"></i> Tipo de Solicitante
               </label>
-              <select class="form-select shadow-sm border-primary" name="tipo_solicitud" id="tipo_solicitud" required>
+              <select class="form-select shadow-sm border-primary" name="tipo_solicitud" id="tipo_solicitud">
                 <option value="" selected disabled>Seleccione el perfil...</option>
                 <option value="Comunidad">Comunidad</option>
                 <option value="Institucion">Institución</option>
@@ -60,7 +60,7 @@
             <div class="row mb-3">
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Municipio</label>
-                <select name="com_municipio" id="com_municipio" class="form-select bg-white" required disabled onchange="actualizarParroquias()">
+                <select name="com_municipio" id="com_municipio" class="form-select bg-white" required disabled onchange="actualizarParroquias('com_municipio', 'com_parroquia')">
                   <option value="" selected disabled>Seleccione...</option>
                   <option value="Iribarren">Iribarren</option>
                   <option value="Palavecino">Palavecino</option>
@@ -123,6 +123,20 @@
               </div>
             </div>
 
+            <div class="col-md-6">
+                <label class="form-label fw-semibold">RIF</label>
+                <div class="input-group flex-nowrap">
+                  <select class="form-select bg-white" name="inst_rif_letra" style="max-width: 80px;" required disabled>
+                    <option value="J" selected>J</option>
+                    <option value="V">V</option>
+                    <option value="E">E</option>
+                    <option value="G">G</option>
+                    <option value="C">C</option>
+                  </select>
+                  <input type="text" name="inst_rif_numero" class="form-control bg-white" placeholder="Ej. 123456789" required minlength="8" maxlength="9" pattern="^[0-9]{8,9}$" title="Ingrese entre 8 y 9 dígitos numéricos" oninput="this.value = this.value.replace(/[^0-9]/g, '')" disabled />
+                </div>
+              </div>
+
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Correo Institución</label>
@@ -177,12 +191,33 @@
             </div>
             
             <div class="row mb-3">
-              <div class="col-md-12">
-                <label class="form-label fw-semibold">Dirección</label>
-                <textarea class="form-control bg-white" name="part_direccion" minlength="10" maxlength="100" rows="2" style="resize: none;" required disabled></textarea>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Municipio</label>
+                  <select name="part_municipio" id="part_municipio" class="form-select bg-white" required disabled onchange="actualizarParroquias('part_municipio', 'part_parroquia')">
+                    <option value="" selected disabled>Seleccione...</option>
+                    <option value="Iribarren">Iribarren</option>
+                    <option value="Palavecino">Palavecino</option>
+                    <option value="Jiménez">Jiménez</option>
+                    <option value="Morán">Morán</option>
+                    <option value="Crespo">Crespo</option>
+                    <option value="Urdaneta">Urdaneta</option>
+                    <option value="Simón Planas">Simón Planas</option>
+                    <option value="Andrés Eloy Blanco">Andrés Eloy Blanco</option>
+                    <option value="Torres">Torres</option>
+                  </select>
               </div>
-            </div>
-          </div>
+  <div class="col-md-4">
+    <label class="form-label fw-semibold">Parroquia</label>
+    <select name="part_parroquia" id="part_parroquia" class="form-select bg-white" required disabled>
+      <option value="" selected disabled>Seleccione primero el municipio...</option>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label fw-semibold">Dirección Detallada</label>
+    <textarea class="form-control bg-white" name="part_direccion" minlength="10" maxlength="100" rows="1" style="resize: none;" required disabled placeholder="Ej. Calle, sector, Nro casa"></textarea>
+  </div>
+</div>
+</div>
 
           <div id="seccion_detalles" class="mt-5 p-4 rounded" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
             <h5 class="text-secondary border-bottom pb-2 mb-4"><i class="bi bi-card-text"></i> Detalles de la Solicitud</h5>
@@ -242,18 +277,20 @@
     "Torres": ["Altagracia", "Antonio Díaz", "Camacaro", "Castañeda", "Cecilio Zubillaga", "Chiquinquirá", "El Blanco", "Espinoza de los Monteros", "Heriberto Arroyo", "Las Mercedes", "Manuel Morillo", "Montaña Verde", "Montes de Oca", "Reyes Vargas", "Trinidad Samuel", "Xaguas"]
   };
 
-  function actualizarParroquias() {
-    const municipioSelect = document.getElementById('com_municipio');
-    const parroquiaSelect = document.getElementById('com_parroquia');
-    
-    // Obtener municipio seleccionado
+// Se le añaden dos parámetros a la función para saber qué campos actualizar
+  function actualizarParroquias(idSelectMunicipio, idSelectParroquia) {
+    const municipioSelect = document.getElementById(idSelectMunicipio);
+    const parroquiaSelect = document.getElementById(idSelectParroquia);
     const municipio = municipioSelect.value;
     
-    // Limpiar opciones anteriores
+    // Reseteamos el selector de parroquias cada vez que cambia el municipio
     parroquiaSelect.innerHTML = '<option value="" selected disabled>Seleccione Parroquia...</option>';
     
+    // Verificamos que exista el municipio en nuestra data (laraData)
     if (municipio && laraData[municipio]) {
-      parroquiaSelect.disabled = false;
+      parroquiaSelect.disabled = false; // Habilitamos el selector
+      
+      // Ordenamos alfabéticamente e insertamos las opciones
       laraData[municipio].sort().forEach(parroquia => {
         const option = document.createElement('option');
         option.value = parroquia;
@@ -261,6 +298,7 @@
         parroquiaSelect.appendChild(option);
       });
     } else {
+      // Si no hay municipio válido, lo volvemos a deshabilitar
       parroquiaSelect.disabled = true;
     }
   }

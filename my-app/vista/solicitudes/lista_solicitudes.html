@@ -61,14 +61,28 @@
                 </td>
                 <td style="max-width:200px; white-space:normal;">{{ s.problematica }}</td>
                 <td>{{ s.fecha }}</td>
-                <td width="10px">
-                  <a
-                    href="/detalles-solicitud/{{ s.id_solicitud }}"
-                    type="button"
-                    class="btn btn-info btn-sm"
-                    title="Ver detalles">
-                    <i class="bi bi-eye"></i> Ver
-                  </a>
+                <td width="10px" class="text-nowrap">
+                  <div class="d-flex gap-1">
+                    <a
+                      href="/detalles-solicitud/{{ s.id_solicitud }}"
+                      class="btn btn-info btn-sm"
+                      title="Ver detalles">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a
+                      href="/editar-solicitud/{{ s.id_solicitud }}"
+                      class="btn btn-warning btn-sm"
+                      title="Editar solicitud">
+                      <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a
+                      href="/eliminar-solicitud/{{ s.id_solicitud }}"
+                      class="btn btn-danger btn-sm"
+                      title="Eliminar solicitud"
+                      onclick="return confirm('¿Estás seguro de que deseas eliminar esta solicitud? Esta acción no se puede deshacer.');">
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </div>
                 </td>
               </tr>
               {% endfor %}

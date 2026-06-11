@@ -2,23 +2,22 @@ from app import app
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from mysql.connector.errors import Error
 
-
-# Importando cenexión a BD
+# Importando conexión a BD y controladores
 from controllers.funciones_home import *
-from controllers.UserController import user_bp # Import the user blueprint
+from controllers.UserController import user_bp 
 from controllers.funciones_solicitud import *
 from controllers.EmpleadoController import empleado_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
 
-##Gerencias
+## Gerencias
 from controllers.gerenciasController import gerencia_bp
-from app import app
 app.register_blueprint(gerencia_bp)
 
 # Crear Blueprint para manejar las rutas de home con la carpeta de vistas correcta
 home_bp = Blueprint('home_bp', __name__, template_folder='../vista')
 
+# Rutas de carpetas (Paths)
 PATH_URL = "solicitudes"
 PATH_URL_CONTRAT = "contratacion"
 PATH_URLG = "gerencias"
@@ -34,8 +33,7 @@ PATH_URL_REPORTE_EXCEL = "reportes"
 PATH_URL_REPORTE_PDF = "reportes"
 PATH_URL_REPORTE_ESTADISTICO = "reportes"
 
-
-# Register blueprints
+# Registrar blueprints
 app.register_blueprint(user_bp)
 app.register_blueprint(empleado_bp)
 app.register_blueprint(reporte_excel_bp)
@@ -46,7 +44,7 @@ def viewFormSolicitud():
     if 'conectado' in session:
         return render_template(f'{PATH_URL}/form_solicitud.html')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
 @home_bp.route('/registrar-publicaciones', methods=['GET'])
@@ -54,7 +52,7 @@ def viewFormPublicaciones():
     if 'conectado' in session:
         return render_template(f'{PATH_URL_PUB}/form_publicaciones.html')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
 @home_bp.route('/administrar-respaldos', methods=['GET'])
@@ -62,7 +60,7 @@ def viewFormRespaldos():
     if 'conectado' in session:
         return render_template(f'{PATH_URL_RES}/form_respaldo.html')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
 @home_bp.route('/registrar-maquinaria', methods=['GET'])
@@ -71,7 +69,7 @@ def viewFormMaquinaria():
     if 'conectado' in session:
         return render_template(f'{PATH_URL_PROY}/form_maquinaria.html')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))    
 
 @home_bp.route('/registrar-mortadela', methods=['GET'])
@@ -79,7 +77,7 @@ def viewFormMortadela():
     if 'conectado' in session:
         return render_template(f'{PATH_URL}/form_mortadela.html')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
 @home_bp.route('/gestionar-obras', methods=['GET'])
@@ -87,7 +85,7 @@ def viewFormGestionarObras():
     if 'conectado' in session:
         return render_template(f'{PATH_URL_GEST_OBR}/form_gestionar_obras.html')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
 @home_bp.route('/gestionar-gravedad', methods=['GET'])
@@ -138,23 +136,18 @@ def viewFormInspectores():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-
-
 ## Gerencias
 @home_bp.route('/registrar-gerencias', methods=['GET'])
 def viewFormGerencia():
     if 'conectado' in session:
         from models.model_gerencias import GerenciaModel
         modelo = GerenciaModel()
-        # lista de informes
         informes = modelo.obtener_informes_disponibles()
-        # lista informe a vista
         return render_template(f'{PATH_URLG}/form_gerencia.html', informes=informes)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-# Ruta para procesar el formulario
 @app.route('/form-registrar-gerencias', methods=['POST'])
 def procesar_registro():
     from controllers.gerenciasController import procesar_registro_gerencia
@@ -162,7 +155,6 @@ def procesar_registro():
         flash('Registro exitoso', 'success')
         return redirect(url_for('lista_gerencias'))
     return "Error al registrar"
-
 
 @app.route('/lista-gerencias', methods=['GET'])
 def lista_gerencias():
@@ -177,10 +169,10 @@ def lista_gerencias():
 def viewEditarGerencia(id_gerencia):
     if 'conectado' in session:
         from controllers.gerenciasController import obtener_gerencia_por_id
-        from models.model_gerencias import GerenciaModel # Importa el modelo
+        from models.model_gerencias import GerenciaModel
         
         gerencia = obtener_gerencia_por_id(id_gerencia)
-        informes = GerenciaModel().obtener_informes_disponibles() # Obtenemos la lista
+        informes = GerenciaModel().obtener_informes_disponibles()
         
         if gerencia:
             return render_template(f'{PATH_URLG}/edi_gerencias.html', gerencia=gerencia, informes=informes)
@@ -210,15 +202,12 @@ def eliminar_gerencia(id_gerencia):
     else:
         return redirect(url_for('login_bp.inicio'))
 
-
-
-
 @home_bp.route('/bitacora', methods=['GET'])
 def viewBitacora():
     if 'conectado' in session:
         return render_template('placeholder.html', title='Bitacora', message='Esta página está en desarrollo.', note='Contacto al administrador para habilitar esta función.')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
 @home_bp.route('/inf_avance_obra', methods=['GET'])
@@ -226,22 +215,15 @@ def viewFormInforme_avan_obras():
     if 'conectado' in session:
         return render_template(f'{PATH_URL_INF}/inf_avance_obra.html')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
 @home_bp.route('/form-registrar-solicitud', methods=['POST'])
 def formSolicitud():
-    # Verificar sesión
     if 'conectado' not in session:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-    # Aceptar envío con o sin archivo 'foto_solicitud'
-    foto_perfil = None
-    if 'foto_solicitud' in request.files and request.files['foto_solicitud'].filename != '':
-        foto_perfil = request.files['foto_solicitud']
-
-    # usar la función de creación de solicitante
     resultado = None
     try:
         from controllers.funciones_solicitud import crear_solicitante
@@ -255,22 +237,64 @@ def formSolicitud():
         flash('La solicitud NO fue registrada.', 'error')
         return render_template(f'{PATH_URL}/form_solicitud.html')
 
-
 @app.route('/lista-de-solicitudes', methods=['GET'])
 def lista_solicitudes():
     if 'conectado' in session:
         from controllers.funciones_solicitud import obtener_solicitantes
         return render_template(f'{PATH_URL}/lista_solicitudes.html', solicitudes=obtener_solicitantes())
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
+@app.route('/eliminar-solicitud/<int:id_solicitud>', methods=['GET'])
+def eliminar_solicitud(id_solicitud):
+    if 'conectado' in session:
+        from controllers.funciones_solicitud import eliminar_solicitud_por_id
+        
+        if eliminar_solicitud_por_id(id_solicitud):
+            flash('Solicitud eliminada correctamente.', 'success')
+        else:
+            flash('Error al intentar eliminar la solicitud.', 'error')
+            
+        return redirect(url_for('lista_solicitudes'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+@app.route('/editar-solicitud/<int:id_solicitud>', methods=['GET'])
+def viewEditarSolicitud(id_solicitud):
+    if 'conectado' in session:
+        from controllers.funciones_solicitud import obtener_solicitante_por_id
+        
+        solicitud = obtener_solicitante_por_id(id_solicitud)
+        
+        if solicitud:
+            # CORRECCIÓN: Apunta correctamente al archivo editar_solicitud.html
+            return render_template(f'{PATH_URL}/editar_solicitud.html', solicitud=solicitud)
+        else:
+            flash('La solicitud no existe.', 'error')
+            return redirect(url_for('lista_solicitudes'))
+    return redirect(url_for('login_bp.inicio'))
+
+@app.route('/update-solicitud', methods=['POST'])
+def update_solicitud():
+    if 'conectado' in session:
+        from controllers.funciones_solicitud import actualizar_datos_solicitud
+        
+        id_solicitud = request.form.get('id_solicitud')
+        
+        if actualizar_datos_solicitud(id_solicitud, request.form):
+            flash('Solicitud actualizada correctamente.', 'success')
+        else:
+            flash('Error al actualizar la solicitud.', 'error')
+            
+        return redirect(url_for('lista_solicitudes'))
+    return redirect(url_for('login_bp.inicio'))
 
 @app.route("/detalles-solicitud/", methods=['GET'])
 @app.route("/detalles-solicitud/<int:idSolicitud>", methods=['GET'])
 def detalleSolicitud(idSolicitud=None):
     if 'conectado' in session:
-        # Verificamos si el parámetro idSolicitud es None o no está presente en la URL
         if idSolicitud is None:
             return redirect(url_for('login_bp.inicio'))
         else:
@@ -286,7 +310,7 @@ def viewFormRegistrarEmpleados():
     if 'conectado' in session:
         return render_template(f'{PATH_URL_REG_EMPLEADOS}/form_empleado.html')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
     
 @app.route('/empleados', methods=['GET'])
@@ -294,25 +318,26 @@ def viewFormListarEmpleados():
     if 'conectado' in session:
         return render_template(f'{PATH_URL_LIST_EMPLEADOS}/empleados.html')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-# Buscadon de empleados
+# Buscador de empleados
 @app.route("/buscando-empleado", methods=['POST'])
 def viewBuscarEmpleadoBD():
     resultadoBusqueda = buscarEmpleadoBD(request.json['busqueda'])
     if resultadoBusqueda:
-        return render_template(f'{PATH_URL}/resultado_busqueda_empleado.html', dataBusqueda=resultadoBusqueda)
+        # CORRECCIÓN: Se cambió de PATH_URL a PATH_URL_LIST_EMPLEADOS
+        return render_template(f'{PATH_URL_LIST_EMPLEADOS}/resultado_busqueda_empleado.html', dataBusqueda=resultadoBusqueda)
     else:
         return jsonify({'fin': 0})
-
 
 @app.route("/editar-empleado/<int:id>", methods=['GET'])
 def viewEditarEmpleado(id):
     if 'conectado' in session:
         respuestaEmpleado = buscarEmpleadoUnico(id)
         if respuestaEmpleado:
-            return render_template(f'{PATH_URL}/form_empleado_update.html', respuestaEmpleado=respuestaEmpleado)
+            # CORRECCIÓN: Se cambió de PATH_URL a PATH_URL_LIST_EMPLEADOS
+            return render_template(f'{PATH_URL_LIST_EMPLEADOS}/form_empleado_update.html', respuestaEmpleado=respuestaEmpleado)
         else:
             flash('El empleado no existe.', 'error')
             return redirect(url_for('login_bp.inicio'))
@@ -325,7 +350,7 @@ def viewFormReportesExcel():
     if 'conectado' in session:
         return render_template(f'{PATH_URL_REPORTE_EXCEL}/reporteExcel.html')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
     
 @home_bp.route('/reportes/reporte-pdf', methods=['GET'])
@@ -333,7 +358,7 @@ def viewFormReportesPDF():
     if 'conectado' in session:
         return render_template(f'{PATH_URL_REPORTE_PDF}/reportePDF.html')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
     
 @home_bp.route('/reportes/reporte-estadistico', methods=['GET'])
@@ -341,7 +366,7 @@ def viewFormReportesEstadisticos():
     if 'conectado' in session:
         return render_template(f'{PATH_URL_REPORTE_ESTADISTICO}/reporteEstadistico.html')
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
 # Registrar el blueprint en la aplicación
