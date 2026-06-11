@@ -17,35 +17,79 @@
 
   <div class="row justify-content-center mb-2">
     <div class="col-md-10">
- <form method="POST" action="/form-registrar-gerencias" autocomplete="off">
+ <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-gerencias" autocomplete="off">
     <div class="card-body">
         <div class="row">
             <div class="col-md-4">
                 <label for="nombre_gerencia" class="form-label">Nombre de la Gerencia</label>
-                <input type="text" class="form-control bg-white" name="nombre_gerencia" placeholder="Nombre" required />
+                <input type="text" name="nombre_gerencia" class="form-control" maxlength="50" required />
             </div>
             <div class="col-md-4">
                 <label for="direccion_gerencia" class="form-label">Dirección de Gerencia</label>
-                <input type="text" class="form-control bg-white" name="direccion_gerencia" placeholder="Dirección" required />
+                <input type="text" name="direccion_gerencia" class="form-control" maxlength="100" required />
             </div>
-        <div class="col-md-4">
-               <label for="informe_avance_obra_id_informe" class="form-label">Seleccionar Informe</label>
-               <select name="informe_avance_obra_id_informe" class="form-control" required>
-               <option value="">-- Seleccione una obra --</option>
-               {% for inf in informes %}
-               <option value="{{ inf.id_informe }}">
-               ID: {{ inf.id_informe }} - {{ inf.tipo_obras }}
-               </option>
-               {% endfor %}
-               </select>
+            <div class="col-md-4">
+                <label for="informe_avance_obra_id_informe" class="form-label">Informe de Avance</label>
+                <input type="text" name="informe_avance_obra_id_informe" class="form-control" maxlength="100" required />
+            </div>
         </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn rounded-pill btn-primary">
+                Registrar Gerencia <i class="bi bi-arrow-clockwise"></i>
+            </button>
         </div>
-        <div class="mt-5 text-center">
-            <button  class="btn btn-primary btn-lg px-5 shadow-sm" style="border-radius: 50px;" type="submit"><i class="bi bi-save me-2"></i>Registrar Gerencia</button>
-          </div>
     </div>
 </form>
     </div>
+
+
+<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
+  <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+    <h5 class="mb-0 text-primary fw-bold">GERENCIAS REGISTRADAS</h5>
+  </div>
+  
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Nombre Gerencia</th>
+            <th>Dirección Gerente</th>
+            <th>Informe de Avanze de Obra</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for gerencia in gerencia %}
+          <tr>
+            <td>{{ gerencia.id_gerencias }}</td>
+            <td>{{ gerencia.nombre_gerencia }}</td>
+            <td>{{ gerencia.direccion }}</td>
+            <td>{{ gerencia.informe_avance_obra_id_informe }}</td>
+            <td class="text-center">
+              <a href="#" class="btn btn-outline-info btn-sm" title="Ver detalle"><i class="bx bx-show"></i></a>
+              <a href="#" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
+              <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar"><i class="bx bx-trash"></i></a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="8" class="text-center text-muted py-4">No hay Gerencias registradas en el sistema.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+     </div>
+     </div>
+     </div>        
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
         </div>
       </form>
     </div>
