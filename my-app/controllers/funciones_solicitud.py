@@ -27,3 +27,21 @@ def obtener_solicitante_por_id(id_solicitud):
     """
     modelo = SolicitudModel()
     return modelo.obtener_solicitud_por_id(id_solicitud)
+
+
+def eliminar_solicitud_por_id(id_solicitud):
+    """
+    Solicita al modelo que elimine un registro por su ID.
+    """
+    modelo = SolicitudModel()
+    return modelo.eliminar_solicitud(id_solicitud)
+
+def actualizar_datos_solicitud(id_solicitud, datos_formulario):
+    """
+    Solicita al modelo la actualización de los datos de la solicitud.
+    """
+    if not id_solicitud or not datos_formulario:
+        return False
+    
+    modelo = SolicitudModel()
+    return modelo.actualizar_solicitud(id_solicitud, datos_formulario)
