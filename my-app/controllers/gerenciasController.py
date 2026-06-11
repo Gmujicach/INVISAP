@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
  
 from models.model_gerencias import GerenciaModel
 
-@gerencia_bp.route('/registrar-gerencias', methods=['GET'])
+#@gerencia_bp.route('/registrar-gerencias', methods=['GET'])
 def gestionar_gerencias():
     if 'conectado' in session:
         modelo = GerenciaModel()

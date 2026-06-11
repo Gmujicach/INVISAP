@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, request, session, redirect, url_fo
 
 # Configuración de ruta local para la librería fpdf2
 base_dir = os.path.dirname(os.path.abspath(__file__))
-lib_path = os.path.normpath(os.path.join(base_dir, '..', 'lib_pdf'))
+lib_path = os.path.normpath(os.path.join(base_dir, '..', 'static', 'libs', 'lib_pdf', 'fpdf'))
 if lib_path not in sys.path:
     sys.path.append(lib_path)
 
