@@ -173,7 +173,7 @@ def viewEditarProyecto(id_proyecto):
 def formActualizarProyecto():
     if 'conectado' in session:
         from models.model_proyecto import ProyectoModel
-        id_proyecto = request.form.get('id_proyecto')
+        id_proyecto = request.form.get('id_proyectos')
         modelo = ProyectoModel()
         if modelo.actualizar_proyecto(id_proyecto, request.form):
             flash('Proyecto actualizado satisfactoriamente.', 'success')
