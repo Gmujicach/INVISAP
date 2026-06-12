@@ -121,73 +121,7 @@
         </div>
     </div>
 
-    <div class="collapse mt-3" id="formContratacion">
-  <div class="card shadow-sm p-4">
-    <form method="POST" action="/registrar-contratacion" autocomplete="off">
-    <div class="card mb-3">
-        <div class="card-header bg-light"><strong>Datos de la Contratación</strong></div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Descripción</label>
-                    <input type="text" name="descripcion" class="form-control" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Empresa Ganadora</label>
-                    <input type="text" name="empresa_ganadora" class="form-control" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Número Contrato</label>
-                    <input type="text" name="numero_contrato" class="form-control" required>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Monto</label>
-                    <input type="text" name="monto" class="form-control" placeholder="Ej: 1000.00" required>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Tipo de Contrato</label>
-                    <input type="text" name="tipo_contrato" class="form-control" required>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card mb-3">
-        <div class="card-header bg-light"></div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Fecha Inicio Procedimiento</label>
-                    <input type="datetime-local" name="fecha_inicio" class="form-control" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Fecha Adjudicación</label>
-                    <input type="datetime-local" name="fecha_adjudicacion" class="form-control" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Fecha Registro</label>
-                    <input type="datetime-local" name="fecha_registro" class="form-control" required>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Modalidad</label>
-                    <input type="text" name="modalidad" class="form-control" required>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Objeto</label>
-                    <input type="text" name="objeto" class="form-control" required>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">Observaciones</label>
-                    <input type="text" name="observacion" class="form-control">
-                </div>
-            </div>
-        </div>
-    </div>
-
+   
     <div class="card mb-3">
         <div class="card-header bg-light"></div>
         <div class="card-body">
@@ -221,17 +155,9 @@
 
 <div class="collapse mt-3" id="formContratacion">
   <div class="card shadow-sm p-4">
-    <form method="POST" action="/registrar-contratacion" autocomplete="off">
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <label>Descripción</label>
-                <input type="text" name="descripcion" class="form-control" required>
-            </div>
-            </div>
         <div class="text-center mt-4">
         <button type="submit" class="btn btn-primary btn-lg px-5">Guardar Contratación</button>
     </div>
-    </form>
   </div>
 </div>
 {% endblock %}
