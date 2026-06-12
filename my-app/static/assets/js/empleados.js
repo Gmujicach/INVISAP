@@ -40,7 +40,8 @@ function triggerEmpleadosDashboard() {
         <!-- Formulario de Registro -->
         <div class="dashboard-section">
           <h4 class="fw-bold mb-4" style="color: #08b324;"><i class="bi bi-person-plus-fill me-2"></i>Nuevo Empleado</h4>
-          <form action="/empleado/crear-empleado" method="POST" enctype="multipart/form-data">
+          <!-- Se corrige la ruta para que coincida con EmpleadoController -->
+          <form action="/empleados/create" method="POST" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Nombre</label>
@@ -105,7 +106,8 @@ function triggerEmpleadosDashboard() {
 
 function eliminarEmpleadoJS(id, foto) {
     if (confirm("¿Está seguro que desea eliminar a este empleado de la base de datos?")) {
-        let url = `/empleado/borrar-empleado/${id}`;
+        // Se corrige la ruta para que coincida con EmpleadoController
+        let url = `/empleados/delete/${id}`;
         if (foto && foto !== 'None') url += `/${foto}`;
         window.location.href = url;
     }
