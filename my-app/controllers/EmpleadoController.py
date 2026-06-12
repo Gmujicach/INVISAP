@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from models.empleados import EmpleadoModel
 
-empleado_bp = Blueprint('empleado_bp', __name__, template_folder='../vista/empleados', url_prefix='/empleados')
+empleado_bp = Blueprint('empleado_bp', __name__, template_folder='../vista/form_empleado.html', url_prefix='/empleados')
 
 model = EmpleadoModel()
 

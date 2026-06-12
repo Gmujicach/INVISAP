@@ -35,7 +35,7 @@ PATH_URL_PROY = "proyectos"
 PATH_URL_GEST_OBR = "obras"
 PATH_URL_PUB = "publicaciones"
 PATH_URL_IA = "ia"
-PATH_URL_REG_EMPLEADOS = "registrar-empleado"
+PATH_URL_REG_EMPLEADOS = "empleados"
 PATH_URL_LIST_EMPLEADOS = "empleados"
 PATH_URL_REPORTE_EXCEL = "reportes"
 PATH_URL_REPORTE_PDF = "reportes"
@@ -467,7 +467,8 @@ def viewFormRegistrarEmpleados():
 @app.route('/empleados', methods=['GET'])
 def viewFormListarEmpleados():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL_LIST_EMPLEADOS}/empleados.html')
+        resp_empleadosBD = sql_lista_empleadosBD()
+        return render_template(f'{PATH_URL_LIST_EMPLEADOS}/empleados.html', resp_empleadosBD=resp_empleadosBD)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -488,7 +489,7 @@ def viewEditarEmpleado(id):
         respuestaEmpleado = buscarEmpleadoUnico(id)
         if respuestaEmpleado:
             # CORRECCIÓN: Se cambió de PATH_URL a PATH_URL_LIST_EMPLEADOS
-            return render_template(f'{PATH_URL_LIST_EMPLEADOS}/form_empleado_update.html', respuestaEmpleado=respuestaEmpleado)
+            return render_template(f'{PATH_URL_LIST_EMPLEADOS}/form_empleado_update.html', empleado=respuestaEmpleado)
         else:
             flash('El empleado no existe.', 'error')
             return redirect(url_for('login_bp.inicio'))
