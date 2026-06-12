@@ -87,6 +87,48 @@ def formRegistrarMaquinaria():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))    
 
+@home_bp.route('/editar-maquinaria/<int:id_maquinaria>', methods=['GET'])
+def viewEditarMaquinaria(id_maquinaria):
+    if 'conectado' in session:
+        # Se asume que obtener_maquinaria_controller existe en funciones_maquinaria.py
+        maquinaria = obtener_maquinaria_controller(id_maquinaria)
+        if maquinaria:
+            return render_template(f'{PATH_URL_PROY}/form_maquinaria-update.html', maquinaria=maquinaria)
+        else:
+            flash('La maquinaria no existe.', 'error')
+            return redirect(url_for('home_bp.viewFormMaquinaria'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/actualizar-maquinaria', methods=['POST'])
+def formActualizarMaquinaria():
+    if 'conectado' in session:
+        id_maquinaria = request.form.get('id_maquinaria')
+        if actualizar_maquinaria_controller(id_maquinaria, request.form):
+            flash('Maquinaria actualizada con éxito.', 'success')
+        else:
+            flash('Error al intentar actualizar la maquinaria.', 'error')
+        return redirect(url_for('home_bp.viewFormMaquinaria'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/eliminar-maquinaria/<int:id_maquinaria>', methods=['GET'])
+def eliminarMaquinaria(id_maquinaria):
+    if 'conectado' in session:
+        res = eliminar_maquinaria_controller(id_maquinaria)
+        if res == "utilizada":
+            flash('No se puede eliminar: Esta maquinaria está asignada a uno o más proyectos.', 'warning')
+        elif res:
+            flash('Maquinaria eliminada correctamente.', 'success')
+        else:
+            flash('Error al intentar eliminar la maquinaria.', 'error')
+        return redirect(url_for('home_bp.viewFormMaquinaria'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
 @home_bp.route('/registrar-mortadela', methods=['GET'])
 def viewFormMortadela():
     if 'conectado' in session:
