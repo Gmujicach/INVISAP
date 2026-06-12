@@ -1,54 +1,52 @@
 {% extends 'base_cpanel.html' %}
-{% block title %}Crud con Python 🐍 | Gestión de Empresas{% endblock %}
-{% block customCSS %}
-<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
-{% endblock %}
+{% block title %}Gestión de Contrataciones{% endblock %}
 
 {% block body %}
 <div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
-  <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
-    <h5 class="mb-0 text-primary fw-bold">EMPRESAS REGISTRADAS</h5>
-    
-    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario" aria-expanded="false" aria-controls="contenedorFormulario">
-      <i class="bx bx-plus"></i> Añadir Empresa
+  <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+    <h5 class="mb-0 text-primary fw-bold">CONTRATACIONES REGISTRADAS</h5>
+    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#formContratacion">
+      <i class="bx bx-plus"></i> Nueva Contratación
     </button>
   </div>
-  
   <div class="card-body">
     <div class="table-responsive">
-      <table class="table table-bordered table-striped table-hover align-middle">
+      <table class="table table-bordered table-striped table-hover align-middle" style="font-size: 0.85rem;">
         <thead class="table-light">
           <tr>
             <th>#</th>
+            <th>Descripción</th>
             <th>Empresa</th>
-            <th>Rif Empresa</th>
-            <th>Tipo Contrato</th>
-            <th>Correo Empresa</th>
-            <th>Fecha Creada</th>
-            <th>Fecha Actualización</th>
+            <th>Contrato</th>
+            <th>Monto</th>
+            <th>Modalidad</th>
+            <th>Fechas (Inicio / Adjud.)</th>
+            <th>Vínculos</th>
             <th class="text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {% for empresa in empresas %}
+          {% for c in contrataciones %}
           <tr>
-            <td>{{ empresa.id_empresa }}</td>
-            <td>{{ empresa.nombre }}</td>
-            <td>{{ empresa.rut }}</td>
-            <td><span class="badge bg-info">{{ empresa.tipo_contrato }}</span></td>
-            <td>{{ empresa.correo }}</td>
-            <td>{{ empresa.fecha_creada }}</td>
-            <td>{{ empresa.fecha_actualizacion }}</td>
+            <td>{{ c.id_contratacion }}</td>
+            <td>{{ c.descripcion }}</td>
+            <td>{{ c.empresa_ganadora }}</td>
+            <td>{{ c.numero_contrato }}</td>
+            <td>{{ c.monto }}</td>
+            <td>{{ c.modalidad }}</td>
+            <td>
+                <small>Ini: {{ c.fecha_inicio }}</small><br>
+                <small>Adj: {{ c.fecha_adjudicacion }}</small>
+            </td>
+            <td>
+                <small>P: {{ c.id_proyecto }} | M: {{ c.id_maquinaria }}</small>
+            </td>
             <td class="text-center">
-              <a href="#" class="btn btn-outline-info btn-sm" title="Ver detalle"><i class="bx bx-show"></i></a>
-              <a href="#" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
-              <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar"><i class="bx bx-trash"></i></a>
+              <a href="#" class="btn btn-outline-info btn-sm"><i class="bx bx-show"></i></a>
             </td>
           </tr>
           {% else %}
-          <tr>
-            <td colspan="8" class="text-center text-muted py-4">No hay empresas registradas en el sistema.</td>
-          </tr>
+          <tr><td colspan="9" class="text-center text-muted">No hay registros.</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -56,89 +54,184 @@
   </div>
 </div>
 
-<div class="collapse mt-3" id="contenedorFormulario">
-  <div class="card shadow-sm" style="border-radius: 0px !important">
-    <div class="row justify-content-center mb-2">
-      <div class="col-md-12">
-        <h4 class="text-center mt-5 mb-3 text-secondary">REGISTRAR NUEVA EMPRESA</h4>
-        <hr class="w-75 mx-auto"/>
-      </div>
+<div class="collapse mt-3" id="formContratacion">
+  <div class="card shadow-sm p-4">
+    <form method="POST" action="{{ url_for('contrataciones_bp.procesar_registro') }}" autocomplete="off">
+    <div class="card mb-3">
+        <div class="card-header bg-light"><strong>Datos de la Contratación</strong></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Descripción</label>
+                    <input type="text" name="descripcion" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Empresa Ganadora</label>
+                    <input type="text" name="empresa_ganadora" class="form-control" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Número Contrato</label>
+                    <input type="text" name="numero_contrato" class="form-control" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Monto</label>
+                    <input type="text" name="monto" class="form-control" placeholder="Ej: 1000.00" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Tipo de Contrato</label>
+                    <input type="text" name="tipo_contrato" class="form-control" required>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="row justify-content-center mb-4">
-      <div class="col-md-10">
-        <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-empresa" autocomplete="off">
-          <div class="card-body pt-0">
-            
-            <div class="row mb-3 mt-3">
-              <div class="col-md-6">
-                <label for="nombre_empresa" class="form-label">Nombre de la Empresa</label>
-                <input type="text" class="form-control" name="nombre_empresa" id="nombre_empresa" maxlength="100" placeholder="Ej: Tech Solutions C.A." required />
-              </div>
-              <div class="col-md-6">
-                <label for="rut_empresa" class="form-label">Rif Empresa</label>
-                <input type="text" class="form-control" name="rut_empresa" id="rut_empresa" maxlength="20" placeholder="Ej: 12345678-9" required />
-              </div>
+    <div class="card mb-3">
+        <div class="card-header bg-light"></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha Inicio Procedimiento</label>
+                    <input type="datetime-local" name="fecha_inicio" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha Adjudicación</label>
+                    <input type="datetime-local" name="fecha_adjudicacion" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha Registro</label>
+                    <input type="datetime-local" name="fecha_registro" class="form-control" required>
+                </div>
             </div>
-
-            <div class="row mb-3 mt-3">
-              <div class="col-md-6">
-                <label for="descripcion_empresa" class="form-label">Descripcion de la Empresa</label>
-                <input type="text" class="form-control" name="descripcion_empresa" id="descripcion_empresa" maxlength="255" placeholder="Ej: Tech Solutions C.A." required />
-              </div>
-              <div class="col-md-6">
-                <label for="tlf_empresa" class="form-label">Telefono Empresa</label>
-                <input type="text" class="form-control" name="tlf_empresa" id="tlf_empresa" maxlength="12" placeholder="Ej: 0412-1234567" required />
-              </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Modalidad</label>
+                    <input type="text" name="modalidad" class="form-control" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Objeto</label>
+                    <input type="text" name="objeto" class="form-control" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Observaciones</label>
+                    <input type="text" name="observacion" class="form-control">
+                </div>
             </div>
-
-            <div class="row mb-3 mt-3">
-              <div class="col-md-6">
-                <label for="domicilio_fiscal" class="form-label">Domicilio Fiscal</label>
-                <input type="text" class="form-control" name="domicilio_fiscal" id="domicilio_fiscal" maxlength="255" placeholder="Ej: Tech Solutions C.A." required />
-              </div>
-              <div class="col-md-6">
-                <label for="observaciones" class="form-label">Observaciones</label>
-                <input type="text" class="form-control" name="observaciones" id="observaciones" maxlength="255" placeholder="Ej: Tech Solutions C.A." />
-              </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                <label for="correo_empresa" class="form-label">Correo Empresa</label>
-                <input type="email" class="form-control" name="correo_empresa" id="correo_empresa" maxlength="100" placeholder="contacto@empresa.com" required />
-              </div>              
-            </div>
-            
-
-            <!--<div class="row mb-4">
-              <div class="col-md-6">
-                <label for="fecha_creada" class="form-label">Fecha Creada</label>
-                <input type="date" class="form-control" name="fecha_creada" id="fecha_creada" required />
-              </div>
-              <div class="col-md-6">
-                <label for="fecha_actualizacion" class="form-label">Fecha Actualización</label>
-                <input type="date" class="form-control" name="fecha_actualizacion" id="fecha_actualizacion" />
-              </div>
-            </div> -->
-
-            <div class="mb-3 text-center">
-              <button type="submit" class="btn rounded-pill btn-primary px-5 me-2">
-                Guardar Registro
-                <i class="bx bx-save ms-1"></i>
-              </button>
-              <button class="btn rounded-pill btn-outline-secondary px-4" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario">
-                Cancelar
-              </button>
-            </div>
-            
-          </div>
-        </form>
-      </div>
+        </div>
     </div>
+
+    <div class="collapse mt-3" id="formContratacion">
+  <div class="card shadow-sm p-4">
+    <form method="POST" action="/registrar-contratacion" autocomplete="off">
+    <div class="card mb-3">
+        <div class="card-header bg-light"><strong>Datos de la Contratación</strong></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Descripción</label>
+                    <input type="text" name="descripcion" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Empresa Ganadora</label>
+                    <input type="text" name="empresa_ganadora" class="form-control" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Número Contrato</label>
+                    <input type="text" name="numero_contrato" class="form-control" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Monto</label>
+                    <input type="text" name="monto" class="form-control" placeholder="Ej: 1000.00" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Tipo de Contrato</label>
+                    <input type="text" name="tipo_contrato" class="form-control" required>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header bg-light"></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha Inicio Procedimiento</label>
+                    <input type="datetime-local" name="fecha_inicio" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha Adjudicación</label>
+                    <input type="datetime-local" name="fecha_adjudicacion" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha Registro</label>
+                    <input type="datetime-local" name="fecha_registro" class="form-control" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Modalidad</label>
+                    <input type="text" name="modalidad" class="form-control" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Objeto</label>
+                    <input type="text" name="objeto" class="form-control" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Observaciones</label>
+                    <input type="text" name="observacion" class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header bg-light"></div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Proyecto</label>
+                    <input type="number" name="id_proyecto" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Maquinaria</label>
+                    <input type="number" name="id_maquinaria" class="form-control" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Empresa</label>
+                    <input type="text" name="empresa_rif" class="form-control" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Empresa-Proyecto</label>
+                    <input type="number" name="empresa_proyecto_id" class="form-control" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Empresa-Maquinaria</label>
+                    <input type="number" name="empresa_maquinaria_id" class="form-control" required>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+<div class="collapse mt-3" id="formContratacion">
+  <div class="card shadow-sm p-4">
+    <form method="POST" action="/registrar-contratacion" autocomplete="off">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Descripción</label>
+                <input type="text" name="descripcion" class="form-control" required>
+            </div>
+            </div>
+        <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary btn-lg px-5">Guardar Contratación</button>
+    </div>
+    </form>
   </div>
 </div>
-{% endblock %} 
-
-{% block customJS %}
 {% endblock %}

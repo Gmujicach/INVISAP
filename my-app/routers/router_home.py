@@ -1,9 +1,13 @@
 from app import app
+
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from mysql.connector.errors import Error
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session
 
 # Importando conexión a BD y controladores
 from controllers.funciones_home import *
+from models.contratacion import ContratacionModel
+from controllers.contratacion import contrataciones_bp
 from controllers.UserController import user_bp 
 from controllers.funciones_solicitud import *
 from controllers.EmpleadoController import empleado_bp
@@ -18,6 +22,8 @@ app.register_blueprint(gerencia_bp)
 
 # Crear Blueprint para manejar las rutas de home con la carpeta de vistas correcta
 home_bp = Blueprint('home_bp', __name__, template_folder='../vista')
+contrataciones_bp = Blueprint('contrataciones_bp', __name__)
+##app.register_blueprint(contrataciones_bp)
 
 # Rutas de carpetas (Paths)
 PATH_URL = "solicitudes"
@@ -203,13 +209,28 @@ def api_obtener_solicitudes_json():
     else:
         return jsonify([]), 401
 
-@home_bp.route('/registrar-contratacion', methods=['GET'])
-def viewFormContratacion():
+
+### Contratacion
+
+@contrataciones_bp.route('/contrataciones', methods=['GET'])
+def gestionar_contrataciones():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL_CONTRAT}/form_contratacion.html')
-    else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
+        return render_template('contratacion/form_contratacion.html') 
+    return redirect(url_for('login_bp.inicio'))
+    
+@contrataciones_bp.route('/registrar-contratacion', methods=['POST'])
+def procesar_registro():
+    # Aquí Flask recibe los datos del formulario
+    if 'conectado' in session:
+        modelo = ContratacionesModel()
+        if modelo.registrar_contrataciones(request.form):
+            flash('Registrado correctamente', 'success')
+        else:
+            flash('Error al guardar', 'error')
+        return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
+    return redirect(url_for('login_bp.inicio'))
+
+
 
 @home_bp.route('/inspectores', methods=['GET'])
 def viewFormInspectores():
@@ -454,3 +475,4 @@ def viewFormReportesEstadisticos():
 
 # Registrar el blueprint en la aplicación
 app.register_blueprint(home_bp)
+app.register_blueprint(contrataciones_bp)
