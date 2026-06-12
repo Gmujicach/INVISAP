@@ -9,6 +9,8 @@ from controllers.funciones_solicitud import *
 from controllers.EmpleadoController import empleado_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
+from controllers.funciones_proyecto import *
+from controllers.funciones_maquinaria import *
 
 ## Gerencias
 from controllers.gerenciasController import gerencia_bp
@@ -67,7 +69,20 @@ def viewFormRespaldos():
 @home_bp.route('/maquinaria', methods=['GET'])
 def viewFormMaquinaria():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL_PROY}/form_maquinaria.html')
+        maquinarias = listar_maquinarias_controller()
+        return render_template(f'{PATH_URL_PROY}/form_maquinaria.html', maquinarias=maquinarias)
+    else:
+        flash('primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))    
+
+@home_bp.route('/form-registrar-maquinaria', methods=['POST'])
+def formRegistrarMaquinaria():
+    if 'conectado' in session:
+        if registrar_maquinaria_controller(request.form):
+            flash('Maquinaria registrada con éxito.', 'success')
+        else:
+            flash('Error al intentar registrar la maquinaria. Verifique los datos.', 'error')
+        return redirect(url_for('home_bp.viewFormMaquinaria'))
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))    
@@ -115,10 +130,78 @@ def viewFormPrioridad():
 @home_bp.route('/gestionar-proyectos', methods=['GET'])
 def viewFormProyectos():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL_PROY}/proyectos.html')
+        proyectos = listar_proyectos_controller()
+        maquinarias = listar_maquinarias_controller()
+        return render_template(f'{PATH_URL_PROY}/proyectos.html', proyectos=proyectos, maquinarias=maquinarias)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/form-registrar-proyecto', methods=['POST'])
+def formRegistrarProyecto():
+    if 'conectado' in session:
+        try:
+            if registrar_proyecto_controller(request.form):
+                flash('Proyecto registrado satisfactoriamente.', 'success')
+            else:
+                flash('Error al registrar el proyecto en la base de datos.', 'error')
+        except Exception as e:
+            print(f"Excepción en router: {e}")
+            flash(f'Ocurrió un error inesperado: {e}', 'error')
+        return redirect(url_for('home_bp.viewFormProyectos'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/editar-proyecto/<int:id_proyecto>', methods=['GET'])
+def viewEditarProyecto(id_proyecto):
+    if 'conectado' in session:
+        from models.model_proyecto import ProyectoModel
+        modelo = ProyectoModel()
+        proyecto = modelo.obtener_proyecto_por_id(id_proyecto)
+        maquinarias = listar_maquinarias_controller()
+        if proyecto:
+            return render_template(f'{PATH_URL_PROY}/form_proyecto_update.html', proyecto=proyecto, maquinarias=maquinarias)
+        else:
+            flash('El proyecto no existe.', 'error')
+            return redirect(url_for('home_bp.viewFormProyectos'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/actualizar-proyecto', methods=['POST'])
+def formActualizarProyecto():
+    if 'conectado' in session:
+        from models.model_proyecto import ProyectoModel
+        id_proyecto = request.form.get('id_proyecto')
+        modelo = ProyectoModel()
+        if modelo.actualizar_proyecto(id_proyecto, request.form):
+            flash('Proyecto actualizado satisfactoriamente.', 'success')
+        else:
+            flash('Error al actualizar el proyecto.', 'error')
+        return redirect(url_for('home_bp.viewFormProyectos'))
+    return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/eliminar-proyecto/<int:id_proyecto>', methods=['GET'])
+def eliminarProyecto(id_proyecto):
+    if 'conectado' in session:
+        from models.model_proyecto import ProyectoModel
+        modelo = ProyectoModel()
+        if modelo.eliminar_proyecto(id_proyecto):
+            flash('Proyecto eliminado correctamente.', 'success')
+        else:
+            flash('Error al intentar eliminar el proyecto.', 'error')
+        return redirect(url_for('home_bp.viewFormProyectos'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/api/obtener-solicitudes-json', methods=['GET'])
+def api_obtener_solicitudes_json():
+    if 'conectado' in session:
+        return jsonify(obtener_solicitantes())
+    else:
+        return jsonify([]), 401
 
 @home_bp.route('/registrar-contratacion', methods=['GET'])
 def viewFormContratacion():
