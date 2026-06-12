@@ -4,14 +4,11 @@ class ContratacionModel:
     
     def registrar_contrataciones(self, datos):
         conexion = connectionBD()
-        if conexion is None:
-            print("Error: No se pudo establecer conexión.")
-            return False
+        if conexion is None: return False
             
         try:
             cursor = conexion.cursor()
-            
-            sql = """INSERT INTO contrataciones (
+            sql = """INSERT INTO gestionar_contrataciones (
                 descripcion, empresa_ganadora, numero_contrato, monto, tipo_contrato, 
                 fecha_inicio_procedimiento, fecha_adjudicacion, fecha_registro, 
                 modalidad, objeto, observacion, 
@@ -20,13 +17,24 @@ class ContratacionModel:
                 empresa_gestionar_proyectos_maquinaria_id_maquinaria
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
             
+            # Los nombres dentro de datos[] DEBEN ser iguales a los 'name' del input HTML
             valores = (
-                datos['descripcion'], datos['empresa_ganadora'], datos['numero_contrato'], 
-                datos['monto'], datos['tipo_contrato'], datos['fecha_inicio'], 
-                datos['fecha_adjudicacion'], datos['fecha_registro'], datos['modalidad'], 
-                datos['objeto'], datos['observacion'], datos['id_proyecto'], 
-                datos['id_maquinaria'], datos['empresa_rif'], 
-                datos['empresa_proyecto_id'], datos['empresa_maquinaria_id']
+                datos.get('descripcion'), 
+                datos.get('empresa_ganadora'), 
+                datos.get('numero_contrato'), 
+                datos.get('monto'), 
+                datos.get('tipo_contrato'), 
+                datos.get('fecha_inicio'), 
+                datos.get('fecha_adjudicacion'), 
+                datos.get('fecha_registro'), 
+                datos.get('modalidad'), 
+                datos.get('objeto'), 
+                datos.get('observacion'), 
+                datos.get('id_proyecto'), 
+                datos.get('id_maquinaria'), 
+                datos.get('empresa_rif'), 
+                datos.get('empresa_proyecto_id'), 
+                datos.get('empresa_maquinaria_id')
             )
             
             cursor.execute(sql, valores)
@@ -34,12 +42,8 @@ class ContratacionModel:
             return True
             
         except Exception as e:
-            print(f"--- [ERROR AL REGISTRAR]: {e} ---")
+            print(f"--- [ERROR DETALLADO]: {e} ---") 
             return False
-            
-        finally:
-            if conexion:
-                conexion.close()
 
     def obtener_todas_las_contrataciones(self):
         conexion = connectionBD()
@@ -48,7 +52,7 @@ class ContratacionModel:
             
         try:
             cursor = conexion.cursor(dictionary=True)
-            cursor.execute("SELECT * FROM contrataciones")
+            cursor.execute("SELECT * FROM gestionar_contrataciones")
             return cursor.fetchall()
         except Exception as e:
             print(f"--- [ERROR AL CONSULTAR]: {e} ---")

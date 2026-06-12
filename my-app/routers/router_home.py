@@ -257,22 +257,27 @@ def api_obtener_solicitudes_json():
 @contrataciones_bp.route('/contrataciones', methods=['GET'])
 def gestionar_contrataciones():
     if 'conectado' in session:
-        return render_template('contratacion/form_contratacion.html') 
+        modelo_p = ProyectoModel()
+        modelo_m = MaquinariaModel()
+        lista_proyectos = modelo_p.obtener_proyectos() 
+        lista_maquinarias = modelo_m.obtener_maquinarias() 
+        
+        return render_template('contratacion/form_contratacion.html', 
+                               proyectos=lista_proyectos, 
+                               maquinarias=lista_maquinarias)
     return redirect(url_for('login_bp.inicio'))
     
 @contrataciones_bp.route('/registrar-contratacion', methods=['POST'])
 def procesar_registro():
-    # Aquí Flask recibe los datos del formulario
     if 'conectado' in session:
-        modelo = ContratacionesModel()
+        modelo = ContratacionModel()
+       
         if modelo.registrar_contrataciones(request.form):
             flash('Registrado correctamente', 'success')
         else:
             flash('Error al guardar', 'error')
         return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
     return redirect(url_for('login_bp.inicio'))
-
-
 
 @home_bp.route('/inspectores', methods=['GET'])
 def viewFormInspectores():
