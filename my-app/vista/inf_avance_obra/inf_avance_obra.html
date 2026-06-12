@@ -10,7 +10,7 @@
     <h5 class="mb-0 text-primary fw-bold">Informes de Avance de Obras</h5>
     
     <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario" aria-expanded="false" aria-controls="contenedorFormulario">
-      <i class="bx bx-plus"></i> Generar Informe
+      <i class="bx bx-plus"></i> Registrar Informe
     </button>
   </div>
   
@@ -23,7 +23,7 @@
             <th>Recurso</th>
             <th>Estado</th>
             <th>Logro</th>
-            <th>Tipo de Obra</th>
+            <th>Tipo de Informe</th>
             <th>Poblacion Beneficiada</th>
             <th>Fecha</th>
             <th class="text-center">Acciones</th>
@@ -73,11 +73,11 @@
             <div class="row mb-3 mt-3">
               <div class="col-md-6">
                 <label for="nombre_empresa" class="form-label">Recurso</label>
-                <input type="text" class="form-control" name="nombre_empresa" id="nombre_empresa" maxlength="100" placeholder="Ej: Tech Solutions C.A." required />
+                <input type="text" class="form-control" name="nombre_empresa" id="nombre_empresa" maxlength="100" placeholder="Ej: Asfalto" required />
               </div>
               <div class="col-md-6">
-                <label for="rut_empresa" class="form-label">Estado</label>
-              <select class="form-select shadow-sm" name="tipo_solicitud" id="tipo_solicitud" required>
+                <label for="estado" class="form-label">Estado</label>
+              <select class="form-select shadow-sm" name="estado" id="estado" required>
                 <option value="" selected disabled>Seleccione...</option>
                 <option value="Comunidad">Aprobado</option>
                 <option value="Institucion">En Ejecucion</option>
@@ -88,14 +88,14 @@
 
             <div class="row mb-3 mt-3">
               <div class="col-md-6">
-                <label for="descripcion_empresa" class="form-label">Logro</label>
-                <input type="text" class="form-control" name="descripcion_empresa" id="descripcion_empresa" maxlength="255" placeholder="Ej: Tech Solutions C.A." required />
+                <label for="logro" class="form-label">Logro</label>
+                <input type="text" class="form-control" name="logro" id="logro" maxlength="255" placeholder="Ej: Calle Asfaltada" required />
               </div>
               <div class="col-md-6">
-                <label for="tlf_empresa" class="form-label">Tipo de Obra</label>
-              <select class="form-select shadow-sm" name="tipo_solicitud" id="tipo_solicitud" required>
+                <label for="tipo_informe" class="form-label">Tipo de Informe</label>
+              <select class="form-select shadow-sm" name="tipo_informe" id="tipo_informe" required>
                 <option value="" selected disabled>Seleccione...</option>
-                <option value="Comunidad">Mayor</option>
+                <option value="Comunidad">Ficha Inspeccion Tecnica</option>
                 <option value="Institucion">Menor</option>
               </select>
               </div>
@@ -103,8 +103,8 @@
 
             <div class="row mb-3 mt-3">
               <div class="col-md-6">
-                <label for="domicilio_fiscal" class="form-label">Poblacion Beneficiada</label>
-              <select class="form-select shadow-sm" name="tipo_solicitud" id="tipo_solicitud" required>
+                <label for="poblacion_beneficiada" class="form-label">Poblacion Beneficiada</label>
+              <select class="form-select shadow-sm" name="poblacion_beneficiada" id="poblacion_beneficiada" required>
                 <option value="" selected disabled>Seleccione...</option>
                 <option value="Comunidad">La Salle</option>
                 <option value="Institucion">El Tostado</option>
@@ -113,7 +113,7 @@
               </div>
               <div class="col-md-6">
                 <label for="observaciones" class="form-label">Observaciones</label>
-                <input type="text" class="form-control" name="observaciones" id="observaciones" maxlength="255" placeholder="Ej: Tech Solutions C.A." />
+                <input type="text" class="form-control" name="observaciones" id="observaciones" maxlength="255" placeholder="Sin Observaciones" />
               </div>
             </div>
 
