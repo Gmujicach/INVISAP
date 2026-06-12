@@ -20,7 +20,7 @@
         <thead class="table-light">
           <tr>
             <th>#</th>
-            <th>ID Maquinaria</th>
+        
             <th>Nombre de la Maquinaria</th>
             <th class="text-center">Acciones</th>
           </tr>
@@ -29,17 +29,19 @@
           {% for maquinaria in maquinarias %}
           <tr>
             <td>{{ loop.index }}</td>
-            <td>{{ maquinaria.id_maquinaria }}</td>
+            
             <td class="text-uppercase">{{ maquinaria.nombre_maquinaria }}</td>
             <td class="text-center">
-              <a href="#" class="btn btn-outline-info btn-sm" title="Ver detalle"><i class="bx bx-show"></i></a>
-              <a href="#" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
-              <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar"><i class="bx bx-trash"></i></a>
+              <a href="{{ url_for('home_bp.viewEditarMaquinaria', id_maquinaria=maquinaria.id_maquinaria) }}" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
+              <a href="{{ url_for('home_bp.eliminarMaquinaria', id_maquinaria=maquinaria.id_maquinaria) }}" 
+                 class="btn btn-outline-danger btn-sm" 
+                 title="Eliminar"
+                 onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')"><i class="bx bx-trash"></i></a>
             </td>
           </tr>
           {% else %}
           <tr>
-            <td colspan="4" class="text-center text-muted py-4">No hay maquinaria registrada en el sistema.</td>
+            <td colspan="3" class="text-center text-muted py-4">No hay maquinaria registrada en el sistema.</td>
           </tr>
           {% endfor %}
         </tbody>

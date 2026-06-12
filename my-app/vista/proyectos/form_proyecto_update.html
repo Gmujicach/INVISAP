@@ -1,0 +1,109 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}Invilara | Editar Proyecto{% endblock %}
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm" style="border-radius: 0px !important">
+        <div class="card-header bg-white border-bottom py-3">
+          <h5 class="mb-0 text-primary fw-bold">
+            <i class="bx bx-edit-alt me-2"></i>MODIFICAR PROYECTO: {{ proyecto.codigo_proyecto }}
+          </h5>
+        </div>
+        
+        <form class="form-horizontal" method="POST" action="/actualizar-proyecto" autocomplete="off">
+          
+          <input type="hidden" name="id_proyectos" value="{{ proyecto.id_proyectos }}">
+          
+          <div class="card-body">
+           
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold text-muted">Solicitante</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="bx bx-user"></i></span>
+                  <input type="text" class="form-control bg-light" name="solicitante_p" value="{{ proyecto.nombre_solicitante or 'N/A' }}" readonly />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold text-muted">Tipo de Solicitud</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light"><i class="bx bx-purchase-tag-alt"></i></span>
+                  <input type="text" class="form-control bg-light" name="tipo_solicitud_p" value="{{ proyecto.tipo_solicitud or 'N/A' }}" readonly />
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label fw-semibold text-muted">Problemática de la Solicitud</label>
+              <textarea class="form-control bg-light" rows="2" readonly name="problematica_p">{{ proyecto.problematica_solicitud or 'No hay problemática registrada' }}</textarea>
+            </div>
+            <hr class="mb-4 text-muted">
+
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <label for="fecha_p" class="form-label fw-bold text-secondary">Fecha de Planificación</label>
+                <div class="input-group shadow-sm">
+                  <span class="input-group-text bg-light"><i class="bx bx-calendar"></i></span>
+                  <input type="date" class="form-control" name="fecha_p" id="fecha_p" value="{{ proyecto.fecha_planificacion }}" required />
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label for="Codigo_p" class="form-label fw-bold text-secondary">Código del Proyecto</label>
+                <input type="text" class="form-control shadow-sm bg-light" name="Codigo_p" id="Codigo_p" value="{{ proyecto.codigo_proyecto }}" readonly />
+                <small class="text-muted">El código no es editable por seguridad.</small>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="observaciones" class="form-label fw-bold text-secondary">Descripción Técnica</label>
+              <textarea class="form-control shadow-sm" name="observaciones" id="observaciones" rows="3" maxlength="200" required>{{ proyecto.descripcion_tecnica }}</textarea>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <label for="computos_p" class="form-label fw-bold text-secondary">Cómputos Métricos</label>
+                <input type="text" class="form-control shadow-sm" name="computos_p" id="computos_p" value="{{ proyecto.computos_metricos if proyecto.computos_metricos else '' }}" placeholder="Ej: 150m2 de asfalto" />
+              </div>
+              <div class="col-md-6">
+                <label for="estimacion_p" class="form-label fw-bold text-secondary">Estimación de Costo</label>
+                <input type="text" class="form-control shadow-sm" name="estimacion_p" id="estimacion_p" value="{{ proyecto.estimacion_costo_proyecto if proyecto.estimacion_costo_proyecto else '' }}" placeholder="Ej: 50.000,00" />
+              </div>
+            </div>
+
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <label for="maquinaria_p" class="form-label fw-bold text-secondary">Maquinaria Requerida</label>
+                <select class="form-select shadow-sm" name="maquinaria_p" id="maquinaria_p" required>
+                  {% for maquinaria in maquinarias %}
+                    <option value="{{ maquinaria.id_maquinaria }}" {% if maquinaria.id_maquinaria|int == proyecto.maquinaria_id_maquinaria|int %}selected{% endif %}>
+                      {{ maquinaria.nombre_maquinaria|upper }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="inspeccion_p" class="form-label fw-bold text-secondary">Inspecciones Previas</label>
+                <input type="text" class="form-control shadow-sm" name="inspeccion_p" id="inspeccion_p" value="{{ proyecto.inspecciones_previas }}" required />
+              </div>
+            </div>
+          </div>
+
+          <div class="card-footer bg-light py-3 d-flex justify-content-between">
+            <a href="/proyectos" class="btn btn-outline-secondary px-4 rounded-pill">
+              <i class="bx bx-arrow-back me-1"></i> Volver
+            </a>
+            <button type="submit" class="btn btn-warning px-5 rounded-pill fw-bold">
+              Guardar Cambios <i class="bx bx-refresh ms-1"></i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
