@@ -302,10 +302,15 @@ def viewFormGerencia():
 @app.route('/form-registrar-gerencias', methods=['POST'])
 def procesar_registro():
     from controllers.gerenciasController import procesar_registro_gerencia
+    
     if procesar_registro_gerencia(request.form):
-        flash('Registro exitoso', 'success')
+        # Guardamos el mensaje de éxito
+        flash('¡La gerencia ha sido registrada con éxito!', 'success')
         return redirect(url_for('lista_gerencias'))
-    return "Error al registrar"
+    else:
+        # Guardamos el mensaje de error
+        flash('Error: No se pudo registrar la gerencia.', 'error')
+        return redirect(url_for('viewFormGerencia'))
 
 @app.route('/lista-gerencias', methods=['GET'])
 def lista_gerencias():
