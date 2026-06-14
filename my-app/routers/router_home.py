@@ -15,6 +15,7 @@ from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
 from controllers.funciones_proyecto import *
 from controllers.funciones_maquinaria import *
+from models.model_empresa import EmpresaModel
 
 ## Gerencias
 from controllers.gerenciasController import gerencia_bp
@@ -257,25 +258,32 @@ def api_obtener_solicitudes_json():
 @contrataciones_bp.route('/contrataciones', methods=['GET'])
 def gestionar_contrataciones():
     if 'conectado' in session:
-        modelo_p = ProyectoModel()
-        modelo_m = MaquinariaModel()
-        lista_proyectos = modelo_p.obtener_proyectos() 
-        lista_maquinarias = modelo_m.obtener_maquinarias() 
+        # Importamos la maquinaria (ajusta esto si tu modelo está en otra parte)
+        from models.model_maquinaria import MaquinariaModel
         
+        lista_proyectos = ProyectoModel().obtener_proyectos()
+        lista_maquinarias = MaquinariaModel().obtener_maquinarias()
+        lista_empresas = EmpresaModel().obtener_empresas()
+        lista_contrataciones = ContratacionModel().obtener_todas_las_contrataciones()
+        
+        # Enviamos a form_contratacion.html (Asegúrate de que la carpeta se llame 'contratacion')
         return render_template('contratacion/form_contratacion.html', 
-                               proyectos=lista_proyectos, 
-                               maquinarias=lista_maquinarias)
+                               contrataciones=lista_contrataciones,
+                               proyectos=lista_proyectos,
+                               maquinarias=lista_maquinarias,
+                               empresas=lista_empresas)
     return redirect(url_for('login_bp.inicio'))
     
 @contrataciones_bp.route('/registrar-contratacion', methods=['POST'])
 def procesar_registro():
     if 'conectado' in session:
         modelo = ContratacionModel()
-       
+        
         if modelo.registrar_contrataciones(request.form):
-            flash('Registrado correctamente', 'success')
+            flash('Contratación registrada correctamente', 'success')
         else:
-            flash('Error al guardar', 'error')
+            flash('Error al guardar en la base de datos', 'error')
+            
         return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
     return redirect(url_for('login_bp.inicio'))
 
@@ -304,11 +312,9 @@ def procesar_registro():
     from controllers.gerenciasController import procesar_registro_gerencia
     
     if procesar_registro_gerencia(request.form):
-        # Guardamos el mensaje de éxito
         flash('¡La gerencia ha sido registrada con éxito!', 'success')
         return redirect(url_for('lista_gerencias'))
     else:
-        # Guardamos el mensaje de error
         flash('Error: No se pudo registrar la gerencia.', 'error')
         return redirect(url_for('viewFormGerencia'))
 

@@ -17,7 +17,6 @@ class ContratacionModel:
                 empresa_gestionar_proyectos_maquinaria_id_maquinaria
             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
             
-            # Los nombres dentro de datos[] DEBEN ser iguales a los 'name' del input HTML
             valores = (
                 datos.get('descripcion'), 
                 datos.get('empresa_ganadora'), 
@@ -30,11 +29,15 @@ class ContratacionModel:
                 datos.get('modalidad'), 
                 datos.get('objeto'), 
                 datos.get('observacion'), 
+                
+                # Relaciones principales
                 datos.get('id_proyecto'), 
                 datos.get('id_maquinaria'), 
                 datos.get('empresa_rif'), 
-                datos.get('empresa_proyecto_id'), 
-                datos.get('empresa_maquinaria_id')
+                
+                # AQUÍ ESTÁ EL TRUCO: Reutilizamos los IDs para cumplir con la DB
+                datos.get('id_proyecto'), 
+                datos.get('id_maquinaria')
             )
             
             cursor.execute(sql, valores)
@@ -42,21 +45,30 @@ class ContratacionModel:
             return True
             
         except Exception as e:
-            print(f"--- [ERROR DETALLADO]: {e} ---") 
+            print(f"--- [ERROR DETALLADO INSERT]: {e} ---") 
             return False
+        finally:
+            if conexion: conexion.close()
 
     def obtener_todas_las_contrataciones(self):
         conexion = connectionBD()
-        if conexion is None:
-            return []
+        if conexion is None: return []
             
         try:
             cursor = conexion.cursor(dictionary=True)
-            cursor.execute("SELECT * FROM gestionar_contrataciones")
+            # Hacemos JOINs para traer los nombres reales
+            sql = """
+            SELECT c.*, 
+                   p.codigo_proyecto as nombre_proyecto, 
+                   m.nombre_maquinaria as nombre_maquinaria
+            FROM gestionar_contrataciones c
+            LEFT JOIN gestionar_proyectos p ON c.gestionar_proyectos_id_proyectos = p.id_proyectos
+            LEFT JOIN maquinaria m ON c.gestionar_proyectos_maquinaria_id_maquinaria = m.id_maquinaria
+            """
+            cursor.execute(sql)
             return cursor.fetchall()
         except Exception as e:
             print(f"--- [ERROR AL CONSULTAR]: {e} ---")
             return []
         finally:
-            if conexion:
-                conexion.close()
+            if conexion: conexion.close()
