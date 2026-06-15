@@ -1,17 +1,26 @@
 from app import app
+
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from mysql.connector.errors import Error
 
 # Importando conexión a BD y controladores
 from controllers.funciones_home import *
-from controllers.UserController import user_bp 
-from controllers.funciones_solicitud import *
+from models.contratacion import ContratacionModel
+from controllers.contratacion import contrataciones_bp
+from controllers.UserController import user_bp
+from controllers.funciones_solicitud import (
+    obtener_solicitudes, crear_solicitud, obtener_solicitud_por_id,
+    actualizar_solicitud, eliminar_solicitud
+)
+from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, obtener_estadisticas_bitacora
+from services.bitacora_service import BitacoraService
 from controllers.EmpleadoController import empleado_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
 from controllers.funciones_publicaciones import *
 from controllers.funciones_proyecto import *
 from controllers.funciones_maquinaria import *
+from models.model_empresa import EmpresaModel
 
 ## Gerencias
 from controllers.gerenciasController import gerencia_bp
@@ -19,6 +28,8 @@ app.register_blueprint(gerencia_bp)
 
 # Crear Blueprint para manejar las rutas de home con la carpeta de vistas correcta
 home_bp = Blueprint('home_bp', __name__, template_folder='../vista')
+contrataciones_bp = Blueprint('contrataciones_bp', __name__)
+##app.register_blueprint(contrataciones_bp)
 
 # Rutas de carpetas (Paths)
 PATH_URL = "solicitudes"
@@ -30,7 +41,7 @@ PATH_URL_PROY = "proyectos"
 PATH_URL_GEST_OBR = "obras"
 PATH_URL_PUB = "publicaciones"
 PATH_URL_IA = "ia"
-PATH_URL_REG_EMPLEADOS = "registrar-empleado"
+PATH_URL_REG_EMPLEADOS = "empleados"
 PATH_URL_LIST_EMPLEADOS = "empleados"
 PATH_URL_REPORTE_EXCEL = "reportes"
 PATH_URL_REPORTE_PDF = "reportes"
@@ -87,6 +98,48 @@ def formRegistrarMaquinaria():
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))    
+
+@home_bp.route('/editar-maquinaria/<int:id_maquinaria>', methods=['GET'])
+def viewEditarMaquinaria(id_maquinaria):
+    if 'conectado' in session:
+        # Se asume que obtener_maquinaria_controller existe en funciones_maquinaria.py
+        maquinaria = obtener_maquinaria_controller(id_maquinaria)
+        if maquinaria:
+            return render_template(f'{PATH_URL_PROY}/form_maquinaria-update.html', maquinaria=maquinaria)
+        else:
+            flash('La maquinaria no existe.', 'error')
+            return redirect(url_for('home_bp.viewFormMaquinaria'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/actualizar-maquinaria', methods=['POST'])
+def formActualizarMaquinaria():
+    if 'conectado' in session:
+        id_maquinaria = request.form.get('id_maquinaria')
+        if actualizar_maquinaria_controller(id_maquinaria, request.form):
+            flash('Maquinaria actualizada con éxito.', 'success')
+        else:
+            flash('Error al intentar actualizar la maquinaria.', 'error')
+        return redirect(url_for('home_bp.viewFormMaquinaria'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/eliminar-maquinaria/<int:id_maquinaria>', methods=['GET'])
+def eliminarMaquinaria(id_maquinaria):
+    if 'conectado' in session:
+        res = eliminar_maquinaria_controller(id_maquinaria)
+        if res == "utilizada":
+            flash('No se puede eliminar: Esta maquinaria está asignada a uno o más proyectos.', 'warning')
+        elif res:
+            flash('Maquinaria eliminada correctamente.', 'success')
+        else:
+            flash('Error al intentar eliminar la maquinaria.', 'error')
+        return redirect(url_for('home_bp.viewFormMaquinaria'))
+    else:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
 
 @home_bp.route('/registrar-mortadela', methods=['GET'])
 def viewFormMortadela():
@@ -204,13 +257,40 @@ def api_obtener_solicitudes_json():
     else:
         return jsonify([]), 401
 
-@home_bp.route('/registrar-contratacion', methods=['GET'])
-def viewFormContratacion():
+
+### Contratacion
+
+@contrataciones_bp.route('/contrataciones', methods=['GET'])
+def gestionar_contrataciones():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL_CONTRAT}/form_contratacion.html')
-    else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
+        # Importamos la maquinaria (ajusta esto si tu modelo está en otra parte)
+        from models.model_maquinaria import MaquinariaModel
+        
+        lista_proyectos = ProyectoModel().obtener_proyectos()
+        lista_maquinarias = MaquinariaModel().obtener_maquinarias()
+        lista_empresas = EmpresaModel().obtener_empresas()
+        lista_contrataciones = ContratacionModel().obtener_todas_las_contrataciones()
+        
+        # Enviamos a form_contratacion.html (Asegúrate de que la carpeta se llame 'contratacion')
+        return render_template('contratacion/form_contratacion.html', 
+                               contrataciones=lista_contrataciones,
+                               proyectos=lista_proyectos,
+                               maquinarias=lista_maquinarias,
+                               empresas=lista_empresas)
+    return redirect(url_for('login_bp.inicio'))
+    
+@contrataciones_bp.route('/registrar-contratacion', methods=['POST'])
+def procesar_registro():
+    if 'conectado' in session:
+        modelo = ContratacionModel()
+        
+        if modelo.registrar_contrataciones(request.form):
+            flash('Contratación registrada correctamente', 'success')
+        else:
+            flash('Error al guardar en la base de datos', 'error')
+            
+        return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
+    return redirect(url_for('login_bp.inicio'))
 
 @home_bp.route('/inspectores', methods=['GET'])
 def viewFormInspectores():
@@ -235,10 +315,13 @@ def viewFormGerencia():
 @app.route('/form-registrar-gerencias', methods=['POST'])
 def procesar_registro():
     from controllers.gerenciasController import procesar_registro_gerencia
+    
     if procesar_registro_gerencia(request.form):
-        flash('Registro exitoso', 'success')
+        flash('¡La gerencia ha sido registrada con éxito!', 'success')
         return redirect(url_for('lista_gerencias'))
-    return "Error al registrar"
+    else:
+        flash('Error: No se pudo registrar la gerencia.', 'error')
+        return redirect(url_for('viewFormGerencia'))
 
 @app.route('/lista-gerencias', methods=['GET'])
 def lista_gerencias():
@@ -288,11 +371,30 @@ def eliminar_gerencia(id_gerencia):
 
 @home_bp.route('/bitacora', methods=['GET'])
 def viewBitacora():
-    if 'conectado' in session:
-        return render_template('placeholder.html', title='Bitacora', message='Esta página está en desarrollo.', note='Contacto al administrador para habilitar esta función.')
-    else:
+    if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+
+    # Obtener filtros opcionales
+    filtro_usuario = request.args.get('usuario', '').strip()
+    filtro_modulo = request.args.get('modulo', '').strip()
+    filtro_accion = request.args.get('accion', '').strip()
+
+    registros = filtrar_bitacora(
+        usuario=filtro_usuario or None,
+        modulo=filtro_modulo or None,
+        accion=filtro_accion or None
+    )
+    estadisticas = obtener_estadisticas_bitacora()
+
+    return render_template(
+        'bitacora/lista_bitacora.html',
+        registros=registros,
+        estadisticas=estadisticas,
+        filtro_usuario=filtro_usuario,
+        filtro_modulo=filtro_modulo,
+        filtro_accion=filtro_accion
+    )
 
 @home_bp.route('/inf_avance_obra', methods=['GET'])
 def viewFormInforme_avan_obras():
@@ -308,86 +410,101 @@ def formSolicitud():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-    resultado = None
+    nuevo_id = False
     try:
-        from controllers.funciones_solicitud import crear_solicitante
-        resultado = crear_solicitante(request.form)
-    except Exception:
-        resultado = 0
+        nuevo_id = crear_solicitud(request.form)
+    except Exception as e:
+        print(f"[Router] Error al crear solicitud: {e}")
+        nuevo_id = False
 
-    if resultado:
+    if nuevo_id:
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'CREAR',
+            f'Solicitud #{nuevo_id} creada por {session.get("nombre", "")}'
+        )
+        flash('Solicitud registrada exitosamente.', 'success')
         return redirect(url_for('lista_solicitudes'))
     else:
-        flash('La solicitud NO fue registrada.', 'error')
-        return render_template(f'{PATH_URL}/form_solicitud.html')
+        flash('La solicitud NO fue registrada. Verifique los datos ingresados.', 'error')
+        return redirect(url_for('home_bp.viewFormSolicitud'))
 
 @app.route('/lista-de-solicitudes', methods=['GET'])
 def lista_solicitudes():
-    if 'conectado' in session:
-        from controllers.funciones_solicitud import obtener_solicitantes
-        return render_template(f'{PATH_URL}/lista_solicitudes.html', solicitudes=obtener_solicitantes())
-    else:
+    if 'conectado' not in session:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    solicitudes = obtener_solicitudes()
+    estadisticas = {}
+    try:
+        from models.model_solicitudes import SolicitudModel
+        estadisticas = SolicitudModel().obtener_estadisticas()
+    except Exception:
+        pass
+    return render_template(f'{PATH_URL}/lista_solicitudes.html',
+                           solicitudes=solicitudes, estadisticas=estadisticas)
+
+@app.route('/eliminar-solicitud/<int:id_solicitud>', methods=['GET'])
+def eliminar_solicitud_route(id_solicitud):
+    if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-@app.route('/eliminar-solicitud/<int:id_solicitud>', methods=['GET'])
-def eliminar_solicitud(id_solicitud):
-    if 'conectado' in session:
-        from controllers.funciones_solicitud import eliminar_solicitud_por_id
-        
-        if eliminar_solicitud_por_id(id_solicitud):
-            flash('Solicitud eliminada correctamente.', 'success')
-        else:
-            flash('Error al intentar eliminar la solicitud.', 'error')
-            
-        return redirect(url_for('lista_solicitudes'))
+    if eliminar_solicitud(id_solicitud):
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'ELIMINAR',
+            f'Solicitud #{id_solicitud} eliminada'
+        )
+        flash('Solicitud eliminada correctamente.', 'success')
     else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
+        flash('Error al intentar eliminar la solicitud.', 'error')
+    return redirect(url_for('lista_solicitudes'))
 
 @app.route('/editar-solicitud/<int:id_solicitud>', methods=['GET'])
 def viewEditarSolicitud(id_solicitud):
-    if 'conectado' in session:
-        from controllers.funciones_solicitud import obtener_solicitante_por_id
-        
-        solicitud = obtener_solicitante_por_id(id_solicitud)
-        
-        if solicitud:
-            # CORRECCIÓN: Apunta correctamente al archivo editar_solicitud.html
-            return render_template(f'{PATH_URL}/editar_solicitud.html', solicitud=solicitud)
-        else:
-            flash('La solicitud no existe.', 'error')
-            return redirect(url_for('lista_solicitudes'))
-    return redirect(url_for('login_bp.inicio'))
+    if 'conectado' not in session:
+        return redirect(url_for('login_bp.inicio'))
+    solicitud = obtener_solicitud_por_id(id_solicitud)
+    if solicitud:
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'VER',
+            f'Accedió a editar Solicitud #{id_solicitud}'
+        )
+        return render_template(f'{PATH_URL}/editar_solicitud.html', solicitud=solicitud)
+    else:
+        flash('La solicitud no existe.', 'error')
+        return redirect(url_for('lista_solicitudes'))
 
 @app.route('/update-solicitud', methods=['POST'])
 def update_solicitud():
-    if 'conectado' in session:
-        from controllers.funciones_solicitud import actualizar_datos_solicitud
-        
-        id_solicitud = request.form.get('id_solicitud')
-        
-        if actualizar_datos_solicitud(id_solicitud, request.form):
-            flash('Solicitud actualizada correctamente.', 'success')
-        else:
-            flash('Error al actualizar la solicitud.', 'error')
-            
-        return redirect(url_for('lista_solicitudes'))
-    return redirect(url_for('login_bp.inicio'))
+    if 'conectado' not in session:
+        return redirect(url_for('login_bp.inicio'))
+    id_solicitud = request.form.get('id_solicitud')
+    if actualizar_solicitud(id_solicitud, request.form):
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'EDITAR',
+            f'Solicitud #{id_solicitud} actualizada'
+        )
+        flash('Solicitud actualizada correctamente.', 'success')
+    else:
+        flash('Error al actualizar la solicitud. Verifique los datos.', 'error')
+    return redirect(url_for('lista_solicitudes'))
 
 @app.route("/detalles-solicitud/", methods=['GET'])
 @app.route("/detalles-solicitud/<int:idSolicitud>", methods=['GET'])
 def detalleSolicitud(idSolicitud=None):
-    if 'conectado' in session:
-        if idSolicitud is None:
-            return redirect(url_for('login_bp.inicio'))
-        else:
-            from controllers.funciones_solicitud import obtener_solicitante_por_id
-            detalle_solicitud = obtener_solicitante_por_id(idSolicitud) or []
-            return render_template(f'{PATH_URL}/detalles_solicitud.html', detalle_solicitud=detalle_solicitud)
-    else:
+    if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+    if idSolicitud is None:
+        return redirect(url_for('lista_solicitudes'))
+    detalle_solicitud = obtener_solicitud_por_id(idSolicitud)
+    if detalle_solicitud:
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'VER',
+            f'Detalles de Solicitud #{idSolicitud}'
+        )
+    return render_template(f'{PATH_URL}/detalles_solicitud.html',
+                           detalle_solicitud=detalle_solicitud or {})
 
 @app.route('/registrar-empleado', methods=['GET'])
 def viewFormRegistrarEmpleados():
@@ -400,7 +517,8 @@ def viewFormRegistrarEmpleados():
 @app.route('/empleados', methods=['GET'])
 def viewFormListarEmpleados():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL_LIST_EMPLEADOS}/empleados.html')
+        resp_empleadosBD = sql_lista_empleadosBD()
+        return render_template(f'{PATH_URL_LIST_EMPLEADOS}/empleados.html', resp_empleadosBD=resp_empleadosBD)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -421,7 +539,7 @@ def viewEditarEmpleado(id):
         respuestaEmpleado = buscarEmpleadoUnico(id)
         if respuestaEmpleado:
             # CORRECCIÓN: Se cambió de PATH_URL a PATH_URL_LIST_EMPLEADOS
-            return render_template(f'{PATH_URL_LIST_EMPLEADOS}/form_empleado_update.html', respuestaEmpleado=respuestaEmpleado)
+            return render_template(f'{PATH_URL_LIST_EMPLEADOS}/form_empleado_update.html', empleado=respuestaEmpleado)
         else:
             flash('El empleado no existe.', 'error')
             return redirect(url_for('login_bp.inicio'))
@@ -455,3 +573,4 @@ def viewFormReportesEstadisticos():
 
 # Registrar el blueprint en la aplicación
 app.register_blueprint(home_bp)
+app.register_blueprint(contrataciones_bp)

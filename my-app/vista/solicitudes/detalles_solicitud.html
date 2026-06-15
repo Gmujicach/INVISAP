@@ -41,11 +41,13 @@
                 <li class="list-group-item">
                   <strong>Estatus:</strong> 
                   {% if detalle_solicitud.estatus_solicitud == 'Pendiente' %}
-                    <span class="badge bg-warning text-dark">{{ detalle_solicitud.estatus_solicitud }}</span>
-                  {% elif detalle_solicitud.estatus_solicitud == 'Procesada' %}
-                    <span class="badge bg-success">{{ detalle_solicitud.estatus_solicitud }}</span>
+                    <span class="badge rounded-pill bg-warning text-dark"><i class="bi bi-clock-history me-1"></i>Pendiente</span>
+                  {% elif detalle_solicitud.estatus_solicitud == 'En Proceso' %}
+                    <span class="badge rounded-pill bg-primary"><i class="bi bi-arrow-repeat me-1"></i>En Proceso</span>
+                  {% elif detalle_solicitud.estatus_solicitud in ['Completada', 'Procesada'] %}
+                    <span class="badge rounded-pill bg-success"><i class="bi bi-check-circle me-1"></i>Completada</span>
                   {% else %}
-                    <span class="badge bg-secondary">{{ detalle_solicitud.estatus_solicitud }}</span>
+                    <span class="badge rounded-pill bg-secondary">{{ detalle_solicitud.estatus_solicitud }}</span>
                   {% endif %}
                 </li>
               </ul>

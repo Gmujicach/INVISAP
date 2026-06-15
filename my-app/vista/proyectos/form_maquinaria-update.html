@@ -1,0 +1,47 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | Editar Maquinaria{% endblock %}
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm" style="border-radius: 0px !important">
+        <div class="card-header bg-white border-bottom py-3">
+          <h5 class="mb-0 text-primary fw-bold">
+            <i class="bx bx-edit-alt me-2"></i>MODIFICAR MAQUINARIA
+          </h5>
+        </div>
+        
+        <form class="form-horizontal" method="POST" action="/actualizar-maquinaria" autocomplete="off">
+          <!-- Campo oculto para el ID -->
+          <input type="hidden" name="id_maquinaria" value="{{ maquinaria.id_maquinaria }}">
+          
+          <div class="card-body">
+            <div class="mb-4 mt-3">
+              <label for="nombre_maquinaria" class="form-label fw-bold">Nombre de la Maquinaria</label>
+              <input type="text" class="form-control shadow-sm" name="nombre_maquinaria" id="nombre_maquinaria" 
+                     value="{{ maquinaria.nombre_maquinaria }}" maxlength="50" placeholder="Ej: Camión Volteo..." required />
+            </div>
+
+            <div class="mb-3 text-center">
+              <button type="submit" class="btn rounded-pill btn-primary px-5 me-2">
+                Guardar Cambios
+                <i class="bx bx-save ms-1"></i>
+              </button>
+              <a href="/maquinaria" class="btn rounded-pill btn-outline-secondary px-4">
+                Cancelar
+              </a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+{% endblock %}

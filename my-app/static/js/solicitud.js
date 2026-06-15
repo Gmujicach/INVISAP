@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const regexTexto = /^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]{3,50}$/; 
   const regexCedula = /^\d{7,10}$/; 
   const regexTelefono = /^\d{10,12}$/; // Permite formatos tipo 04141234567
-  const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const regexCorreo = /^[a-zA-Z0-9._%+-ñÑáéíóúÁÉÍÓÚ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const regexRif = /^\d{8,9}$/; // 8 a 9 números para RIF
 
   /**

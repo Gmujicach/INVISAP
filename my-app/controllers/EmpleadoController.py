@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from models.empleados import EmpleadoModel
 
-empleado_bp = Blueprint('empleado_bp', __name__, template_folder='../vista/empleados', url_prefix='/empleados')
+# Se corrige template_folder para que apunte a la carpeta raíz de vistas
+empleado_bp = Blueprint('empleado_bp', __name__, template_folder='../vista', url_prefix='/empleados')
 
 model = EmpleadoModel()
 
@@ -13,7 +14,8 @@ def list_empleados():
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
     empleados = model.all()
-    return render_template('empleados.html', empleados=empleados)
+    # Se ajusta la ruta del template y el nombre de la variable para compatibilidad con JS
+    return render_template('empleados/empleados.html', resp_empleadosBD=empleados)
 
 
 @empleado_bp.route('/create', methods=['GET'])
@@ -21,7 +23,7 @@ def create_form():
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
-    return render_template('form_empleado.html')
+    return render_template('empleados/form_empleado.html')
 
 
 @empleado_bp.route('/create', methods=['POST'])
@@ -47,7 +49,7 @@ def edit_form(id_empleado):
     if not empleado:
         flash('Empleado no encontrado', 'error')
         return redirect(url_for('empleado_bp.list_empleados'))
-    return render_template('form_empleado_update.html', empleado=empleado)
+    return render_template('empleados/form_empleado_update.html', empleado=empleado)
 
 
 @empleado_bp.route('/update', methods=['POST'])

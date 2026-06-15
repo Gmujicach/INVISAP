@@ -33,13 +33,13 @@
       </a>
     </li>
     
-    <li
-      class="menu-item {% if request.path == '/registrar-contratacion' %} active {% endif %}">
-      <a href="{{ url_for('home_bp.viewFormContratacion') }}" class="menu-link">
-        <i class="menu-icon bi bi-person-bounding-box"></i>
-        <div data-i18n="Basic">Gestionar Contratación</div>
-      </a>
+    <li class="menu-item {% if request.path == '/contratacion' %} active {% endif %}">
+      <a href="{{ url_for('contrataciones_bp.gestionar_contrataciones') }}" class="menu-link">
+      <i class="menu-icon bi bi-person-bounding-box"></i>
+      <div data-i18n="Basic">Gestionar Contratación</div>
+     </a>
     </li>
+
     <li
       class="menu-item {% if request.path == '/gestionar-gravedad' %} active {% endif %}">
       <a href="{{ url_for('home_bp.viewFormGravedad') }}" class="menu-link">
