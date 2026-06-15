@@ -1,0 +1,100 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | Gestión de Publicaciones{% endblock %}
+
+{% block body %}
+<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
+  <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+    <h5 class="mb-0 text-primary fw-bold"><i class="bx bx-news me-2"></i>Gestión de Publicaciones</h5>
+    
+    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario" aria-expanded="false">
+      <i class="bx bx-plus"></i> Nueva Publicación
+    </button>
+  </div>
+
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Título</th>
+            <th>Responsable</th>
+            <th>Tipo</th>
+            <th>Fecha de Publicación</th>
+            <th class="text-center">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pub in publicaciones %}
+          <tr>
+            <td>{{ pub.id_publicaciones }}</td>
+            <td>{{ pub.titulo_publicacion }}</td>
+            <td>{{ pub.nombre_responsable }}</td>
+            <td><span class="badge bg-info text-dark">{{ pub.tipo_publicacion }}</span></td>
+            <td>{{ pub.fecha_publicacion }}</td>
+            <td class="text-center">
+              <a href="/eliminar-publicacion/{{ pub.id_publicaciones }}" class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar esta publicación?')">
+                <i class="bx bx-trash"></i>
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" class="text-center text-muted py-4">No hay publicaciones registradas.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Formulario de Registro (Colapsable) -->
+<div class="collapse mt-3" id="contenedorFormulario">
+  <div class="card shadow-sm" style="border-radius: 0px !important">
+    <div class="card-body">
+      <h4 class="text-center mb-4 text-secondary">Registrar Nueva Publicación</h4>
+      <hr class="w-75 mx-auto mb-4"/>
+      
+      <form action="/form-registrar-publicacion" method="POST" class="px-md-5">
+        <div class="row g-3">
+          <div class="col-md-12">
+            <label for="titulo_publicacion" class="form-label">Título de la Publicación</label>
+            <input type="text" class="form-control" name="titulo_publicacion" id="titulo_publicacion" required placeholder="Ej: Avance de Obra Av. Los Leones">
+          </div>
+          
+          <div class="col-md-6">
+            <label for="nombre_responsable" class="form-label">Nombre del Responsable</label>
+            <input type="text" class="form-control" name="nombre_responsable" id="nombre_responsable" required placeholder="Nombre y Apellido">
+          </div>
+          
+          <div class="col-md-3">
+            <label for="tipo_publicacion" class="form-label">Tipo</label>
+            <select class="form-select" name="tipo_publicacion" id="tipo_publicacion" required>
+              <option value="" selected disabled>Seleccione...</option>
+              <option value="Noticia">Noticia</option>
+              <option value="Informe">Informe</option>
+              <option value="Evento">Evento</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label for="fecha_publicacion" class="form-label">Fecha</label>
+            <input type="datetime-local" class="form-control" name="fecha_publicacion" id="fecha_publicacion" required>
+          </div>
+
+          <div class="col-12 text-center mt-4">
+            <button type="submit" class="btn btn-primary px-5 rounded-pill">
+              Guardar Publicación <i class="bx bx-save ms-1"></i>
+            </button>
+            <button type="button" class="btn btn-outline-secondary px-4 rounded-pill ms-2" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

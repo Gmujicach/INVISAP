@@ -7,14 +7,16 @@
 {% endblock %}
 
 {% block body %}
-<div class="container-fluid p-0">
+<div class="container-xxl flex-grow-1 container-p-y">
     <!-- Contenedor de carga mientras se activa el dashboard -->
-    <div class="text-center mt-5">
-        <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
-            <span class="visually-hidden">Cargando...</span>
+    <div class="d-flex flex-column align-items-center justify-content-center mt-5" style="min-height: 400px;">
+        <div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Procesando...</span>
         </div>
-        <h5 class="mt-3 fw-semibold">Cargando Gestión de Empleados...</h5>
-        <p class="text-muted">Iniciando panel interactivo.</p>
+        <div class="mt-4 text-center">
+            <h5 class="fw-bold text-primary mb-1">Cargando Gestión de Empleados</h5>
+            <p class="text-muted">Preparando panel interactivo e información del sistema...</p>
+        </div>
     </div>
 </div>
 {% endblock %}

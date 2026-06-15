@@ -228,7 +228,7 @@ class SolicitudModel:
         estatus = 'Pendiente'
         """Inserta una nueva solicitud y retorna su ID."""
         sql = """
-            INSERT INTO gestionar_solicitudes
+            INSERT INTO solicitudes
                 (fecha, telefono_solicitante, direccion_solicitante,
                  tipo_solicitud, estatus_solicitud, problematica,
                  tipo_solicitante, solicitante_id_comunidad)
@@ -255,7 +255,7 @@ class SolicitudModel:
                        gs.tipo_solicitante,
                        s.nombre_solicitante, s.rif, s.cedula, s.correo,
                        s.municipio, s.parroquia, s.ambito
-                FROM gestionar_solicitudes gs
+                FROM solicitudes gs
                 LEFT JOIN solicitante s ON gs.solicitante_id_comunidad = s.id_solicitante
                 ORDER BY gs.fecha DESC
             """
@@ -281,7 +281,7 @@ class SolicitudModel:
             sql = """
                 SELECT gs.*, s.nombre_solicitante, s.rif, s.cedula, s.correo,
                        s.municipio, s.parroquia, s.ambito
-                FROM gestionar_solicitudes gs
+                FROM solicitudes gs
                 LEFT JOIN solicitante s ON gs.solicitante_id_comunidad = s.id_solicitante
                 WHERE gs.id_solicitud = %s
             """
@@ -306,7 +306,7 @@ class SolicitudModel:
                 return False
             cursor = conn.cursor()
             sql = """
-                UPDATE gestionar_solicitudes
+                UPDATE solicitudes
                 SET estatus_solicitud = %s, problematica = %s
                 WHERE id_solicitud = %s
             """
@@ -332,7 +332,7 @@ class SolicitudModel:
             if conn is None:
                 return False
             cursor = conn.cursor()
-            sql = "DELETE FROM gestionar_solicitudes WHERE id_solicitud = %s"
+            sql = "DELETE FROM solicitudes WHERE id_solicitud = %s"
             cursor.execute(sql, (id_solicitud,))
             conn.commit()
             return cursor.rowcount > 0
@@ -456,7 +456,7 @@ class SolicitudModel:
             if conn is None:
                 return {}
             cursor = conn.cursor(dictionary=True)
-            sql = "SELECT estatus_solicitud, COUNT(*) as total FROM gestionar_solicitudes GROUP BY estatus_solicitud"
+            sql = "SELECT estatus_solicitud, COUNT(*) as total FROM solicitudes GROUP BY estatus_solicitud"
             cursor.execute(sql)
             rows = cursor.fetchall()
             return {r['estatus_solicitud']: r['total'] for r in rows}
