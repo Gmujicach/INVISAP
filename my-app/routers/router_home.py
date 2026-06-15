@@ -253,7 +253,7 @@ def eliminarProyecto(id_proyecto):
 @home_bp.route('/api/obtener-solicitudes-json', methods=['GET'])
 def api_obtener_solicitudes_json():
     if 'conectado' in session:
-        return jsonify(obtener_solicitantes())
+        return jsonify(obtener_solicitudes() or [])
     else:
         return jsonify([]), 401
 

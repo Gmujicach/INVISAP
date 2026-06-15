@@ -14,7 +14,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema invilara
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `invilara` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+CREATE SCHEMA IF NOT EXISTS `invilara2` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
 USE `invilara` ;
 
 -- -----------------------------------------------------

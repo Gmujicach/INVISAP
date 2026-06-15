@@ -44,9 +44,9 @@
             <td>{{ proyecto.fecha_planificacion }}</td>
             <td class="text-uppercase" style="font-size: 0.85rem;">{{ proyecto.nombre_solicitante or '—' }}</td>
             <td style="max-width: 250px; white-space: normal;">{{ proyecto.descripcion_tecnica or '—' }}</td>
-            <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.problematica_solicitud or '—' }}</td>
+            <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.problematica or '—' }}</td>
             <td><span class="badge bg-dark">{{ proyecto.nombre_maquinaria or 'Sin asignar' }}</span></td>
-            <td class="text-success fw-bold">{{ proyecto.estimacion_costo_proyecto or '0.00' }}</td>
+            <td class="text-success fw-bold">{{ proyecto.estimacion_costo or '0.00' }}</td>
             <td><span class="badge bg-info text-uppercase">{{ proyecto.inspecciones_previas or 'Ninguna' }}</span></td>
             <td class="text-center">
               <button type="button" class="btn btn-outline-info btn-sm" title="Ver detalle"
@@ -57,9 +57,9 @@
                       data-solicitante="{{ proyecto.nombre_solicitante or 'N/A' }}"
                       data-tipo="{{ proyecto.tipo_solicitud or 'N/A' }}"
                       data-descripcion="{{ proyecto.descripcion_tecnica or 'N/A' }}"
-                      data-problematica="{{ proyecto.problematica_solicitud or 'N/A' }}"
+                      data-problematica="{{ proyecto.problematica or 'N/A' }}"
                       data-computos="{{ proyecto.computos_metricos or 'N/A' }}"
-                      data-costo="{{ proyecto.estimacion_costo_proyecto or '0.00' }}"
+                      data-costo="{{ proyecto.estimacion_costo or '0.00' }}"
                       data-maquinaria="{{ proyecto.nombre_maquinaria or 'Sin asignar' }}"
                       data-inspecciones="{{ proyecto.inspecciones_previas or 'Ninguna' }}">
                 <i class="bx bx-show"></i>
@@ -304,7 +304,7 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
             </td>
         </tr>`;
 
-    fetch('/api/obtener-solicitudes-json')
+    fetch("{{ url_for('home_bp.api_obtener_solicitudes_json') }}")
         .then(response => {
             if (!response.ok) throw new Error('Error en el servidor');
             return response.json();
@@ -319,7 +319,7 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
 
             data.forEach((s, index) => {
                 let badgeHTML = '';
-                const estatus = (s.estatus_solicitud || '').toUpperCase();
+                const estatus = (s.estatus_solicitud || s.estatus || '').toUpperCase();
                 
                 if (estatus === 'PENDIENTE') {
                     badgeHTML = `<span class="badge bg-warning text-dark">PENDIENTE</span>`;
@@ -332,14 +332,14 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
                 contenidoHTML += `
                     <tr>
                         <td>${index + 1}</td>
-                        <td class="text-uppercase" style="font-size: 0.85rem;">${s.nombre_solicitante || '—'}</td>
-                        <td>${s.tipo_solicitud || '—'}</td>
+                        <td class="text-uppercase" style="font-size: 0.85rem;">${s.nombre_solicitante || s.solicitante || '—'}</td>
+                        <td>${s.tipo_solicitud || s.tipo || '—'}</td>
                         <td>${badgeHTML}</td>
-                        <td style="max-width:250px; white-space:normal;">${s.problematica || '—'}</td>
-                        <td>${s.fecha || '—'}</td>
+                        <td style="max-width:250px; white-space:normal;">${s.problematica || s.problematica_solicitud || '—'}</td>
+                        <td>${s.fecha || s.fecha_solicitud || s.fecha_registro || '—'}</td>
                         <td class="text-center">
                             <button type="button" class="btn btn-outline-primary btn-sm" 
-                                    onclick="seleccionarSolicitud('${(s.nombre_solicitante || '').replace(/'/g, "\\'")}', '${(s.tipo_solicitud || '').replace(/'/g, "\\'")}', '${(s.problematica || '').replace(/'/g, "\\'")}')">
+                                    onclick="seleccionarSolicitud('${(s.nombre_solicitante || s.solicitante || '').replace(/'/g, "\\'")}', '${(s.tipo_solicitud || s.tipo || '').replace(/'/g, "\\'")}', '${(s.problematica || s.problematica_solicitud || '').replace(/'/g, "\\'")}')">
                                 <i class="bx bx-check"></i> Seleccionar
                             </button>
                         </td>

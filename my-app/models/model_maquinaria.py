@@ -1,79 +1,77 @@
 from conexion.conexionBD import connectionBD
 
 class MaquinariaModel:
-    def registrar_maquinaria(self, nombre):
-        conexion = None
-        try:
-            conexion = connectionBD()
-            cursor = conexion.cursor()
-            sql = "INSERT INTO maquinaria (nombre_maquinaria) VALUES (%s)"
-            cursor.execute(sql, (nombre,))
-            conexion.commit()
-            return cursor.rowcount
-        except Exception as e:
-            print(f"Error en MaquinariaModel.registrar_maquinaria: {e}")
-            return False
-        finally:
-            if conexion: conexion.close()
-
     def obtener_maquinarias(self):
-        conexion = None
+        conexion = connectionBD()
+        cursor = None
         try:
-            conexion = connectionBD()
             cursor = conexion.cursor(dictionary=True)
             cursor.execute("SELECT * FROM maquinaria ORDER BY id_maquinaria DESC")
             return cursor.fetchall()
         except Exception as e:
-            print(f"Error en MaquinariaModel.obtener_maquinarias: {e}")
+            print(f"Error en obtener_maquinarias: {e}")
             return []
         finally:
-            if conexion: conexion.close()
+            if cursor: cursor.close()
+            conexion.close()
 
-    def obtener_maquinaria_por_id(self, id_maquinaria):
-        conexion = None
+    def registrar_maquinaria(self, nombre, tipo):
+        conexion = connectionBD()
+        cursor = None
         try:
-            conexion = connectionBD()
-            cursor = conexion.cursor(dictionary=True)
-            sql = "SELECT * FROM maquinaria WHERE id_maquinaria = %s"
-            cursor.execute(sql, (id_maquinaria,))
-            return cursor.fetchone()
-        except Exception as e:
-            print(f"Error en MaquinariaModel.obtener_maquinaria_por_id: {e}")
-            return None
-        finally:
-            if conexion: conexion.close()
-
-    def actualizar_maquinaria(self, id_maquinaria, nombre):
-        conexion = None
-        try:
-            conexion = connectionBD()
             cursor = conexion.cursor()
-            sql = "UPDATE maquinaria SET nombre_maquinaria = %s WHERE id_maquinaria = %s"
-            cursor.execute(sql, (nombre, id_maquinaria))
+            sql = "INSERT INTO maquinaria (nombre_maquinaria, tipo_maquinaria) VALUES (%s, %s)"
+            cursor.execute(sql, (nombre, tipo))
             conexion.commit()
             return cursor.rowcount
         except Exception as e:
-            print(f"Error en MaquinariaModel.actualizar_maquinaria: {e}")
-            return False
+            print(f"Error al registrar: {e}")
+            return 0
         finally:
-            if conexion: conexion.close()
+            if cursor: cursor.close()
+            conexion.close()
+
+    def obtener_maquinaria_por_id(self, id_maquinaria):
+        conexion = connectionBD()
+        cursor = None
+        try:
+            cursor = conexion.cursor(dictionary=True)
+            cursor.execute("SELECT * FROM maquinaria WHERE id_maquinaria = %s", (id_maquinaria,))
+            return cursor.fetchone()
+        except Exception as e:
+            print(f"Error al obtener por ID: {e}")
+            return None
+        finally:
+            if cursor: cursor.close()
+            conexion.close()
+
+    def actualizar_maquinaria(self, id_maquinaria, nombre, tipo):
+        conexion = connectionBD()
+        cursor = None
+        try:
+            cursor = conexion.cursor()
+            sql = "UPDATE maquinaria SET nombre_maquinaria = %s, tipo_maquinaria = %s WHERE id_maquinaria = %s"
+            cursor.execute(sql, (nombre, tipo, id_maquinaria))
+            conexion.commit()
+            return cursor.rowcount
+        except Exception as e:
+            print(f"Error al actualizar: {e}")
+            return 0
+        finally:
+            if cursor: cursor.close()
+            conexion.close()
 
     def eliminar_maquinaria(self, id_maquinaria):
-        conexion = None
+        conexion = connectionBD()
+        cursor = None
         try:
-            conexion = connectionBD()
-            cursor = conexion.cursor(dictionary=True)
-            
-            # Verificar si la maquinaria está siendo usada en algún proyecto
-            cursor.execute("SELECT COUNT(*) as total FROM gestionar_proyectos WHERE maquinaria_id_maquinaria = %s", (id_maquinaria,))
-            if cursor.fetchone()['total'] > 0:
-                return "utilizada"
-
+            cursor = conexion.cursor()
             cursor.execute("DELETE FROM maquinaria WHERE id_maquinaria = %s", (id_maquinaria,))
             conexion.commit()
             return cursor.rowcount
         except Exception as e:
-            print(f"Error en MaquinariaModel.eliminar_maquinaria: {e}")
-            return False
+            print(f"Error al eliminar: {e}")
+            return 0
         finally:
-            if conexion: conexion.close()
+            if cursor: cursor.close()
+            conexion.close()
