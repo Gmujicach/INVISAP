@@ -3,9 +3,9 @@ from conexion.conexionBD import connectionBD_invilara
 class PublicacionModel:
     def obtener_todas_las_publicaciones(self):
         try:
-            conexion = connectionBD_invilara()
+            conexion = connectionBD_invilara() # Asumiendo que esta es la conexión correcta a la base de datos de prueba completa
             cursor = conexion.cursor(dictionary=True)
-            cursor.execute("SELECT * FROM gestionar_publicaciones ORDER BY fecha_publicacion DESC")
+            cursor.execute("SELECT * FROM publicacion ORDER BY fecha_publicacion DESC")
             publicaciones = cursor.fetchall()
             return publicaciones
         except Exception as e:
@@ -19,11 +19,12 @@ class PublicacionModel:
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
-            sql = """INSERT INTO gestionar_publicaciones 
-                     (titulo_publicacion, nombre_responsable, tipo_publicacion, fecha_publicacion) 
-                     VALUES (%s, %s, %s, %s)"""
-            valores = (data['titulo_publicacion'], data['nombre_responsable'], 
-                       data['tipo_publicacion'], data['fecha_publicacion'])
+            sql = """INSERT INTO publicacion 
+                     (titulo_publicacion, autor_publicacion, fecha_publicacion, cuerpo_publicacion, evidencias) 
+                     VALUES (%s, %s, %s, %s, %s)"""
+            valores = (data['titulo_publicacion'], data['autor_publicacion'], 
+                       data['fecha_publicacion'], data['cuerpo_publicacion'],
+                       data.get('evidencias'))
             cursor.execute(sql, valores)
             conexion.commit()
             return cursor.rowcount
@@ -38,7 +39,7 @@ class PublicacionModel:
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor(dictionary=True)
-            cursor.execute("SELECT * FROM gestionar_publicaciones WHERE id_publicaciones = %s", (id_publicacion,))
+            cursor.execute("SELECT * FROM publicacion WHERE id_publicaciones = %s", (id_publicacion,))
             return cursor.fetchone()
         except Exception as e:
             print(f"Error en obtener_publicacion_por_id: {e}")
@@ -51,11 +52,12 @@ class PublicacionModel:
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
-            sql = """UPDATE gestionar_publicaciones 
-                     SET titulo_publicacion=%s, nombre_responsable=%s, tipo_publicacion=%s, fecha_publicacion=%s
+            sql = """UPDATE publicacion 
+                     SET titulo_publicacion=%s, autor_publicacion=%s, fecha_publicacion=%s, cuerpo_publicacion=%s, evidencias=%s
                      WHERE id_publicaciones=%s"""
-            valores = (data['titulo_publicacion'], data['nombre_responsable'], 
-                       data['tipo_publicacion'], data['fecha_publicacion'], id_publicacion)
+            valores = (data['titulo_publicacion'], data['autor_publicacion'], 
+                       data['fecha_publicacion'], data['cuerpo_publicacion'], 
+                       data.get('evidencias'), id_publicacion)
             cursor.execute(sql, valores)
             conexion.commit()
             return cursor.rowcount
@@ -70,7 +72,7 @@ class PublicacionModel:
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
-            cursor.execute("DELETE FROM gestionar_publicaciones WHERE id_publicaciones = %s", (id_publicacion,))
+            cursor.execute("DELETE FROM publicacion WHERE id_publicaciones = %s", (id_publicacion,))
             conexion.commit()
             return cursor.rowcount
         except Exception as e:

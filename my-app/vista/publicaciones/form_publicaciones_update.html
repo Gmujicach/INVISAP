@@ -1,0 +1,96 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | Editar Publicación{% endblock %}
+
+{% block custom_css %}
+<style>
+    .card-publication {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    .header-green {
+        background: linear-gradient(45deg, #08b324, #0bc92a);
+        color: white;
+    }
+    .form-label {
+        font-weight: 600;
+        color: #495057;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-publication shadow-sm border-0">
+                <div class="card-header header-green p-3">
+                    <h4 class="mb-0 fs-5"><i class="bi bi-pencil-square me-2"></i>Editar Publicación del Instituto</h4>
+                </div>
+                <div class="card-body p-4 bg-white">
+                    <p class="text-muted small mb-4">Modifique los campos necesarios para actualizar la publicación institucional.</p>
+                    
+                    <form action="{{ url_for('home_bp.formActualizarPublicacion') }}" method="POST">
+                        <input type="hidden" name="id_publicaciones" value="{{ publicacion.id_publicaciones }}">
+                        <div class="mb-3">
+                            <label for="titulo_publicacion" class="form-label">Título de la Publicación</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-type-h1"></i></span>
+                                <input type="text" name="titulo_publicacion" id="titulo_publicacion" class="form-control" value="{{ publicacion.titulo_publicacion }}" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="autor_publicacion" class="form-label">Autor</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-person-badge"></i></span>
+                                    <select name="autor_publicacion" id="autor_publicacion" class="form-select" required>
+                                        <option value="Presidencia" {% if publicacion.autor_publicacion == 'Presidencia' %}selected{% endif %}>Presidencia</option>
+                                        <option value="Gerencia General" {% if publicacion.autor_publicacion == 'Gerencia General' %}selected{% endif %}>Gerencia General</option>
+                                        <option value="Gerencia de Proyectos" {% if publicacion.autor_publicacion == 'Gerencia de Proyectos' %}selected{% endif %}>Gerencia de Proyectos</option>
+                                        <option value="Gerencia de Desarrollo Social" {% if publicacion.autor_publicacion == 'Gerencia de Desarrollo Social' %}selected{% endif %}>Gerencia de Desarrollo Social</option>
+                                        <option value="Oficina de Atención al Ciudadano" {% if publicacion.autor_publicacion == 'Oficina de Atención al Ciudadano' %}selected{% endif %}>Oficina de Atención al Ciudadano</option>
+                                        <option value="{{ publicacion.autor_publicacion }}" {% if publicacion.autor_publicacion not in ['Presidencia', 'Gerencia General', 'Gerencia de Proyectos', 'Gerencia de Desarrollo Social', 'Oficina de Atención al Ciudadano'] %}selected{% endif %}>{{ publicacion.autor_publicacion }} (Actual)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="fecha_publicacion" class="form-label">Fecha de Emisión</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light"><i class="bi bi-calendar-event"></i></span>
+                                    <input type="date" name="fecha_publicacion" id="fecha_publicacion" class="form-control" value="{{ publicacion.fecha_publicacion }}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="evidencias" class="form-label">Vincular Evidencias (Fotos de Obra)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-images"></i></span>
+                                <select name="evidencias" id="evidencias" class="form-select">
+                                    <option value="">-- Sin evidencias vinculadas --</option>
+                                    {% for informe in informes %}
+                                        <option value="{{ informe.id_informe }}" {% if publicacion.evidencias == informe.id_informe|string %}selected{% endif %}>Informe #{{ informe.id_informe }} - {{ informe.nombre_proyecto }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="cuerpo_publicacion" class="form-label">Contenido de la Publicación</label>
+                            <textarea name="cuerpo_publicacion" id="cuerpo_publicacion" class="form-control" rows="8" required>{{ publicacion.cuerpo_publicacion }}</textarea>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                            <a href="{{ url_for('home_bp.viewFormPublicaciones') }}" class="btn btn-outline-secondary px-4">Cancelar</a>
+                            <button type="submit" class="btn text-white px-5 shadow-sm" style="background-color: #08b324;">
+                                <i class="bi bi-arrow-repeat me-1"></i> Actualizar Publicación
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

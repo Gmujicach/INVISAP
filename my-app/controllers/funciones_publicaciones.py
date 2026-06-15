@@ -16,3 +16,7 @@ def eliminar_publicacion_controller(id_publicacion):
 def obtener_publicacion_por_id_controller(id_publicacion):
     modelo = PublicacionModel()
     return modelo.obtener_publicacion_por_id(id_publicacion)
+
+def actualizar_publicacion_controller(id_publicacion, data):
+    modelo = PublicacionModel()
+    return modelo.actualizar_publicacion(id_publicacion, data)
