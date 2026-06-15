@@ -222,25 +222,32 @@
             <h5 class="text-secondary border-bottom pb-2 mb-4"><i class="bi bi-card-text"></i> Detalles de la Solicitud</h5>
             <div class="row mb-3">
               <div class="col-md-6">
+                <label for="tipo_problematica" class="form-label fw-semibold">Tipo de Problemática</label>
+                <select class="form-select bg-white" name="tipo_problematica" id="tipo_problematica" required>
+                  <option value="" selected disabled>Seleccione categoría...</option>
+                  <option value="Servicios Básicos (Agua, Luz, Gas)">Servicios Básicos (Agua, Luz, Gas)</option>
+                  <option value="Infraestructura y Vialidad">Infraestructura y Vialidad</option>
+                  <option value="Salud y Asistencia Médica">Salud y Asistencia Médica</option>
+                  <option value="Educación y Deporte">Educación y Deporte</option>
+                  <option value="Seguridad Ciudadana">Seguridad Ciudadana</option>
+                  <option value="Vivienda">Vivienda</option>
+                  <option value="Otros">Otros</option>
+                </select>
+              </div>
+              <div class="col-md-6">
                 <label for="estatus" class="form-label fw-semibold">Estatus de la solicitud</label>
                 <select class="form-select bg-white" name="estatus">
-                  <option value="" selected disabled>Seleccione...</option>
-                  <option value="Pendiente">Pendiente</option>
+                  <option value="Pendiente" selected>Pendiente</option>
                   <option value="En Proceso">En Proceso</option>
                   <option value="Completada">Completada</option>
                 </select>
-              </div>
-
-              <div class="col-md-6">
-                <label for="fecha" class="form-label fw-semibold">Fecha y Hora</label>
-                <input class="form-control bg-white" type="datetime-local" name="fecha" required />
               </div>
             </div>
 
             <div class="row mb-3">
               <div class="col-md-12">
-                <label for="problematica" class="form-label fw-semibold">Problemática</label>
-                <textarea class="form-control bg-white" name="problematica" minlength="20" maxlength="500" rows="3" style="resize: none;" required placeholder="Describa la problemática de forma clara y concisa (Mínimo 20 caracteres)..."></textarea>
+                <label for="problematica" class="form-label fw-semibold">Descripción Detallada</label>
+                <textarea class="form-control bg-white" name="problematica" minlength="15" maxlength="500" rows="3" style="resize: none;" required placeholder="Describa la problemática de forma clara y concisa (Mínimo 15 caracteres)..."></textarea>
               </div>
             </div>
           </div>
@@ -305,10 +312,7 @@
   // Ejecutar el script externo (asumiendo que maneja el select de tipo_solicitud)
   // Pero me aseguraré de que cuando "Comunidad" se seleccione, o cuando el documento inicie, el comportamiento sea correcto.
   document.addEventListener('DOMContentLoaded', function() {
-    const now = new Date();
-    const tzoffset = (new Date()).getTimezoneOffset() * 60000;
-    const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 16);
-    document.querySelector('input[name="fecha"]').value = localISOTime;
+    // Inicialización del formulario si es necesario
   });
 </script>
 {% endblock %}

@@ -2,14 +2,18 @@ from app import app
 
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from mysql.connector.errors import Error
-from flask import Blueprint, render_template, request, flash, redirect, url_for, session
 
 # Importando conexión a BD y controladores
 from controllers.funciones_home import *
 from models.contratacion import ContratacionModel
 from controllers.contratacion import contrataciones_bp
-from controllers.UserController import user_bp 
-from controllers.funciones_solicitud import *
+from controllers.UserController import user_bp
+from controllers.funciones_solicitud import (
+    obtener_solicitudes, crear_solicitud, obtener_solicitud_por_id,
+    actualizar_solicitud, eliminar_solicitud
+)
+from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, obtener_estadisticas_bitacora
+from services.bitacora_service import BitacoraService
 from controllers.EmpleadoController import empleado_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
@@ -366,11 +370,30 @@ def eliminar_gerencia(id_gerencia):
 
 @home_bp.route('/bitacora', methods=['GET'])
 def viewBitacora():
-    if 'conectado' in session:
-        return render_template('placeholder.html', title='Bitacora', message='Esta página está en desarrollo.', note='Contacto al administrador para habilitar esta función.')
-    else:
+    if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+
+    # Obtener filtros opcionales
+    filtro_usuario = request.args.get('usuario', '').strip()
+    filtro_modulo = request.args.get('modulo', '').strip()
+    filtro_accion = request.args.get('accion', '').strip()
+
+    registros = filtrar_bitacora(
+        usuario=filtro_usuario or None,
+        modulo=filtro_modulo or None,
+        accion=filtro_accion or None
+    )
+    estadisticas = obtener_estadisticas_bitacora()
+
+    return render_template(
+        'bitacora/lista_bitacora.html',
+        registros=registros,
+        estadisticas=estadisticas,
+        filtro_usuario=filtro_usuario,
+        filtro_modulo=filtro_modulo,
+        filtro_accion=filtro_accion
+    )
 
 @home_bp.route('/inf_avance_obra', methods=['GET'])
 def viewFormInforme_avan_obras():
@@ -386,86 +409,101 @@ def formSolicitud():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-    resultado = None
+    nuevo_id = False
     try:
-        from controllers.funciones_solicitud import crear_solicitante
-        resultado = crear_solicitante(request.form)
-    except Exception:
-        resultado = 0
+        nuevo_id = crear_solicitud(request.form)
+    except Exception as e:
+        print(f"[Router] Error al crear solicitud: {e}")
+        nuevo_id = False
 
-    if resultado:
+    if nuevo_id:
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'CREAR',
+            f'Solicitud #{nuevo_id} creada por {session.get("nombre", "")}'
+        )
+        flash('Solicitud registrada exitosamente.', 'success')
         return redirect(url_for('lista_solicitudes'))
     else:
-        flash('La solicitud NO fue registrada.', 'error')
-        return render_template(f'{PATH_URL}/form_solicitud.html')
+        flash('La solicitud NO fue registrada. Verifique los datos ingresados.', 'error')
+        return redirect(url_for('home_bp.viewFormSolicitud'))
 
 @app.route('/lista-de-solicitudes', methods=['GET'])
 def lista_solicitudes():
-    if 'conectado' in session:
-        from controllers.funciones_solicitud import obtener_solicitantes
-        return render_template(f'{PATH_URL}/lista_solicitudes.html', solicitudes=obtener_solicitantes())
-    else:
+    if 'conectado' not in session:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    solicitudes = obtener_solicitudes()
+    estadisticas = {}
+    try:
+        from models.model_solicitudes import SolicitudModel
+        estadisticas = SolicitudModel().obtener_estadisticas()
+    except Exception:
+        pass
+    return render_template(f'{PATH_URL}/lista_solicitudes.html',
+                           solicitudes=solicitudes, estadisticas=estadisticas)
+
+@app.route('/eliminar-solicitud/<int:id_solicitud>', methods=['GET'])
+def eliminar_solicitud_route(id_solicitud):
+    if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-@app.route('/eliminar-solicitud/<int:id_solicitud>', methods=['GET'])
-def eliminar_solicitud(id_solicitud):
-    if 'conectado' in session:
-        from controllers.funciones_solicitud import eliminar_solicitud_por_id
-        
-        if eliminar_solicitud_por_id(id_solicitud):
-            flash('Solicitud eliminada correctamente.', 'success')
-        else:
-            flash('Error al intentar eliminar la solicitud.', 'error')
-            
-        return redirect(url_for('lista_solicitudes'))
+    if eliminar_solicitud(id_solicitud):
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'ELIMINAR',
+            f'Solicitud #{id_solicitud} eliminada'
+        )
+        flash('Solicitud eliminada correctamente.', 'success')
     else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
+        flash('Error al intentar eliminar la solicitud.', 'error')
+    return redirect(url_for('lista_solicitudes'))
 
 @app.route('/editar-solicitud/<int:id_solicitud>', methods=['GET'])
 def viewEditarSolicitud(id_solicitud):
-    if 'conectado' in session:
-        from controllers.funciones_solicitud import obtener_solicitante_por_id
-        
-        solicitud = obtener_solicitante_por_id(id_solicitud)
-        
-        if solicitud:
-            # CORRECCIÓN: Apunta correctamente al archivo editar_solicitud.html
-            return render_template(f'{PATH_URL}/editar_solicitud.html', solicitud=solicitud)
-        else:
-            flash('La solicitud no existe.', 'error')
-            return redirect(url_for('lista_solicitudes'))
-    return redirect(url_for('login_bp.inicio'))
+    if 'conectado' not in session:
+        return redirect(url_for('login_bp.inicio'))
+    solicitud = obtener_solicitud_por_id(id_solicitud)
+    if solicitud:
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'VER',
+            f'Accedió a editar Solicitud #{id_solicitud}'
+        )
+        return render_template(f'{PATH_URL}/editar_solicitud.html', solicitud=solicitud)
+    else:
+        flash('La solicitud no existe.', 'error')
+        return redirect(url_for('lista_solicitudes'))
 
 @app.route('/update-solicitud', methods=['POST'])
 def update_solicitud():
-    if 'conectado' in session:
-        from controllers.funciones_solicitud import actualizar_datos_solicitud
-        
-        id_solicitud = request.form.get('id_solicitud')
-        
-        if actualizar_datos_solicitud(id_solicitud, request.form):
-            flash('Solicitud actualizada correctamente.', 'success')
-        else:
-            flash('Error al actualizar la solicitud.', 'error')
-            
-        return redirect(url_for('lista_solicitudes'))
-    return redirect(url_for('login_bp.inicio'))
+    if 'conectado' not in session:
+        return redirect(url_for('login_bp.inicio'))
+    id_solicitud = request.form.get('id_solicitud')
+    if actualizar_solicitud(id_solicitud, request.form):
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'EDITAR',
+            f'Solicitud #{id_solicitud} actualizada'
+        )
+        flash('Solicitud actualizada correctamente.', 'success')
+    else:
+        flash('Error al actualizar la solicitud. Verifique los datos.', 'error')
+    return redirect(url_for('lista_solicitudes'))
 
 @app.route("/detalles-solicitud/", methods=['GET'])
 @app.route("/detalles-solicitud/<int:idSolicitud>", methods=['GET'])
 def detalleSolicitud(idSolicitud=None):
-    if 'conectado' in session:
-        if idSolicitud is None:
-            return redirect(url_for('login_bp.inicio'))
-        else:
-            from controllers.funciones_solicitud import obtener_solicitante_por_id
-            detalle_solicitud = obtener_solicitante_por_id(idSolicitud) or []
-            return render_template(f'{PATH_URL}/detalles_solicitud.html', detalle_solicitud=detalle_solicitud)
-    else:
+    if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+    if idSolicitud is None:
+        return redirect(url_for('lista_solicitudes'))
+    detalle_solicitud = obtener_solicitud_por_id(idSolicitud)
+    if detalle_solicitud:
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'VER',
+            f'Detalles de Solicitud #{idSolicitud}'
+        )
+    return render_template(f'{PATH_URL}/detalles_solicitud.html',
+                           detalle_solicitud=detalle_solicitud or {})
 
 @app.route('/registrar-empleado', methods=['GET'])
 def viewFormRegistrarEmpleados():

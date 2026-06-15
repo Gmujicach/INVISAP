@@ -1,47 +1,53 @@
-# my-app/controllers/funciones_solicitud.py
+"""
+funciones_solicitud.py — Controlador de Solicitudes.
+
+Principio SRP: Solo coordina entre router y modelo.
+No contiene lógica de negocio ni SQL.
+"""
 from models.model_solicitudes import SolicitudModel
 
 
-def obtener_solicitantes():
-    """
-    Devuelve todas las solicitudes registradas en la base de datos invilara.
-    """
-    modelo = SolicitudModel()
-    return modelo.obtener_todas_las_solicitudes()
+def _get_modelo() -> SolicitudModel:
+    """Fábrica del modelo (DRY)."""
+    return SolicitudModel()
 
 
-def crear_solicitante(datos_formulario):
+def obtener_solicitudes() -> list:
+    """Retorna todas las solicitudes registradas."""
+    return _get_modelo().obtener_todas_las_solicitudes()
+
+
+def crear_solicitud(datos_formulario: dict):
     """
-    Crea el solicitante o lo recupera y registra la solicitud en invilara.
+    Crea una nueva solicitud.
+    Retorna el ID de la nueva solicitud o False si falla.
     """
     if not datos_formulario.get('tipo_solicitud') or not datos_formulario.get('problematica'):
         return False
-
-    modelo = SolicitudModel()
-    return modelo.crear_nueva_solicitud(datos_formulario)
+    return _get_modelo().crear_nueva_solicitud(datos_formulario)
 
 
-def obtener_solicitante_por_id(id_solicitud):
-    """
-    Recupera los datos de una solicitud por su identificador.
-    """
-    modelo = SolicitudModel()
-    return modelo.obtener_solicitud_por_id(id_solicitud)
+def obtener_solicitud_por_id(id_solicitud) -> dict | None:
+    """Retorna los datos de una solicitud específica."""
+    if not id_solicitud:
+        return None
+    return _get_modelo().obtener_solicitud_por_id(id_solicitud)
 
 
-def eliminar_solicitud_por_id(id_solicitud):
-    """
-    Solicita al modelo que elimine un registro por su ID.
-    """
-    modelo = SolicitudModel()
-    return modelo.eliminar_solicitud(id_solicitud)
-
-def actualizar_datos_solicitud(id_solicitud, datos_formulario):
-    """
-    Solicita al modelo la actualización de los datos de la solicitud.
-    """
+def actualizar_solicitud(id_solicitud, datos_formulario: dict) -> bool:
+    """Actualiza el estatus y problemática de una solicitud."""
     if not id_solicitud or not datos_formulario:
         return False
-    
-    modelo = SolicitudModel()
-    return modelo.actualizar_solicitud(id_solicitud, datos_formulario)
+    return _get_modelo().actualizar_solicitud(id_solicitud, datos_formulario)
+
+
+def eliminar_solicitud(id_solicitud) -> bool:
+    """Elimina una solicitud por su ID."""
+    if not id_solicitud:
+        return False
+    return _get_modelo().eliminar_solicitud(id_solicitud)
+
+
+def obtener_estadisticas_solicitudes() -> dict:
+    """Retorna estadísticas agrupadas por estatus."""
+    return _get_modelo().obtener_estadisticas()
