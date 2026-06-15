@@ -262,34 +262,86 @@ def api_obtener_solicitudes_json():
 @contrataciones_bp.route('/contrataciones', methods=['GET'])
 def gestionar_contrataciones():
     if 'conectado' in session:
-        # Importamos la maquinaria (ajusta esto si tu modelo está en otra parte)
-        from models.model_maquinaria import MaquinariaModel
+        modelo = ContratacionModel()
+        lista = modelo.obtener_todas_las_contrataciones()
         
-        lista_proyectos = ProyectoModel().obtener_proyectos()
-        lista_maquinarias = MaquinariaModel().obtener_maquinarias()
-        lista_empresas = EmpresaModel().obtener_empresas()
-        lista_contrataciones = ContratacionModel().obtener_todas_las_contrataciones()
+        return render_template('contratacion/form_contratacion.html', contrataciones=lista)
         
-        # Enviamos a form_contratacion.html (Asegúrate de que la carpeta se llame 'contratacion')
-        return render_template('contratacion/form_contratacion.html', 
-                               contrataciones=lista_contrataciones,
-                               proyectos=lista_proyectos,
-                               maquinarias=lista_maquinarias,
-                               empresas=lista_empresas)
     return redirect(url_for('login_bp.inicio'))
-    
+
+@contrataciones_bp.route('/api/obtener-empresas-json', methods=['GET'])
+def obtener_empresas_json():
+    if 'conectado' in session:
+        modelo = ContratacionModel()
+        empresas = modelo.obtener_empresas()
+        return jsonify(empresas)
+    return jsonify([]), 401
+
 @contrataciones_bp.route('/registrar-contratacion', methods=['POST'])
 def procesar_registro():
     if 'conectado' in session:
         modelo = ContratacionModel()
-        
         if modelo.registrar_contrataciones(request.form):
-            flash('Contratación registrada correctamente', 'success')
+            flash('Contratacion Registrada correctamente', 'success')
         else:
-            flash('Error al guardar en la base de datos', 'error')
+            flash('Error al guardar', 'error')
             
+
+        return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
+        
+    return redirect(url_for('login_bp.inicio'))
+
+
+@contrataciones_bp.route('/editar-contratacion/<int:id>', methods=['GET'])
+def vista_editar(id):
+    if 'conectado' in session:
+        modelo = ContratacionModel()
+        contratacion_data = modelo.obtener_contratacion_por_id(id)
+        
+        if contratacion_data:
+            
+            campos_fecha = ['fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro']
+            
+            for campo in campos_fecha:
+                if contratacion_data.get(campo):
+                    if hasattr(contratacion_data[campo], 'strftime'):
+                        contratacion_data[campo] = contratacion_data[campo].strftime('%Y-%m-%d')
+                    else:
+                        contratacion_data[campo] = str(contratacion_data[campo])[:10]
+            
+            return render_template('contratacion/form_contratacionM.html', contratacion=contratacion_data)
+        
+        flash('Contratación no encontrada', 'error')
         return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
     return redirect(url_for('login_bp.inicio'))
+
+
+@contrataciones_bp.route('/actualizar-contratacion', methods=['POST'])
+def procesar_actualizacion():
+    if 'conectado' in session:
+        modelo = ContratacionModel()
+        if modelo.actualizar_contratacion(request.form):
+            flash('Contratación modificada correctamente', 'success')
+        else:
+            flash('Error al intentar actualizar el registro', 'error')
+        return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
+    return redirect(url_for('login_bp.inicio'))
+
+@contrataciones_bp.route('/eliminar-contratacion/<int:id>', methods=['GET'])
+def eliminar_contratacion(id):
+    if 'conectado' in session:
+        modelo = ContratacionModel()
+        
+        if modelo.eliminar_contratacion(id):
+            flash('Contratación eliminada correctamente', 'success')
+        else:
+            flash('No se pudo eliminar la contratación o está vinculada a otro registro', 'error')
+            
+        return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
+        
+    return redirect(url_for('login_bp.inicio'))
+
+
 
 @home_bp.route('/inspectores', methods=['GET'])
 def viewFormInspectores():
