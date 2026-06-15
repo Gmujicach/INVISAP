@@ -13,7 +13,7 @@
       <i class="bx bx-plus"></i> Registrar Informe
     </button>
   </div>
-  
+
   <div class="card-body">
     <div class="table-responsive">
       <table class="table table-bordered table-striped table-hover align-middle">
@@ -30,15 +30,15 @@
           </tr>
         </thead>
         <tbody>
-          {% for empresa in empresas %}
+          {% for informe in informes%}
           <tr>
-            <td>{{ empresa.id_empresa }}</td>
-            <td>{{ empresa.nombre }}</td>
-            <td>{{ empresa.rut }}</td>
-            <td><span class="badge bg-info">{{ empresa.tipo_contrato }}</span></td>
-            <td>{{ empresa.correo }}</td>
-            <td>{{ empresa.fecha_creada }}</td>
-            <td>{{ empresa.fecha_actualizacion }}</td>
+            <td>{{ informe.id_informe }}</td>
+            <td>{{ informe.recurso }}</td>
+            <td>{{ informe.estado }}</td>
+            <td>{{ informe.logro }}</td>
+            <td>{{ informe.tipo_informe }}</td>
+            <td>{{ informe.poblacion_beneficiada }}</td>
+            <td>{{ informe.fecha }}</td>
             <td class="text-center">
               <a href="#" class="btn btn-outline-info btn-sm" title="Ver detalle"><i class="bx bx-show"></i></a>
               <a href="#" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
@@ -67,13 +67,13 @@
 
     <div class="row justify-content-center mb-4">
       <div class="col-md-10">
-        <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-empresa" autocomplete="off">
+        <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-informe-avance-obra" autocomplete="off">
           <div class="card-body pt-0">
             
             <div class="row mb-3 mt-3">
               <div class="col-md-6">
-                <label for="nombre_empresa" class="form-label">Recurso</label>
-                <input type="text" class="form-control" name="nombre_empresa" id="nombre_empresa" maxlength="100" placeholder="Ej: Asfalto" required />
+                <label for="id_informe" class="form-label">Recurso</label>
+                <input type="text" class="form-control" name="id_informe" id="id_informe" maxlength="100" placeholder="Ej: Asfalto" required />
               </div>
               <div class="col-md-6">
                 <label for="estado" class="form-label">Estado</label>

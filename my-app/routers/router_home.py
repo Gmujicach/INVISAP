@@ -17,6 +17,7 @@ from services.bitacora_service import BitacoraService
 from controllers.EmpleadoController import empleado_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
+from controllers.funciones_publicaciones import *
 from controllers.funciones_proyecto import *
 from controllers.funciones_maquinaria import *
 from models.model_empresa import EmpresaModel
@@ -252,7 +253,7 @@ def eliminarProyecto(id_proyecto):
 @home_bp.route('/api/obtener-solicitudes-json', methods=['GET'])
 def api_obtener_solicitudes_json():
     if 'conectado' in session:
-        return jsonify(obtener_solicitantes())
+        return jsonify(obtener_solicitudes() or [])
     else:
         return jsonify([]), 401
 

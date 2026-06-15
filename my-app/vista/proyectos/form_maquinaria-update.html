@@ -1,47 +1,44 @@
 {% extends 'base_cpanel.html' %}
-{% block title %}INVISAP | Editar Maquinaria{% endblock %}
-{% block customCSS %}
-<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
-{% endblock %}
+{% block title %}Editar Maquinaria{% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card shadow-sm" style="border-radius: 0px !important">
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4 text-primary">MODIFICAR MAQUINARIA</h4>
+    <div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
         <div class="card-header bg-white border-bottom py-3">
-          <h5 class="mb-0 text-primary fw-bold">
-            <i class="bx bx-edit-alt me-2"></i>MODIFICAR MAQUINARIA
-          </h5>
+            <h5 class="mb-0 fw-bold text-warning"><i class="bx bx-edit me-1"></i> Editando Registro #{{ maquinaria.id_maquinaria }}</h5>
         </div>
-        
-        <form class="form-horizontal" method="POST" action="/actualizar-maquinaria" autocomplete="off">
-          <!-- Campo oculto para el ID -->
-          <input type="hidden" name="id_maquinaria" value="{{ maquinaria.id_maquinaria }}">
-          
-          <div class="card-body">
-            <div class="mb-4 mt-3">
-              <label for="nombre_maquinaria" class="form-label fw-bold">Nombre de la Maquinaria</label>
-              <input type="text" class="form-control shadow-sm" name="nombre_maquinaria" id="nombre_maquinaria" 
-                     value="{{ maquinaria.nombre_maquinaria }}" maxlength="50" placeholder="Ej: Camión Volteo..." required />
-            </div>
-
-            <div class="mb-3 text-center">
-              <button type="submit" class="btn rounded-pill btn-primary px-5 me-2">
-                Guardar Cambios
-                <i class="bx bx-save ms-1"></i>
-              </button>
-              <a href="/maquinaria" class="btn rounded-pill btn-outline-secondary px-4">
-                Cancelar
-              </a>
-            </div>
-          </div>
-        </form>
-      </div>
+        <div class="card-body">
+            <form action="{{ url_for('home_bp.formActualizarMaquinaria') }}" method="POST" class="mt-3">
+                <input type="hidden" name="id_maquinaria" value="{{ maquinaria.id_maquinaria }}">
+                
+                <div class="row">
+                    <div class="col-md-8 mb-3">
+                        <label class="form-label fw-bold">Nombre de la Maquinaria</label>
+                        <input type="text" name="nombre_maquinaria" class="form-control" value="{{ maquinaria.nombre_maquinaria }}" required>
+                    </div>
+                    
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-bold">Tipo de Maquinaria</label>
+                        <select name="tipo_maquinaria" id="tipo_maquinaria" class="form-select" required>
+                            <option value="Pesada" {{ 'selected' if maquinaria.tipo_maquinaria == 'Pesada' }}>Pesada</option>
+                            <option value="Liviana" {{ 'selected' if maquinaria.tipo_maquinaria == 'Liviana' }}>Liviana</option>
+                            <option value="Herramienta" {{ 'selected' if maquinaria.tipo_maquinaria == 'Herramienta' }}>Herramienta</option>
+                            <option value="Vehículo" {{ 'selected' if maquinaria.tipo_maquinaria == 'Vehículo' }}>Vehículo</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-end gap-2 mt-3">
+                    <a href="{{ url_for('home_bp.viewFormMaquinaria') }}" class="btn btn-outline-secondary px-4">
+                        <i class="bx bx-arrow-back"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-warning px-4 fw-bold">
+                        <i class="bx bx-refresh"></i> Actualizar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
-{% endblock %}
-
-{% block customJS %}
 {% endblock %}

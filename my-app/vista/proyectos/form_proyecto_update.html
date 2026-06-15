@@ -40,7 +40,7 @@
 
             <div class="mb-4">
               <label class="form-label fw-semibold text-muted">Problemática de la Solicitud</label>
-              <textarea class="form-control bg-light" rows="2" readonly name="problematica_p">{{ proyecto.problematica_solicitud or 'No hay problemática registrada' }}</textarea>
+              <textarea class="form-control bg-light" rows="2" readonly name="problematica_p">{{ proyecto.problematica or 'No hay problemática registrada' }}</textarea>
             </div>
             <hr class="mb-4 text-muted">
 
@@ -71,7 +71,7 @@
               </div>
               <div class="col-md-6">
                 <label for="estimacion_p" class="form-label fw-bold text-secondary">Estimación de Costo</label>
-                <input type="text" class="form-control shadow-sm" name="estimacion_p" id="estimacion_p" value="{{ proyecto.estimacion_costo_proyecto if proyecto.estimacion_costo_proyecto else '' }}" placeholder="Ej: 50.000,00" />
+                <input type="text" class="form-control shadow-sm" name="estimacion_p" id="estimacion_p" value="{{ proyecto.estimacion_costo if proyecto.estimacion_costo else '' }}" placeholder="Ej: 50.000,00" />
               </div>
             </div>
 
