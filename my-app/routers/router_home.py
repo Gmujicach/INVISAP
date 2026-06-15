@@ -9,6 +9,7 @@ from controllers.funciones_solicitud import *
 from controllers.EmpleadoController import empleado_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
+from controllers.funciones_publicaciones import *
 from controllers.funciones_proyecto import *
 from controllers.funciones_maquinaria import *
 
