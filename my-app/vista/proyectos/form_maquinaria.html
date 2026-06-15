@@ -1,91 +1,76 @@
 {% extends 'base_cpanel.html' %}
-{% block title %}INVISAP | Gestión de Maquinaria{% endblock %}
-{% block customCSS %}
-<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
-{% endblock %}
+{% block title %}Registrar Maquinaria{% endblock %}
 
 {% block body %}
-<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
-  <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
-    <h5 class="mb-0 text-primary fw-bold">MAQUINARIA REGISTRADA</h5>
-    
-    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario" aria-expanded="false" aria-controls="contenedorFormulario">
-      <i class="bx bx-plus"></i> Añadir Maquinaria
-    </button>
-  </div>
-  
-  <div class="card-body">
-    <div class="table-responsive">
-      <table class="table table-bordered table-striped table-hover align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>#</th>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4 text-primary">GESTIÓN DE MAQUINARIA</h4>
+
+    <!-- Sección de Registro (Ancho Completo) -->
+    <div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
+        <div class="card-header bg-white border-bottom py-3">
+            <h5 class="mb-0 fw-bold"><i class="bx bx-plus me-1"></i> Registrar Nueva Maquinaria</h5>
+        </div>
+        <div class="card-body mt-3">
+            <form action="{{ url_for('home_bp.formRegistrarMaquinaria') }}" method="POST" autocomplete="off">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Nombre de la Maquinaria</label>
+                        <input type="text" name="nombre_maquinaria" class="form-control" placeholder="Ej: Excavadora CAT 320" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-semibold">Tipo de Maquinaria</label>
+                        <select name="tipo_maquinaria" id="tipo_maquinaria" class="form-select" required>
+                            <option value="" disabled selected>Seleccione el tipo...</option>
+                            <option value="Pesada">Pesada</option>
+                            <option value="Liviana">Liviana</option>
+                            <option value="Herramienta">Herramienta</option>
+                            <option value="Vehículo">Vehículo</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 mb-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bx bx-save"></i> Registrar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sección de Lista (Ancho Completo) -->
+    <div class="card shadow-sm" style="border-radius: 0px !important">
+        <div class="card-header bg-white border-bottom py-3">
+            <h5 class="mb-0 fw-bold text-secondary"><i class="bx bx-list-ul me-1"></i> Inventario de Maquinaria</h5>
+        </div>
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
         
-            <th>Nombre de la Maquinaria</th>
-            <th class="text-center">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for maquinaria in maquinarias %}
-          <tr>
-            <td>{{ loop.index }}</td>
-            
-            <td class="text-uppercase">{{ maquinaria.nombre_maquinaria }}</td>
-            <td class="text-center">
-              <a href="{{ url_for('home_bp.viewEditarMaquinaria', id_maquinaria=maquinaria.id_maquinaria) }}" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
-              <a href="{{ url_for('home_bp.eliminarMaquinaria', id_maquinaria=maquinaria.id_maquinaria) }}" 
-                 class="btn btn-outline-danger btn-sm" 
-                 title="Eliminar"
-                 onclick="return confirm('¿Estás seguro de que deseas eliminar este registro?')"><i class="bx bx-trash"></i></a>
-            </td>
-          </tr>
-          {% else %}
-          <tr>
-            <td colspan="3" class="text-center text-muted py-4">No hay maquinaria registrada en el sistema.</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+                        <th>Nombre de Maquinaria</th>
+                        <th>Tipo</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                    {% for maq in maquinarias %}
+                    <tr>
+                        
+                        <td>{{ maq.nombre_maquinaria|upper }}</td>
+                        <td><span class="badge bg-dark">{{ maq.tipo_maquinaria }}</span></td>
+                        <td class="text-center">
+                            <a class="btn btn-sm btn-outline-warning" href="{{ url_for('home_bp.viewEditarMaquinaria', id_maquinaria=maq.id_maquinaria) }}" title="Editar">
+                                <i class="bx bx-edit-alt"></i> Editar
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger" href="{{ url_for('home_bp.eliminarMaquinaria', id_maquinaria=maq.id_maquinaria) }}" onclick="return confirm('¿Eliminar esta maquinaria?')" title="Eliminar">
+                                <i class="bx bx-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
 </div>
-
-<div class="collapse mt-3" id="contenedorFormulario">
-  <div class="card shadow-sm" style="border-radius: 0px !important">
-    <div class="row justify-content-center mb-2">
-      <div class="col-md-12">
-        <h4 class="text-center mt-5 mb-3 text-secondary">REGISTRAR NUEVA MAQUINARIA</h4>
-        <hr class="w-75 mx-auto"/>
-      </div>
-    </div>
-
-    <div class="row justify-content-center mb-4">
-      <div class="col-md-6">
-        <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-maquinaria" autocomplete="off">
-          <div class="card-body pt-0">
-            
-            <div class="mb-4 mt-3">
-              <label for="nombre_maquinaria" class="form-label fw-bold">Nombre de la Maquinaria</label>
-              <input type="text" class="form-control shadow-sm" name="nombre_maquinaria" id="nombre_maquinaria" maxlength="50" placeholder="Ej: Camión Volteo, Retroexcavadora..." required />
-            </div>
-
-            <div class="mb-3 text-center">
-              <button type="submit" class="btn rounded-pill btn-primary px-5 me-2">
-                Guardar Registro
-                <i class="bx bx-save ms-1"></i>
-              </button>
-              <button class="btn rounded-pill btn-outline-secondary px-4" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario">
-                Cancelar
-              </button>
-            </div>
-            
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-{% endblock %} 
-
-{% block customJS %}
 {% endblock %}

@@ -8,36 +8,25 @@ class ContratacionModel:
             
         try:
             cursor = conexion.cursor()
-            sql = """INSERT INTO gestionar_contrataciones (
-                descripcion, empresa_ganadora, numero_contrato, monto, tipo_contrato, 
-                fecha_inicio_procedimiento, fecha_adjudicacion, fecha_registro, 
-                modalidad, objeto, observacion, 
-                gestionar_proyectos_id_proyectos, gestionar_proyectos_maquinaria_id_maquinaria, 
-                empresa_rif, empresa_gestionar_proyectos_id_proyectos, 
-                empresa_gestionar_proyectos_maquinaria_id_maquinaria
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            sql = """INSERT INTO contratacion (
+                descripcion, empresa_ganadora, numero_contrato, monto, 
+                fecha_inicio_procedimiento, fecha_adjudicacion, tipo_contrato, 
+                modalidad, objeto, observacion, fecha_registro, empresa_rif
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
             
             valores = (
                 datos.get('descripcion'), 
                 datos.get('empresa_ganadora'), 
                 datos.get('numero_contrato'), 
                 datos.get('monto'), 
-                datos.get('tipo_contrato'), 
-                datos.get('fecha_inicio'), 
+                datos.get('fecha_inicio_procedimiento'), 
                 datos.get('fecha_adjudicacion'), 
-                datos.get('fecha_registro'), 
+                datos.get('tipo_contrato'), 
                 datos.get('modalidad'), 
                 datos.get('objeto'), 
                 datos.get('observacion'), 
-                
-                # Relaciones principales
-                datos.get('id_proyecto'), 
-                datos.get('id_maquinaria'), 
-                datos.get('empresa_rif'), 
-                
-                # AQUÍ ESTÁ EL TRUCO: Reutilizamos los IDs para cumplir con la DB
-                datos.get('id_proyecto'), 
-                datos.get('id_maquinaria')
+                datos.get('fecha_registro'), 
+                datos.get('empresa_rif')
             )
             
             cursor.execute(sql, valores)
@@ -56,19 +45,99 @@ class ContratacionModel:
             
         try:
             cursor = conexion.cursor(dictionary=True)
-            # Hacemos JOINs para traer los nombres reales
+            
             sql = """
-            SELECT c.*, 
-                   p.codigo_proyecto as nombre_proyecto, 
-                   m.nombre_maquinaria as nombre_maquinaria
-            FROM gestionar_contrataciones c
-            LEFT JOIN gestionar_proyectos p ON c.gestionar_proyectos_id_proyectos = p.id_proyectos
-            LEFT JOIN maquinaria m ON c.gestionar_proyectos_maquinaria_id_maquinaria = m.id_maquinaria
+            SELECT c.*, e.nombre_empresa 
+            FROM contratacion c
+            LEFT JOIN empresa e ON c.empresa_rif = e.rif
             """
+            
             cursor.execute(sql)
             return cursor.fetchall()
         except Exception as e:
             print(f"--- [ERROR AL CONSULTAR]: {e} ---")
             return []
+        finally:
+            if conexion: conexion.close()
+
+
+    def obtener_empresas(self):
+        conexion = connectionBD()
+        if conexion is None: return []
+            
+        try:
+            cursor = conexion.cursor(dictionary=True)
+            # Consultamos el RIF y el Nombre exacto de la tabla empresa
+            sql = "SELECT rif, nombre_empresa FROM empresa"
+            cursor.execute(sql)
+            return cursor.fetchall()
+        except Exception as e:
+            print(f"--- [ERROR AL OBTENER EMPRESAS PARA MODAL]: {e} ---")
+            return []
+        finally:
+            if conexion: conexion.close()
+
+    def obtener_contratacion_por_id(self, id_contratacion):
+        conexion = connectionBD()
+        if conexion is None: return None
+        try:
+            cursor = conexion.cursor(dictionary=True)
+            sql = "SELECT * FROM contratacion WHERE id_contratacion = %s"
+            cursor.execute(sql, (id_contratacion,))
+            return cursor.fetchone()
+        except Exception as e:
+            print(f"--- [ERROR AL BUSCAR UNA CONTRATACION]: {e} ---")
+            return None
+        finally:
+            if conexion: conexion.close()
+
+
+    def actualizar_contratacion(self, datos):
+        conexion = connectionBD()
+        if conexion is None: return False
+        try:
+            cursor = conexion.cursor()
+            sql = """UPDATE contratacion SET 
+                descripcion = %s, empresa_ganadora = %s, numero_contrato = %s, monto = %s, 
+                fecha_inicio_procedimiento = %s, fecha_adjudicacion = %s, tipo_contrato = %s, 
+                modalidad = %s, objeto = %s, observacion = %s, fecha_registro = %s, empresa_rif = %s 
+                WHERE id_contratacion = %s"""
+            valores = (
+                datos.get('descripcion'),
+                datos.get('empresa_ganadora'),
+                datos.get('numero_contrato'),
+                datos.get('monto'),
+                datos.get('fecha_inicio_procedimiento'),
+                datos.get('fecha_adjudicacion'),
+                datos.get('tipo_contrato'),
+                datos.get('modalidad'),
+                datos.get('objeto'),
+                datos.get('observacion'),
+                datos.get('fecha_registro'),
+                datos.get('empresa_rif'),
+                datos.get('id_contratacion')
+            )
+            cursor.execute(sql, valores)
+            conexion.commit()
+            return True
+        except Exception as e:
+            print(f"--- [ERROR DETALLADO UPDATE]: {e} ---")
+            return False
+        finally:
+            if conexion: conexion.close()
+
+    def eliminar_contratacion(self, id_contratacion):
+        conexion = connectionBD()
+        if conexion is None: return False
+            
+        try:
+            cursor = conexion.cursor()
+            sql = "DELETE FROM contratacion WHERE id_contratacion = %s"
+            cursor.execute(sql, (id_contratacion,))
+            conexion.commit()
+            return True
+        except Exception as e:
+            print(f"--- [ERROR AL ELIMINAR CONTRATACION]: {e} ---")
+            return False
         finally:
             if conexion: conexion.close()
