@@ -181,6 +181,24 @@ class SolicitudModel:
             'tipo_solicitante': self._limpiar(datos.get('tipo_solicitud', ''), 45),
         }
 
+    def _formatear_fecha(self, fecha):
+        """Retorna la fecha en formato D d-m-Y h:i:s A para visualización."""
+        if fecha is None:
+            return ''
+        if isinstance(fecha, datetime):
+            return fecha.strftime('%a %d-%m-%Y %I:%M:%S %p')
+        if isinstance(fecha, str):
+            for fmt in ('%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M:%S.%f'):
+                try:
+                    return datetime.strptime(fecha, fmt).strftime('%a %d-%m-%Y %I:%M:%S %p')
+                except ValueError:
+                    continue
+            return fecha
+        try:
+            return datetime.fromisoformat(str(fecha)).strftime('%a %d-%m-%Y %I:%M:%S %p')
+        except Exception:
+            return str(fecha)
+
     # -----------------------------------------------------------------
     # Métodos privados — SQL (SRP)
     # -----------------------------------------------------------------
@@ -207,6 +225,7 @@ class SolicitudModel:
         return cursor.lastrowid
 
     def _sql_insertar_solicitud(self, cursor, datos: dict, solicitante_id: int) -> int:
+        estatus = 'Pendiente'
         """Inserta una nueva solicitud y retorna su ID."""
         sql = """
             INSERT INTO gestionar_solicitudes
@@ -217,7 +236,7 @@ class SolicitudModel:
         """
         cursor.execute(sql, (
             datos['fecha'], datos['telefono_solicitante'], datos['direccion_solicitante'],
-            datos['tipo_solicitud'], datos['estatus_solicitud'], datos['problematica'],
+            datos['tipo_solicitud'], estatus, datos['problematica'],
             datos['tipo_solicitante'], solicitante_id
         ))
         return cursor.lastrowid
@@ -241,7 +260,10 @@ class SolicitudModel:
                 ORDER BY gs.fecha DESC
             """
             cursor.execute(sql)
-            return cursor.fetchall()
+            rows = cursor.fetchall()
+            for row in rows:
+                row['fecha_formateada'] = self._formatear_fecha(row.get('fecha'))
+            return rows
         except Exception as e:
             print(f"[SolicitudModel._sql_todas_solicitudes] Error: {e}")
             return []
@@ -264,7 +286,10 @@ class SolicitudModel:
                 WHERE gs.id_solicitud = %s
             """
             cursor.execute(sql, (id_solicitud,))
-            return cursor.fetchone()
+            row = cursor.fetchone()
+            if row:
+                row['fecha_formateada'] = self._formatear_fecha(row.get('fecha'))
+            return row
         except Exception as e:
             print(f"[SolicitudModel._sql_solicitud_por_id] Error: {e}")
             return None

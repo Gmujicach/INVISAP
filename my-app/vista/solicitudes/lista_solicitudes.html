@@ -106,7 +106,7 @@
                   {% endif %}
                 </td>
                 <td style="max-width:200px; white-space:normal;">{{ s.problematica }}</td>
-                <td>{{ s.fecha }}</td>
+                <td>{{ s.fecha_formateada or s.fecha }}</td>
                 <td width="10px" class="text-nowrap">
                   <div class="d-flex gap-1">
                     <a
