@@ -1,51 +1,114 @@
 {% extends 'base_cpanel.html' %}
 {% block title %}Editar Empleado{% endblock %}
 {% block body %}
-<div class="card">
-  <div class="card-header"><h5>Editar Empleado</h5></div>
-  <div class="card-body">
-    <form action="{{ url_for('empleado_bp.update_empleado') }}" method="post" enctype="multipart/form-data" id="formEmpleadoUpdate">
-      <input type="hidden" name="id_empleado" value="{{ empleado.id_empleado }}">
-      <div class="mb-3">
-        <label>Nombre</label>
-        <input name="nombre_empleado" class="form-control" value="{{ empleado.nombre_empleado }}" required>
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Empleados /</span> Actualizar Información
+  </h4>
+
+  <div class="row">
+    <div class="col-xl">
+      <div class="card mb-4 shadow-sm border-0">
+        <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom">
+          <h5 class="mb-0 fw-semibold text-warning"><i class="bi bi-pencil-square me-2"></i>Editando Empleado: {{ empleado.nombre_empleado }}</h5>
+          <small class="text-muted float-end">Modifique los campos necesarios</small>
+        </div>
+        <div class="card-body pt-4">
+          <form action="{{ url_for('empleado_bp.update_empleado') }}" method="post" enctype="multipart/form-data" id="formEmpleadoUpdate">
+            <input type="hidden" name="id_empleado" value="{{ empleado.id_empleado }}">
+
+            <!-- Sección 1: Datos Personales -->
+            <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3"><i class="bi bi-person-vcard me-2"></i>Datos Personales</p>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-person me-1"></i>Nombre</label>
+                <input name="nombre_empleado" class="form-control" value="{{ empleado.nombre_empleado }}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium">Apellido</label>
+                <input type="text" name="apellido_empleado" class="form-control" value="{{ empleado.apellido_empleado }}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-gender-ambiguous me-1"></i>Sexo</label>
+                <select name="sexo_empleado" class="form-select" required>
+                  <option value="1" {% if empleado.sexo_empleado == 1 %}selected{% endif %}>Masculino</option>
+                  <option value="2" {% if empleado.sexo_empleado == 2 %}selected{% endif %}>Femenino</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-telephone me-1"></i>Teléfono</label>
+                <input type="text" name="telefono_empleado" class="form-control" value="{{ empleado.telefono_empleado }}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-envelope me-1"></i>Email</label>
+                <input name="email_empleado" type="email" class="form-control" value="{{ empleado.email_empleado }}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-file-person me-1"></i>Cédula (Persona ID)</label>
+                <input type="number" name="persona_id_persona" class="form-control" value="{{ empleado.persona_id_persona }}" required>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Sección 2: Información Institucional -->
+            <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3"><i class="bi bi-briefcase me-2"></i>Información Institucional</p>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-award me-1"></i>Cargo</label>
+                <select name="cargo" class="form-select" required>
+                  <option value="Gerente" {% if empleado.cargo == 'Gerente' %}selected{% endif %}>Gerente</option>
+                  <option value="Inspector" {% if empleado.cargo == 'Inspector' %}selected{% endif %}>Inspector</option>
+                  <option value="Asistente" {% if empleado.cargo == 'Asistente' %}selected{% endif %}>Asistente</option>
+                  <option value="Coordinador" {% if empleado.cargo == 'Coordinador' %}selected{% endif %}>Coordinador</option>
+                  <option value="Operador" {% if empleado.cargo == 'Operador' %}selected{% endif %}>Operador</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-calendar-event me-1"></i>Fecha de Ingreso</label>
+                <input type="date" name="fecha_ingreso" class="form-control" value="{{ empleado.fecha_ingreso }}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-building me-1"></i>Gerencia Asignada</label>
+                <input type="text" name="gerencia_asignada" class="form-control" value="{{ empleado.gerencia_asignada }}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-mortarboard me-1"></i>Profesión</label>
+                <input type="text" name="profesion_empleado" class="form-control" value="{{ empleado.profesion_empleado }}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-cash-stack me-1"></i>Salario</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input name="salario_empleado" class="form-control" value="{{ empleado.salario_empleado }}" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-image me-1"></i>Foto (opcional)</label>
+                <input type="file" name="foto_empleado" class="form-control">
+                {% if empleado.foto_empleado %}
+                <div class="mt-2 d-flex align-items-center gap-2">
+                  <img src="{{ url_for('static', filename='fotos_empleados/' ~ empleado.foto_empleado) }}" 
+                       class="rounded-circle shadow-sm" 
+                       style="height:60px; width:60px; object-fit: cover;">
+                  <span class="text-muted small">Imagen actual</span>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="mt-5 d-flex justify-content-end gap-2">
+              <a href="{{ url_for('viewFormListarEmpleados') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i>Cancelar
+              </a>
+              <button class="btn btn-warning px-4 shadow-sm">
+                <i class="bi bi-arrow-repeat me-1"></i>Actualizar Información
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="mb-3">
-        <label>Apellido</label>
-        <input type="text" name="apellido_empleado" class="form-control" value="{{ empleado.apellido_empleado }}" required>
-      </div>
-      <div class="mb-3">
-        <label>Sexo</label>
-        <select name="sexo_empleado" class="form-select" required>
-          <option value="1" {% if empleado.sexo_empleado == 1 %}selected{% endif %}>Masculino</option>
-          <option value="2" {% if empleado.sexo_empleado == 2 %}selected{% endif %}>Femenino</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label>Teléfono</label>
-        <input type="text" name="telefono_empleado" class="form-control" value="{{ empleado.telefono_empleado }}" required>
-      </div>
-      <div class="mb-3">
-        <label>Email</label>
-        <input name="email_empleado" type="email" class="form-control" value="{{ empleado.email_empleado }}" required>
-      </div>
-      <div class="mb-3">
-        <label>Profesión</label>
-        <input type="text" name="profesion_empleado" class="form-control" value="{{ empleado.profesion_empleado }}" required>
-      </div>
-      <div class="mb-3">
-        <label>Salario</label>
-        <input name="salario_empleado" class="form-control" value="{{ empleado.salario_empleado }}" required>
-      </div>
-      <div class="mb-3">
-        <label>Foto (opcional)</label>
-        <input type="file" name="foto_empleado" class="form-control">
-        {% if empleado.foto_empleado %}
-        <div class="mt-2"><img src="{{ url_for('static', filename='fotos_empleados/' ~ empleado.foto_empleado) }}" style="height:60px"></div>
-        {% endif %}
-      </div>
-      <button class="btn btn-success">Actualizar</button>
-    </form>
+    </div>
   </div>
 </div>
 {% endblock %}

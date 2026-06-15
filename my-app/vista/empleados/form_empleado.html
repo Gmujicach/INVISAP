@@ -1,51 +1,110 @@
 {% extends 'base_cpanel.html' %}
 {% block title %}Registrar Empleado{% endblock %}
 {% block body %}
-<div class="card">
-  <div class="card-header"><h5>Registrar Empleado</h5></div>
-  <div class="card-body">
-    <form action="{{ url_for('empleado_bp.create_empleado') }}" method="post" enctype="multipart/form-data" id="formEmpleado">
-      <div class="mb-3">
-        <label>Nombre</label>
-        <input name="nombre_empleado" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label>Apellido</label>
-        <input type="text" name="apellido_empleado" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label class="form-label d-block">Sexo</label>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="sexo_empleado" id="sexo_masculino" value="1" required>
-          <label class="form-check-label" for="sexo_masculino">Masculino</label>
+<div class="container-xxl flex-grow-1 container-p-y">
+  <h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Empleados /</span> Registro de Nuevo Empleado
+  </h4>
+
+  <div class="row">
+    <div class="col-xl">
+      <div class="card mb-4 shadow-sm border-0">
+        <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom">
+          <h5 class="mb-0 fw-semibold text-primary"><i class="bi bi-person-plus-fill me-2"></i>Información del Empleado</h5>
+          <small class="text-muted float-end">Complete todos los campos requeridos</small>
         </div>
-        <div class="form-check form-check-inline">
-          <input class="form-check-input" type="radio" name="sexo_empleado" id="sexo_femenino" value="2" required>
-          <label class="form-check-label" for="sexo_femenino">Femenino</label>
+        <div class="card-body pt-4">
+          <form action="{{ url_for('empleado_bp.create_empleado') }}" method="post" enctype="multipart/form-data" id="formEmpleado">
+            
+            <!-- Sección 1: Datos Personales (Ley de Hicks: Agrupación Lógica) -->
+            <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3"><i class="bi bi-person-vcard me-2"></i>Datos Personales</p>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-person me-1"></i>Nombre</label>
+                <input name="nombre_empleado" class="form-control" placeholder="Ej: Juan" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium">Apellido</label>
+                <input type="text" name="apellido_empleado" class="form-control" placeholder="Ej: Pérez" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium d-block"><i class="bi bi-gender-ambiguous me-1"></i>Sexo</label>
+                <div class="form-check form-check-inline mt-2">
+                  <input class="form-check-input" type="radio" name="sexo_empleado" id="sexo_masculino" value="1" required>
+                  <label class="form-check-label" for="sexo_masculino">Masculino</label>
+                </div>
+                <div class="form-check form-check-inline mt-2">
+                  <input class="form-check-input" type="radio" name="sexo_empleado" id="sexo_femenino" value="2" required>
+                  <label class="form-check-label" for="sexo_femenino">Femenino</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-telephone me-1"></i>Teléfono</label>
+                <input type="text" name="telefono_empleado" class="form-control" placeholder="04xx-xxxxxxx" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-envelope me-1"></i>Email</label>
+                <input name="email_empleado" type="email" class="form-control" placeholder="juan@invilara.com" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-file-person me-1"></i>Cédula (Persona ID)</label>
+                <input type="number" name="persona_id_persona" class="form-control" placeholder="ID de Persona vinculada" required>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Sección 2: Información Institucional -->
+            <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3"><i class="bi bi-briefcase me-2"></i>Información Institucional</p>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-award me-1"></i>Cargo</label>
+                <select name="cargo" class="form-select" required>
+                  <option value="" disabled selected>Seleccione un cargo...</option>
+                  <option value="Gerente">Gerente</option>
+                  <option value="Inspector">Inspector</option>
+                  <option value="Asistente">Asistente</option>
+                  <option value="Coordinador">Coordinador</option>
+                  <option value="Operador">Operador</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-calendar-event me-1"></i>Fecha de Ingreso</label>
+                <input type="date" name="fecha_ingreso" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-building me-1"></i>Gerencia Asignada</label>
+                <input type="text" name="gerencia_asignada" class="form-control" placeholder="Ej: Gerencia de Infraestructura" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-mortarboard me-1"></i>Profesión</label>
+                <input type="text" name="profesion_empleado" class="form-control" placeholder="Ej: Ingeniero Civil" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-cash-stack me-1"></i>Salario</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input name="salario_empleado" class="form-control" placeholder="0.00" required>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-image me-1"></i>Foto de Perfil</label>
+                <input type="file" name="foto_empleado" class="form-control">
+              </div>
+            </div>
+
+            <div class="mt-5 d-flex justify-content-end gap-2">
+              <a href="{{ url_for('viewFormListarEmpleados') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-1"></i>Cancelar
+              </a>
+              <button class="btn btn-primary px-4 shadow-sm">
+                <i class="bi bi-check-circle me-1"></i>Guardar Empleado
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-      <div class="mb-3">
-        <label>Teléfono</label>
-        <input type="text" name="telefono_empleado" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label>Email</label>
-        <input name="email_empleado" type="email" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label>Profesión</label>
-        <input type="text" name="profesion_empleado" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label>Salario</label>
-        <input name="salario_empleado" class="form-control" required>
-      </div>
-      <div class="mb-3">
-        <label>Foto</label>
-        <input type="file" name="foto_empleado" class="form-control">
-      </div>
-      <button class="btn btn-success">Guardar</button>
-    </form>
+    </div>
   </div>
 </div>
 {% endblock %}
