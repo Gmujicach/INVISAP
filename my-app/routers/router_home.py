@@ -252,7 +252,7 @@ def eliminarProyecto(id_proyecto):
 @home_bp.route('/api/obtener-solicitudes-json', methods=['GET'])
 def api_obtener_solicitudes_json():
     if 'conectado' in session:
-        return jsonify(obtener_solicitantes())
+        return jsonify(obtener_solicitudes())
     else:
         return jsonify([]), 401
 
@@ -340,12 +340,6 @@ def eliminar_contratacion(id):
         return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
         
     return redirect(url_for('login_bp.inicio'))
-
-
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 
 @home_bp.route('/inspectores', methods=['GET'])
 def viewFormInspectores():
