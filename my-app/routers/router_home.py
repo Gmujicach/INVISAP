@@ -342,7 +342,10 @@ def eliminar_contratacion(id):
     return redirect(url_for('login_bp.inicio'))
 
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 
 @home_bp.route('/inspectores', methods=['GET'])
 def viewFormInspectores():
