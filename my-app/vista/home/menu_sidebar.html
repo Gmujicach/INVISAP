@@ -83,19 +83,19 @@
     <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
         <i class="menu-icon bi bi-bar-chart-line-fill"></i>
-        <div data-i18n="Gerencias">Gestionar Gerencias</div>
+        <div data-i18n="Gerencias">Gestionar Empresas</div>
       </a>
       <ul class="menu-sub">
         <li
-      class="menu-item {% if request.path == '/registrar-gerencias' %} active {% endif %}">
-      <a href="{{ url_for('home_bp.viewFormGerencia') }}" class="menu-link">
-        <div data-i18n="Basic">Registrar Gerencias</div>
+      class="menu-item {% if request.path == '/registrar-empresas' %} active {% endif %}">
+      <a href="{{ url_for('home_bp.viewFormEmpresa') }}" class="menu-link">
+        <div data-i18n="Basic">Registrar Empresas</div>
       </a>
     </li>
     <li
-        class="menu-item {% if request.path == '/lista-gerencias' %} active {% endif %}">
-        <a href="{{ url_for('lista_gerencias') }}" class="menu-link">
-        <div data-i18n="Basic">Listar Gerencias</div>
+        class="menu-item {% if request.path == '/lista-empresas' %} active {% endif %}">
+        <a href="{{ url_for('lista_empresas') }}" class="menu-link">
+        <div data-i18n="Basic">Listar Empresas</div>
         </a>
     </li>
       </ul>
