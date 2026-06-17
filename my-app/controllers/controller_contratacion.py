@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session
-from models.contratacion import ContratacionModel
-from models.model_proyecto import ProyectoModel
+from models.model_contratacion import ContratacionModel
+##from models.model_proyecto import ProyectoModel
 from controllers.funciones_maquinaria import *
 
 contrataciones_bp = Blueprint('contrataciones_bp', __name__)

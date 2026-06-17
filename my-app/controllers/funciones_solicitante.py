@@ -1,19 +1,16 @@
-from conexion.conexionBD import connectionBD
+from conexion.conexionBD import connectionBD_invilara as connectionBD
 
-
-# CREATE: Inserción de un nuevo solicitante
 def crear_solicitante(datos):
     try:
         conexion = connectionBD()
+        if not conexion: return 0
         cursor = conexion.cursor()
         try:
-            sql = """INSERT INTO solicitante (nombre_solicitante, parroquia, municipio, ambito, rif, cedula, correo) 
-                     VALUES (%s, %s, %s, %s, %s, %s, %s)"""
+            sql = """INSERT INTO persona (cedula_persona, direccion, parroquia, municipio, telefono, correo) 
+                     VALUES (%s, %s, %s, %s, %s, %s)"""
 
-            rif_completo = f"{datos.get('tipo_rif','')}-{datos.get('numero_rif','')}"
-
-            valores = (datos.get('nombre_solicitante'), datos.get('parroquia'), datos.get('municipio'),
-                       datos.get('ambito'), rif_completo, datos.get('cedula'), datos.get('correo'))
+            valores = (datos.get('cedula_persona'), datos.get('direccion'), datos.get('parroquia'), 
+                       datos.get('municipio'), datos.get('telefono'), datos.get('correo'))
 
             cursor.execute(sql, valores)
             conexion.commit()
@@ -25,14 +22,20 @@ def crear_solicitante(datos):
         print(f"Error al crear solicitante: {e}")
         return 0
 
-
-# READ: Obtener todos los registros para la vista de listado
 def obtener_solicitantes():
     try:
         conexion = connectionBD()
+        if not conexion: return []
         cursor = conexion.cursor(dictionary=True)
         try:
-            sql = "SELECT * FROM solicitante ORDER BY id_comunidad DESC"
+            sql = """
+                SELECT p.*, COALESCE(CONCAT(pa.nombre, ' ', pa.apellido), i.razon_social, c.nombre_comunidad) AS nombre_solicitante
+                FROM persona p
+                LEFT JOIN particular pa ON p.id_persona = pa.persona_id_persona
+                LEFT JOIN institucion i ON p.id_persona = i.persona_id_persona
+                LEFT JOIN comunidad c ON p.id_persona = c.persona_id_persona
+                ORDER BY p.id_persona DESC
+            """
             cursor.execute(sql)
             return cursor.fetchall()
         finally:
@@ -42,15 +45,14 @@ def obtener_solicitantes():
         print(f"Error al obtener solicitantes: {e}")
         return []
 
-
-# READ: Obtener un solicitante por id
-def obtener_solicitante_por_id(id_comunidad):
+def obtener_solicitante_por_id(id_persona):
     try:
         conexion = connectionBD()
+        if not conexion: return None
         cursor = conexion.cursor(dictionary=True)
         try:
-            sql = "SELECT * FROM solicitante WHERE id_comunidad = %s"
-            cursor.execute(sql, (id_comunidad,))
+            sql = "SELECT * FROM persona WHERE id_persona = %s"
+            cursor.execute(sql, (id_persona,))
             return cursor.fetchone()
         finally:
             cursor.close()
@@ -59,21 +61,18 @@ def obtener_solicitante_por_id(id_comunidad):
         print(f"Error al obtener solicitante por id: {e}")
         return None
 
-
-# UPDATE: Modificar información de un solicitante existente
 def actualizar_solicitante(datos):
     try:
         conexion = connectionBD()
+        if not conexion: return 0
         cursor = conexion.cursor()
         try:
-            sql = """UPDATE solicitante SET nombre_solicitante = %s, parroquia = %s, 
-                     municipio = %s, ambito = %s, rif = %s, cedula = %s, correo = %s 
-                     WHERE id_comunidad = %s"""
+            sql = """UPDATE persona SET cedula_persona = %s, direccion = %s, parroquia = %s, 
+                     municipio = %s, telefono = %s, correo = %s 
+                     WHERE id_persona = %s"""
 
-            rif_completo = f"{datos.get('tipo_rif','')}-{datos.get('numero_rif','')}"
-
-            valores = (datos.get('nombre_solicitante'), datos.get('parroquia'), datos.get('municipio'),
-                       datos.get('ambito'), rif_completo, datos.get('cedula'), datos.get('correo'), datos.get('id_comunidad'))
+            valores = (datos.get('cedula_persona'), datos.get('direccion'), datos.get('parroquia'), 
+                       datos.get('municipio'), datos.get('telefono'), datos.get('correo'), datos.get('id_persona'))
             cursor.execute(sql, valores)
             conexion.commit()
             return cursor.rowcount
@@ -84,15 +83,14 @@ def actualizar_solicitante(datos):
         print(f"Error al actualizar: {e}")
         return 0
 
-
-# DELETE: Eliminar un registro
-def eliminar_solicitante(id_comunidad):
+def eliminar_solicitante(id_persona):
     try:
         conexion = connectionBD()
+        if not conexion: return 0
         cursor = conexion.cursor()
         try:
-            sql = "DELETE FROM solicitante WHERE id_comunidad = %s"
-            cursor.execute(sql, (id_comunidad,))
+            sql = "DELETE FROM persona WHERE id_persona = %s"
+            cursor.execute(sql, (id_persona,))
             conexion.commit()
             return cursor.rowcount
         finally:

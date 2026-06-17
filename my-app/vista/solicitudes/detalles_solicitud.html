@@ -22,9 +22,8 @@
               <h6 class="text-muted border-bottom pb-2">Información del Solicitante</h6>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item"><strong>Nombre/Comunidad:</strong> {{ detalle_solicitud.nombre_solicitante or 'N/A' }}</li>
-                <li class="list-group-item"><strong>Tipo de Solicitante:</strong> {{ detalle_solicitud.tipo_solicitante or 'N/A' }}</li>
-                <li class="list-group-item"><strong>Cédula:</strong> {{ detalle_solicitud.cedula or 'N/A' }}</li>
-                <li class="list-group-item"><strong>RIF:</strong> {{ detalle_solicitud.rif or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Tipo de Solicitante:</strong> {{ detalle_solicitud.tipo_solicitud or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Cédula:</strong> {{ detalle_solicitud.cedula_persona or 'N/A' }}</li>
                 <li class="list-group-item"><strong>Teléfono:</strong> {{ detalle_solicitud.telefono_solicitante or 'N/A' }}</li>
                 <li class="list-group-item"><strong>Correo:</strong> {{ detalle_solicitud.correo or 'N/A' }}</li>
               </ul>
@@ -36,8 +35,10 @@
                 <li class="list-group-item"><strong>Dirección:</strong> {{ detalle_solicitud.direccion_solicitante or 'N/A' }}</li>
                 <li class="list-group-item"><strong>Municipio:</strong> {{ detalle_solicitud.municipio or 'N/A' }}</li>
                 <li class="list-group-item"><strong>Parroquia:</strong> {{ detalle_solicitud.parroquia or 'N/A' }}</li>
+                {% if detalle_solicitud.tipo_solicitud == 'Comunidad' %}
                 <li class="list-group-item"><strong>Ámbito:</strong> {{ detalle_solicitud.ambito or 'N/A' }}</li>
-                <li class="list-group-item"><strong>Tipo Solicitud:</strong> {{ detalle_solicitud.tipo_solicitud or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Sector:</strong> {{ detalle_solicitud.sector or 'N/A' }}</li>
+                {% endif %}
                 <li class="list-group-item">
                   <strong>Estatus:</strong> 
                   {% if detalle_solicitud.estatus_solicitud == 'Pendiente' %}
@@ -66,7 +67,6 @@
         </div>
         <div class="card-footer bg-white text-end">
           <a href="{{ url_for('lista_solicitudes') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver a la Lista</a>
-          <!-- Si deseas añadir un botón para actualizar el estatus puedes hacerlo aquí -->
         </div>
       </div>
       {% else %}
@@ -81,5 +81,4 @@
 
   </div>
 </div>
-
 {% endblock %}

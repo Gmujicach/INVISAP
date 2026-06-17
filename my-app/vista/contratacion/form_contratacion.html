@@ -31,7 +31,9 @@
             <th>N° Contrato</th>
             <th>Monto</th>
             <th>Fechas (Inicio/Adj.)</th>
-            <th>Modalidad</th>      <th>Tipo Contrato</th>  <th class="text-center">Acciones</th>
+            <th>Modalidad</th>      
+            <th>Tipo Contrato</th>  
+            <th class="text-center">Acciones</th>
         </tr>
         </thead>
         <tbody>
@@ -48,23 +50,21 @@
                 <small class="d-block"><strong>Adj:</strong> {{ c.fecha_adjudicacion }}</small>
             </td>
             <td>
-                <td>
-                <span class="badge bg-info text-dark text-uppercase">{{ c.modalidad }}</span>
-                </td>
-                <td>
-                <span class="text-secondary text-capitalize">{{ c.tipo_contrato }}</span>
-                </td>
+            <td><span class="badge bg-info text-dark text-uppercase">{{ c.modalidad }}</span></td>
+            <td><span class="text-secondary text-capitalize">{{ c.tipo_contrato }}</span></td>
             </td>
+
+            
             <td class="text-center">
              <a href="{{ url_for('contrataciones_bp.vista_editar', id=c.id_contratacion) }}" class="btn btn-outline-warning btn-sm" title="Editar">
                 <i class="bx bx-edit"></i>
             </a>
-              <a href="{{ url_for('contrataciones_bp.eliminar_contratacion', id=c.id_contratacion) }}" 
-                class="btn btn-outline-danger btn-sm" 
+              <a href="#" 
+                class="btn btn-outline-danger btn-sm btn-eliminar" 
                 title="Eliminar"
-                onclick="return confirm('¿Estás seguro de que deseas eliminar esta contratación por completo?')">
+                data-url="{{ url_for('contrataciones_bp.eliminar_contratacion', id=c.id_contratacion) }}">
                 <i class="bx bx-trash"></i>
-            </a>
+              </a>
             </td>
           </tr>
           {% else %}
@@ -86,12 +86,12 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       
-      <form method="POST" action="{{ url_for('contrataciones_bp.procesar_registro') }}" autocomplete="off">
+      <form method="POST" action="{{ url_for('contrataciones_bp.procesar_registro') }}" id="formContratacion" autocomplete="off">
         <div class="modal-body p-4">
             
             <div class="d-flex justify-content-between align-items-center p-3 mb-4 rounded" style="background-color: #f8f9fa; border-left: 4px solid #F9A800;">
                 <div>
-                  <span class="fw-bold d-block text-dark" style="font-size: 0.9rem;">¿Necesitas asociar una Empresa?</span>
+                  <span class="fw-bold d-block text-dark" style="font-size: 0.9rem;">Empresas Registradas</span>
                   <small class="text-muted">Consulta el registro de empresas disponibles en el sistema.</small>
                 </div>
                 <button class="btn btn-sm text-white fw-semibold border-0 px-3" 
@@ -104,19 +104,30 @@
                 </button>
             </div>
 
-            <div class="row mb-3">
+          <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-secondary">Empresa Ganadora</label>
                     <div class="input-group shadow-sm">
                         <span class="input-group-text bg-light border-end-0"><i class="bx bx-building"></i></span>
-                        <input type="text" class="form-control border-start-0 bg-light" name="empresa_ganadora" id="empresa_ganadora" readonly placeholder="Selecciona desde el botón arriba" required>
+                        <input type="text" class="form-control border-start-0 bg-light text-muted" 
+                   name="empresa_ganadora" id="empresa_ganadora" readonly tabindex="-1"
+                   placeholder="Selecciona desde el botón Ver Empresas" 
+                   style="user-select: none; pointer-events: none;" required>
                     </div>
                 </div>
+    
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-secondary">RIF de la Empresa</label>
                     <div class="input-group shadow-sm">
                         <span class="input-group-text bg-light border-end-0"><i class="bx bx-id-card"></i></span>
-                        <input type="text" class="form-control border-start-0 bg-light" name="empresa_rif" id="empresa_rif" readonly placeholder="Autocompletado" required>
+                        <input type="text" class="form-control border-start-0 bg-light text-muted" 
+                   name="empresa_rif" id="empresa_rif" readonly tabindex="-1"
+                   placeholder="Autocompletada por Empresas Registradas" 
+                   style="user-select: none; pointer-events: none;" required>
+            
+                        <button class="btn btn-outline-secondary border-start-0" type="button" id="btn_limpiar_seleccion" title="Eliminar empresa seleccionada">
+                            <i class="bx bx-x fs-5 align-middle"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -126,7 +137,11 @@
             <div class="row mb-3">
                 <div class="col-md-12">
                     <label class="form-label fw-semibold text-secondary">Descripción de la Contratación</label>
-                    <textarea class="form-control shadow-sm" name="descripcion" rows="2" required></textarea>
+                    <textarea class="form-control shadow-sm" id="descripcion" name="descripcion" rows="5" maxlength="100" required></textarea>
+                    <div class="d-flex justify-content-between mt-1">
+                    <small id="descripcionFeedback" class="text-danger d-none">Descripción minima de 5 caracteres.</small>
+                    <small id="descripcionContador" class="text-muted ms-auto">0 / 100 caracteres</small>
+                    </div>
                 </div>
             </div>
 
@@ -156,7 +171,7 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Observación</label>
-                    <input type="text" name="observacion" class="form-control shadow-sm">
+                    <input type="text" name="observacion" class="form-control shadow-sm" required>
                 </div>
             </div>
 
@@ -207,7 +222,6 @@
           <table class="table table-bordered table-striped table-hover align-middle table-sm">
             <thead class="table-light text-uppercase" style="font-size: 0.8rem;">
               <tr>
-                <th>#</th>
                 <th>RIF</th>
                 <th>Nombre de la Empresa</th>
                 <th class="text-center">Acción</th>
@@ -229,81 +243,7 @@
     </div>
   </div>
 </div>
-
 {% endblock %} 
-
 {% block customJS %}
-<script>
-// Lógica para cargar los datos en el Modal Secundario mediante Fetch
-document.getElementById('btnCargarEmpresas').addEventListener('click', function() {
-    const tablaCuerpo = document.getElementById('tablaEmpresasCuerpo');
-    
-    // Mostramos un loader mientras carga
-    tablaCuerpo.innerHTML = `
-        <tr>
-            <td colspan="4" class="text-center text-muted py-4">
-                <i class="bx bx-loader-alt bx-spin me-2 fs-5 align-middle"></i> 
-                Consultando registros de empresas...
-            </td>
-        </tr>`;
-
-    // IMPORTANTE: Asegúrate de tener esta ruta creada en tu app.py o routes 
-    // que devuelva un JSON con las empresas. Ejemplo: [{'rif': 'J-12345', 'nombre_empresa': 'Constructora XYZ'}]
-    fetch('/api/obtener-empresas-json')
-        .then(response => {
-            if (!response.ok) throw new Error('Error en el servidor');
-            return response.json();
-        })
-        .then(data => {
-            let contenidoHTML = ''; 
-
-            if (data.length === 0) {
-                tablaCuerpo.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">No hay empresas registradas.</td></tr>`;
-                return;
-            }
-
-            data.forEach((empresa, index) => {
-                contenidoHTML += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td class="fw-bold">${empresa.rif || '—'}</td>
-                        <td class="text-uppercase">${empresa.nombre_empresa || '—'}</td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-outline-primary btn-sm" 
-                                    onclick="seleccionarEmpresa('${(empresa.rif || '').replace(/'/g, "\\'")}', '${(empresa.nombre_empresa || '').replace(/'/g, "\\'")}')">
-                                <i class="bx bx-check"></i> Seleccionar
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            tablaCuerpo.innerHTML = contenidoHTML; 
-        })
-        .catch(error => {
-            console.error('Error al capturar empresas:', error);
-            tablaCuerpo.innerHTML = `
-                <tr>
-                    <td colspan="4" class="text-center text-danger py-4">
-                        <i class="bx bx-error-circle me-1 fs-5 align-middle"></i> 
-                        Error al conectar con el servidor. Por favor, verifique su ruta de la API.
-                    </td>
-                </tr>`;
-        });
-});
-
-// Función que inserta los datos en el formulario principal y cierra el modal secundario
-function seleccionarEmpresa(rif, nombre) {
-    // Pegamos los valores en los inputs de solo lectura
-    document.getElementById('empresa_rif').value = rif;
-    document.getElementById('empresa_ganadora').value = nombre;
-
-    // Ocultamos el modal de empresas
-    const modalEmpresas = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEmpresas'));
-    modalEmpresas.hide();
-    
-    // Mostramos nuevamente el modal del formulario principal
-    const modalRegistro = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalContratacion'));
-    modalRegistro.show();
-}
-</script>
-{% endblock %}
+<script src="{{ url_for('static', filename ='js/contratacion.js') }}"></script>
+{% endblock %} 
