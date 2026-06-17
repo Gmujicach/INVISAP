@@ -5,8 +5,8 @@ from mysql.connector.errors import Error
 
 # Importando conexión a BD y controladores
 from controllers.funciones_home import *
-from models.contratacion import ContratacionModel
-from controllers.contratacion import contrataciones_bp
+from models.model_contratacion import ContratacionModel
+from controllers.controller_contratacion import contrataciones_bp
 from controllers.UserController import user_bp
 from controllers.funciones_solicitud import (
     obtener_solicitudes, crear_solicitud, obtener_solicitud_por_id,
