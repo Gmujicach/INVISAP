@@ -315,7 +315,6 @@ def vista_editar(id):
         return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
     return redirect(url_for('login_bp.inicio'))
 
-<<<<<<< Updated upstream
 
 @contrataciones_bp.route('/actualizar-contratacion', methods=['POST'])
 def procesar_actualizacion():
@@ -343,30 +342,7 @@ def eliminar_contratacion(id):
     return redirect(url_for('login_bp.inicio'))
 
 
-=======
-@app.route('/api/obtener-empresas-json', methods=['GET'])
-def obtener_empresas_json():
-    conexion = connectionBD()
-    if not conexion:
-        return jsonify({"error": "Error de conexión a la base de datos"}), 500
-    
-    cursor = conexion.cursor(dictionary=True)
-    try:
-        # Hacemos la consulta a la tabla empresa (según tu invilara def.sql)
-        sql = "SELECT rif, nombre_empresa FROM empresa ORDER BY nombre_empresa ASC"
-        cursor.execute(sql)
-        empresas = cursor.fetchall()
-        
-        return jsonify(empresas)
-        
-    except Exception as e:
-        print(f"Error al obtener empresas para JSON: {e}")
-        return jsonify({"error": str(e)}), 500
-        
-    finally:
-        cursor.close()
-        conexion.close()
->>>>>>> Stashed changes
+
 
 @home_bp.route('/inspectores', methods=['GET'])
 def viewFormInspectores():
