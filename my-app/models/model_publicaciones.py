@@ -20,10 +20,11 @@ class PublicacionModel:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
             sql = """INSERT INTO publicacion 
-                     (titulo_publicacion, autor_publicacion, fecha_publicacion, cuerpo_publicacion, evidencias) 
+                     (titulo_publicacion, autor_publicacion, fecha_publicacion, cuerpo_publicacion, evidencias)
                      VALUES (%s, %s, %s, %s, %s)"""
             valores = (data['titulo_publicacion'], data['autor_publicacion'], 
-                       data['fecha_publicacion'], data['cuerpo_publicacion'],
+                       data['fecha_publicacion'], 
+                       data['cuerpo_publicacion'],
                        data.get('evidencias'))
             cursor.execute(sql, valores)
             conexion.commit()
