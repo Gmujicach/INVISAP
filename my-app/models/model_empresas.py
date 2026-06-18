@@ -24,8 +24,14 @@ class EmpresaModel:
         conexion = None
         try:
             conexion = connectionBD_invilara()
-            cursor = conexion.cursor()
-            # Se insertan los datos incluyendo el RIF que es la clave primaria
+            cursor = conexion.cursor(dictionary=True)
+            
+            # --- VALIDACIÓN DE NEGOCIO: Evitar duplicados ---
+            cursor.execute("SELECT rif FROM empresa WHERE rif = %s", (datos['rif'],))
+            if cursor.fetchone():
+                return "DUPLICADO" # Avisamos al controlador que el RIF ya existe
+            
+            # Si no existe, procedemos a insertar
             sql = "INSERT INTO empresa (rif, nombre_empresa, telefono, domicilio_fiscal) VALUES (%s, %s, %s, %s)"
             valores = (
                 datos['rif'], 
@@ -36,9 +42,11 @@ class EmpresaModel:
             cursor.execute(sql, valores)
             conexion.commit()
             return True
+            
         except Exception as e:
             print(f"Error fatal en el modelo al insertar empresa: {e}")
             return False
+            
         finally:
             if conexion: conexion.close()
 

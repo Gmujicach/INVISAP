@@ -1,5 +1,4 @@
 from app import app
-
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from mysql.connector.errors import Error
 
@@ -484,9 +483,14 @@ def viewFormInspectores():
 @home_bp.route('/registrar-empresas', methods=['GET'])
 def viewFormEmpresa():
     if 'conectado' in session:
+        # Sacamos los datos de la sesión (si los hay)
+        datos_formulario = session.pop('form_empresa', None)
+        
         from models.model_empresas import EmpresaModel
         modelo = EmpresaModel()
-        return render_template(f'{PATH_URLE}/form_empresa.html')
+        
+        # AQUÍ ESTÁ EL CAMBIO: Le pasamos la variable al HTML
+        return render_template(f'{PATH_URLE}/form_empresa.html', datos_form=datos_formulario)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -495,11 +499,23 @@ def viewFormEmpresa():
 def procesar_registro():
     from controllers.controller_empresa import procesar_registro_empresa
     
-    if procesar_registro_empresa(request.form):
-        flash('¡La empresa ha sido registrada con éxito!', 'success')
+    exito, mensaje, categoria = procesar_registro_empresa(request.form)
+    flash(mensaje, categoria)
+    
+    if exito:
+        # Si todo salió bien, nos aseguramos de limpiar la sesión por si acaso
+        session.pop('form_empresa', None)
         return redirect(url_for('lista_empresas'))
     else:
-        flash('Error: No se pudo registrar la empresa.', 'error')
+        # 1. Convertimos los datos enviados en un diccionario normal de Python
+        datos_viejos = request.form.to_dict()
+        
+        # 2. OPCIÓN: Borrar el RIF y mantener el resto (como solicitaste)
+        # Si prefieres mantener el RIF también, simplemente comenta o borra la siguiente línea:
+        datos_viejos['rif'] = '' 
+        
+        # 3. Guardamos el resto de los datos en la sesión y redirigimos
+        session['form_empresa'] = datos_viejos
         return redirect(url_for('home_bp.viewFormEmpresa'))
 
 @app.route('/lista-empresas', methods=['GET'])
@@ -540,7 +556,7 @@ def eliminar_empresa(rif):
     if 'conectado' in session:
         from controllers.controller_empresa import eliminar_empresa_por_rif
         if eliminar_empresa_por_rif(rif):
-            flash('empresa eliminada correctamente.', 'success')
+            flash('Empresa eliminada correctamente.', 'success')
         else:
             flash('Error al intentar eliminar la empresa.', 'error')
         return redirect(url_for('lista_empresas'))
