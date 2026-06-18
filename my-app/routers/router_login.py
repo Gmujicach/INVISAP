@@ -63,12 +63,12 @@ def cpanelResgisterUserBD():
         resultData = recibeInsertRegisterUser(
             nombre, correo, pass_user, cedula, rol)
         if (resultData != 0):
-            flash('la cuenta fue creada correctamente.', 'success')
+            flash('La cuenta fue creada correctamente.', 'success')
             return redirect(url_for('login_bp.inicio'))
         else:
             return redirect(url_for('login_bp.inicio'))
     else:
-        flash('el método HTTP es incorrecto', 'error')
+        flash('El método HTTP es incorrecto.', 'danger')
         return redirect(url_for('login_bp.inicio'))
 
 
@@ -79,23 +79,23 @@ def actualizarPerfil():
         if 'conectado' in session:
             respuesta = procesar_update_perfil(request.form)
             if respuesta == 1:
-                flash('Los datos fuerón actualizados correctamente.', 'success')
+                flash('Los datos fueron actualizados correctamente.', 'success')
                 return redirect(url_for('login_bp.inicio'))
             elif respuesta == 0:
                 flash(
-                    'La contraseña actual esta incorrecta, por favor verifique.', 'error')
+                    'La contraseña actual es incorrecta. Por favor, verifique.', 'danger')
                 return redirect(url_for('login_bp.perfil'))
             elif respuesta == 2:
-                flash('Ambas claves deben se igual, por favor verifique.', 'error')
+                flash('Las contraseñas no coinciden. Por favor, verifique.', 'danger')
                 return redirect(url_for('login_bp.perfil'))
             elif respuesta == 3:
                 flash('La Clave actual es obligatoria.', 'error')
                 return redirect(url_for('login_bp.perfil'))
         else:
-            flash('primero debes iniciar sesión.', 'error')
+            flash('Primero debes iniciar sesión.', 'danger')
             return redirect(url_for('login_bp.inicio'))
     else:
-        flash('primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesión.', 'danger')
         return redirect(url_for('login_bp.inicio'))
 
 
@@ -118,13 +118,13 @@ def loginCliente():
                 session['id'] = account['id_usuarios']
                 session['name_surname'] = account['nombre']
                 session['email_user'] = account['correo']
-                flash('Inicio de sesion exitoso :)', 'success')
+                flash('¡Inicio de sesión exitoso!', 'success')
                 return redirect(url_for('login_bp.inicio'))
             else:
-                flash('Credenciales incorrectas o usuario inactivo.', 'error')
+                flash('Credenciales incorrectas o usuario inactivo.', 'danger')
                 return render_template(f'{PATH_URL_LOGIN}/base_login.html')
         else:
-            flash('Primero debes iniciar sesión.', 'error')
+            flash('Primero debes iniciar sesión.', 'danger')
             return render_template(f'{PATH_URL_LOGIN}/base_login.html')
 
 @login_bp.route('/recuperar-clave', methods=['POST'])
@@ -144,7 +144,7 @@ def recuperarClave():
             flash(f'Se ha enviado un enlace de recuperación a {correo}.', 'success')
             return redirect(url_for('login_bp.inicio'))
         else:
-            flash('El correo no está registrado en el sistema.', 'error')
+            flash('El correo no está registrado en el sistema.', 'danger')
             return redirect(url_for('login_bp.cpanelRecoveryPassUser'))
     else:
         flash('Por favor ingrese su correo electrónico.', 'error')
@@ -162,5 +162,5 @@ def logout():
             flash('Tu sesión fue cerrada correctamente.', 'success')
             return redirect(url_for('login_bp.inicio'))
         else:
-            flash('Recuerde debe iniciar sesión.', 'error')
+            flash('Recuerde que debe iniciar sesión.', 'danger')
             return render_template(f'{PATH_URL_LOGIN}/base_login.html')
