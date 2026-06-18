@@ -65,11 +65,40 @@ function triggerEmpleadosDashboard() {
     openDashboard(content);
 }
 
-function eliminarEmpleadoJS(id, foto) {
-    if (confirm("¿Está seguro que desea eliminar a este empleado de la base de datos?")) {
-        // Se corrige la ruta para que coincida con EmpleadoController
-        let url = `/empleados/delete/${id}`;
-        if (foto && foto !== 'None') url += `/${foto}`;
-        window.location.href = url;
+/**
+ * Lógica Fetch para Registro (Sin recarga de página)
+ */
+async function registrarEmpleadoFetch(event) {
+    event.preventDefault();
+    const form = event.target;
+    if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        return;
+    }
+
+    const formData = new FormData(form);
+    try {
+        const response = await fetch('/empleados/create', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        if (result.status === 'success') {
+            // Notificación (createToast debe estar disponible globalmente)
+            window.location.reload(); 
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+/**
+ * Borrado Lógico con Confirmación
+ */
+function eliminarEmpleadoJS(id) {
+    if (confirm("¿Estás seguro de desactivar este empleado? (Borrado Lógico)")) {
+        window.location.href = `/empleados/delete/${id}`;
     }
 }

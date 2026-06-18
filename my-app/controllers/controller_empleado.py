@@ -13,7 +13,7 @@ def list_empleados():
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
-    empleados = model.all()
+    empleados = model.get_all_empleados()
     return render_template('empleados/empleados.html', resp_empleadosBD=empleados)
 
 
@@ -30,13 +30,19 @@ def create_empleado():
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
-    file = request.files.get('foto_empleado')
-    res = model.create(request.form, file)
-    if res:
-        flash('Empleado creado correctamente', 'success')
-    else:
-        flash('Error al crear empleado', 'error')
-    return redirect(url_for('empleado_bp.list_empleados'))
+    
+    try:
+        # El modelo ahora maneja la validación y la persistencia
+        res = model.registrar_empleado(request.form)
+        if res:
+            return jsonify({'status': 'success', 'message': 'Empleado registrado correctamente.'})
+        else:
+            return jsonify({'status': 'error', 'message': 'No se pudo registrar el empleado. Verifique los datos.'}), 400
+    except ValueError as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 400
+    except Exception as e:
+        print(f"Error en create_empleado: {e}") # Para depuración
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor.'}), 500
 
 
 @empleado_bp.route('/edit/<int:id_empleado>', methods=['GET'])
@@ -44,34 +50,38 @@ def edit_form(id_empleado):
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
-    empleado = model.get(id_empleado)
+    empleado = model.get_empleado_by_id(id_empleado)
     if not empleado:
         flash('Empleado no encontrado', 'error')
         return redirect(url_for('empleado_bp.list_empleados'))
     return render_template('empleados/form_empleado_update.html', empleado=empleado)
 
 
-@empleado_bp.route('/update', methods=['POST'])
+@empleado_bp.route('/update', methods=['POST']) # Este endpoint recibirá la petición Fetch
 def update_empleado():
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
-    file = request.files.get('foto_empleado')
-    res = model.update(request.form, file)
-    if res:
-        flash('Empleado actualizado correctamente', 'success')
-    else:
-        flash('Error al actualizar empleado', 'error')
-    return redirect(url_for('empleado_bp.list_empleados'))
+    
+    try:
+        res = model.actualizar_empleado(request.form)
+        if res:
+            return jsonify({'status': 'success', 'message': 'Empleado actualizado correctamente.'})
+        else:
+            return jsonify({'status': 'error', 'message': 'No se pudo actualizar el empleado. Verifique los datos.'}), 400
+    except ValueError as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 400
+    except Exception as e:
+        print(f"Error en update_empleado: {e}") # Para depuración
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor.'}), 500
 
 
 @empleado_bp.route('/delete/<int:id_empleado>', methods=['GET'])
-@empleado_bp.route('/delete/<int:id_empleado>/<path:foto>', methods=['GET'])
-def delete_empleado(id_empleado, foto=None):
+def delete_empleado(id_empleado):
     if 'conectado' not in session:
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
-    res = model.delete(id_empleado, foto)
+    res = model.eliminar_empleado_logico(id_empleado)
     if res:
         flash('Empleado eliminado correctamente', 'success')
     else:

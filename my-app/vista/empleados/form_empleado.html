@@ -3,26 +3,26 @@
 {% block body %}
 <div class="container-xxl flex-grow-1 container-p-y">
   <h4 class="fw-bold py-3 mb-4">
-    <span class="text-muted fw-light">Empleados /</span> Gestion de Empleados
+    <span class="text-muted fw-light">Empleados /</span> Registro de Nuevo Empleado
   </h4>
 
   <div class="row">
     <div class="col-xl">
       <div class="card mb-4 shadow-sm border-0">
         <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom">
-          <h5 class="mb-0 fw-semibold text-primary"><i class="bi bi-person-plus-fill me-2"></i>Registrar Empleados</h5>
+          <h5 class="mb-0 fw-semibold text-primary"><i class="bi bi-person-plus-fill me-2"></i>Información del Empleado</h5>
           <small class="text-muted float-end">Complete todos los campos requeridos</small>
         </div>
         <div class="card-body pt-4">
           <!-- Se aplica Fetch/AJAX (Módulo Independiente empleados_validation.js) -->
           <form id="formEmpleado" class="needs-validation" novalidate onsubmit="registrarEmpleadoFetch(event)">
             
-            <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3"><i class="bi bi-person-vcard me-2"></i>Información del Empleado</p>
+            <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3"><i class="bi bi-person-vcard me-2"></i>Información del Empleado (Tabla: empleados)</p>
             <div class="row g-3 mb-4">
               <div class="col-md-6">
                 <label class="form-label fw-medium"><i class="bi bi-person me-1"></i>Nombre del Empleado</label>
                 <input type="text" name="nombre_empleado" class="form-control" placeholder="Ingrese nombres y apellidos" required 
-                       pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{3,45}$">
+                       pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{3,45}$" title="Solo letras, mínimo 3, máximo 45 caracteres.">
                 <div class="invalid-feedback">Obligatorio (mín. 3 letras, máx. 45).</div>
               </div>
               <div class="col-md-6">
@@ -31,16 +31,25 @@
                   <option value="" disabled selected>Seleccione el cargo institucional...</option>
                   <option value="Gerente">Gerente</option><option value="Inspector">Inspector</option>
                   <option value="Asistente">Asistente</option><option value="Proyectista">Proyectista</option>
+                  <option value="Recepcionista">Recepcionista</option>
                 </select>
+                <div class="invalid-feedback">Seleccione un cargo válido.</div>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-medium"><i class="bi bi-calendar-event me-1"></i>Fecha de Ingreso</label>
                 <input type="date" name="fecha_ingreso" class="form-control" required>
+                <div class="invalid-feedback">La fecha de ingreso es obligatoria.</div>
               </div>
               <div class="col-md-12">
                 <label class="form-label fw-medium"><i class="bi bi-building me-1"></i>Gerencia Asignada</label>
                 <input type="text" name="gerencia_asignada" class="form-control" placeholder="Ej: Gerencia de Infraestructura y Mantenimiento" required
-                       pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{5,45}$">
+                       pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{5,45}$" title="Solo letras, mínimo 5, máximo 45 caracteres.">
+                <div class="invalid-feedback">Especifique la gerencia (mínimo 5 caracteres).</div>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-medium"><i class="bi bi-file-person me-1"></i>Persona ID (Cédula)</label>
+                <input type="number" name="persona_id_persona" class="form-control" placeholder="Ej: 12345678" required min="1">
+                <div class="invalid-feedback">Requerido para integridad referencial (número positivo).</div>
               </div>
             </div>
 
@@ -49,7 +58,7 @@
                 <i class="bi bi-x-circle me-1"></i>Cancelar
               </a>
               <button type="submit" class="btn btn-primary px-4 shadow-sm">
-                <i class="bi bi-check-circle me-1"></i>Registrar Empleado
+                <i class="bi bi-check-circle me-1"></i>Guardar Empleado
               </button>
             </div>
           </form>
