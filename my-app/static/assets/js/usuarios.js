@@ -1,8 +1,4 @@
-﻿﻿/**
- * VIEW-CONTROLLED: USUARIOS
- * Encargado de la interacción del usuario y renderizado de componentes.
- */
-function openDashboard(htmlContent) {
+﻿﻿function openDashboard(htmlContent) {
     const panel = document.getElementById('moduleDashboard');
     const overlay = document.getElementById('dashboardOverlay');
     const container = document.getElementById('dashboardInjectedContent');
@@ -69,130 +65,64 @@ function triggerUsuariosDashboard() {
     openDashboard(content);
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    /**
+     * Componente Molécula: Inicialización de revelación de contraseña
+     * Busca todos los elementos compatibles con el diseño atómico
+     */
+    const initPasswordToggles = () => {
+        const toggleButtons = document.querySelectorAll('.password-toggle-btn');
+        
+        toggleButtons.forEach(btn => {
+            const container = btn.closest('.input-group');
+            const input = container ? container.querySelector('.password-input') : null;
+            const icon = btn.querySelector('.toggle-icon');
+            const molecule = btn.closest('.molecule-password-field');
+            const helpText = molecule ? molecule.querySelector('#passwordHelp') : null;
 
-// no auto-blink: la animación de cierre se gestiona solo al hacer click
+            if (!input || !icon) return;
 
-function installPasswordReveal(passwordInput) {
-  const inputGroup = passwordInput.closest('.input-group, .password-input-wrapper');
-  if (!inputGroup) return;
-  let toggleButton = inputGroup.querySelector('.btn-password-toggle');
-  if (!toggleButton) {
-    toggleButton = document.createElement('button');
-    toggleButton.type = 'button';
-    toggleButton.className = 'btn btn-outline-secondary btn-password-toggle';
-    toggleButton.setAttribute('aria-label', 'Mostrar contraseña');
-    toggleButton.tabIndex = -1;
-    toggleButton.innerHTML = `
-      <span class="password-eye is-closed" aria-hidden="true">
-        <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          <g class="eye-content">
-            <circle cy="12" cx="12" r="4" fill="currentColor" opacity="0.9" />
-            <circle cy="11.5" cx="13" r="1" fill="black" />
-          </g>
-        </svg>
-      </span>
-      <span class="sr-only visually-hidden">Mostrar contraseña</span>
-    `;
-    inputGroup.insertBefore(toggleButton, passwordInput); // Insertar antes del input
-  }
+            // Funcionalidad de Revelación Fija
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const isPassword = input.type === 'password';
+                input.type = isPassword ? 'text' : 'password';
+                
+                // Actualización Atómica del Icono
+                icon.classList.toggle('bi-eye', isPassword);
+                icon.classList.toggle('bi-eye-slash', !isPassword);
+                
+                // Accesibilidad y estado visual
+                btn.setAttribute('aria-label', isPassword ? 'Ocultar contraseña' : 'Mostrar contraseña');
+            });
 
-  const eye = toggleButton.querySelector('.password-eye');
-  if (!eye) return;
+            // Feedback dinámico de validación (Mivel Molécula)
+            if (helpText) {
+                input.addEventListener('input', () => {
+                    helpText.classList.toggle('d-none', input.value.trim() === '');
+                });
+            }
+        });
+    };
 
-  toggleButton.addEventListener('click', function () {
-    const willShow = passwordInput.type === 'password';
-    
-    // Toggle instantáneo para evitar lag en el formulario
-    passwordInput.type = willShow ? 'text' : 'password';
-    toggleButton.setAttribute('aria-label', willShow ? 'Ocultar contraseña' : 'Mostrar contraseña');
-    eye.classList.toggle('open', willShow);
-    eye.classList.toggle('is-closed', !willShow);
-  });
-}
+    initPasswordToggles();
 
-// Función para que el ojo siga el cursor
-document.addEventListener('mousemove', (e) => {
-  const eyeContents = document.querySelectorAll('.eye-content');
-  eyeContents.forEach(content => {
-    const rect = content.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    const dx = e.clientX - centerX;
-    const dy = e.clientY - centerY;
-    const angle = Math.atan2(dy, dx);
-    
-    // Limitamos el movimiento a un radio pequeño
-    const distance = Math.min(2.5, Math.hypot(dx, dy) / 40);
-    const x = Math.cos(angle) * distance;
-    const y = Math.sin(angle) * distance;
-    
-    content.style.transform = `translate(${x}px, ${y}px)`;
-  });
-});
 
-// setupPasswordEyeBlink removed: no blinking automático
+    // Lógica de validación Regex (Nivel Organismo/Formulario)
+    const passwordRegex = /^(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}$/;
+    const forms = document.querySelectorAll('form');
 
-document.addEventListener('DOMContentLoaded', function () {
-  const forms = document.querySelectorAll('form');
-  const passwordRegex = /^(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}$/;
+    forms.forEach(form => {
+        const passwordInput = form.querySelector('.password-input');
+        if (!passwordInput) return;
 
-  forms.forEach(form => {
-    const passwordInput = form.querySelector('input[name="pass_user"]');
-    if (!passwordInput) return;
-
-    installPasswordReveal(passwordInput);
-    passwordInput.setAttribute('minlength', '8');
-    passwordInput.setAttribute('maxlength', '12');
-    passwordInput.setAttribute('pattern', '(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}');
-    const feedbackId = `${passwordInput.name}_feedback`;
-    let feedback = document.getElementById(feedbackId);
-    if (!feedback) {
-      feedback = document.createElement('div');
-      feedback.id = feedbackId;
-      feedback.className = 'invalid-feedback';
-      passwordInput.parentNode.appendChild(feedback);
-    }
-
-    function showPasswordError(message) {
-      passwordInput.classList.add('is-invalid');
-      passwordInput.classList.remove('is-valid');
-      feedback.textContent = message;
-    }
-
-    function clearPasswordError() {
-      passwordInput.classList.remove('is-invalid');
-      passwordInput.classList.add('is-valid');
-      feedback.textContent = '';
-    }
-
-    passwordInput.addEventListener('input', function () {
-      const value = passwordInput.value;
-      if (!value) {
-        passwordInput.classList.remove('is-valid', 'is-invalid');
-        feedback.textContent = '';
-        return;
-      }
-      if (!passwordRegex.test(value)) {
-        showPasswordError('La clave debe tener entre 8 y 12 caracteres, incluir letras y al menos un carácter especial.');
-      } else {
-        clearPasswordError();
-      }
-    });
-
-    form.addEventListener('submit', function (event) {
-      const value = passwordInput.value;
-      if (!value && passwordInput.hasAttribute('required')) {
-        showPasswordError('La contraseña es obligatoria.');
-        event.preventDefault();
-        return;
-      }
-      if (value && !passwordRegex.test(value)) {
-        showPasswordError('La clave debe tener entre 8 y 12 caracteres, incluir letras y al menos un símbolo.');
-        event.preventDefault();
-      }
+        passwordInput.addEventListener('input', () => {
+            const value = passwordInput.value;
+            if (value && !passwordRegex.test(value)) {
+                passwordInput.classList.add('is-invalid');
+            } else {
+                passwordInput.classList.remove('is-invalid');
+            }
+        });
     });
   });
-});

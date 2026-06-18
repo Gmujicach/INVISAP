@@ -1,0 +1,61 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}Modificar Empresa{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card" style="border-radius: 0px !important">
+      <div class="card-header bg-info">
+        <h4 class="text-white mb-0">Actualizar Datos de la Empresa</h4>
+      </div>
+      <div class="card-body mt-4">
+        <form action="{{ url_for('update_empresa') }}" method="POST" autocomplete="off" id="form_registro_empresa">
+          <input type="hidden" name="rif" value="{{ empresa.rif }}">
+
+          <div class="row">
+
+            <div class="col-md-6">
+              <label for="nombre_empresa" class="form-label">Nombre de la Empresa</label>
+              <input type="text" class="form-control" name="nombre_empresa" value="{{ empresa.nombre_empresa }}" required>
+            </div>
+
+            <div class="col-md-6">
+                <label for="telefono" class="form-label">Teléfono</label>
+                <div class="input-group">
+                    <select class="form-select" id="prefijo_telefono" style="max-width: 100px;">
+                        <option value="0414">0414</option>
+                        <option value="0424">0424</option>
+                        <option value="0412">0412</option>
+                        <option value="0416">0416</option>
+                        <option value="0426">0426</option>
+                        <option value="0422">0422</option>
+                    </select>
+                    <input type="text" class="form-control" id="numero_telefono" placeholder="1234567" minlength="7" maxlength="7" required>
+                    <input type="hidden" name="telefono" id="telefono_final" value="{{ empresa.telefono }}">
+                </div>
+            </div>
+  
+            <div class="col-md-12">
+              <label for="domicilio_fiscal" class="form-label">Domicilio Fiscal</label>
+              <input type="text" class="form-control" name="domicilio_fiscal" value="{{ empresa.domicilio_fiscal }}" required>
+            </div>
+          </div>
+
+          <div class="text-center mt-3">
+            <button type="submit" class="btn btn-info px-5 text-white">
+              <i class="bi bi-arrow-repeat"></i> Modificar Empresa
+            </button>
+            <a href="{{ url_for('lista_empresas') }}" class="btn btn-secondary">
+               Volver
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block customJS %}
+<script src="{{ url_for('static', filename ='assets/customJS/file.js') }}"></script>
+<script src="{{ url_for('static', filename ='js/empresa.js') }}"></script>
+{% endblock %}

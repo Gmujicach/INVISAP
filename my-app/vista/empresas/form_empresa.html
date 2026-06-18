@@ -1,0 +1,80 @@
+{% extends 'base_cpanel.html' %} 
+{% block title %}INVISAP | Registrar Empresa{% endblock %} 
+{% block customCSS %} 
+<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" /> 
+{% endblock %} 
+
+{% block body %} 
+<div class="card" style="border-radius: 0px !important"> 
+  <div class="row justify-content-center mb-2"> 
+    <div class="col-md-12"> 
+      <h3 class="text-center mt-5 mb-3">REGISTRAR EMPRESAS</h3> 
+      <hr /> 
+    </div> 
+  </div> 
+
+  <div class="row justify-content-center mb-2"> 
+    <div class="col-md-10"> 
+      <form method="POST" action="{{ url_for('procesar_registro') }}" autocomplete="off" id="form_registro_empresa"> 
+        <div class="card-body"> 
+          <div class="row"> 
+            
+            <div class="col-md-4"> 
+              <label for="rif" class="form-label">RIF Empresa</label> 
+              <div class="input-group"> 
+                <select class="form-select" id="tipo_rif" style="max-width: 80px;"> 
+                  <option value="J">J</option> 
+                  <option value="V">V</option> 
+                  <option value="G">G</option> 
+                  <option value="E">E</option> 
+                </select> 
+                <input type="text" class="form-control" id="numero_rif" placeholder="123456780" maxlength="9" required /> 
+                <input type="hidden" name="rif" id="rif_final"> 
+              </div> 
+            </div> 
+
+            <div class="col-md-4"> 
+              <label for="nombre_empresa" class="form-label">Nombre de la Empresa</label> 
+              <input type="text" class="form-control bg-white" name="nombre_empresa" id="nombre_empresa" placeholder="Ingresa Nombre de Empresa" minlength="3" required /> 
+            </div> 
+
+            <div class="col-md-4"> 
+              <label for="telefono" class="form-label fw-semibold">Teléfono</label> 
+              <div class="input-group"> 
+                <select class="form-select" id="prefijo_telefono" style="max-width: 100px;"> 
+                  <option value="0414">0414</option> 
+                  <option value="0424">0424</option> 
+                  <option value="0412">0412</option> 
+                  <option value="0416">0416</option> 
+                  <option value="0426">0426</option> 
+                  <option value="0422">0422</option> 
+                </select> 
+                <input type="text" class="form-control" id="numero_telefono" placeholder="1234567" minlength="7" maxlength="7" required /> 
+                <input type="hidden" name="telefono" id="telefono_final"> 
+              </div> 
+            </div> 
+          </div> 
+            
+          <div class="row mt-3">
+            <div class="col-md-12"> 
+              <label for="domicilio_fiscal" class="form-label">Domicilio Fiscal</label> 
+              <input type="text" class="form-control bg-white" name="domicilio_fiscal" placeholder="Domicilio Fiscal de la Empresa" minlength="3" maxlength="42" required /> 
+            </div> 
+          </div>
+
+          <div class="mt-5 text-center"> 
+            <button class="btn btn-primary btn-lg px-5 shadow-sm" style="border-radius: 50px;" type="submit">
+              <i class="bi bi-save me-2"></i>Registrar Empresa
+            </button> 
+          </div> 
+        </div> 
+      </form> 
+    </div> 
+  </div> 
+</div> 
+{% endblock %} 
+
+{% block customJS %} 
+<script src="{{ url_for('static', filename ='assets/customJS/file.js') }}"></script> 
+<script src="{{ url_for('static', filename ='js/empresa.js') }}"></script> 
+{% endblock %}

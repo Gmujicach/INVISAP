@@ -1,17 +1,20 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session
 
 # Importando mi conexión a BD
-from conexion.conexionBD import connectionBD
+from conexion.conexionBD import connectionBD_seguridad
 
 # Para encriptar contraseña generate_password_hash
 from werkzeug.security import check_password_hash
 
 # Importando controllers para el modulo de login
 from controllers.funciones_login import *
+from controllers.strategies import AuthContext, DatabaseLoginStrategy
 
 login_bp = Blueprint('login_bp', __name__)
 PATH_URL_LOGIN = "login"
 
+# Contexto de autenticación inyectado con la estrategia de base de datos
+auth_context = AuthContext(DatabaseLoginStrategy())
 
 @login_bp.route('/', methods=['GET'])
 def inicio():
@@ -107,38 +110,18 @@ def loginCliente():
             nombre_usuario = str(request.form['nombre'])
             pass_user = str(request.form['pass_user'])
 
-            try:
-                # Comprobando si existe una cuenta
-                conexion_MySQLdb = connectionBD()
-                cursor = conexion_MySQLdb.cursor(dictionary=True)
-                try:
-                    cursor.execute(
-                        "SELECT * FROM usuarios WHERE nombre = %s", [nombre_usuario])
-                    account = cursor.fetchone()
-                finally:
-                    cursor.close()
-                    conexion_MySQLdb.close()
-            except Exception as db_error:
-                flash('No se puede conectar con la base de datos. Verifique la configuración del servidor.', 'error')
-                print(f"Error de conexión en loginCliente: {db_error}")
-                return render_template(f'{PATH_URL_LOGIN}/base_login.html')
+            # Usando el patrón Strategy para la autenticación
+            account = auth_context.login(nombre_usuario, pass_user)
 
             if account:
-                if check_password_hash(account['contrasena'], pass_user):
-                    # Crear datos de sesión, para poder acceder a estos datos en otras rutas
-                    session['conectado'] = True
-                    session['id'] = account['id_usuarios']
-                    session['name_surname'] = account['nombre']
-                    session['email_user'] = account['correo']
-
-                    flash('Inicio de sesion exitoso :)', 'success')
-                    return redirect(url_for('login_bp.inicio'))
-                else:
-                    # La cuenta no existe o el nombre de usuario/contraseña es incorrecto
-                    flash('Credenciales incorrectas, por favor verifique usuario y contraseña.', 'error')
-                    return render_template(f'{PATH_URL_LOGIN}/base_login.html')
+                session['conectado'] = True
+                session['id'] = account['id_usuarios']
+                session['name_surname'] = account['nombre']
+                session['email_user'] = account['correo']
+                flash('Inicio de sesion exitoso :)', 'success')
+                return redirect(url_for('login_bp.inicio'))
             else:
-                flash('El usuario no existe, por favor verifique.', 'error')
+                flash('Credenciales incorrectas o usuario inactivo.', 'error')
                 return render_template(f'{PATH_URL_LOGIN}/base_login.html')
         else:
             flash('Primero debes iniciar sesión.', 'error')
@@ -148,7 +131,7 @@ def loginCliente():
 def recuperarClave():
     correo = request.form.get('email_user')
     if correo:
-        conexion = connectionBD()
+        conexion = connectionBD_seguridad()
         cursor = conexion.cursor(dictionary=True)
         cursor.execute("SELECT nombre, correo FROM usuarios WHERE correo = %s", [correo])
         user = cursor.fetchone()

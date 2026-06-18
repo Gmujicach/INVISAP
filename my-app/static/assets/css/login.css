@@ -1,0 +1,98 @@
+/* INVISAP - Login Styles (Atomic UI) */
+
+.transition-all {
+  transition: all 0.3s ease-in-out !important;
+}
+
+.password-strength-wrapper {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(67, 89, 113, 0.08);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.rule-item {
+  font-size: 0.8rem;
+}
+
+.rule-item i {
+  font-size: 0.9rem;
+}
+
+.password-toggle-btn {
+  border-radius: 0 0.375rem 0.375rem 0 !important;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  background-color: transparent !important;
+  border-left: 0 !important;
+}
+
+/* Atomic Design: Profile Components */
+.molecule-avatar-upload .atom-avatar {
+  transition: transform 0.3s ease;
+}
+
+.molecule-avatar-upload:hover .atom-avatar {
+  transform: scale(1.02);
+}
+
+.btn-icon {
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Atomic: Dark Mode Organisms */
+body.dark-mode {
+  background-color: #232333 !important;
+  color: #cfcde9 !important;
+}
+
+.dark-mode .card, 
+.dark-mode .navbar, 
+.dark-mode .modal-content,
+.dark-mode .dropdown-menu,
+.dark-mode .list-group-item {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+  border-color: #444564 !important;
+}
+
+.dark-mode .profile-link-fixed {
+  background-color: #2b2c40;
+  color: #cfcde9;
+}
+
+.dark-mode .form-control, .dark-mode .input-group-text {
+  background-color: #232333 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+
+.dark-mode .bg-light {
+  background-color: #232333 !important;
+}
+
+/* Atomic: Dark Mode Organisms */
+body.dark-mode {
+  background-color: #232333 !important;
+  color: #cfcde9 !important;
+}
+
+.dark-mode .card, 
+.dark-mode .navbar, 
+.dark-mode .modal-content,
+.dark-mode .dropdown-menu {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+  border-color: #444564 !important;
+}
+
+.dark-mode .form-control, .dark-mode .input-group-text {
+  background-color: #232333 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}

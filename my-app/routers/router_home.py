@@ -20,13 +20,14 @@ from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
 from controllers.funciones_proyecto import *
 from controllers.funciones_maquinaria import *
-from models.model_empresa import EmpresaModel
+from models.model_empresas import EmpresaModel
 
-## Gerencias
-from controllers.gerenciasController import gerencia_bp
-app.register_blueprint(gerencia_bp)
+## Empresas
+from controllers.controller_empresa import empresa_bp
+app.register_blueprint(empresa_bp)
+empresa_bp = Blueprint('empresa_bp', __name__)
 
-# Crear Blueprint para manejar las rutas de home con la carpeta de vistas correcta
+# Contrataciones
 home_bp = Blueprint('home_bp', __name__, template_folder='../vista')
 contrataciones_bp = Blueprint('contrataciones_bp', __name__)
 ##app.register_blueprint(contrataciones_bp)
@@ -34,7 +35,7 @@ contrataciones_bp = Blueprint('contrataciones_bp', __name__)
 # Rutas de carpetas (Paths)
 PATH_URL = "solicitudes"
 PATH_URL_CONTRAT = "contratacion"
-PATH_URLG = "gerencias"
+PATH_URLE = "empresas"
 PATH_URL_RES = "respaldo"
 PATH_URL_INF = "inf_avance_obra"
 PATH_URL_PROY = "proyectos"
@@ -479,72 +480,70 @@ def viewFormInspectores():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-## Gerencias
-@home_bp.route('/registrar-gerencias', methods=['GET'])
-def viewFormGerencia():
+## Empresas
+@home_bp.route('/registrar-empresas', methods=['GET'])
+def viewFormEmpresa():
     if 'conectado' in session:
-        from models.model_gerencias import GerenciaModel
-        modelo = GerenciaModel()
-        informes = modelo.obtener_informes_disponibles()
-        return render_template(f'{PATH_URLG}/form_gerencia.html', informes=informes)
+        from models.model_empresas import EmpresaModel
+        modelo = EmpresaModel()
+        return render_template(f'{PATH_URLE}/form_empresa.html')
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-@app.route('/form-registrar-gerencias', methods=['POST'])
+@app.route('/form-registrar-empresas', methods=['POST'])
 def procesar_registro():
-    from controllers.gerenciasController import procesar_registro_gerencia
+    from controllers.controller_empresa import procesar_registro_empresa
     
-    if procesar_registro_gerencia(request.form):
-        flash('¡La gerencia ha sido registrada con éxito!', 'success')
-        return redirect(url_for('lista_gerencias'))
+    if procesar_registro_empresa(request.form):
+        flash('¡La empresa ha sido registrada con éxito!', 'success')
+        return redirect(url_for('lista_empresas'))
     else:
-        flash('Error: No se pudo registrar la gerencia.', 'error')
-        return redirect(url_for('viewFormGerencia'))
+        flash('Error: No se pudo registrar la empresa.', 'error')
+        return redirect(url_for('home_bp.viewFormEmpresa'))
 
-@app.route('/lista-gerencias', methods=['GET'])
-def lista_gerencias():
+@app.route('/lista-empresas', methods=['GET'])
+def lista_empresas():
     if 'conectado' in session:
-        from controllers.gerenciasController import obtener_todas_las_gerencias
-        return render_template(f'{PATH_URLG}/lista_gerencias.html', gerencias=obtener_todas_las_gerencias())
+        from controllers.controller_empresa import obtener_todas_las_empresas
+        return render_template(f'{PATH_URLE}/lista_empresas.html', empresas=obtener_todas_las_empresas())
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-@app.route('/edi-gerencias/<int:id_gerencia>', methods=['GET'])
-def viewEditarGerencia(id_gerencia):
+@app.route('/edi-empresas/<string:rif>', methods=['GET'])
+def viewEditarEmpresa(rif):
     if 'conectado' in session:
-        from controllers.gerenciasController import obtener_gerencia_por_id
-        from models.model_gerencias import GerenciaModel
+        from controllers.controller_empresa import obtener_empresa_por_rif
+        from models.model_empresas import EmpresaModel
         
-        gerencia = obtener_gerencia_por_id(id_gerencia)
-        informes = GerenciaModel().obtener_informes_disponibles()
+        empresa = obtener_empresa_por_rif(rif)
         
-        if gerencia:
-            return render_template(f'{PATH_URLG}/edi_gerencias.html', gerencia=gerencia, informes=informes)
+        if empresa:
+            return render_template(f'{PATH_URLE}/edi_empresas.html', empresa=empresa)
         else:
-            flash('La gerencia no existe.', 'error')
-            return redirect(url_for('lista_gerencias'))
+            flash('La empresa no existe.', 'error')
+            return redirect(url_for('lista_empresas'))
     return redirect(url_for('login_bp.inicio'))
 
-@app.route('/update-gerencia', methods=['POST'])
-def update_gerencia():
-    from controllers.gerenciasController import update_gerencia
-    if update_gerencia(request.form):
+@app.route('/update-empresa', methods=['POST'])
+def update_empresa():
+    from controllers.controller_empresa import update_empresa
+    if update_empresa(request.form):
         flash('Actualizado correctamente', 'success')
     else:
         flash('Error al actualizar', 'error')
-    return redirect(url_for('lista_gerencias'))
+    return redirect(url_for('lista_empresas'))
 
-@app.route('/eliminar-gerencia/<int:id_gerencia>', methods=['GET'])
-def eliminar_gerencia(id_gerencia):
+@app.route('/eliminar-empresa/<string:rif>', methods=['GET'])
+def eliminar_empresa(rif):
     if 'conectado' in session:
-        from controllers.gerenciasController import eliminar_gerencia_por_id
-        if eliminar_gerencia_por_id(id_gerencia):
-            flash('Gerencia eliminada correctamente.', 'success')
+        from controllers.controller_empresa import eliminar_empresa_por_rif
+        if eliminar_empresa_por_rif(rif):
+            flash('empresa eliminada correctamente.', 'success')
         else:
-            flash('Error al intentar eliminar la gerencia.', 'error')
-        return redirect(url_for('lista_gerencias'))
+            flash('Error al intentar eliminar la empresa.', 'error')
+        return redirect(url_for('lista_empresas'))
     else:
         return redirect(url_for('login_bp.inicio'))
 
