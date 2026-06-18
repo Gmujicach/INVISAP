@@ -1,46 +1,39 @@
 {% extends 'base_cpanel.html' %}
-{% block title %}Modificar Gerencia{% endblock %}
+{% block title %}Modificar Empresa{% endblock %}
 
 {% block body %}
 <div class="row justify-content-center">
   <div class="col-md-8">
-    <div class="card">
+    <div class="card" style="border-radius: 0px !important">
       <div class="card-header bg-info">
-        <h4 class="text-white mb-0">Actualizar Datos de Gerencia</h4>
+        <h4 class="text-white mb-0">Actualizar Datos de la Empresa</h4>
       </div>
       <div class="card-body mt-4">
-        <form action="{{ url_for('update_gerencia') }}" method="POST">
-          <input type="hidden" name="id_gerencias" value="{{ gerencia.id_gerencias }}">
+        <form action="{{ url_for('update_empresa') }}" method="POST" autocomplete="off">
+          <input type="hidden" name="rif" value="{{ empresa.rif }}">
+
           <div class="row">
-            <div class="col-md-12 mb-3">
-             <label for="nombre_gerencia" class="form-label">Nombre de la Gerencia</label>
-              <input type="text" class="form-control" name="nombre_gerencia" value="{{ gerencia.nombre_gerencia }}" required>
-             </div>
-  
-              <div class="col-md-6 mb-3">
-                <label for="direccion_gerencia" class="form-label">Dirección de Gerencia</label>
-                <input type="text" class="form-control" name="direccion_gerencia" value="{{ gerencia.direccion_gerencia }}" required>
-              </div>
             <div class="col-md-6 mb-3">
-              <label for="informe_avance_obra_id_informe" class="form-label">Seleccionar Informe</label>
-              <select name="informe_avance_obra_id_informe" class="form-control" required>
-              {% for inf in informes %}
-              <option value="{{ inf.id_informe }}" 
-              {% if inf.id_informe == gerencia.informe_avance_obra_id_informe %}selected{% endif %}>
-              {% if inf.id_informe == gerencia.informe_avance_obra_id_informe %}
-                ACTUAL: 
-               {% endif %}
-               ID: {{ inf.id_informe }} - {{ inf.tipo_obras }}
-               </option>
-               {% endfor %}
-                </select>
+              <label for="nombre_empresa" class="form-label">Nombre de la Empresa</label>
+              <input type="text" class="form-control" name="nombre_empresa" value="{{ empresa.nombre_empresa }}" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="telefono" class="form-label">Teléfono</label>
+              <input type="text" class="form-control" name="telefono" value="{{ empresa.telefono }}" required>
+            </div>
+  
+            <div class="col-md-12 mb-3">
+              <label for="domicilio_fiscal" class="form-label">Domicilio Fiscal</label>
+              <input type="text" class="form-control" name="domicilio_fiscal" value="{{ empresa.domicilio_fiscal }}" required>
+            </div>
           </div>
-          </div>
+
           <div class="text-center mt-3">
-            <button type="submit" class="btn btn-info px-5">
-              <i class="bi bi-arrow-repeat"></i> Modificar Gerencia
+            <button type="submit" class="btn btn-info px-5 text-white">
+              <i class="bi bi-arrow-repeat"></i> Modificar Empresa
             </button>
-            <a href="{{ url_for('lista_gerencias') }}" class="btn btn-secondary">
+            <a href="{{ url_for('lista_empresas') }}" class="btn btn-secondary">
                Volver
             </a>
           </div>
