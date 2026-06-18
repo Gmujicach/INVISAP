@@ -24,8 +24,8 @@ class EmpleadoModel:
         conn = connectionBD()
         cur = conn.cursor(dictionary=True)
         try:
-            sql = """SELECT id_empleado AS id, nombre_empleado, apellido_empleado, salario_empleado, foto_empleado, sexo_empleado
-                     FROM tbl_empleados ORDER BY id_empleado DESC"""
+            sql = """SELECT id_empleados, nombre_empleado, cargo, fecha_ingreso, gerencia_asignada
+                     FROM empleados ORDER BY id_empleados DESC"""
             cur.execute(sql)
             return cur.fetchall()
         finally:
@@ -36,28 +36,22 @@ class EmpleadoModel:
         conn = connectionBD()
         cur = conn.cursor(dictionary=True)
         try:
-            cur.execute("SELECT * FROM tbl_empleados WHERE id_empleado = %s", (id_empleado,))
+            cur.execute("SELECT * FROM empleados WHERE id_empleados = %s", (id_empleado,))
             return cur.fetchone()
         finally:
             cur.close()
             conn.close()
 
-    def create(self, form, file_storage=None):
-        foto = self._save_file(file_storage) if file_storage else None
-        salario = int(''.join([c for c in form.get('salario_empleado','0') if c.isdigit()]) or 0)
+    def create(self, form):
         conn = connectionBD()
         cur = conn.cursor()
         try:
-            sql = "INSERT INTO tbl_empleados (nombre_empleado, apellido_empleado, sexo_empleado, telefono_empleado, email_empleado, profesion_empleado, foto_empleado, salario_empleado) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+            sql = "INSERT INTO empleados (nombre_empleado, cargo, fecha_ingreso, gerencia_asignada) VALUES (%s,%s,%s,%s)"
             params = (
                 form.get('nombre_empleado'),
-                form.get('apellido_empleado'),
-                form.get('sexo_empleado'),
-                form.get('telefono_empleado'),
-                form.get('email_empleado'),
-                form.get('profesion_empleado'),
-                foto,
-                salario,
+                form.get('cargo'),
+                form.get('fecha_ingreso'),
+                form.get('gerencia_asignada')
             )
             cur.execute(sql, params)
             conn.commit()

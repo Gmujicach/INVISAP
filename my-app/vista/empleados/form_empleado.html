@@ -3,103 +3,53 @@
 {% block body %}
 <div class="container-xxl flex-grow-1 container-p-y">
   <h4 class="fw-bold py-3 mb-4">
-    <span class="text-muted fw-light">Empleados /</span> Registro de Nuevo Empleado
+    <span class="text-muted fw-light">Empleados /</span> Gestion de Empleados
   </h4>
 
   <div class="row">
     <div class="col-xl">
       <div class="card mb-4 shadow-sm border-0">
         <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom">
-          <h5 class="mb-0 fw-semibold text-primary"><i class="bi bi-person-plus-fill me-2"></i>Información del Empleado</h5>
+          <h5 class="mb-0 fw-semibold text-primary"><i class="bi bi-person-plus-fill me-2"></i>Registrar Empleados</h5>
           <small class="text-muted float-end">Complete todos los campos requeridos</small>
         </div>
         <div class="card-body pt-4">
-          <form action="{{ url_for('empleado_bp.create_empleado') }}" method="post" enctype="multipart/form-data" id="formEmpleado">
+          <!-- Se aplica Fetch/AJAX (Módulo Independiente empleados_validation.js) -->
+          <form id="formEmpleado" class="needs-validation" novalidate onsubmit="registrarEmpleadoFetch(event)">
             
-            <!-- Sección 1: Datos Personales (Ley de Hicks: Agrupación Lógica) -->
-            <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3"><i class="bi bi-person-vcard me-2"></i>Datos Personales</p>
+            <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3"><i class="bi bi-person-vcard me-2"></i>Información del Empleado</p>
             <div class="row g-3 mb-4">
               <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-person me-1"></i>Nombre</label>
-                <input name="nombre_empleado" class="form-control" placeholder="Ej: Juan" required>
+                <label class="form-label fw-medium"><i class="bi bi-person me-1"></i>Nombre del Empleado</label>
+                <input type="text" name="nombre_empleado" class="form-control" placeholder="Ingrese nombres y apellidos" required 
+                       pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{3,45}$">
+                <div class="invalid-feedback">Obligatorio (mín. 3 letras, máx. 45).</div>
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-medium">Apellido</label>
-                <input type="text" name="apellido_empleado" class="form-control" placeholder="Ej: Pérez" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-medium d-block"><i class="bi bi-gender-ambiguous me-1"></i>Sexo</label>
-                <div class="form-check form-check-inline mt-2">
-                  <input class="form-check-input" type="radio" name="sexo_empleado" id="sexo_masculino" value="1" required>
-                  <label class="form-check-label" for="sexo_masculino">Masculino</label>
-                </div>
-                <div class="form-check form-check-inline mt-2">
-                  <input class="form-check-input" type="radio" name="sexo_empleado" id="sexo_femenino" value="2" required>
-                  <label class="form-check-label" for="sexo_femenino">Femenino</label>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-telephone me-1"></i>Teléfono</label>
-                <input type="text" name="telefono_empleado" class="form-control" placeholder="04xx-xxxxxxx" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-envelope me-1"></i>Email</label>
-                <input name="email_empleado" type="email" class="form-control" placeholder="juan@invilara.com" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-file-person me-1"></i>Cédula (Persona ID)</label>
-                <input type="number" name="persona_id_persona" class="form-control" placeholder="ID de Persona vinculada" required>
-              </div>
-            </div>
-
-            <hr class="my-4">
-
-            <!-- Sección 2: Información Institucional -->
-            <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3"><i class="bi bi-briefcase me-2"></i>Información Institucional</p>
-            <div class="row g-3 mb-4">
-              <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-award me-1"></i>Cargo</label>
+                <label class="form-label fw-medium"><i class="bi bi-briefcase me-1"></i>Cargo</label>
                 <select name="cargo" class="form-select" required>
-                  <option value="" disabled selected>Seleccione un cargo...</option>
-                  <option value="Asistente">Asistente</option>
-                  <option value="Recepcionista">Recepcionista</option>
-                  <option value="Gerente">Gerente</option>
-                  <option value="Proyectista">Proyectista</option>
-                  <option value="Inspector">Inspector</option>
-                  <option value="Contratista">Contratista</option>
+                  <option value="" disabled selected>Seleccione el cargo institucional...</option>
+                  <option value="Gerente">Gerente</option><option value="Inspector">Inspector</option>
+                  <option value="Asistente">Asistente</option><option value="Proyectista">Proyectista</option>
                 </select>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-medium"><i class="bi bi-calendar-event me-1"></i>Fecha de Ingreso</label>
                 <input type="date" name="fecha_ingreso" class="form-control" required>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-12">
                 <label class="form-label fw-medium"><i class="bi bi-building me-1"></i>Gerencia Asignada</label>
-                <input type="text" name="gerencia_asignada" class="form-control" placeholder="Ej: Gerencia de Infraestructura" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-mortarboard me-1"></i>Profesión</label>
-                <input type="text" name="profesion_empleado" class="form-control" placeholder="Ej: Ingeniero Civil" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-cash-stack me-1"></i>Salario</label>
-                <div class="input-group">
-                  <span class="input-group-text">$</span>
-                  <input name="salario_empleado" class="form-control" placeholder="0.00" required>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-image me-1"></i>Foto de Perfil</label>
-                <input type="file" name="foto_empleado" class="form-control">
+                <input type="text" name="gerencia_asignada" class="form-control" placeholder="Ej: Gerencia de Infraestructura y Mantenimiento" required
+                       pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{5,45}$">
               </div>
             </div>
 
             <div class="mt-5 d-flex justify-content-end gap-2">
-              <a href="{{ url_for('viewFormListarEmpleados') }}" class="btn btn-outline-secondary">
+              <a href="{{ url_for('empleado_bp.list_empleados') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-x-circle me-1"></i>Cancelar
               </a>
-              <button class="btn btn-primary px-4 shadow-sm">
-                <i class="bi bi-check-circle me-1"></i>Guardar Empleado
+              <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                <i class="bi bi-check-circle me-1"></i>Registrar Empleado
               </button>
             </div>
           </form>

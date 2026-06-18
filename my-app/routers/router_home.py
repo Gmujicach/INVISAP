@@ -15,7 +15,7 @@ from controllers.funciones_solicitud import (
 from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, obtener_estadisticas_bitacora
 from models.model_publicacion import PublicacionModel
 from services.bitacora_service import BitacoraService
-from controllers.EmpleadoController import empleado_bp
+from controllers.controller_empleado import empleado_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
 from controllers.funciones_proyecto import *

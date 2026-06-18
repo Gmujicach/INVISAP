@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from models.empleados import EmpleadoModel
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
+from models.model_empleados import EmpleadoModel
 
 # Se corrige template_folder para que apunte a la carpeta raíz de vistas
 empleado_bp = Blueprint('empleado_bp', __name__, template_folder='../vista', url_prefix='/empleados')
@@ -14,7 +14,6 @@ def list_empleados():
         flash('primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
     empleados = model.all()
-    # Se ajusta la ruta del template y el nombre de la variable para compatibilidad con JS
     return render_template('empleados/empleados.html', resp_empleadosBD=empleados)
 
 
