@@ -10,8 +10,8 @@ class EvidenciaModel:
         # Atributos privados para encapsulamiento
         self.__id_evidencia = None
         self.__fotos = []
-        self.__etapas = {} # To store stage for each photo
-        self.__observaciones = ""
+        self.__etapas = {}
+        self.__url_archivos = None
         self.__fecha_registro = None
         self.__estado = 1
         
@@ -26,9 +26,11 @@ class EvidenciaModel:
             raise ValueError("Debe seleccionar entre 3 y 5 imágenes por informe.")
         self.__fotos = files
 
-    def set_etapas_y_observaciones(self, form_data):
+    def set_url_archivos(self, url):
+        self.__url_archivos = url
+        
+    def set_etapas(self, form_data):
         self.__etapas = {f"foto-{i}": form_data.get(f"etapa-foto-{i}") for i in range(len(self.__fotos))}
-        self.__observaciones = form_data.get('observaciones', '')
 
     # --- Métodos de Lógica de Negocio ---
     def __comprimir_y_guardar_imagen(self, file):
@@ -44,33 +46,27 @@ class EvidenciaModel:
         # Retorna la URL relativa para guardar en la BD
         return f"static/uploads/evidencias/{unique_name}"
 
-    def __guardar_informe_y_evidencias_db(self):
+    def __guardar_evidencias_db(self):
         """Guarda el informe y las evidencias asociadas en la base de datos."""
         conn = None
         cur = None
         try:
             conn = connectionBD()
             cur = conn.cursor()
-
-            # 1. Crear el registro principal en 'informe_avance_obra'
-            sql_informe = "INSERT INTO informe_avance_obra (fecha, estado_informe, poblacion_beneficiada, tipo_informe, observaciones, estado) VALUES (%s, %s, %s, %s, %s, 1)"
-            # These values should come from the form, here are placeholders
-            cur.execute(sql_informe, (datetime.now(), 'En Proceso', 'N/A', 'Inspección', self.__observaciones))
-            id_informe_nuevo = cur.lastrowid
-
-            # 2. Guardar cada foto en la tabla 'evidencia' y enlazar en 'informe_has_evidencia'
-            sql_evidencia = "INSERT INTO evidencia (url_foto, etapa, fecha_registro, estado) VALUES (%s, %s, %s, 1)"
-            sql_link = "INSERT INTO informe_has_evidencia (id_informe, id_evidencia) VALUES (%s, %s)"
             
+            # Bucle para guardar cada foto con su etapa
+            sql = "INSERT INTO evidencia (fotos, url_archivos, fecha_registro, estado, etapa) VALUES (%s, %s, %s, 1, %s)"
             for i, file in enumerate(self.__fotos):
                 url = self.__comprimir_y_guardar_imagen(file)
-                etapa = self.__etapas.get(f"foto-{i}", "antes") # Default to 'antes' if not specified
-                cur.execute(sql_evidencia, (url, etapa, datetime.now()))
-                id_evidencia_nueva = cur.lastrowid
-                cur.execute(sql_link, (id_informe_nuevo, id_evidencia_nueva))
-
+                etapa = self.__etapas.get(f"foto-{i}", "antes") # 'antes' por defecto
+                nombre_referencia = file.filename
+                
+                # En esta versión simplificada, cada foto es un registro
+                cur.execute(sql, (nombre_referencia, url, datetime.now(), etapa))
+                
             conn.commit()
-            return id_informe_nuevo
+            return True # Retornamos éxito
+
         except Exception as e:
             if conn:
                 conn.rollback()
@@ -84,17 +80,8 @@ class EvidenciaModel:
         conn = connectionBD()
         cur = conn.cursor(dictionary=True)
         try:
-            # This query now gets reports and their associated photos
-            sql = """
-                SELECT 
-                    iao.id_informe, 
-                    iao.fecha, 
-                    iao.observaciones,
-                    (SELECT COUNT(*) FROM v_informe_evidencias WHERE id_informe = iao.id_informe) as num_fotos
-                FROM informe_avance_obra iao
-                WHERE iao.estado = 1
-                ORDER BY iao.fecha DESC
-            """
+            # Consulta simple a la tabla evidencia
+            sql = "SELECT * FROM evidencia WHERE estado = 1 ORDER BY fecha_registro DESC"
             cur.execute(sql)
             return cur.fetchall()
         finally:
@@ -102,7 +89,7 @@ class EvidenciaModel:
             conn.close()
 
     # --- Interfaz Pública ---
-    def registrar_informe_con_evidencias(self, files, form_data):
+    def registrar_evidencias(self, files, form_data):
         self.set_fotos(files)
-        self.set_etapas_y_observaciones(form_data)
-        return self.__guardar_informe_y_evidencias_db()
+        self.set_etapas(form_data)
+        return self.__guardar_evidencias_db()

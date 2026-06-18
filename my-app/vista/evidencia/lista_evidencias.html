@@ -31,19 +31,19 @@
                     {% if evidencias %}
                         {% for evidencia in evidencias %}
                         <tr>
-                            <td><span class="fw-bold">{{ evidencia.id_evidencia }}</span></td>
+                            <td><span class="fw-bold">{{ evidencia.id_informe or evidencia.id_evidencia }}</span></td>
                             <td>{{ evidencia.fotos }}</td>
                             <td>
-                                {% set urls = evidencia.url_archivos.split(',') %}
-                                <span class="badge bg-label-primary">{{ urls|length }} imágenes</span>
+                                {% set urls = evidencia.url_archivos.split(',') if evidencia.url_archivos else [] %}
+                                <span class="badge bg-label-primary">{{ urls|length }} Imagenes</span>
                             </td>
-                            <td>{{ evidencia.fecha_registro.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ (evidencia.fecha_registro or evidencia.fecha).strftime('%Y-%m-%d %H:%M') }}</td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2">
                                     <a href="{{ url_for('evidencia_bp.show_modificar_evidencia', id_evidencia=evidencia.id_evidencia) }}" class="btn btn-warning btn-icon-only btn-sm" title="Modificar Evidencia">
-                                        <i class="bi bi-eye-fill text-white"></i>
+                                        <i class="bi bi-pencil-square text-white"></i>
                                     </a>
-                                    <a href="#" class="btn btn-danger btn-icon-only btn-sm" title="Eliminar (Borrado Lógico)">
+                                    <a href="javascript:void(0);" onclick="eliminarEvidenciaJS({{ evidencia.id_evidencia }})" class="btn btn-danger btn-icon-only btn-sm" title="Eliminar (Borrado Lógico)">
                                         <i class="bi bi-trash3-fill text-white"></i>
                                     </a>
                                 </div>

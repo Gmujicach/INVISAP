@@ -29,10 +29,10 @@ def api_subir_evidencias():
         files = request.files.getlist('fotos')
         form_data = request.form
         modelo = EvidenciaModel()
-        nuevo_id = modelo.registrar_informe_con_evidencias(files, form_data)
+        nuevo_id = modelo.registrar_evidencias(files, form_data)
 
         if nuevo_id:
-            return jsonify({'status': 'success', 'message': f'Informe de Avance de Obra #{nuevo_id} y sus evidencias han sido registrados.'})
+            return jsonify({'status': 'success', 'message': f'Evidencias registradas con ID: {nuevo_id}'})
         else:
             return jsonify({'status': 'error', 'message': 'No se pudo guardar el informe.'}), 500
 
