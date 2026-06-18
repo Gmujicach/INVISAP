@@ -1,0 +1,63 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}Listar Evidencias{% endblock %}
+
+{% block body %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold py-3 mb-0">
+            <span class="text-muted fw-light">Gestión /</span> Listado de Evidencias
+        </h4>
+        <a href="{{ url_for('evidencia_bp.show_registrar_evidencia') }}" class="btn btn-primary shadow-sm">
+            <i class="bi bi-plus-circle-fill me-2"></i>Registrar Nuevas
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-bottom">
+            <h5 class="mb-0 fw-semibold text-primary">Registros de Evidencias</h5>
+        </div>
+        <div class="table-responsive text-nowrap p-3">
+            <table class="table table-hover align-middle" id="tablaEvidencias">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Referencia</th>
+                        <th>Imágenes</th>
+                        <th>Fecha de Registro</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyEvidencias" class="table-border-bottom-0">
+                    {% if evidencias %}
+                        {% for evidencia in evidencias %}
+                        <tr>
+                            <td><span class="fw-bold">{{ evidencia.id_evidencia }}</span></td>
+                            <td>{{ evidencia.fotos }}</td>
+                            <td>
+                                {% set urls = evidencia.url_archivos.split(',') %}
+                                <span class="badge bg-label-primary">{{ urls|length }} imágenes</span>
+                            </td>
+                            <td>{{ evidencia.fecha_registro.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{{ url_for('evidencia_bp.show_modificar_evidencia', id_evidencia=evidencia.id_evidencia) }}" class="btn btn-warning btn-icon-only btn-sm" title="Modificar Evidencia">
+                                        <i class="bi bi-eye-fill text-white"></i>
+                                    </a>
+                                    <a href="#" class="btn btn-danger btn-icon-only btn-sm" title="Eliminar (Borrado Lógico)">
+                                        <i class="bi bi-trash3-fill text-white"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">No hay evidencias registradas.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

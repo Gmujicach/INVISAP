@@ -15,6 +15,7 @@ from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, o
 from models.model_publicacion import PublicacionModel
 from services.bitacora_service import BitacoraService
 from controllers.controller_empleado import empleado_bp
+from controllers.controller_evidencia import evidencia_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
 from controllers.funciones_proyecto import *
@@ -51,6 +52,7 @@ PATH_URL_REPORTE_ESTADISTICO = "reportes"
 app.register_blueprint(user_bp)
 app.register_blueprint(empleado_bp)
 app.register_blueprint(reporte_excel_bp)
+app.register_blueprint(evidencia_bp)
 app.register_blueprint(reporte_pdf_bp)
 
 @home_bp.route('/registrar-solicitud', methods=['GET'])

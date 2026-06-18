@@ -109,6 +109,24 @@
         <div data-i18n="Tables">Maquinaria</div>
       </a>
     </li>
+    <li class="menu-item {% if 'evidencias' in request.path %} active open {% endif %}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon bi bi-images"></i>
+        <div data-i18n="Evidences">Gestionar Evidencias</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {% if request.path == '/evidencias/registrar' %} active {% endif %}">
+          <a href="{{ url_for('evidencia_bp.show_registrar_evidencia') }}" class="menu-link">
+            <div data-i18n="Register Evidences">Registrar Evidencias</div>
+          </a>
+        </li>
+        <li class="menu-item {% if request.path == '/evidencias/listar' %} active {% endif %}">
+          <a href="{{ url_for('evidencia_bp.show_listar_evidencias') }}" class="menu-link">
+            <div data-i18n="List Evidences">Listar Evidencias</div>
+          </a>
+        </li>
+      </ul>
+    </li>
     <li
       class="menu-item {% if request.path == '/gestionar-proyectos' %} active {% endif %}">
       <a href="{{ url_for('home_bp.viewFormProyectos') }}" class="menu-link">
