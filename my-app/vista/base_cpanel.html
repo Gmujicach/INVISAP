@@ -12,6 +12,7 @@
     <!-- Assets de Arquitectura MVC por Feature -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/reportesEstadisticos.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/usuarios.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/login.css') }}">
     {% block customCSS %} {% endblock %}
     <style>
       /* Estilos para el acceso rápido a Mi Perfil */
@@ -34,13 +35,22 @@
         font-weight: 400;
         transition: all 0.3s ease;
       }
-      .profile-link-fixed:hover, .profile-link-fixed.active {
+      .profile-link-fixed:hover, .profile-link-fixed.active, .corner-profile-container .show > .profile-link-fixed {
         background-color: #08b324;
         color: #fff !important;
       }
+      .dropdown-toggle::after {
+        display: none;
+      }
+      /* Ajustes para el Modal de Desarrolladores */
+      #modalDevelopers .modal-content {
+        border-radius: 15px;
+      }
+      .ls-1 { letter-spacing: 1px; }
+      .bg-label-primary { background-color: #e7e7ff; color: #696cff; }
     </style>
   </head>
-  <body>
+  <body class="transition-all">
     {% include 'home/pre_loader.html' %}
     <!---->
     {% include 'home/navbar.html' %}
@@ -57,10 +67,44 @@
       <div class="layout-container">
         <!-- Acceso persistente a Mi Perfil -->
         <div class="corner-profile-container">
-          <a href="{{ url_for('login_bp.perfil') }}" class="profile-link-fixed {% if request.path == '/mi-perfil' %} active {% endif %}">
-            <i class="bi bi-person-fill-gear"></i>
-            <span>Mi Perfil</span>
-          </a>
+          <div class="btn-group">
+            <button type="button" class="profile-link-fixed dropdown-toggle border-0 shadow-sm" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle"></i>
+              <span>Mi Perfil</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2" style="border-radius: 12px; min-width: 220px;">
+              <li>
+                <a class="dropdown-item rounded d-flex align-items-center py-2" href="{{ url_for('login_bp.perfil') }}">
+                  <i class="bi bi-person-vcard me-2 fs-5 text-primary"></i>
+                  <span>Gestionar Perfil</span>
+                </a>
+              </li>
+              <li>
+                <div class="dropdown-item rounded d-flex align-items-center justify-content-between py-2">
+                  <div class="d-flex align-items-center">
+                    <i id="theme-icon" class="bi bi-sun-fill me-2 fs-5 text-warning"></i>
+                    <span>Modo Oscuro</span>
+                  </div>
+                  <div class="form-check form-switch mb-0">
+                    <input class="form-check-input cursor-pointer" type="checkbox" id="dark-mode-switch">
+                  </div>
+                </div>
+              </li>
+              <li>
+                <a class="dropdown-item rounded d-flex align-items-center py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalDevelopers">
+                  <i class="bi bi-gear-wide-connected me-2 fs-5 text-info"></i>
+                  <span>Configuración</span>
+                </a>
+              </li>
+              <li><hr class="dropdown-divider mx-n2"></li>
+              <li>
+                <a class="dropdown-item rounded d-flex align-items-center py-2 text-danger" href="{{ url_for('login_bp.logout') }}">
+                  <i class="bi bi-power me-2 fs-5"></i>
+                  <span>Cerrar Sesión</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
 
         {% include 'home/menu_sidebar.html' %}
@@ -85,8 +129,41 @@
       <div class="layout-overlay layout-menu-toggle"></div>
     </div>
 
+    <!-- Modal: Créditos / Configuración -->
+    <div class="modal fade" id="modalDevelopers" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="modal-title fw-bold"><i class="bi bi-info-circle-fill me-2 text-primary"></i>Acerca de</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body py-4">
+            <p class="text-muted small mb-3 text-uppercase fw-bold ls-1 text-center">Equipo INVISAP</p>
+            <div class="list-group list-group-flush border-top border-bottom">
+              <div class="list-group-item d-flex align-items-center py-2 px-1 bg-transparent">
+                <i class="bi bi-person-check me-2 text-secondary"></i> David Peña
+              </div>
+              <div class="list-group-item d-flex align-items-center py-2 px-1 bg-transparent">
+                <i class="bi bi-person-check me-2 text-secondary"></i> Gabriel Mujica
+              </div>
+              <div class="list-group-item d-flex align-items-center py-2 px-1 bg-transparent">
+                <i class="bi bi-person-check me-2 text-secondary"></i> Eliot Puerta
+              </div>
+              <div class="list-group-item d-flex align-items-center py-2 px-1 bg-transparent">
+                <i class="bi bi-person-check me-2 text-secondary"></i> Frangher Pereira
+              </div>
+              <div class="list-group-item d-flex align-items-center py-2 px-1 bg-transparent">
+                <i class="bi bi-person-check me-2 text-secondary"></i> Freider Guedez
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     {% include 'home/js.html' %}
     <script src="{{ url_for('static', filename='assets/js/usuarios.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/login.js') }}"></script>
     <!--Custom JS-->
     {% block customJS %} {% endblock %}
   </body>

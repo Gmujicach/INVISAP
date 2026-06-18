@@ -2,10 +2,7 @@
 from flask import session, flash
 
 # Importando conexion a BD
-from conexion.conexionBD import connectionBD
-
-# Importando conexion a BD invilara
-from conexion.conexionBD import connectionBD_invilara
+from conexion.conexionBD import connectionBD_seguridad
 # Para  validar contraseña
 from werkzeug.security import check_password_hash
 
@@ -13,14 +10,19 @@ import re
 # Para encriptar contraseña generate_password_hash
 from werkzeug.security import generate_password_hash
 
+# Regex: 8-12 caracteres, letras y al menos un símbolo especial.
+PASSWORD_REGEX = r'^(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}$'
 
 def recibeInsertRegisterUser(nombre, correo, pass_user, cedula, rol='Usuario'):
-    respuestaValidar = validarDataRegisterLogin(nombre, correo, pass_user, cedula)
+    if not re.match(PASSWORD_REGEX, pass_user):
+        flash('La contraseña no cumple con el formato requerido (8-12 caracteres, letras y símbolos).', 'error')
+        return False
 
+    respuestaValidar = validarDataRegisterLogin(nombre, correo, pass_user, cedula)
     if (respuestaValidar):
         nueva_password = generate_password_hash(pass_user)
         try:
-            conexion_MySQLdb = connectionBD()
+            conexion_MySQLdb = connectionBD_seguridad()
             mycursor = conexion_MySQLdb.cursor()
             try:
                 sql = "INSERT INTO usuarios (nombre, correo, contrasena, cedula_usuario, rol) VALUES (%s, %s, %s, %s, %s)"
@@ -42,10 +44,10 @@ def recibeInsertRegisterUser(nombre, correo, pass_user, cedula, rol='Usuario'):
 # Validando la data del Registros para el login
 def validarDataRegisterLogin(nombre, correo, pass_user, cedula):
     try:
-        conexion_MySQLdb = connectionBD()
+        conexion_MySQLdb = connectionBD_seguridad()
         cursor = conexion_MySQLdb.cursor(dictionary=True)
         try:
-            querySQL = "SELECT * FROM usuarios WHERE correo = %s OR cedula_usuario = %s"
+            querySQL = "SELECT id_usuarios FROM usuarios WHERE correo = %s OR cedula_usuario = %s"
             cursor.execute(querySQL, (correo, cedula))
             userBD = cursor.fetchone()  # Obtener la primera fila de resultados
 
@@ -66,12 +68,11 @@ def validarDataRegisterLogin(nombre, correo, pass_user, cedula):
             conexion_MySQLdb.close()
     except Exception as e:
         print(f"Error en validarDataRegisterLogin : {e}")
-        return []
-
+        return False
 
 def info_perfil_session():
     try:
-        conexion_MySQLdb = connectionBD()
+        conexion_MySQLdb = connectionBD_seguridad()
         cursor = conexion_MySQLdb.cursor(dictionary=True)
         try:
             querySQL = "SELECT nombre, correo FROM usuarios WHERE id_usuarios = %s"
@@ -98,7 +99,7 @@ def procesar_update_perfil(data_form):
     if not pass_actual or not email_user:
         return 3
 
-    conexion_MySQLdb = connectionBD()
+    conexion_MySQLdb = connectionBD_seguridad()
     cursor = conexion_MySQLdb.cursor(dictionary=True)
     try:
         querySQL = """SELECT * FROM usuarios WHERE correo = %s LIMIT 1"""
@@ -115,7 +116,7 @@ def procesar_update_perfil(data_form):
                     else:
                         try:
                             nueva_password = generate_password_hash(new_pass_user)
-                            conexion_upd = connectionBD()
+                            conexion_upd = connectionBD_seguridad()
                             cursor_upd = conexion_upd.cursor()
                             try:
                                 querySQL = """
@@ -144,7 +145,7 @@ def procesar_update_perfil(data_form):
 
 def updatePefilSinPass(id_user, name_surname):
     try:
-        conexion_MySQLdb = connectionBD()
+        conexion_MySQLdb = connectionBD_seguridad()
         cursor = conexion_MySQLdb.cursor()
         try:
             querySQL = """

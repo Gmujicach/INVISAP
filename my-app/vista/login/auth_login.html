@@ -1,3 +1,6 @@
+<!-- Atomic Styles -->
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/login.css') }}">
+
 <div class="container-xxl">
   <div class="authentication-wrapper authentication-basic container-p-y">
     <div class="authentication-inner" style="position: relative; z-index: 1;">
@@ -27,35 +30,54 @@
                 autofocus
                 required />
             </div>
-            <div class="mb-3 form-password-toggle">
+            <div class="mb-3 molecule-password-field position-relative">
               <div class="d-flex justify-content-between">
-                <label class="form-label" for="password">Clave</label>
+                <label class="form-label">Clave</label>
                 <a href="{{ url_for('login_bp.cpanelRecoveryPassUser') }}">
                   <small>Olvidó su Clave?</small>
                 </a>
               </div>
-              <div class="password-input-wrapper input-group input-group-merge">
+              <div class="input-group input-group-merge">
                 <input
                   type="password"
-                  class="form-control password-reveal-input"
+                  class="form-control password-input border-end-0"
                   name="pass_user"
-                  id="pass_user"
                   placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                  aria-describedby="password"
+                  aria-describedby="strength-meter"
                   required />
-                <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
-                  <span class="password-eye" aria-hidden="true">
-                    <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                      <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                      <g class="eye">
-                        <circle cy="12" cx="12" r="4" fill="currentColor" />
-                        <circle cy="11" cx="13" r="1" fill="#000" />
-                      </g>
-                    </svg>
-                  </span>
-                  <span class="sr-only visually-hidden">Mostrar contraseña</span>
+                <!-- Atomic Toggle Button -->
+                <button type="button" class="btn btn-outline-secondary password-toggle-btn px-3 border-start-0" aria-label="Revelar">
+                  <i class="bi bi-eye-slash fs-5 toggle-icon"></i>
                 </button>
+              </div>
+
+              <!-- Password Strength Checker Widget (Organismo Reutilizable) -->
+              <div class="password-strength-widget password-strength-wrapper mt-3 d-none">
+                <p class="password-strength-description small text-muted mb-2 fw-semibold">Tu contraseña debe incluir:</p>
+                <ul class="password-strength-list list-unstyled mb-3">
+                  <li class="rule-item d-flex align-items-center mb-1 text-danger transition-all" data-rule="length">
+                    <i class="bi bi-circle me-2 icon-rule"></i> 8 a 12 caracteres
+                  </li>
+                  <li class="rule-item d-flex align-items-center mb-1 text-danger transition-all" data-rule="upper-lower">
+                    <i class="bi bi-circle me-2 icon-rule"></i> Mayúsculas y minúsculas
+                  </li>
+                  <li class="rule-item d-flex align-items-center mb-1 text-danger transition-all" data-rule="symbol">
+                    <i class="bi bi-circle me-2 icon-rule"></i> Un símbolo especial
+                  </li>
+                </ul>
+                
+                <div class="strength-indicator-header d-flex justify-content-between align-items-center mb-2">
+                  <span class="small fw-semibold text-heading">Seguridad:</span>
+                  <span class="strength-label badge bg-label-secondary">Esperando...</span>
+                </div>
+                
+                <div class="progress" style="height: 6px; background-color: rgba(67, 89, 113, 0.1);">
+                  <div class="strength-meter progress-bar transition-all" role="progressbar" style="width: 0%;"></div>
+                </div>
+              </div>
+
+              <div id="passwordHelp" class="form-text text-muted d-none mt-2">
+                <small><i class="bi bi-info-circle me-1"></i> Validación de seguridad activa.</small>
               </div>
             </div>
             <div class="mb-3">

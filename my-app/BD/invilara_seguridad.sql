@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `invilara_seguridad`.`usuarios` (
   `contrasena` VARCHAR(255) NOT NULL,
   `correo` VARCHAR(45) NOT NULL,
   `rol` VARCHAR(20) NOT NULL COMMENT 'Tabla de los usuarios.',
+  `estado` TINYINT(1) NOT NULL DEFAULT 1 COMMENT '1 para activo, 0 para inactivo',
   PRIMARY KEY (`id_usuarios`),
   UNIQUE INDEX `cedula_usuario_UNIQUE` (`cedula_usuario` ASC))
 ENGINE = InnoDB
@@ -88,4 +89,3 @@ COMMENT = 'Tabla de la bitacora del sistema.';
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-

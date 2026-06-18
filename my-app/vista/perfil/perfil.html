@@ -1,125 +1,101 @@
 {% extends 'base_cpanel.html' %}
-<!--Cambiando el title-->
-{% block title %}Crud con Python 🐍 | Perfil {% endblock %}
-<!--Inicio del block-->
-{% block body %}
-<div class="card" style="border-radius: 0px !important">
-  <div class="row justify-content-center mb-2">
-    <div class="col-md-12">
-      <h3 class="text-center mt-5 mb-3">MI PERFIL</h3>
-      <hr />
-    </div>
-  </div>
 
-  <div class="row justify-content-center mb-2">
-    <div class="col-md-6">
-      <form
-        class="form-horizontal mx-auto"
-        method="POST"
-        action="{{ url_for('login_bp.actualizarPerfil') }}">
-        <div class="card-body">
-          <div class="mb-3">
-            <label for="name_surname" class="form-label">Usuario</label>
-            <input
-              type="text"
-              name="name_surname"
-              value="{{ info_perfil_session[0]['name_surname'] }}"
-              class="form-control"
-              required />
-          </div>
-          <div class="mb-3">
-            <label for="email_user" class="form-label">Email</label>
-            <input
-              class="form-control"
-              type="email"
-              name="email_user"
-              value="{{ info_perfil_session[0]['email_user'] }}"
-              readonly />
-          </div>
-          <div class="mb-3 form-password-toggle">
-            <label class="form-label" for="pass_actual">Clave Actual</label>
-            <div class="password-input-wrapper input-group input-group-merge">
-              <input
-                type="password"
-                class="form-control password-reveal-input"
-                name="pass_actual"
-                id="pass_actual"
-                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                aria-describedby="password" />
-              <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
-                <span class="password-eye" aria-hidden="true">
-                  <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    <g class="eye">
-                      <circle cy="12" cx="12" r="4" fill="currentColor" />
-                      <circle cy="11" cx="13" r="1" fill="#000" />
-                    </g>
-                  </svg>
-                </span>
-                <span class="sr-only visually-hidden">Mostrar contraseña</span>
-              </button>
+{% block title %}INVISAP | Perfil de Usuario{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+  <div class="col-xl-10 col-lg-12">
+    <!-- Organism: Profile Container -->
+    <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 15px !important">
+      <div class="card-header bg-primary py-4">
+        <h3 class="text-white text-center mb-0 fw-bold"><i class="bi bi-person-workspace me-2"></i>AJUSTES DE MI PERFIL</h3>
+      </div>
+      
+      <div class="card-body p-4 p-md-5">
+        <form class="organism-profile-form" method="POST" action="{{ url_for('login_bp.actualizarPerfil') }}" enctype="multipart/form-data">
+          <div class="row">
+            
+            <!-- Molecule: Avatar Section -->
+            <div class="col-lg-4 mb-5 mb-lg-0 border-end-lg d-flex flex-column align-items-center justify-content-center">
+                <div class="position-relative molecule-avatar-upload">
+                    <img id="avatar-preview" 
+                         src="{{ url_for('static', filename='assets/img/avatars/1.png') }}" 
+                         class="rounded-circle shadow-sm border p-1 atom-avatar" 
+                         style="width: 180px; height: 180px; object-fit: cover;"
+                         alt="Avatar">
+                    <label for="profile_img" class="btn btn-primary btn-icon rounded-circle position-absolute bottom-0 end-0 shadow" 
+                           style="width: 45px; height: 45px; cursor: pointer;">
+                        <i class="bi bi-camera-fill fs-5"></i>
+                        <input type="file" id="profile_img" name="profile_img" hidden accept="image/*">
+                    </label>
+                </div>
+                <div class="text-center mt-3">
+                  <h5 class="fw-bold mb-1">{{ info_perfil_session[0]['name_surname'] }}</h5>
+                  <span class="badge bg-label-primary rounded-pill px-3">Usuario del Sistema</span>
+                </div>
+            </div>
+
+            <!-- Molecule: Data Section -->
+            <div class="col-lg-8">
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <label class="atom-label form-label fw-bold"><i class="bi bi-person me-1"></i>Nombre de Usuario</label>
+                  <input type="text" name="name_surname" value="{{ info_perfil_session[0]['name_surname'] }}" class="atom-input form-control" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="atom-label form-label fw-bold"><i class="bi bi-envelope me-1"></i>Email</label>
+                  <input class="atom-input form-control bg-light" type="email" name="email_user" value="{{ info_perfil_session[0]['email_user'] }}" readonly>
+                </div>
+                
+                <div class="col-12 mt-4 pt-2">
+                  <h6 class="text-primary fw-bold text-uppercase small ls-1"><i class="bi bi-shield-lock me-2"></i>Seguridad de la Cuenta</h6>
+                  <hr class="mt-1">
+                </div>
+
+                <!-- Molecule: Password Groups -->
+                <div class="col-12 molecule-password-field">
+                  <label class="atom-label form-label fw-bold text-danger">Contraseña Actual <span class="text-muted fw-normal">(Obligatorio para cambios)</span></label>
+                  <div class="input-group input-group-merge">
+                    <input type="password" name="pass_actual" class="atom-input form-control password-input" placeholder="Confirma tu clave para validar cambios" required>
+                    <button class="btn btn-outline-secondary password-toggle-btn border-start-0" type="button">
+                      <i class="bi bi-eye-slash toggle-icon fs-5"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="col-md-6 molecule-password-field">
+                  <label class="atom-label form-label fw-bold">Nueva Contraseña</label>
+                  <div class="input-group input-group-merge">
+                    <input type="password" name="new_pass_user" class="atom-input form-control password-input" placeholder="Min. 8 caracteres">
+                    <button class="btn btn-outline-secondary password-toggle-btn border-start-0" type="button">
+                      <i class="bi bi-eye-slash toggle-icon fs-5"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="col-md-6 molecule-password-field">
+                  <label class="atom-label form-label fw-bold">Repetir Nueva Contraseña</label>
+                  <div class="input-group input-group-merge">
+                    <input type="password" name="repetir_pass_user" class="atom-input form-control password-input" placeholder="Repite la clave nueva">
+                    <button class="btn btn-outline-secondary password-toggle-btn border-start-0" type="button">
+                      <i class="bi bi-eye-slash toggle-icon fs-5"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-5 d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
+                <button type="submit" class="atom-button btn btn-primary px-5 py-2 rounded-pill shadow-sm fw-bold">
+                  <i class="bi bi-arrow-repeat me-2"></i> ACTUALIZAR MIS DATOS
+                </button>
+                <button type="reset" class="btn btn-outline-secondary px-5 py-2 rounded-pill fw-bold">
+                  <i class="bi bi-x-circle me-2"></i> CANCELAR
+                </button>
+              </div>
             </div>
           </div>
-          <div class="mb-3 form-password-toggle">
-            <label class="form-label" for="new_pass_user">Nueva Clave</label>
-            <div class="password-input-wrapper input-group input-group-merge">
-              <input
-                type="password"
-                class="form-control password-reveal-input"
-                name="new_pass_user"
-                id="new_pass_user"
-                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                aria-describedby="password" />
-              <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
-                <span class="password-eye" aria-hidden="true">
-                  <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    <g class="eye">
-                      <circle cy="12" cx="12" r="4" fill="currentColor" />
-                      <circle cy="11" cx="13" r="1" fill="#000" />
-                    </g>
-                  </svg>
-                </span>
-                <span class="sr-only visually-hidden">Mostrar contraseña</span>
-              </button>
-            </div>
-          </div>
-          <div class="mb-3 form-password-toggle">
-            <label class="form-label" for="repetir_pass_user">
-              Repetir Nueva Clave
-            </label>
-            <div class="password-input-wrapper input-group input-group-merge">
-              <input
-                type="password"
-                class="form-control password-reveal-input"
-                name="repetir_pass_user"
-                id="repetir_pass_user"
-                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                aria-describedby="password" />
-              <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
-                <span class="password-eye" aria-hidden="true">
-                  <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    <g class="eye">
-                      <circle cy="12" cx="12" r="4" fill="currentColor" />
-                      <circle cy="11" cx="13" r="1" fill="#000" />
-                    </g>
-                  </svg>
-                </span>
-                <span class="sr-only visually-hidden">Mostrar contraseña</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="mb-3 text-center">
-          <button type="submit" class="btn rounded-pill btn-primary">
-            Actualizar mis datos
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </div>

@@ -5,7 +5,7 @@ Toda entrada es validada con regex antes de ejecutar consultas parametrizadas.
 """
 import re
 from datetime import datetime
-from conexion.conexionBD import connectionBD_invilara
+from conexion.conexionBD import connectionBD_seguridad
 
 
 class BitacoraModel:
@@ -32,7 +32,7 @@ class BitacoraModel:
     @staticmethod
     def _con():
         """Abre y retorna una conexión nueva."""
-        return connectionBD_invilara()
+        return connectionBD_seguridad()
 
     # -----------------------------------------------------------------
     # Métodos privados — SQL
