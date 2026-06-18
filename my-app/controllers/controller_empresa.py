@@ -29,4 +29,13 @@ def update_empresa(datos):
     return EmpresaModel().update_empresa(datos)
 
 def eliminar_empresa_por_rif(rif):
-    return EmpresaModel().eliminar_empresa(rif)
+    try:
+        # Esto usará la lógica que ya tienes en el modelo
+        resultado = EmpresaModel().eliminar_empresa(rif)
+        if not resultado:
+            print(f"DEBUG: El modelo devolvió False para el RIF: {rif}")
+        return resultado
+    except Exception as e:
+        # Esto imprimirá el error real en tu consola (terminal de Flask)
+        print(f"DEBUG: ERROR CRÍTICO AL ELIMINAR -> {str(e)}")
+        return False

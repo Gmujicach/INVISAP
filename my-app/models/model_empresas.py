@@ -72,9 +72,16 @@ class EmpresaModel:
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
-            # Se elimina utilizando el RIF
-            sql = "DELETE FROM empresa WHERE rif = %s"
-            cursor.execute(sql, (rif,))
+            
+            # PASO 1: Eliminar las relaciones de esta empresa en los proyectos primero
+            # Esto evita el error de bloqueo de MySQL
+            #sql_proyectos = "DELETE FROM proyecto WHERE empresa_rif = %s"
+            #cursor.execute(sql_proyectos, (rif,))
+            
+            # PASO 2: Ahora sí, eliminar la empresa tranquilamente
+            sql_empresa = "DELETE FROM empresa WHERE rif = %s"
+            cursor.execute(sql_empresa, (rif,))
+            
             conexion.commit()
             return True
         except Exception as e:

@@ -24,6 +24,7 @@ from models.model_empresas import EmpresaModel
 ## Empresas
 from controllers.controller_empresa import empresa_bp
 app.register_blueprint(empresa_bp)
+empresa_bp = Blueprint('empresa_bp', __name__)
 
 # Contrataciones
 home_bp = Blueprint('home_bp', __name__, template_folder='../vista')
