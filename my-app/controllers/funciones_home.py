@@ -82,7 +82,7 @@ def sql_lista_empleadosBD():
         conexion_MySQLdb = connectionBD()
         cursor = conexion_MySQLdb.cursor(dictionary=True)
         try:
-            querySQL = (f"""
+            querySQL = ("""
                     SELECT 
                         e.id_empleado,
                         e.nombre_empleado, 
