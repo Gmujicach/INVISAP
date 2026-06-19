@@ -18,7 +18,13 @@
     </div>
   
     <div class="menu-inner-shadow"></div>
-    <ul class="menu-inner py-5">    
+    <ul class="menu-inner py-5"> 
+      <li class="menu-item {% if request.path in ['/users/register', '/users'] %} active open {% endif %}">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+          <i class="menu-icon bi bi-people-fill"></i> {# Icono de personas para usuarios #}
+          <div data-i18n="Users">Solicitudes</div>
+        </a>  
+        <ul class="menu-sub">
       <li
         class="menu-item {% if request.path == '/registrar-solicitud' %} active {% endif %}">
         <a href="{{ url_for('home_bp.viewFormSolicitud') }}" class="menu-link">
@@ -32,6 +38,7 @@
           <i class="menu-icon bi bi-list-task"></i>
           <div data-i18n="Basic">Lista de Solicitudes</div>
         </a>
+      </ul>
       </li>
       
       <li class="menu-item {% if request.path == '/contratacion' %} active {% endif %}">
@@ -132,7 +139,7 @@
         class="menu-item {% if request.path == '/gestionar-proyectos' %} active {% endif %}">
         <a href="{{ url_for('home_bp.viewFormProyectos') }}" class="menu-link">
           <i class="menu-icon bi bi-person-lines-fill"></i>
-          <div data-i18n="Tables">Gestionar Proyectos</div>
+          <div data-i18n="Tables">Asignar Proyectos</div>
         </a>
       </li>
       <li
@@ -146,7 +153,7 @@
         class="menu-item {% if request.path == '/inspectores' %} active{% endif %}">
         <a href="{{ url_for('home_bp.viewFormInspectores') }}" class="menu-link">
           <i class="menu-icon bi bi-person-lines-fill"></i>
-          <div data-i18n="Boxicons">Inspectores</div>
+          <div data-i18n="Boxicons">Inspecciones</div>
         </a>
       </li>
       <li
