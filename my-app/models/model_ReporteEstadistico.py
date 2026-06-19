@@ -8,8 +8,6 @@ class ReporteEstadisticoModel:
         Recibe el nombre de la tabla y retorna datos para los gráficos.
         """
         cursor = self.conn.cursor(dictionary=True)
-        # Nota: La tabla debe ser validada contra una lista blanca si es dinámica
-        # Aquí asumimos que recibes el nombre de un campo de tiempo/categoría y un conteo
         query = "SELECT fecha_registro as label, COUNT(*) as valor FROM %s GROUP BY fecha_registro" % tabla_modulo
         
         try:
