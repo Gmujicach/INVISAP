@@ -31,7 +31,7 @@
                   <option value="" disabled selected>Seleccione el cargo institucional...</option>
                   <option value="Gerente">Gerente</option><option value="Inspector">Inspector</option>
                   <option value="Asistente">Asistente</option><option value="Proyectista">Proyectista</option>
-                  <option value="Recepcionista">Recepcionista</option>
+                  <option value="Recepcionista">Recepcionista</option><option value="Ingeniero">Ingeniero</option>
                 </select>
                 <div class="invalid-feedback">Seleccione un cargo válido.</div>
               </div>
@@ -47,9 +47,9 @@
                 <div class="invalid-feedback">Especifique la gerencia (mínimo 5 caracteres).</div>
               </div>
               <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-file-person me-1"></i>Persona ID (Cédula)</label>
-                <input type="number" name="persona_id_persona" class="form-control" placeholder="Ej: 12345678" required min="1">
-                <div class="invalid-feedback">Requerido para integridad referencial (número positivo).</div>
+                <label class="form-label fw-medium"><i class="bi bi-file-person me-1"></i>Cédula</label>
+                <input type="text" name="cedula_empleado" class="form-control" placeholder="Ej: 12345678" required minlength="7" maxlength="8">
+                <div class="invalid-feedback">La cédula es obligatoria (7-8 caracteres).</div>
               </div>
             </div>
 
