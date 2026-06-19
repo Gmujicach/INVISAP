@@ -29,13 +29,13 @@
                   <option value="E">E</option> 
                 </select> 
                 <input type="text" class="form-control" id="numero_rif" placeholder="123456780" maxlength="9" required /> 
-                <input type="hidden" name="rif" id="rif_final"> 
+                <input type="hidden" name="rif" id="rif_final" value="{{ datos_form.rif if datos_form else '' }}">
               </div> 
             </div> 
 
             <div class="col-md-4"> 
               <label for="nombre_empresa" class="form-label">Nombre de la Empresa</label> 
-              <input type="text" class="form-control bg-white" name="nombre_empresa" id="nombre_empresa" placeholder="Ingresa Nombre de Empresa" minlength="3" required /> 
+              <input type="text" class="form-control bg-white" name="nombre_empresa" id="nombre_empresa" placeholder="Ingresa Nombre de Empresa" minlength="3" required value="{{ datos_form.nombre_empresa if datos_form else '' }}" />
             </div> 
 
             <div class="col-md-4"> 
@@ -50,7 +50,7 @@
                   <option value="0422">0422</option> 
                 </select> 
                 <input type="text" class="form-control" id="numero_telefono" placeholder="1234567" minlength="7" maxlength="7" required /> 
-                <input type="hidden" name="telefono" id="telefono_final"> 
+                <input type="hidden" name="telefono" id="telefono_final" value="{{ datos_form.telefono if datos_form else '' }}"> 
               </div> 
             </div> 
           </div> 
@@ -58,7 +58,7 @@
           <div class="row mt-3">
             <div class="col-md-12"> 
               <label for="domicilio_fiscal" class="form-label">Domicilio Fiscal</label> 
-              <input type="text" class="form-control bg-white" name="domicilio_fiscal" placeholder="Domicilio Fiscal de la Empresa" minlength="3" maxlength="42" required /> 
+              <input type="text" class="form-control bg-white" name="domicilio_fiscal" placeholder="Domicilio Fiscal de la Empresa" minlength="3" maxlength="42" required value="{{ datos_form.domicilio_fiscal if datos_form else '' }}" />
             </div> 
           </div>
 

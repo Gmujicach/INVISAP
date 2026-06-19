@@ -82,3 +82,33 @@ class PublicacionModel:
         finally:
             if 'cursor' in locals(): cursor.close()
             if 'conexion' in locals(): conexion.close()
+
+    def obtener_informes_para_publicaciones(self):
+        """Obtiene los informes de avance de obra para vincularlos a publicaciones."""
+        try:
+            conexion = connectionBD_invilara()
+            cursor = conexion.cursor(dictionary=True)
+            # Seleccionamos el ID y el tipo como etiqueta para el select
+            cursor.execute("SELECT id_informe, tipo_informe AS nombre_proyecto FROM informe_avance_obra")
+            return cursor.fetchall()
+        except Exception as e:
+            print(f"Error en obtener_informes_para_publicaciones: {e}")
+            return []
+        finally:
+            if 'cursor' in locals(): cursor.close()
+            if 'conexion' in locals(): conexion.close()
+
+    def validar_informe_activo(self, id_informe):
+        """Verifica si un informe existe en la base de datos."""
+        try:
+            conexion = connectionBD_invilara()
+            cursor = conexion.cursor()
+            cursor.execute("SELECT COUNT(*) FROM informe_avance_obra WHERE id_informe = %s", (id_informe,))
+            result = cursor.fetchone()
+            return result[0] > 0 if result else False
+        except Exception as e:
+            print(f"Error en validar_informe_activo: {e}")
+            return False
+        finally:
+            if 'cursor' in locals(): cursor.close()
+            if 'conexion' in locals(): conexion.close()

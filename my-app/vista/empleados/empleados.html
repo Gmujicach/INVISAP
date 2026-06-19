@@ -8,14 +8,44 @@
 
 {% block body %}
 <div class="container-xxl flex-grow-1 container-p-y">
-    <!-- Contenedor de carga mientras se activa el dashboard -->
-    <div class="d-flex flex-column align-items-center justify-content-center mt-5" style="min-height: 400px;">
-        <div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;">
-            <span class="visually-hidden">Procesando...</span>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold py-3 mb-0">
+            <span class="text-muted fw-light">Personal /</span> Listado de Empleados
+        </h4>
+        <a href="{{ url_for('empleado_bp.viewFormEmpleado') }}" class="btn btn-primary shadow-sm">
+            <i class="bi bi-person-plus-fill me-2"></i>Registrar Nuevo
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-bottom">
+            <h5 class="mb-0 fw-semibold text-primary">Gestión de Personal Invilara</h5>
         </div>
-        <div class="mt-4 text-center">
-            <h5 class="fw-bold text-primary mb-1">Cargando Gestión de Empleados</h5>
-            <p class="text-muted">Preparando panel interactivo e información del sistema...</p>
+        <div class="table-responsive text-nowrap p-3">
+            <table class="table table-hover align-middle" id="tablaEmpleados">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Cargo</th>
+                        <th>Gerencia</th>
+                        <th>Ingreso</th>
+                        <th>Estado</th> <!-- Borrado Lógico -->
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyEmpleados" class="table-border-bottom-0">
+                    <!-- Cargando dinámicamente con AJAX/Fetch en empleados.js -->
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            <div class="spinner-grow text-primary" role="status" style="width: 2rem; height: 2rem;">
+                                <span class="visually-hidden">Procesando...</span>
+                            </div>
+                            <p class="mt-2 mb-0 text-muted">Consultando base de datos...</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -26,8 +56,8 @@
 <script src="{{ url_for('static', filename='assets/js/usuarios.js') }}"></script>
 <script src="{{ url_for('static', filename='assets/js/empleados.js') }}"></script>
 <script>
-    // Inyectamos los datos de empleados a la ventana global para JS
-    window.resp_empleadosBD = {{ resp_empleadosBD | tojson | safe }};
+    // Inyectamos los datos de empleados a la ventana global para JS con respaldo de seguridad
+    window.resp_empleadosBD = {{ resp_empleadosBD | default([]) | tojson | safe }};
     
     document.addEventListener('DOMContentLoaded', function() {
         // Disparamos el dashboard automáticamente al cargar la vista

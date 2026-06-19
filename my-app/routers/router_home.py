@@ -1,5 +1,4 @@
 from app import app
-
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from mysql.connector.errors import Error
 
@@ -13,8 +12,10 @@ from controllers.funciones_solicitud import (
     actualizar_solicitud, eliminar_solicitud
 )
 from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, obtener_estadisticas_bitacora
+from models.model_publicacion import PublicacionModel
 from services.bitacora_service import BitacoraService
-from controllers.EmpleadoController import empleado_bp
+from controllers.controller_empleado import empleado_bp
+from controllers.controller_evidencia import evidencia_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
 from controllers.funciones_proyecto import *
@@ -51,6 +52,7 @@ PATH_URL_REPORTE_ESTADISTICO = "reportes"
 app.register_blueprint(user_bp)
 app.register_blueprint(empleado_bp)
 app.register_blueprint(reporte_excel_bp)
+app.register_blueprint(evidencia_bp)
 app.register_blueprint(reporte_pdf_bp)
 
 @home_bp.route('/registrar-solicitud', methods=['GET'])
@@ -64,10 +66,139 @@ def viewFormSolicitud():
 @home_bp.route('/registrar-publicaciones', methods=['GET'])
 def viewFormPublicaciones():
     if 'conectado' in session:
-        return render_template(f'{PATH_URL_PUB}/form_publicaciones.html')
+        modelo = PublicacionModel()
+        publicaciones = modelo.obtener_todas_las_publicaciones()
+        informes = modelo.obtener_informes_para_publicaciones()
+        return render_template(f'{PATH_URL_PUB}/form_publicaciones.html', 
+                               publicaciones=publicaciones, 
+                               informes=informes)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/api/publicaciones/crear', methods=['POST'])
+def api_crear_publicacion():
+    if 'conectado' not in session:
+        return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
+    
+    try:
+        data = request.form
+        modelo = PublicacionModel()
+        # Soportar ambos nombres posibles del campo (id_informe o evidencias)
+        id_inf = data.get('id_informe') or data.get('evidencias')
+        
+        # Validación de existencia en tiempo real (Backend)
+        if not modelo.validar_informe_activo(id_inf):
+            return jsonify({'status': 'error', 'message': 'El informe seleccionado no existe o fue eliminado.'}), 400
+
+        # Aplicación de setters con validación Regex integrada
+        modelo.titulo = data.get('titulo_publicacion')
+        modelo.responsable = data.get('nombre_responsable') or data.get('autor_publicacion')
+        modelo.tipo = data.get('tipo_publicacion')
+        modelo.id_informe = id_inf
+        
+        if modelo.guardar():
+            return jsonify({'status': 'success', 'message': 'Publicación registrada correctamente'})
+        return jsonify({'status': 'error', 'message': 'Error al guardar en BD'}), 500
+        
+    except ValueError as ve:
+        return jsonify({'status': 'error', 'message': str(ve)}), 400
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+@home_bp.route('/api/publicaciones/validar-informe/<int:id_informe>', methods=['GET'])
+def validar_informe(id_informe):
+    modelo = PublicacionModel()
+    existe = modelo.validar_informe_activo(id_informe)
+    return jsonify({'existe': existe})
+
+@home_bp.route('/api/publicaciones/eliminar/<int:id_pub>', methods=['DELETE'])
+def api_eliminar_publicacion(id_pub):
+    if 'conectado' in session:
+        modelo = PublicacionModel(id_publicacion=id_pub)
+        if modelo.eliminar():
+            return jsonify({'status': 'success', 'message': 'Registro desactivado correctamente'})
+        return jsonify({'status': 'error', 'message': 'No se pudo eliminar'}), 500
+    return jsonify({'status': 'error', 'message': 'No autorizado'}), 403
+
+@home_bp.route('/form-registrar-publicacion', methods=['POST'])
+def formRegistrarPublicacion():
+    if 'conectado' not in session:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    
+    try:
+        data = request.form
+        modelo = PublicacionModel()
+        # Soportar ambos nombres posibles del campo (id_informe o evidencias)
+        id_inf = data.get('id_informe') or data.get('evidencias')
+        
+        # Validación de existencia en tiempo real (Backend)
+        if not modelo.validar_informe_activo(id_inf):
+            flash('El informe seleccionado no existe o fue eliminado.', 'error')
+            return redirect(url_for('home_bp.viewFormPublicaciones'))
+
+        # Aplicación de setters con validación Regex integrada
+        modelo.titulo = data.get('titulo_publicacion')
+        modelo.responsable = data.get('nombre_responsable') or data.get('autor_publicacion')
+        modelo.tipo = data.get('tipo_publicacion')
+        modelo.id_informe = id_inf
+        
+        if modelo.guardar():
+            flash('Publicación registrada correctamente', 'success')
+        else:
+            flash('Error al guardar la publicación en la base de datos.', 'error')
+    except ValueError as ve:
+        flash(f'Error de validación: {str(ve)}', 'error')
+    except Exception as e:
+        print(f"Error al registrar publicación: {e}")
+        flash('Error interno del servidor al registrar la publicación.', 'error')
+        
+    return redirect(url_for('home_bp.viewFormPublicaciones'))
+
+@home_bp.route('/editar-publicacion/<int:id_publicacion>', methods=['GET'])
+def viewEditarPublicacion(id_publicacion):
+    if 'conectado' in session:
+        modelo = PublicacionModel()
+        publicacion = modelo.obtener_publicacion_por_id(id_publicacion)
+        informes = modelo.obtener_informes_para_publicaciones()
+        if publicacion:
+            return render_template(f'{PATH_URL_PUB}/form_publicaciones_update.html', publicacion=publicacion, informes=informes)
+        flash('La publicación no existe.', 'error')
+        return redirect(url_for('home_bp.viewFormPublicaciones'))
+    return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/actualizar-publicacion', methods=['POST'])
+def formActualizarPublicacion():
+    if 'conectado' in session:
+        try:
+            data = request.form
+            modelo = PublicacionModel(id_publicacion=data.get('id_publicaciones'))
+            modelo.titulo = data.get('titulo_publicacion')
+            modelo.responsable = data.get('nombre_responsable') or data.get('autor_publicacion')
+            modelo.tipo = data.get('tipo_publicacion', 'Noticia')
+            modelo.id_informe = data.get('id_informe') or data.get('evidencias')
+            
+            if modelo.actualizar():
+                flash('Publicación actualizada correctamente', 'success')
+            else:
+                flash('Error al actualizar', 'error')
+        except ValueError as ve:
+            flash(str(ve), 'error')
+        return redirect(url_for('home_bp.viewFormPublicaciones'))
+    return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/eliminar-publicacion/<int:id_publicacion>', methods=['GET'])
+def eliminarPublicacion(id_publicacion):
+    """Maneja la eliminación lógica desde enlaces GET."""
+    if 'conectado' in session:
+        modelo = PublicacionModel(id_publicacion=id_publicacion)
+        if modelo.eliminar():
+            flash('Publicación eliminada (Desactivada) correctamente.', 'success')
+        else:
+            flash('No se pudo eliminar la publicación.', 'error')
+        return redirect(url_for('home_bp.viewFormPublicaciones'))
+    return redirect(url_for('login_bp.inicio'))
 
 @home_bp.route('/administrar-respaldos', methods=['GET'])
 def viewFormRespaldos():
@@ -355,9 +486,14 @@ def viewFormInspectores():
 @home_bp.route('/registrar-empresas', methods=['GET'])
 def viewFormEmpresa():
     if 'conectado' in session:
+        # Sacamos los datos de la sesión (si los hay)
+        datos_formulario = session.pop('form_empresa', None)
+        
         from models.model_empresas import EmpresaModel
         modelo = EmpresaModel()
-        return render_template(f'{PATH_URLE}/form_empresa.html')
+        
+        # AQUÍ ESTÁ EL CAMBIO: Le pasamos la variable al HTML
+        return render_template(f'{PATH_URLE}/form_empresa.html', datos_form=datos_formulario)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -366,11 +502,23 @@ def viewFormEmpresa():
 def procesar_registro():
     from controllers.controller_empresa import procesar_registro_empresa
     
-    if procesar_registro_empresa(request.form):
-        flash('¡La empresa ha sido registrada con éxito!', 'success')
+    exito, mensaje, categoria = procesar_registro_empresa(request.form)
+    flash(mensaje, categoria)
+    
+    if exito:
+        # Si todo salió bien, nos aseguramos de limpiar la sesión por si acaso
+        session.pop('form_empresa', None)
         return redirect(url_for('lista_empresas'))
     else:
-        flash('Error: No se pudo registrar la empresa.', 'error')
+        # 1. Convertimos los datos enviados en un diccionario normal de Python
+        datos_viejos = request.form.to_dict()
+        
+        # 2. OPCIÓN: Borrar el RIF y mantener el resto (como solicitaste)
+        # Si prefieres mantener el RIF también, simplemente comenta o borra la siguiente línea:
+        datos_viejos['rif'] = '' 
+        
+        # 3. Guardamos el resto de los datos en la sesión y redirigimos
+        session['form_empresa'] = datos_viejos
         return redirect(url_for('home_bp.viewFormEmpresa'))
 
 @app.route('/lista-empresas', methods=['GET'])
@@ -411,7 +559,7 @@ def eliminar_empresa(rif):
     if 'conectado' in session:
         from controllers.controller_empresa import eliminar_empresa_por_rif
         if eliminar_empresa_por_rif(rif):
-            flash('empresa eliminada correctamente.', 'success')
+            flash('Empresa eliminada correctamente.', 'success')
         else:
             flash('Error al intentar eliminar la empresa.', 'error')
         return redirect(url_for('lista_empresas'))

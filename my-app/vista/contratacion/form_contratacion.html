@@ -49,11 +49,9 @@
                 <small class="d-block"><strong>Ini:</strong> {{ c.fecha_inicio_procedimiento }}</small>
                 <small class="d-block"><strong>Adj:</strong> {{ c.fecha_adjudicacion }}</small>
             </td>
-            <td>
+            
             <td><span class="badge bg-info text-dark text-uppercase">{{ c.modalidad }}</span></td>
             <td><span class="text-secondary text-capitalize">{{ c.tipo_contrato }}</span></td>
-            </td>
-
             
             <td class="text-center">
              <a href="{{ url_for('contrataciones_bp.vista_editar', id=c.id_contratacion) }}" class="btn btn-outline-warning btn-sm" title="Editar">
@@ -68,7 +66,7 @@
             </td>
           </tr>
           {% else %}
-          <tr><td colspan="9" class="text-center text-muted py-4">NO SE ENCUENTRAN CONTRATACIONES REGISTRADAS</td></tr>
+          <tr><td colspan="10" class="text-center text-muted py-4">NO SE ENCUENTRAN CONTRATACIONES REGISTRADAS</td></tr>
           {% endfor %}
         </tbody>
       </table>
