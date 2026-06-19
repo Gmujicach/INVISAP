@@ -1,4 +1,4 @@
-# Declarando nombre de la aplicación e inicializando, crear la aplicación Flask
+# Declarando nombre del sistema invilara e inicializando, crear la aplicación Flask
 from app import app
 
 # Ejecutando el objeto Flask
