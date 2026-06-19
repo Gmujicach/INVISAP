@@ -186,7 +186,8 @@ def viewFormProyectos():
     if 'conectado' in session:
         proyectos = listar_proyectos_controller()
         maquinarias = listar_maquinarias_controller()
-        return render_template(f'{PATH_URL_PROY}/proyectos.html', proyectos=proyectos, maquinarias=maquinarias)
+        solicitudes = obtener_solicitudes()  # Se traen las solicitudes para visualizarlas en el listar de proyectos
+        return render_template(f'{PATH_URL_PROY}/proyectos.html', proyectos=proyectos, maquinarias=maquinarias, solicitudes=solicitudes)
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -207,12 +208,12 @@ def formRegistrarProyecto():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-@home_bp.route('/editar-proyecto/<int:id_proyecto>', methods=['GET'])
-def viewEditarProyecto(id_proyecto):
+@home_bp.route('/editar-proyecto/<string:codigo_proyecto>', methods=['GET'])
+def viewEditarProyecto(codigo_proyecto):
     if 'conectado' in session:
         from models.model_proyecto import ProyectoModel
         modelo = ProyectoModel()
-        proyecto = modelo.obtener_proyecto_por_id(id_proyecto)
+        proyecto = modelo.obtener_proyecto_por_id(codigo_proyecto)
         maquinarias = listar_maquinarias_controller()
         if proyecto:
             return render_template(f'{PATH_URL_PROY}/form_proyecto_update.html', proyecto=proyecto, maquinarias=maquinarias)
@@ -227,21 +228,21 @@ def viewEditarProyecto(id_proyecto):
 def formActualizarProyecto():
     if 'conectado' in session:
         from models.model_proyecto import ProyectoModel
-        id_proyecto = request.form.get('id_proyectos')
+        codigo_proyecto_actual = request.form.get('codigo_proyecto_actual') # Se espera el nombre correcto del campo oculto
         modelo = ProyectoModel()
-        if modelo.actualizar_proyecto(id_proyecto, request.form):
+        if modelo.actualizar_proyecto(codigo_proyecto_actual, request.form):
             flash('Proyecto actualizado satisfactoriamente.', 'success')
         else:
             flash('Error al actualizar el proyecto.', 'error')
         return redirect(url_for('home_bp.viewFormProyectos'))
     return redirect(url_for('login_bp.inicio'))
 
-@home_bp.route('/eliminar-proyecto/<int:id_proyecto>', methods=['GET'])
-def eliminarProyecto(id_proyecto):
+@home_bp.route('/eliminar-proyecto/<string:codigo_proyecto>', methods=['GET'])
+def eliminarProyecto(codigo_proyecto):
     if 'conectado' in session:
         from models.model_proyecto import ProyectoModel
         modelo = ProyectoModel()
-        if modelo.eliminar_proyecto(id_proyecto):
+        if modelo.eliminar_proyecto(codigo_proyecto):
             flash('Proyecto eliminado correctamente.', 'success')
         else:
             flash('Error al intentar eliminar el proyecto.', 'error')

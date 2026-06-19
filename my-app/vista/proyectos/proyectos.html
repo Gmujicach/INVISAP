@@ -32,7 +32,6 @@
             <th>Problemática</th>
             <th>Maquinaria</th>
             <th>Est. Costo</th>
-            <th>Inspecciones Previas</th>
             <th class="text-center">Acciones</th>
           </tr>
         </thead>
@@ -47,7 +46,6 @@
             <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.problematica or '—' }}</td>
             <td><span class="badge bg-dark">{{ proyecto.nombre_maquinaria or 'Sin asignar' }}</span></td>
             <td class="text-success fw-bold">{{ proyecto.estimacion_costo or '0.00' }}</td>
-            <td><span class="badge bg-info text-uppercase">{{ proyecto.inspecciones_previas or 'Ninguna' }}</span></td>
             <td class="text-center">
               <button type="button" class="btn btn-outline-info btn-sm" title="Ver detalle"
                       data-bs-toggle="modal" 
@@ -60,12 +58,11 @@
                       data-problematica="{{ proyecto.problematica or 'N/A' }}"
                       data-computos="{{ proyecto.computos_metricos or 'N/A' }}"
                       data-costo="{{ proyecto.estimacion_costo or '0.00' }}"
-                      data-maquinaria="{{ proyecto.nombre_maquinaria or 'Sin asignar' }}"
-                      data-inspecciones="{{ proyecto.inspecciones_previas or 'Ninguna' }}">
+                      data-maquinaria="{{ proyecto.nombre_maquinaria or 'Sin asignar' }}">
                 <i class="bx bx-show"></i>
               </button>
-              <a href="{{ url_for('home_bp.viewEditarProyecto', id_proyecto=proyecto.id_proyectos) }}" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
-              <a href="{{ url_for('home_bp.eliminarProyecto', id_proyecto=proyecto.id_proyectos) }}" 
+              <a href="{{ url_for('home_bp.viewEditarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
+              <a href="{{ url_for('home_bp.eliminarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}" 
                  class="btn btn-outline-danger btn-sm" 
                  title="Eliminar"
                  onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')"><i class="bx bx-trash"></i></a>
@@ -73,7 +70,7 @@
           </tr>
           {% else %}
           <tr>
-            <td colspan="10" class="text-center text-muted py-4">NO SE ENCUENTRAN PROYECTOS GESTIONADOS</td>
+            <td colspan="9" class="text-center text-muted py-4">NO SE ENCUENTRAN PROYECTOS GESTIONADOS</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -93,13 +90,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <form class="form-horizontal" method="POST" action="/form-registrar-proyecto" autocomplete="off">
+      <form class="form-horizontal" method="POST" action="/form-registrar-proyecto" autocomplete="off" id="formRegistrarProyecto">
         <div class="modal-body">
           
           <div class="d-flex justify-content-between align-items-center p-3 mb-4 rounded" style="background-color: #f8f9fa; border-left: 4px solid #F9A800;">
             <div>
               <span class="fw-bold d-block text-dark" style="font-size: 0.9rem;">¿Necesitas asociar una solicitud activa?</span>
-              <small class="text-muted">Consulta el historial de requerimientos técnicos e inspectores.</small>
+              <small class="text-muted">Consulta el historial de solicitudes registradas y su estado</small>
+              <div id="solicitud_error_message" class="text-danger fw-bold mt-2 d-none">
+                Debe seleccionar una solicitud para registrar un proyecto.
+              </div>
             </div>
             <button class="btn btn-sm text-white fw-semibold border-0 px-3" 
                     type="button" 
@@ -111,6 +111,8 @@
             </button>
           </div>
 
+          <input type="hidden" name="solicitud_id_p" id="solicitud_id_p">
+          
           <div class="row mb-3">
             <div class="col-md-6">
               <label for="solicitante_p" class="form-label fw-semibold text-secondary">Solicitante</label>
@@ -163,20 +165,15 @@
             <div class="col-md-4">
               <label for="maquinaria_p" class="form-label fw-semibold text-secondary">Maquinaria Requerida</label>
               <select class="form-select shadow-sm" name="maquinaria_p" id="maquinaria_p" required>
-                <option value="" selected disabled>Seleccione maquinaria...</option>
+                <option value="" selected disabled>Seleccione maquinaria...</option> 
                 {% for maquinaria in maquinarias %}
                   <option value="{{ maquinaria.id_maquinaria }}">{{ maquinaria.nombre_maquinaria|upper }}</option>
                 {% endfor %}
               </select>
             </div>
-          </div>
+          </div> 
 
           <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="inspeccion_p" class="form-label fw-semibold text-secondary">Inspecciones Previas</label>
-              <input type="text" class="form-control shadow-sm" name="inspeccion_p" id="inspeccion_p" maxlength="255" placeholder="Ej: Rehabilitación vial" required />
-            </div>
-          
             <div class="col-md-6">
               <label for="Codigo_p" class="form-label fw-semibold text-secondary">Código del Proyecto</label>
               <input type="text" class="form-control shadow-sm" name="Codigo_p" id="Codigo_p" maxlength="15" placeholder="Ej: PRY-001" required />
@@ -193,7 +190,6 @@
           </button>
         </div>
       </form>
-
     </div>
   </div>
 </div>
@@ -241,7 +237,6 @@
   </div>
 </div>
 
-
 <div class="modal fade" id="modalDetalleProyecto" tabindex="-1" aria-labelledby="modalDetalleProyectoLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content" style="border-radius: 0px !important">
@@ -278,9 +273,6 @@
           <div class="col-md-6">
             <p class="mb-1"><strong>Estimación de Costo:</strong> <span class="text-success fw-bold" id="det_costo"></span></p>
           </div>
-        </div>
-        <div class="mb-0">
-          <p class="mb-1"><strong>Inspecciones Previas:</strong> <span id="det_inspecciones"></span></p>
         </div>
       </div>
       <div class="modal-footer">
@@ -339,7 +331,7 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
                         <td>${s.fecha || s.fecha_solicitud || s.fecha_registro || '—'}</td>
                         <td class="text-center">
                             <button type="button" class="btn btn-outline-primary btn-sm" 
-                                    onclick="seleccionarSolicitud('${(s.nombre_solicitante || s.solicitante || '').replace(/'/g, "\\'")}', '${(s.tipo_solicitud || s.tipo || '').replace(/'/g, "\\'")}', '${(s.problematica || s.problematica_solicitud || '').replace(/'/g, "\\'")}')">
+                                    onclick="seleccionarSolicitud('${s.id_solicitud}', '${(s.nombre_solicitante || s.solicitante || '').replace(/'/g, "\\'")}', '${(s.tipo_solicitud || s.tipo || '').replace(/'/g, "\\'")}', '${(s.problematica || s.problematica_solicitud || '').replace(/'/g, "\\'")}')">
                                 <i class="bx bx-check"></i> Seleccionar
                             </button>
                         </td>
@@ -360,21 +352,18 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
         });
 });
 
-function seleccionarSolicitud(solicitante, tipo, problematica) {
-    
+function seleccionarSolicitud(id, solicitante, tipo, problematica) {
+    document.getElementById('solicitud_id_p').value = id;
     document.getElementById('solicitante_p').value = solicitante;
     document.getElementById('tipo_solicitud_p').value = tipo;
     document.getElementById('problematica_p').value = problematica;
 
-    
     const modalSolicitudes = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalSolicitudes'));
     modalSolicitudes.hide();
     
-   
     const modalRegistro = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalRegistrarProyecto'));
     modalRegistro.show();
 }
-
 
 const modalDetalleProyecto = document.getElementById('modalDetalleProyecto');
 if (modalDetalleProyecto) {
@@ -390,8 +379,19 @@ if (modalDetalleProyecto) {
         document.getElementById('det_descripcion').textContent = button.getAttribute('data-descripcion');
         document.getElementById('det_computos').textContent = button.getAttribute('data-computos');
         document.getElementById('det_costo').textContent = button.getAttribute('data-costo');
-        document.getElementById('det_inspecciones').textContent = button.getAttribute('data-inspecciones');
     });
 }
+
+document.getElementById('formRegistrarProyecto').addEventListener('submit', function(event) {
+    const solicitudIdInput = document.getElementById('solicitud_id_p');
+    const errorMessageDiv = document.getElementById('solicitud_error_message');
+
+    if (!solicitudIdInput.value) {
+        event.preventDefault();
+        errorMessageDiv.classList.remove('d-none');
+    } else {
+        errorMessageDiv.classList.add('d-none');
+    }
+});
 </script>
 {% endblock %}
