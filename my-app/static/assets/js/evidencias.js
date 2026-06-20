@@ -1,3 +1,9 @@
+/**
+ * evidencias.js - Módulo independiente para gestión de evidencias
+ * Implementa comunicación asíncrona con Fetch/Ajax según instrucciones del profesor Escalona
+ * Validación en tiempo real y manejo de eventos
+ */
+
 document.addEventListener('DOMContentLoaded', function () {
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
@@ -8,186 +14,278 @@ document.addEventListener('DOMContentLoaded', function () {
     let selectedFiles = [];
     let isEditMode = formEvidencias && formEvidencias.id === 'formEvidenciasUpdate';
 
-    // --- Inicialización para modo edición ---
+    // Constantes de validación
+    const MIN_IMAGENES = 3;
+    const MAX_IMAGENES = 5;
+    const FORMATOS_PERMITIDOS = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+
+    // ========== INICIALIZACIÓN MODO EDICIÓN ==========
+    
     if (isEditMode && window.evidenciaData) {
-        // En modo edición, el botón de submit se habilita si ya hay 3-5 imágenes existentes
-        // El usuario debe seleccionar nuevas imágenes para reemplazar las antiguas.
-        const existingUrls = window.evidenciaData.url_archivos.split(',');
-        if (existingUrls.length >= 3 && existingUrls.length <= 5) {
+        const existingUrls = window.evidenciaData.url_archivos ? window.evidenciaData.url_archivos.split(',') : [];
+        if (existingUrls.length >= MIN_IMAGENES && existingUrls.length <= MAX_IMAGENES) {
             btnSubmit.disabled = false;
             if (dropZone) dropZone.style.borderColor = '#08b324'; // Verde
         } else {
             btnSubmit.disabled = true;
             if (dropZone) dropZone.style.borderColor = '#dc3545'; // Rojo
         }
-        // No pre-cargamos selectedFiles con las URLs antiguas, ya que el usuario subirá nuevas.
-        // La previsualización inicial se hace directamente en el HTML con Jinja.
     }
 
-    // --- Lógica de Drag and Drop y Selección de Archivos ---
+    // ========== EVENTOS DRAG AND DROP ==========
+    
     if (dropZone && fileInput) {
+        // Click en zona de drop abre selector de archivos
         dropZone.addEventListener('click', () => fileInput.click());
+        
+        // Eventos de arrastre
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('dragover');
         });
+        
         dropZone.addEventListener('dragleave', () => {
             dropZone.classList.remove('dragover');
         });
+        
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('dragover');
             const files = e.dataTransfer.files;
             handleFiles(files);
         });
+        
+        // Evento de selección de archivos
         fileInput.addEventListener('change', () => {
             handleFiles(fileInput.files);
         });
     }
 
+    // ========== MANEJO DE ARCHIVOS ==========
+    
     function handleFiles(files) {
-        selectedFiles = Array.from(files);
+        // Convertir FileList a Array
+        const filesArray = Array.from(files);
+        
+        // Validar formatos
+        const archivosInvalidos = filesArray.filter(file => !FORMATOS_PERMITIDOS.includes(file.type));
+        
+        if (archivosInvalidos.length > 0) {
+            mostrarError(`Formato no permitido. Solo se aceptan: JPG, PNG, GIF, WEBP.`);
+            return;
+        }
+        
+        selectedFiles = filesArray;
         updatePreviews();
         validateFileCount();
     }
 
-    // Función para construir la URL estática (simula url_for('static') de Flask)
-    function getStaticUrl(relativePath) {
-        // Asume que 'static/' es la base para archivos estáticos.
-        // La URL almacenada en DB ya es relativa a 'static/'.
-        return `/${relativePath}`; 
-    }
-
+    // ========== ACTUALIZACIÓN DE PREVISUALIZACIONES ==========
+    
     function updatePreviews() {
-        imagePreviewContainer.innerHTML = ''; // Limpiar previsualizaciones existentes
+        imagePreviewContainer.innerHTML = ''; // Limpiar previsualizaciones
         
-        // Mostrar previsualizaciones de los archivos seleccionados
+        if (selectedFiles.length === 0 && isEditMode && window.evidenciaData && window.evidenciaData.url_archivos) {
+            // Mostrar imágenes existentes en modo edición
+            const existingUrls = window.evidenciaData.url_archivos.split(',');
+            existingUrls.forEach(url => {
+                const previewCard = crearCardPreview(getStaticUrl(url), 'Evidencia existente', true);
+                imagePreviewContainer.innerHTML += previewCard;
+            });
+            return;
+        }
+        
+        // Mostrar previsualizaciones de archivos seleccionados
         selectedFiles.forEach((file, index) => {
             const reader = new FileReader();
             reader.onload = function (e) {
-                const previewCard = `
-                    <div class="preview-card-container">
-                        <div class="preview-card">
-                            <img src="${e.target.result}" alt="${file.name}" title="${file.name}">
-                        </div>
-                        <select class="form-select form-select-sm mt-2" name="etapa-foto-${index}" required>
-                            <option value="" disabled selected>Etapa...</option>
-                            <option value="antes">Antes</option>
-                            <option value="durante">Durante</option>
-                            <option value="despues">Después</option>
-                        </select>
-                    </div>
-                `;
+                const previewCard = crearCardPreview(e.target.result, file.name, false, index);
                 imagePreviewContainer.innerHTML += previewCard;
             };
             reader.readAsDataURL(file);
         });
-
-        // En modo edición, si no se han seleccionado nuevos archivos,
-        // y hay imágenes existentes, se muestran las existentes.
-        // Esto ya se maneja en el HTML con Jinja, pero si se borran y no se suben nuevas,
-        // esta lógica podría ser útil para mostrar un mensaje.
-        // Por ahora, la lógica es que si se seleccionan nuevos archivos, reemplazan la vista de los antiguos.
-        if (isEditMode && selectedFiles.length === 0 && window.evidenciaData && window.evidenciaData.url_archivos) {
-            const existingUrls = window.evidenciaData.url_archivos.split(',');
-            existingUrls.forEach(url => {
-                const previewCard = `
-                    <div class="preview-card">
-                        <img src="${getStaticUrl(url)}" alt="Evidencia existente" title="Evidencia existente">
-                    </div>
-                `;
-                imagePreviewContainer.innerHTML += previewCard;
-            });
-        }
     }
 
+    function crearCardPreview(src, alt, esExistente, index = 0) {
+        if (esExistente) {
+            return `
+                <div class="preview-card">
+                    <img src="${src}" alt="${alt}" title="${alt}">
+                    <p class="text-muted small mt-1">Imagen actual</p>
+                </div>
+            `;
+        }
+        
+        return `
+            <div class="preview-card-container">
+                <div class="preview-card">
+                    <img src="${src}" alt="${alt}" title="${alt}">
+                </div>
+                <select class="form-select form-select-sm mt-2" name="etapa-foto-${index}" required>
+                    <option value="" disabled selected>Seleccione etapa...</option>
+                    <option value="antes">Antes</option>
+                    <option value="durante">Durante</option>
+                    <option value="despues">Después</option>
+                </select>
+            </div>
+        `;
+    }
+
+    function getStaticUrl(relativePath) {
+        // Construye URL estática (simula url_for de Flask)
+        return `/${relativePath}`;
+    }
+
+    // ========== VALIDACIÓN DE CANTIDAD DE ARCHIVOS ==========
+    
     function validateFileCount() {
         const count = selectedFiles.length;
-        if (count >= 3 && count <= 5) {
+        
+        if (count >= MIN_IMAGENES && count <= MAX_IMAGENES) {
             btnSubmit.disabled = false;
             if (dropZone) dropZone.style.borderColor = '#08b324'; // Verde
         } else {
             btnSubmit.disabled = true;
             if (dropZone) dropZone.style.borderColor = '#dc3545'; // Rojo
+            
             if (count > 0) {
-                if (typeof createToast === 'function') {
-                    createToast('Debe seleccionar entre 3 y 5 imágenes.', 'error');
-                } else {
-                    alert('Debe seleccionar entre 3 y 5 imágenes.');
-                }
+                mostrarError(`Debe seleccionar entre ${MIN_IMAGENES} y ${MAX_IMAGENES} imágenes.`);
             }
         }
     }
 
-    // --- Lógica de Envío Asíncrono (Fetch/AJAX) para Registro ---
+    // ========== ENVÍO ASÍNCRONO (FETCH/AJAX) - REGISTRO ==========
+    
     async function registrarEvidenciasFetch(event) {
         event.preventDefault();
-        if (btnSubmit.disabled) return;
+        
+        if (btnSubmit.disabled) {
+            mostrarError('Complete todos los campos requeridos.');
+            return;
+        }
 
+        // Validar que todas las etapas estén seleccionadas
+        const selectoresEtapa = document.querySelectorAll('select[name^="etapa-foto-"]');
+        let etapasCompletas = true;
+        
+        selectoresEtapa.forEach(select => {
+            if (!select.value) {
+                etapasCompletas = false;
+                select.classList.add('is-invalid');
+            } else {
+                select.classList.remove('is-invalid');
+            }
+        });
+        
+        if (!etapasCompletas) {
+            mostrarError('Debe seleccionar la etapa para cada imagen.');
+            return;
+        }
+
+        // Construir FormData
         const formData = new FormData(formEvidencias);
         selectedFiles.forEach(file => formData.append('fotos', file, file.name));
 
+        // Deshabilitar botón durante el envío
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Registrando...';
+
         try {
-            const response = await fetch('/api/evidencias/subir', { // URL para registro
+            const response = await fetch('/api/evidencias/subir', {
                 method: 'POST',
                 body: formData
             });
+            
             const result = await response.json();
 
             if (result.status === 'success') {
-                if (typeof createToast === 'function') createToast(result.message, 'success');
-                window.location.href = '/evidencias/listar';
+                mostrarExito(result.message);
+                setTimeout(() => {
+                    window.location.href = '/evidencias/listar';
+                }, 1500);
             } else {
-                if (typeof createToast === 'function') createToast('Error: ' + result.message, 'error');
-                else alert('Error: ' + result.message);
+                mostrarError('Error: ' + result.message);
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<i class="bi bi-check-circle me-1"></i>Registrar Evidencias';
             }
         } catch (error) {
             console.error('Error al subir evidencias:', error);
-            if (typeof createToast === 'function') createToast('Error de conexión con el servidor.', 'error');
-            else alert('Error de conexión con el servidor.');
+            mostrarError('Error de conexión con el servidor.');
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = '<i class="bi bi-check-circle me-1"></i>Registrar Evidencias';
         }
     }
 
-    // --- Lógica de Envío Asíncrono (Fetch/AJAX) para Actualización ---
+    // ========== ENVÍO ASÍNCRONO (FETCH/AJAX) - ACTUALIZACIÓN ==========
+    
     async function actualizarEvidenciasFetch(event) {
         event.preventDefault();
-        if (btnSubmit.disabled) return;
+        
+        if (btnSubmit.disabled) {
+            mostrarError('Complete todos los campos requeridos.');
+            return;
+        }
 
         const idEvidencia = document.getElementById('idEvidencia').value;
+        
+        if (!idEvidencia) {
+            mostrarError('ID de evidencia no válido.');
+            return;
+        }
+
+        // Validar existencia en tiempo real antes de actualizar
+        const existeResponse = await fetch(`/api/evidencias/validar/${idEvidencia}`);
+        const existeData = await existeResponse.json();
+        
+        if (!existeData.existe) {
+            mostrarError('La evidencia no existe o fue eliminada.');
+            return;
+        }
+
+        // Construir FormData
         const formData = new FormData(formEvidencias);
         selectedFiles.forEach(file => formData.append('fotos', file));
 
+        // Deshabilitar botón durante el envío
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Actualizando...';
+
         try {
-            const response = await fetch(`/api/evidencias/actualizar/${idEvidencia}`, { // URL para actualización
+            const response = await fetch(`/api/evidencias/actualizar/${idEvidencia}`, {
                 method: 'POST',
                 body: formData
             });
+            
             const result = await response.json();
 
             if (result.status === 'success') {
-                if (typeof createToast === 'function') createToast(result.message, 'success');
-                window.location.href = '/evidencias/listar';
+                mostrarExito(result.message);
+                setTimeout(() => {
+                    window.location.href = '/evidencias/listar';
+                }, 1500);
             } else {
-                if (typeof createToast === 'function') createToast('Error: ' + result.message, 'error');
-                else alert('Error: ' + result.message);
+                mostrarError('Error: ' + result.message);
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>Modificar Evidencia';
             }
         } catch (error) {
             console.error('Error al actualizar evidencias:', error);
-            if (typeof createToast === 'function') createToast('Error de conexión con el servidor.', 'error');
-            else alert('Error de conexión con el servidor.');
+            mostrarError('Error de conexión con el servidor.');
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>Modificar Evidencia';
         }
     }
 
-    // --- Borrado Lógico con Confirmación (SweetAlert2) ---
-    // Esta función debe ser global para ser llamada desde el HTML de lista_evidencias.html
+    // ========== BORRADO LÓGICO CON CONFIRMACIÓN (SWEETALERT2) ==========
+    
     window.eliminarEvidenciaJS = function(id_evidencia) {
         Swal.fire({
             title: '¿Estás seguro?',
             text: "La evidencia será desactivada (borrado lógico) y no aparecerá en el listado activo.",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#dc3545', // Rojo de Bootstrap para peligro
-            cancelButtonColor: '#6c757d',  // Gris de Bootstrap para cancelar
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
             confirmButtonText: 'Sí, desactivar',
             cancelButtonText: 'Cancelar',
             reverseButtons: true
@@ -198,7 +296,36 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    // --- Asignar manejadores de submit ---
+    // ========== FUNCIONES DE NOTIFICACIÓN ==========
+    
+    function mostrarExito(mensaje) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: mensaje,
+                timer: 2000,
+                showConfirmButton: false
+            });
+        } else {
+            alert(mensaje);
+        }
+    }
+
+    function mostrarError(mensaje) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: mensaje
+            });
+        } else {
+            alert(mensaje);
+        }
+    }
+
+    // ========== ASIGNAR MANEJADORES DE SUBMIT ==========
+    
     if (formEvidencias) {
         if (isEditMode) {
             formEvidencias.addEventListener('submit', actualizarEvidenciasFetch);

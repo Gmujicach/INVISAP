@@ -2,8 +2,7 @@
 {% block title %}Listar Empleados{% endblock %}
 
 {% block customCSS %}
-<!-- Reutilizamos los estilos del dashboard de usuarios -->
-<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/usuarios.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/empleados.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -30,20 +29,46 @@
                         <th>Cargo</th>
                         <th>Gerencia</th>
                         <th>Ingreso</th>
-                        <th>Estado</th> <!-- Borrado Lógico -->
+                        <th>Estado</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tbodyEmpleados" class="table-border-bottom-0">
-                    <!-- Cargando dinámicamente con AJAX/Fetch en empleados.js -->
+                    {% if resp_empleadosBD %}
+                        {% for empleado in resp_empleadosBD %}
+                        <tr>
+                            <td><span class="fw-bold">{{ empleado.id_empleados }}</span></td>
+                            <td>{{ empleado.nombre_empleado }}</td>
+                            <td><span class="badge bg-label-primary">{{ empleado.cargo }}</span></td>
+                            <td><small class="text-muted">{{ empleado.gerencia_asignada }}</small></td>
+                            <td>{{ empleado.fecha_ingreso }}</td>
+                            <td>
+                                {% if empleado.estado == 1 %}
+                                <span class="badge bg-success">Activo</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Inactivo</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{{ url_for('empleado_bp.viewEditarEmpleado', id_empleado=empleado.id_empleados) }}" 
+                                       class="btn btn-warning btn-sm" title="Editar Empleado">
+                                        <i class="bi bi-pencil-square text-white"></i>
+                                    </a>
+                                    <a href="javascript:void(0);" 
+                                       onclick="eliminarEmpleadoJS({{ empleado.id_empleados }})" 
+                                       class="btn btn-danger btn-sm" title="Eliminar (Borrado Lógico)">
+                                        <i class="bi bi-trash3-fill text-white"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
                     <tr>
-                        <td colspan="7" class="text-center py-5">
-                            <div class="spinner-grow text-primary" role="status" style="width: 2rem; height: 2rem;">
-                                <span class="visually-hidden">Procesando...</span>
-                            </div>
-                            <p class="mt-2 mb-0 text-muted">Consultando base de datos...</p>
-                        </td>
+                        <td colspan="7" class="text-center py-5 text-muted">No hay empleados registrados.</td>
                     </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
@@ -52,18 +77,6 @@
 {% endblock %}
 
 {% block customJS %}
-<!-- Cargamos la lógica de usuarios para heredar las funciones openDashboard/closeDashboard -->
-<script src="{{ url_for('static', filename='assets/js/usuarios.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ url_for('static', filename='assets/js/empleados.js') }}"></script>
-<script>
-    // Inyectamos los datos de empleados a la ventana global para JS con respaldo de seguridad
-    window.resp_empleadosBD = {{ resp_empleadosBD | default([]) | tojson | safe }};
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        // Disparamos el dashboard automáticamente al cargar la vista
-        if (typeof triggerEmpleadosDashboard === 'function') {
-            triggerEmpleadosDashboard();
-        }
-    });
-</script>
 {% endblock %}

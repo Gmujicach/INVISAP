@@ -1,5 +1,10 @@
 {% extends 'base_cpanel.html' %}
 {% block title %}Editar Empleado{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/empleados.css') }}">
+{% endblock %}
+
 {% block body %}
 <div class="container-xxl flex-grow-1 container-p-y">
   <h4 class="fw-bold py-3 mb-4">
@@ -10,36 +15,50 @@
     <div class="col-xl">
       <div class="card mb-4 shadow-sm border-0">
         <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom">
-          <h5 class="mb-0 fw-semibold text-warning"><i class="bi bi-pencil-square me-2"></i>Editando Empleado: {{ empleado.nombre_empleado }}</h5>
+          <h5 class="mb-0 fw-semibold text-warning">
+            <i class="bi bi-pencil-square me-2"></i>Editando: {{ empleado.nombre_empleado }}
+          </h5>
           <small class="text-muted float-end">Modifique los campos necesarios</small>
         </div>
         <div class="card-body pt-4">
-          <form action="{{ url_for('empleado_bp.update_empleado') }}" method="post" enctype="multipart/form-data" id="formEmpleadoUpdate">
-            <input type="hidden" name="id_empleado" value="{{ empleado.id_empleado }}">
+          <!-- Formulario con Fetch/AJAX -->
+          <form id="formEmpleadoUpdate" class="needs-validation" novalidate onsubmit="actualizarEmpleadoFetch(event)">
+            <input type="hidden" name="id_empleado" value="{{ empleado.id_empleados }}">
 
-            <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3"><i class="bi bi-person-vcard me-2"></i>Información del Empleado</p>
+            <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3">
+              <i class="bi bi-person-vcard me-2"></i>Datos Laborales
+            </p>
             <div class="row g-3 mb-4">
               <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-person me-1"></i>Nombre</label>
-                <input name="nombre_empleado" class="form-control" value="{{ empleado.nombre_empleado }}" required>
+                <label class="form-label fw-medium"><i class="bi bi-person me-1"></i>Nombre Completo</label>
+                <input type="text" name="nombre_empleado" class="form-control" 
+                       value="{{ empleado.nombre_empleado }}" 
+                       placeholder="Nombre completo del empleado" required
+                       pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{3,45}$">
+                <div class="invalid-feedback">Nombre inválido.</div>
               </div>
+              
               <div class="col-md-6">
                 <label class="form-label fw-medium"><i class="bi bi-award me-1"></i>Cargo</label>
                 <select name="cargo" class="form-select" required>
-                  <option value="Gerente" {% if empleado.cargo == 'Gerente' %}selected{% endif %}>Gerente</option>
-                  <option value="Inspector" {% if empleado.cargo == 'Inspector' %}selected{% endif %}>Inspector</option>
-                  <option value="Asistente" {% if empleado.cargo == 'Asistente' %}selected{% endif %}>Asistente</option>
-                  <option value="Coordinador" {% if empleado.cargo == 'Coordinador' %}selected{% endif %}>Coordinador</option>
-                  <option value="Operador" {% if empleado.cargo == 'Operador' %}selected{% endif %}>Operador</option>
+                  {% for cargo in cargos %}
+                  <option value="{{ cargo }}" {% if empleado.cargo == cargo %}selected{% endif %}>{{ cargo }}</option>
+                  {% endfor %}
                 </select>
               </div>
+              
               <div class="col-md-6">
                 <label class="form-label fw-medium"><i class="bi bi-calendar-event me-1"></i>Fecha de Ingreso</label>
-                <input type="date" name="fecha_ingreso" class="form-control" value="{{ empleado.fecha_ingreso }}" required>
+                <input type="date" name="fecha_ingreso" class="form-control" 
+                       value="{{ empleado.fecha_ingreso }}" required>
               </div>
+              
               <div class="col-md-6">
                 <label class="form-label fw-medium"><i class="bi bi-building me-1"></i>Gerencia Asignada</label>
-                <input type="text" name="gerencia_asignada" class="form-control" value="{{ empleado.gerencia_asignada }}" required>
+                <input type="text" name="gerencia_asignada" class="form-control" 
+                       value="{{ empleado.gerencia_asignada }}" 
+                       placeholder="Gerencia asignada" required
+                       pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{5,100}$">
               </div>
             </div>
 
@@ -47,7 +66,7 @@
               <a href="{{ url_for('empleado_bp.list_empleados') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-x-circle me-1"></i>Cancelar
               </a>
-              <button class="btn btn-warning px-4 shadow-sm">
+              <button type="submit" id="btnActualizar" class="btn btn-warning px-4 shadow-sm">
                 <i class="bi bi-arrow-repeat me-1"></i>Actualizar Información
               </button>
             </div>
@@ -60,5 +79,6 @@
 {% endblock %}
 
 {% block customJS %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ url_for('static', filename='assets/js/empleados_validation.js') }}"></script>
 {% endblock %}
