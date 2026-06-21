@@ -19,8 +19,8 @@
           <small class="text-muted float-end">Complete todos los campos requeridos</small>
         </div>
         <div class="card-body pt-4">
-          <!-- Formulario con Fetch/AJAX -->
-          <form id="formEmpleado" class="needs-validation" novalidate onsubmit="registrarEmpleadoFetch(event)">
+          <!-- Formulario con Fetch/AJAX - SIN onsubmit en el HTML -->
+          <form id="formEmpleado" class="needs-validation" novalidate>
             
             <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3">
               <i class="bi bi-person-vcard me-2"></i>Datos Laborales
@@ -39,16 +39,15 @@
                 <label class="form-label fw-medium"><i class="bi bi-briefcase me-1"></i>Cargo Institucional</label>
                 <select name="cargo" class="form-select" required>
                   <option value="" disabled selected>Seleccione el cargo...</option>
-                  {% for cargo in cargos %}
-                  <option value="{{ cargo }}">{{ cargo }}</option>
-                  {% endfor %}
-                  <option value="Asistente">Asistente</option>
-                  <option value="Recepcionista">Recepcionista</option>
                   <option value="Gerente">Gerente</option>
+                  <option value="Inspector">Inspector</option>
+                  <option value="Asistente">Asistente</option>
+                  <option value="Proyectista">Proyectista</option>
+                  <option value="Recepcionista">Recepcionista</option>
+                  <option value="Ingeniero">Ingeniero</option>
+                  <option value="Coordinador">Coordinador</option>
                   <option value="Presidente">Presidente</option>
                   <option value="Administrador">Administrador</option>
-                  <option value="Proyectista">Proyectista</option>
-                  <option value="Inspector">Inspector</option>
                 </select>
                 <div class="invalid-feedback">Seleccione un cargo válido.</div>
               </div>
