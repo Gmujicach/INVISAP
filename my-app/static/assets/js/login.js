@@ -1,6 +1,5 @@
 /**
- * INVISAP - Login Logic (Atomic UI)
- * Manages Password Strength Checker and Visibility Toggle
+ * Login del Sistema Invilara
  */
 
 'use strict';
@@ -14,16 +13,30 @@ document.addEventListener('DOMContentLoaded', function () {
         const toggleBtn = field.querySelector('.password-toggle-btn');
         const strengthWidget = field.querySelector('.password-strength-widget');
 
-        // --- Átomo: Toggle de Visibilidad ---
+        // --- Átomo: Toggle de Visibilidad (Protección contra Duplicados y Conflictos) ---
         if (passwordInput && toggleBtn) {
-            const icon = toggleBtn.querySelector('.toggle-icon');
             
-            toggleBtn.addEventListener('click', function() {
+            // Reemplazar el botón por un clon limpio para purgar cualquier listener duplicado de la plantilla
+            const cleanToggleBtn = toggleBtn.cloneNode(true);
+            toggleBtn.parentNode.replaceChild(cleanToggleBtn, toggleBtn);
+            const cleanIcon = cleanToggleBtn.querySelector('.toggle-icon');
+
+            cleanToggleBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation(); // Evita que scripts nativos de la plantilla base interfieran
+                
                 const isPassword = passwordInput.type === 'password';
                 passwordInput.type = isPassword ? 'text' : 'password';
                 
-                icon.classList.toggle('bi-eye', isPassword);
-                icon.classList.toggle('bi-eye-slash', !isPassword);
+                // Alternar las clases del ícono de Bootstrap
+                if (isPassword) {
+                    cleanIcon.classList.remove('bi-eye-slash');
+                    cleanIcon.classList.add('bi-eye');
+                } else {
+                    cleanIcon.classList.remove('bi-eye');
+                    cleanIcon.classList.add('bi-eye-slash');
+                }
+                
                 passwordInput.focus();
             });
         }
@@ -32,79 +45,77 @@ document.addEventListener('DOMContentLoaded', function () {
         if (passwordInput && strengthWidget) {
             const meter = strengthWidget.querySelector('.strength-meter');
             const label = strengthWidget.querySelector('.strength-label');
-            const helpText = field.querySelector('#passwordHelp');
-            
-            const rules = {
-                length: strengthWidget.querySelector('[data-rule="length"]'),
-                upperLower: strengthWidget.querySelector('[data-rule="upper-lower"]'),
-                symbol: strengthWidget.querySelector('[data-rule="symbol"]')
-            };
+            const helpText = field.querySelector('.form-text');
 
-            const updateRuleUI = (element, isValid) => {
-                const icon = element.querySelector('.icon-rule');
-                if (isValid) {
-                    element.classList.replace('text-danger', 'text-success');
-                    if (icon) icon.className = 'bi bi-check-circle-fill me-2 icon-rule';
-                } else {
-                    element.classList.replace('text-success', 'text-danger');
-                    if (icon) icon.className = 'bi bi-circle me-2 icon-rule';
-                }
-            };
-
-            passwordInput.addEventListener('input', function() {
+            passwordInput.addEventListener('input', function () {
                 const val = passwordInput.value;
                 
-                if (val.length > 0) {
-                    if (strengthWidget.classList.contains('d-none')) {
-                        strengthWidget.classList.remove('d-none');
-                        // Trigger Entry Animation (Atomic Logic)
-                        strengthWidget.classList.add('animate__animated', 'animate__fadeInDown');
-                        
-                        setTimeout(() => {
-                            strengthWidget.classList.remove('animate__fadeInDown');
-                        }, 500);
-                    }
-                    if (helpText) helpText.classList.add('d-none');
-                } else {
+                if (val.length === 0) {
                     strengthWidget.classList.add('d-none');
-                    if (helpText) helpText.classList.remove('d-none');
+                    if (helpText) helpText.classList.add('d-none');
+                    return;
                 }
 
-                const checks = {
-                    length: val.length >= 8 && val.length <= 12,
-                    upperLower: /[a-z]/.test(val) && /[A-Z]/.test(val),
-                    symbol: /[^A-Za-z0-9]/.test(val)
-                };
+                strengthWidget.classList.remove('d-none');
+                if (helpText) helpText.classList.remove('d-none');
 
-                updateRuleUI(rules.length, checks.length);
-                updateRuleUI(rules.upperLower, checks.upperLower);
-                updateRuleUI(rules.symbol, checks.symbol);
+                // Lógica de evaluación de reglas regex backend (8-12 carac, letras y símbolo)
+                const hasLength = val.length >= 8 && val.length <= 12;
+                const hasSymbol = /[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]/.test(val);
+
+                const ruleLength = strengthWidget.querySelector('[data-rule="length"]');
+                const ruleSymbol = strengthWidget.querySelector('[data-rule="symbol"]');
 
                 let score = 0;
-                if (checks.length) score += 33.3;
-                if (checks.upperLower) score += 33.3;
-                if (checks.symbol) score += 33.4;
 
-                meter.style.width = `${score}%`;
-                
-                if (score < 40) {
-                    meter.className = 'progress-bar bg-danger';
-                    label.textContent = 'Débil';
-                    label.className = 'badge bg-label-danger';
-                } else if (score < 80) {
-                    meter.className = 'progress-bar bg-warning';
-                    label.textContent = 'Media';
-                    label.className = 'badge bg-label-warning';
+                if (hasLength) {
+                    score++;
+                    if (ruleLength) {
+                        ruleLength.className = 'rule-item text-success mb-1';
+                        ruleLength.querySelector('i').className = 'bi bi-check-circle-fill me-2';
+                    }
                 } else {
-                    meter.className = 'progress-bar bg-success';
-                    label.textContent = 'Fuerte';
-                    label.className = 'badge bg-label-success';
+                    if (ruleLength) {
+                        ruleLength.className = 'rule-item text-danger mb-1';
+                        ruleLength.querySelector('i').className = 'bi bi-x-circle-fill me-2';
+                    }
+                }
+
+                if (hasSymbol) {
+                    score++;
+                    if (ruleSymbol) {
+                        ruleSymbol.className = 'rule-item text-success mb-1';
+                        ruleSymbol.querySelector('i').className = 'bi bi-check-circle-fill me-2';
+                    }
+                } else {
+                    if (ruleSymbol) {
+                        ruleSymbol.className = 'rule-item text-danger mb-1';
+                        ruleSymbol.querySelector('i').className = 'bi bi-x-circle-fill me-2';
+                    }
+                }
+
+                // Actualizar UI del medidor de seguridad
+                if (score === 0) {
+                    meter.style.width = '25%';
+                    meter.className = 'strength-meter progress-bar bg-danger';
+                    label.textContent = 'Insegura';
+                    label.className = 'strength-label badge bg-label-danger';
+                } else if (score === 1) {
+                    meter.style.width = '60%';
+                    meter.className = 'strength-meter progress-bar bg-warning';
+                    label.textContent = 'Media';
+                    label.className = 'strength-label badge bg-label-warning';
+                } else if (score === 2) {
+                    meter.style.width = '100%';
+                    meter.className = 'strength-meter progress-bar bg-success';
+                    label.textContent = 'Fuerte (Válida)';
+                    label.className = 'strength-label badge bg-label-success';
                 }
             });
         }
     });
 
-    // --- Dark Mode & Profile Molecule Logic ---
+    // --- Organismo Adicional: Modo Oscuro LocalStorage ---
     const darkModeSwitch = document.getElementById('dark-mode-switch');
     const themeIcon = document.getElementById('theme-icon');
 
@@ -126,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Avatar Preview Logic
+    // --- Organismo Adicional: Vista previa de Avatar ---
     const avatarInput = document.getElementById('profile_img');
     const avatarPreview = document.getElementById('avatar-preview');
     if (avatarInput && avatarPreview) {
@@ -136,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     avatarPreview.setAttribute('src', e.target.result);
-                }
+                };
                 reader.readAsDataURL(file);
             }
         });
