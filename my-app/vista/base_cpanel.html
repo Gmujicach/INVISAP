@@ -83,9 +83,31 @@
         padding-top: 0.75rem;
         border-top: 1px solid rgba(0,0,0,0.06);
       }
+
+      /* Ajustes de Modo Oscuro en Plantilla Base */
+      .dark-mode .profile-link-fixed {
+        background-color: #2b2c40 !important;
+        color: #cfcde9 !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+      }
+      .dark-mode .alert-molecule.bg-white {
+        background-color: #2b2c40 !important;
+        color: #cfcde9 !important;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3) !important;
+      }
+      .dark-mode .alert-molecule .text-dark {
+        color: #cfcde9 !important;
+      }
     </style>
   </head>
   <body class="transition-all">
+    <script>
+      (function() {
+        if (localStorage.getItem('theme') === 'dark') {
+          document.body.classList.add('dark-mode');
+        }
+      })();
+    </script>
     {% include 'home/pre_loader.html' %}
     <!---->
     {% include 'home/navbar.html' %}
