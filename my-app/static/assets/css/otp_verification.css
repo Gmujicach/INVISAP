@@ -1,0 +1,199 @@
+/**
+ * Estilos para Verificación OTP - Sistema INVILARA
+ * Autor: David - Equipo Invilara
+ * Sin dependencias de CDN - Todo local
+ * Siguiendo Atomic Design
+ */
+
+/* ============================================
+   CONTENEDOR OTP
+   ============================================ */
+.otp-container {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 0;
+}
+
+/* ============================================
+   INPUTS OTP (Átomos)
+   ============================================ */
+.otp-input {
+  width: 50px;
+  height: 60px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  border: 2px solid #d1d5db;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  background: #ffffff;
+  color: #2c3e50;
+  font-family: 'Courier New', monospace;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.otp-input:focus {
+  outline: none;
+  border-color: #696cff;
+  box-shadow: 0 0 0 4px rgba(105, 108, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.otp-input:disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.otp-input.filled {
+  border-color: #2ecc71;
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+}
+
+.otp-input.error {
+  border-color: #e74c3c;
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  animation: shake 0.5s;
+}
+
+/* ============================================
+   ANIMACIONES
+   ============================================ */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.otp-input.pulse {
+  animation: pulse 0.6s ease-in-out;
+}
+
+/* ============================================
+   TEMPORIZADOR (Molécula)
+   ============================================ */
+.timer-container {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border-radius: 8px;
+  border: 1px solid #fed7aa;
+}
+
+.timer-text {
+  color: #9a3412;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.timer-countdown {
+  font-size: 18px;
+  color: #ea580c;
+  font-family: 'Courier New', monospace;
+  min-width: 60px;
+  text-align: center;
+}
+
+.timer-countdown.warning {
+  color: #dc2626;
+  animation: pulse 1s infinite;
+}
+
+/* ============================================
+   ESTADOS DE VERIFICACIÓN
+   ============================================ */
+.verification-success {
+  animation: fadeIn 0.5s ease-in-out;
+  background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+  border: 2px solid #10b981;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.verification-success i {
+  font-size: 48px;
+  color: #10b981;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.verification-error {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   Según indicaciones del Prof. Escalona
+   ============================================ */
+@media (max-width: 576px) {
+  .otp-container {
+    gap: 8px;
+  }
+  
+  .otp-input {
+    width: 40px;
+    height: 50px;
+    font-size: 20px;
+  }
+  
+  .timer-container {
+    padding: 10px 15px;
+  }
+  
+  .timer-text {
+    font-size: 12px;
+  }
+  
+  .timer-countdown {
+    font-size: 16px;
+  }
+}
+
+/* ============================================
+   MODO OSCURO
+   ============================================ */
+body.dark-mode .otp-input {
+  background: #2b2c40;
+  border-color: #444564;
+  color: #cfcde9;
+}
+
+body.dark-mode .otp-input:focus {
+  border-color: #696cff;
+  background: #232333;
+}
+
+body.dark-mode .otp-input.filled {
+  border-color: #2ecc71;
+  background: #1a3a2a;
+}
+
+body.dark-mode .timer-container {
+  background: #2b2c40;
+  border-color: #444564;
+}
+
+body.dark-mode .timer-text,
+body.dark-mode .timer-countdown {
+  color: #cfcde9;
+}
