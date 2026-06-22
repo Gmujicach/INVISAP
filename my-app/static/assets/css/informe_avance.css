@@ -1,0 +1,733 @@
+/**
+ * Estilos para Módulo de Informe de Avance de Obra
+ * Diseño Atomic Design + Reglas de Hick (UI/UX)
+ * Paleta: Verde, Amarillo, Negro (Identidad INVILARA)
+ * Responsive Design
+ */
+
+/* ========== VARIABLES DE COLOR (Identidad INVILARA) ========== */
+:root {
+    --invilara-verde: #2d6a4f;
+    --invilara-verde-claro: #52b788;
+    --invilara-verde-oscuro: #1b4332;
+    --invilara-amarillo: #ffd60a;
+    --invilara-amarillo-oscuro: #ffc300;
+    --invilara-amarillo-claro: #ffea00;
+    --invilara-negro: #212529;
+    --invilara-gris: #6c757d;
+    --invilara-gris-claro: #e9ecef;
+    --invilara-blanco: #ffffff;
+    --invilara-rojo: #dc3545;
+    --invilara-azul: #0d6efd;
+}
+
+/* ========== PLACEHOLDERS MEJORADOS (Prof. Escalona - OBLIGATORIO) ========== */
+.form-control::placeholder,
+.form-select::placeholder {
+    color: var(--invilara-amarillo-oscuro) !important;
+    opacity: 0.85;
+    font-style: italic;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.form-control:focus::placeholder,
+.form-select:focus::placeholder {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+/* Placeholder para textarea específicamente */
+textarea.form-control::placeholder {
+    color: var(--invilara-amarillo-oscuro) !important;
+    opacity: 0.8;
+    font-size: 0.85rem;
+}
+
+/* ========== LABELS CON INDICADOR REQUERIDO ========== */
+.form-label.required::after {
+    content: " *";
+    color: var(--invilara-rojo);
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--invilara-negro);
+    margin-bottom: 0.5rem;
+}
+
+/* ========== BOTONES CON IDENTIDAD INVILARA ========== */
+.btn-invilara-primary {
+    background-color: var(--invilara-verde);
+    border-color: var(--invilara-verde);
+    color: var(--invilara-blanco);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-invilara-primary:hover {
+    background-color: var(--invilara-verde-claro);
+    border-color: var(--invilara-verde-claro);
+    color: var(--invilara-blanco);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(45, 106, 79, 0.3);
+}
+
+.btn-invilara-primary:active {
+    background-color: var(--invilara-verde-oscuro);
+    border-color: var(--invilara-verde-oscuro);
+    transform: translateY(0);
+}
+
+.btn-invilara-secondary {
+    background-color: var(--invilara-amarillo);
+    border-color: var(--invilara-amarillo);
+    color: var(--invilara-negro);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-invilara-secondary:hover {
+    background-color: var(--invilara-amarillo-oscuro);
+    border-color: var(--invilara-amarillo-oscuro);
+    color: var(--invilara-negro);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 214, 10, 0.3);
+}
+
+/* Botones de acción en tabla */
+.btn-outline-info:hover {
+    background-color: #0dcaf0;
+    border-color: #0dcaf0;
+    color: white;
+}
+
+.btn-outline-warning:hover {
+    background-color: var(--invilara-amarillo);
+    border-color: var(--invilara-amarillo);
+    color: var(--invilara-negro);
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--invilara-rojo);
+    border-color: var(--invilara-rojo);
+    color: white;
+}
+
+/* ========== TABLA RESPONSIVE ========== */
+.table-informe-avance {
+    font-size: 0.9rem;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table-informe-avance thead {
+    background: linear-gradient(135deg, var(--invilara-verde) 0%, var(--invilara-verde-claro) 100%);
+    color: var(--invilara-blanco);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table-informe-avance thead th {
+    border: none;
+    padding: 1rem 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.table-informe-avance tbody tr {
+    transition: all 0.3s ease;
+}
+
+.table-informe-avance tbody tr:hover {
+    background-color: rgba(45, 106, 79, 0.08);
+    cursor: pointer;
+    transform: scale(1.01);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table-informe-avance tbody td {
+    vertical-align: middle;
+    padding: 0.75rem;
+}
+
+/* ========== BADGES DE ESTADO ========== */
+.badge {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-aprobado,
+.badge.bg-success {
+    background-color: var(--invilara-verde) !important;
+    color: white;
+}
+
+.badge-en-ejecucion,
+.badge.bg-warning {
+    background-color: var(--invilara-amarillo) !important;
+    color: var(--invilara-negro) !important;
+}
+
+.badge-culminado,
+.badge.bg-info {
+    background-color: var(--invilara-azul) !important;
+    color: white;
+}
+
+.badge-paralizado,
+.badge.bg-danger {
+    background-color: var(--invilara-rojo) !important;
+    color: white;
+}
+
+/* ========== PROGRESS BAR (Porcentaje de Avance) ========== */
+.progress {
+    height: 25px;
+    border-radius: 10px;
+    background-color: var(--invilara-gris-claro);
+    overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: width 0.6s ease;
+    background: linear-gradient(90deg, var(--invilara-verde) 0%, var(--invilara-verde-claro) 100%);
+}
+
+/* ========== TARJETAS DE ESTADÍSTICAS ========== */
+.card-estadistica {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-estadistica:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.card-estadistica .card-body {
+    padding: 1.5rem;
+}
+
+.card-estadistica h6 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.card-estadistica h3 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+/* Colores específicos para tarjetas */
+.card-estadistica.bg-light {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.card-estadistica.bg-success {
+    background: linear-gradient(135deg, var(--invilara-verde) 0%, var(--invilara-verde-claro) 100%);
+}
+
+.card-estadistica.bg-warning {
+    background: linear-gradient(135deg, var(--invilara-amarillo-oscuro) 0%, var(--invilara-amarillo) 100%);
+}
+
+.card-estadistica.bg-info {
+    background: linear-gradient(135deg, #0dcaf0 0%, #31d2f2 100%);
+}
+
+/* Nuevos estilos de tarjetas sólidas sin degradado */
+.card-estadistica.card-aprobados {
+    background: var(--invilara-azul) !important;
+    color: var(--invilara-blanco) !important;
+}
+
+.card-estadistica.card-culminados {
+    background: var(--invilara-verde) !important;
+    color: var(--invilara-blanco) !important;
+}
+
+/* Nuevos estilos de tarjetas sólidas sin degradado */
+.card-estadistica.card-aprobados {
+    background: var(--invilara-azul) !important;
+    color: var(--invilara-blanco) !important;
+}
+
+.card-estadistica.card-culminados {
+    background: var(--invilara-verde) !important;
+    color: var(--invilara-blanco) !important;
+}
+
+/* ========== FORMULARIO ========== */
+.form-control,
+.form-select {
+    border: 2px solid var(--invilara-gris-claro);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--invilara-verde);
+    box-shadow: 0 0 0 0.2rem rgba(45, 106, 79, 0.15);
+    outline: none;
+}
+
+.form-control:invalid,
+.form-select:invalid {
+    border-color: var(--invilara-rojo);
+}
+
+/* Textarea específico */
+textarea.form-control {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* ========== CONTADOR DE CARACTERES ========== */
+.form-text {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.form-text.text-warning {
+    font-weight: bold;
+    color: var(--invilara-amarillo-oscuro) !important;
+}
+
+.form-text.text-danger {
+    font-weight: bold;
+    color: var(--invilara-rojo) !important;
+}
+
+/* ========== VALIDACIÓN EN TIEMPO REAL ========== */
+.validation-feedback {
+    animation: fadeInUp 0.3s ease;
+}
+
+.validating-indicator {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ========== PREVIEW DE IMÁGENES ========== */
+.preview-imagenes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.preview-img-wrapper {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.preview-img-wrapper:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.preview-img-wrapper img {
+    display: block;
+}
+
+.preview-img-wrapper .badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* ========== INPUT FILE PERSONALIZADO ========== */
+input[type="file"] {
+    cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+    background-color: var(--invilara-verde);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-right: 1rem;
+    transition: all 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: var(--invilara-verde-claro);
+}
+
+/* ========== COLLAPSE ANIMATION ========== */
+.collapse {
+    transition: height 0.35s ease;
+}
+
+.collapsing {
+    transition: height 0.35s ease;
+}
+
+/* ========== SPINNER DE CARGA ========== */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.15em;
+}
+
+/* ========== RESPONSIVE DESIGN (Prof. Escalona - OBLIGATORIO) ========== */
+@media (max-width: 768px) {
+    /* Tabla responsive */
+    .table-responsive {
+        font-size: 0.8rem;
+    }
+    
+    .table-informe-avance thead th {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.75rem;
+    }
+    
+    .table-informe-avance tbody td {
+        padding: 0.5rem 0.25rem;
+    }
+    
+    /* Botones más pequeños */
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    /* Tarjetas de estadísticas */
+    .card-estadistica h3 {
+        font-size: 1.8rem;
+    }
+    
+    .card-estadistica h6 {
+        font-size: 0.75rem;
+    }
+    
+    /* Header de card */
+    .card-header h5 {
+        font-size: 1rem;
+    }
+    
+    /* Formulario */
+    .form-control,
+    .form-select {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.75rem;
+    }
+    
+    /* Progress bar */
+    .progress {
+        height: 20px;
+    }
+    
+    .progress-bar {
+        font-size: 0.75rem;
+    }
+    
+    /* Preview de imágenes */
+    .preview-img-wrapper {
+        width: 60px !important;
+        height: 60px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Ocultar columnas menos importantes en móvil */
+    .table-informe-avance th:nth-child(6),
+    .table-informe-avance td:nth-child(6) {
+        display: none;
+    }
+    
+    /* Botones apilados */
+    .card-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .card-header .btn {
+        width: 100%;
+    }
+    
+    /* Tarjetas de estadísticas en columna */
+    .row > [class*="col-"] {
+        margin-bottom: 1rem;
+    }
+}
+
+/* ========== ANIMACIONES SUAVES ========== */
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-in {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* ========== SCROLL SUAVE ========== */
+html {
+    scroll-behavior: smooth;
+}
+
+/* ========== SCROLLBAR PERSONALIZADO ========== */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--invilara-gris-claro);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--invilara-verde);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--invilara-verde-claro);
+}
+
+/* ========== TOOLTIPS ========== */
+[title] {
+    position: relative;
+}
+
+/* ========== ACCESIBILIDAD ========== */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ========== FOCUS VISIBLE (Accesibilidad) ========== */
+*:focus-visible {
+    outline: 2px solid var(--invilara-verde);
+    outline-offset: 2px;
+}
+
+/* ========== PRINT STYLES ========== */
+@media print {
+    .btn,
+    .card-header button,
+    .btn-eliminar-informe,
+    .btn-editar-informe {
+        display: none !important;
+    }
+    
+    .table-informe-avance {
+        font-size: 10pt;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}
+
+/* ========== UTILIDADES ADICIONALES ========== */
+.text-invilara-verde {
+    color: var(--invilara-verde) !important;
+}
+
+.text-invilara-amarillo {
+    color: var(--invilara-amarillo-oscuro) !important;
+}
+
+.bg-invilara-verde {
+    background-color: var(--invilara-verde) !important;
+}
+
+.bg-invilara-amarillo {
+    background-color: var(--invilara-amarillo) !important;
+}
+
+.border-invilara-verde {
+    border-color: var(--invilara-verde) !important;
+}
+
+.border-invilara-amarillo {
+    border-color: var(--invilara-amarillo) !important;
+}
+
+/* ========== INTEGRACIÓN DEL MODO OSCURO (INVISAP) ========== */
+body.dark-mode {
+    background-color: #232333 !important;
+    color: #cfcde9 !important;
+}
+
+body.dark-mode .card {
+    background-color: #2b2c40 !important;
+    color: #cfcde9 !important;
+    border-color: #444564 !important;
+}
+
+body.dark-mode .card-header {
+    background-color: #2b2c40 !important;
+    color: #cfcde9 !important;
+    border-bottom: 1px solid #444564 !important;
+}
+
+body.dark-mode .table-informe-avance {
+    color: #cfcde9 !important;
+    background-color: #2b2c40 !important;
+}
+
+body.dark-mode .table-informe-avance thead {
+    background: linear-gradient(135deg, var(--invilara-verde-oscuro) 0%, var(--invilara-verde) 100%) !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .table-informe-avance tbody tr {
+    background-color: #2b2c40 !important;
+    color: #cfcde9 !important;
+}
+
+body.dark-mode .table-informe-avance tbody tr:hover {
+    background-color: rgba(82, 183, 136, 0.12) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .table-informe-avance td, 
+body.dark-mode .table-informe-avance th {
+    border-color: #444564 !important;
+    color: #cfcde9 !important;
+}
+
+body.dark-mode .table-informe-avance td .bx {
+    color: #52b788 !important;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: #232333 !important;
+    border-color: #444564 !important;
+    color: #cfcde9 !important;
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+    border-color: var(--invilara-verde-claro) !important;
+    box-shadow: 0 0 0 0.2rem rgba(82, 183, 136, 0.25) !important;
+}
+
+body.dark-mode .form-control::placeholder,
+body.dark-mode .form-select::placeholder {
+    color: #8c8ea3 !important;
+    opacity: 0.8 !important;
+}
+
+body.dark-mode .form-label {
+    color: #cfcde9 !important;
+}
+
+body.dark-mode .text-secondary.border-bottom {
+    color: #a3a4cc !important;
+    border-color: #444564 !important;
+}
+
+body.dark-mode .form-text.text-muted {
+    color: #8c8ea3 !important;
+}
+
+body.dark-mode .progress {
+    background-color: #232333 !important;
+}
+
+body.dark-mode .card-estadistica.bg-light {
+    background: #2b2c40 !important;
+    color: #cfcde9 !important;
+}
+
+body.dark-mode .card-estadistica.bg-light .text-muted {
+    color: #8c8ea3 !important;
+}
+
+body.dark-mode .card-estadistica.bg-light h3 {
+    color: #ffffff !important;
+}
+
+body.dark-mode textarea.form-control::placeholder {
+    color: #8c8ea3 !important;
+}
+
+body.dark-mode .alert-info {
+    background-color: #232333 !important;
+    border-color: #444564 !important;
+    color: #cfcde9 !important;
+}
