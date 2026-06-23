@@ -1,93 +1,131 @@
 {% extends 'login/base_login.html' %}
-<!---->
-{% block title %}Sistema Invilara 🐍 | crear cuenta{% endblock %}
-<!---->
+{% block title %}Sistema Invilara | Crear Cuenta{% endblock %}
 {% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/login.css') }}">
 
 <div class="container-xxl">
   <div class="authentication-wrapper authentication-basic container-p-y">
     <div class="authentication-inner">
       <div class="card">
         <div class="card-body">
-          <div class="app-brand justify-content-center">
+          <!-- Logo -->
+          <div class="app-brand justify-content-center mb-4">
             <span class="app-brand-logo">
               <img
-            src="{{ url_for('static', filename ='assets/img/NUEVO LOGO GOBERNACION DE LARA JUNIO 2025.png') }}"
-          alt="Logo" 
-          style="max-height: 48px; max-width: 160px; object-fit: contain; width: auto; height: auto;" />
+                src="{{ url_for('static', filename='assets/img/NUEVO LOGO GOBERNACION DE LARA JUNIO 2025.png') }}"
+                alt="Logo INVILARA" 
+                style="max-height: 85px; max-width: 160px; object-fit: contain; width: auto; height: auto;" />
             </span>
           </div>
 
+          <h4 class="mb-2 text-center fw-bold text-heading">Crear Nueva Cuenta 📝</h4>
+          <p class="mb-4 text-center text-muted">Completa el formulario para registrarte en el sistema</p>
+
+          <!-- Formulario -->
           <form
             class="mb-3"
             action="{{ url_for('login_bp.cpanelResgisterUserBD') }}"
             method="POST">
+            
+            <!-- Nombre Completo -->
             <div class="mb-3">
-              <label for="name_surname" class="form-label">
-                Nombre Completo
-              </label>
+              <label for="nombre" class="form-label text-heading fw-semibold">Nombre Completo</label>
               <input
                 type="text"
-                class="form-control"
+                class="form-control custom-placeholder border-secondary-subtle"
                 name="nombre"
+                id="nombre"
+                placeholder="Ej: Juan Carlos Medina"
                 required
                 autofocus />
             </div>
+
+            <!-- Cédula -->
             <div class="mb-3">
-              <label for="cedula_usuario" class="form-label">Cédula</label>
+              <label for="cedula_usuario" class="form-label text-heading fw-semibold">Cédula de Identidad</label>
               <input
                 type="text"
-                class="form-control"
+                class="form-control custom-placeholder border-secondary-subtle"
                 name="cedula_usuario"
+                id="cedula_usuario"
+                placeholder="Ej: 12345678 (solo números, sin V o E)"
                 maxlength="10"
+                pattern="[0-9]{7,10}"
                 required />
-            </div>
-            <div class="mb-3">
-              <label for="email_user" class="form-label">Correo Electrónico</label>
-              <input
-                type="email"
-                class="form-control"
-                name="correo"
-                required />
-            </div>
-            <div class="mb-3 form-password-toggle">
-              <label class="form-label" for="pass_user">Clave</label>
-              <div class="password-input-wrapper input-group input-group-merge">
-                <input
-                  type="password"
-                  class="form-control password-reveal-input"
-                  name="pass_user"
-                  id="pass_user"
-                  placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                  aria-describedby="password"
-                  required />
-                <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
-                  <span class="password-eye" aria-hidden="true">
-                    <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                      <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                      <g class="eye">
-                        <circle cy="12" cx="12" r="4" fill="currentColor" />
-                        <circle cy="11" cx="13" r="1" fill="#000" />
-                      </g>
-                    </svg>
-                  </span>
-                  <span class="sr-only visually-hidden">Mostrar contraseña</span>
-                </button>
+              <div class="form-text text-muted">
+                <small><i class="bi bi-info-circle me-1"></i> Solo números, sin letras ni puntos</small>
               </div>
             </div>
-            <button class="btn btn-primary w-100">
-              Crear cuenta
-              <i class="bi bi-arrow-right-circle"></i>
+
+            <!-- Correo Electrónico -->
+            <div class="mb-3">
+              <label for="correo" class="form-label text-heading fw-semibold">Correo Electrónico</label>
+              <input
+                type="email"
+                class="form-control custom-placeholder border-secondary-subtle"
+                name="correo"
+                id="correo"
+                placeholder="Ej: jmedina@invilara.gob.ve"
+                required />
+            </div>
+
+            <!-- Contraseña -->
+            <div class="mb-3 molecule-password-field position-relative">
+              <label for="pass_user" class="form-label text-heading fw-semibold">Contraseña</label>
+              
+              <div class="input-group input-group-merge">
+                <input
+                  type="password"
+                  id="pass_user"
+                  class="form-control password-input custom-placeholder border-end-0 border-secondary-subtle"
+                  name="pass_user"
+                  placeholder="Mín. 8 caracteres, letras y un símbolo (Ej: Invi2026*)"
+                  required />
+                
+                <button 
+                  type="button" 
+                  class="input-group-text password-toggle-btn border-start-0 border-secondary-subtle px-3" 
+                  style="background-color: #fff; cursor: pointer;">
+                  <i class="bi bi-eye-slash toggle-icon fs-5 text-muted"></i>
+                </button>
+              </div>
+
+              <!-- Indicador de fortaleza -->
+              <div class="password-strength-widget d-none mt-2">
+                <ul class="list-unstyled mb-2">
+                  <li class="rule-item transition-all" data-rule="length">
+                    <i class="bi bi-circle me-2 icon-rule"></i> De 8 a 12 caracteres
+                  </li>
+                  <li class="rule-item transition-all" data-rule="symbol">
+                    <i class="bi bi-circle me-2 icon-rule"></i> Un símbolo especial
+                  </li>
+                </ul>
+                
+                <div class="strength-indicator-header d-flex justify-content-between align-items-center mb-2">
+                  <span class="small fw-semibold text-heading">Seguridad:</span>
+                  <span class="strength-label badge bg-label-secondary">Esperando...</span>
+                </div>
+                
+                <div class="progress" style="height: 6px; background-color: rgba(67, 89, 113, 0.1);">
+                  <div class="strength-meter progress-bar transition-all" role="progressbar" style="width: 0%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botón de registro -->
+            <button class="btn btn-primary w-100 py-2 fw-semibold d-flex align-items-center justify-content-center" type="submit">
+              <span>Crear Cuenta</span>
+              <i class="bi bi-arrow-right-circle ms-2 fs-5"></i>
             </button>
           </form>
 
+          <!-- Volver al login -->
           <div class="text-center">
             <a
               href="{{ url_for('login_bp.inicio') }}"
-              class="d-flex align-items-center justify-content-center">
-              <i class="bx bx-chevron-left scaleX-n1-rtl bx-sm"></i>
-              volver
+              class="d-flex align-items-center justify-content-center text-decoration-none">
+              <i class="bi bi-arrow-left-circle me-2"></i>
+              <span>Ya tengo cuenta, iniciar sesión</span>
             </a>
           </div>
         </div>
@@ -96,4 +134,5 @@
   </div>
 </div>
 
+<script src="{{ url_for('static', filename='assets/js/login.js') }}"></script>
 {% endblock %}
