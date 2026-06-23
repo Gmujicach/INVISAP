@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 20-06-2026 a las 07:20:18
+-- Tiempo de generación: 23-06-2026 a las 20:00:59
 -- Versión del servidor: 9.4.0
 -- Versión de PHP: 8.3.30
 
@@ -140,7 +140,8 @@ CREATE TABLE `empleados` (
 INSERT INTO `empleados` (`id_empleados`, `nombre_empleado`, `cargo`, `fecha_ingreso`, `gerencia_asignada`, `persona_id_persona`, `estado`) VALUES
 (1, 'Juan Carlos Perez Hernandez', 'Inspector', '2026-06-20', 'Obras', 7, 1),
 (2, 'Cesilia  del Carmen Suarez', 'Recepcionista', '2026-06-20', 'Atención al Ciudadano', 9, 1),
-(3, 'Maria del Carmen Suarez', 'Asistente', '2026-06-20', 'Comunicaciones', 9, 1);
+(3, 'Maria del Carmen Suarez', 'Asistente', '2026-06-20', 'Comunicaciones', 9, 1),
+(5, 'Carlos Ramírez Inspector', 'Inspector', '2026-06-22', 'Obras Públicas', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -176,16 +177,6 @@ CREATE TABLE `evidencia` (
   `estado` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)',
   `etapa` enum('antes','durante','despues') NOT NULL DEFAULT 'antes' COMMENT 'Etapa de la evidencia fotográfica'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `evidencia`
---
-
-INSERT INTO `evidencia` (`id_evidencia`, `fotos`, `url_archivos`, `fecha_registro`, `estado`, `etapa`) VALUES
-(2, 'EER de INVILARA.png', 'uploads/evidencias/e7ba2aea7bf8_EER_de_INVILARA.png', '2026-06-20 00:32:41', 1, 'antes'),
-(3, 'Gemini_Generated_Image_3oh0bu3oh0bu3oh0.png', 'uploads/evidencias/014b53c08a35_Gemini_Generated_Image_3oh0bu3oh0bu3oh0.png', '2026-06-20 00:32:42', 1, 'antes'),
-(4, 'MER INVILARA.drawio.png', 'uploads/evidencias/8960ab992e11_MER_INVILARA.drawio.png', '2026-06-20 00:32:42', 1, 'antes'),
-(5, 'MER INVILARA.png', 'uploads/evidencias/bf4ef8de466d_MER_INVILARA.png', '2026-06-20 00:32:44', 1, 'antes');
 
 -- --------------------------------------------------------
 
@@ -497,16 +488,16 @@ INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_evidencia_informe` (
-`id_evidencia` int
-,`fotos` varchar(45)
-,`url_archivos` varchar(90)
-,`fecha_registro` datetime
-,`etapa` enum('antes','durante','despues')
-,`estado` tinyint
-,`id_informe` int
-,`fecha_informe` datetime
-,`tipo_informe` varchar(30)
+`estado` tinyint
 ,`estado_informe` varchar(25)
+,`etapa` enum('antes','durante','despues')
+,`fecha_informe` datetime
+,`fecha_registro` datetime
+,`fotos` varchar(45)
+,`id_evidencia` int
+,`id_informe` int
+,`tipo_informe` varchar(30)
+,`url_archivos` varchar(90)
 );
 
 --
@@ -713,7 +704,7 @@ ALTER TABLE `contratacion`
 -- AUTO_INCREMENT de la tabla `empleados`
 --
 ALTER TABLE `empleados`
-  MODIFY `id_empleados` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_empleados` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `evidencia`
