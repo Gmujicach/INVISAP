@@ -1,7 +1,7 @@
 /**
- * evidencias.js - Módulo independiente para gestión de evidencias
- * Implementa comunicación asíncrona con Fetch/Ajax según instrucciones del profesor Escalona
- * Validación en tiempo real y manejo de eventos
+ * evidencias.js
+ * Implementa comunicación asíncrona con Fetch/Ajax, Validación en tiempo real y 
+ * manejo de eventos
  */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const archivosInvalidos = filesArray.filter(file => !FORMATOS_PERMITIDOS.includes(file.type));
         
         if (archivosInvalidos.length > 0) {
-            mostrarError(`Formato no permitido. Solo se aceptan: JPG, PNG, GIF, WEBP.`);
+            mostrarError(`Formato no permitido. Solo se aceptan: JPG, JPEG, PNG, GIF, WEBP.`);
             return;
         }
         
@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
         }
         
+        // CORRECCIÓN: Valores en minúsculas para coincidir con el backend
         return `
             <div class="preview-card-container">
                 <div class="preview-card">
@@ -156,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ========== ENVÍO ASÍNCRONO (FETCH/AJAX) - REGISTRO ==========
     
-    async function registrarEvidenciasFetch(event) {
+    window.registrarEvidenciasFetch = async function(event) {
         event.preventDefault();
         
         if (btnSubmit.disabled) {
@@ -183,8 +184,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Construir FormData
-        const formData = new FormData(formEvidencias);
-        selectedFiles.forEach(file => formData.append('fotos', file, file.name));
+        const formData = new FormData();
+        
+        // Agregar archivos
+        selectedFiles.forEach(file => {
+            formData.append('fotos', file);
+        });
+        
+        // Agregar etapas (IMPORTANTE: en minúsculas)
+        selectoresEtapa.forEach((select, index) => {
+            formData.append(`etapa-foto-${index}`, select.value.toLowerCase());
+        });
 
         // Deshabilitar botón durante el envío
         btnSubmit.disabled = true;
@@ -214,11 +224,11 @@ document.addEventListener('DOMContentLoaded', function () {
             btnSubmit.disabled = false;
             btnSubmit.innerHTML = '<i class="bi bi-check-circle me-1"></i>Registrar Evidencias';
         }
-    }
+    };
 
     // ========== ENVÍO ASÍNCRONO (FETCH/AJAX) - ACTUALIZACIÓN ==========
     
-    async function actualizarEvidenciasFetch(event) {
+    window.actualizarEvidenciasFetch = async function(event) {
         event.preventDefault();
         
         if (btnSubmit.disabled) {
@@ -242,9 +252,42 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        // Validar que se hayan seleccionado nuevas imágenes
+        if (selectedFiles.length === 0) {
+            mostrarError('Debe seleccionar al menos una imagen nueva.');
+            return;
+        }
+
+        // Validar etapas
+        const selectoresEtapa = document.querySelectorAll('select[name^="etapa-foto-"]');
+        let etapasCompletas = true;
+        
+        selectoresEtapa.forEach(select => {
+            if (!select.value) {
+                etapasCompletas = false;
+                select.classList.add('is-invalid');
+            } else {
+                select.classList.remove('is-invalid');
+            }
+        });
+        
+        if (!etapasCompletas) {
+            mostrarError('Debe seleccionar la etapa para cada imagen.');
+            return;
+        }
+
         // Construir FormData
-        const formData = new FormData(formEvidencias);
-        selectedFiles.forEach(file => formData.append('fotos', file));
+        const formData = new FormData();
+        
+        // Agregar archivos
+        selectedFiles.forEach(file => {
+            formData.append('fotos', file);
+        });
+        
+        // Agregar etapas (en minúsculas)
+        selectoresEtapa.forEach((select, index) => {
+            formData.append(`etapa-foto-${index}`, select.value.toLowerCase());
+        });
 
         // Deshabilitar botón durante el envío
         btnSubmit.disabled = true;
@@ -274,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function () {
             btnSubmit.disabled = false;
             btnSubmit.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>Modificar Evidencia';
         }
-    }
+    };
 
     // ========== BORRADO LÓGICO CON CONFIRMACIÓN (SWEETALERT2) ==========
     
@@ -321,16 +364,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         } else {
             alert(mensaje);
-        }
-    }
-
-    // ========== ASIGNAR MANEJADORES DE SUBMIT ==========
-    
-    if (formEvidencias) {
-        if (isEditMode) {
-            formEvidencias.addEventListener('submit', actualizarEvidenciasFetch);
-        } else {
-            formEvidencias.addEventListener('submit', registrarEvidenciasFetch);
         }
     }
 });

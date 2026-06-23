@@ -3,6 +3,93 @@
 
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/informe_avance.css') }}" />
+<style>
+  /* Estilos para los modales de selección */
+  .modal-evidencia-item {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+  }
+  
+  .modal-evidencia-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  
+  .modal-evidencia-item.selected {
+    border-color: #28a745;
+    background-color: #d4edda;
+  }
+  
+  .modal-evidencia-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .badge-etapa {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+  }
+  
+  .inspector-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+  
+  .inspector-card:hover {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+    transform: translateY(-2px);
+  }
+  
+  .inspector-card.selected {
+    border-color: #28a745;
+    background-color: #d4edda;
+  }
+  
+  .evidencias-seleccionadas-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .evidencia-preview-item {
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+  
+  .evidencia-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid #28a745;
+  }
+  
+  .evidencia-preview-item .remove-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+  }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -258,7 +345,7 @@
           </div>
         </div>
 
-        <!-- ========== SECCIÓN 2: RESPONSABLE ========== -->
+        <!-- ========== SECCIÓN 2: RESPONSABLE (CON MODAL) ========== -->
         <div class="row mb-4 mt-4">
           <div class="col-12">
             <h6 class="text-secondary border-bottom pb-2 mb-3">
@@ -270,22 +357,18 @@
         <div class="row mb-3">
           <div class="col-md-12">
             <label for="gerente_responsable_id" class="form-label required">
-              Gerente o Inspector Responsable
+              Inspector Responsable
             </label>
-            <select class="form-select shadow-sm" name="gerente_responsable_id" 
-                    id="gerente_responsable_id" required>
-              <option value="" selected disabled>Seleccione el responsable del informe...</option>
-              {% for gerente in gerentes %}
-              <option value="{{ gerente.id_empleados }}">
-                {{ gerente.nombre_empleado }} - {{ gerente.cargo }}
-                {% if gerente.gerencia_asignada %}
-                  ({{ gerente.gerencia_asignada }})
-                {% endif %}
-              </option>
-              {% endfor %}
-            </select>
+            <div class="input-group">
+              <input type="text" class="form-control shadow-sm" id="inspector_nombre_display" 
+                     placeholder="Haga clic en el botón para seleccionar un inspector..." readonly required />
+              <input type="hidden" name="gerente_responsable_id" id="gerente_responsable_id" />
+              <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalSeleccionarInspector">
+                <i class="bx bx-search"></i> Seleccionar Inspector
+              </button>
+            </div>
             <small class="form-text text-muted">
-              <i class="bx bx-info-circle"></i> Solo se muestran empleados con cargo de Gerente o Inspector activos
+              <i class="bx bx-info-circle"></i> Solo se muestran empleados con cargo de Inspector activos
             </small>
           </div>
         </div>
@@ -313,7 +396,7 @@
           </div>
         </div>
 
-        <!-- ========== SECCIÓN 4: EVIDENCIAS FOTOGRÁFICAS ========== -->
+        <!-- ========== SECCIÓN 4: EVIDENCIAS FOTOGRÁFICAS (CON MODALES) ========== -->
         <div class="row mb-4 mt-4">
           <div class="col-12">
             <h6 class="text-secondary border-bottom pb-2 mb-3">
@@ -321,42 +404,54 @@
             </h6>
             <div class="alert alert-info" role="alert">
               <i class="bx bx-info-circle me-2"></i>
-              <strong>Importante:</strong> Máximo 5 imágenes por etapa. Las imágenes serán comprimidas automáticamente para optimizar el almacenamiento.
+              <strong>Importante:</strong> Seleccione las evidencias fotográficas registradas en el sistema. Máximo 5 imágenes por etapa.
             </div>
           </div>
         </div>
 
         <div class="row mb-3">
+          <!-- FOTOS ANTES -->
           <div class="col-md-4">
-            <label for="evidencias_antes" class="form-label">
+            <label class="form-label">
               <i class="bx bx-image-add me-1"></i>Fotos ANTES
             </label>
-            <input type="file" class="form-control shadow-sm" name="evidencias_antes" 
-                   id="evidencias_antes" multiple accept="image/*" />
+            <button type="button" class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasAntes">
+              <i class="bx bx-folder-open"></i> Seleccionar Evidencias ANTES
+            </button>
+            <input type="hidden" name="evidencias_antes" id="evidencias_antes_ids" />
+            <div id="preview_antes" class="evidencias-seleccionadas-preview"></div>
             <small class="form-text text-muted">
-              Máximo 5 imágenes (JPG, PNG, GIF, WEBP)
+              <span id="count_antes">0</span> evidencias seleccionadas (máx. 5)
             </small>
           </div>
 
+          <!-- FOTOS DURANTE -->
           <div class="col-md-4">
-            <label for="evidencias_durante" class="form-label">
+            <label class="form-label">
               <i class="bx bx-image-add me-1"></i>Fotos DURANTE
             </label>
-            <input type="file" class="form-control shadow-sm" name="evidencias_durante" 
-                   id="evidencias_durante" multiple accept="image/*" />
+            <button type="button" class="btn btn-outline-warning w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasDurante">
+              <i class="bx bx-folder-open"></i> Seleccionar Evidencias DURANTE
+            </button>
+            <input type="hidden" name="evidencias_durante" id="evidencias_durante_ids" />
+            <div id="preview_durante" class="evidencias-seleccionadas-preview"></div>
             <small class="form-text text-muted">
-              Máximo 5 imágenes (JPG, PNG, GIF, WEBP)
+              <span id="count_durante">0</span> evidencias seleccionadas (máx. 5)
             </small>
           </div>
 
+          <!-- FOTOS DESPUÉS -->
           <div class="col-md-4">
-            <label for="evidencias_despues" class="form-label">
+            <label class="form-label">
               <i class="bx bx-image-add me-1"></i>Fotos DESPUÉS
             </label>
-            <input type="file" class="form-control shadow-sm" name="evidencias_despues" 
-                   id="evidencias_despues" multiple accept="image/*" />
+            <button type="button" class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasDespues">
+              <i class="bx bx-folder-open"></i> Seleccionar Evidencias DESPUÉS
+            </button>
+            <input type="hidden" name="evidencias_despues" id="evidencias_despues_ids" />
+            <div id="preview_despues" class="evidencias-seleccionadas-preview"></div>
             <small class="form-text text-muted">
-              Máximo 5 imágenes (JPG, PNG, GIF, WEBP)
+              <span id="count_despues">0</span> evidencias seleccionadas (máx. 5)
             </small>
           </div>
         </div>
@@ -382,31 +477,370 @@
   </div>
 </div>
 
+<!-- ========== MODAL: SELECCIONAR INSPECTOR ========== -->
+<div class="modal fade" id="modalSeleccionarInspector" tabindex="-1" aria-labelledby="modalSeleccionarInspectorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalSeleccionarInspectorLabel">
+          <i class="bx bx-user-check me-2"></i>Seleccionar Inspector Responsable
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row" id="listaInspectores">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="text-muted mt-2">Cargando inspectores...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: EVIDENCIAS ANTES ========== -->
+<div class="modal fade" id="modalEvidenciasAntes" tabindex="-1" aria-labelledby="modalEvidenciasAntesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="modalEvidenciasAntesLabel">
+          <i class="bx bx-image me-2"></i>Seleccionar Evidencias ANTES (Máx. 5)
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row" id="listaEvidenciasAntes">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-success" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="text-muted mt-2">Cargando evidencias...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" onclick="confirmarSeleccionEvidencias('antes')" data-bs-dismiss="modal">
+          <i class="bx bx-check"></i> Confirmar Selección
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: EVIDENCIAS DURANTE ========== -->
+<div class="modal fade" id="modalEvidenciasDurante" tabindex="-1" aria-labelledby="modalEvidenciasDuranteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title" id="modalEvidenciasDuranteLabel">
+          <i class="bx bx-image me-2"></i>Seleccionar Evidencias DURANTE (Máx. 5)
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row" id="listaEvidenciasDurante">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-warning" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="text-muted mt-2">Cargando evidencias...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-warning" onclick="confirmarSeleccionEvidencias('durante')" data-bs-dismiss="modal">
+          <i class="bx bx-check"></i> Confirmar Selección
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: EVIDENCIAS DESPUÉS ========== -->
+<div class="modal fade" id="modalEvidenciasDespues" tabindex="-1" aria-labelledby="modalEvidenciasDespuesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title" id="modalEvidenciasDespuesLabel">
+          <i class="bx bx-image me-2"></i>Seleccionar Evidencias DESPUÉS (Máx. 5)
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row" id="listaEvidenciasDespues">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-info" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="text-muted mt-2">Cargando evidencias...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-info" onclick="confirmarSeleccionEvidencias('despues')" data-bs-dismiss="modal">
+          <i class="bx bx-check"></i> Confirmar Selección
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %} 
 
 {% block customJS %}
-<!-- JavaScript del módulo (LOCAL) -->
 <script src="{{ url_for('static', filename='js/informe_avance.js') }}"></script>
 
 <script>
-  // Inicializar validación de límite de imágenes al cargar la página
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('Módulo Informe de Avance cargado correctamente');
+/**
+ * Script para Selección de Evidencias e Inspector
+ * Autor: David - Equipo INVILARA
+ * Aplicando principios de modularidad según Prof. Escalona
+ */
+
+// Variables globales para almacenar selecciones
+let evidenciasSeleccionadas = {
+  antes: [],
+  durante: [],
+  despues: []
+};
+
+// ============================================
+// CARGAR INSPECTORES AL ABRIR EL MODAL
+// ============================================
+document.getElementById('modalSeleccionarInspector').addEventListener('show.bs.modal', function() {
+  cargarInspectores();
+});
+
+async function cargarInspectores() {
+  try {
+    const response = await fetch('/api/obtener-inspectores');
+    const inspectores = await response.json();
     
-    // Validar límite de imágenes
-    const inputAntes = document.getElementById('evidencias_antes');
-    const inputDurante = document.getElementById('evidencias_durante');
-    const inputDespues = document.getElementById('evidencias_despues');
+    const container = document.getElementById('listaInspectores');
+    container.innerHTML = '';
     
-    if (inputAntes && typeof validarLimiteImagenes === 'function') {
-      validarLimiteImagenes(inputAntes, 5);
+    if (inspectores.length === 0) {
+      container.innerHTML = `
+        <div class="col-12 text-center py-5">
+          <i class="bx bx-user-x bx-lg text-muted mb-3"></i>
+          <p class="text-muted">No hay inspectores registrados en el sistema.</p>
+        </div>
+      `;
+      return;
     }
-    if (inputDurante && typeof validarLimiteImagenes === 'function') {
-      validarLimiteImagenes(inputDurante, 5);
-    }
-    if (inputDespues && typeof validarLimiteImagenes === 'function') {
-      validarLimiteImagenes(inputDespues, 5);
-    }
+    
+    inspectores.forEach(inspector => {
+      const card = `
+        <div class="col-md-6 mb-3">
+          <div class="card inspector-card h-100" onclick="seleccionarInspector(${inspector.id_empleados}, '${inspector.nombre_empleado}', '${inspector.gerencia_asignada || 'Sin asignar'}')">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="avatar avatar-lg bg-label-primary rounded-circle me-3">
+                  <i class="bx bx-user fs-3"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="mb-1">${inspector.nombre_empleado}</h6>
+                  <p class="mb-0 text-muted small">
+                    <i class="bx bx-briefcase me-1"></i>${inspector.cargo}
+                  </p>
+                  <p class="mb-0 text-muted small">
+                    <i class="bx bx-buildings me-1"></i>${inspector.gerencia_asignada || 'Sin asignar'}
+                  </p>
+                </div>
+                <div>
+                  <i class="bx bx-check-circle text-success fs-4 d-none check-icon"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      container.innerHTML += card;
+    });
+    
+  } catch (error) {
+    console.error('Error al cargar inspectores:', error);
+    document.getElementById('listaInspectores').innerHTML = `
+      <div class="col-12 text-center py-5">
+        <i class="bx bx-error bx-lg text-danger mb-3"></i>
+        <p class="text-danger">Error al cargar los inspectores. Por favor, intente nuevamente.</p>
+      </div>
+    `;
+  }
+}
+
+function seleccionarInspector(id, nombre, gerencia) {
+  document.getElementById('gerente_responsable_id').value = id;
+  document.getElementById('inspector_nombre_display').value = `${nombre} - ${gerencia}`;
+  
+  document.querySelectorAll('.inspector-card').forEach(card => {
+    card.classList.remove('selected');
+    card.querySelector('.check-icon').classList.add('d-none');
   });
+  
+  event.currentTarget.classList.add('selected');
+  event.currentTarget.querySelector('.check-icon').classList.remove('d-none');
+  
+  const modal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionarInspector'));
+  modal.hide();
+}
+
+// ============================================
+// CARGAR EVIDENCIAS POR ETAPA
+// ============================================
+document.getElementById('modalEvidenciasAntes').addEventListener('show.bs.modal', function() {
+  cargarEvidencias('antes');
+});
+
+document.getElementById('modalEvidenciasDurante').addEventListener('show.bs.modal', function() {
+  cargarEvidencias('durante');
+});
+
+document.getElementById('modalEvidenciasDespues').addEventListener('show.bs.modal', function() {
+  cargarEvidencias('despues');
+});
+
+async function cargarEvidencias(etapa) {
+  try {
+    const response = await fetch(`/api/obtener-evidencias?etapa=${etapa}`);
+    const evidencias = await response.json();
+    
+    const containerId = `listaEvidencias${etapa.charAt(0).toUpperCase() + etapa.slice(1)}`;
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    
+    if (evidencias.length === 0) {
+      container.innerHTML = `
+        <div class="col-12 text-center py-5">
+          <i class="bx bx-image-alt bx-lg text-muted mb-3"></i>
+          <p class="text-muted">No hay evidencias registradas para la etapa "${etapa.toUpperCase()}".</p>
+          <small class="text-muted">Registre evidencias en el módulo correspondiente.</small>
+        </div>
+      `;
+      return;
+    }
+    
+    evidencias.forEach(evidencia => {
+      const isSelected = evidenciasSeleccionadas[etapa].includes(evidencia.id_evidencia);
+      const card = `
+        <div class="col-md-3 mb-3">
+          <div class="card modal-evidencia-item ${isSelected ? 'selected' : ''}" 
+               data-id="${evidencia.id_evidencia}"
+               onclick="toggleEvidencia('${etapa}', ${evidencia.id_evidencia}, '${evidencia.url_archivos}')">
+            <div class="position-relative">
+              <span class="badge badge-etapa bg-${etapa === 'antes' ? 'success' : etapa === 'durante' ? 'warning' : 'info'}">
+                ${etapa.toUpperCase()}
+              </span>
+              <img src="/${evidencia.url_archivos}" alt="${evidencia.fotos}" class="card-img-top" />
+            </div>
+            <div class="card-body p-2">
+              <p class="mb-1 small text-truncate" title="${evidencia.fotos}">
+                <i class="bx bx-file me-1"></i>${evidencia.fotos}
+              </p>
+              <small class="text-muted">
+                <i class="bx bx-calendar me-1"></i>${new Date(evidencia.fecha_registro).toLocaleDateString('es-VE')}
+              </small>
+              <div class="text-center mt-2">
+                <i class="bx bx-check-circle text-success fs-4 ${isSelected ? '' : 'd-none'} check-icon"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      container.innerHTML += card;
+    });
+    
+  } catch (error) {
+    console.error(`Error al cargar evidencias ${etapa}:`, error);
+    const containerId = `listaEvidencias${etapa.charAt(0).toUpperCase() + etapa.slice(1)}`;
+    document.getElementById(containerId).innerHTML = `
+      <div class="col-12 text-center py-5">
+        <i class="bx bx-error bx-lg text-danger mb-3"></i>
+        <p class="text-danger">Error al cargar las evidencias. Por favor, intente nuevamente.</p>
+      </div>
+    `;
+  }
+}
+
+function toggleEvidencia(etapa, id, url) {
+  const index = evidenciasSeleccionadas[etapa].indexOf(id);
+  const card = event.currentTarget;
+  
+  if (index > -1) {
+    evidenciasSeleccionadas[etapa].splice(index, 1);
+    card.classList.remove('selected');
+    card.querySelector('.check-icon').classList.add('d-none');
+  } else {
+    if (evidenciasSeleccionadas[etapa].length >= 5) {
+      alert(`Solo puede seleccionar un máximo de 5 evidencias para la etapa "${etapa.toUpperCase()}".`);
+      return;
+    }
+    
+    evidenciasSeleccionadas[etapa].push(id);
+    card.classList.add('selected');
+    card.querySelector('.check-icon').classList.remove('d-none');
+  }
+  
+  document.getElementById(`count_${etapa}`).textContent = evidenciasSeleccionadas[etapa].length;
+}
+
+function confirmarSeleccionEvidencias(etapa) {
+  document.getElementById(`evidencias_${etapa}_ids`).value = evidenciasSeleccionadas[etapa].join(',');
+  actualizarPreview(etapa);
+}
+
+async function actualizarPreview(etapa) {
+  const previewContainer = document.getElementById(`preview_${etapa}`);
+  previewContainer.innerHTML = '';
+  
+  if (evidenciasSeleccionadas[etapa].length === 0) {
+    return;
+  }
+  
+  try {
+    const response = await fetch(`/api/obtener-evidencias?etapa=${etapa}`);
+    const todasEvidencias = await response.json();
+    
+    evidenciasSeleccionadas[etapa].forEach(id => {
+      const evidencia = todasEvidencias.find(e => e.id_evidencia === id);
+      if (evidencia) {
+        const preview = `
+          <div class="evidencia-preview-item">
+            <img src="/${evidencia.url_archivos}" alt="${evidencia.fotos}" title="${evidencia.fotos}" />
+            <div class="remove-btn" onclick="removerEvidencia('${etapa}', ${id})">
+              <i class="bx bx-x"></i>
+            </div>
+          </div>
+        `;
+        previewContainer.innerHTML += preview;
+      }
+    });
+  } catch (error) {
+    console.error('Error al actualizar preview:', error);
+  }
+}
+
+function removerEvidencia(etapa, id) {
+  const index = evidenciasSeleccionadas[etapa].indexOf(id);
+  if (index > -1) {
+    evidenciasSeleccionadas[etapa].splice(index, 1);
+    document.getElementById(`evidencias_${etapa}_ids`).value = evidenciasSeleccionadas[etapa].join(',');
+    document.getElementById(`count_${etapa}`).textContent = evidenciasSeleccionadas[etapa].length;
+    actualizarPreview(etapa);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('✅ Módulo Informe de Avance cargado correctamente');
+});
 </script>
 {% endblock %}

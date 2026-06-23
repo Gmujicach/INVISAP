@@ -58,6 +58,7 @@
                 </button>
               </div>
 
+              <!-- ✅ Indicador de fortaleza (añadido) -->
               <div class="password-strength-widget d-none mt-2">
                 <ul class="list-unstyled mb-2">
                   <li class="rule-item transition-all" data-rule="length">
@@ -76,10 +77,6 @@
                 <div class="progress" style="height: 6px; background-color: rgba(67, 89, 113, 0.1);">
                   <div class="strength-meter progress-bar transition-all" role="progressbar" style="width: 0%;"></div>
                 </div>
-              </div>
-
-              <div id="passwordHelp" class="form-text text-muted d-none mt-2">
-                <small><i class="bi bi-info-circle me-1"></i> Validación de seguridad activa.</small>
               </div>
             </div>
 
@@ -101,4 +98,7 @@
     </div>
   </div>
 </div>
+
+<!-- Script de JS-->
+<script src="{{ url_for('static', filename='assets/js/login.js') }}"></script>
 {% endblock %}

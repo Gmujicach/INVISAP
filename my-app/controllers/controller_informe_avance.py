@@ -1,7 +1,5 @@
 """
 Controller para Informe de Avance de Obra
-Implementa validaciones, lógica de negocio y comunicación con el modelo
-Cumple con especificaciones de los profesores: Escalona, Cadenas, Jhoanly
 """
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from models.model_informe_avance import InformeAvanceModel
@@ -10,8 +8,95 @@ from services.bitacora_service import BitacoraService
 from werkzeug.utils import secure_filename
 import os
 
+from conexion.conexionBD import connectionBD_invilara
+
 # Crear Blueprint para el módulo
 informe_avance_bp = Blueprint('informe_avance_bp', __name__)
+
+# Agregar al final del archivo controller_informe_avance.py, antes de los reportes
+
+# ==================== API PARA MODALES (EVIDENCIAS E INSPECTORES) ====================
+
+@informe_avance_bp.route('/api/obtener-evidencias', methods=['GET'])
+def api_obtener_evidencias():
+    """
+    API para obtener evidencias filtradas por etapa
+    Usado por los modales de selección
+    """
+    if 'conectado' not in session:
+        return jsonify([]), 401
+    
+    try:
+        etapa = request.args.get('etapa', '').lower()
+        
+        if etapa not in ['antes', 'durante', 'despues']:
+            return jsonify({
+                'status': 'error',
+                'message': 'Etapa inválida'
+            }), 400
+        
+        conn = connectionBD_invilara()
+        if not conn:
+            return jsonify([]), 500
+        
+        cur = conn.cursor(dictionary=True)
+        
+        # Consulta parametrizada para obtener evidencias por etapa
+        sql = """
+            SELECT id_evidencia, fotos, url_archivos, fecha_registro, etapa
+            FROM evidencia
+            WHERE etapa = %s AND estado = 1
+            ORDER BY fecha_registro DESC
+        """
+        
+        cur.execute(sql, (etapa,))
+        evidencias = cur.fetchall()
+        
+        cur.close()
+        conn.close()
+        
+        return jsonify(evidencias)
+        
+    except Exception as e:
+        print(f"Error api_obtener_evidencias: {e}")
+        return jsonify([]), 500
+
+
+@informe_avance_bp.route('/api/obtener-inspectores', methods=['GET'])
+def api_obtener_inspectores():
+    """
+    API para obtener solo empleados con cargo 'Inspector'
+    Usado por el modal de selección de inspector
+    """
+    if 'conectado' not in session:
+        return jsonify([]), 401
+    
+    try:
+        conn = connectionBD_invilara()
+        if not conn:
+            return jsonify([]), 500
+        
+        cur = conn.cursor(dictionary=True)
+        
+        # Solo inspectores activos (Prof. Jhoanly)
+        sql = """
+            SELECT id_empleados, nombre_empleado, cargo, gerencia_asignada
+            FROM empleados
+            WHERE cargo = 'Inspector' AND estado = 1
+            ORDER BY nombre_empleado ASC
+        """
+        
+        cur.execute(sql)
+        inspectores = cur.fetchall()
+        
+        cur.close()
+        conn.close()
+        
+        return jsonify(inspectores)
+        
+    except Exception as e:
+        print(f"Error api_obtener_inspectores: {e}")
+        return jsonify([]), 500
 
 # Configuración de carga de archivos
 UPLOAD_FOLDER = 'static/uploads/evidencias'
