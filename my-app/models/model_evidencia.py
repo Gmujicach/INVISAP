@@ -15,7 +15,7 @@ class EvidenciaModel:
     """Repositorio de evidencias fotográficas con compresión y validación."""
 
     # Expresiones regulares para validación (Principio de Responsabilidad Única)
-    _RE_NOMBRE_ARCHIVO = re.compile(r'^[\w\-. ]{3,100}\.(jpg|jpeg|png|gif|webp)$', re.IGNORECASE)
+    _RE_NOMBRE_ARCHIVO = re.compile(r'^[\w\-. áéíóúÁÉÍÓÚñÑ()]{1,100}\.(jpg|jpeg|png|gif|webp)$', re.IGNORECASE)
     _RE_URL = re.compile(r'^[\w\-/. ]{10,200}$')
     _ETAPAS_VALIDAS = {'antes', 'durante', 'despues'}
     
