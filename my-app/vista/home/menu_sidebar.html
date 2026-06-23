@@ -44,7 +44,7 @@
       <li class="menu-item {% if request.path == '/contratacion' %} active {% endif %}">
         <a href="{{ url_for('contrataciones_bp.gestionar_contrataciones') }}" class="menu-link">
         <i class="menu-icon bi bi-person-bounding-box"></i>
-        <div data-i18n="Basic">Gestionar Contratación</div>
+        <div data-i18n="Basic">Contratación</div>
        </a>
       </li>
   
@@ -52,7 +52,7 @@
         class="menu-item {% if request.path == '/gestionar-gravedad' %} active {% endif %}">
         <a href="{{ url_for('home_bp.viewFormGravedad') }}" class="menu-link">
           <i class="menu-icon bi bi-person-lines-fill"></i>
-          <div data-i18n="Tables">Gestionar Gravedad</div>
+          <div data-i18n="Tables">Gravedad Obra</div>
         </a>
       </li>
       <li
@@ -66,13 +66,13 @@
         class="menu-item {% if request.path == '/gestionar-prioridad' %} active {% endif %}">
         <a href="{{ url_for('home_bp.viewFormPrioridad') }}" class="menu-link">
           <i class="menu-icon bi bi-person-lines-fill"></i>
-          <div data-i18n="Tables">Gestionar Prioridad</div>
+          <div data-i18n="Tables">Prioridad</div>
         </a>
       </li>
       <li class="menu-item {% if request.path in ['/registrar-empleado', '/empleados'] %} active open {% endif %}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon bi bi-person-badge-fill"></i>
-          <div data-i18n="Employees">Gestionar Empleados</div>
+          <div data-i18n="Employees">Empleados</div>
         </a>
         <ul class="menu-sub">
           <li class="menu-item {% if request.path == '/registrar-empleado' %} active {% endif %}">
@@ -91,7 +91,7 @@
       <li class="menu-item">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon bi bi-bar-chart-line-fill"></i>
-          <div data-i18n="Gerencias">Gestionar Empresas</div>
+          <div data-i18n="Gerencias">Empresas</div>
         </a>
         <ul class="menu-sub">
           <li
@@ -120,7 +120,7 @@
       <li class="menu-item {% if 'evidencias' in request.path %} active open {% endif %}">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
           <i class="menu-icon bi bi-images"></i>
-          <div data-i18n="Evidences">Gestionar Evidencias</div>
+          <div data-i18n="Evidences">Evidencias</div>
         </a>
         <ul class="menu-sub">
           <li class="menu-item {% if request.path == '/evidencias/registrar' %} active {% endif %}">
@@ -146,7 +146,7 @@
         class="menu-item {% if request.path == '/registrar-obras' %} active {% endif %}">
         <a href="{{ url_for('home_bp.viewFormGestionarObras') }}" class="menu-link">
           <i class="menu-icon bi bi-person-bounding-box"></i>
-          <div data-i18n="Basic">Gestionar Obras</div>
+          <div data-i18n="Basic">Obras</div>
         </a>
       </li>
       <li
@@ -225,12 +225,6 @@
             </a>
           </li>
         </ul>
-      </li>
-      <li class="menu-item">
-        <a href="{{ url_for('login_bp.logout') }}" class="menu-link">
-          <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
-          <div data-i18n="Tables">Salir</div>
-        </a>
       </li>
     </ul>
   </aside>

@@ -4,6 +4,7 @@ from mysql.connector.errors import Error
 
 # Importando conexión a BD y controladores
 from controllers.funciones_home import *
+from controllers.controller_informe_avance import informe_avance_bp
 from models.model_contratacion import ContratacionModel
 from controllers.controller_contratacion import contrataciones_bp
 from controllers.UserController import user_bp
@@ -21,6 +22,10 @@ from controllers.controller_reportesPDF import reporte_pdf_bp
 from controllers.funciones_proyecto import *
 from controllers.funciones_maquinaria import *
 from models.model_empresas import EmpresaModel
+
+## Informe de Avance de Obra
+app.register_blueprint(informe_avance_bp)
+informe_avance_bp = Blueprint('informe_avance_bp', __name__)
 
 ## Empresas
 from controllers.controller_empresa import empresa_bp
