@@ -55,7 +55,7 @@ def procesar_registro_empresa(formulario):
         return False, 'Error: El prefijo o formato del teléfono es inválido.', 'error'
 
     # E. Validar Domicilio Fiscal (Letras, números, espacios, guiones, #, . y comas)
-    if not re.match(r'^[a-zA-Z0-9\s#\-\.,ñÑáéíóúÁÉÍÓÚ]{3,78}$', domicilio_fiscal):
+    if not re.match(r'^[a-zA-Z0-9\s#\-\.,ñÑáéíóúÁÉÍÓÚ/()]{3,78}$', domicilio_fiscal):
         return False, 'Error: El domicilio fiscal contiene caracteres no permitidos o longitud incorrecta.', 'error'
 
     # 3. Si todas las validaciones pasan, empaquetamos los datos limpios

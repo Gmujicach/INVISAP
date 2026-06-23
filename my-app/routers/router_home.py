@@ -2,6 +2,7 @@ from app import app
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from mysql.connector.errors import Error
 
+
 # Importando conexión a BD y controladores
 from controllers.funciones_home import *
 from models.model_contratacion import ContratacionModel
@@ -502,24 +503,15 @@ def viewFormEmpresa():
 def procesar_registro():
     from controllers.controller_empresa import procesar_registro_empresa
     
+    # Tu controlador ya hace todo el trabajo y devuelve (exito, mensaje, categoria)
     exito, mensaje, categoria = procesar_registro_empresa(request.form)
-    flash(mensaje, categoria)
     
-    if exito:
-        # Si todo salió bien, nos aseguramos de limpiar la sesión por si acaso
-        session.pop('form_empresa', None)
-        return redirect(url_for('lista_empresas'))
-    else:
-        # 1. Convertimos los datos enviados en un diccionario normal de Python
-        datos_viejos = request.form.to_dict()
-        
-        # 2. OPCIÓN: Borrar el RIF y mantener el resto (como solicitaste)
-        # Si prefieres mantener el RIF también, simplemente comenta o borra la siguiente línea:
-        datos_viejos['rif'] = '' 
-        
-        # 3. Guardamos el resto de los datos en la sesión y redirigimos
-        session['form_empresa'] = datos_viejos
-        return redirect(url_for('home_bp.viewFormEmpresa'))
+    # En lugar de usar flash() y redirect(), le respondemos directamente al JavaScript
+    return jsonify({
+        'exito': exito,
+        'mensaje': mensaje,
+        'categoria': categoria
+    })
 
 @app.route('/lista-empresas', methods=['GET'])
 def lista_empresas():
@@ -548,23 +540,24 @@ def viewEditarEmpresa(rif):
 @app.route('/update-empresa', methods=['POST'])
 def update_empresa():
     from controllers.controller_empresa import update_empresa
+    
     if update_empresa(request.form):
-        flash('Actualizado correctamente', 'success')
+        # Respondemos con JSON en lugar de flash/redirect
+        return jsonify({'exito': True, 'mensaje': 'Empresa actualizada correctamente.'})
     else:
-        flash('Error al actualizar', 'error')
-    return redirect(url_for('lista_empresas'))
+        return jsonify({'exito': False, 'mensaje': 'Error al actualizar la empresa.', 'categoria': 'error'})
 
 @app.route('/eliminar-empresa/<string:rif>', methods=['GET'])
 def eliminar_empresa(rif):
     if 'conectado' in session:
         from controllers.controller_empresa import eliminar_empresa_por_rif
+        
         if eliminar_empresa_por_rif(rif):
-            flash('Empresa eliminada correctamente.', 'success')
+            return jsonify({'exito': True, 'mensaje': 'Empresa eliminada correctamente.'})
         else:
-            flash('Error al intentar eliminar la empresa.', 'error')
-        return redirect(url_for('lista_empresas'))
+            return jsonify({'exito': False, 'mensaje': 'Error al intentar eliminar la empresa.', 'categoria': 'error'})
     else:
-        return redirect(url_for('login_bp.inicio'))
+        return jsonify({'exito': False, 'mensaje': 'Debes iniciar sesión.', 'categoria': 'error'})
 
 @home_bp.route('/bitacora', methods=['GET'])
 def viewBitacora():

@@ -67,8 +67,8 @@ class ContratacionModel:
             
         try:
             cursor = conexion.cursor(dictionary=True)
-            # Consultamos el RIF y el Nombre exacto de la tabla empresa
-            sql = "SELECT rif, nombre_empresa FROM empresa"
+            # AQUI ESTÁ EL CAMBIO: Agregamos el WHERE estatus = 1
+            sql = "SELECT rif, nombre_empresa FROM empresa WHERE estado = 1"
             cursor.execute(sql)
             return cursor.fetchall()
         except Exception as e:

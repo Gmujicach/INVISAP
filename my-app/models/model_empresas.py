@@ -6,10 +6,11 @@ class EmpresaModel:
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor(dictionary=True)
-            # Seleccionamos los campos correspondientes a la tabla empresas
+            # FILTRO: Solo seleccionamos las empresas activas (estado = 1)
             sql = """
                 SELECT rif, nombre_empresa, telefono, domicilio_fiscal 
                 FROM empresa
+                WHERE estado = 1
                 ORDER BY nombre_empresa ASC
             """
             cursor.execute(sql)
@@ -26,13 +27,32 @@ class EmpresaModel:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor(dictionary=True)
             
-            # --- VALIDACIÓN DE NEGOCIO: Evitar duplicados ---
-            cursor.execute("SELECT rif FROM empresa WHERE rif = %s", (datos['rif'],))
-            if cursor.fetchone():
-                return "DUPLICADO" # Avisamos al controlador que el RIF ya existe
+            # --- VALIDACIÓN DE NEGOCIO: Verificar si el RIF ya existe y su estado ---
+            cursor.execute("SELECT rif, estado FROM empresa WHERE rif = %s", (datos['rif'],))
+            empresa_existente = cursor.fetchone()
             
-            # Si no existe, procedemos a insertar
-            sql = "INSERT INTO empresa (rif, nombre_empresa, telefono, domicilio_fiscal) VALUES (%s, %s, %s, %s)"
+            if empresa_existente:
+                if empresa_existente['estado'] == 1:
+                    return "DUPLICADO" # El RIF ya está activo en el sistema
+                else:
+                    # Si existía pero estaba dada de baja (estado 0), la reactivamos con los nuevos datos
+                    sql_reactivar = """
+                        UPDATE empresa 
+                        SET nombre_empresa = %s, telefono = %s, domicilio_fiscal = %s, estado = 1 
+                        WHERE rif = %s
+                    """
+                    valores = (
+                        datos['nombre_empresa'], 
+                        datos['telefono'], 
+                        datos['domicilio_fiscal'],
+                        datos['rif']
+                    )
+                    cursor.execute(sql_reactivar, valores)
+                    conexion.commit()
+                    return True
+            
+            # Si no existe en absoluto, procedemos a realizar un INSERT común
+            sql = "INSERT INTO empresa (rif, nombre_empresa, telefono, domicilio_fiscal, estado) VALUES (%s, %s, %s, %s, 1)"
             valores = (
                 datos['rif'], 
                 datos['nombre_empresa'], 
@@ -46,7 +66,6 @@ class EmpresaModel:
         except Exception as e:
             print(f"Error fatal en el modelo al insertar empresa: {e}")
             return False
-            
         finally:
             if conexion: conexion.close()
 
@@ -55,17 +74,17 @@ class EmpresaModel:
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
-            # Se actualizan los datos buscando por el RIF
+            # Actualizamos los datos asegurándonos de que la empresa siga activa
             sql = """UPDATE empresa 
                      SET nombre_empresa = %s, 
                          telefono = %s, 
                          domicilio_fiscal = %s 
-                     WHERE rif = %s"""
+                     WHERE rif = %s AND estado = 1"""
             cursor.execute(sql, (
                 datos['nombre_empresa'], 
                 datos['telefono'], 
                 datos['domicilio_fiscal'], 
-                datos['rif']  # El RIF va de último para el WHERE
+                datos['rif']
             ))
             conexion.commit()
             return True
@@ -81,19 +100,14 @@ class EmpresaModel:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
             
-            # PASO 1: Eliminar las relaciones de esta empresa en los proyectos primero
-            # Esto evita el error de bloqueo de MySQL
-            #sql_proyectos = "DELETE FROM proyecto WHERE empresa_rif = %s"
-            #cursor.execute(sql_proyectos, (rif,))
-            
-            # PASO 2: Ahora sí, eliminar la empresa tranquilamente
-            sql_empresa = "DELETE FROM empresa WHERE rif = %s"
+            # BORRADO LÓGICO: Cambiamos el estado a 0. No rompe restricciones de FK.
+            sql_empresa = "UPDATE empresa SET estado = 0 WHERE rif = %s"
             cursor.execute(sql_empresa, (rif,))
             
             conexion.commit()
-            return True
+            return cursor.rowcount > 0 # Retorna True si se desactivó la empresa correctamente
         except Exception as e:
-            print(f"Error al eliminar empresa: {e}")
+            print(f"Error al eliminar empresa de forma lógica: {e}")
             return False
         finally:
             if conexion: conexion.close()
@@ -102,8 +116,6 @@ class EmpresaModel:
         conexion = connectionBD_invilara()
         try:
             cursor = conexion.cursor(dictionary=True)
-            # Unimos las tablas para que el usuario vea: "Proyecto - Maquinaria"
-            # Se actualizó el nombre de la tabla a 'proyecto' y se usa la tabla intermedia proyecto_has_maquinaria
             sql = """
             SELECT 
                 p.codigo_proyecto, 
