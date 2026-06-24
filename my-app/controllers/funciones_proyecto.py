@@ -19,15 +19,11 @@ def listar_proyectos_controller(session_flask):
     proyectos = modelo.obtener_proyectos()
     contadores = modelo.obtener_contadores_proyectos()
     
-    # 🚨 VERIFICACIÓN DE LA BANDERA DE SESIÓN
-    # Si la marca existe en la sesión, significa que el usuario viene de actualizar 
-    # un proyecto y Flask lo redireccionó aquí. ¡Omitimos el VER!
     if session_flask.get('ignorar_proximo_ver'):
-        # Borramos la marca inmediatamente para que la próxima vez que entre normalmente sí registre el VER
+        
         session_flask.pop('ignorar_proximo_ver', None)
         return proyectos, contadores
 
-    # Si entra de manera normal (desde el menú, etc.), registramos el VER sin problemas
     BitacoraService.registrar_accion(
         session_flask, 'Proyectos', 'VER',
         'Accedió al módulo de Gestión de Proyectos'
@@ -44,11 +40,10 @@ def actualizar_proyecto_controller(codigo_proyecto_actual, datos, session_flask)
     modelo = ProyectoModel()
     resultado = modelo.actualizar_proyecto(codigo_proyecto_actual, datos)
     
-    # Si el modelo retorna True (operación exitosa en BD)
     if resultado:
         codigo_nuevo = datos.get('Codigo_p', codigo_proyecto_actual)
         BitacoraService.registrar_accion(
-            session_flask, 'Proyectos', 'MODIFICAR',
+            session_flask, 'Proyectos', 'EDITAR',
             f'Modificó el proyecto. Código anterior: {codigo_proyecto_actual} -> Nuevo: {codigo_nuevo}'
         )
         return True
