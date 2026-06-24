@@ -7,22 +7,27 @@
     cursor: pointer;
     transition: all 0.3s ease;
     background-color: #f8f9fa;
+    position: relative;
 }
+
 .file-drop-zone.dragover {
     background-color: #e9f7eb;
     border-color: #067d1a;
 }
+
 .preview-container {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
     margin-top: 20px;
 }
+
 .preview-card-container {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
+
 .preview-card {
     width: 120px;
     height: 120px;
@@ -31,8 +36,44 @@
     position: relative;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
+
 .preview-card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* Placeholders amarillos visibles (Ley de Hick) */
+.custom-placeholder::placeholder {
+    color: #cca025 !important;
+    opacity: 0.9 !important;
+    font-weight: 500 !important;
+    font-style: italic;
+    font-size: 0.88rem;
+}
+
+.custom-placeholder:-ms-input-placeholder {
+    color: #cca025 !important;
+    font-weight: 500 !important;
+    font-style: italic;
+}
+
+.custom-placeholder::-ms-input-placeholder {
+    color: #cca025 !important;
+    font-weight: 500 !important;
+    font-style: italic;
+}
+
+/* Botones y transiciones */
+.btn-icon-only {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.transition-all {
+    transition: all 0.3s ease-in-out !important;
 }

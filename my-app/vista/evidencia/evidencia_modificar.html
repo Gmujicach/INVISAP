@@ -60,7 +60,7 @@
 
 {% block customJS %}
 <script>
-    // Inyectamos los datos de la evidencia existente para que JS los use
+    // Inyectamos los datos de la evidencia existente
     window.evidenciaData = JSON.parse('{{ evidencia | tojson | safe }}');
 </script>
 <!-- SweetAlert2 -->
