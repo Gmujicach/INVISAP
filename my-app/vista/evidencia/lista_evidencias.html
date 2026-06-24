@@ -21,8 +21,9 @@
                 <thead class="table-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Referencia</th>
+                        <th>Descripción</th>
                         <th>Imágenes</th>
+                        <th>Etapas</th>
                         <th>Fecha de Registro</th>
                         <th class="text-center">Acciones</th>
                     </tr>
@@ -31,13 +32,17 @@
                     {% if evidencias %}
                         {% for evidencia in evidencias %}
                         <tr>
-                            <td><span class="fw-bold">{{ evidencia.id_informe or evidencia.id_evidencia }}</span></td>
+                            <td><span class="fw-bold">{{ evidencia.id_evidencia }}</span></td>
                             <td>{{ evidencia.fotos }}</td>
                             <td>
                                 {% set urls = evidencia.url_archivos.split(',') if evidencia.url_archivos else [] %}
-                                <span class="badge bg-label-primary">{{ urls|length }} Imagenes</span>
+                                <span class="badge bg-label-primary">{{ urls|length }} Imágenes</span>
                             </td>
-                            <td>{{ (evidencia.fecha_registro or evidencia.fecha).strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                {% set etapas = evidencia.etapa.split(',') if evidencia.etapa else [] %}
+                                <span class="badge bg-label-secondary">{{ etapas|join(', ') }}</span>
+                            </td>
+                            <td>{{ evidencia.fecha_registro.strftime('%Y-%m-%d %H:%M') }}</td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-2">
                                     <a href="{{ url_for('evidencia_bp.show_modificar_evidencia', id_evidencia=evidencia.id_evidencia) }}" class="btn btn-warning btn-icon-only btn-sm" title="Modificar Evidencia">
@@ -52,7 +57,7 @@
                         {% endfor %}
                     {% else %}
                     <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">No hay evidencias registradas.</td>
+                        <td colspan="6" class="text-center py-5 text-muted">No hay evidencias registradas.</td>
                     </tr>
                     {% endif %}
                 </tbody>

@@ -1,7 +1,6 @@
 /**
- * evidencias.js
- * Implementa comunicación asíncrona con Fetch/Ajax, Validación en tiempo real y 
- * manejo de eventos
+ * evidencias.js - Módulo de gestión de evidencias con Fetch/Ajax
+ * Implementa drag & drop, previsualización, validación y envío asíncrono.
  */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -10,83 +9,64 @@ document.addEventListener('DOMContentLoaded', function () {
     const imagePreviewContainer = document.getElementById('imagePreview');
     const formEvidencias = document.getElementById('formEvidencias') || document.getElementById('formEvidenciasUpdate');
     const btnSubmit = document.getElementById('btnSubir') || document.getElementById('btnModificar');
-    
+
     let selectedFiles = [];
     let isEditMode = formEvidencias && formEvidencias.id === 'formEvidenciasUpdate';
 
-    // Constantes de validación
     const MIN_IMAGENES = 3;
     const MAX_IMAGENES = 5;
-    const FORMATOS_PERMITIDOS = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
 
-    // ========== INICIALIZACIÓN MODO EDICIÓN ==========
-    
+    // ========== INICIALIZACIÓN ==========
     if (isEditMode && window.evidenciaData) {
         const existingUrls = window.evidenciaData.url_archivos ? window.evidenciaData.url_archivos.split(',') : [];
         if (existingUrls.length >= MIN_IMAGENES && existingUrls.length <= MAX_IMAGENES) {
             btnSubmit.disabled = false;
-            if (dropZone) dropZone.style.borderColor = '#08b324'; // Verde
+            if (dropZone) dropZone.style.borderColor = '#08b324';
         } else {
             btnSubmit.disabled = true;
-            if (dropZone) dropZone.style.borderColor = '#dc3545'; // Rojo
+            if (dropZone) dropZone.style.borderColor = '#dc3545';
         }
     }
 
-    // ========== EVENTOS DRAG AND DROP ==========
-    
+    // ========== DRAG & DROP ==========
     if (dropZone && fileInput) {
-        // Click en zona de drop abre selector de archivos
         dropZone.addEventListener('click', () => fileInput.click());
-        
-        // Eventos de arrastre
+
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropZone.classList.add('dragover');
         });
-        
+
         dropZone.addEventListener('dragleave', () => {
             dropZone.classList.remove('dragover');
         });
-        
+
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('dragover');
             const files = e.dataTransfer.files;
             handleFiles(files);
         });
-        
-        // Evento de selección de archivos
+
         fileInput.addEventListener('change', () => {
             handleFiles(fileInput.files);
         });
     }
 
     // ========== MANEJO DE ARCHIVOS ==========
-    
     function handleFiles(files) {
-        // Convertir FileList a Array
         const filesArray = Array.from(files);
-        
-        // Validar formatos
-        const archivosInvalidos = filesArray.filter(file => !FORMATOS_PERMITIDOS.includes(file.type));
-        
-        if (archivosInvalidos.length > 0) {
-            mostrarError(`Formato no permitido. Solo se aceptan: JPG, JPEG, PNG, GIF, WEBP.`);
-            return;
-        }
-        
+        // No validamos formatos en frontend, el backend lo hará
         selectedFiles = filesArray;
         updatePreviews();
         validateFileCount();
     }
 
-    // ========== ACTUALIZACIÓN DE PREVISUALIZACIONES ==========
-    
+    // ========== PREVISUALIZACIÓN ==========
     function updatePreviews() {
-        imagePreviewContainer.innerHTML = ''; // Limpiar previsualizaciones
-        
+        imagePreviewContainer.innerHTML = '';
+
         if (selectedFiles.length === 0 && isEditMode && window.evidenciaData && window.evidenciaData.url_archivos) {
-            // Mostrar imágenes existentes en modo edición
             const existingUrls = window.evidenciaData.url_archivos.split(',');
             existingUrls.forEach(url => {
                 const previewCard = crearCardPreview(getStaticUrl(url), 'Evidencia existente', true);
@@ -94,8 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             return;
         }
-        
-        // Mostrar previsualizaciones de archivos seleccionados
+
         selectedFiles.forEach((file, index) => {
             const reader = new FileReader();
             reader.onload = function (e) {
@@ -115,8 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             `;
         }
-        
-        // CORRECCIÓN: Valores en minúsculas para coincidir con el backend
         return `
             <div class="preview-card-container">
                 <div class="preview-card">
@@ -133,42 +110,34 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getStaticUrl(relativePath) {
-        // Construye URL estática (simula url_for de Flask)
-        return `/${relativePath}`;
+        return '/' + relativePath;
     }
 
-    // ========== VALIDACIÓN DE CANTIDAD DE ARCHIVOS ==========
-    
+    // ========== VALIDACIÓN DE CANTIDAD ==========
     function validateFileCount() {
         const count = selectedFiles.length;
-        
         if (count >= MIN_IMAGENES && count <= MAX_IMAGENES) {
             btnSubmit.disabled = false;
-            if (dropZone) dropZone.style.borderColor = '#08b324'; // Verde
+            if (dropZone) dropZone.style.borderColor = '#08b324';
         } else {
             btnSubmit.disabled = true;
-            if (dropZone) dropZone.style.borderColor = '#dc3545'; // Rojo
-            
+            if (dropZone) dropZone.style.borderColor = '#dc3545';
             if (count > 0) {
                 mostrarError(`Debe seleccionar entre ${MIN_IMAGENES} y ${MAX_IMAGENES} imágenes.`);
             }
         }
     }
 
-    // ========== ENVÍO ASÍNCRONO (FETCH/AJAX) - REGISTRO ==========
-    
+    // ========== ENVÍO ASÍNCRONO (REGISTRO) ==========
     window.registrarEvidenciasFetch = async function(event) {
         event.preventDefault();
-        
         if (btnSubmit.disabled) {
             mostrarError('Complete todos los campos requeridos.');
             return;
         }
 
-        // Validar que todas las etapas estén seleccionadas
         const selectoresEtapa = document.querySelectorAll('select[name^="etapa-foto-"]');
         let etapasCompletas = true;
-        
         selectoresEtapa.forEach(select => {
             if (!select.value) {
                 etapasCompletas = false;
@@ -177,26 +146,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 select.classList.remove('is-invalid');
             }
         });
-        
         if (!etapasCompletas) {
             mostrarError('Debe seleccionar la etapa para cada imagen.');
             return;
         }
 
-        // Construir FormData
         const formData = new FormData();
-        
-        // Agregar archivos
         selectedFiles.forEach(file => {
             formData.append('fotos', file);
         });
-        
-        // Agregar etapas (IMPORTANTE: en minúsculas)
         selectoresEtapa.forEach((select, index) => {
             formData.append(`etapa-foto-${index}`, select.value.toLowerCase());
         });
 
-        // Deshabilitar botón durante el envío
         btnSubmit.disabled = true;
         btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Registrando...';
 
@@ -205,7 +167,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 method: 'POST',
                 body: formData
             });
-            
             const result = await response.json();
 
             if (result.status === 'success') {
@@ -226,42 +187,35 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // ========== ENVÍO ASÍNCRONO (FETCH/AJAX) - ACTUALIZACIÓN ==========
-    
+    // ========== ENVÍO ASÍNCRONO (ACTUALIZACIÓN) ==========
     window.actualizarEvidenciasFetch = async function(event) {
         event.preventDefault();
-        
         if (btnSubmit.disabled) {
             mostrarError('Complete todos los campos requeridos.');
             return;
         }
 
         const idEvidencia = document.getElementById('idEvidencia').value;
-        
         if (!idEvidencia) {
             mostrarError('ID de evidencia no válido.');
             return;
         }
 
-        // Validar existencia en tiempo real antes de actualizar
+        // Validar existencia en tiempo real
         const existeResponse = await fetch(`/api/evidencias/validar/${idEvidencia}`);
         const existeData = await existeResponse.json();
-        
         if (!existeData.existe) {
             mostrarError('La evidencia no existe o fue eliminada.');
             return;
         }
 
-        // Validar que se hayan seleccionado nuevas imágenes
         if (selectedFiles.length === 0) {
             mostrarError('Debe seleccionar al menos una imagen nueva.');
             return;
         }
 
-        // Validar etapas
         const selectoresEtapa = document.querySelectorAll('select[name^="etapa-foto-"]');
         let etapasCompletas = true;
-        
         selectoresEtapa.forEach(select => {
             if (!select.value) {
                 etapasCompletas = false;
@@ -270,26 +224,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 select.classList.remove('is-invalid');
             }
         });
-        
         if (!etapasCompletas) {
             mostrarError('Debe seleccionar la etapa para cada imagen.');
             return;
         }
 
-        // Construir FormData
         const formData = new FormData();
-        
-        // Agregar archivos
         selectedFiles.forEach(file => {
             formData.append('fotos', file);
         });
-        
-        // Agregar etapas (en minúsculas)
         selectoresEtapa.forEach((select, index) => {
             formData.append(`etapa-foto-${index}`, select.value.toLowerCase());
         });
 
-        // Deshabilitar botón durante el envío
         btnSubmit.disabled = true;
         btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Actualizando...';
 
@@ -298,7 +245,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 method: 'POST',
                 body: formData
             });
-            
             const result = await response.json();
 
             if (result.status === 'success') {
@@ -319,8 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // ========== BORRADO LÓGICO CON CONFIRMACIÓN (SWEETALERT2) ==========
-    
+    // ========== BORRADO LÓGICO CON SWEETALERT2 ==========
     window.eliminarEvidenciaJS = function(id_evidencia) {
         Swal.fire({
             title: '¿Estás seguro?',
@@ -339,8 +284,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    // ========== FUNCIONES DE NOTIFICACIÓN ==========
-    
+    // ========== NOTIFICACIONES ==========
     function mostrarExito(mensaje) {
         if (typeof Swal !== 'undefined') {
             Swal.fire({
