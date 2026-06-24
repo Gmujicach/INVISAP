@@ -61,7 +61,13 @@ def api_subir_evidencias():
     try:
         files = request.files.getlist('fotos')
         form_data = request.form
-        
+
+        # [DEBUG] Loguear archivos recibidos
+        print(f"[DEBUG:api_subir_evidencias] Archivos recibidos: {len(files)}")
+        for i, f in enumerate(files):
+            print(f"[DEBUG:api_subir_evidencias] Archivo {i}: nombre={f.filename!r}, content_type={f.content_type!r}")
+        print(f"[DEBUG:api_subir_evidencias] form_data keys: {list(form_data.keys())}")
+
         # Validación básica
         if not files:
             return jsonify({
@@ -71,6 +77,8 @@ def api_subir_evidencias():
         
         modelo = EvidenciaModel()
         ids_nuevos = modelo.registrar_evidencias(files, form_data)
+
+        print(f"[DEBUG:api_subir_evidencias] ids_nuevos={ids_nuevos!r}")
 
         if ids_nuevos:
             return jsonify({
@@ -86,9 +94,12 @@ def api_subir_evidencias():
 
     except ValueError as ve:
         # Errores de validación (Regex, cantidad de imágenes, etc.)
+        print(f"[DEBUG:api_subir_evidencias] ValueError: {ve}")
         return jsonify({'status': 'error', 'message': str(ve)}), 400
     except Exception as e:
-        print(f"Error en api_subir_evidencias: {e}")
+        import traceback
+        print(f"[DEBUG:api_subir_evidencias] Exception: {e}")
+        traceback.print_exc()
         return jsonify({
             'status': 'error',
             'message': 'Error interno del servidor.'

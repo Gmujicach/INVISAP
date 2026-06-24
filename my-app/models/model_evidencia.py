@@ -124,10 +124,16 @@ class EvidenciaModel:
         filename = secure_filename(file.filename)
         unique_name = f"{uuid.uuid4().hex[:12]}_{filename}"
         path = os.path.join(self.__upload_folder, unique_name)
-        
+
+        print(f"[DEBUG:__comprimir_y_guardar_imagen] filename={filename!r}, unique_name={unique_name!r}")
+        print(f"[DEBUG:__comprimir_y_guardar_imagen] path={path!r}")
+        print(f"[DEBUG:__comprimir_y_guardar_imagen] url a guardar: uploads/evidencias/{unique_name!r} (len={len('uploads/evidencias/' + unique_name)})")
+
         try:
-            # Abrir imagen con Pillow
+            # Resetear stream y abrir imagen con Pillow
+            file.stream.seek(0)
             img = Image.open(file.stream)
+            print(f"[DEBUG:__comprimir_y_guardar_imagen] img.mode={img.mode!r}, img.size={img.size!r}")
             
             # Convertir a RGB si es necesario (para PNG con transparencia)
             if img.mode in ('RGBA', 'LA', 'P'):
@@ -143,13 +149,16 @@ class EvidenciaModel:
             
             # Guardar con compresión del 80%
             img.save(path, format='JPEG', optimize=True, quality=self.CALIDAD_COMPRESION)
+            print(f"[DEBUG:__comprimir_y_guardar_imagen] Imagen guardada exitosamente en {path!r}")
             
             # Retornar URL relativa para la BD
             return f"uploads/evidencias/{unique_name}"
             
         except Exception as e:
-            print(f"Error al comprimir imagen {filename}: {e}")
-            raise ValueError(f"No se pudo procesar la imagen {filename}")
+            import traceback
+            print(f"[DEBUG:__comprimir_y_guardar_imagen] ERROR: {e}")
+            traceback.print_exc()
+            raise ValueError(f"No se pudo procesar la imagen {filename}: {e}")
     
     def __guardar_evidencias_db(self):
         """
@@ -173,6 +182,8 @@ class EvidenciaModel:
                 (fotos, url_archivos, fecha_registro, estado, etapa) 
                 VALUES (%s, %s, %s, %s, %s)
             """
+
+            print(f"[DEBUG:__guardar_evidencias_db] Iniciando inserción de {len(self.__fotos)} fotos")
             
             # Insertar cada foto con su etapa correspondiente
             for i, file in enumerate(self.__fotos):
@@ -186,24 +197,25 @@ class EvidenciaModel:
                 etapa = self.__etapas.get(i, "antes")
                 nombre_referencia = self._limpiar_texto(file.filename, 45)
                 
+                params = (nombre_referencia, url, datetime.now(), 1, etapa)
+                print(f"[DEBUG:__guardar_evidencias_db] Ejecutando INSERT foto {i}: fotos={nombre_referencia!r}, url={url!r}(len={len(url)}), etapa={etapa!r}")
+
                 # Ejecutar con parámetros (evita inyección SQL)
-                cur.execute(sql, (
-                    nombre_referencia,
-                    url,
-                    datetime.now(),
-                    1,  # Estado activo
-                    etapa
-                ))
+                cur.execute(sql, params)
                 
                 ids_insertados.append(cur.lastrowid)
+                print(f"[DEBUG:__guardar_evidencias_db] Foto {i} insertada con id={cur.lastrowid}")
             
             conn.commit()
+            print(f"[DEBUG:__guardar_evidencias_db] Commit exitoso. IDs: {ids_insertados}")
             return ids_insertados  # Retorna lista de IDs insertados
             
         except Exception as e:
             if conn:
                 conn.rollback()
-            print(f"Error al guardar evidencias en BD: {e}")
+            import traceback
+            print(f"[DEBUG:__guardar_evidencias_db] ERROR al guardar en BD: {e}")
+            traceback.print_exc()
             return None
         finally:
             if cur:
