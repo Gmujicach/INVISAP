@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 23-06-2026 a las 20:00:59
+-- Tiempo de generación: 24-06-2026 a las 19:34:35
 -- Versión del servidor: 9.4.0
 -- Versión de PHP: 8.3.30
 
@@ -274,6 +274,38 @@ CREATE TABLE `maquinaria` (
   `tipo_maquinaria` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Volcado de datos para la tabla `maquinaria`
+--
+
+INSERT INTO `maquinaria` (`id_maquinaria`, `nombre_maquinaria`, `tipo_maquinaria`) VALUES
+(1, 'Excavadora CAT 320', 'Pesada'),
+(2, 'Retroexcavadora', 'Pesada'),
+(3, 'Motoniveladora', 'Pesada'),
+(4, 'Bulldozer (Topadora)', 'Pesada'),
+(5, 'Compactador Rodillo liso', 'Pesada'),
+(6, 'Pavimentadora (Terminadora de asfalto)', 'Pesada'),
+(7, 'Fresadora de pavimento', 'Pesada'),
+(8, 'Mototraílla (Scraper)', 'Pesada'),
+(9, 'Mini cargadora (tipo Bobcat)', 'Liviana'),
+(10, 'Placa vibratoria Wacker Neuson', 'Liviana'),
+(11, 'Pisón vibratorio (Canguro)', 'Liviana'),
+(12, 'Cortadora de pavimento (Suelo/Asfalto)', 'Liviana'),
+(13, 'Generador eléctrico', 'Liviana'),
+(14, 'Barredora mecánica', 'Liviana'),
+(15, 'Motosierra', 'Herramienta'),
+(16, 'Taladro percutor / Rotomartillo', 'Herramienta'),
+(17, 'Esmeriladora', 'Herramienta'),
+(18, 'Estación total Leica TS06', 'Herramienta'),
+(19, 'Palas', 'Herramienta'),
+(20, 'Picos', 'Herramienta'),
+(21, 'rastrillos', 'Herramienta'),
+(22, 'macetas', 'Herramienta'),
+(23, 'Camión volquete (Dúmper) Mack Granite', 'Vehículo'),
+(24, 'Camión cisterna', 'Vehículo'),
+(25, 'Camión hormigonera (Mixer)', 'Vehículo'),
+(26, 'Camión plataforma', 'Vehículo');
+
 -- --------------------------------------------------------
 
 --
@@ -383,6 +415,13 @@ CREATE TABLE `proyecto` (
   `estimacion_costo` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de gestion de proyectos';
 
+--
+-- Volcado de datos para la tabla `proyecto`
+--
+
+INSERT INTO `proyecto` (`codigo_proyecto`, `fecha_planificacion`, `descripcion_tecnica`, `computos_metricos`, `estimacion_costo`) VALUES
+('FRE-001', '2026-06-24 00:00:00', 'Restauración Vial', '230 m2', '200000 dolares');
+
 -- --------------------------------------------------------
 
 --
@@ -393,6 +432,33 @@ CREATE TABLE `proyecto_has_maquinaria` (
   `proyecto_codigo_proyecto` varchar(15) NOT NULL,
   `maquinaria_id_maquinaria` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `proyecto_has_maquinaria`
+--
+
+INSERT INTO `proyecto_has_maquinaria` (`proyecto_codigo_proyecto`, `maquinaria_id_maquinaria`) VALUES
+('FRE-001', 7);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `proyecto_has_solicitudes`
+--
+
+CREATE TABLE `proyecto_has_solicitudes` (
+  `proyecto_codigo_proyecto` varchar(15) NOT NULL,
+  `solicitudes_id_solicitudes` int NOT NULL,
+  `solicitudes_persona_id_persona` int NOT NULL,
+  `solicitudes_prioridad_id_gestion_prioridad` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `proyecto_has_solicitudes`
+--
+
+INSERT INTO `proyecto_has_solicitudes` (`proyecto_codigo_proyecto`, `solicitudes_id_solicitudes`, `solicitudes_persona_id_persona`, `solicitudes_prioridad_id_gestion_prioridad`) VALUES
+('FRE-001', 7, 6, 1);
 
 -- --------------------------------------------------------
 
@@ -488,16 +554,16 @@ INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_evidencia_informe` (
-`estado` tinyint
-,`estado_informe` varchar(25)
-,`etapa` enum('antes','durante','despues')
-,`fecha_informe` datetime
-,`fecha_registro` datetime
+`id_evidencia` int
 ,`fotos` varchar(45)
-,`id_evidencia` int
-,`id_informe` int
-,`tipo_informe` varchar(30)
 ,`url_archivos` varchar(90)
+,`fecha_registro` datetime
+,`etapa` enum('antes','durante','despues')
+,`estado` tinyint
+,`id_informe` int
+,`fecha_informe` datetime
+,`tipo_informe` varchar(30)
+,`estado_informe` varchar(25)
 );
 
 --
@@ -644,6 +710,14 @@ ALTER TABLE `proyecto_has_maquinaria`
   ADD KEY `fk_proyecto_has_maquinaria_proyecto1_idx` (`proyecto_codigo_proyecto`);
 
 --
+-- Indices de la tabla `proyecto_has_solicitudes`
+--
+ALTER TABLE `proyecto_has_solicitudes`
+  ADD PRIMARY KEY (`proyecto_codigo_proyecto`,`solicitudes_id_solicitudes`,`solicitudes_persona_id_persona`,`solicitudes_prioridad_id_gestion_prioridad`),
+  ADD KEY `fk_proyecto_has_solicitudes_solicitudes1_idx` (`solicitudes_id_solicitudes`,`solicitudes_persona_id_persona`,`solicitudes_prioridad_id_gestion_prioridad`),
+  ADD KEY `fk_proyecto_has_solicitudes_proyecto1_idx` (`proyecto_codigo_proyecto`);
+
+--
 -- Indices de la tabla `publicacion`
 --
 ALTER TABLE `publicacion`
@@ -740,7 +814,7 @@ ALTER TABLE `institucion`
 -- AUTO_INCREMENT de la tabla `maquinaria`
 --
 ALTER TABLE `maquinaria`
-  MODIFY `id_maquinaria` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_maquinaria` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `obra`
@@ -873,6 +947,13 @@ ALTER TABLE `particular`
 ALTER TABLE `proyecto_has_maquinaria`
   ADD CONSTRAINT `fk_proyecto_has_maquinaria_maquinaria1` FOREIGN KEY (`maquinaria_id_maquinaria`) REFERENCES `maquinaria` (`id_maquinaria`),
   ADD CONSTRAINT `fk_proyecto_has_maquinaria_proyecto1` FOREIGN KEY (`proyecto_codigo_proyecto`) REFERENCES `proyecto` (`codigo_proyecto`);
+
+--
+-- Filtros para la tabla `proyecto_has_solicitudes`
+--
+ALTER TABLE `proyecto_has_solicitudes`
+  ADD CONSTRAINT `fk_proyecto_has_solicitudes_proyecto1` FOREIGN KEY (`proyecto_codigo_proyecto`) REFERENCES `proyecto` (`codigo_proyecto`),
+  ADD CONSTRAINT `fk_proyecto_has_solicitudes_solicitudes1` FOREIGN KEY (`solicitudes_id_solicitudes`,`solicitudes_persona_id_persona`,`solicitudes_prioridad_id_gestion_prioridad`) REFERENCES `solicitudes` (`id_solicitudes`, `persona_id_persona`, `prioridad_id_gestion_prioridad`);
 
 --
 -- Filtros para la tabla `publicacion`
