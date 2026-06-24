@@ -322,7 +322,8 @@ def viewFormPrioridad():
 def viewFormProyectos():
     if 'conectado' in session:
         # 1. Llamamos a tu controlador modificado para capturar la tupla (proyectos, contadores)
-        proyectos, contadores = listar_proyectos_controller()
+        proyectos, contadores = listar_proyectos_controller(session)
+        
         
         # 2. Las demás consultas se mantienen igual
         maquinarias = listar_maquinarias_controller()
@@ -344,7 +345,7 @@ def viewFormProyectos():
 def formRegistrarProyecto():
     if 'conectado' in session:
         try:
-            if registrar_proyecto_controller(request.form):
+            if registrar_proyecto_controller(request.form, session):
                 flash('Proyecto registrado satisfactoriamente.', 'success')
             else:
                 flash('Error al registrar el proyecto en la base de datos.', 'error')
@@ -375,30 +376,33 @@ def viewEditarProyecto(codigo_proyecto):
 @home_bp.route('/actualizar-proyecto', methods=['POST'])
 def formActualizarProyecto():
     if 'conectado' in session:
-        from models.model_proyecto import ProyectoModel
-        codigo_proyecto_actual = request.form.get('codigo_proyecto_actual') # Se espera el nombre correcto del campo oculto
-        modelo = ProyectoModel()
-        if modelo.actualizar_proyecto(codigo_proyecto_actual, request.form):
+        # IMPORTANTE: Importamos el controlador, NO el modelo directo
+        from controllers.funciones_proyecto import actualizar_proyecto_controller
+        
+        codigo_proyecto_actual = request.form.get('codigo_proyecto_actual')
+        
+        # Ejecutamos la lógica que sí incluye el guardado en BitacoraService
+        if actualizar_proyecto_controller(codigo_proyecto_actual, request.form, session):
             flash('Proyecto actualizado satisfactoriamente.', 'success')
         else:
             flash('Error al actualizar el proyecto.', 'error')
+            
         return redirect(url_for('home_bp.viewFormProyectos'))
     return redirect(url_for('login_bp.inicio'))
-
 @home_bp.route('/eliminar-proyecto/<string:codigo_proyecto>', methods=['GET'])
 def eliminarProyecto(codigo_proyecto):
     if 'conectado' in session:
-        from models.model_proyecto import ProyectoModel
-        modelo = ProyectoModel()
-        if modelo.eliminar_proyecto(codigo_proyecto):
+        # 1. Importamos la función correcta del controlador
+        from controllers.funciones_proyecto import eliminar_proyecto_controller
+        
+        # 2. Llamamos al controlador pasándole el código y la sesión
+        if eliminar_proyecto_controller(codigo_proyecto, session):
             flash('Proyecto eliminado correctamente.', 'success')
         else:
             flash('Error al intentar eliminar el proyecto.', 'error')
+            
         return redirect(url_for('home_bp.viewFormProyectos'))
-    else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-
+    return redirect(url_for('login_bp.inicio'))
 @home_bp.route('/api/obtener-solicitudes-json', methods=['GET'])
 def api_obtener_solicitudes_json():
     if 'conectado' in session:

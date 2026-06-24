@@ -150,10 +150,14 @@ class ProyectoModel:
             if not fecha_plan:
                 fecha_plan = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+            # 💡 CORRECCIÓN AQUÍ: Buscamos tanto 'observaciones_p' como 'observaciones' 
+            # para asegurar que capture el textarea de tu formulario HTML.
+            descripcion = datos.get('observaciones_p') or datos.get('observaciones') or ''
+
             valores = (
                 codigo_nuevo,
                 fecha_plan,
-                datos.get('observaciones', '')[:200],
+                descripcion[:200],
                 datos.get('computos_p', '')[:255],
                 datos.get('estimacion_p', '')[:45],
                 codigo_proyecto_actual
@@ -163,7 +167,6 @@ class ProyectoModel:
             # MANEJO SEGURO DE LA TABLA PUENTE DE SOLICITUDES
             id_solicitud = datos.get('solicitud_id_p')
             if id_solicitud:
-                # Si se especifica una nueva relación, limpiamos la anterior e insertamos con sus claves correspondientes
                 cursor.execute("DELETE FROM proyecto_has_solicitudes WHERE proyecto_codigo_proyecto = %s", (codigo_proyecto_actual,))
                 cursor.execute("""
                     SELECT persona_id_persona, prioridad_id_gestion_prioridad 
@@ -178,7 +181,6 @@ class ProyectoModel:
                         VALUES (%s, %s, %s, %s)""", 
                         (codigo_nuevo, id_solicitud, res_sol['persona_id_persona'], res_sol['prioridad_id_gestion_prioridad']))
             else:
-                # Si no se altera la solicitud pero el código del proyecto cambió, actualizamos la referencia en el puente
                 if codigo_nuevo != codigo_proyecto_actual:
                     cursor.execute("""
                         UPDATE proyecto_has_solicitudes 
@@ -201,7 +203,8 @@ class ProyectoModel:
                     """, (codigo_nuevo, codigo_proyecto_actual))
 
             conexion.commit()
-            return cursor.rowcount
+            # 💡 RETORNO SEGURO: Retornamos True porque la operación fue exitosa en la base de datos
+            return True
         except Exception as e:
             if conexion: conexion.rollback()
             print(f"Error en ProyectoModel.actualizar_proyecto: {e}")
