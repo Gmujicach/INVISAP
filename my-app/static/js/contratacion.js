@@ -1,3 +1,6 @@
+// =========================================================================
+// 1. CARGA DE EMPRESAS DESDE LA API (MODAL DIRECTORIO)
+// =========================================================================
 document.getElementById('btnCargarEmpresas').addEventListener('click', function() {
     const tablaCuerpo = document.getElementById('tablaEmpresasCuerpo');
     
@@ -10,8 +13,6 @@ document.getElementById('btnCargarEmpresas').addEventListener('click', function(
             </td>
         </tr>`;
 
-    // IMPORTANTE: Asegúrate de tener esta ruta creada en tu app.py o routes 
-    // que devuelva un JSON con las empresas. Ejemplo: [{'rif': 'J-12345', 'nombre_empresa': 'Constructora XYZ'}]
     fetch('/api/obtener-empresas-json')
         .then(response => {
             if (!response.ok) throw new Error('Error en el servidor');
@@ -25,7 +26,7 @@ document.getElementById('btnCargarEmpresas').addEventListener('click', function(
                 return;
             }
 
-            data.forEach((empresa, index) => {
+            data.forEach((empresa) => {
                 contenidoHTML += `
                     <tr>
                         <td class="fw-bold">${empresa.rif || '—'}</td>
@@ -53,9 +54,8 @@ document.getElementById('btnCargarEmpresas').addEventListener('click', function(
         });
 });
 
-// Función que inserta los datos en el formulario principal y cierra el modal secundario
+// Función que inserta los datos en el formulario principal y gestiona los modales
 function seleccionarEmpresa(rif, nombre) {
-    // Pegamos los valores en los inputs de solo lectura
     document.getElementById('empresa_rif').value = rif;
     document.getElementById('empresa_ganadora').value = nombre;
 
@@ -63,187 +63,114 @@ function seleccionarEmpresa(rif, nombre) {
     const modalEmpresas = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEmpresas'));
     modalEmpresas.hide();
     
-    // Mostramos nuevamente el modal del formulario principal
-    const modalRegistro = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalContratacion'));
-    modalRegistro.show();
+    // Mostramos nuevamente el modal del formulario principal (si existe en la vista actual)
+    const elModalContratacion = document.getElementById('modalContratacion');
+    if (elModalContratacion) {
+        const modalRegistro = bootstrap.Modal.getOrCreateInstance(elModalContratacion);
+        modalRegistro.show();
+    }
 }
 
-//Validaciones
-
-document.getElementById('descripcion').addEventListener('input', function() {
-    const textarea = this;
-    const feedback = document.getElementById('descripcionFeedback');
-    const contador = document.getElementById('descripcionContador');
-    const longitud = textarea.value.trim().length;
-
-    //Actualizar el contador de texto en la esquina derecha
-    contador.textContent = `${textarea.value.length} / 100 caracteres`;
-    // vacío
-    if (textarea.value.length === 0) {
-        textarea.classList.remove('is-valid', 'is-invalid');
-        feedback.classList.add('d-none');
-        contador.className = "text-muted ms-auto";
-        return;
-    }
-
-    // Validar si cumple con el mínimo de 5 letras
-    if (longitud < 5) {
-        textarea.classList.add('is-invalid');
-        textarea.classList.remove('is-valid');
-        feedback.classList.remove('d-none');
-        feedback.className = "text-danger fw-bold";
-        feedback.textContent = "❌ Descripcion minima de 5 caracteres.";
-
-        contador.className = "text-danger fw-bold ms-auto";
-    } else {
-        textarea.classList.add('is-valid');
-        textarea.classList.remove('is-invalid');
-        
-        feedback.classList.remove('d-none');
-        feedback.className = "text-success fw-bold";
-        feedback.textContent = "✅";
-        
-        contador.className = "text-muted ms-auto";
-    }
-});
-
-// --- NUEVA VALIDACIÓN: NÚMERO DE CONTRATO ---
-document.getElementById('numero_contrato').addEventListener('input', function() {
-    const input = this;
-    
-    // 1. Filtrar caracteres no permitidos en tiempo real
-    // Solo permite letras (mayúsculas/minúsculas), números, guiones y asteriscos.
-    input.value = input.value.replace(/[^a-zA-Z0-9\-\*]/g, '');
-
-    const longitud = input.value.trim().length;
-
-    // 2. Si el campo está vacío, quitamos colores
-    if (longitud === 0) {
-        input.classList.remove('is-valid', 'is-invalid');
-        return;
-    }
-
-    // 3. Evaluar la longitud (Mínimo 3)
-    if (longitud < 3) {
-        input.classList.add('is-invalid'); // Borde rojo
-        input.classList.remove('is-valid');
-    } else {
-        input.classList.add('is-valid');   // Borde verde
-        input.classList.remove('is-invalid');
-    }
-});
-// --------------------------------------------
-
-
-document.getElementById('formContratacion').addEventListener('submit', function(event) {
-    event.preventDefault(); // 1. Detenemos la recarga de página
-
-    const form = this;
-    const btnSubmit = form.querySelector('button[type="submit"]');
-    const textoOriginalBtn = btnSubmit.innerHTML;
-
-    // 2. Estado de carga visual
-    btnSubmit.disabled = true;
-    btnSubmit.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Guardando...';
-
-    // 3. Envío al servidor
-    fetch(form.getAttribute('action'), {
-        method: 'POST',
-        body: new FormData(form)
-    })
-    .then(response => response.json())
-    .then(data => {
-        btnSubmit.disabled = false;
-        btnSubmit.innerHTML = textoOriginalBtn;
-
-        if (data.status === 'success') {
-            Swal.fire({ icon: 'success', title: '¡Éxito!', text: data.message }).then(() => {
-                window.location.href = '/contrataciones'; // Redirige solo si es exitoso
-            });
-        } else {
-            Swal.fire({ icon: 'error', title: 'Error', text: data.message });
-        }
-    })
-    .catch(error => {
-        btnSubmit.disabled = false;
-        btnSubmit.innerHTML = textoOriginalBtn;
-        Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión.' });
-    });
-});
-
-document.addEventListener('click', function(event) {
-    // Buscamos si el clic se hizo en el botón de eliminar o en su ícono interno
-    const boton = event.target.closest('.btn-eliminar');
-    
-    if (boton) {
-        // Evitamos que el enlace actúe por defecto
-        event.preventDefault();
-        
-        // Obtenemos la URL de Flask que guardamos en el HTML
-        const urlEliminar = boton.getAttribute('data-url');
-
-        // Disparamos la alerta estética de SweetAlert2
-        Swal.fire({
-            title: '¿Estás completamente seguro?',
-            text: "Esta acción eliminará la contratación por completo y no se puede deshacer.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#dc3545', // Rojo de Bootstrap para peligro
-            cancelButtonColor: '#6c757d',  // Gris de Bootstrap para cancelar
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar',
-            reverseButtons: true // Pone el botón de confirmar a la derecha
-        }).then((result) => {
-            // Si el usuario presionó el botón de "Sí, eliminar"
-            if (result.isConfirmed) {
-                // Redirigimos a la ruta de Flask para que ejecute el backend
-                window.location.href = urlEliminar;
-            }
-        });
-    }
-});
-
+// Limpiar la empresa seleccionada
 document.getElementById('btn_limpiar_seleccion').addEventListener('click', function() {
     const inputEmpresa = document.getElementById('empresa_ganadora');
     const inputRif = document.getElementById('empresa_rif');
     
-    // Vaciamos ambos campos de un solo golpe
     inputEmpresa.value = '';
     inputRif.value = '';
     
-    // Limpiamos los estilos visuales de validación de Bootstrap si existieran
     inputEmpresa.classList.remove('is-valid', 'is-invalid');
     inputRif.classList.remove('is-valid', 'is-invalid');
 });
 
-// --- VALIDACIÓN: MONTO EN TIEMPO REAL (PERMITIENDO ESPACIOS) ---
-document.getElementById('monto').addEventListener('input', function() {
-    const input = this;
-    
-    // Filtro: Permite letras (a-z), números (0-9), puntos (.), comas (,) y espacios (\s)
-    input.value = input.value.replace(/[^a-zA-Z0-9.,\s]/g, '');
 
-    // Medimos la longitud quitando los espacios de los extremos para que no burlen el mínimo
-    const longitud = input.value.trim().length;
+// =========================================================================
+// 2. VALIDACIONES EN TIEMPO REAL (INPUTS COPIADOS EXACTAMENTE)
+// =========================================================================
 
-    // Si está vacío, quitamos colores
-    if (longitud === 0) {
-        input.classList.remove('is-valid', 'is-invalid');
-        return;
-    }
+// Validación de Descripción
+const descInput = document.getElementById('descripcion');
+if (descInput) {
+    descInput.addEventListener('input', function() {
+        const textarea = this;
+        const feedback = document.getElementById('descripcionFeedback');
+        const contador = document.getElementById('descripcionContador');
+        const longitud = textarea.value.trim().length;
 
-    // Evaluar la longitud mínima de 3
-    if (longitud < 3) {
-        input.classList.add('is-invalid');
-        input.classList.remove('is-valid');
-    } else {
-        input.classList.add('is-valid');
-        input.classList.remove('is-invalid');
-    }
-});
+        contador.textContent = `${textarea.value.length} / 100 caracteres`;
+        
+        if (textarea.value.length === 0) {
+            textarea.classList.remove('is-valid', 'is-invalid');
+            feedback.classList.add('d-none');
+            contador.className = "text-muted ms-auto";
+            return;
+        }
 
-// --- EFECTO VISUAL: SELECTS Y FECHAS AL SELECCIONAR ---
-// Esta función pone los campos en verde en cuanto el usuario elige una opción o fecha
+        if (longitud < 5) {
+            textarea.classList.add('is-invalid');
+            textarea.classList.remove('is-valid');
+            feedback.classList.remove('d-none');
+            feedback.className = "text-danger fw-bold";
+            feedback.textContent = "❌ Descripcion minima de 5 caracteres.";
+            contador.className = "text-danger fw-bold ms-auto";
+        } else {
+            textarea.classList.add('is-valid');
+            textarea.classList.remove('is-invalid');
+            feedback.classList.remove('d-none');
+            feedback.className = "text-success fw-bold";
+            feedback.textContent = "✅";
+            contador.className = "text-muted ms-auto";
+        }
+    });
+}
+
+// Validación de Número de Contrato
+const numContratoInput = document.getElementById('numero_contrato');
+if (numContratoInput) {
+    numContratoInput.addEventListener('input', function() {
+        const input = this;
+        input.value = input.value.replace(/[^a-zA-Z0-9\-\*]/g, '');
+        const longitud = input.value.trim().length;
+
+        if (longitud === 0) {
+            input.classList.remove('is-valid', 'is-invalid');
+            return;
+        }
+
+        if (longitud < 3) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+        } else {
+            input.classList.add('is-valid');
+            input.classList.remove('is-invalid');
+        }
+    });
+}
+
+// Validación de Monto
+const montoInput = document.getElementById('monto');
+if (montoInput) {
+    montoInput.addEventListener('input', function() {
+        const input = this;
+        input.value = input.value.replace(/[^a-zA-Z0-9.,\s]/g, '');
+        const longitud = input.value.trim().length;
+
+        if (longitud === 0) {
+            input.classList.remove('is-valid', 'is-invalid');
+            return;
+        }
+
+        if (longitud < 3) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+        } else {
+            input.classList.add('is-valid');
+            input.classList.remove('is-invalid');
+        }
+    });
+}
+
+// Validación dinámica para Selects y Fechas al cambiar
 const camposGenerales = [
     'tipo_contrato', 'modalidad', 'objeto', 
     'fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro'
@@ -264,14 +191,51 @@ camposGenerales.forEach(id => {
     }
 });
 
-// --- ACTUALIZACIÓN DEL EVENTO SUBMIT PARA EVALUAR TODO ---
-// Reemplaza tu actual document.getElementById('formContratacion').addEventListener('submit', ...) por este:
 
+// =========================================================================
+// 3. ELIMINACIÓN DE REGISTROS (SWEETALERT DELEGADO)
+// =========================================================================
+document.addEventListener('click', function(event) {
+    const boton = event.target.closest('.btn-eliminar');
+    
+    if (boton) {
+        event.preventDefault();
+        const urlEliminar = boton.getAttribute('data-url');
+
+        Swal.fire({
+            title: '¿Estás completamente seguro?',
+            text: "Esta acción eliminará la contratación por completo y no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545', 
+            cancelButtonColor: '#6c757d',  
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            didOpen: () => { 
+                // Asegura que la alerta salga encima de todo si se llama desde un entorno con capas elevadas
+                document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = urlEliminar;
+            }
+        });
+    }
+});
+
+
+// =========================================================================
+// 4. ENVÍO UNIFICADO DEL FORMULARIO (VALIDACIÓN + FETCH AJAX + FIX AL FRONT)
+// =========================================================================
 document.getElementById('formContratacion').addEventListener('submit', function(event) {
+    event.preventDefault(); // Detenemos la recarga por defecto obligatoriamente
+    event.stopPropagation(); // Evitamos que la plantilla escuche este envío
+
     let hayErrores = false;
     let primerElementoConError = null;
 
-    // 1. Validar descripción (Si existe en esta vista)
+    // --- SUB-FASE: EVALUACIÓN ANTES DE ENVIAR ---
     const descripcionInput = document.getElementById('descripcion');
     if (descripcionInput && descripcionInput.value.trim().length < 5) {
         descripcionInput.classList.add('is-invalid');
@@ -279,23 +243,20 @@ document.getElementById('formContratacion').addEventListener('submit', function(
         primerElementoConError = primerElementoConError || descripcionInput;
     }
 
-    // 2. Validar número de contrato (Si existe en esta vista)
-    const numeroContratoInput = document.getElementById('numero_contrato');
-    if (numeroContratoInput && numeroContratoInput.value.trim().length < 3) {
-        numeroContratoInput.classList.add('is-invalid');
+    const numeroContratoInputSubmit = document.getElementById('numero_contrato');
+    if (numeroContratoInputSubmit && numeroContratoInputSubmit.value.trim().length < 3) {
+        numeroContratoInputSubmit.classList.add('is-invalid');
         hayErrores = true;
-        primerElementoConError = primerElementoConError || numeroContratoInput;
+        primerElementoConError = primerElementoConError || numeroContratoInputSubmit;
     }
 
-    // 3. Validar Monto
-    const montoInput = document.getElementById('monto');
-    if (montoInput && montoInput.value.trim().length < 3) {
-        montoInput.classList.add('is-invalid');
+    const montoInputSubmit = document.getElementById('monto');
+    if (montoInputSubmit && montoInputSubmit.value.trim().length < 3) {
+        montoInputSubmit.classList.add('is-invalid');
         hayErrores = true;
-        primerElementoConError = primerElementoConError || montoInput;
+        primerElementoConError = primerElementoConError || montoInputSubmit;
     }
 
-    // 4. Validar Selects y Fechas
     const camposAValidar = [
         'tipo_contrato', 'modalidad', 'objeto', 
         'fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro'
@@ -305,7 +266,7 @@ document.getElementById('formContratacion').addEventListener('submit', function(
         const elemento = document.getElementById(id);
         if (elemento) {
             if (elemento.value.trim() === "") {
-                elemento.classList.add('is-invalid'); // Borde rojo si no ha seleccionado nada
+                elemento.classList.add('is-invalid'); 
                 hayErrores = true;
                 primerElementoConError = primerElementoConError || elemento;
             } else {
@@ -315,11 +276,79 @@ document.getElementById('formContratacion').addEventListener('submit', function(
         }
     });
 
-    // Si encontramos algún error, detenemos el envío y hacemos focus en el primer error
+    // Si se detectaron problemas, paramos la ejecución y enfocamos el error
     if (hayErrores) {
-        event.preventDefault(); 
         if (primerElementoConError) {
             primerElementoConError.focus();
         }
+        return; 
     }
+
+    // --- SUB-FASE: PETICIÓN FETCH AL SERVIDOR ---
+    const form = this;
+    const btnSubmit = form.querySelector('button[type="submit"]');
+    const textoOriginalBtn = btnSubmit.innerHTML;
+
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Guardando...';
+
+    // ⬇️ [AQUÍ PEGAMOS EL TRUCO]: Apagamos los loaders comunes de plantillas a la fuerza
+    const loadersComunes = ['.preloader', '#preloader', '.loader-wrapper', '.loading', '#loader'];
+    loadersComunes.forEach(selector => {
+        const elementoLoader = document.querySelector(selector);
+        if (elementoLoader) {
+            elementoLoader.style.setProperty('display', 'none', 'important');
+            elementoLoader.style.setProperty('opacity', '0', 'important');
+            elementoLoader.style.setProperty('visibility', 'hidden', 'important');
+        }
+    });
+
+    fetch(form.getAttribute('action'), {
+        method: 'POST',
+        body: new FormData(form)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Error crítico en el servidor');
+        return response.json();
+    })
+    .then(data => {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = textoOriginalBtn;
+
+        if (data.status === 'success') {
+            Swal.fire({ 
+                icon: 'success', 
+                title: '¡Éxito!', 
+                text: data.message,
+                didOpen: () => { 
+                    document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
+                }
+            }).then(() => {
+                window.location.href = '/contrataciones'; 
+            });
+        } else {
+            Swal.fire({ 
+                icon: 'error', 
+                title: 'Error', 
+                text: data.message,
+                didOpen: () => { 
+                    document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
+                }
+            });
+        }
+    })
+    .catch(error => {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = textoOriginalBtn;
+        console.error('Error capturado en el formulario:', error);
+        
+        Swal.fire({ 
+            icon: 'error', 
+            title: 'Error de conexión', 
+            text: 'No se pudo procesar la solicitud en el servidor.',
+            didOpen: () => { 
+                document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
+            }
+        });
+    });
 });
