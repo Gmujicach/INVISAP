@@ -1,53 +1,64 @@
 """
 funciones_solicitud.py — Controlador de Solicitudes.
-
-Principio SRP: Solo coordina entre router y modelo.
-No contiene lógica de negocio ni SQL.
+Coordina entre router y modelo, manejando los ValueErrors.
 """
 from models.model_solicitudes import SolicitudModel
 
-
-def _get_modelo() -> SolicitudModel:
-    """Fábrica del modelo (DRY)."""
-    return SolicitudModel()
-
-
 def obtener_solicitudes() -> list:
     """Retorna todas las solicitudes registradas."""
-    return _get_modelo().obtener_todas_las_solicitudes()
+    return SolicitudModel.obtener_todas()
 
-
-def crear_solicitud(datos_formulario: dict):
+def crear_solicitud(datos_formulario: dict) -> dict:
     """
-    Crea una nueva solicitud.
-    Retorna el ID de la nueva solicitud o False si falla.
+    Crea una nueva solicitud instanciando el modelo.
+    Retorna dict {'success': bool, 'id': int, 'message': str}.
     """
-    if not datos_formulario.get('tipo_solicitud') or not datos_formulario.get('problematica'):
-        return False
-    return _get_modelo().crear_nueva_solicitud(datos_formulario)
-
+    try:
+        modelo = SolicitudModel()
+        modelo.set_tipo_solicitud(datos_formulario.get('tipo_solicitud'))
+        modelo.set_estatus_solicitud(datos_formulario.get('estatus'))
+        modelo.set_problematica(datos_formulario.get('problematica'), datos_formulario.get('tipo_problematica'))
+        modelo.set_fecha()
+        modelo.set_solicitante_data(datos_formulario)
+        
+        nuevo_id = modelo.guardar()
+        if nuevo_id:
+            return {'success': True, 'id': nuevo_id, 'message': 'Solicitud registrada correctamente.'}
+        return {'success': False, 'message': 'Error en la base de datos al guardar.'}
+    except ValueError as e:
+        return {'success': False, 'message': str(e)}
+    except Exception as e:
+        print(f"Error en crear_solicitud controlador: {e}")
+        return {'success': False, 'message': 'Error interno del servidor.'}
 
 def obtener_solicitud_por_id(id_solicitud) -> dict | None:
     """Retorna los datos de una solicitud específica."""
     if not id_solicitud:
         return None
-    return _get_modelo().obtener_solicitud_por_id(id_solicitud)
+    return SolicitudModel.buscar_por_id(id_solicitud)
 
-
-def actualizar_solicitud(id_solicitud, datos_formulario: dict) -> bool:
+def actualizar_solicitud(id_solicitud, datos_formulario: dict) -> dict:
     """Actualiza el estatus y problemática de una solicitud."""
-    if not id_solicitud or not datos_formulario:
-        return False
-    return _get_modelo().actualizar_solicitud(id_solicitud, datos_formulario)
+    try:
+        modelo = SolicitudModel(id_solicitudes=id_solicitud)
+        modelo.set_estatus_solicitud(datos_formulario.get('estatus', datos_formulario.get('estatus_solicitud')))
+        modelo.set_problematica(datos_formulario.get('problematica'))
+        
+        exito = modelo.actualizar()
+        if exito:
+            return {'success': True, 'message': 'Solicitud actualizada correctamente.'}
+        return {'success': False, 'message': 'No se pudo actualizar la solicitud (posible ID no encontrado).'}
+    except ValueError as e:
+        return {'success': False, 'message': str(e)}
 
-
-def eliminar_solicitud(id_solicitud) -> bool:
+def eliminar_solicitud(id_solicitud) -> dict:
     """Elimina una solicitud por su ID."""
-    if not id_solicitud:
-        return False
-    return _get_modelo().eliminar_solicitud(id_solicitud)
-
+    modelo = SolicitudModel(id_solicitudes=id_solicitud)
+    exito = modelo.eliminar()
+    if exito:
+        return {'success': True, 'message': 'Solicitud eliminada correctamente.'}
+    return {'success': False, 'message': 'No se pudo eliminar la solicitud.'}
 
 def obtener_estadisticas_solicitudes() -> dict:
     """Retorna estadísticas agrupadas por estatus."""
-    return _get_modelo().obtener_estadisticas()
+    return SolicitudModel.obtener_estadisticas()

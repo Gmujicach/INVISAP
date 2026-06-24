@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const regexTexto = /^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/; 
   const regexCedula = /^\d{7,10}$/; 
-  const regexTelefono = /^\d{10,12}$/;
+  const regexTelefono = /^(0414|0424|0412|0416|0426|0251|0212)-?\d{7}$/;
   const regexCorreo = /^[a-zA-Z0-9._%+-ñÑáéíóúÁÉÍÓÚ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   const setError = (input, message) => {

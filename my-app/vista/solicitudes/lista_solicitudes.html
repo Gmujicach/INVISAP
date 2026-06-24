@@ -8,9 +8,9 @@
       <h3 class="fw-bold mb-1"><i class="bi bi-list-task text-primary me-2"></i>Gestión de Solicitudes</h3>
       <p class="text-muted mb-0">Visualice y administre todas las solicitudes registradas</p>
     </div>
-    <a href="{{ url_for('home_bp.viewFormSolicitud') }}" class="btn btn-primary shadow-sm" style="border-radius: 30px;">
+    <button type="button" class="btn btn-primary shadow-sm" style="border-radius: 30px;" data-bs-toggle="modal" data-bs-target="#modalCrearSolicitud">
       <i class="bi bi-plus-circle me-1"></i> Nueva Solicitud
-    </a>
+    </button>
   </div>
 
   <div class="row g-3 mb-4">
@@ -18,7 +18,7 @@
       <div class="card border-0 shadow-sm rounded-4" style="border-left: 4px solid #f59e0b;">
         <div class="card-body">
           <h6 class="text-muted text-uppercase mb-1" style="font-size: 0.8rem;">Pendientes</h6>
-          <h3 class="mb-0 fw-bold">{{ estadisticas.get('Pendiente', 0) }}</h3>
+          <h3 class="mb-0 fw-bold" id="widget-pendientes">{{ estadisticas.get('Pendiente', 0) }}</h3>
         </div>
       </div>
     </div>
@@ -26,7 +26,7 @@
       <div class="card border-0 shadow-sm rounded-4" style="border-left: 4px solid #3b82f6;">
         <div class="card-body">
           <h6 class="text-muted text-uppercase mb-1" style="font-size: 0.8rem;">En Proceso</h6>
-          <h3 class="mb-0 fw-bold">{{ estadisticas.get('En Proceso', 0) }}</h3>
+          <h3 class="mb-0 fw-bold" id="widget-en-proceso">{{ estadisticas.get('En Proceso', 0) }}</h3>
         </div>
       </div>
     </div>
@@ -34,7 +34,7 @@
       <div class="card border-0 shadow-sm rounded-4" style="border-left: 4px solid #10b981;">
         <div class="card-body">
           <h6 class="text-muted text-uppercase mb-1" style="font-size: 0.8rem;">Completadas</h6>
-          <h3 class="mb-0 fw-bold">{{ estadisticas.get('Completada', 0) + estadisticas.get('Procesada', 0) }}</h3>
+          <h3 class="mb-0 fw-bold" id="widget-completadas">{{ estadisticas.get('Completada', 0) + estadisticas.get('Procesada', 0) }}</h3>
         </div>
       </div>
     </div>
@@ -42,7 +42,7 @@
       <div class="card border-0 shadow-sm rounded-4 bg-primary text-white">
         <div class="card-body">
           <h6 class="text-uppercase text-white-50 mb-1" style="font-size: 0.8rem;">Total</h6>
-          <h3 class="mb-0 fw-bold text-white">{{ solicitudes|length }}</h3>
+          <h3 class="mb-0 fw-bold text-white" id="widget-total">{{ solicitudes|length }}</h3>
         </div>
       </div>
     </div>
@@ -115,17 +115,14 @@
                       title="Ver detalles">
                       <i class="bi bi-eye"></i>
                     </a>
-                    <a
-                      href="/editar-solicitud/{{ s.id_solicitud }}"
-                      class="btn btn-warning btn-sm"
-                      title="Editar solicitud">
+                    <button type="button" class="btn btn-warning btn-sm" title="Editar solicitud" onclick="abrirModalEditar({{ s.id_solicitud }});">
                       <i class="bi bi-pencil-square"></i>
-                    </a>
+                    </button>
                     <a
-                      href="/eliminar-solicitud/{{ s.id_solicitud }}"
+                      href="javascript:void(0);"
                       class="btn btn-danger btn-sm"
                       title="Eliminar solicitud"
-                      onclick="return confirm('¿Estás seguro de que deseas eliminar esta solicitud? Esta acción no se puede deshacer.');">
+                      onclick="eliminarSolicitudAjax({{ s.id_solicitud }});">
                       <i class="bi bi-trash"></i>
                     </a>
                   </div>
@@ -143,5 +140,346 @@
     </div>
 
   </div>
+
+<!-- Modal Crear Solicitud -->
+<div class="modal fade" id="modalCrearSolicitud" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title"><i class="bi bi-file-earmark-plus"></i> Registrar Nueva Solicitud</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal mx-auto" method="POST" action="/api/solicitudes/crear" id="formCrearSolicitud" autocomplete="off">
+        
+        <div class="card-body pt-0">
+          
+          <div class="d-flex justify-content-end mb-4 bg-light p-3 rounded border">
+            <div style="width: 300px;">
+              <label for="tipo_solicitud" class="form-label text-dark fw-semibold mb-1">
+                <i class="bi bi-person-badge"></i> Tipo de Solicitante
+              </label>
+              <select class="form-select shadow-sm border-primary" name="tipo_solicitud" id="tipo_solicitud">
+                <option value="" selected disabled>Seleccione el perfil...</option>
+                <option value="Comunidad">Comunidad</option>
+                <option value="Institucion">Institución</option>
+                <option value="Particular">Particular</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="seccion_comunidad" class="dinamic-section" style="display: none;">
+            <h5 class="text-primary border-bottom pb-2 mb-4"><i class="bi bi-people-fill"></i> Datos de la Comunidad</h5>
+            
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label class="form-label fw-semibold">Nombre de la Comunidad</label>
+                <input type="text" name="com_nombre" class="form-control bg-white" placeholder="Ej. Consejo Comunal El Cují" minlength="5" maxlength="100" required disabled />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Municipio</label>
+                <select name="com_municipio" id="com_municipio" class="form-select bg-white" required disabled onchange="actualizarParroquias('com_municipio', 'com_parroquia')">
+                  <option value="" selected disabled>Seleccione...</option>
+                  <option value="Iribarren">Iribarren</option>
+                  <option value="Palavecino">Palavecino</option>
+                  <option value="Jiménez">Jiménez</option>
+                  <option value="Morán">Morán</option>
+                  <option value="Crespo">Crespo</option>
+                  <option value="Urdaneta">Urdaneta</option>
+                  <option value="Simón Planas">Simón Planas</option>
+                  <option value="Andrés Eloy Blanco">Andrés Eloy Blanco</option>
+                  <option value="Torres">Torres</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Parroquia</label>
+                <select name="com_parroquia" id="com_parroquia" class="form-select bg-white" required disabled>
+                  <option value="" selected disabled>Seleccione primero el municipio...</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Ámbito</label>
+                <input type="text" name="com_ambito" class="form-control bg-white" placeholder="Ej. Urbano / Rural" minlength="3" maxlength="45" required disabled />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Sector</label>
+                <input type="text" name="com_sector" class="form-control bg-white" placeholder="Ej. Sector 1, Calle Principal" minlength="3" maxlength="45" required disabled />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Cédula del Representante</label>
+                <input type="text" name="com_cedula" class="form-control bg-white" placeholder="Ej. 12345678" required minlength="7" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, \'\')" title="Solo números permitidos (7 a 10 dígitos)" disabled />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Teléfono</label>
+                <input type="text" name="com_telefono" class="form-control bg-white" placeholder="Ej. 0424-1234567" required minlength="12" maxlength="12" pattern="^(0414|0424|0412|0416|0426|0251|0212)-[0-9]{7}$" title="Debe ser un número válido de Venezuela (Ej. 0424-1234567)" oninput="formatPhone(this)" disabled />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label class="form-label fw-semibold">Correo Electrónico</label>
+                <input type="email" name="com_correo" class="form-control bg-white" placeholder="Ej. usuario@correo.com" maxlength="45" required disabled />
+              </div>
+            </div>
+          </div>
+
+          <div id="seccion_institucion" class="dinamic-section" style="display: none;">
+            <h5 class="text-primary border-bottom pb-2 mb-4"><i class="bi bi-bank"></i> Datos de la Institución</h5>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Razón Social (Nombre)</label>
+                <input type="text" name="inst_nombre" class="form-control bg-white" placeholder="Ej. Unidad Educativa Andrés Bello" minlength="4" maxlength="120" required disabled />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Dirección Institución</label>
+                <input type="text" name="inst_direccion" class="form-control bg-white" placeholder="Ej. Av. Vargas con carrera 22" minlength="10" maxlength="200" required disabled />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Municipio</label>
+                <select name="inst_municipio" id="inst_municipio" class="form-select bg-white" required disabled onchange="actualizarParroquias('inst_municipio', 'inst_parroquia')">
+                  <option value="" selected disabled>Seleccione...</option>
+                  <option value="Iribarren">Iribarren</option>
+                  <option value="Palavecino">Palavecino</option>
+                  <option value="Jiménez">Jiménez</option>
+                  <option value="Morán">Morán</option>
+                  <option value="Crespo">Crespo</option>
+                  <option value="Urdaneta">Urdaneta</option>
+                  <option value="Simón Planas">Simón Planas</option>
+                  <option value="Andrés Eloy Blanco">Andrés Eloy Blanco</option>
+                  <option value="Torres">Torres</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Parroquia</label>
+                <select name="inst_parroquia" id="inst_parroquia" class="form-select bg-white" required disabled>
+                  <option value="" selected disabled>Seleccione primero el municipio...</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Correo Institución</label>
+                <input type="email" name="inst_correo" class="form-control bg-white" placeholder="Ej. institucion@correo.com" maxlength="45" required disabled />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Teléfono Institución</label>
+                <input type="text" name="inst_telefono" class="form-control bg-white" placeholder="Ej. 0424-1234567" required minlength="12" maxlength="12" pattern="^(0414|0424|0412|0416|0426|0251|0212)-[0-9]{7}$" title="Debe ser un número válido de Venezuela (Ej. 0424-1234567)" oninput="formatPhone(this)" disabled />
+              </div>
+            </div>
+
+            <h6 class="mt-4 mb-3 text-secondary"><i class="bi bi-person-vcard"></i> Datos del Director/Representante</h6>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Nombre del Representante</label>
+                <input type="text" name="inst_director_nombre" class="form-control bg-white" placeholder="Ej. Juan Pérez" minlength="3" maxlength="45" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Solo letras y espacios" required disabled />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Cédula</label>
+                <input type="text" name="inst_director_cedula" class="form-control bg-white" placeholder="Ej. 12345678" required minlength="7" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, \'\')" title="Solo números permitidos (7 a 10 dígitos)" disabled />
+              </div>
+            </div>
+          </div>
+
+          <div id="seccion_particular" class="dinamic-section" style="display: none;">
+            <h5 class="text-primary border-bottom pb-2 mb-4"><i class="bi bi-person"></i> Datos del Particular</h5>
+            
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Nombre(s)</label>
+                <input type="text" name="part_nombre" class="form-control bg-white" placeholder="Ej. María" minlength="3" maxlength="45" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Solo letras y espacios" required disabled />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Apellido(s)</label>
+                <input type="text" name="part_apellido" class="form-control bg-white" placeholder="Ej. González" minlength="3" maxlength="45" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Solo letras y espacios" required disabled />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Cédula</label>
+                <input type="text" name="part_cedula" class="form-control bg-white" placeholder="Ej. 12345678" required minlength="7" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, \'\')" title="Solo números permitidos (7 a 10 dígitos)" disabled />
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Correo Electrónico</label>
+                <input type="email" name="part_correo" class="form-control bg-white" placeholder="Ej. particular@correo.com" maxlength="45" required disabled />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Teléfono</label>
+                <input type="text" name="part_telefono" class="form-control bg-white" placeholder="Ej. 0424-1234567" required minlength="12" maxlength="12" pattern="^(0414|0424|0412|0416|0426|0251|0212)-[0-9]{7}$" title="Debe ser un número válido de Venezuela (Ej. 0424-1234567)" oninput="formatPhone(this)" disabled />
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Municipio</label>
+                  <select name="part_municipio" id="part_municipio" class="form-select bg-white" required disabled onchange="actualizarParroquias('part_municipio', 'part_parroquia')">
+                    <option value="" selected disabled>Seleccione...</option>
+                    <option value="Iribarren">Iribarren</option>
+                    <option value="Palavecino">Palavecino</option>
+                    <option value="Jiménez">Jiménez</option>
+                    <option value="Morán">Morán</option>
+                    <option value="Crespo">Crespo</option>
+                    <option value="Urdaneta">Urdaneta</option>
+                    <option value="Simón Planas">Simón Planas</option>
+                    <option value="Andrés Eloy Blanco">Andrés Eloy Blanco</option>
+                    <option value="Torres">Torres</option>
+                  </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Parroquia</label>
+                <select name="part_parroquia" id="part_parroquia" class="form-select bg-white" required disabled>
+                  <option value="" selected disabled>Seleccione primero el municipio...</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Dirección Detallada</label>
+                <textarea class="form-control bg-white" name="part_direccion" minlength="10" maxlength="200" rows="1" style="resize: none;" required disabled placeholder="Ej. Calle, sector, Nro casa"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div id="seccion_detalles" class="mt-5 p-4 rounded" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
+            <h5 class="text-secondary border-bottom pb-2 mb-4"><i class="bi bi-card-text"></i> Detalles de la Solicitud</h5>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="tipo_problematica" class="form-label fw-semibold">Tipo de Problemática</label>
+                <select class="form-select bg-white" name="tipo_problematica" id="tipo_problematica" required>
+                  <option value="" selected disabled>Seleccione categoría...</option>
+                  <option value="Servicios Básicos (Agua, Luz, Gas)">Servicios Básicos (Agua, Luz, Gas)</option>
+                  <option value="Infraestructura y Vialidad">Infraestructura y Vialidad</option>
+                  <option value="Salud y Asistencia Médica">Salud y Asistencia Médica</option>
+                  <option value="Educación y Deporte">Educación y Deporte</option>
+                  <option value="Seguridad Ciudadana">Seguridad Ciudadana</option>
+                  <option value="Vivienda">Vivienda</option>
+                  <option value="Otros">Otros</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="estatus" class="form-label fw-semibold">Estatus de la solicitud</label>
+                <select class="form-select bg-white" name="estatus">
+                  <option value="Pendiente" selected>Pendiente</option>
+                  <option value="En Proceso">En Proceso</option>
+                  <option value="Completada">Completada</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label for="problematica" class="form-label fw-semibold">Descripción Detallada</label>
+                <textarea class="form-control bg-white" name="problematica" minlength="15" maxlength="255" rows="3" style="resize: none;" required placeholder="Describa la problemática de forma clara y concisa (Mínimo 15 caracteres)..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5 text-center">
+            <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm" style="border-radius: 50px;">
+              <i class="bi bi-save me-2"></i> Registrar Solicitud
+            </button>
+          </div>
+          
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+<!-- Modal Editar Solicitud -->
+<div class="modal fade" id="modalEditarSolicitud" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Editar Solicitud <span id="edit_solicitud_id_title"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="/api/solicitudes/actualizar" id="formEditarSolicitud">
+          <input type="hidden" name="id_solicitud" id="edit_id_solicitud" value="">
+
+          <div class="mb-3">
+            <label for="edit_estatus_solicitud" class="form-label fw-semibold">Estatus de la solicitud</label>
+            <select class="form-select" name="estatus_solicitud" id="edit_estatus_solicitud" required>
+              <option value="Pendiente">Pendiente</option>
+              <option value="En Proceso">En Proceso</option>
+              <option value="Completada">Completada</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label for="edit_problematica" class="form-label fw-semibold">Problemática</label>
+            <textarea class="form-control" name="problematica" id="edit_problematica" rows="4" required></textarea>
+          </div>
+
+          <div class="text-center">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="btnGuardarEdicion"><i class="bi bi-save"></i> Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='js/solicitud.js') }}"></script>
+<script>
+  const laraData = {
+    "Iribarren": ["Aguedo Felipe Alvarado", "Buena Vista", "Catedral", "Concepción", "El Cují", "Juares", "Guerrera Ana Soto (Juan de Villegas)", "Santa Rosa", "Tamaca", "Unión"],
+    "Palavecino": ["Cabudare", "José Gregorio Bastidas", "Agua Viva"],
+    "Jiménez": ["Cuicas", "Tintorero", "San Miguel", "Quíbor", "Coronel Mariano Peraza", "Paraíso de San José", "Cabo José Bernardo Dorante", "Coronel Mariano Peraza"],
+    "Morán": ["Anzoátegui", "Bolívar", "Guárico", "Hilario Luna y Luna", "Humocaro Alto", "Humocaro Bajo", "La Candelaria", "Morán"],
+    "Crespo": ["Freitez", "José María Blanco"],
+    "Urdaneta": ["Xaguas", "Siquisique", "San Miguel", "Moroturo"],
+    "Simón Planas": ["Buría", "Gustavo Vegas León", "Sarare"],
+    "Andrés Eloy Blanco": ["Pío Tamayo", "Yacambú", "Quebrada Honda de Guache"],
+    "Torres": ["Altagracia", "Antonio Díaz", "Camacaro", "Castañeda", "Cecilio Zubillaga", "Chiquinquirá", "El Blanco", "Espinoza de los Monteros", "Heriberto Arroyo", "Las Mercedes", "Manuel Morillo", "Montaña Verde", "Montes de Oca", "Reyes Vargas", "Trinidad Samuel", "Xaguas"]
+  };
+
+  function actualizarParroquias(idSelectMunicipio, idSelectParroquia) {
+    const municipioSelect = document.getElementById(idSelectMunicipio);
+    const parroquiaSelect = document.getElementById(idSelectParroquia);
+    const municipio = municipioSelect.value;
+    
+    parroquiaSelect.innerHTML = '<option value="" selected disabled>Seleccione Parroquia...</option>';
+    
+    if (municipio && laraData[municipio]) {
+      parroquiaSelect.disabled = false;
+      laraData[municipio].sort().forEach(parroquia => {
+        const option = document.createElement('option');
+        option.value = parroquia;
+        option.textContent = parroquia;
+        parroquiaSelect.appendChild(option);
+      });
+    } else {
+      parroquiaSelect.disabled = true;
+    }
+  }
+</script>
+
+<script src="{{ url_for('static', filename='js/solicitud_ajax.js') }}"></script>
+<script>
+  function formatPhone(input) {
+    let val = input.value.replace(/\D/g, ''); // Remover todo lo que no sea número
+    if (val.length > 4) {
+      val = val.substring(0, 4) + '-' + val.substring(4, 11);
+    }
+    input.value = val;
+  }
+</script>
 {% endblock %}

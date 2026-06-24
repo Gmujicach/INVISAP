@@ -395,6 +395,51 @@ def api_obtener_solicitudes_json():
     else:
         return jsonify([]), 401
 
+@home_bp.route('/api/solicitudes/crear', methods=['POST'])
+def api_crear_solicitud():
+    if 'conectado' not in session:
+        return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
+
+    resultado = crear_solicitud(request.form)
+    if resultado.get('success'):
+        return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud creada'), 'id': resultado.get('id')}), 200
+    return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo crear la solicitud')}), 400
+
+@home_bp.route('/api/solicitudes/<int:id_solicitud>', methods=['GET'])
+def api_obtener_solicitud(id_solicitud):
+    if 'conectado' not in session:
+        return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
+
+    solicitud = obtener_solicitud_por_id(id_solicitud)
+    if solicitud:
+        return jsonify({'status': 'success', 'data': solicitud}), 200
+    return jsonify({'status': 'error', 'message': 'Solicitud no encontrada'}), 404
+
+@home_bp.route('/api/solicitudes/actualizar', methods=['PUT', 'POST'])
+def api_actualizar_solicitud():
+    if 'conectado' not in session:
+        return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
+
+    datos = request.form if request.form else request.get_json(silent=True) or {}
+    id_solicitud = datos.get('id_solicitud') or datos.get('id')
+    if not id_solicitud:
+        return jsonify({'status': 'error', 'message': 'ID de solicitud requerido'}), 400
+
+    resultado = actualizar_solicitud(id_solicitud, datos)
+    if resultado.get('success'):
+        return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud actualizada')}), 200
+    return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo actualizar la solicitud')}), 400
+
+@home_bp.route('/api/solicitudes/eliminar/<int:id_solicitud>', methods=['DELETE'])
+def api_eliminar_solicitud(id_solicitud):
+    if 'conectado' not in session:
+        return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
+
+    resultado = eliminar_solicitud(id_solicitud)
+    if resultado.get('success'):
+        return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud eliminada')}), 200
+    return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo eliminar la solicitud')}), 400
+
 
 ### Contratacion
 
