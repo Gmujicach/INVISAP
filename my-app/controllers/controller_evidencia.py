@@ -1,6 +1,8 @@
 """
 Controller de Evidencias - Implementa comunicación asíncrona con Fetch/Ajax.
+Rutas de vistas y API.
 """
+
 from flask import Blueprint, render_template, request, jsonify, session, flash, redirect, url_for
 from models.model_evidencia import EvidenciaModel
 
@@ -8,7 +10,6 @@ evidencia_bp = Blueprint('evidencia_bp', __name__, template_folder='../vista')
 
 
 # ========== RUTAS DE VISTAS (GET) ==========
-
 @evidencia_bp.route('/evidencias/registrar', methods=['GET'])
 def show_registrar_evidencia():
     """Muestra el formulario de registro de evidencias."""
@@ -48,7 +49,6 @@ def show_modificar_evidencia(id_evidencia):
 
 
 # ========== RUTAS API (POST/DELETE) - Comunicación Asíncrona ==========
-
 @evidencia_bp.route('/api/evidencias/subir', methods=['POST'])
 def api_subir_evidencias():
     """
@@ -62,29 +62,21 @@ def api_subir_evidencias():
         files = request.files.getlist('fotos')
         form_data = request.form
 
-        # [DEBUG] Loguear archivos recibidos
-        print(f"[DEBUG:api_subir_evidencias] Archivos recibidos: {len(files)}")
-        for i, f in enumerate(files):
-            print(f"[DEBUG:api_subir_evidencias] Archivo {i}: nombre={f.filename!r}, content_type={f.content_type!r}")
-        print(f"[DEBUG:api_subir_evidencias] form_data keys: {list(form_data.keys())}")
+        print(f"[DEBUG] Archivos recibidos: {len(files)}")
+        for f in files:
+            print(f"  - {f.filename}, tamaño: {f.content_length}, tipo: {f.content_type}")
 
-        # Validación básica
         if not files:
-            return jsonify({
-                'status': 'error',
-                'message': 'No se recibieron archivos.'
-            }), 400
-        
+            return jsonify({'status': 'error', 'message': 'No se recibieron archivos.'}), 400
+
         modelo = EvidenciaModel()
-        ids_nuevos = modelo.registrar_evidencias(files, form_data)
+        nuevo_id = modelo.registrar_evidencias(files, form_data)
 
-        print(f"[DEBUG:api_subir_evidencias] ids_nuevos={ids_nuevos!r}")
-
-        if ids_nuevos:
+        if nuevo_id:
             return jsonify({
                 'status': 'success',
-                'message': f'Se registraron {len(ids_nuevos)} evidencias correctamente.',
-                'ids': ids_nuevos
+                'message': f'Evidencias registradas correctamente (ID: {nuevo_id}).',
+                'id': nuevo_id
             })
         else:
             return jsonify({
@@ -93,17 +85,13 @@ def api_subir_evidencias():
             }), 500
 
     except ValueError as ve:
-        # Errores de validación (Regex, cantidad de imágenes, etc.)
-        print(f"[DEBUG:api_subir_evidencias] ValueError: {ve}")
+        print(f"[ERROR] ValueError: {ve}")
         return jsonify({'status': 'error', 'message': str(ve)}), 400
     except Exception as e:
+        print(f"[ERROR] Excepción general: {e}")
         import traceback
-        print(f"[DEBUG:api_subir_evidencias] Exception: {e}")
         traceback.print_exc()
-        return jsonify({
-            'status': 'error',
-            'message': 'Error interno del servidor.'
-        }), 500
+        return jsonify({'status': 'error', 'message': f'Error interno: {str(e)}'}), 500
 
 
 @evidencia_bp.route('/api/evidencias/actualizar/<int:id_evidencia>', methods=['POST'])
@@ -117,13 +105,17 @@ def api_actualizar_evidencia(id_evidencia):
     try:
         files = request.files.getlist('fotos')
         form_data = request.form
-        
+
+        print(f"[DEBUG] Actualizando ID {id_evidencia}, archivos: {len(files)}")
+        for f in files:
+            print(f"  - {f.filename}")
+
         if not files:
             return jsonify({
                 'status': 'error',
                 'message': 'Debe seleccionar al menos una imagen nueva.'
             }), 400
-        
+
         modelo = EvidenciaModel()
         
         # Validación de existencia en tiempo real
@@ -147,13 +139,13 @@ def api_actualizar_evidencia(id_evidencia):
             }), 500
 
     except ValueError as ve:
+        print(f"[ERROR] ValueError: {ve}")
         return jsonify({'status': 'error', 'message': str(ve)}), 400
     except Exception as e:
-        print(f"Error en api_actualizar_evidencia: {e}")
-        return jsonify({
-            'status': 'error',
-            'message': 'Error interno del servidor.'
-        }), 500
+        print(f"[ERROR] Excepción general: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'status': 'error', 'message': f'Error interno: {str(e)}'}), 500
 
 
 @evidencia_bp.route('/api/evidencias/validar/<int:id_evidencia>', methods=['GET'])
@@ -188,7 +180,7 @@ def eliminar_evidencia(id_evidencia):
     except ValueError as ve:
         flash(str(ve), 'error')
     except Exception as e:
-        print(f"Error al eliminar evidencia: {e}")
+        print(f"[ERROR] eliminar_evidencia: {e}")
         flash('Error interno del servidor.', 'error')
     
     return redirect(url_for('evidencia_bp.show_listar_evidencias'))

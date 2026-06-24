@@ -494,14 +494,14 @@ def procesar_registro():
         
         exito, mensaje = modelo.registrar_contrataciones(request.form)
         
+        # En lugar de flash y redirect, devolvemos JSON para que el JS (SweetAlert) lo entienda
         if exito:
-            flash(mensaje, 'success')
+            return jsonify({'status': 'success', 'message': mensaje})
         else:
-            flash(mensaje, 'error') 
+            return jsonify({'status': 'error', 'message': mensaje})
             
-        return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
-        
-    return redirect(url_for('login_bp.inicio'))
+    # Si no hay sesión, devolvemos un error en JSON
+    return jsonify({'status': 'error', 'message': 'Sesión expirada. Por favor, inicie sesión nuevamente.'}), 401
 
 
 @contrataciones_bp.route('/actualizar-contratacion', methods=['POST'])
@@ -512,13 +512,11 @@ def procesar_actualizacion():
         exito, mensaje = modelo.actualizar_contratacion(request.form)
         
         if exito:
-            flash(mensaje, 'success')
+            return jsonify({'status': 'success', 'message': mensaje})
         else:
-            flash(mensaje, 'error')
+            return jsonify({'status': 'error', 'message': mensaje})
             
-        return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
-        
-    return redirect(url_for('login_bp.inicio'))
+    return jsonify({'status': 'error', 'message': 'Sesión expirada. Por favor, inicie sesión nuevamente.'}), 401
 
 
 @contrataciones_bp.route('/eliminar-contratacion/<int:id>', methods=['GET'])

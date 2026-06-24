@@ -84,9 +84,9 @@
                 <label class="form-label fw-bold text-secondary">Tipo de Contrato</label>
                 <select class="form-select shadow-sm" id="tipo_contrato" name="tipo_contrato" required>
                   <option value="" disabled>Seleccione una opción...</option>
-                  <option value="Contrato de Obra" {% if contratacion.tipo_contrato == 'Contrato de Obra' %}selected{% endif %}>Contrato de Obra</option>
-                  <option value="Contrato de Servicio" {% if contratacion.tipo_contrato == 'Contrato de Servicio' %}selected{% endif %}>Contrato de Servicio</option>
-                  <option value="Contrato de Adquisición de Bienes" {% if contratacion.tipo_contrato == 'Contrato de Adquisición de Bienes' %}selected{% endif %}>Contrato de Adquisición de Bienes</option>
+                  <option value="Contrato de Obra" {% if contratacion.tipo_contrato == 'Contrato de Obra' %}selected{% endif %}>Obra</option>
+                  <option value="Contrato de Servicio" {% if contratacion.tipo_contrato == 'Contrato de Servicio' %}selected{% endif %}>Servicio</option>
+                  <option value="Contrato de Bienes" {% if contratacion.tipo_contrato == 'Contrato de Bienes' %}selected{% endif %}>Contrato de Bienes</option>
                 </select>
               </div>
             </div>
@@ -99,7 +99,7 @@
                   <option value="Concurso Abierto" {% if contratacion.modalidad == 'Concurso Abierto' %}selected{% endif %}>Concurso Abierto</option>
                   <option value="Concurso Cerrado" {% if contratacion.modalidad == 'Concurso Cerrado' %}selected{% endif %}>Concurso Cerrado</option>
                   <option value="Consulta de Precios" {% if contratacion.modalidad == 'Consulta de Precios' %}selected{% endif %}>Consulta de Precios</option>
-                  <option value="Adjudicación Directa" {% if contratacion.modalidad == 'Adjudicación Directa' %}selected{% endif %}>Adjudicación Directa</option>
+                  <option value="Contratación Directa" {% if contratacion.modalidad == 'Contratación Directa' %}selected{% endif %}>Contratación Directa</option>
                 </select>
               </div>
               <div class="col-md-4">

@@ -13,6 +13,7 @@
     --invilara-amarillo: #ffd60a;
     --invilara-amarillo-oscuro: #ffc300;
     --invilara-amarillo-claro: #ffea00;
+    --invilara-amarillo-placeholder: #cca025; /* Mostaza/Dorado para WCAG Compliance */
     --invilara-negro: #212529;
     --invilara-gris: #6c757d;
     --invilara-gris-claro: #e9ecef;
@@ -24,8 +25,8 @@
 /* ========== PLACEHOLDERS MEJORADOS (Prof. Escalona - OBLIGATORIO) ========== */
 .form-control::placeholder,
 .form-select::placeholder {
-    color: var(--invilara-amarillo-oscuro) !important;
-    opacity: 0.85;
+    color: var(--invilara-amarillo-placeholder) !important;
+    opacity: 0.95;
     font-style: italic;
     font-size: 0.9rem;
     font-weight: 500;
@@ -39,8 +40,8 @@
 
 /* Placeholder para textarea específicamente */
 textarea.form-control::placeholder {
-    color: var(--invilara-amarillo-oscuro) !important;
-    opacity: 0.8;
+    color: var(--invilara-amarillo-placeholder) !important;
+    opacity: 0.9;
     font-size: 0.85rem;
 }
 
@@ -123,14 +124,6 @@ textarea.form-control::placeholder {
     border-spacing: 0;
 }
 
-.table-informe-avance thead {
-    background: linear-gradient(135deg, var(--invilara-verde) 0%, var(--invilara-verde-claro) 100%);
-    color: var(--invilara-blanco);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
 .table-informe-avance thead th {
     border: none;
     padding: 1rem 0.75rem;
@@ -142,13 +135,6 @@ textarea.form-control::placeholder {
 
 .table-informe-avance tbody tr {
     transition: all 0.3s ease;
-}
-
-.table-informe-avance tbody tr:hover {
-    background-color: rgba(45, 106, 79, 0.08);
-    cursor: pointer;
-    transform: scale(1.01);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .table-informe-avance tbody td {
@@ -256,17 +242,6 @@ textarea.form-control::placeholder {
 
 .card-estadistica.bg-info {
     background: linear-gradient(135deg, #0dcaf0 0%, #31d2f2 100%);
-}
-
-/* Nuevos estilos de tarjetas sólidas sin degradado */
-.card-estadistica.card-aprobados {
-    background: var(--invilara-azul) !important;
-    color: var(--invilara-blanco) !important;
-}
-
-.card-estadistica.card-culminados {
-    background: var(--invilara-verde) !important;
-    color: var(--invilara-blanco) !important;
 }
 
 /* Nuevos estilos de tarjetas sólidas sin degradado */
@@ -625,6 +600,61 @@ html {
     border-color: var(--invilara-amarillo) !important;
 }
 
+/* ==========================================================================
+   REFACTORIZACIÓN: UNIFICACIÓN DE COLOR CORPORATIVO Y LEGIBILIDAD (MODO CLARO)
+   ========================================================================== */
+
+/* 1. Eliminar el degradado y forzar el verde sólido del formulario en la tabla */
+.table-informe-avance,
+.table-informe-avance thead,
+.table-informe-avance thead tr,
+.table-informe-avance tbody tr {
+    background: var(--invilara-verde) !important;
+    background-color: var(--invilara-verde) !important;
+    background-image: none !important; /* Aplasta por completo cualquier degradado anterior */
+    border-color: var(--invilara-verde-oscuro) !important;
+}
+
+/* 2. Forzar texto, enlaces, iconos y clases secundarias a blanco puro (#ffffff) */
+.table-informe-avance th,
+.table-informe-avance td,
+.table-informe-avance td a,
+.table-informe-avance td i,
+.table-informe-avance td span,
+.table-informe-avance td .text-muted,
+.table-informe-avance td .text-secondary {
+    color: #ffffff !important;
+}
+
+/* 3. Optimización del Hover: Feedback visual usando el verde oscuro de la paleta */
+.table-informe-avance tbody tr:hover {
+    background-color: var(--invilara-verde-oscuro) !important;
+    background-image: none !important;
+    cursor: pointer;
+}
+
+/* 4. Ajuste de contraste para Badges de estado dentro de la tabla */
+.table-informe-avance td .badge {
+    color: #ffffff !important; /* Texto blanco para badges generales */
+}
+
+.table-informe-avance td .badge.bg-warning {
+    color: var(--invilara-negro) !important; /* El badge amarillo requiere texto oscuro por norma WCAG */
+}
+
+/* 5. Tarjetas de Estadísticas (Aprobados, Ejecución, Culminados) Textos en blanco */
+.card-aprobados,
+.card-aprobados h6,
+.card-aprobados h3,
+.card-estadistica.bg-warning,
+.card-estadistica.bg-warning h6,
+.card-estadistica.bg-warning h3,
+.card-culminados,
+.card-culminados h6,
+.card-culminados h3 {
+    color: #ffffff !important;
+}
+
 /* ========== INTEGRACIÓN DEL MODO OSCURO (INVISAP) ========== */
 body.dark-mode {
     background-color: #232333 !important;
@@ -649,7 +679,7 @@ body.dark-mode .table-informe-avance {
 }
 
 body.dark-mode .table-informe-avance thead {
-    background: linear-gradient(135deg, var(--invilara-verde-oscuro) 0%, var(--invilara-verde) 100%) !important;
+    background: var(--invilara-verde-oscuro) !important; /* Se mantiene un tono oscuro acorde al tema */
     color: #ffffff !important;
 }
 
