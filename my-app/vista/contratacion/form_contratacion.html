@@ -146,45 +146,57 @@
             <div class="row mb-3">
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Número Contrato</label>
-                    <input type="text" name="numero_contrato" class="form-control shadow-sm" required>
+                    <input type="text" id="numero_contrato" name="numero_contrato" class="form-control shadow-sm" minlength="3" maxlength="12" required>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Monto</label>
-                    <input type="text" name="monto" class="form-control shadow-sm" placeholder="Ej: 1000.00" required>
+                    <input type="text" id="monto" name="monto" class="form-control shadow-sm" placeholder="Ej: 1000.00" minlength="3" maxlength="20" required>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Tipo de Contrato</label>
-                    <input type="text" name="tipo_contrato" class="form-control shadow-sm" required>
+                    <select id="tipo_contrato" name="tipo_contrato" class="form-select shadow-sm" required>
+                        <option value="" disabled selected>Seleccione una opción...</option>
+                        <option value="Contrato de Obra">Contrato de Obra</option>
+                        <option value="Contrato de Servicio">Contrato de Servicio</option>
+                        <option value="Contrato de Adquisición de Bienes">Contrato de Adquisición de Bienes</option>
+                    </select>
                 </div>
-            </div>
-
-            <div class="row mb-3">
+            </div> <div class="row mb-3">
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Modalidad</label>
-                    <input type="text" name="modalidad" class="form-control shadow-sm" required>
+                    <select id="modalidad" name="modalidad" class="form-select shadow-sm" required>
+                        <option value="" disabled selected>Seleccione una opción...</option>
+                        <option value="Concurso Abierto">Concurso Abierto</option>
+                        <option value="Concurso Cerrado">Concurso Cerrado</option>
+                        <option value="Consulta de Precios">Consulta de Precios</option>
+                        <option value="Adjudicación Directa">Adjudicación Directa</option>
+                    </select>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Objeto</label>
-                    <input type="text" name="objeto" class="form-control shadow-sm" required>
+                    <select id="objeto" name="objeto" class="form-select shadow-sm" required>
+                        <option value="" disabled selected>Seleccione una opción...</option>
+                        <option value="Ejecución de Obras">Ejecución de Obras</option>
+                        <option value="Prestación de Servicios">Prestación de Servicios</option>
+                        <option value="Suministro de Bienes">Suministro de Bienes</option>
+                    </select>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Observación</label>
-                    <input type="text" name="observacion" class="form-control shadow-sm" required>
+                    <input type="text" id="observacion" name="observacion" class="form-control shadow-sm" required>
                 </div>
-            </div>
-
-            <div class="row mb-3">
+            </div> <div class="row mb-3">
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Inicio Procedimiento</label>
-                    <input type="date" name="fecha_inicio_procedimiento" class="form-control shadow-sm" required>
+                    <input type="date" id="fecha_inicio_procedimiento" name="fecha_inicio_procedimiento" class="form-control shadow-sm" required>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Fecha Adjudicación</label>
-                    <input type="date" name="fecha_adjudicacion" class="form-control shadow-sm" required>
+                    <input type="date" id="fecha_adjudicacion" name="fecha_adjudicacion" class="form-control shadow-sm" required>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Fecha Registro</label>
-                    <input type="date" name="fecha_registro" class="form-control shadow-sm" required>
+                    <input type="date" id="fecha_registro" name="fecha_registro" class="form-control shadow-sm" required>
                 </div>
             </div>
 

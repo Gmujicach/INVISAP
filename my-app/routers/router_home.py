@@ -398,14 +398,40 @@ def api_obtener_solicitudes_json():
 
 ### Contratacion
 
+@contrataciones_bp.route('/form-contratacion', methods=['GET'])
+def viewFormContratacion():
+    if 'conectado' in session:
+        return render_template('contrataciones/form_contratacion.html')
+    return redirect(url_for('login_bp.inicio'))
+
 @contrataciones_bp.route('/contrataciones', methods=['GET'])
 def gestionar_contrataciones():
     if 'conectado' in session:
         modelo = ContratacionModel()
         lista = modelo.obtener_todas_las_contrataciones()
-        
+        # Estado = 1
         return render_template('contratacion/form_contratacion.html', contrataciones=lista)
+    return redirect(url_for('login_bp.inicio'))
+
+@contrataciones_bp.route('/editar-contratacion/<int:id>', methods=['GET'])
+def vista_editar(id):
+    if 'conectado' in session:
+        modelo = ContratacionModel()
+        contratacion_data = modelo.obtener_contratacion_por_id(id)
         
+        if contratacion_data:
+            campos_fecha = ['fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro']
+            for campo in campos_fecha:
+                if contratacion_data.get(campo):
+                    if hasattr(contratacion_data[campo], 'strftime'):
+                        contratacion_data[campo] = contratacion_data[campo].strftime('%Y-%m-%d')
+                    else:
+                        contratacion_data[campo] = str(contratacion_data[campo])[:10]
+            
+            return render_template('contratacion/form_contratacionM.html', contratacion=contratacion_data)
+        
+        flash('Contratación no encontrada o ha sido eliminada.', 'error')
+        return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
     return redirect(url_for('login_bp.inicio'))
 
 @contrataciones_bp.route('/api/obtener-empresas-json', methods=['GET'])
@@ -420,38 +446,16 @@ def obtener_empresas_json():
 def procesar_registro():
     if 'conectado' in session:
         modelo = ContratacionModel()
-        if modelo.registrar_contrataciones(request.form):
-            flash('Contratacion Registrada correctamente', 'success')
+        
+        exito, mensaje = modelo.registrar_contrataciones(request.form)
+        
+        if exito:
+            flash(mensaje, 'success')
         else:
-            flash('Error al guardar', 'error')
+            flash(mensaje, 'error') 
             
-
         return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
         
-    return redirect(url_for('login_bp.inicio'))
-
-
-@contrataciones_bp.route('/editar-contratacion/<int:id>', methods=['GET'])
-def vista_editar(id):
-    if 'conectado' in session:
-        modelo = ContratacionModel()
-        contratacion_data = modelo.obtener_contratacion_por_id(id)
-        
-        if contratacion_data:
-            
-            campos_fecha = ['fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro']
-            
-            for campo in campos_fecha:
-                if contratacion_data.get(campo):
-                    if hasattr(contratacion_data[campo], 'strftime'):
-                        contratacion_data[campo] = contratacion_data[campo].strftime('%Y-%m-%d')
-                    else:
-                        contratacion_data[campo] = str(contratacion_data[campo])[:10]
-            
-            return render_template('contratacion/form_contratacionM.html', contratacion=contratacion_data)
-        
-        flash('Contratación no encontrada', 'error')
-        return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
     return redirect(url_for('login_bp.inicio'))
 
 
@@ -459,12 +463,18 @@ def vista_editar(id):
 def procesar_actualizacion():
     if 'conectado' in session:
         modelo = ContratacionModel()
-        if modelo.actualizar_contratacion(request.form):
-            flash('Contratación modificada correctamente', 'success')
+        
+        exito, mensaje = modelo.actualizar_contratacion(request.form)
+        
+        if exito:
+            flash(mensaje, 'success')
         else:
-            flash('Error al intentar actualizar el registro', 'error')
+            flash(mensaje, 'error')
+            
         return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
+        
     return redirect(url_for('login_bp.inicio'))
+
 
 @contrataciones_bp.route('/eliminar-contratacion/<int:id>', methods=['GET'])
 def eliminar_contratacion(id):
@@ -472,9 +482,9 @@ def eliminar_contratacion(id):
         modelo = ContratacionModel()
         
         if modelo.eliminar_contratacion(id):
-            flash('Contratación eliminada correctamente', 'success')
+            flash('Contratación eliminada correctamente (Archivada)', 'success')
         else:
-            flash('No se pudo eliminar la contratación o está vinculada a otro registro', 'error')
+            flash('Error al intentar eliminar el registro.', 'error')
             
         return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
         
@@ -492,13 +502,11 @@ def viewFormInspectores():
 @home_bp.route('/registrar-empresas', methods=['GET'])
 def viewFormEmpresa():
     if 'conectado' in session:
-        # Sacamos los datos de la sesión (si los hay)
         datos_formulario = session.pop('form_empresa', None)
         
         from models.model_empresas import EmpresaModel
         modelo = EmpresaModel()
         
-        # AQUÍ ESTÁ EL CAMBIO: Le pasamos la variable al HTML
         return render_template(f'{PATH_URLE}/form_empresa.html', datos_form=datos_formulario)
     else:
         flash('Primero debes iniciar sesión.', 'error')
@@ -508,10 +516,8 @@ def viewFormEmpresa():
 def procesar_registro():
     from controllers.controller_empresa import procesar_registro_empresa
     
-    # Tu controlador ya hace todo el trabajo y devuelve (exito, mensaje, categoria)
     exito, mensaje, categoria = procesar_registro_empresa(request.form)
     
-    # En lugar de usar flash() y redirect(), le respondemos directamente al JavaScript
     return jsonify({
         'exito': exito,
         'mensaje': mensaje,
@@ -547,7 +553,6 @@ def update_empresa():
     from controllers.controller_empresa import update_empresa
     
     if update_empresa(request.form):
-        # Respondemos con JSON en lugar de flash/redirect
         return jsonify({'exito': True, 'mensaje': 'Empresa actualizada correctamente.'})
     else:
         return jsonify({'exito': False, 'mensaje': 'Error al actualizar la empresa.', 'categoria': 'error'})
@@ -570,7 +575,7 @@ def viewBitacora():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-    # Obtener filtros opcionales
+    # Obtener filtros
     filtro_usuario = request.args.get('usuario', '').strip()
     filtro_modulo = request.args.get('modulo', '').strip()
     filtro_accion = request.args.get('accion', '').strip()
