@@ -228,3 +228,39 @@ class ProyectoModel:
             return False
         finally:
             if conexion: conexion.close()
+
+    def obtener_contadores_proyectos(self):
+        conexion = None
+        try:
+            conexion = connectionBD()
+            cursor = conexion.cursor(dictionary=True)
+            
+            sql = """SELECT s.tipo_solicitud 
+                     FROM proyecto p
+                     INNER JOIN proyecto_has_solicitudes phs ON p.codigo_proyecto = phs.proyecto_codigo_proyecto
+                     INNER JOIN solicitudes s ON phs.solicitudes_id_solicitudes = s.id_solicitudes"""
+            cursor.execute(sql)
+            proyectos_vinculados = cursor.fetchall()
+            
+            total_registrados = len(proyectos_vinculados)
+            en_proceso = 0
+            completadas = 0
+            
+            for item in proyectos_vinculados:
+                estado = str(item.get('tipo_solicitud', '')).lower()
+                if 'proceso' in estado:
+                    en_proceso += 1
+                elif 'completa' in estado or 'finalizado' in estado:
+                    completadas += 1
+            
+            return {
+                'total_registrados': total_registrados,
+                'en_proceso': en_proceso,
+                'completadas': completadas,
+                'total': total_registrados
+            }
+        except Exception as e:
+            print(f"Error en ProyectoModel.obtener_contadores_proyectos: {e}")
+            return {'total_registrados': 0, 'en_proceso': 0, 'completadas': 0, 'total': 0}
+        finally:
+            if conexion: conexion.close()

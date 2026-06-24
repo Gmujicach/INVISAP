@@ -321,10 +321,21 @@ def viewFormPrioridad():
 @home_bp.route('/gestionar-proyectos', methods=['GET'])
 def viewFormProyectos():
     if 'conectado' in session:
-        proyectos = listar_proyectos_controller()
+        # 1. Llamamos a tu controlador modificado para capturar la tupla (proyectos, contadores)
+        proyectos, contadores = listar_proyectos_controller()
+        
+        # 2. Las demás consultas se mantienen igual
         maquinarias = listar_maquinarias_controller()
-        solicitudes = obtener_solicitudes()  # Se traen las solicitudes para visualizarlas en el listar de proyectos
-        return render_template(f'{PATH_URL_PROY}/proyectos.html', proyectos=proyectos, maquinarias=maquinarias, solicitudes=solicitudes)
+        solicitudes = obtener_solicitudes()  
+        
+        # 3. Enviamos 'contadores=contadores' a la plantilla HTML
+        return render_template(
+            f'{PATH_URL_PROY}/proyectos.html', 
+            proyectos=proyectos, 
+            maquinarias=maquinarias, 
+            solicitudes=solicitudes,
+            contadores=contadores
+        )
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
