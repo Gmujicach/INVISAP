@@ -137,12 +137,23 @@
         <div data-i18n="Tables">Informe Avance de Obra</div>
       </a>
     </li>
-    <li
-      class="menu-item {% if request.path == '/registrar-publicaciones' %} active {% endif %}">
-      <a href="{{ url_for('home_bp.viewFormPublicaciones') }}" class="menu-link">
-        <i class="menu-icon bi bi-person-bounding-box"></i>
-        <div data-i18n="Basic">Registrar Publicaciones</div>
+  <li class="menu-item {% if request.path in ['/registrar-publicaciones', '/lista-publicaciones'] %} active open {% endif %}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon bi bi-journal-text"></i>
+        <div data-i18n="Publicaciones">Gestionar Publicaciones</div>
       </a>
+      <ul class="menu-sub">
+        <li class="menu-item {% if request.path == '/registrar-publicaciones' %} active {% endif %}">
+          <a href="{{ url_for('home_bp.viewFormPublicaciones') }}" class="menu-link">
+            <div data-i18n="Basic">Registrar Publicación</div>
+          </a>
+        </li>
+        <li class="menu-item {% if request.path == '/lista-publicaciones' %} active {% endif %}">
+          <a href="{{ url_for('home_bp.lista_publicaciones') }}" class="menu-link">
+            <div data-i18n="Basic">Lista de Publicaciones</div>
+          </a>
+        </li>
+      </ul>
     </li>
     <li
       class="menu-item {% if request.path == '/administrar-respaldos' %} active {% endif %}">

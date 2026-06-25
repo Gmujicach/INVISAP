@@ -13,7 +13,7 @@ from controllers.funciones_solicitud import (
     actualizar_solicitud, eliminar_solicitud
 )
 from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, obtener_estadisticas_bitacora
-from models.model_publicacion import PublicacionModel
+from models.model_publicaciones import PublicacionModel
 from services.bitacora_service import BitacoraService
 from controllers.EmpleadoController import empleado_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
@@ -122,6 +122,9 @@ def api_eliminar_publicacion(id_pub):
 
 @home_bp.route('/form-registrar-publicacion', methods=['POST'])
 def formRegistrarPublicacion():
+    # Importamos datetime aquí para asegurar que funcione sin modificar la cabecera del archivo
+    from datetime import datetime 
+
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -129,29 +132,42 @@ def formRegistrarPublicacion():
     try:
         data = request.form
         modelo = PublicacionModel()
-        # Soportar ambos nombres posibles del campo (id_informe o evidencias)
+        
+        # Soportar el ID del informe que viene del HTML
         id_inf = data.get('id_informe') or data.get('evidencias')
         
-        # Validación de existencia en tiempo real (Backend)
+        # Validación 1: Verificar que el usuario realmente seleccionó un informe
+        if not id_inf:
+            flash('Debe seleccionar un Informe de Avance de Obra válido.', 'warning')
+            return redirect(url_for('home_bp.viewFormPublicaciones'))
+
+        # Validación 2: Verificar que el informe existe en la BD
         if not modelo.validar_informe_activo(id_inf):
             flash('El informe seleccionado no existe o fue eliminado.', 'error')
             return redirect(url_for('home_bp.viewFormPublicaciones'))
 
-        # Aplicación de setters con validación Regex integrada
-        modelo.titulo = data.get('titulo_publicacion')
-        modelo.responsable = data.get('nombre_responsable') or data.get('autor_publicacion')
-        modelo.tipo = data.get('tipo_publicacion')
-        modelo.id_informe = id_inf
+        # Armamos el diccionario con las llaves que espera nuestro modelo SQL corregido
+        datos_insertar = {
+            'titulo_publicacion': data.get('titulo_publicacion'),
+            'nombre_responsable': data.get('nombre_responsable') or data.get('autor_publicacion'),
+            'tipo_publicacion': data.get('tipo_publicacion', 'General'),
+            'fecha_publicacion': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'informe_avance_obra_id_informe': id_inf
+        }
         
-        if modelo.guardar():
+        # Llamamos a la BD
+        resultado = modelo.registrar_publicacion(datos_insertar)
+        
+        if resultado > 0:
             flash('Publicación registrada correctamente', 'success')
         else:
-            flash('Error al guardar la publicación en la base de datos.', 'error')
-    except ValueError as ve:
-        flash(f'Error de validación: {str(ve)}', 'error')
+            flash('Error al guardar la publicación. Revisa la consola para más detalles.', 'error')
+            
     except Exception as e:
-        print(f"Error al registrar publicación: {e}")
-        flash('Error interno del servidor al registrar la publicación.', 'error')
+        # Imprimimos en consola para ti como desarrollador
+        print(f"Error CRÍTICO al registrar publicación: {e}")
+        # Mostramos el error real en la pantalla para no tener que adivinar
+        flash(f'Error del sistema: {str(e)}', 'error')
         
     return redirect(url_for('home_bp.viewFormPublicaciones'))
 
@@ -169,24 +185,32 @@ def viewEditarPublicacion(id_publicacion):
 
 @home_bp.route('/actualizar-publicacion', methods=['POST'])
 def formActualizarPublicacion():
-    if 'conectado' in session:
-        try:
-            data = request.form
-            modelo = PublicacionModel(id_publicacion=data.get('id_publicaciones'))
-            modelo.titulo = data.get('titulo_publicacion')
-            modelo.responsable = data.get('nombre_responsable') or data.get('autor_publicacion')
-            modelo.tipo = data.get('tipo_publicacion', 'Noticia')
-            modelo.id_informe = data.get('id_informe') or data.get('evidencias')
-            
-            if modelo.actualizar():
-                flash('Publicación actualizada correctamente', 'success')
-            else:
-                flash('Error al actualizar', 'error')
-        except ValueError as ve:
-            flash(str(ve), 'error')
-        return redirect(url_for('home_bp.viewFormPublicaciones'))
-    return redirect(url_for('login_bp.inicio'))
+    if 'conectado' not in session:
+        return redirect(url_for('login_bp.inicio'))
+        
+    try:
+        data = request.form
+        # Capturamos el ID del input hidden que corregimos antes
+        id_pub = data.get('id_publicacion')
+        
+        if not id_pub:
+            flash('Error: No se pudo identificar la publicación a actualizar.', 'error')
+            return redirect(url_for('home_bp.viewFormPublicaciones'))
 
+        modelo = PublicacionModel()
+        
+        # Pasamos el ID y el diccionario de datos al modelo
+        if modelo.actualizar_publicacion(id_pub, data) > 0:
+            flash('Publicación actualizada correctamente', 'success')
+        else:
+            flash('No se realizaron cambios o hubo un error en la base de datos.', 'warning')
+            
+    except Exception as e:
+        print(f"Error técnico en actualización: {e}")
+        flash(f'Error al actualizar: {str(e)}', 'error')
+        
+    return redirect(url_for('home_bp.viewFormPublicaciones'))
+    
 @home_bp.route('/eliminar-publicacion/<int:id_publicacion>', methods=['GET'])
 def eliminarPublicacion(id_publicacion):
     """Maneja la eliminación lógica desde enlaces GET."""
@@ -198,6 +222,36 @@ def eliminarPublicacion(id_publicacion):
             flash('No se pudo eliminar la publicación.', 'error')
         return redirect(url_for('home_bp.viewFormPublicaciones'))
     return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/lista-publicaciones', methods=['GET'])
+def lista_publicaciones():
+    if 'conectado' not in session:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    
+    # Instanciamos el modelo para obtener los datos
+    modelo = PublicacionModel()
+    publicaciones = modelo.obtener_todas_las_publicaciones()
+    
+    # Calculamos las estadísticas leyendo los resultados
+    activas = 0
+    inactivas = 0
+    
+    for p in publicaciones:
+        # El estado 1 representa Activo en la BD
+        if p.get('estado') == 1 or str(p.get('estado')).lower() == 'activo':
+            activas += 1
+        else:
+            inactivas += 1
+            
+    estadisticas = {
+        'Activas': activas,
+        'Inactivas': inactivas
+    }
+    
+    return render_template(f'{PATH_URL_PUB}/lista_publicaciones.html', 
+                           publicaciones=publicaciones, 
+                           estadisticas=estadisticas)
 
 @home_bp.route('/administrar-respaldos', methods=['GET'])
 def viewFormRespaldos():
