@@ -298,10 +298,14 @@
 {% endblock %} 
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/proyectoregister.js') }}"></script>
+
 <script>
+// 2. Control de la carga de Solicitudes Activas vía AJAX (Fetch)
 document.getElementById('btnCargarSolicitudes').addEventListener('click', function() {
     const tablaCuerpo = document.getElementById('tablaSolicitudesCuerpo');
     
+    // Mostramos el loader interno animado
     tablaCuerpo.innerHTML = `
         <tr>
             <td colspan="7" class="text-center text-muted py-4">
@@ -310,16 +314,17 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
             </td>
         </tr>`;
 
+    // Realizamos la petición a tu endpoint de Flask
     fetch("{{ url_for('home_bp.api_obtener_solicitudes_json') }}")
         .then(response => {
-            if (!response.ok) throw new Error('Error en el servidor');
+            if (!response.ok) throw new Error('Error en la respuesta del servidor');
             return response.json();
         })
         .then(data => {
             let contenidoHTML = ''; 
 
-            if (data.length === 0) {
-                tablaCuerpo.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">No hay solicitudes registradas.</td></tr>`;
+            if (!data || data.length === 0) {
+                tablaCuerpo.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">No hay solicitudes registradas en este momento.</td></tr>`;
                 return;
             }
 
@@ -335,6 +340,11 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
                     badgeHTML = `<span class="badge bg-secondary">${estatus || 'N/A'}</span>`;
                 }
 
+                // Escapamos comillas simples para evitar rupturas de strings en el onclick
+                const nomSolicitante = (s.nombre_solicitante || s.solicitante || '').replace(/'/g, "\\'");
+                const tSolicitud = (s.tipo_solicitud || s.tipo || '').replace(/'/g, "\\'");
+                const prob = (s.problematica || s.problematica_solicitud || '').replace(/'/g, "\\'");
+
                 contenidoHTML += `
                     <tr>
                         <td>${index + 1}</td>
@@ -345,7 +355,7 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
                         <td>${s.fecha || s.fecha_solicitud || s.fecha_registro || '—'}</td>
                         <td class="text-center">
                             <button type="button" class="btn btn-outline-primary btn-sm" 
-                                    onclick="seleccionarSolicitud('${s.id_solicitud}', '${(s.nombre_solicitante || s.solicitante || '').replace(/'/g, "\\'")}', '${(s.tipo_solicitud || s.tipo || '').replace(/'/g, "\\'")}', '${(s.problematica || s.problematica_solicitud || '').replace(/'/g, "\\'")}')">
+                                    onclick="seleccionarSolicitud('${s.id_solicitud}', '${nomSolicitante}', '${tSolicitud}', '${prob}')">
                                 <i class="bx bx-check"></i> Seleccionar
                             </button>
                         </td>
@@ -360,25 +370,35 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
                 <tr>
                     <td colspan="7" class="text-center text-danger py-4">
                         <i class="bx bx-error-circle me-1 fs-5 align-middle"></i> 
-                        Error al conectar con el servidor. Por favor, verifique su sesión.
+                        Error al conectar con el servidor de Invilara.
                     </td>
                 </tr>`;
         });
 });
 
+// 3. Función limpia para alternar modales sin romper el DOM ni congelar los inputs
 function seleccionarSolicitud(id, solicitante, tipo, problematica) {
     document.getElementById('solicitud_id_p').value = id;
     document.getElementById('solicitante_p').value = solicitante;
     document.getElementById('tipo_solicitud_p').value = tipo;
     document.getElementById('problematica_p').value = problematica;
 
-    const modalSolicitudes = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalSolicitudes'));
-    modalSolicitudes.hide();
-    
-    const modalRegistro = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalRegistrarProyecto'));
-    modalRegistro.show();
+    // Obtenemos instancias de los modales mediante Bootstrap JS nativo
+    const modalSolicitudesEl = document.getElementById('modalSolicitudes');
+    const modalRegistroEl = document.getElementById('modalRegistrarProyecto');
+
+    const instanceSolicitudes = bootstrap.Modal.getInstance(modalSolicitudesEl) || new bootstrap.Modal(modalSolicitudesEl);
+    const instanceRegistro = bootstrap.Modal.getInstance(modalRegistroEl) || new bootstrap.Modal(modalRegistroEl);
+
+    // Ocultamos de forma controlada y esperamos que termine la transición para abrir el formulario
+    instanceSolicitudes.hide();
+    modalSolicitudesEl.addEventListener('hidden.bs.modal', function bienOcultado() {
+        instanceRegistro.show();
+        modalSolicitudesEl.removeEventListener('hidden.bs.modal', bienOcultado); // Evita duplicar triggers
+    });
 }
 
+// 4. Lógica para el modal informativo de Detalles del Proyecto
 const modalDetalleProyecto = document.getElementById('modalDetalleProyecto');
 if (modalDetalleProyecto) {
     modalDetalleProyecto.addEventListener('show.bs.modal', function (event) {
@@ -395,17 +415,5 @@ if (modalDetalleProyecto) {
         document.getElementById('det_costo').textContent = button.getAttribute('data-costo');
     });
 }
-
-document.getElementById('formRegistrarProyecto').addEventListener('submit', function(event) {
-    const solicitudIdInput = document.getElementById('solicitud_id_p');
-    const errorMessageDiv = document.getElementById('solicitud_error_message');
-
-    if (!solicitudIdInput.value) {
-        event.preventDefault();
-        errorMessageDiv.classList.remove('d-none');
-    } else {
-        errorMessageDiv.classList.add('d-none');
-    }
-});
 </script>
 {% endblock %}

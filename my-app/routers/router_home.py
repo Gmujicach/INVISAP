@@ -376,27 +376,16 @@ def viewEditarProyecto(codigo_proyecto):
 @home_bp.route('/actualizar-proyecto', methods=['POST'])
 def formActualizarProyecto():
     if 'conectado' in session:
+        # IMPORTANTE: Importamos el controlador, NO el modelo directo
         from controllers.funciones_proyecto import actualizar_proyecto_controller
         
         codigo_proyecto_actual = request.form.get('codigo_proyecto_actual')
         
-        print("====== CONTROL DE EDICIÓN ======")
-        print(f"1. Código actual recibido en ruta: {codigo_proyecto_actual}")
-        print(f"2. Parámetros del Formulario: {dict(request.form)}")
-        
-        # Guardamos el resultado del controlador
-        resultado = actualizar_proyecto_controller(codigo_proyecto_actual, request.form, session)
-        
-        print(f"3. ¿Qué devolvió el controlador?: {resultado}")
-        print("=================================")
-        
-        if resultado:
+        # Ejecutamos la lógica que sí incluye el guardado en BitacoraService
+        if actualizar_proyecto_controller(codigo_proyecto_actual, request.form, session):
             flash('Proyecto actualizado satisfactoriamente.', 'success')
-            session['ignorar_proximo_ver'] = True
         else:
             flash('Error al actualizar el proyecto.', 'error')
-            # Forzamos la sesión aquí también para ver si el fallo de la BD nos mete el VER
-            session['ignorar_proximo_ver'] = True
             
         return redirect(url_for('home_bp.viewFormProyectos'))
     return redirect(url_for('login_bp.inicio'))
