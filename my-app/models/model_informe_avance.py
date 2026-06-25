@@ -144,7 +144,7 @@ class InformeAvanceModel:
             # Consulta parametrizada (seguridad contra inyección)
             sql = """
                 INSERT INTO informe_avance_obra 
-                (fecha, estado, poblacion_benefiada, tipo_informe, 
+                (fecha, estado, poblacion_beneficiada, tipo_informe, 
                  evidencia_antes, evidencia_durante, evidencia_despues, avance_id_avance)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """
@@ -193,7 +193,7 @@ class InformeAvanceModel:
             
             sql = """
                 UPDATE informe_avance_obra 
-                SET estado = %s, poblacion_benefiada = %s, tipo_informe = %s,
+                SET estado = %s, poblacion_beneficiada = %s, tipo_informe = %s,
                     evidencia_antes = %s, evidencia_durante = %s, evidencia_despues = %s
                 WHERE id_informe = %s
             """

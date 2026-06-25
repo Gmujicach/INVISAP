@@ -1,0 +1,142 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | Lista de Publicaciones{% endblock %}
+{% block body %}
+
+<div class="container-fluid pt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold mb-1"><i class="bi bi-journal-text text-primary me-2"></i>Gestión de Publicaciones</h3>
+      <p class="text-muted mb-0">Visualice y administre todas las publicaciones registradas en el sistema</p>
+    </div>
+    <a href="{{ url_for('home_bp.viewFormPublicaciones') }}" class="btn btn-primary shadow-sm" style="border-radius: 30px;">
+      <i class="bi bi-plus-circle me-1"></i> Nueva Publicación
+    </a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-4" style="border-left: 4px solid #10b981;">
+        <div class="card-body">
+          <h6 class="text-muted text-uppercase mb-1" style="font-size: 0.8rem;">Activas</h6>
+          <h3 class="mb-0 fw-bold">{{ estadisticas.get('Activas', 0) }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-4" style="border-left: 4px solid #ef4444;">
+        <div class="card-body">
+          <h6 class="text-muted text-uppercase mb-1" style="font-size: 0.8rem;">Inactivas</h6>
+          <h3 class="mb-0 fw-bold">{{ estadisticas.get('Inactivas', 0) }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-4 bg-primary text-white">
+        <div class="card-body">
+          <h6 class="text-uppercase text-white-50 mb-1" style="font-size: 0.8rem;">Total Publicaciones</h6>
+          <h3 class="mb-0 fw-bold text-white">{{ publicaciones|length }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm" style="border-radius: 12px !important">
+    <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
+      <h6 class="mb-0 fw-bold text-secondary">Registro Completo</h6>
+      <div style="width: 300px;">
+        <input
+          type="search"
+          id="search"
+          class="form-control form-control-sm bg-light border-0"
+          placeholder="Buscar publicación..."
+          onkeyup="buscadorTable('tbl_publicaciones')" />
+      </div>
+    </div>
+
+    <div class="row justify-content-center mb-4 mt-2">
+      <div class="table-responsive text-nowrap table-hover">
+        <table
+          id="tbl_publicaciones"
+          class="table table-striped table-bordered"
+          cellspacing="0"
+          width="100%">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Título de la Publicación</th>
+              <th>Responsable</th>
+              <th>Tipo</th>
+              <th>Estado</th>
+              <th>Fecha</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if publicaciones %}
+              {% for p in publicaciones %}
+              <tr id="publicacion_{{ p.id_publicacion }}">
+                <td class="text-muted fw-semibold">#{{ p.id_publicacion }}</td>
+                
+                <td style="max-width:250px; white-space:normal; font-weight: 500;">
+                  {{ p.titulo_publicacion }}
+                </td>
+                
+                <td>
+                  <div class="d-flex flex-column">
+                    <span class="fw-bold">{{ p.nombre_responsable or p.autor_publicacion or '—' }}</span>
+                  </div>
+                </td>
+                
+                <td>
+                  <span class="badge bg-light text-dark border">
+                    <i class="bi bi-tag me-1"></i>{{ p.tipo_publicacion or 'General' }}
+                  </span>
+                </td>
+                
+                <td>
+                  {% if p.estado == 1 or p.estado == 'Activo' %}
+                    <span class="badge rounded-pill bg-success"><i class="bi bi-check-circle me-1"></i>Activo</span>
+                  {% else %}
+                    <span class="badge rounded-pill bg-danger"><i class="bi bi-x-circle me-1"></i>Inactivo</span>
+                  {% endif %}
+                </td>
+                
+                <td>{{ p.fecha_publicacion }}</td>
+                
+                <td width="10px" class="text-nowrap">
+                  <div class="d-flex gap-1">
+                    <a
+                      href="/detalles-publicacion/{{ p.id_publicacion }}"
+                      class="btn btn-info btn-sm"
+                      title="Ver detalles">
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    <a
+                      href="/editar-publicacion/{{ p.id_publicacion }}"
+                      class="btn btn-warning btn-sm"
+                      title="Editar publicación">
+                      <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a
+                      href="/eliminar-publicacion/{{ p.id_publicacion }}"
+                      class="btn btn-danger btn-sm"
+                      title="Eliminar publicación"
+                      onclick="return confirm('¿Estás seguro de que deseas eliminar esta publicación? Esta acción no se puede deshacer.');">
+                      <i class="bi bi-trash"></i>
+                    </a>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="7" class="text-center text-muted py-4">No hay publicaciones registradas.</td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

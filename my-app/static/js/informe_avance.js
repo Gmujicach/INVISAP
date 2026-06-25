@@ -501,7 +501,7 @@ function crearFilaInforme(informe) {
         <td>${informe.id_informe}</td>
         <td>${informe.tipo_informe}</td>
         <td><span class="badge ${badgeClass}">${informe.estado}</span></td>
-        <td>${informe.poblacion_benefiada || 'N/A'}</td>
+        <td>${informe.poblacion_beneficiada || 'N/A'}</td>
         <td>
             <div class="progress" style="height: 20px;">
                 <div class="progress-bar bg-success" role="progressbar" 

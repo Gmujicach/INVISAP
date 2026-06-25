@@ -1,6 +1,7 @@
 /**
  * evidencias.js - Módulo de gestión de evidencias con Fetch/Ajax
  * Implementa drag & drop, previsualización, validación y envío asíncrono.
+ * Arquitectura modular e inyección de datos limpia
  */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -56,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // ========== MANEJO DE ARCHIVOS ==========
     function handleFiles(files) {
         const filesArray = Array.from(files);
-        // No validamos formatos en frontend, el backend lo hará
         selectedFiles = filesArray;
         updatePreviews();
         validateFileCount();
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const reader = new FileReader();
             reader.onload = function (e) {
                 const previewCard = crearCardPreview(e.target.result, file.name, false, index);
-                imagePreviewContainer.innerHTML += previewCard;
+                imagePreviewContainer.insertAdjacentHTML('beforeend', previewCard);
             };
             reader.readAsDataURL(file);
         });
@@ -151,12 +151,19 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const formData = new FormData();
-        selectedFiles.forEach(file => {
+        // ✅ CORRECCIÓN: Usar el formulario directamente para incluir todos los campos
+        const formData = new FormData(formEvidencias);
+        
+        // Agregar los archivos al FormData
+        selectedFiles.forEach((file, index) => {
             formData.append('fotos', file);
-        });
-        selectoresEtapa.forEach((select, index) => {
-            formData.append(`etapa-foto-${index}`, select.value.toLowerCase());
+
+            const selectEtapa = document.querySelector(`select[name="etapa-foto-${index}"]`);
+            if (selectEtapa && selectEtapa.value) {
+                if (!formData.has(`etapa-foto-${index}`)) {
+                    formData.append(`etapa-foto-${index}`, selectEtapa.value);
+                }
+            }
         });
 
         btnSubmit.disabled = true;
@@ -201,7 +208,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Validar existencia en tiempo real
         const existeResponse = await fetch(`/api/evidencias/validar/${idEvidencia}`);
         const existeData = await existeResponse.json();
         if (!existeData.existe) {
@@ -211,6 +217,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (selectedFiles.length === 0) {
             mostrarError('Debe seleccionar al menos una imagen nueva.');
+            return;
+        }
+
+        // Validar cantidad de imágenes seleccionadas
+        if (selectedFiles.length < MIN_IMAGENES || selectedFiles.length > MAX_IMAGENES) {
+            mostrarError(`Debe seleccionar entre ${MIN_IMAGENES} y ${MAX_IMAGENES} imágenes.`);
             return;
         }
 
@@ -229,12 +241,12 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const formData = new FormData();
-        selectedFiles.forEach(file => {
+        // ✅ CORRECCIÓN: Usar el formulario directamente para incluir todos los campos
+        const formData = new FormData(formEvidencias);
+        
+        // Agregar los archivos al FormData
+        selectedFiles.forEach((file) => {
             formData.append('fotos', file);
-        });
-        selectoresEtapa.forEach((select, index) => {
-            formData.append(`etapa-foto-${index}`, select.value.toLowerCase());
         });
 
         btnSubmit.disabled = true;

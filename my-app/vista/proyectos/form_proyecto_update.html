@@ -15,7 +15,14 @@
           </h5>
         </div>
         
-        <form class="form-horizontal" method="POST" action="/actualizar-proyecto" autocomplete="off">
+       <form id="formEditarProyecto" class="form-horizontal" method="POST" action="/actualizar-proyecto" autocomplete="off">
+    ...
+
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='js/proyecto.js') }}"></script>
+{% endblock %}
+          
           
           <input type="hidden" name="codigo_proyecto_actual" value="{{ proyecto.codigo_proyecto }}">
           
@@ -49,7 +56,7 @@
                 <label for="fecha_p" class="form-label fw-bold text-secondary">Fecha de Planificación</label>
                 <div class="input-group shadow-sm">
                   <span class="input-group-text bg-light"><i class="bx bx-calendar"></i></span>
-                  <input type="date" class="form-control" name="fecha_p" id="fecha_p" value="{{ proyecto.fecha_planificacion }}" required />
+                  <input type="date" id="fecha_p" name="fecha_p" class="form-control" value="{{ proyecto.fecha_p.split(' ')[0] if proyecto.fecha_p else '' }}">
                 </div>
               </div>
               <div class="col-md-6">

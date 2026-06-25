@@ -14,7 +14,7 @@ from controllers.funciones_solicitud import (
     actualizar_solicitud, eliminar_solicitud
 )
 from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, obtener_estadisticas_bitacora
-from models.model_publicacion import PublicacionModel
+from models.model_publicaciones import PublicacionModel
 from services.bitacora_service import BitacoraService
 from controllers.controller_empleado import empleado_bp
 from controllers.controller_evidencia import evidencia_bp
@@ -129,6 +129,9 @@ def api_eliminar_publicacion(id_pub):
 
 @home_bp.route('/form-registrar-publicacion', methods=['POST'])
 def formRegistrarPublicacion():
+    # Importamos datetime aquí para asegurar que funcione sin modificar la cabecera del archivo
+    from datetime import datetime 
+
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -136,29 +139,42 @@ def formRegistrarPublicacion():
     try:
         data = request.form
         modelo = PublicacionModel()
-        # Soportar ambos nombres posibles del campo (id_informe o evidencias)
+        
+        # Soportar el ID del informe que viene del HTML
         id_inf = data.get('id_informe') or data.get('evidencias')
         
-        # Validación de existencia en tiempo real (Backend)
+        # Validación 1: Verificar que el usuario realmente seleccionó un informe
+        if not id_inf:
+            flash('Debe seleccionar un Informe de Avance de Obra válido.', 'warning')
+            return redirect(url_for('home_bp.viewFormPublicaciones'))
+
+        # Validación 2: Verificar que el informe existe en la BD
         if not modelo.validar_informe_activo(id_inf):
             flash('El informe seleccionado no existe o fue eliminado.', 'error')
             return redirect(url_for('home_bp.viewFormPublicaciones'))
 
-        # Aplicación de setters con validación Regex integrada
-        modelo.titulo = data.get('titulo_publicacion')
-        modelo.responsable = data.get('nombre_responsable') or data.get('autor_publicacion')
-        modelo.tipo = data.get('tipo_publicacion')
-        modelo.id_informe = id_inf
+        # Armamos el diccionario con las llaves que espera nuestro modelo SQL corregido
+        datos_insertar = {
+            'titulo_publicacion': data.get('titulo_publicacion'),
+            'nombre_responsable': data.get('nombre_responsable') or data.get('autor_publicacion'),
+            'tipo_publicacion': data.get('tipo_publicacion', 'General'),
+            'fecha_publicacion': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'informe_avance_obra_id_informe': id_inf
+        }
         
-        if modelo.guardar():
+        # Llamamos a la BD
+        resultado = modelo.registrar_publicacion(datos_insertar)
+        
+        if resultado > 0:
             flash('Publicación registrada correctamente', 'success')
         else:
-            flash('Error al guardar la publicación en la base de datos.', 'error')
-    except ValueError as ve:
-        flash(f'Error de validación: {str(ve)}', 'error')
+            flash('Error al guardar la publicación. Revisa la consola para más detalles.', 'error')
+            
     except Exception as e:
-        print(f"Error al registrar publicación: {e}")
-        flash('Error interno del servidor al registrar la publicación.', 'error')
+        # Imprimimos en consola para ti como desarrollador
+        print(f"Error CRÍTICO al registrar publicación: {e}")
+        # Mostramos el error real en la pantalla para no tener que adivinar
+        flash(f'Error del sistema: {str(e)}', 'error')
         
     return redirect(url_for('home_bp.viewFormPublicaciones'))
 
@@ -176,24 +192,32 @@ def viewEditarPublicacion(id_publicacion):
 
 @home_bp.route('/actualizar-publicacion', methods=['POST'])
 def formActualizarPublicacion():
-    if 'conectado' in session:
-        try:
-            data = request.form
-            modelo = PublicacionModel(id_publicacion=data.get('id_publicaciones'))
-            modelo.titulo = data.get('titulo_publicacion')
-            modelo.responsable = data.get('nombre_responsable') or data.get('autor_publicacion')
-            modelo.tipo = data.get('tipo_publicacion', 'Noticia')
-            modelo.id_informe = data.get('id_informe') or data.get('evidencias')
-            
-            if modelo.actualizar():
-                flash('Publicación actualizada correctamente', 'success')
-            else:
-                flash('Error al actualizar', 'error')
-        except ValueError as ve:
-            flash(str(ve), 'error')
-        return redirect(url_for('home_bp.viewFormPublicaciones'))
-    return redirect(url_for('login_bp.inicio'))
+    if 'conectado' not in session:
+        return redirect(url_for('login_bp.inicio'))
+        
+    try:
+        data = request.form
+        # Capturamos el ID del input hidden que corregimos antes
+        id_pub = data.get('id_publicacion')
+        
+        if not id_pub:
+            flash('Error: No se pudo identificar la publicación a actualizar.', 'error')
+            return redirect(url_for('home_bp.viewFormPublicaciones'))
 
+        modelo = PublicacionModel()
+        
+        # Pasamos el ID y el diccionario de datos al modelo
+        if modelo.actualizar_publicacion(id_pub, data) > 0:
+            flash('Publicación actualizada correctamente', 'success')
+        else:
+            flash('No se realizaron cambios o hubo un error en la base de datos.', 'warning')
+            
+    except Exception as e:
+        print(f"Error técnico en actualización: {e}")
+        flash(f'Error al actualizar: {str(e)}', 'error')
+        
+    return redirect(url_for('home_bp.viewFormPublicaciones'))
+    
 @home_bp.route('/eliminar-publicacion/<int:id_publicacion>', methods=['GET'])
 def eliminarPublicacion(id_publicacion):
     """Maneja la eliminación lógica desde enlaces GET."""
@@ -205,6 +229,36 @@ def eliminarPublicacion(id_publicacion):
             flash('No se pudo eliminar la publicación.', 'error')
         return redirect(url_for('home_bp.viewFormPublicaciones'))
     return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/lista-publicaciones', methods=['GET'])
+def lista_publicaciones():
+    if 'conectado' not in session:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    
+    # Instanciamos el modelo para obtener los datos
+    modelo = PublicacionModel()
+    publicaciones = modelo.obtener_todas_las_publicaciones()
+    
+    # Calculamos las estadísticas leyendo los resultados
+    activas = 0
+    inactivas = 0
+    
+    for p in publicaciones:
+        # El estado 1 representa Activo en la BD
+        if p.get('estado') == 1 or str(p.get('estado')).lower() == 'activo':
+            activas += 1
+        else:
+            inactivas += 1
+            
+    estadisticas = {
+        'Activas': activas,
+        'Inactivas': inactivas
+    }
+    
+    return render_template(f'{PATH_URL_PUB}/lista_publicaciones.html', 
+                           publicaciones=publicaciones, 
+                           estadisticas=estadisticas)
 
 @home_bp.route('/administrar-respaldos', methods=['GET'])
 def viewFormRespaldos():
@@ -313,10 +367,22 @@ def viewFormPrioridad():
 @home_bp.route('/gestionar-proyectos', methods=['GET'])
 def viewFormProyectos():
     if 'conectado' in session:
-        proyectos = listar_proyectos_controller()
+        # 1. Llamamos a tu controlador modificado para capturar la tupla (proyectos, contadores)
+        proyectos, contadores = listar_proyectos_controller(session)
+        
+        
+        # 2. Las demás consultas se mantienen igual
         maquinarias = listar_maquinarias_controller()
-        solicitudes = obtener_solicitudes()  # Se traen las solicitudes para visualizarlas en el listar de proyectos
-        return render_template(f'{PATH_URL_PROY}/proyectos.html', proyectos=proyectos, maquinarias=maquinarias, solicitudes=solicitudes)
+        solicitudes = obtener_solicitudes()  
+        
+        # 3. Enviamos 'contadores=contadores' a la plantilla HTML
+        return render_template(
+            f'{PATH_URL_PROY}/proyectos.html', 
+            proyectos=proyectos, 
+            maquinarias=maquinarias, 
+            solicitudes=solicitudes,
+            contadores=contadores
+        )
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
@@ -325,7 +391,7 @@ def viewFormProyectos():
 def formRegistrarProyecto():
     if 'conectado' in session:
         try:
-            if registrar_proyecto_controller(request.form):
+            if registrar_proyecto_controller(request.form, session):
                 flash('Proyecto registrado satisfactoriamente.', 'success')
             else:
                 flash('Error al registrar el proyecto en la base de datos.', 'error')
@@ -356,30 +422,33 @@ def viewEditarProyecto(codigo_proyecto):
 @home_bp.route('/actualizar-proyecto', methods=['POST'])
 def formActualizarProyecto():
     if 'conectado' in session:
-        from models.model_proyecto import ProyectoModel
-        codigo_proyecto_actual = request.form.get('codigo_proyecto_actual') # Se espera el nombre correcto del campo oculto
-        modelo = ProyectoModel()
-        if modelo.actualizar_proyecto(codigo_proyecto_actual, request.form):
+        # IMPORTANTE: Importamos el controlador, NO el modelo directo
+        from controllers.funciones_proyecto import actualizar_proyecto_controller
+        
+        codigo_proyecto_actual = request.form.get('codigo_proyecto_actual')
+        
+        # Ejecutamos la lógica que sí incluye el guardado en BitacoraService
+        if actualizar_proyecto_controller(codigo_proyecto_actual, request.form, session):
             flash('Proyecto actualizado satisfactoriamente.', 'success')
         else:
             flash('Error al actualizar el proyecto.', 'error')
+            
         return redirect(url_for('home_bp.viewFormProyectos'))
     return redirect(url_for('login_bp.inicio'))
-
 @home_bp.route('/eliminar-proyecto/<string:codigo_proyecto>', methods=['GET'])
 def eliminarProyecto(codigo_proyecto):
     if 'conectado' in session:
-        from models.model_proyecto import ProyectoModel
-        modelo = ProyectoModel()
-        if modelo.eliminar_proyecto(codigo_proyecto):
+        # 1. Importamos la función correcta del controlador
+        from controllers.funciones_proyecto import eliminar_proyecto_controller
+        
+        # 2. Llamamos al controlador pasándole el código y la sesión
+        if eliminar_proyecto_controller(codigo_proyecto, session):
             flash('Proyecto eliminado correctamente.', 'success')
         else:
             flash('Error al intentar eliminar el proyecto.', 'error')
+            
         return redirect(url_for('home_bp.viewFormProyectos'))
-    else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-
+    return redirect(url_for('login_bp.inicio'))
 @home_bp.route('/api/obtener-solicitudes-json', methods=['GET'])
 def api_obtener_solicitudes_json():
     if 'conectado' in session:

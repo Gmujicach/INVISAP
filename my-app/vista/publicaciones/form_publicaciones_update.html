@@ -30,11 +30,11 @@
                     <p class="text-muted small mb-4">Modifique los campos necesarios para actualizar la publicación institucional.</p>
                     
                     <form action="{{ url_for('home_bp.formActualizarPublicacion') }}" method="POST">
-                        <input type="hidden" name="id_publicaciones" value="{{ publicacion.id_publicaciones }}">
+                        <input type="hidden" name="id_publicacion" value="{{ publicacion.id_publicacion }}">
                         <div class="mb-3">
                             <label for="titulo_publicacion" class="form-label">Título de la Publicación</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="bi bi-type-h1"></i></span>
+                                <span class="input-group-text bg-light"><i class="bi bi-card-text"></i></span>
                                 <input type="text" name="titulo_publicacion" id="titulo_publicacion" class="form-control" value="{{ publicacion.titulo_publicacion }}" required>
                             </div>
                         </div>
