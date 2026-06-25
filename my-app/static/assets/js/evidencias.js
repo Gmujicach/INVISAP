@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const reader = new FileReader();
             reader.onload = function (e) {
                 const previewCard = crearCardPreview(e.target.result, file.name, false, index);
-                imagePreviewContainer.innerHTML += previewCard;
+                imagePreviewContainer.insertAdjacentHTML('beforeend', previewCard);
             };
             reader.readAsDataURL(file);
         });
@@ -155,8 +155,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const formData = new FormData(formEvidencias);
         
         // Agregar los archivos al FormData
-        selectedFiles.forEach((file) => {
+        selectedFiles.forEach((file, index) => {
             formData.append('fotos', file);
+
+            const selectEtapa = document.querySelector(`select[name="etapa-foto-${index}"]`);
+            if (selectEtapa && selectEtapa.value) {
+                if (!formData.has(`etapa-foto-${index}`)) {
+                    formData.append(`etapa-foto-${index}`, selectEtapa.value);
+                }
+            }
         });
 
         btnSubmit.disabled = true;
