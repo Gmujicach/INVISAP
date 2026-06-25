@@ -211,7 +211,7 @@ CREATE TABLE `informe_avance_obra` (
   `id_informe` int NOT NULL,
   `fecha` datetime NOT NULL,
   `estado` varchar(25) NOT NULL,
-  `poblacion_benefiada` varchar(45) NOT NULL,
+  `poblacion_beneficiada` varchar(45) NOT NULL,
   `tipo_informe` varchar(30) NOT NULL,
   `evidencia_antes` varchar(50) NOT NULL,
   `evidencia_durante` varchar(50) NOT NULL,
