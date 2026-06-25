@@ -150,10 +150,14 @@ class ProyectoModel:
             if not fecha_plan:
                 fecha_plan = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+            # 💡 CORRECCIÓN AQUÍ: Buscamos tanto 'observaciones_p' como 'observaciones' 
+            # para asegurar que capture el textarea de tu formulario HTML.
+            descripcion = datos.get('observaciones_p') or datos.get('observaciones') or ''
+
             valores = (
                 codigo_nuevo,
                 fecha_plan,
-                datos.get('observaciones', '')[:200],
+                descripcion[:200],
                 datos.get('computos_p', '')[:255],
                 datos.get('estimacion_p', '')[:45],
                 codigo_proyecto_actual
@@ -163,7 +167,6 @@ class ProyectoModel:
             # MANEJO SEGURO DE LA TABLA PUENTE DE SOLICITUDES
             id_solicitud = datos.get('solicitud_id_p')
             if id_solicitud:
-                # Si se especifica una nueva relación, limpiamos la anterior e insertamos con sus claves correspondientes
                 cursor.execute("DELETE FROM proyecto_has_solicitudes WHERE proyecto_codigo_proyecto = %s", (codigo_proyecto_actual,))
                 cursor.execute("""
                     SELECT persona_id_persona, prioridad_id_gestion_prioridad 
@@ -178,7 +181,6 @@ class ProyectoModel:
                         VALUES (%s, %s, %s, %s)""", 
                         (codigo_nuevo, id_solicitud, res_sol['persona_id_persona'], res_sol['prioridad_id_gestion_prioridad']))
             else:
-                # Si no se altera la solicitud pero el código del proyecto cambió, actualizamos la referencia en el puente
                 if codigo_nuevo != codigo_proyecto_actual:
                     cursor.execute("""
                         UPDATE proyecto_has_solicitudes 
@@ -201,7 +203,8 @@ class ProyectoModel:
                     """, (codigo_nuevo, codigo_proyecto_actual))
 
             conexion.commit()
-            return cursor.rowcount
+            # 💡 RETORNO SEGURO: Retornamos True porque la operación fue exitosa en la base de datos
+            return True
         except Exception as e:
             if conexion: conexion.rollback()
             print(f"Error en ProyectoModel.actualizar_proyecto: {e}")
@@ -226,5 +229,41 @@ class ProyectoModel:
             if conexion: conexion.rollback()
             print(f"Error en ProyectoModel.eliminar_proyecto: {e}")
             return False
+        finally:
+            if conexion: conexion.close()
+
+    def obtener_contadores_proyectos(self):
+        conexion = None
+        try:
+            conexion = connectionBD()
+            cursor = conexion.cursor(dictionary=True)
+            
+            sql = """SELECT s.tipo_solicitud 
+                     FROM proyecto p
+                     INNER JOIN proyecto_has_solicitudes phs ON p.codigo_proyecto = phs.proyecto_codigo_proyecto
+                     INNER JOIN solicitudes s ON phs.solicitudes_id_solicitudes = s.id_solicitudes"""
+            cursor.execute(sql)
+            proyectos_vinculados = cursor.fetchall()
+            
+            total_registrados = len(proyectos_vinculados)
+            en_proceso = 0
+            completadas = 0
+            
+            for item in proyectos_vinculados:
+                estado = str(item.get('tipo_solicitud', '')).lower()
+                if 'proceso' in estado:
+                    en_proceso += 1
+                elif 'completa' in estado or 'finalizado' in estado:
+                    completadas += 1
+            
+            return {
+                'total_registrados': total_registrados,
+                'en_proceso': en_proceso,
+                'completadas': completadas,
+                'total': total_registrados
+            }
+        except Exception as e:
+            print(f"Error en ProyectoModel.obtener_contadores_proyectos: {e}")
+            return {'total_registrados': 0, 'en_proceso': 0, 'completadas': 0, 'total': 0}
         finally:
             if conexion: conexion.close()
