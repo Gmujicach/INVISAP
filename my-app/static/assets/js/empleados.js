@@ -1,114 +1,446 @@
 /**
- * VIEW-CONTROLLED: EMPLEADOS
- * Maneja la lógica de renderizado del Dashboard de Empleados (SPA-style).
+ * empleados.js - Módulo para Dashboard SPA de Empleados
+ * Maneja la lógica de renderizado dinámico y comunicación con el backend
+ * Complementa a empleados_validation.js (formularios independientes)
  */
 
+/**
+ * Función principal que renderiza el Dashboard de Empleados (SPA-style)
+ * Se dispara desde empleados.html al cargar la página
+ */
 function triggerEmpleadosDashboard() {
     const empleados = window.resp_empleadosBD || [];
     
+    // Generar filas de la tabla con validación de datos y acciones
     let rowsHtml = empleados.length > 0 
-        ? empleados.map(e => `
-            <tr>
-              <td>
-                <div class="d-flex align-items-center">
-                  ${e.foto_empleado 
-                    ? `<img src="/static/fotos_empleados/${e.foto_empleado}" alt="foto" style="height:38px; width:38px; border-radius:8px; object-fit:cover" class="me-2 shadow-sm">` 
-                    : '<div class="me-2 shadow-sm" style="height:38px; width:38px; border-radius:8px; background:#e9ecef; display:flex; align-items:center; justify-content:center"><i class="bi bi-person-fill text-secondary"></i></div>'}
-                  <div>
-                    <span class="fw-bold d-block">${e.nombre_empleado} ${e.apellido_empleado}</span>
-                    <small class="text-muted">${e.sexo_empleado}</small>
-                  </div>
-                </div>
-              </td>
-              <td><span class="text-muted">${e.email_empleado || 'Sin correo'}</span></td>
-              <td><span class="fw-semibold text-dark">$${e.salario_empleado}</span></td>
-              <td class="text-center">
-                <div class="d-flex justify-content-center gap-2">
-                  <a href="/editar-empleado/${e.id_empleado}" class="btn btn-warning btn-icon-only btn-sm" title="Editar">
-                    <i class="bi bi-pencil-square text-white"></i>
-                  </a>
-                  <button type="button" onclick="eliminarEmpleadoJS('${e.id_empleado}', '${e.foto_empleado || ''}')" class="btn btn-danger btn-icon-only btn-sm" title="Eliminar">
-                    <i class="bi bi-trash3"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>`).join('')
-        : '<tr><td colspan="4" class="text-center py-4 text-muted">No se encontraron empleados registrados.</td></tr>';
+        ? empleados.map(e => {
+            const estadoBadge = e.estado == 1 
+                ? '<span class="badge bg-success">Activo</span>' 
+                : '<span class="badge bg-secondary">Inactivo</span>';
+            
+            return `
+              <tr data-empleado-id="${e.id_empleados}">
+                <td><span class="fw-bold">#${e.id_empleados}</span></td>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <div class="avatar avatar-sm me-2">
+                            <span class="avatar-initial rounded-circle bg-label-primary">
+                                ${e.nombre_empleado.charAt(0).toUpperCase()}
+                            </span>
+                        </div>
+                        <div>
+                            <strong>${e.nombre_empleado}</strong>
+                            ${e.cedula_persona ? `<br><small class="text-muted">CI: ${e.cedula_persona}</small>` : ''}
+                        </div>
+                    </div>
+                </td>
+                <td><span class="badge bg-label-primary">${e.cargo}</span></td>
+                <td><small class="text-muted">${e.gerencia_asignada || 'No asignada'}</small></td>
+                <td>${formatearFecha(e.fecha_ingreso)}</td>
+                <td>${estadoBadge}</td>
+                <td class="text-center">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-warning" 
+                                onclick="editarEmpleadoModal(${e.id_empleados})" 
+                                title="Editar">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-danger" 
+                                onclick="eliminarEmpleadoJS(${e.id_empleados})" 
+                                title="Desactivar">
+                            <i class="bi bi-trash3-fill"></i>
+                        </button>
+                    </div>
+                </td>
+              </tr>`;
+        }).join('')
+        : '<tr><td colspan="7" class="text-center py-5 text-muted"><i class="bi bi-inbox fs-1 d-block mb-2"></i>No se encontraron empleados registrados.</td></tr>';
 
+    // Contenido del Dashboard con formulario integrado
     const content = `
       <div class="dashboard-grid">
-        <!-- Formulario de Registro -->
+        <!-- Panel de Registro Rápido -->
         <div class="dashboard-section">
-          <h4 class="fw-bold mb-4" style="color: #08b324;"><i class="bi bi-person-plus-fill me-2"></i>Nuevo Empleado</h4>
-          <!-- Se corrige la ruta para que coincida con EmpleadoController -->
-          <form action="/empleados/create" method="POST" enctype="multipart/form-data">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Nombre</label>
-                    <input type="text" name="nombre_empleado" class="form-control" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Apellido</label>
-                    <input type="text" name="apellido_empleado" class="form-control" required>
-                </div>
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0"><i class="bi bi-person-plus-fill me-2"></i>Registro Rápido de Empleado</h5>
             </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Sexo</label>
-                    <select name="sexo_empleado" class="form-select" required>
-                        <option value="1">Masculino</option>
-                        <option value="2">Femenino</option>
+            <div class="card-body">
+              <form id="formEmpleadoDashboard" onsubmit="registrarEmpleadoFetchDashboard(event)" class="needs-validation" novalidate>
+                
+                <!-- Datos Laborales -->
+                <div class="row g-3">
+                  <div class="col-md-12">
+                    <label class="form-label fw-medium">
+                      <i class="bi bi-person me-1"></i>Nombre Completo
+                    </label>
+                    <input type="text" name="nombre_empleado" class="form-control" 
+                           placeholder="Ej: Juan Carlos Pérez" required 
+                           pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{3,45}$"
+                           title="Solo letras, mínimo 3, máximo 45 caracteres">
+                    <div class="invalid-feedback">Nombre inválido (3-45 caracteres).</div>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <label class="form-label fw-medium">
+                      <i class="bi bi-briefcase me-1"></i>Cargo
+                    </label>
+                    <select name="cargo" class="form-select" required>
+                      <option value="" disabled selected>Seleccione cargo...</option>
+                      <option value="Gerente">Gerente</option>
+                      <option value="Inspector">Inspector</option>
+                      <option value="Asistente">Asistente</option>
+                      <option value="Proyectista">Proyectista</option>
+                      <option value="Recepcionista">Recepcionista</option>
+                      <option value="Ingeniero">Ingeniero</option>
+                      <option value="Coordinador">Coordinador</option>
                     </select>
+                    <div class="invalid-feedback">Seleccione un cargo.</div>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <label class="form-label fw-medium">
+                      <i class="bi bi-calendar-event me-1"></i>Fecha de Ingreso
+                    </label>
+                    <input type="date" name="fecha_ingreso" class="form-control" required>
+                    <div class="invalid-feedback">Fecha obligatoria.</div>
+                  </div>
+                  
+                  <div class="col-md-12">
+                    <label class="form-label fw-medium">
+                      <i class="bi bi-building me-1"></i>Gerencia Asignada
+                    </label>
+                    <input type="text" name="gerencia_asignada" class="form-control" 
+                           placeholder="Ej: Gerencia de Infraestructura" required
+                           pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{5,100}$">
+                    <div class="invalid-feedback">Gerencia inválida (5-100 caracteres).</div>
+                  </div>
+                  
+                  <div class="col-md-6">
+                    <label class="form-label fw-medium">
+                      <i class="bi bi-card-text me-1"></i>Cédula
+                    </label>
+                    <input type="text" name="cedula_empleado" class="form-control" 
+                           placeholder="Ej: 12345678" required 
+                           pattern="^\\d{7,8}$" minlength="7" maxlength="8">
+                    <div class="invalid-feedback">Cédula inválida (7-8 dígitos).</div>
+                  </div>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Salario</label>
-                    <input type="text" name="salario_empleado" class="form-control" placeholder="Ej: 2500" required>
+                
+                <div class="mt-4 d-grid">
+                  <button type="submit" class="btn btn-primary" id="btnGuardarDashboard">
+                    <i class="bi bi-check-circle me-1"></i>Registrar Empleado
+                  </button>
                 </div>
+              </form>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Teléfono</label>
-                <input type="text" name="telefono_empleado" class="form-control" required>
+          </div>
+          
+          <!-- Estadísticas Rápidas -->
+          <div class="card border-0 shadow-sm mt-3">
+            <div class="card-body">
+              <h6 class="text-muted mb-3">Estadísticas</h6>
+              <div class="row text-center">
+                <div class="col-6">
+                  <div class="border-end">
+                    <h3 class="text-primary mb-0">${empleados.length}</h3>
+                    <small class="text-muted">Total Empleados</small>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <h3 class="text-success mb-0">${empleados.filter(e => e.estado == 1).length}</h3>
+                  <small class="text-muted">Activos</small>
+                </div>
+              </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="email" name="email_empleado" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Profesión</label>
-                <input type="text" name="profesion_empleado" class="form-control" required>
-            </div>
-            <div class="mb-4">
-                <label class="form-label">Foto de Perfil</label>
-                <input type="file" name="foto_empleado" class="form-control" accept="image/*">
-            </div>
-            <button type="submit" class="btn w-100 text-white shadow-sm" style="background-color: #08b324; font-weight: 500;">
-                <i class="bi bi-check-circle me-1"></i> Guardar Empleado
-            </button>
-          </form>
+          </div>
         </div>
 
-        <!-- Listado Detallado -->
+        <!-- Panel de Listado Detallado -->
         <div class="dashboard-section">
-          <h4 class="fw-bold mb-4" style="color: #08b324;"><i class="bi bi-people-fill me-2"></i>Listado de Empleados</h4>
-          <div class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead class="table-light">
-                <tr><th>Empleado</th><th>Email</th><th>Salario</th><th class="text-center">Acciones</th></tr>
-              </thead>
-              <tbody>${rowsHtml}</tbody>
-            </table>
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-transparent border-bottom d-flex justify-content-between align-items-center">
+              <h5 class="mb-0">
+                <i class="bi bi-people-fill me-2 text-primary"></i>Listado de Empleados
+              </h5>
+              <div class="input-group" style="max-width: 300px;">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" id="searchEmpleado" 
+                       placeholder="Buscar empleado..." onkeyup="filtrarEmpleados()">
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="tablaEmpleadosDashboard">
+                  <thead class="table-light">
+                    <tr>
+                      <th>ID</th>
+                      <th>Empleado</th>
+                      <th>Cargo</th>
+                      <th>Gerencia</th>
+                      <th>Ingreso</th>
+                      <th>Estado</th>
+                      <th class="text-center">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbodyEmpleadosDashboard">
+                    ${rowsHtml}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     `;
+    
     openDashboard(content);
 }
 
-function eliminarEmpleadoJS(id, foto) {
-    if (confirm("¿Está seguro que desea eliminar a este empleado de la base de datos?")) {
-        // Se corrige la ruta para que coincida con EmpleadoController
-        let url = `/empleados/delete/${id}`;
-        if (foto && foto !== 'None') url += `/${foto}`;
-        window.location.href = url;
+/**
+ * Función para formatear fechas de manera legible
+ */
+function formatearFecha(fecha) {
+    if (!fecha) return 'N/A';
+    try {
+        const date = new Date(fecha);
+        const opciones = { year: 'numeric', month: 'short', day: 'numeric' };
+        return date.toLocaleDateString('es-ES', opciones);
+    } catch (error) {
+        return fecha;
     }
+}
+
+/**
+ * Función para filtrar empleados en tiempo real (búsqueda)
+ */
+function filtrarEmpleados() {
+    const input = document.getElementById('searchEmpleado');
+    if (!input) return;
+    
+    const filter = input.value.toUpperCase();
+    const table = document.getElementById('tablaEmpleadosDashboard');
+    if (!table) return;
+    
+    const tr = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < tr.length; i++) {
+        const td = tr[i].getElementsByTagName('td');
+        let encontrado = false;
+        
+        for (let j = 0; j < td.length; j++) {
+            if (td[j]) {
+                const txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    encontrado = true;
+                    break;
+                }
+            }
+        }
+        
+        tr[i].style.display = encontrado ? '' : 'none';
+    }
+}
+
+/**
+ * Registro de empleado desde el Dashboard (Fetch/AJAX)
+ * Usa la API mejorada /empleados/api/create
+ */
+async function registrarEmpleadoFetchDashboard(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    
+    // Validar formulario HTML5
+    if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        mostrarNotificacion('Complete todos los campos correctamente.', 'error');
+        return;
+    }
+
+    const btnGuardar = document.getElementById('btnGuardarDashboard');
+    if (!btnGuardar) return;
+    
+    const formData = new FormData(form);
+    
+    // Deshabilitar botón durante el envío
+    btnGuardar.disabled = true;
+    btnGuardar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+
+    try {
+        const response = await fetch('/empleados/api/create', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            mostrarNotificacion(result.message, 'success');
+            
+            // Recargar página después de 1.5 segundos
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
+        } else {
+            mostrarNotificacion('Error: ' + result.message, 'error');
+            btnGuardar.disabled = false;
+            btnGuardar.innerHTML = '<i class="bi bi-check-circle me-1"></i>Registrar Empleado';
+        }
+    } catch (error) {
+        console.error('Error al registrar empleado:', error);
+        mostrarNotificacion('Error de conexión con el servidor.', 'error');
+        btnGuardar.disabled = false;
+        btnGuardar.innerHTML = '<i class="bi bi-check-circle me-1"></i>Registrar Empleado';
+    }
+}
+
+/**
+ * Función para editar empleado (abre modal o redirige)
+ */
+function editarEmpleadoModal(id_empleado) {
+    // Validar existencia en tiempo real antes de editar
+    fetch(`/empleados/api/validar/${id_empleado}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.existe) {
+                window.location.href = `/empleados/edit/${id_empleado}`;
+            } else {
+                mostrarNotificacion('El empleado no existe o fue eliminado.', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error al validar empleado:', error);
+            mostrarNotificacion('Error de conexión.', 'error');
+        });
+}
+
+/**
+ * Borrado Lógico con Confirmación (SweetAlert2 o confirm nativo)
+ */
+function eliminarEmpleadoJS(id_empleado) {
+    if (typeof Swal !== 'undefined') {
+        // Usar SweetAlert2 si está disponible
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "El empleado será desactivado (borrado lógico) y no aparecerá en el listado activo.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, desactivar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/empleados/delete/${id_empleado}`;
+            }
+        });
+    } else {
+        // Fallback a confirm nativo
+        if (confirm("¿Estás seguro de desactivar este empleado? (Borrado Lógico)")) {
+            window.location.href = `/empleados/delete/${id_empleado}`;
+        }
+    }
+}
+
+/**
+ * Función de notificación (compatible con SweetAlert2 o Toast personalizado)
+ */
+function mostrarNotificacion(mensaje, tipo = 'info') {
+    if (typeof Swal !== 'undefined') {
+        const iconos = {
+            'success': 'success',
+            'error': 'error',
+            'warning': 'warning',
+            'info': 'info'
+        };
+        
+        Swal.fire({
+            icon: iconos[tipo] || 'info',
+            title: tipo === 'success' ? '¡Éxito!' : tipo === 'error' ? 'Error' : 'Información',
+            text: mensaje,
+            timer: tipo === 'success' ? 2000 : undefined,
+            showConfirmButton: tipo !== 'success'
+        });
+    } else if (typeof createToast === 'function') {
+        // Si existe función createToast global
+        createToast(mensaje, tipo);
+    } else {
+        // Fallback a alert nativo
+        alert(mensaje);
+    }
+}
+
+/**
+ * Función para obtener empleados por cargo (usado por otros módulos)
+ * Ejemplo: obtenerEmpleadosPorCargo('Inspector').then(inspectores => {...})
+ */
+async function obtenerEmpleadosPorCargo(cargo) {
+    try {
+        const response = await fetch(`/empleados/api/por-cargo/${cargo}`);
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            return result.empleados;
+        } else {
+            console.error('Error al obtener empleados por cargo:', result.message);
+            return [];
+        }
+    } catch (error) {
+        console.error('Error de conexión:', error);
+        return [];
+    }
+}
+
+/**
+ * Función auxiliar para cargar empleados dinámicamente (usado por otros módulos)
+ * Ejemplo de uso en módulo de inspecciones:
+ * 
+ * cargarEmpleadosPorCargo('Inspector', 'selectInspector');
+ */
+async function cargarEmpleadosPorCargo(cargo, selectId) {
+    const selectElement = document.getElementById(selectId);
+    if (!selectElement) {
+        console.error(`Elemento select con ID '${selectId}' no encontrado`);
+        return;
+    }
+    
+    try {
+        const empleados = await obtenerEmpleadosPorCargo(cargo);
+        
+        // Limpiar opciones existentes (excepto la primera)
+        selectElement.innerHTML = '<option value="" disabled selected>Seleccione...</option>';
+        
+        // Agregar empleados como opciones
+        empleados.forEach(emp => {
+            const option = document.createElement('option');
+            option.value = emp.id_empleados;
+            option.textContent = `${emp.nombre_empleado} - ${emp.gerencia_asignada}`;
+            selectElement.appendChild(option);
+        });
+        
+        // Habilitar el select
+        selectElement.disabled = false;
+        
+    } catch (error) {
+        console.error('Error al cargar empleados:', error);
+        selectElement.innerHTML = '<option value="" disabled selected>Error al cargar empleados</option>';
+    }
+}
+
+/**
+ * Exportar funciones para uso global (si se usa módulos ES6)
+ * Si no usas módulos, estas funciones ya están en el scope global
+ */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        triggerEmpleadosDashboard,
+        registrarEmpleadoFetchDashboard,
+        eliminarEmpleadoJS,
+        obtenerEmpleadosPorCargo,
+        cargarEmpleadosPorCargo,
+        filtrarEmpleados,
+        editarEmpleadoModal
+    };
 }

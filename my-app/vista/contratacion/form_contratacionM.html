@@ -15,32 +15,57 @@
           </h5>
         </div>
         
-        <form class="form-horizontal" method="POST" action="{{ url_for('contrataciones_bp.procesar_actualizacion') }}" autocomplete="off">
-          
+        <form class="form-horizontal" id="formContratacion" method="POST" action="{{ url_for('contrataciones_bp.procesar_actualizacion') }}" autocomplete="off">
           <input type="hidden" name="id_contratacion" value="{{ contratacion.id_contratacion }}">
           
           <div class="card-body">
             
+            <div class="d-flex justify-content-between align-items-center p-3 mb-4 rounded" style="background-color: #f8f9fa; border-left: 4px solid #F9A800;">
+                <div>
+                  <span class="fw-bold d-block text-dark" style="font-size: 0.9rem;">Empresas Registradas</span>
+                  <small class="text-muted">Cambia la empresa asignada consultando el directorio.</small>
+                </div>
+                <button class="btn btn-sm text-white fw-semibold border-0 px-3" 
+                        type="button" 
+                        id="btnCargarEmpresas"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalEmpresas"
+                        style="background-color: #F9A800; transition: background 0.3s ease;">
+                  <i class="bx bx-buildings me-1 align-middle"></i> Ver Empresas
+                </button>
+            </div>
+
             <div class="row mb-3">
               <div class="col-md-6">
                 <label class="form-label fw-semibold text-muted">Empresa Ganadora</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-light"><i class="bx bx-building"></i></span>
-                  <input type="text" class="form-control" name="empresa_ganadora" value="{{ contratacion.empresa_ganadora }}" required />
+                <div class="input-group shadow-sm">
+                  <span class="input-group-text bg-light border-end-0"><i class="bx bx-building"></i></span>
+                  <input type="text" class="form-control border-start-0 bg-light text-muted" 
+                         id="empresa_ganadora" name="empresa_ganadora" value="{{ contratacion.empresa_ganadora }}" 
+                         readonly tabindex="-1" style="user-select: none; pointer-events: none;" required />
                 </div>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-semibold text-muted">RIF de la Empresa</label>
-                <div class="input-group">
-                  <span class="input-group-text bg-light"><i class="bx bx-id-card"></i></span>
-                  <input type="text" class="form-control" name="empresa_rif" value="{{ contratacion.empresa_rif }}" required />
+                <div class="input-group shadow-sm">
+                  <span class="input-group-text bg-light border-end-0"><i class="bx bx-id-card"></i></span>
+                  <input type="text" class="form-control border-start-0 bg-light text-muted" 
+                         id="empresa_rif" name="empresa_rif" value="{{ contratacion.empresa_rif }}" 
+                         readonly tabindex="-1" style="user-select: none; pointer-events: none;" required />
+                  <button class="btn btn-outline-secondary border-start-0" type="button" id="btn_limpiar_seleccion" title="Eliminar empresa seleccionada">
+                      <i class="bx bx-x fs-5 align-middle"></i>
+                  </button>
                 </div>
               </div>
             </div>
 
             <div class="mb-4">
               <label class="form-label fw-semibold text-muted">Descripción de la Contratación</label>
-              <textarea class="form-control" rows="2" name="descripcion" required>{{ contratacion.descripcion }}</textarea>
+              <textarea class="form-control shadow-sm" id="descripcion" rows="3" name="descripcion" maxlength="100" required>{{ contratacion.descripcion }}</textarea>
+              <div class="d-flex justify-content-between mt-1">
+                <small id="descripcionFeedback" class="text-danger d-none">Descripción minima de 5 caracteres.</small>
+                <small id="descripcionContador" class="text-muted ms-auto">{{ contratacion.descripcion|length }} / 100 caracteres</small>
+              </div>
             </div>
             
             <hr class="mb-4 text-muted">
@@ -48,46 +73,62 @@
             <div class="row mb-4">
               <div class="col-md-4">
                 <label class="form-label fw-bold text-secondary">Número de Contrato</label>
-                <input type="text" class="form-control shadow-sm bg-light" name="numero_contrato" value="{{ contratacion.numero_contrato }}" readonly />
+                <input type="text" class="form-control shadow-sm bg-light" id="numero_contrato" name="numero_contrato" value="{{ contratacion.numero_contrato }}" readonly />
                 <small class="text-muted">No editable por seguridad.</small>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-bold text-secondary">Monto ($ / Bs)</label>
-                <input type="text" class="form-control shadow-sm" name="monto" value="{{ contratacion.monto }}" required />
+                <input type="text" class="form-control shadow-sm" id="monto" name="monto" value="{{ contratacion.monto }}" minlength="3" maxlength="20" required />
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-bold text-secondary">Tipo de Contrato</label>
-                <input type="text" class="form-control shadow-sm" name="tipo_contrato" value="{{ contratacion.tipo_contrato }}" required />
+                <select class="form-select shadow-sm" id="tipo_contrato" name="tipo_contrato" required>
+                  <option value="" disabled>Seleccione una opción...</option>
+                  <option value="Contrato de Obra" {% if contratacion.tipo_contrato == 'Contrato de Obra' %}selected{% endif %}>Obra</option>
+                  <option value="Contrato de Servicio" {% if contratacion.tipo_contrato == 'Contrato de Servicio' %}selected{% endif %}>Servicio</option>
+                  <option value="Contrato de Bienes" {% if contratacion.tipo_contrato == 'Contrato de Bienes' %}selected{% endif %}>Contrato de Bienes</option>
+                </select>
               </div>
             </div>
 
             <div class="row mb-4">
               <div class="col-md-4">
                 <label class="form-label fw-bold text-secondary">Modalidad</label>
-                <input type="text" class="form-control shadow-sm" name="modalidad" value="{{ contratacion.modalidad }}" required />
+                <select class="form-select shadow-sm" id="modalidad" name="modalidad" required>
+                  <option value="" disabled>Seleccione una opción...</option>
+                  <option value="Concurso Abierto" {% if contratacion.modalidad == 'Concurso Abierto' %}selected{% endif %}>Concurso Abierto</option>
+                  <option value="Concurso Cerrado" {% if contratacion.modalidad == 'Concurso Cerrado' %}selected{% endif %}>Concurso Cerrado</option>
+                  <option value="Consulta de Precios" {% if contratacion.modalidad == 'Consulta de Precios' %}selected{% endif %}>Consulta de Precios</option>
+                  <option value="Contratación Directa" {% if contratacion.modalidad == 'Contratación Directa' %}selected{% endif %}>Contratación Directa</option>
+                </select>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-bold text-secondary">Objeto</label>
-                <input type="text" class="form-control shadow-sm" name="objeto" value="{{ contratacion.objeto }}" required />
+                <select class="form-select shadow-sm" id="objeto" name="objeto" required>
+                  <option value="" disabled>Seleccione una opción...</option>
+                  <option value="Ejecución de Obras" {% if contratacion.objeto == 'Ejecución de Obras' %}selected{% endif %}>Ejecución de Obras</option>
+                  <option value="Prestación de Servicios" {% if contratacion.objeto == 'Prestación de Servicios' %}selected{% endif %}>Prestación de Servicios</option>
+                  <option value="Suministro de Bienes" {% if contratacion.objeto == 'Suministro de Bienes' %}selected{% endif %}>Suministro de Bienes</option>
+                </select>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-bold text-secondary">Observación</label>
-                <input type="text" class="form-control shadow-sm" name="observacion" value="{{ contratacion.observacion if contratacion.observacion else '' }}" />
+                <input type="text" class="form-control shadow-sm" id="observacion" name="observacion" value="{{ contratacion.observacion if contratacion.observacion else '' }}" />
               </div>
             </div>
 
             <div class="row mb-4">
               <div class="col-md-4">
                 <label class="form-label fw-bold text-secondary">Inicio Procedimiento</label>
-                <input type="date" class="form-control shadow-sm" name="fecha_inicio_procedimiento" value="{{ contratacion.fecha_inicio_procedimiento }}" required />
+                <input type="date" class="form-control shadow-sm" id="fecha_inicio_procedimiento" name="fecha_inicio_procedimiento" value="{{ contratacion.fecha_inicio_procedimiento }}" required />
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-bold text-secondary">Fecha Adjudicación</label>
-                <input type="date" class="form-control shadow-sm" name="fecha_adjudicacion" value="{{ contratacion.fecha_adjudicacion }}" required />
+                <input type="date" class="form-control shadow-sm" id="fecha_adjudicacion" name="fecha_adjudicacion" value="{{ contratacion.fecha_adjudicacion }}" required />
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-bold text-secondary">Fecha de Registro</label>
-                <input type="date" class="form-control shadow-sm" name="fecha_registro" value="{{ contratacion.fecha_registro }}" required />
+                <input type="date" class="form-control shadow-sm" id="fecha_registro" name="fecha_registro" value="{{ contratacion.fecha_registro }}" required />
               </div>
             </div>
 
@@ -106,4 +147,47 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="modalEmpresas" tabindex="-1" aria-labelledby="modalEmpresasLabel" aria-hidden="true" style="background-color: rgba(0,0,0,0.4);">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered"> 
+    <div class="modal-content" style="border-radius: 0px !important; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+      <div class="modal-header bg-dark text-white">
+        <div>
+          <h5 class="modal-title fw-bold text-white" id="modalEmpresasLabel">
+            <i class="bx bx-buildings me-1 text-warning"></i> Directorio de Empresas
+          </h5>
+          <small class="text-light-50">Seleccione la empresa ganadora para esta contratación</small>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped table-hover align-middle table-sm">
+            <thead class="table-light text-uppercase" style="font-size: 0.8rem;">
+              <tr>
+                <th>RIF</th>
+                <th>Nombre de la Empresa</th>
+                <th class="text-center">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="tablaEmpresasCuerpo">
+              <tr>
+                <td colspan="4" class="text-center text-muted py-4">Presione el botón para consultar datos...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">
+          <i class="bx bx-arrow-back me-1"></i> Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename ='js/contratacion.js') }}"></script>
 {% endblock %}

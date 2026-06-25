@@ -1,0 +1,100 @@
+{% extends 'login/base_login.html' %}
+{% block title %}Sistema Invilara | Verificar Código{% endblock %}
+{% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/login.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/otp_verification.css') }}">
+
+<div class="container-xxl">
+  <div class="authentication-wrapper authentication-basic container-p-y">
+    <div class="authentication-inner py-4">
+      <div class="card">
+        <div class="card-body">
+          <!-- Logo -->
+          <div class="app-brand justify-content-center mb-4">
+            <span class="app-brand-logo">
+              <img
+                src="{{ url_for('static', filename='assets/img/NUEVO LOGO GOBERNACION DE LARA JUNIO 2025.png') }}"
+                alt="Logo INVILARA" 
+                style="max-height: 85px; max-width: 160px; object-fit: contain; width: auto; height: auto;" />
+            </span>
+          </div>
+
+          <!-- Título -->
+          <h4 class="mb-2 text-center fw-bold text-heading">Verificación de Código 🔐</h4>
+          <p class="mb-4 text-center text-muted">
+            Hemos enviado un código de 6 dígitos a tu correo electrónico. Por favor, ingrésalo a continuación.
+          </p>
+
+          <!-- Formulario OTP -->
+          <form
+            id="formVerifyOTP"
+            class="mb-3"
+            action="{{ url_for('login_bp.verificarOTP') }}"
+            method="POST">
+            
+            <!-- Contenedor de inputs OTP -->
+            <div class="otp-container mb-4">
+              <input type="text" maxlength="1" class="otp-input" id="otp1" data-index="0" autocomplete="off" />
+              <input type="text" maxlength="1" class="otp-input" id="otp2" data-index="1" autocomplete="off" />
+              <input type="text" maxlength="1" class="otp-input" id="otp3" data-index="2" autocomplete="off" />
+              <input type="text" maxlength="1" class="otp-input" id="otp4" data-index="3" autocomplete="off" />
+              <input type="text" maxlength="1" class="otp-input" id="otp5" data-index="4" autocomplete="off" />
+              <input type="text" maxlength="1" class="otp-input" id="otp6" data-index="5" autocomplete="off" />
+            </div>
+
+            <!-- Input oculto para enviar el código completo -->
+            <input type="hidden" name="otp_code" id="otp_code" />
+
+            <!-- Temporizador -->
+            <div class="text-center mb-3">
+              <div class="timer-container">
+                <i class="bi bi-clock-history text-warning me-2"></i>
+                <span class="timer-text">Código válido por: </span>
+                <span class="timer-countdown fw-bold text-primary" id="countdown">15:00</span>
+              </div>
+            </div>
+
+            <!-- Botón de verificar -->
+            <button 
+              class="btn btn-primary w-100 py-2 fw-semibold d-flex align-items-center justify-content-center" 
+              type="submit"
+              id="btnVerifyOTP">
+              <i class="bi bi-check-circle me-2 fs-5"></i>
+              <span>Verificar Código</span>
+            </button>
+          </form>
+
+          <!-- Reenviar código -->
+          <div class="text-center mb-3">
+            <p class="text-muted small mb-2">¿No recibiste el código?</p>
+            <a href="{{ url_for('login_bp.cpanelRecoveryPassUser') }}" class="text-primary fw-semibold text-decoration-none">
+              <i class="bi bi-arrow-clockwise me-1"></i>
+              Solicitar nuevo código
+            </a>
+          </div>
+
+          <!-- Volver -->
+          <div class="text-center">
+            <a
+              href="{{ url_for('login_bp.inicio') }}"
+              class="d-flex align-items-center justify-content-center text-decoration-none text-muted">
+              <i class="bi bi-arrow-left-circle me-2"></i>
+              <span>Cancelar y volver</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información de seguridad -->
+      <div class="text-center mt-4">
+        <div class="alert alert-info d-inline-block" role="alert">
+          <i class="bi bi-shield-lock-fill me-2"></i>
+          <small>Por tu seguridad, el código expira en 15 minutos</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='assets/js/otp_verification.js') }}"></script>
+{% endblock %}

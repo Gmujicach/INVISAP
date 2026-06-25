@@ -11,11 +11,11 @@
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>{% block crud %}Sistema Invilara{% endblock %}</title>
+    <title>{% block title %}Sistema Invilara{% endblock %}</title>
     <link
       rel="icon"
       type="image/x-icon"
-      href="{{ url_for('static', filename ='assets/img/NUEVO-LOGO-GOBERNACION-DE-LARA-JUNIO-2025.ico') }}" />
+      href="{{ url_for('static', filename='assets/img/NUEVO-LOGO-GOBERNACION-DE-LARA-JUNIO-2025.ico') }}" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,31 +29,31 @@
 
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename ='assets/vendor/fonts/boxicons.css') }}" />
+      href="{{ url_for('static', filename='assets/vendor/fonts/boxicons.css') }}" />
 
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename ='assets/vendor/css/core.css') }}"
+      href="{{ url_for('static', filename='assets/vendor/css/core.css') }}"
       class="template-customizer-core-css" />
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename ='assets/vendor/css/theme-default.css') }}"
+      href="{{ url_for('static', filename='assets/vendor/css/theme-default.css') }}"
       class="template-customizer-theme-css" />
 
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename ='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
+      href="{{ url_for('static', filename='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
 
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename ='assets/vendor/css/pages/page-auth.css') }}" />
+      href="{{ url_for('static', filename='assets/vendor/css/pages/page-auth.css') }}" />
 
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename ='assets/css/my_style.css') }}" />
+      href="{{ url_for('static', filename='assets/css/my_style.css') }}" />
 
-    <script src="{{ url_for('static', filename ='assets/vendor/js/helpers.js') }}"></script>
-    <script src="{{ url_for('static', filename ='assets/js/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/js/helpers.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
   </head>
 
   <body>
@@ -64,14 +64,15 @@
     </div>
 
     {% include 'includes/messages.html' %}
+    
     <!--cuerpo-->
     {% block body %}
-
     <!--Include-->
     {% include 'login/auth_login.html' %}
     <!--fin del cuerpo-->
     {% endblock %}
 
-    <script src="{{ url_for('static', filename ='assets/customJS/home.js') }}"></script>
+    <!-- Scripts al final del body para mejor rendimiento -->
+    <script src="{{ url_for('static', filename='assets/customJS/home.js') }}"></script>
   </body>
 </html>

@@ -1,53 +1,264 @@
 {% extends 'base_cpanel.html' %}
-{% block title %}Crud con Python 🐍 | Gestión de Empresas{% endblock %}
+{% block title %}Informe de Avances de Obras{% endblock %}
+
 {% block customCSS %}
-<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/informe_avance.css') }}" />
+<style>
+  /* Estilos para los modales de selección */
+  .modal-evidencia-item {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+  }
+  
+  .modal-evidencia-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  
+  .modal-evidencia-item.selected {
+    border-color: #28a745;
+    background-color: #d4edda;
+  }
+  
+  .modal-evidencia-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .badge-etapa {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+  }
+  
+  .inspector-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+  
+  .inspector-card:hover {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+    transform: translateY(-2px);
+  }
+  
+  .inspector-card.selected {
+    border-color: #28a745;
+    background-color: #d4edda;
+  }
+  
+  .evidencias-seleccionadas-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .evidencia-preview-item {
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+  
+  .evidencia-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 2px solid #28a745;
+  }
+  
+  .evidencia-preview-item .remove-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+  }
+</style>
 {% endblock %}
 
 {% block body %}
-<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
-  <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
-    <h5 class="mb-0 text-primary fw-bold">Informes de Avance de Obras</h5>
-    
-    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario" aria-expanded="false" aria-controls="contenedorFormulario">
-      <i class="bx bx-plus"></i> Registrar Informe
-    </button>
+<!-- ========== HEADER CON ESTADÍSTICAS ========== -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card shadow-sm" style="border-radius: 0px !important">
+      <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+        <h5 class="mb-0 text-invilara-verde fw-bold">
+          <i class="bx bx-file-blank me-2"></i>Informes de Avance de Obras
+        </h5>
+        
+        <button class="btn btn-invilara-primary btn-sm" type="button" 
+                data-bs-toggle="collapse" data-bs-target="#contenedorFormulario" 
+                aria-expanded="false" aria-controls="contenedorFormulario">
+          <i class="bx bx-plus"></i> Registrar Informe
+        </button>
+      </div>
+    </div>
   </div>
+</div>
 
+<!-- ========== TARJETAS DE ESTADÍSTICAS ========== -->
+<div class="row mb-4">
+  <div class="col-md-3 col-sm-6 mb-3">
+    <div class="card card-estadistica bg-light">
+      <div class="card-body text-center">
+        <h6 class="text-muted mb-2">
+          <i class="bx bx-file me-1"></i>Total Informes
+        </h6>
+        <h3 class="text-primary mb-0">{{ informes|length }}</h3>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3 col-sm-6 mb-3">
+    <div class="card card-estadistica card-aprobados text-white">
+      <div class="card-body text-center">
+        <h6 class="mb-2 text-white">
+          <i class="bx bx-check-circle me-1"></i>Aprobados
+        </h6>
+        <h3 class="mb-0 text-white">{{ informes|selectattr('estado', 'equalto', 'Aprobado')|list|length }}</h3>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3 col-sm-6 mb-3">
+    <div class="card card-estadistica bg-warning text-white">
+      <div class="card-body text-center">
+        <h6 class="mb-2 text-white">
+          <i class="bx bx-time me-1"></i>En Ejecución
+        </h6>
+        <h3 class="mb-0 text-white">{{ informes|selectattr('estado', 'equalto', 'En Ejecucion')|list|length }}</h3>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-md-3 col-sm-6 mb-3">
+    <div class="card card-estadistica card-culminados text-white">
+      <div class="card-body text-center">
+        <h6 class="mb-2 text-white">
+          <i class="bx bx-check-double me-1"></i>Culminados
+        </h6>
+        <h3 class="mb-0 text-white">{{ informes|selectattr('estado', 'equalto', 'Culminado')|list|length }}</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TABLA DE INFORMES ========== -->
+<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
   <div class="card-body">
     <div class="table-responsive">
-      <table class="table table-bordered table-striped table-hover align-middle">
-        <thead class="table-light">
+      <table class="table table-bordered table-striped table-hover align-middle table-informe-avance" id="tablaInformes">
+        <thead>
           <tr>
             <th>#</th>
-            <th>Recurso</th>
-            <th>Estado</th>
-            <th>Logro</th>
             <th>Tipo de Informe</th>
-            <th>Poblacion Beneficiada</th>
+            <th>Estado</th>
+            <th>Población Beneficiada</th>
+            <th>% Avance</th>
+            <th>Gerente/Inspector</th>
             <th>Fecha</th>
             <th class="text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
-          {% for informe in informes%}
-          <tr>
-            <td>{{ informe.id_informe }}</td>
-            <td>{{ informe.recurso }}</td>
-            <td>{{ informe.estado }}</td>
-            <td>{{ informe.logro }}</td>
-            <td>{{ informe.tipo_informe }}</td>
-            <td>{{ informe.poblacion_beneficiada }}</td>
-            <td>{{ informe.fecha }}</td>
+          {% for informe in informes %}
+          <tr class="fade-in">
+            <td class="fw-bold">{{ informe.id_informe }}</td>
+            <td>
+              <i class="bx bx-file-blank me-1 text-primary"></i>
+              {{ informe.tipo_informe }}
+            </td>
+            <td>
+              {% if informe.estado == 'Aprobado' %}
+                <span class="badge bg-success">
+                  <i class="bx bx-check-circle"></i> {{ informe.estado }}
+                </span>
+              {% elif informe.estado == 'En Ejecucion' %}
+                <span class="badge bg-warning text-dark">
+                  <i class="bx bx-time"></i> {{ informe.estado }}
+                </span>
+              {% elif informe.estado == 'Culminado' %}
+                <span class="badge bg-info">
+                  <i class="bx bx-check-double"></i> {{ informe.estado }}
+                </span>
+              {% elif informe.estado == 'Paralizado' %}
+                <span class="badge bg-danger">
+                  <i class="bx bx-pause-circle"></i> {{ informe.estado }}
+                </span>
+              {% else %}
+                <span class="badge bg-secondary">{{ informe.estado }}</span>
+              {% endif %}
+            </td>
+            <td>
+              <i class="bx bx-group me-1 text-muted"></i>
+              {{ informe.poblacion_beneficiada or 'No especificado' }}
+            </td>
+            <td>
+              <div class="progress" style="height: 25px;">
+                <div class="progress-bar bg-success" role="progressbar" 
+                     style="width: {{ informe.porcentaje_avance or 0 }}%;" 
+                     aria-valuenow="{{ informe.porcentaje_avance or 0 }}" 
+                     aria-valuemin="0" aria-valuemax="100">
+                  {{ informe.porcentaje_avance or 0 }}%
+                </div>
+              </div>
+            </td>
+            <td>
+              <i class="bx bx-user me-1 text-muted"></i>
+              {{ informe.gerente_nombre or 'No asignado' }}
+            </td>
+            <td>
+              <i class="bx bx-calendar me-1 text-muted"></i>
+              {% if informe.fecha %}
+                {{ informe.fecha.strftime('%d/%m/%Y') }}
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
             <td class="text-center">
-              <a href="#" class="btn btn-outline-info btn-sm" title="Ver detalle"><i class="bx bx-show"></i></a>
-              <a href="#" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
-              <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar"><i class="bx bx-trash"></i></a>
+              <div class="btn-group" role="group">
+                <a href="/informe-detalle/{{ informe.id_informe }}" 
+                   class="btn btn-outline-info btn-sm" 
+                   title="Ver detalle completo">
+                  <i class="bx bx-show"></i>
+                </a>
+                <a href="/editar-informe/{{ informe.id_informe }}" 
+                   class="btn btn-outline-warning btn-sm btn-editar-informe" 
+                   data-id="{{ informe.id_informe }}"
+                   title="Editar informe">
+                  <i class="bx bx-edit"></i>
+                </a>
+                <button class="btn btn-outline-danger btn-sm btn-eliminar-informe" 
+                        data-id="{{ informe.id_informe }}" 
+                        title="Eliminar informe (borrado lógico)">
+                  <i class="bx bx-trash"></i>
+                </button>
+              </div>
             </td>
           </tr>
           {% else %}
           <tr>
-            <td colspan="8" class="text-center text-muted py-4">No hay informes registrados en el sistema.</td>
+            <td colspan="8" class="text-center text-muted py-5">
+              <i class="bx bx-info-circle bx-lg mb-2"></i><br>
+              <strong>No hay informes registrados en el sistema.</strong><br>
+              <small>Haga clic en "Registrar Informe" para crear uno nuevo.</small>
+            </td>
           </tr>
           {% endfor %}
         </tbody>
@@ -56,97 +267,580 @@
   </div>
 </div>
 
+<!-- ========== FORMULARIO DE REGISTRO (COLLAPSE) ========== -->
 <div class="collapse mt-3" id="contenedorFormulario">
-  <div class="card shadow-sm" style="border-radius: 0px !important">
-    <div class="row justify-content-center mb-2">
-      <div class="col-md-12">
-        <h4 class="text-center mt-5 mb-3 text-secondary">Informe de Avance de Obra</h4>
-        <hr class="w-75 mx-auto"/>
-      </div>
+  <div class="card shadow-sm fade-in-up" style="border-radius: 0px !important">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">
+        <i class="bx bx-file-blank me-2"></i>Registrar Informe de Avance de Obra
+      </h5>
     </div>
 
-    <div class="row justify-content-center mb-4">
-      <div class="col-md-10">
-        <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-informe-avance-obra" autocomplete="off">
-          <div class="card-body pt-0">
-            
-            <div class="row mb-3 mt-3">
-              <div class="col-md-6">
-                <label for="id_informe" class="form-label">Recurso</label>
-                <input type="text" class="form-control" name="id_informe" id="id_informe" maxlength="100" placeholder="Ej: Asfalto" required />
-              </div>
-              <div class="col-md-6">
-                <label for="estado" class="form-label">Estado</label>
-              <select class="form-select shadow-sm" name="estado" id="estado" required>
-                <option value="" selected disabled>Seleccione...</option>
-                <option value="Comunidad">Aprobado</option>
-                <option value="Institucion">En Ejecucion</option>
-                <option value="Particular">Culminado</option>
-              </select>
-              </div>
-            </div>
-
-            <div class="row mb-3 mt-3">
-              <div class="col-md-6">
-                <label for="logro" class="form-label">Logro</label>
-                <input type="text" class="form-control" name="logro" id="logro" maxlength="255" placeholder="Ej: Calle Asfaltada" required />
-              </div>
-              <div class="col-md-6">
-                <label for="tipo_informe" class="form-label">Tipo de Informe</label>
-              <select class="form-select shadow-sm" name="tipo_informe" id="tipo_informe" required>
-                <option value="" selected disabled>Seleccione...</option>
-                <option value="Comunidad">Ficha Inspeccion Tecnica</option>
-                <option value="Institucion">Menor</option>
-              </select>
-              </div>
-            </div>
-
-            <div class="row mb-3 mt-3">
-              <div class="col-md-6">
-                <label for="poblacion_beneficiada" class="form-label">Poblacion Beneficiada</label>
-              <select class="form-select shadow-sm" name="poblacion_beneficiada" id="poblacion_beneficiada" required>
-                <option value="" selected disabled>Seleccione...</option>
-                <option value="Comunidad">La Salle</option>
-                <option value="Institucion">El Tostado</option>
-                <option value="Particular">El Cuji</option>
-              </select>
-              </div>
-              <div class="col-md-6">
-                <label for="observaciones" class="form-label">Observaciones</label>
-                <input type="text" class="form-control" name="observaciones" id="observaciones" maxlength="255" placeholder="Sin Observaciones" />
-              </div>
-            </div>
-
-            
-
-            <!--<div class="row mb-4">
-              <div class="col-md-6">
-                <label for="fecha_creada" class="form-label">Fecha Creada</label>
-                <input type="date" class="form-control" name="fecha_creada" id="fecha_creada" required />
-              </div>
-              <div class="col-md-6">
-                <label for="fecha_actualizacion" class="form-label">Fecha Actualización</label>
-                <input type="date" class="form-control" name="fecha_actualizacion" id="fecha_actualizacion" />
-              </div>
-            </div> -->
-
-            <div class="mb-3 text-center">
-              <button type="submit" class="btn rounded-pill btn-primary px-5 me-2">
-                Registrar
-                <i class="bx bx-save ms-1"></i>
-              </button>
-              <button class="btn rounded-pill btn-outline-secondary px-4" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario">
-                Cancelar
-              </button>
-            </div>
-            
+    <div class="card-body">
+      <form class="form-horizontal" method="POST" action="/form-registrar-informe-avance-obra" 
+            autocomplete="off" enctype="multipart/form-data" id="formInformeAvance">
+        
+        <!-- ========== SECCIÓN 1: INFORMACIÓN BÁSICA ========== -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <h6 class="text-secondary border-bottom pb-2 mb-3">
+              <i class="bx bx-info-circle me-2"></i>Información Básica del Informe
+            </h6>
           </div>
-        </form>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label for="tipo_informe" class="form-label required">Tipo de Informe</label>
+            <select class="form-select shadow-sm" name="tipo_informe" id="tipo_informe" required>
+              <option value="" selected disabled>Seleccione el tipo de informe...</option>
+              <option value="Ficha Inspeccion Tecnica">Ficha Inspección Técnica</option>
+              <option value="Menor">Informe Menor</option>
+              <option value="Mayor">Informe Mayor</option>
+              <option value="Avance Mensual">Avance Mensual</option>
+            </select>
+            <small class="form-text text-muted">
+              <i class="bx bx-info-circle"></i> Seleccione el tipo según la naturaleza del avance
+            </small>
+          </div>
+
+          <div class="col-md-6">
+            <label for="estado" class="form-label required">Estado de la Obra</label>
+            <select class="form-select shadow-sm" name="estado" id="estado" required>
+              <option value="" selected disabled>Seleccione el estado actual...</option>
+              <option value="Aprobado">✓ Aprobado</option>
+              <option value="En Ejecucion">⏳ En Ejecución</option>
+              <option value="Culminado">✓✓ Culminado</option>
+              <option value="Paralizado">⏸ Paralizado</option>
+            </select>
+            <small class="form-text text-muted">
+              <i class="bx bx-info-circle"></i> Estado actual de la obra o proyecto
+            </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <label for="poblacion_beneficiada" class="form-label required">Población Beneficiada</label>
+            <input type="text" class="form-control shadow-sm" name="poblacion_beneficiada" 
+                   id="poblacion_beneficiada" maxlength="200" 
+                   placeholder="Ej: Comunidad La Salle, Sector El Cuji (aprox. 500 familias)" 
+                   required />
+            <small class="form-text text-muted">
+              <i class="bx bx-info-circle"></i> Describa la población o comunidad beneficiada (3-200 caracteres)
+            </small>
+          </div>
+
+          <div class="col-md-4">
+            <label for="porcentaje_avance" class="form-label">% de Avance</label>
+            <div class="input-group shadow-sm">
+              <input type="number" class="form-control" name="porcentaje_avance" 
+                     id="porcentaje_avance" min="0" max="100" value="0"
+                     placeholder="0-100" />
+              <span class="input-group-text">%</span>
+            </div>
+            <small class="form-text text-muted">
+              <i class="bx bx-info-circle"></i> Porcentaje de avance (0-100)
+            </small>
+          </div>
+        </div>
+
+        <!-- ========== SECCIÓN 2: RESPONSABLE (CON MODAL) ========== -->
+        <div class="row mb-4 mt-4">
+          <div class="col-12">
+            <h6 class="text-secondary border-bottom pb-2 mb-3">
+              <i class="bx bx-user me-2"></i>Responsable del Informe
+            </h6>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <label for="gerente_responsable_id" class="form-label required">
+              Inspector Responsable
+            </label>
+            <div class="input-group">
+              <input type="text" class="form-control shadow-sm" id="inspector_nombre_display" 
+                     placeholder="Haga clic en el botón para seleccionar un inspector..." readonly required />
+              <input type="hidden" name="gerente_responsable_id" id="gerente_responsable_id" />
+              <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalSeleccionarInspector">
+                <i class="bx bx-search"></i> Seleccionar Inspector
+              </button>
+            </div>
+            <small class="form-text text-muted">
+              <i class="bx bx-info-circle"></i> Solo se muestran empleados con cargo de Inspector activos
+            </small>
+          </div>
+        </div>
+
+        <!-- ========== SECCIÓN 3: OBSERVACIONES TÉCNICAS ========== -->
+        <div class="row mb-4 mt-4">
+          <div class="col-12">
+            <h6 class="text-secondary border-bottom pb-2 mb-3">
+              <i class="bx bx-edit me-2"></i>Observaciones Técnicas
+            </h6>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <label for="observaciones" class="form-label">
+              Observaciones del Inspector
+            </label>
+            <textarea class="form-control shadow-sm" name="observaciones" id="observaciones" 
+                      rows="5" maxlength="500" 
+                      placeholder="Describa las observaciones técnicas captadas en campo, incidencias, recomendaciones, estado de materiales, avance de trabajos, etc. (Máximo 500 caracteres)"></textarea>
+            <small class="form-text text-muted">
+              <i class="bx bx-info-circle"></i> Campo opcional para detalles técnicos adicionales
+            </small>
+          </div>
+        </div>
+
+        <!-- ========== SECCIÓN 4: EVIDENCIAS FOTOGRÁFICAS (CON MODALES) ========== -->
+        <div class="row mb-4 mt-4">
+          <div class="col-12">
+            <h6 class="text-secondary border-bottom pb-2 mb-3">
+              <i class="bx bx-camera me-2"></i>Evidencias Fotográficas (Antes, Durante, Después)
+            </h6>
+            <div class="alert alert-info" role="alert">
+              <i class="bx bx-info-circle me-2"></i>
+              <strong>Importante:</strong> Seleccione las evidencias fotográficas registradas en el sistema. Máximo 5 imágenes por etapa.
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <!-- FOTOS ANTES -->
+          <div class="col-md-4">
+            <label class="form-label">
+              <i class="bx bx-image-add me-1"></i>Fotos ANTES
+            </label>
+            <button type="button" class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasAntes">
+              <i class="bx bx-folder-open"></i> Seleccionar Evidencias ANTES
+            </button>
+            <input type="hidden" name="evidencias_antes" id="evidencias_antes_ids" />
+            <div id="preview_antes" class="evidencias-seleccionadas-preview"></div>
+            <small class="form-text text-muted">
+              <span id="count_antes">0</span> evidencias seleccionadas (máx. 5)
+            </small>
+          </div>
+
+          <!-- FOTOS DURANTE -->
+          <div class="col-md-4">
+            <label class="form-label">
+              <i class="bx bx-image-add me-1"></i>Fotos DURANTE
+            </label>
+            <button type="button" class="btn btn-outline-warning w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasDurante">
+              <i class="bx bx-folder-open"></i> Seleccionar Evidencias DURANTE
+            </button>
+            <input type="hidden" name="evidencias_durante" id="evidencias_durante_ids" />
+            <div id="preview_durante" class="evidencias-seleccionadas-preview"></div>
+            <small class="form-text text-muted">
+              <span id="count_durante">0</span> evidencias seleccionadas (máx. 5)
+            </small>
+          </div>
+
+          <!-- FOTOS DESPUÉS -->
+          <div class="col-md-4">
+            <label class="form-label">
+              <i class="bx bx-image-add me-1"></i>Fotos DESPUÉS
+            </label>
+            <button type="button" class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasDespues">
+              <i class="bx bx-folder-open"></i> Seleccionar Evidencias DESPUÉS
+            </button>
+            <input type="hidden" name="evidencias_despues" id="evidencias_despues_ids" />
+            <div id="preview_despues" class="evidencias-seleccionadas-preview"></div>
+            <small class="form-text text-muted">
+              <span id="count_despues">0</span> evidencias seleccionadas (máx. 5)
+            </small>
+          </div>
+        </div>
+
+        <!-- ========== BOTONES DE ACCIÓN ========== -->
+        <div class="row mt-5">
+          <div class="col-12">
+            <hr class="mb-4">
+            <div class="text-center">
+              <button type="submit" class="btn rounded-pill btn-invilara-primary px-5 me-2">
+                <i class="bx bx-save me-1"></i>Registrar Informe
+              </button>
+              <button class="btn rounded-pill btn-outline-secondary px-4" type="button" 
+                      data-bs-toggle="collapse" data-bs-target="#contenedorFormulario">
+                <i class="bx bx-x me-1"></i>Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+        
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: SELECCIONAR INSPECTOR ========== -->
+<div class="modal fade" id="modalSeleccionarInspector" tabindex="-1" aria-labelledby="modalSeleccionarInspectorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalSeleccionarInspectorLabel">
+          <i class="bx bx-user-check me-2"></i>Seleccionar Inspector Responsable
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row" id="listaInspectores">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="text-muted mt-2">Cargando inspectores...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
       </div>
     </div>
   </div>
 </div>
+
+<!-- ========== MODAL: EVIDENCIAS ANTES ========== -->
+<div class="modal fade" id="modalEvidenciasAntes" tabindex="-1" aria-labelledby="modalEvidenciasAntesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="modalEvidenciasAntesLabel">
+          <i class="bx bx-image me-2"></i>Seleccionar Evidencias ANTES (Máx. 5)
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row" id="listaEvidenciasAntes">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-success" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="text-muted mt-2">Cargando evidencias...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" onclick="confirmarSeleccionEvidencias('antes')" data-bs-dismiss="modal">
+          <i class="bx bx-check"></i> Confirmar Selección
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: EVIDENCIAS DURANTE ========== -->
+<div class="modal fade" id="modalEvidenciasDurante" tabindex="-1" aria-labelledby="modalEvidenciasDuranteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title" id="modalEvidenciasDuranteLabel">
+          <i class="bx bx-image me-2"></i>Seleccionar Evidencias DURANTE (Máx. 5)
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row" id="listaEvidenciasDurante">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-warning" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="text-muted mt-2">Cargando evidencias...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-warning" onclick="confirmarSeleccionEvidencias('durante')" data-bs-dismiss="modal">
+          <i class="bx bx-check"></i> Confirmar Selección
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: EVIDENCIAS DESPUÉS ========== -->
+<div class="modal fade" id="modalEvidenciasDespues" tabindex="-1" aria-labelledby="modalEvidenciasDespuesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title" id="modalEvidenciasDespuesLabel">
+          <i class="bx bx-image me-2"></i>Seleccionar Evidencias DESPUÉS (Máx. 5)
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row" id="listaEvidenciasDespues">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-info" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="text-muted mt-2">Cargando evidencias...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-info" onclick="confirmarSeleccionEvidencias('despues')" data-bs-dismiss="modal">
+          <i class="bx bx-check"></i> Confirmar Selección
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %} 
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/informe_avance.js') }}"></script>
+
+<script>
+/**
+ * Script para Selección de Evidencias e Inspector
+ * Autor: David - Equipo INVILARA
+ * Aplicando principios de modularidad según Prof. Escalona
+ */
+
+// Variables globales para almacenar selecciones
+let evidenciasSeleccionadas = {
+  antes: [],
+  durante: [],
+  despues: []
+};
+
+// ============================================
+// CARGAR INSPECTORES AL ABRIR EL MODAL
+// ============================================
+document.getElementById('modalSeleccionarInspector').addEventListener('show.bs.modal', function() {
+  cargarInspectores();
+});
+
+async function cargarInspectores() {
+  try {
+    const response = await fetch('/api/obtener-inspectores');
+    const inspectores = await response.json();
+    
+    const container = document.getElementById('listaInspectores');
+    container.innerHTML = '';
+    
+    if (inspectores.length === 0) {
+      container.innerHTML = `
+        <div class="col-12 text-center py-5">
+          <i class="bx bx-user-x bx-lg text-muted mb-3"></i>
+          <p class="text-muted">No hay inspectores registrados en el sistema.</p>
+        </div>
+      `;
+      return;
+    }
+    
+    inspectores.forEach(inspector => {
+      const card = `
+        <div class="col-md-6 mb-3">
+          <div class="card inspector-card h-100" onclick="seleccionarInspector(${inspector.id_empleados}, '${inspector.nombre_empleado}', '${inspector.gerencia_asignada || 'Sin asignar'}')">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="avatar avatar-lg bg-label-primary rounded-circle me-3">
+                  <i class="bx bx-user fs-3"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="mb-1">${inspector.nombre_empleado}</h6>
+                  <p class="mb-0 text-muted small">
+                    <i class="bx bx-briefcase me-1"></i>${inspector.cargo}
+                  </p>
+                  <p class="mb-0 text-muted small">
+                    <i class="bx bx-buildings me-1"></i>${inspector.gerencia_asignada || 'Sin asignar'}
+                  </p>
+                </div>
+                <div>
+                  <i class="bx bx-check-circle text-success fs-4 d-none check-icon"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      container.innerHTML += card;
+    });
+    
+  } catch (error) {
+    console.error('Error al cargar inspectores:', error);
+    document.getElementById('listaInspectores').innerHTML = `
+      <div class="col-12 text-center py-5">
+        <i class="bx bx-error bx-lg text-danger mb-3"></i>
+        <p class="text-danger">Error al cargar los inspectores. Por favor, intente nuevamente.</p>
+      </div>
+    `;
+  }
+}
+
+function seleccionarInspector(id, nombre, gerencia) {
+  document.getElementById('gerente_responsable_id').value = id;
+  document.getElementById('inspector_nombre_display').value = `${nombre} - ${gerencia}`;
+  
+  document.querySelectorAll('.inspector-card').forEach(card => {
+    card.classList.remove('selected');
+    card.querySelector('.check-icon').classList.add('d-none');
+  });
+  
+  event.currentTarget.classList.add('selected');
+  event.currentTarget.querySelector('.check-icon').classList.remove('d-none');
+  
+  const modal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionarInspector'));
+  modal.hide();
+}
+
+// ============================================
+// CARGAR EVIDENCIAS POR ETAPA
+// ============================================
+document.getElementById('modalEvidenciasAntes').addEventListener('show.bs.modal', function() {
+  cargarEvidencias('antes');
+});
+
+document.getElementById('modalEvidenciasDurante').addEventListener('show.bs.modal', function() {
+  cargarEvidencias('durante');
+});
+
+document.getElementById('modalEvidenciasDespues').addEventListener('show.bs.modal', function() {
+  cargarEvidencias('despues');
+});
+
+async function cargarEvidencias(etapa) {
+  try {
+    const response = await fetch(`/api/obtener-evidencias?etapa=${etapa}`);
+    const evidencias = await response.json();
+    
+    const containerId = `listaEvidencias${etapa.charAt(0).toUpperCase() + etapa.slice(1)}`;
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    
+    if (evidencias.length === 0) {
+      container.innerHTML = `
+        <div class="col-12 text-center py-5">
+          <i class="bx bx-image-alt bx-lg text-muted mb-3"></i>
+          <p class="text-muted">No hay evidencias registradas para la etapa "${etapa.toUpperCase()}".</p>
+          <small class="text-muted">Registre evidencias en el módulo correspondiente.</small>
+        </div>
+      `;
+      return;
+    }
+    
+    evidencias.forEach(evidencia => {
+      const isSelected = evidenciasSeleccionadas[etapa].includes(evidencia.id_evidencia);
+      const card = `
+        <div class="col-md-3 mb-3">
+          <div class="card modal-evidencia-item ${isSelected ? 'selected' : ''}" 
+               data-id="${evidencia.id_evidencia}"
+               onclick="toggleEvidencia('${etapa}', ${evidencia.id_evidencia}, '${evidencia.url_archivos}')">
+            <div class="position-relative">
+              <span class="badge badge-etapa bg-${etapa === 'antes' ? 'success' : etapa === 'durante' ? 'warning' : 'info'}">
+                ${etapa.toUpperCase()}
+              </span>
+              <img src="/${evidencia.url_archivos}" alt="${evidencia.fotos}" class="card-img-top" />
+            </div>
+            <div class="card-body p-2">
+              <p class="mb-1 small text-truncate" title="${evidencia.fotos}">
+                <i class="bx bx-file me-1"></i>${evidencia.fotos}
+              </p>
+              <small class="text-muted">
+                <i class="bx bx-calendar me-1"></i>${new Date(evidencia.fecha_registro).toLocaleDateString('es-VE')}
+              </small>
+              <div class="text-center mt-2">
+                <i class="bx bx-check-circle text-success fs-4 ${isSelected ? '' : 'd-none'} check-icon"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      container.innerHTML += card;
+    });
+    
+  } catch (error) {
+    console.error(`Error al cargar evidencias ${etapa}:`, error);
+    const containerId = `listaEvidencias${etapa.charAt(0).toUpperCase() + etapa.slice(1)}`;
+    document.getElementById(containerId).innerHTML = `
+      <div class="col-12 text-center py-5">
+        <i class="bx bx-error bx-lg text-danger mb-3"></i>
+        <p class="text-danger">Error al cargar las evidencias. Por favor, intente nuevamente.</p>
+      </div>
+    `;
+  }
+}
+
+function toggleEvidencia(etapa, id, url) {
+  const index = evidenciasSeleccionadas[etapa].indexOf(id);
+  const card = event.currentTarget;
+  
+  if (index > -1) {
+    evidenciasSeleccionadas[etapa].splice(index, 1);
+    card.classList.remove('selected');
+    card.querySelector('.check-icon').classList.add('d-none');
+  } else {
+    if (evidenciasSeleccionadas[etapa].length >= 5) {
+      alert(`Solo puede seleccionar un máximo de 5 evidencias para la etapa "${etapa.toUpperCase()}".`);
+      return;
+    }
+    
+    evidenciasSeleccionadas[etapa].push(id);
+    card.classList.add('selected');
+    card.querySelector('.check-icon').classList.remove('d-none');
+  }
+  
+  document.getElementById(`count_${etapa}`).textContent = evidenciasSeleccionadas[etapa].length;
+}
+
+function confirmarSeleccionEvidencias(etapa) {
+  document.getElementById(`evidencias_${etapa}_ids`).value = evidenciasSeleccionadas[etapa].join(',');
+  actualizarPreview(etapa);
+}
+
+async function actualizarPreview(etapa) {
+  const previewContainer = document.getElementById(`preview_${etapa}`);
+  previewContainer.innerHTML = '';
+  
+  if (evidenciasSeleccionadas[etapa].length === 0) {
+    return;
+  }
+  
+  try {
+    const response = await fetch(`/api/obtener-evidencias?etapa=${etapa}`);
+    const todasEvidencias = await response.json();
+    
+    evidenciasSeleccionadas[etapa].forEach(id => {
+      const evidencia = todasEvidencias.find(e => e.id_evidencia === id);
+      if (evidencia) {
+        const preview = `
+          <div class="evidencia-preview-item">
+            <img src="/${evidencia.url_archivos}" alt="${evidencia.fotos}" title="${evidencia.fotos}" />
+            <div class="remove-btn" onclick="removerEvidencia('${etapa}', ${id})">
+              <i class="bx bx-x"></i>
+            </div>
+          </div>
+        `;
+        previewContainer.innerHTML += preview;
+      }
+    });
+  } catch (error) {
+    console.error('Error al actualizar preview:', error);
+  }
+}
+
+function removerEvidencia(etapa, id) {
+  const index = evidenciasSeleccionadas[etapa].indexOf(id);
+  if (index > -1) {
+    evidenciasSeleccionadas[etapa].splice(index, 1);
+    document.getElementById(`evidencias_${etapa}_ids`).value = evidenciasSeleccionadas[etapa].join(',');
+    document.getElementById(`count_${etapa}`).textContent = evidenciasSeleccionadas[etapa].length;
+    actualizarPreview(etapa);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('✅ Módulo Informe de Avance cargado correctamente');
+});
+</script>
 {% endblock %}

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 16-06-2026 a las 22:19:49
+-- Tiempo de generación: 25-06-2026 a las 04:22:31
 -- Versión del servidor: 9.4.0
 -- Versión de PHP: 8.3.30
 
@@ -38,6 +38,31 @@ CREATE TABLE `avance` (
   `obra_contratacion_id_contratacion` int NOT NULL,
   `obra_gestionar_proyectos_codigo_proyecto` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `catalogo_cargos`
+--
+
+CREATE TABLE `catalogo_cargos` (
+  `id_cargo` int NOT NULL,
+  `nombre_cargo` varchar(45) NOT NULL,
+  `descripcion` varchar(100) DEFAULT NULL,
+  `estado` tinyint NOT NULL DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Catálogo de cargos institucionales';
+
+--
+-- Volcado de datos para la tabla `catalogo_cargos`
+--
+
+INSERT INTO `catalogo_cargos` (`id_cargo`, `nombre_cargo`, `descripcion`, `estado`) VALUES
+(1, 'Gerente', 'Gerente de área o departamento', 1),
+(2, 'Inspector', 'Inspector de obras y proyectos', 1),
+(3, 'Asistente', 'Asistente administrativo', 1),
+(4, 'Proyectista', 'Responsable de diseño de proyectos', 1),
+(5, 'Recepcionista', 'Atención al público', 1),
+(6, 'Ingeniero', 'Ingeniero técnico', 1);
 
 -- --------------------------------------------------------
 
@@ -104,8 +129,19 @@ CREATE TABLE `empleados` (
   `cargo` varchar(45) NOT NULL,
   `fecha_ingreso` date NOT NULL,
   `gerencia_asignada` varchar(45) NOT NULL,
-  `persona_id_persona` int NOT NULL
+  `persona_id_persona` int NOT NULL,
+  `estado` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `empleados`
+--
+
+INSERT INTO `empleados` (`id_empleados`, `nombre_empleado`, `cargo`, `fecha_ingreso`, `gerencia_asignada`, `persona_id_persona`, `estado`) VALUES
+(1, 'Juan Carlos Perez Hernandez', 'Inspector', '2026-06-20', 'Obras', 7, 1),
+(2, 'Cesilia  del Carmen Suarez', 'Recepcionista', '2026-06-20', 'Atención al Ciudadano', 9, 1),
+(3, 'Maria del Carmen Suarez', 'Asistente', '2026-06-20', 'Comunicaciones', 9, 1),
+(5, 'Carlos Ramírez Inspector', 'Inspector', '2026-06-22', 'Obras Públicas', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -135,9 +171,11 @@ INSERT INTO `empresa` (`rif`, `nombre_empresa`, `telefono`, `domicilio_fiscal`) 
 
 CREATE TABLE `evidencia` (
   `id_evidencia` int NOT NULL,
-  `fotos` varchar(45) NOT NULL,
-  `url_archivos` varchar(90) NOT NULL,
-  `fecha_registro` datetime NOT NULL
+  `fotos` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `url_archivos` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `fecha_registro` datetime NOT NULL,
+  `estado` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)',
+  `etapa` enum('antes','durante','despues') NOT NULL DEFAULT 'antes' COMMENT 'Etapa de la evidencia fotográfica'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -173,7 +211,7 @@ CREATE TABLE `informe_avance_obra` (
   `id_informe` int NOT NULL,
   `fecha` datetime NOT NULL,
   `estado` varchar(25) NOT NULL,
-  `poblacion_benefiada` varchar(45) NOT NULL,
+  `poblacion_beneficiada` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `tipo_informe` varchar(30) NOT NULL,
   `evidencia_antes` varchar(50) NOT NULL,
   `evidencia_durante` varchar(50) NOT NULL,
@@ -236,6 +274,38 @@ CREATE TABLE `maquinaria` (
   `tipo_maquinaria` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Volcado de datos para la tabla `maquinaria`
+--
+
+INSERT INTO `maquinaria` (`id_maquinaria`, `nombre_maquinaria`, `tipo_maquinaria`) VALUES
+(1, 'Excavadora CAT 320', 'Pesada'),
+(2, 'Retroexcavadora', 'Pesada'),
+(3, 'Motoniveladora', 'Pesada'),
+(4, 'Bulldozer (Topadora)', 'Pesada'),
+(5, 'Compactador Rodillo liso', 'Pesada'),
+(6, 'Pavimentadora (Terminadora de asfalto)', 'Pesada'),
+(7, 'Fresadora de pavimento', 'Pesada'),
+(8, 'Mototraílla (Scraper)', 'Pesada'),
+(9, 'Mini cargadora (tipo Bobcat)', 'Liviana'),
+(10, 'Placa vibratoria Wacker Neuson', 'Liviana'),
+(11, 'Pisón vibratorio (Canguro)', 'Liviana'),
+(12, 'Cortadora de pavimento (Suelo/Asfalto)', 'Liviana'),
+(13, 'Generador eléctrico', 'Liviana'),
+(14, 'Barredora mecánica', 'Liviana'),
+(15, 'Motosierra', 'Herramienta'),
+(16, 'Taladro percutor / Rotomartillo', 'Herramienta'),
+(17, 'Esmeriladora', 'Herramienta'),
+(18, 'Estación total Leica TS06', 'Herramienta'),
+(19, 'Palas', 'Herramienta'),
+(20, 'Picos', 'Herramienta'),
+(21, 'rastrillos', 'Herramienta'),
+(22, 'macetas', 'Herramienta'),
+(23, 'Camión volquete (Dúmper) Mack Granite', 'Vehículo'),
+(24, 'Camión cisterna', 'Vehículo'),
+(25, 'Camión hormigonera (Mixer)', 'Vehículo'),
+(26, 'Camión plataforma', 'Vehículo');
+
 -- --------------------------------------------------------
 
 --
@@ -278,7 +348,8 @@ CREATE TABLE `particular` (
 --
 
 INSERT INTO `particular` (`id_particular`, `nombre`, `apellido`, `persona_id_persona`) VALUES
-(1, 'Gabriel', 'Mujica', 1);
+(1, 'Gabriel', 'Mujica', 1),
+(2, 'Mariangel', 'Bokor', 11);
 
 -- --------------------------------------------------------
 
@@ -306,7 +377,10 @@ INSERT INTO `persona` (`id_persona`, `cedula_persona`, `direccion`, `parroquia`,
 (3, 56785729, 'calle miami', 'Hilario Luna y Luna', 'Morán', '04245678934', 'youtube@gmail.coom'),
 (4, 31258936, 'cuji', 'Freitez', 'Crespo', '04245087200', 'redfiury21@gmail.com'),
 (5, 30088284, 'ihjdsk', 'Cabudare', 'Palavecino', '04120587814', 'jose@gmail.com'),
-(6, 28433546, 'San Francisco', 'Guerrera Ana Soto (Juan de Villegas)', 'Iribarren', '04123582233', 'mafer25@gmail.com');
+(6, 28433546, 'San Francisco', 'Guerrera Ana Soto (Juan de Villegas)', 'Iribarren', '04123582233', 'mafer25@gmail.com'),
+(7, 29345267, 'Calle 52 con Carrera 24 y 25 ', 'Iribarren', 'Guerrera Ana Soto', '04123456420', 'Juan45p@gmail.com'),
+(9, 7833562, 'Carrera 24 entre Calles 36 y 37', 'Iribarren', 'Juan de Villegas', '04248379835', 'Cesif67@gmail.com'),
+(11, 30587785, 'Carrera 4 con Calle 5', 'Cabudare', 'Palavecino', '04245319088', 'bokorMBmariposa@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -343,6 +417,13 @@ CREATE TABLE `proyecto` (
   `estimacion_costo` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de gestion de proyectos';
 
+--
+-- Volcado de datos para la tabla `proyecto`
+--
+
+INSERT INTO `proyecto` (`codigo_proyecto`, `fecha_planificacion`, `descripcion_tecnica`, `computos_metricos`, `estimacion_costo`) VALUES
+('FRE-001', '2026-06-24 00:00:00', 'Restauración Vial', '230 m2', '200000 dolares');
+
 -- --------------------------------------------------------
 
 --
@@ -353,6 +434,33 @@ CREATE TABLE `proyecto_has_maquinaria` (
   `proyecto_codigo_proyecto` varchar(15) NOT NULL,
   `maquinaria_id_maquinaria` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `proyecto_has_maquinaria`
+--
+
+INSERT INTO `proyecto_has_maquinaria` (`proyecto_codigo_proyecto`, `maquinaria_id_maquinaria`) VALUES
+('FRE-001', 7);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `proyecto_has_solicitudes`
+--
+
+CREATE TABLE `proyecto_has_solicitudes` (
+  `proyecto_codigo_proyecto` varchar(15) NOT NULL,
+  `solicitudes_id_solicitudes` int NOT NULL,
+  `solicitudes_persona_id_persona` int NOT NULL,
+  `solicitudes_prioridad_id_gestion_prioridad` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `proyecto_has_solicitudes`
+--
+
+INSERT INTO `proyecto_has_solicitudes` (`proyecto_codigo_proyecto`, `solicitudes_id_solicitudes`, `solicitudes_persona_id_persona`, `solicitudes_prioridad_id_gestion_prioridad`) VALUES
+('FRE-001', 7, 6, 1);
 
 -- --------------------------------------------------------
 
@@ -435,36 +543,30 @@ CREATE TABLE `solicitudes` (
 --
 
 INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus_solicitud`, `problematica`, `persona_id_persona`, `prioridad_id_gestion_prioridad`) VALUES
-(1, '2026-06-15 16:38:02', 'Particular', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] Haciendo rgistro de prueba mortadela', 1, 1),
-(2, '2026-06-15 16:40:32', 'Comunidad', 'Completada', '[Salud y Asistencia Médica] hhhhhhhhhuuuuuuuuuuuuuuuuu  mantequilla', 2, 1),
-(3, '2026-06-15 16:42:00', 'Institucion', 'En Proceso', '[Servicios Básicos (Agua, Luz, Gas)] gggggggggggggggggggggggggggggggggggggg jamon', 3, 1),
-(5, '2026-06-15 16:46:00', 'Comunidad', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] hueco en la avenida donde salen aguas negras', 4, 1),
-(6, '2026-06-15 19:07:05', 'Comunidad', 'Completada', '[Infraestructura y Vialidad] aaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 5, 1),
-(7, '2026-06-16 17:58:23', 'Comunidad', 'En Proceso', '[Infraestructura y Vialidad] Acondicionamiento vial', 6, 1);
+(1, '2026-06-15 16:38:02', 'Particular', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] no hay gaz de prueba mortadela', 1, 1),
+(2, '2026-06-15 16:40:32', 'Comunidad', 'Completada', '[Salud y Asistencia Médica] En la comunidad necesitamos una jornada de vacunación', 2, 1),
+(3, '2026-06-15 16:46:00', 'Comunidad', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] hueco en la avenida donde salen aguas negras', 4, 1),
+(7, '2026-06-16 17:58:23', 'Comunidad', 'En Proceso', '[Infraestructura y Vialidad] Acondicionamiento vial', 6, 1),
+(8, '2026-06-24 16:04:42', 'Particular', 'En Proceso', '[Servicios Básicos (Agua, Luz, Gas)] No hay agua y todos nos estamos derritiendo, porfis traigan aguita aaaaaaaaa', 11, 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `usuarios`
+-- Estructura Stand-in para la vista `vista_evidencia_informe`
+-- (Véase abajo para la vista actual)
 --
-
-CREATE TABLE `usuarios` (
-  `id_usuarios` int NOT NULL,
-  `nombre` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
-  `cedula_usuario` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
-  `contrasena` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `correo` varchar(45) COLLATE utf8mb4_general_ci NOT NULL,
-  `rol` varchar(20) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Tabla de los usuarios.'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla de usuarios';
-
---
--- Volcado de datos para la tabla `usuarios`
---
-
-INSERT INTO `usuarios` (`id_usuarios`, `nombre`, `cedula_usuario`, `contrasena`, `correo`, `rol`) VALUES
-(1, 'Jhoanly', '30395804', 'pbkdf2:sha256:600000$hI1ARI12kxLAauXD$cfb2353db5762ef956921c951c91fa3bc1deeea2b66511bee0fc27ef527ac1da', 'admin@gmail.com', 'Usuario'),
-(2, 'Frangher', '30553759', 'pbkdf2:sha256:600000$BW8CshHpdlpCU2pX$850ca46134fe0094d6e26718d0e8e54b895486e8bf30baf3923e167166641122', 'frangher@gmail.com', 'Usuario'),
-(3, 'potato', '9543017', 'pbkdf2:sha256:600000$1shk4qAbaznq5Ui1$cf4aebb33ade4358663ac5895b337fc6606cb520dad328711394a47a697529b1', 'potato@gmail.com', 'Usuario');
+CREATE TABLE `vista_evidencia_informe` (
+`id_evidencia` int
+,`fotos` varchar(255)
+,`url_archivos` varchar(1000)
+,`fecha_registro` datetime
+,`etapa` enum('antes','durante','despues')
+,`estado` tinyint
+,`id_informe` int
+,`fecha_informe` datetime
+,`tipo_informe` varchar(30)
+,`estado_informe` varchar(25)
+);
 
 --
 -- Índices para tablas volcadas
@@ -476,6 +578,13 @@ INSERT INTO `usuarios` (`id_usuarios`, `nombre`, `cedula_usuario`, `contrasena`,
 ALTER TABLE `avance`
   ADD PRIMARY KEY (`id_avance`),
   ADD KEY `fk_avance_obra1_idx` (`obra_id_obra`,`obra_semaforo_id_semaforo`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`);
+
+--
+-- Indices de la tabla `catalogo_cargos`
+--
+ALTER TABLE `catalogo_cargos`
+  ADD PRIMARY KEY (`id_cargo`),
+  ADD UNIQUE KEY `nombre_cargo_UNIQUE` (`nombre_cargo`);
 
 --
 -- Indices de la tabla `comunidad`
@@ -497,7 +606,9 @@ ALTER TABLE `contratacion`
 --
 ALTER TABLE `empleados`
   ADD PRIMARY KEY (`id_empleados`),
-  ADD KEY `fk_empleados_persona1_idx` (`persona_id_persona`);
+  ADD KEY `fk_empleados_persona1_idx` (`persona_id_persona`),
+  ADD KEY `idx_empleados_estado` (`estado`),
+  ADD KEY `idx_empleados_cargo` (`cargo`);
 
 --
 -- Indices de la tabla `empresa`
@@ -601,6 +712,14 @@ ALTER TABLE `proyecto_has_maquinaria`
   ADD KEY `fk_proyecto_has_maquinaria_proyecto1_idx` (`proyecto_codigo_proyecto`);
 
 --
+-- Indices de la tabla `proyecto_has_solicitudes`
+--
+ALTER TABLE `proyecto_has_solicitudes`
+  ADD PRIMARY KEY (`proyecto_codigo_proyecto`,`solicitudes_id_solicitudes`,`solicitudes_persona_id_persona`,`solicitudes_prioridad_id_gestion_prioridad`),
+  ADD KEY `fk_proyecto_has_solicitudes_solicitudes1_idx` (`solicitudes_id_solicitudes`,`solicitudes_persona_id_persona`,`solicitudes_prioridad_id_gestion_prioridad`),
+  ADD KEY `fk_proyecto_has_solicitudes_proyecto1_idx` (`proyecto_codigo_proyecto`);
+
+--
 -- Indices de la tabla `publicacion`
 --
 ALTER TABLE `publicacion`
@@ -636,15 +755,14 @@ ALTER TABLE `solicitudes`
   ADD KEY `fk_solicitudes_prioridad1_idx` (`prioridad_id_gestion_prioridad`);
 
 --
--- Indices de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id_usuarios`),
-  ADD UNIQUE KEY `cedula_usuario_UNIQUE` (`cedula_usuario`);
-
---
 -- AUTO_INCREMENT de las tablas volcadas
 --
+
+--
+-- AUTO_INCREMENT de la tabla `catalogo_cargos`
+--
+ALTER TABLE `catalogo_cargos`
+  MODIFY `id_cargo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `comunidad`
@@ -662,13 +780,13 @@ ALTER TABLE `contratacion`
 -- AUTO_INCREMENT de la tabla `empleados`
 --
 ALTER TABLE `empleados`
-  MODIFY `id_empleados` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_empleados` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `evidencia`
 --
 ALTER TABLE `evidencia`
-  MODIFY `id_evidencia` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_evidencia` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `gravedad_obra`
@@ -698,7 +816,7 @@ ALTER TABLE `institucion`
 -- AUTO_INCREMENT de la tabla `maquinaria`
 --
 ALTER TABLE `maquinaria`
-  MODIFY `id_maquinaria` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_maquinaria` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `obra`
@@ -710,13 +828,13 @@ ALTER TABLE `obra`
 -- AUTO_INCREMENT de la tabla `particular`
 --
 ALTER TABLE `particular`
-  MODIFY `id_particular` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_particular` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `id_persona` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_persona` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `prioridad`
@@ -746,13 +864,16 @@ ALTER TABLE `semaforo`
 -- AUTO_INCREMENT de la tabla `solicitudes`
 --
 ALTER TABLE `solicitudes`
-  MODIFY `id_solicitudes` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_solicitudes` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+-- --------------------------------------------------------
 
 --
--- AUTO_INCREMENT de la tabla `usuarios`
+-- Estructura para la vista `vista_evidencia_informe`
 --
-ALTER TABLE `usuarios`
-  MODIFY `id_usuarios` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+DROP TABLE IF EXISTS `vista_evidencia_informe`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_evidencia_informe`  AS SELECT `e`.`id_evidencia` AS `id_evidencia`, `e`.`fotos` AS `fotos`, `e`.`url_archivos` AS `url_archivos`, `e`.`fecha_registro` AS `fecha_registro`, `e`.`etapa` AS `etapa`, `e`.`estado` AS `estado`, `i`.`id_informe` AS `id_informe`, `i`.`fecha` AS `fecha_informe`, `i`.`tipo_informe` AS `tipo_informe`, `i`.`estado` AS `estado_informe` FROM (`evidencia` `e` left join `informe_avance_obra` `i` on((((`e`.`etapa` = 'antes') and (`i`.`evidencia_antes` like concat('%',`e`.`id_evidencia`,'%'))) or ((`e`.`etapa` = 'durante') and (`i`.`evidencia_durante` like concat('%',`e`.`id_evidencia`,'%'))) or ((`e`.`etapa` = 'despues') and (`i`.`evidencia_despues` like concat('%',`e`.`id_evidencia`,'%')))))) WHERE (`e`.`estado` = 1) ;
 
 --
 -- Restricciones para tablas volcadas
@@ -828,6 +949,13 @@ ALTER TABLE `particular`
 ALTER TABLE `proyecto_has_maquinaria`
   ADD CONSTRAINT `fk_proyecto_has_maquinaria_maquinaria1` FOREIGN KEY (`maquinaria_id_maquinaria`) REFERENCES `maquinaria` (`id_maquinaria`),
   ADD CONSTRAINT `fk_proyecto_has_maquinaria_proyecto1` FOREIGN KEY (`proyecto_codigo_proyecto`) REFERENCES `proyecto` (`codigo_proyecto`);
+
+--
+-- Filtros para la tabla `proyecto_has_solicitudes`
+--
+ALTER TABLE `proyecto_has_solicitudes`
+  ADD CONSTRAINT `fk_proyecto_has_solicitudes_proyecto1` FOREIGN KEY (`proyecto_codigo_proyecto`) REFERENCES `proyecto` (`codigo_proyecto`),
+  ADD CONSTRAINT `fk_proyecto_has_solicitudes_solicitudes1` FOREIGN KEY (`solicitudes_id_solicitudes`,`solicitudes_persona_id_persona`,`solicitudes_prioridad_id_gestion_prioridad`) REFERENCES `solicitudes` (`id_solicitudes`, `persona_id_persona`, `prioridad_id_gestion_prioridad`);
 
 --
 -- Filtros para la tabla `publicacion`

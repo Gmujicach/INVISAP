@@ -2,38 +2,81 @@
 {% block title %}Listar Empleados{% endblock %}
 
 {% block customCSS %}
-<!-- Reutilizamos los estilos del dashboard de usuarios -->
-<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/usuarios.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/empleados.css') }}">
 {% endblock %}
 
 {% block body %}
 <div class="container-xxl flex-grow-1 container-p-y">
-    <!-- Contenedor de carga mientras se activa el dashboard -->
-    <div class="d-flex flex-column align-items-center justify-content-center mt-5" style="min-height: 400px;">
-        <div class="spinner-grow text-primary" role="status" style="width: 3rem; height: 3rem;">
-            <span class="visually-hidden">Procesando...</span>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold py-3 mb-0">
+            <span class="text-muted fw-light">Personal /</span> Listado de Empleados
+        </h4>
+        <a href="{{ url_for('empleado_bp.viewFormEmpleado') }}" class="btn btn-primary shadow-sm">
+            <i class="bi bi-person-plus-fill me-2"></i>Registrar Nuevo
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent border-bottom">
+            <h5 class="mb-0 fw-semibold text-primary">Gestión de Personal Invilara</h5>
         </div>
-        <div class="mt-4 text-center">
-            <h5 class="fw-bold text-primary mb-1">Cargando Gestión de Empleados</h5>
-            <p class="text-muted">Preparando panel interactivo e información del sistema...</p>
+        <div class="table-responsive text-nowrap p-3">
+            <table class="table table-hover align-middle" id="tablaEmpleados">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Cargo</th>
+                        <th>Gerencia</th>
+                        <th>Ingreso</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyEmpleados" class="table-border-bottom-0">
+                    {% if resp_empleadosBD %}
+                        {% for empleado in resp_empleadosBD %}
+                        <tr>
+                            <td><span class="fw-bold">{{ empleado.id_empleados }}</span></td>
+                            <td>{{ empleado.nombre_empleado }}</td>
+                            <td><span class="badge bg-label-primary">{{ empleado.cargo }}</span></td>
+                            <td><small class="text-muted">{{ empleado.gerencia_asignada }}</small></td>
+                            <td>{{ empleado.fecha_ingreso }}</td>
+                            <td>
+                                {% if empleado.estado == 1 %}
+                                <span class="badge bg-success">Activo</span>
+                                {% else %}
+                                <span class="badge bg-secondary">Inactivo</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a href="{{ url_for('empleado_bp.viewEditarEmpleado', id_empleado=empleado.id_empleados) }}" 
+                                       class="btn btn-warning btn-sm" title="Editar Empleado">
+                                        <i class="bi bi-pencil-square text-white"></i>
+                                    </a>
+                                    <a href="javascript:void(0);" 
+                                       onclick="eliminarEmpleadoJS({{ empleado.id_empleados }})" 
+                                       class="btn btn-danger btn-sm" title="Eliminar (Borrado Lógico)">
+                                        <i class="bi bi-trash3-fill text-white"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">No hay empleados registrados.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block customJS %}
-<!-- Cargamos la lógica de usuarios para heredar las funciones openDashboard/closeDashboard -->
-<script src="{{ url_for('static', filename='assets/js/usuarios.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ url_for('static', filename='assets/js/empleados.js') }}"></script>
-<script>
-    // Inyectamos los datos de empleados a la ventana global para JS
-    window.resp_empleadosBD = {{ resp_empleadosBD | tojson | safe }};
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        // Disparamos el dashboard automáticamente al cargar la vista
-        if (typeof triggerEmpleadosDashboard === 'function') {
-            triggerEmpleadosDashboard();
-        }
-    });
-</script>
 {% endblock %}

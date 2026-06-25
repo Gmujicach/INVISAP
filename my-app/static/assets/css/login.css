@@ -72,27 +72,41 @@ body.dark-mode {
   color: #cfcde9 !important;
 }
 
-.dark-mode .bg-light {
-  background-color: #232333 !important;
+/* ==========================================================================
+   Estilos de Accesibilidad e Identidad Visual (Placeholders & Inputs)
+   ========================================================================== */
+
+/* Placeholder en Amarillo Dorado Visible y Ergonómico (Cumple WCAG de Contraste) */
+.custom-placeholder::placeholder {
+  color: #cca025 !important;
+  opacity: 0.9 !important;
+  font-weight: 500 !important;
+  font-style: italic;
+  font-size: 0.88rem;
 }
 
-/* Atomic: Dark Mode Organisms */
-body.dark-mode {
-  background-color: #232333 !important;
-  color: #cfcde9 !important;
+.custom-placeholder:-ms-input-placeholder {
+  color: #cca025 !important;
+  font-weight: 500 !important;
+  font-style: italic;
 }
 
-.dark-mode .card, 
-.dark-mode .navbar, 
-.dark-mode .modal-content,
-.dark-mode .dropdown-menu {
-  background-color: #2b2c40 !important;
-  color: #cfcde9 !important;
-  border-color: #444564 !important;
+.custom-placeholder::-ms-input-placeholder {
+  color: #cca025 !important;
+  font-weight: 500 !important;
+  font-style: italic;
 }
 
-.dark-mode .form-control, .dark-mode .input-group-text {
-  background-color: #232333 !important;
-  border-color: #444564 !important;
-  color: #cfcde9 !important;
+/* Ajuste para evitar conflictos estéticos con input-group de la plantilla Sneat */
+.password-toggle-btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.password-toggle-btn:hover {
+  color: #696cff !important;
+  background-color: #fafdff !important;
+}
+
+.password-toggle-btn:focus {
+  box-shadow: none !important;
 }

@@ -15,9 +15,16 @@
           </h5>
         </div>
         
-        <form class="form-horizontal" method="POST" action="/actualizar-proyecto" autocomplete="off">
+       <form id="formEditarProyecto" class="form-horizontal" method="POST" action="/actualizar-proyecto" autocomplete="off">
+    ...
+
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='js/proyecto.js') }}"></script>
+{% endblock %}
           
-          <input type="hidden" name="id_proyectos" value="{{ proyecto.id_proyectos }}">
+          
+          <input type="hidden" name="codigo_proyecto_actual" value="{{ proyecto.codigo_proyecto }}">
           
           <div class="card-body">
            
@@ -49,7 +56,7 @@
                 <label for="fecha_p" class="form-label fw-bold text-secondary">Fecha de Planificación</label>
                 <div class="input-group shadow-sm">
                   <span class="input-group-text bg-light"><i class="bx bx-calendar"></i></span>
-                  <input type="date" class="form-control" name="fecha_p" id="fecha_p" value="{{ proyecto.fecha_planificacion }}" required />
+                  <input type="date" id="fecha_p" name="fecha_p" class="form-control" value="{{ proyecto.fecha_p.split(' ')[0] if proyecto.fecha_p else '' }}">
                 </div>
               </div>
               <div class="col-md-6">
@@ -79,17 +86,15 @@
               <div class="col-md-6">
                 <label for="maquinaria_p" class="form-label fw-bold text-secondary">Maquinaria Requerida</label>
                 <select class="form-select shadow-sm" name="maquinaria_p" id="maquinaria_p" required>
+                  <option value="" {% if proyecto.id_maquinaria is none %}selected{% endif %} disabled>Seleccione maquinaria...</option>
                   {% for maquinaria in maquinarias %}
-                    <option value="{{ maquinaria.id_maquinaria }}" {% if maquinaria.id_maquinaria|int == proyecto.maquinaria_id_maquinaria|int %}selected{% endif %}>
+                    <option value="{{ maquinaria.id_maquinaria }}" {% if proyecto.id_maquinaria is not none and maquinaria.id_maquinaria|int == proyecto.id_maquinaria|int %}selected{% endif %}>
                       {{ maquinaria.nombre_maquinaria|upper }}
                     </option>
                   {% endfor %}
                 </select>
               </div>
-              <div class="col-md-6">
-                <label for="inspeccion_p" class="form-label fw-bold text-secondary">Inspecciones Previas</label>
-                <input type="text" class="form-control shadow-sm" name="inspeccion_p" id="inspeccion_p" value="{{ proyecto.inspecciones_previas }}" required />
-              </div>
+         
             </div>
           </div>
 
