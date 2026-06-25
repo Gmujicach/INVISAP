@@ -278,14 +278,6 @@ def eliminarMaquinaria(id_maquinaria):
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-@home_bp.route('/registrar-mortadela', methods=['GET'])
-def viewFormMortadela():
-    if 'conectado' in session:
-        return render_template(f'{PATH_URL}/form_mortadela.html')
-    else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-
 @home_bp.route('/gestionar-obras', methods=['GET'])
 def viewFormGestionarObras():
     if 'conectado' in session:
@@ -402,7 +394,13 @@ def api_crear_solicitud():
 
     resultado = crear_solicitud(request.form)
     if resultado.get('success'):
-        return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud creada'), 'id': resultado.get('id')}), 200
+        nuevo_id = resultado.get('id')
+        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'CREAR',
+            f'Solicitud #{nuevo_id} creada por {nombre_usr}'
+        )
+        return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud creada'), 'id': nuevo_id}), 200
     return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo crear la solicitud')}), 400
 
 @home_bp.route('/api/solicitudes/<int:id_solicitud>', methods=['GET'])
@@ -427,6 +425,11 @@ def api_actualizar_solicitud():
 
     resultado = actualizar_solicitud(id_solicitud, datos)
     if resultado.get('success'):
+        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'EDITAR',
+            f'Solicitud #{id_solicitud} actualizada por {nombre_usr}'
+        )
         return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud actualizada')}), 200
     return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo actualizar la solicitud')}), 400
 
@@ -436,7 +439,17 @@ def api_eliminar_solicitud(id_solicitud):
         return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
 
     resultado = eliminar_solicitud(id_solicitud)
-    if resultado.get('success'):
+    if isinstance(resultado, dict):
+        success = resultado.get('success')
+    else:
+        success = bool(resultado)
+
+    if success:
+        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'ELIMINAR',
+            f'Solicitud #{id_solicitud} eliminada por {nombre_usr}'
+        )
         return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud eliminada')}), 200
     return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo eliminar la solicitud')}), 400
 
@@ -653,17 +666,19 @@ def formSolicitud():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-    nuevo_id = False
+    resultado = {'success': False}
     try:
-        nuevo_id = crear_solicitud(request.form)
+        resultado = crear_solicitud(request.form) or {'success': False}
     except Exception as e:
         print(f"[Router] Error al crear solicitud: {e}")
-        nuevo_id = False
+        resultado = {'success': False}
 
-    if nuevo_id:
+    if resultado.get('success'):
+        nuevo_id = resultado.get('id')
+        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
         BitacoraService.registrar_accion(
             session, 'Solicitudes', 'CREAR',
-            f'Solicitud #{nuevo_id} creada por {session.get("nombre", "")}'
+            f'Solicitud #{nuevo_id} creada por {nombre_usr}'
         )
         flash('Solicitud registrada exitosamente.', 'success')
         return redirect(url_for('lista_solicitudes'))
@@ -692,10 +707,17 @@ def eliminar_solicitud_route(id_solicitud):
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-    if eliminar_solicitud(id_solicitud):
+    resultado = eliminar_solicitud(id_solicitud)
+    if isinstance(resultado, dict):
+        success = resultado.get('success')
+    else:
+        success = bool(resultado)
+
+    if success:
+        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
         BitacoraService.registrar_accion(
             session, 'Solicitudes', 'ELIMINAR',
-            f'Solicitud #{id_solicitud} eliminada'
+            f'Solicitud #{id_solicitud} eliminada por {nombre_usr}'
         )
         flash('Solicitud eliminada correctamente.', 'success')
     else:
@@ -722,10 +744,17 @@ def update_solicitud():
     if 'conectado' not in session:
         return redirect(url_for('login_bp.inicio'))
     id_solicitud = request.form.get('id_solicitud')
-    if actualizar_solicitud(id_solicitud, request.form):
+    resultado = actualizar_solicitud(id_solicitud, request.form)
+    if isinstance(resultado, dict):
+        success = resultado.get('success')
+    else:
+        success = bool(resultado)
+
+    if success:
+        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
         BitacoraService.registrar_accion(
             session, 'Solicitudes', 'EDITAR',
-            f'Solicitud #{id_solicitud} actualizada'
+            f'Solicitud #{id_solicitud} actualizada por {nombre_usr}'
         )
         flash('Solicitud actualizada correctamente.', 'success')
     else:
