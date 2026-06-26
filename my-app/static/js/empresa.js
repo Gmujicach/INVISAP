@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             const urlEliminar = this.getAttribute('data-url');
-            const filaTabla = this.closest('tr'); // Detectamos la fila <tr> exacta donde se hizo clic
+            const filaTabla = this.closest('tr'); // Detectamos la fila <tr>
             
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -21,12 +21,11 @@ document.addEventListener('DOMContentLoaded', function() {
             }).then((result) => {
                 if (result.isConfirmed) {
                     
-                    // Iniciamos la petición AJAX para eliminar
+                    // Petición AJAX para eliminar
                     fetch(urlEliminar)
                     .then(response => response.json())
                     .then(data => {
                         if(data.exito) {
-                            // Si el servidor dice que se borró, quitamos la fila de la pantalla
                             filaTabla.remove(); 
                             
                             Swal.fire({
@@ -54,24 +53,19 @@ document.addEventListener('DOMContentLoaded', function() {
     if (formulario) {
         
         // RIF
-        // --- REPOBLAR EL RIF ---
         const inputRifFinal = document.getElementById('rif_final');
         if (inputRifFinal && inputRifFinal.value) {
-            // Limpiamos espacios y aseguramos mayúsculas por si el backend lo cambió
             let valorRif = inputRifFinal.value.trim().toUpperCase(); 
             
             const tipo = document.getElementById('tipo_rif');
             const num = document.getElementById('numero_rif');
 
-            // Caso A: Viene con guion (ej: "J-12345678")
             if (valorRif.includes('-')) {
                 const partesRif = valorRif.split('-');
                 if (tipo) tipo.value = partesRif[0];
                 if (num) num.value = partesRif[1];
             } 
-            // Caso B: Viene todo pegado (ej: "J12345678")
             else if (valorRif.length > 1) {
-                // Tomamos la primera letra para el select y el resto para el input
                 if (tipo) tipo.value = valorRif.charAt(0);
                 if (num) num.value = valorRif.substring(1);
             }
@@ -80,22 +74,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // TELÉFONO
         const inputTelFinal = document.getElementById('telefono_final');
         if (inputTelFinal && inputTelFinal.value) {
-            // Limpia todo lo que no sea número
             let soloNumeros = inputTelFinal.value.replace(/\D/g, '');
             if (soloNumeros.length >= 7) {
                 const pref = document.getElementById('prefijo_telefono');
                 const num = document.getElementById('numero_telefono');
-                // Los primeros 4 son el prefijo, el resto es el número
                 if(pref) pref.value = soloNumeros.substring(0, 4);
                 if(num) num.value = soloNumeros.substring(4);
             }
         }
 
-        // ANTES DE ENVIAR (Lógica AJAX)
+        // ANTES DE ENVIAR AJAX
         formulario.addEventListener('submit', function(e) {
-            e.preventDefault(); // 🛑 DETIENE LA RECARGA DE LA PÁGINA
+            e.preventDefault();
 
-            // 1. Armamos los campos ocultos igual que antes
             const prefTel = document.getElementById('prefijo_telefono');
             const numTel = document.getElementById('numero_telefono');
             const telFinal = document.getElementById('telefono_final');
@@ -110,19 +101,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 rifFinal.value = tipoRif.value + '-' + numRif.value;
             }
 
-            // 2. Empaquetamos todos los datos del formulario
             const formData = new FormData(this);
-
-            // 3. Enviamos los datos vía AJAX usando fetch
+            
             fetch(this.action, {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json()) // Recibimos el JSON del Router
+            .then(response => response.json()) //JSON del Router
             .then(data => {
-                // Evaluamos lo que respondió el servidor
                 if (data.exito) {
-                    // Si todo salió bien, mostramos alerta de éxito
                     Swal.fire({
                         icon: 'success',
                         title: '¡Listo!',
@@ -130,12 +117,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         timer: 2000,
                         showConfirmButton: false
                     }).then(() => {
-                        // Redirigimos a la lista de empresas después de 2 segundos
                         window.location.href = '/lista-empresas'; 
                     });
                 } else {
-                    // Si hubo un error (ej. RIF duplicado), mostramos la advertencia
-                    // y los datos se quedan intactos en el formulario para que el usuario corrija
                     Swal.fire({
                         icon: data.categoria === 'error' ? 'error' : 'warning',
                         title: 'Oops...',

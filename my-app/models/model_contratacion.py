@@ -27,7 +27,7 @@ class ContratacionModel:
             if datos.get('tipo_contrato') not in ['Contrato de Obra', 'Contrato de Servicio', 'Contrato de Adquisición de Bienes']:
                 return False, "Tipo de contrato no permitido."
 
-            if datos.get('modalidad') not in ['Concurso Abierto', 'Concurso Cerrado', 'Consulta de Precios', 'Adjudicación Directa']:
+            if datos.get('modalidad') not in ['Concurso Abierto', 'Concurso Cerrado', 'Consulta de Precios', 'Contratación Directa']:
                 return False, "Modalidad no permitida."
 
             if datos.get('objeto') not in ['Ejecución de Obras', 'Prestación de Servicios', 'Suministro de Bienes']:

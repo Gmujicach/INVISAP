@@ -22,7 +22,7 @@ class BitacoraService:
     # Módulos válidos del sistema
     MODULOS_VALIDOS = {
         'Solicitudes', 'Usuarios', 'Empleados', 'Proyectos',
-        'Contrataciones', 'Obras', 'Publicaciones', 'Maquinaria',
+        'Contrataciones', 'Empresas', 'Obras', 'Publicaciones', 'Maquinaria',
         'Gerencias', 'Respaldos', 'Bitacora', 'Login'
     }
 
@@ -54,7 +54,8 @@ class BitacoraService:
 
             # Extraer datos del usuario de la sesión
             nombre_usuario = BitacoraService._validar_texto(
-                session.get('nombre', 'Sistema'), max_len=15
+                session.get('name_surname') or session.get('nombre') or session.get('email_user') or 'Sistema',
+                max_len=15
             )
             id_usuario = int(session.get('id', 0)) if session.get('id') else 1
 
