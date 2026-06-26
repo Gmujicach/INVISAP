@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2deb1+deb13u1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 26-06-2026 a las 01:20:26
--- Versión del servidor: 11.8.6-MariaDB-0+deb13u1 from Debian
--- Versión de PHP: 8.4.21
+-- Tiempo de generación: 26-06-2026 a las 10:26:41
+-- Versión del servidor: 9.4.0
+-- Versión de PHP: 8.3.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,13 +29,13 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `avance` (
   `id_avance` varchar(45) NOT NULL,
-  `porcentaje_avance` int(11) NOT NULL,
+  `porcentaje_avance` int NOT NULL,
   `descripcion` varchar(45) NOT NULL,
   `gerente` varchar(45) NOT NULL,
   `fecha_avance` date NOT NULL,
-  `obra_id_obra` int(11) NOT NULL,
-  `obra_semaforo_id_semaforo` int(11) NOT NULL,
-  `obra_contratacion_id_contratacion` int(11) NOT NULL,
+  `obra_id_obra` int NOT NULL,
+  `obra_semaforo_id_semaforo` int NOT NULL,
+  `obra_contratacion_id_contratacion` int NOT NULL,
   `obra_gestionar_proyectos_codigo_proyecto` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -46,10 +46,10 @@ CREATE TABLE `avance` (
 --
 
 CREATE TABLE `catalogo_cargos` (
-  `id_cargo` int(11) NOT NULL,
+  `id_cargo` int NOT NULL,
   `nombre_cargo` varchar(45) NOT NULL,
   `descripcion` varchar(100) DEFAULT NULL,
-  `estado` tinyint(4) NOT NULL DEFAULT 1
+  `estado` tinyint NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Catálogo de cargos institucionales';
 
 --
@@ -71,11 +71,11 @@ INSERT INTO `catalogo_cargos` (`id_cargo`, `nombre_cargo`, `descripcion`, `estad
 --
 
 CREATE TABLE `comunidad` (
-  `id_comunidad` int(11) NOT NULL,
+  `id_comunidad` int NOT NULL,
   `nombre_comunidad` varchar(100) NOT NULL,
   `ambito` varchar(45) NOT NULL,
   `sector` varchar(45) NOT NULL,
-  `persona_id_persona` int(11) NOT NULL
+  `persona_id_persona` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -95,7 +95,7 @@ INSERT INTO `comunidad` (`id_comunidad`, `nombre_comunidad`, `ambito`, `sector`,
 --
 
 CREATE TABLE `contratacion` (
-  `id_contratacion` int(11) NOT NULL,
+  `id_contratacion` int NOT NULL,
   `descripcion` varchar(255) NOT NULL,
   `empresa_ganadora` varchar(30) NOT NULL,
   `numero_contrato` varchar(12) NOT NULL,
@@ -107,17 +107,15 @@ CREATE TABLE `contratacion` (
   `objeto` varchar(30) NOT NULL,
   `observacion` varchar(100) NOT NULL,
   `fecha_registro` datetime NOT NULL,
-  `empresa_rif` varchar(12) NOT NULL,
-  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
+  `empresa_rif` varchar(12) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de contrataciones';
 
 --
 -- Volcado de datos para la tabla `contratacion`
 --
 
-INSERT INTO `contratacion` (`id_contratacion`, `descripcion`, `empresa_ganadora`, `numero_contrato`, `monto`, `fecha_inicio_procedimiento`, `fecha_adjudicacion`, `tipo_contrato`, `modalidad`, `objeto`, `observacion`, `fecha_registro`, `empresa_rif`, `estado`) VALUES
-(1, 'Hola', 'Polar', '12', '12 Dolares', '2026-06-17 00:00:00', '2026-06-24 00:00:00', 'Anual', 'Fisica', 'Afaltado', 'Calles irregulares', '2026-06-17 00:00:00', '12', 0),
-(2, 'Afaltado para la AV-Torres 16', 'Juan de Villega', 'Invi-123', '10.000,00', '2026-06-25 00:00:00', '2026-06-26 00:00:00', 'Contrato de Servicio', 'Concurso Cerrado', 'Ejecución de Obras', 'Hay Varias', '2026-06-25 00:00:00', 'J-123123213', 1);
+INSERT INTO `contratacion` (`id_contratacion`, `descripcion`, `empresa_ganadora`, `numero_contrato`, `monto`, `fecha_inicio_procedimiento`, `fecha_adjudicacion`, `tipo_contrato`, `modalidad`, `objeto`, `observacion`, `fecha_registro`, `empresa_rif`) VALUES
+(1, 'Hola', 'Polar', '12', '12 Dolares', '2026-06-17 00:00:00', '2026-06-24 00:00:00', 'Anual', 'Fisica', 'Afaltado', 'Calles irregulares', '2026-06-17 00:00:00', '12');
 
 -- --------------------------------------------------------
 
@@ -126,13 +124,13 @@ INSERT INTO `contratacion` (`id_contratacion`, `descripcion`, `empresa_ganadora`
 --
 
 CREATE TABLE `empleados` (
-  `id_empleados` int(11) NOT NULL,
+  `id_empleados` int NOT NULL,
   `nombre_empleado` varchar(45) NOT NULL,
   `cargo` varchar(45) NOT NULL,
   `fecha_ingreso` date NOT NULL,
   `gerencia_asignada` varchar(45) NOT NULL,
-  `persona_id_persona` int(11) NOT NULL,
-  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
+  `persona_id_persona` int NOT NULL,
+  `estado` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -141,7 +139,7 @@ CREATE TABLE `empleados` (
 
 INSERT INTO `empleados` (`id_empleados`, `nombre_empleado`, `cargo`, `fecha_ingreso`, `gerencia_asignada`, `persona_id_persona`, `estado`) VALUES
 (1, 'Juan Carlos Perez Hernandez', 'Inspector', '2026-06-20', 'Obras', 7, 1),
-(2, 'Cesilia del Carmen Suarez', 'Recepcionista', '2026-06-20', 'Atención al Ciudadano', 9, 1),
+(2, 'Cesilia  del Carmen Suarez', 'Recepcionista', '2026-06-20', 'Atención al Ciudadano', 9, 1),
 (3, 'Maria del Carmen Suarez', 'Asistente', '2026-06-20', 'Comunicaciones', 9, 1),
 (5, 'Carlos Ramírez Inspector', 'Inspector', '2026-06-22', 'Obras Públicas', 1, 1);
 
@@ -155,17 +153,15 @@ CREATE TABLE `empresa` (
   `rif` varchar(12) NOT NULL,
   `nombre_empresa` varchar(80) NOT NULL,
   `telefono` varchar(12) NOT NULL COMMENT 'Tabla de empresas.',
-  `domicilio_fiscal` varchar(100) NOT NULL,
-  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
+  `domicilio_fiscal` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `empresa`
 --
 
-INSERT INTO `empresa` (`rif`, `nombre_empresa`, `telefono`, `domicilio_fiscal`, `estado`) VALUES
-('12', 'Polar', '04122212121', 'Calle 13c', 0),
-('J-123123213', 'Juan de Villega', '0412-2213322', 'Mi domicilio Fiscal-03', 1);
+INSERT INTO `empresa` (`rif`, `nombre_empresa`, `telefono`, `domicilio_fiscal`) VALUES
+('12', 'Polar', '04122212121', 'Calle 13c');
 
 -- --------------------------------------------------------
 
@@ -174,11 +170,11 @@ INSERT INTO `empresa` (`rif`, `nombre_empresa`, `telefono`, `domicilio_fiscal`, 
 --
 
 CREATE TABLE `evidencia` (
-  `id_evidencia` int(11) NOT NULL,
-  `fotos` varchar(255) NOT NULL,
-  `url_archivos` varchar(1000) NOT NULL,
+  `id_evidencia` int NOT NULL,
+  `fotos` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `url_archivos` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `fecha_registro` datetime NOT NULL,
-  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)',
+  `estado` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)',
   `etapa` enum('antes','durante','despues') NOT NULL DEFAULT 'antes' COMMENT 'Etapa de la evidencia fotográfica'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -189,10 +185,20 @@ CREATE TABLE `evidencia` (
 --
 
 CREATE TABLE `gravedad_obra` (
-  `id_gravedad` int(11) NOT NULL,
+  `id_gravedad` int NOT NULL,
   `nivel_gravedad` varchar(20) NOT NULL,
-  `criticidad` varchar(10) NOT NULL
+  `criticidad` varchar(10) NOT NULL,
+  `estado` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `gravedad_obra`
+--
+
+INSERT INTO `gravedad_obra` (`id_gravedad`, `nivel_gravedad`, `criticidad`, `estado`) VALUES
+(1, 'Alta', 'Crítica', 1),
+(2, 'Media', 'Moderada', 1),
+(3, 'Baja', 'Leve', 1);
 
 -- --------------------------------------------------------
 
@@ -201,8 +207,8 @@ CREATE TABLE `gravedad_obra` (
 --
 
 CREATE TABLE `gravedad_obra_has_prioridad` (
-  `gravedad_obra_id_gravedad` int(11) NOT NULL,
-  `prioridad_id_gestion_prioridad` int(11) NOT NULL
+  `gravedad_obra_id_gravedad` int NOT NULL,
+  `prioridad_id_gestion_prioridad` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -212,10 +218,10 @@ CREATE TABLE `gravedad_obra_has_prioridad` (
 --
 
 CREATE TABLE `informe_avance_obra` (
-  `id_informe` int(11) NOT NULL,
+  `id_informe` int NOT NULL,
   `fecha` datetime NOT NULL,
   `estado` varchar(25) NOT NULL,
-  `poblacion_beneficiada` varchar(45) NOT NULL,
+  `poblacion_beneficiada` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `tipo_informe` varchar(30) NOT NULL,
   `evidencia_antes` varchar(50) NOT NULL,
   `evidencia_durante` varchar(50) NOT NULL,
@@ -230,20 +236,20 @@ CREATE TABLE `informe_avance_obra` (
 --
 
 CREATE TABLE `inspeccion` (
-  `id_inspeccion` int(11) NOT NULL,
+  `id_inspeccion` int NOT NULL,
   `inspector` varchar(45) NOT NULL,
   `fecha_inspeccion` date NOT NULL,
   `tipo_inspeccion` varchar(45) NOT NULL,
   `observaciones` varchar(255) NOT NULL,
-  `obra_id_obra` int(11) NOT NULL,
-  `obra_semaforo_id_semaforo` int(11) NOT NULL,
-  `obra_contratacion_id_contratacion` int(11) NOT NULL,
+  `obra_id_obra` int NOT NULL,
+  `obra_semaforo_id_semaforo` int NOT NULL,
+  `obra_contratacion_id_contratacion` int NOT NULL,
   `obra_gestionar_proyectos_codigo_proyecto` varchar(15) NOT NULL,
-  `obra_id_obra1` int(11) NOT NULL,
-  `obra_semaforo_id_semaforo1` int(11) NOT NULL,
-  `obra_contratacion_id_contratacion1` int(11) NOT NULL,
+  `obra_id_obra1` int NOT NULL,
+  `obra_semaforo_id_semaforo1` int NOT NULL,
+  `obra_contratacion_id_contratacion1` int NOT NULL,
   `obra_gestionar_proyectos_codigo_proyecto1` varchar(15) NOT NULL,
-  `evidencia_id_evidencia` int(11) NOT NULL
+  `evidencia_id_evidencia` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -253,10 +259,10 @@ CREATE TABLE `inspeccion` (
 --
 
 CREATE TABLE `institucion` (
-  `id_institucion` int(11) NOT NULL,
+  `id_institucion` int NOT NULL,
   `nombre_representante` varchar(45) NOT NULL,
   `razon_social` varchar(120) NOT NULL,
-  `persona_id_persona` int(11) NOT NULL
+  `persona_id_persona` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -273,7 +279,7 @@ INSERT INTO `institucion` (`id_institucion`, `nombre_representante`, `razon_soci
 --
 
 CREATE TABLE `maquinaria` (
-  `id_maquinaria` int(11) NOT NULL,
+  `id_maquinaria` int NOT NULL,
   `nombre_maquinaria` varchar(50) NOT NULL COMMENT 'Tabla de nombres de maquinarias',
   `tipo_maquinaria` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -317,20 +323,20 @@ INSERT INTO `maquinaria` (`id_maquinaria`, `nombre_maquinaria`, `tipo_maquinaria
 --
 
 CREATE TABLE `obra` (
-  `id_obra` int(11) NOT NULL,
+  `id_obra` int NOT NULL,
   `titulo_obra` varchar(45) NOT NULL,
   `ubicacion_obra` varchar(80) NOT NULL,
-  `periodo_ejecucion` int(11) NOT NULL,
+  `periodo_ejecucion` int NOT NULL,
   `fecha_inicio` date NOT NULL,
   `fecha_fin` date NOT NULL,
   `mediciones_obra` varchar(45) NOT NULL,
   `valuaciones` varchar(100) NOT NULL,
   `modificaciones_contrato` varchar(100) NOT NULL,
-  `certificaciones_obras_ejecutadas` int(11) NOT NULL,
+  `certificaciones_obras_ejecutadas` int NOT NULL,
   `numero_contrato` varchar(20) NOT NULL,
-  `porcentaje_avance_obra` int(11) NOT NULL,
-  `semaforo_id_semaforo` int(11) NOT NULL,
-  `contratacion_id_contratacion` int(11) NOT NULL,
+  `porcentaje_avance_obra` int NOT NULL,
+  `semaforo_id_semaforo` int NOT NULL,
+  `contratacion_id_contratacion` int NOT NULL,
   `gestionar_proyectos_codigo_proyecto` varchar(15) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de las inspecciones';
 
@@ -341,10 +347,10 @@ CREATE TABLE `obra` (
 --
 
 CREATE TABLE `particular` (
-  `id_particular` int(11) NOT NULL,
+  `id_particular` int NOT NULL,
   `nombre` varchar(45) NOT NULL,
   `apellido` varchar(45) NOT NULL,
-  `persona_id_persona` int(11) NOT NULL
+  `persona_id_persona` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -362,8 +368,8 @@ INSERT INTO `particular` (`id_particular`, `nombre`, `apellido`, `persona_id_per
 --
 
 CREATE TABLE `persona` (
-  `id_persona` int(11) NOT NULL,
-  `cedula_persona` int(11) NOT NULL,
+  `id_persona` int NOT NULL,
+  `cedula_persona` int NOT NULL,
   `direccion` varchar(200) NOT NULL,
   `parroquia` varchar(45) NOT NULL,
   `municipio` varchar(45) NOT NULL,
@@ -393,7 +399,7 @@ INSERT INTO `persona` (`id_persona`, `cedula_persona`, `direccion`, `parroquia`,
 --
 
 CREATE TABLE `prioridad` (
-  `id_gestion_prioridad` int(11) NOT NULL,
+  `id_gestion_prioridad` int NOT NULL,
   `rango_prioridad` float NOT NULL,
   `fecha_asignacion` datetime NOT NULL,
   `responsable_ajuste` varchar(30) NOT NULL,
@@ -436,7 +442,7 @@ INSERT INTO `proyecto` (`codigo_proyecto`, `fecha_planificacion`, `descripcion_t
 
 CREATE TABLE `proyecto_has_maquinaria` (
   `proyecto_codigo_proyecto` varchar(15) NOT NULL,
-  `maquinaria_id_maquinaria` int(11) NOT NULL
+  `maquinaria_id_maquinaria` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -454,9 +460,9 @@ INSERT INTO `proyecto_has_maquinaria` (`proyecto_codigo_proyecto`, `maquinaria_i
 
 CREATE TABLE `proyecto_has_solicitudes` (
   `proyecto_codigo_proyecto` varchar(15) NOT NULL,
-  `solicitudes_id_solicitudes` int(11) NOT NULL,
-  `solicitudes_persona_id_persona` int(11) NOT NULL,
-  `solicitudes_prioridad_id_gestion_prioridad` int(11) NOT NULL
+  `solicitudes_id_solicitudes` int NOT NULL,
+  `solicitudes_persona_id_persona` int NOT NULL,
+  `solicitudes_prioridad_id_gestion_prioridad` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -473,13 +479,12 @@ INSERT INTO `proyecto_has_solicitudes` (`proyecto_codigo_proyecto`, `solicitudes
 --
 
 CREATE TABLE `publicacion` (
-  `id_publicacion` int(11) NOT NULL,
+  `id_publicacion` int NOT NULL,
   `titulo_publicacion` varchar(150) NOT NULL,
   `nombre_responsable` varchar(45) NOT NULL,
   `tipo_publicacion` varchar(15) NOT NULL,
   `fecha_publicacion` datetime NOT NULL COMMENT 'Tabla de gestion de publicaciones',
-  `informe_avance_obra_id_informe` int(11) NOT NULL,
-  `estado` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1: Activo, 0: Inactivo'
+  `informe_avance_obra_id_informe` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -489,11 +494,11 @@ CREATE TABLE `publicacion` (
 --
 
 CREATE TABLE `recurso_obra` (
-  `id_recurso` int(11) NOT NULL,
+  `id_recurso` int NOT NULL,
   `descripcion_material` varchar(45) NOT NULL,
   `cantidad_material` decimal(5,2) NOT NULL,
   `unidad_material` varchar(20) NOT NULL,
-  `informe_avance_obra_id_informe` int(11) NOT NULL
+  `informe_avance_obra_id_informe` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -503,14 +508,14 @@ CREATE TABLE `recurso_obra` (
 --
 
 CREATE TABLE `reporte` (
-  `id_reporte` int(11) NOT NULL,
+  `id_reporte` int NOT NULL,
   `fecha` datetime NOT NULL,
   `ubicacion` varchar(255) NOT NULL,
-  `solicitudes_pendientes` int(11) NOT NULL,
-  `solicitudes_procesadas` int(11) NOT NULL,
-  `cantidad_total_solicitudes` int(11) NOT NULL,
-  `cantidad_comunidades_atendidas` int(11) NOT NULL,
-  `informe_avance_obra_id_informe` int(11) NOT NULL
+  `solicitudes_pendientes` int NOT NULL,
+  `solicitudes_procesadas` int NOT NULL,
+  `cantidad_total_solicitudes` int NOT NULL,
+  `cantidad_comunidades_atendidas` int NOT NULL,
+  `informe_avance_obra_id_informe` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -520,7 +525,7 @@ CREATE TABLE `reporte` (
 --
 
 CREATE TABLE `semaforo` (
-  `id_semaforo` int(11) NOT NULL,
+  `id_semaforo` int NOT NULL,
   `estado` varchar(20) NOT NULL,
   `color` enum('VERDE','AMARILLO','ROJO') NOT NULL,
   `descripcion` varchar(50) NOT NULL
@@ -533,13 +538,13 @@ CREATE TABLE `semaforo` (
 --
 
 CREATE TABLE `solicitudes` (
-  `id_solicitudes` int(11) NOT NULL,
+  `id_solicitudes` int NOT NULL,
   `fecha` datetime NOT NULL,
   `tipo_solicitud` varchar(45) NOT NULL,
   `estatus_solicitud` varchar(15) NOT NULL,
   `problematica` varchar(255) NOT NULL,
-  `persona_id_persona` int(11) NOT NULL,
-  `prioridad_id_gestion_prioridad` int(11) NOT NULL
+  `persona_id_persona` int NOT NULL,
+  `prioridad_id_gestion_prioridad` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla general de las solicitudes';
 
 --
@@ -560,13 +565,13 @@ INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_evidencia_informe` (
-`id_evidencia` int(11)
+`id_evidencia` int
 ,`fotos` varchar(255)
 ,`url_archivos` varchar(1000)
 ,`fecha_registro` datetime
 ,`etapa` enum('antes','durante','despues')
-,`estado` tinyint(4)
-,`id_informe` int(11)
+,`estado` tinyint
+,`id_informe` int
 ,`fecha_informe` datetime
 ,`tipo_informe` varchar(30)
 ,`estado_informe` varchar(25)
@@ -766,109 +771,109 @@ ALTER TABLE `solicitudes`
 -- AUTO_INCREMENT de la tabla `catalogo_cargos`
 --
 ALTER TABLE `catalogo_cargos`
-  MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_cargo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `comunidad`
 --
 ALTER TABLE `comunidad`
-  MODIFY `id_comunidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_comunidad` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `contratacion`
 --
 ALTER TABLE `contratacion`
-  MODIFY `id_contratacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_contratacion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `empleados`
 --
 ALTER TABLE `empleados`
-  MODIFY `id_empleados` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_empleados` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `evidencia`
 --
 ALTER TABLE `evidencia`
-  MODIFY `id_evidencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_evidencia` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `gravedad_obra`
 --
 ALTER TABLE `gravedad_obra`
-  MODIFY `id_gravedad` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_gravedad` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `informe_avance_obra`
 --
 ALTER TABLE `informe_avance_obra`
-  MODIFY `id_informe` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_informe` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `inspeccion`
 --
 ALTER TABLE `inspeccion`
-  MODIFY `id_inspeccion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_inspeccion` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `institucion`
 --
 ALTER TABLE `institucion`
-  MODIFY `id_institucion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_institucion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `maquinaria`
 --
 ALTER TABLE `maquinaria`
-  MODIFY `id_maquinaria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id_maquinaria` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `obra`
 --
 ALTER TABLE `obra`
-  MODIFY `id_obra` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_obra` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `particular`
 --
 ALTER TABLE `particular`
-  MODIFY `id_particular` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_particular` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `id_persona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_persona` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `prioridad`
 --
 ALTER TABLE `prioridad`
-  MODIFY `id_gestion_prioridad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_gestion_prioridad` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `publicacion`
 --
 ALTER TABLE `publicacion`
-  MODIFY `id_publicacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_publicacion` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `reporte`
 --
 ALTER TABLE `reporte`
-  MODIFY `id_reporte` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_reporte` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `semaforo`
 --
 ALTER TABLE `semaforo`
-  MODIFY `id_semaforo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_semaforo` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitudes`
 --
 ALTER TABLE `solicitudes`
-  MODIFY `id_solicitudes` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_solicitudes` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 -- --------------------------------------------------------
 
@@ -877,7 +882,7 @@ ALTER TABLE `solicitudes`
 --
 DROP TABLE IF EXISTS `vista_evidencia_informe`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_evidencia_informe`  AS SELECT `e`.`id_evidencia` AS `id_evidencia`, `e`.`fotos` AS `fotos`, `e`.`url_archivos` AS `url_archivos`, `e`.`fecha_registro` AS `fecha_registro`, `e`.`etapa` AS `etapa`, `e`.`estado` AS `estado`, `i`.`id_informe` AS `id_informe`, `i`.`fecha` AS `fecha_informe`, `i`.`tipo_informe` AS `tipo_informe`, `i`.`estado` AS `estado_informe` FROM (`evidencia` `e` left join `informe_avance_obra` `i` on(`e`.`etapa` = 'antes' and `i`.`evidencia_antes` like concat('%',`e`.`id_evidencia`,'%') or `e`.`etapa` = 'durante' and `i`.`evidencia_durante` like concat('%',`e`.`id_evidencia`,'%') or `e`.`etapa` = 'despues' and `i`.`evidencia_despues` like concat('%',`e`.`id_evidencia`,'%'))) WHERE `e`.`estado` = 1 ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_evidencia_informe`  AS SELECT `e`.`id_evidencia` AS `id_evidencia`, `e`.`fotos` AS `fotos`, `e`.`url_archivos` AS `url_archivos`, `e`.`fecha_registro` AS `fecha_registro`, `e`.`etapa` AS `etapa`, `e`.`estado` AS `estado`, `i`.`id_informe` AS `id_informe`, `i`.`fecha` AS `fecha_informe`, `i`.`tipo_informe` AS `tipo_informe`, `i`.`estado` AS `estado_informe` FROM (`evidencia` `e` left join `informe_avance_obra` `i` on((((`e`.`etapa` = 'antes') and (`i`.`evidencia_antes` like concat('%',`e`.`id_evidencia`,'%'))) or ((`e`.`etapa` = 'durante') and (`i`.`evidencia_durante` like concat('%',`e`.`id_evidencia`,'%'))) or ((`e`.`etapa` = 'despues') and (`i`.`evidencia_despues` like concat('%',`e`.`id_evidencia`,'%')))))) WHERE (`e`.`estado` = 1) ;
 
 --
 -- Restricciones para tablas volcadas
