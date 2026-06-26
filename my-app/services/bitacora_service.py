@@ -22,7 +22,7 @@ class BitacoraService:
     # Módulos válidos del sistema
     MODULOS_VALIDOS = {
         'Solicitudes', 'Usuarios', 'Empleados', 'Proyectos',
-        'Contrataciones', 'Obras', 'Publicaciones', 'Maquinaria',
+        'Contrataciones', 'Empresas', 'Obras', 'Publicaciones', 'Maquinaria',
         'Gerencias', 'Respaldos', 'Bitacora', 'Login'
     }
 

@@ -536,7 +536,6 @@ def gestionar_contrataciones():
     if 'conectado' in session:
         modelo = ContratacionModel()
         lista = modelo.obtener_todas_las_contrataciones()
-        # Estado = 1
         return render_template('contratacion/form_contratacion.html', contrataciones=lista)
     return redirect(url_for('login_bp.inicio'))
 
@@ -576,13 +575,16 @@ def procesar_registro():
         
         exito, mensaje = modelo.registrar_contrataciones(request.form)
         
-        # En lugar de flash y redirect, devolvemos JSON para que el JS (SweetAlert) lo entienda
         if exito:
+            num_contrato = request.form.get('numero_contrato', 'S/N')
+            BitacoraService.registrar_accion(
+                session, 'Contrataciones', 'CREAR',
+                f'Contratación contrato #{num_contrato} registrada con éxito'
+            )
             return jsonify({'status': 'success', 'message': mensaje})
         else:
             return jsonify({'status': 'error', 'message': mensaje})
             
-    # Si no hay sesión, devolvemos un error en JSON
     return jsonify({'status': 'error', 'message': 'Sesión expirada. Por favor, inicie sesión nuevamente.'}), 401
 
 
@@ -594,6 +596,11 @@ def procesar_actualizacion():
         exito, mensaje = modelo.actualizar_contratacion(request.form)
         
         if exito:
+            id_contratacion = request.form.get('id_contratacion') or request.form.get('id', 'S/I')
+            BitacoraService.registrar_accion(
+                session, 'Contrataciones', 'EDITAR',
+                f'Contratación #{id_contratacion} actualizada con éxito'
+            )
             return jsonify({'status': 'success', 'message': mensaje})
         else:
             return jsonify({'status': 'error', 'message': mensaje})
@@ -607,6 +614,10 @@ def eliminar_contratacion(id):
         modelo = ContratacionModel()
         
         if modelo.eliminar_contratacion(id):
+            BitacoraService.registrar_accion(
+                session, 'Contrataciones', 'ELIMINAR',
+                f'Contratación #{id} eliminada (Archivada)'
+            )
             flash('Contratación eliminada correctamente (Archivada)', 'success')
         else:
             flash('Error al intentar eliminar el registro.', 'error')
@@ -643,6 +654,14 @@ def procesar_registro():
     
     exito, mensaje, categoria = procesar_registro_empresa(request.form)
     
+    if exito:
+        rif = request.form.get('rif', 'S/R')
+        nombre_empresa = request.form.get('nombre_empresa', '')
+        BitacoraService.registrar_accion(
+            session, 'Empresas', 'CREAR',
+            f'Empresa {nombre_empresa} (RIF: {rif}) registrada con éxito'
+        )
+    
     return jsonify({
         'exito': exito,
         'mensaje': mensaje,
@@ -678,6 +697,12 @@ def update_empresa():
     from controllers.controller_empresa import update_empresa
     
     if update_empresa(request.form):
+        rif = request.form.get('rif', 'S/R')
+        nombre_empresa = request.form.get('nombre_empresa', '')
+        BitacoraService.registrar_accion(
+            session, 'Empresas', 'EDITAR',
+            f'Empresa {nombre_empresa} (RIF: {rif}) actualizada con éxito'
+        )
         return jsonify({'exito': True, 'mensaje': 'Empresa actualizada correctamente.'})
     else:
         return jsonify({'exito': False, 'mensaje': 'Error al actualizar la empresa.', 'categoria': 'error'})
@@ -688,11 +713,16 @@ def eliminar_empresa(rif):
         from controllers.controller_empresa import eliminar_empresa_por_rif
         
         if eliminar_empresa_por_rif(rif):
+            BitacoraService.registrar_accion(
+                session, 'Empresas', 'ELIMINAR',
+                f'Empresa con RIF: {rif} eliminada con éxito (Borrado Lógico)'
+            )
             return jsonify({'exito': True, 'mensaje': 'Empresa eliminada correctamente.'})
         else:
             return jsonify({'exito': False, 'mensaje': 'Error al intentar eliminar la empresa.', 'categoria': 'error'})
     else:
         return jsonify({'exito': False, 'mensaje': 'Debes iniciar sesión.', 'categoria': 'error'})
+
 
 @home_bp.route('/bitacora', methods=['GET'])
 def viewBitacora():

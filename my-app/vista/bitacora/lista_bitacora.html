@@ -159,7 +159,7 @@
       </label>
       <select name="modulo" class="form-select form-select-sm">
         <option value="">Todos los módulos</option>
-        {% for m in ['Solicitudes','Usuarios','Empleados','Proyectos','Contrataciones','Obras','Publicaciones','Maquinaria','Gerencias','Respaldos','Login'] %}
+        {% for m in ['Solicitudes','Empresas','Usuarios','Empleados','Proyectos','Contrataciones','Obras','Publicaciones','Maquinaria','Gerencias','Respaldos','Login'] %}
           <option value="{{ m }}" {% if filtro_modulo == m %}selected{% endif %}>{{ m }}</option>
         {% endfor %}
       </select>

@@ -1,10 +1,6 @@
-// =========================================================================
-// 1. CARGA DE EMPRESAS DESDE LA API (MODAL DIRECTORIO)
-// =========================================================================
 document.getElementById('btnCargarEmpresas').addEventListener('click', function() {
     const tablaCuerpo = document.getElementById('tablaEmpresasCuerpo');
     
-    // Mostramos un loader mientras carga
     tablaCuerpo.innerHTML = `
         <tr>
             <td colspan="4" class="text-center text-muted py-4">
@@ -54,16 +50,16 @@ document.getElementById('btnCargarEmpresas').addEventListener('click', function(
         });
 });
 
-// Función que inserta los datos en el formulario principal y gestiona los modales
+
 function seleccionarEmpresa(rif, nombre) {
     document.getElementById('empresa_rif').value = rif;
     document.getElementById('empresa_ganadora').value = nombre;
 
-    // Ocultamos el modal de empresas
+    // Ocultamos modal empresas
     const modalEmpresas = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEmpresas'));
     modalEmpresas.hide();
     
-    // Mostramos nuevamente el modal del formulario principal (si existe en la vista actual)
+    // Mostramos nuevamente el modal del formulario
     const elModalContratacion = document.getElementById('modalContratacion');
     if (elModalContratacion) {
         const modalRegistro = bootstrap.Modal.getOrCreateInstance(elModalContratacion);
@@ -84,9 +80,7 @@ document.getElementById('btn_limpiar_seleccion').addEventListener('click', funct
 });
 
 
-// =========================================================================
 // 2. VALIDACIONES EN TIEMPO REAL (INPUTS COPIADOS EXACTAMENTE)
-// =========================================================================
 
 // Validación de Descripción
 const descInput = document.getElementById('descripcion');
@@ -170,7 +164,7 @@ if (montoInput) {
     });
 }
 
-// Validación dinámica para Selects y Fechas al cambiar
+// Validación Selects y Fechas al cambiar
 const camposGenerales = [
     'tipo_contrato', 'modalidad', 'objeto', 
     'fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro'
@@ -192,9 +186,7 @@ camposGenerales.forEach(id => {
 });
 
 
-// =========================================================================
-// 3. ELIMINACIÓN DE REGISTROS (SWEETALERT DELEGADO)
-// =========================================================================
+// ELIMINACIÓN DE REGISTROS (SWEETALERT DELEGADO)
 document.addEventListener('click', function(event) {
     const boton = event.target.closest('.btn-eliminar');
     
@@ -213,7 +205,6 @@ document.addEventListener('click', function(event) {
             cancelButtonText: 'Cancelar',
             reverseButtons: true,
             didOpen: () => { 
-                // Asegura que la alerta salga encima de todo si se llama desde un entorno con capas elevadas
                 document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
             }
         }).then((result) => {
@@ -225,17 +216,15 @@ document.addEventListener('click', function(event) {
 });
 
 
-// =========================================================================
-// 4. ENVÍO UNIFICADO DEL FORMULARIO (VALIDACIÓN + FETCH AJAX + FIX AL FRONT)
-// =========================================================================
+// ENVÍO UNIFICADO DEL FORMULARIO
 document.getElementById('formContratacion').addEventListener('submit', function(event) {
-    event.preventDefault(); // Detenemos la recarga por defecto obligatoriamente
-    event.stopPropagation(); // Evitamos que la plantilla escuche este envío
+    event.preventDefault(); 
+    event.stopPropagation();
 
     let hayErrores = false;
     let primerElementoConError = null;
 
-    // --- SUB-FASE: EVALUACIÓN ANTES DE ENVIAR ---
+    // EVALUACIÓN ANTES DE ENVIAR
     const descripcionInput = document.getElementById('descripcion');
     if (descripcionInput && descripcionInput.value.trim().length < 5) {
         descripcionInput.classList.add('is-invalid');
@@ -276,7 +265,6 @@ document.getElementById('formContratacion').addEventListener('submit', function(
         }
     });
 
-    // Si se detectaron problemas, paramos la ejecución y enfocamos el error
     if (hayErrores) {
         if (primerElementoConError) {
             primerElementoConError.focus();
@@ -284,7 +272,7 @@ document.getElementById('formContratacion').addEventListener('submit', function(
         return; 
     }
 
-    // --- SUB-FASE: PETICIÓN FETCH AL SERVIDOR ---
+    // PETICIÓN FETCH AL SERVIDOR
     const form = this;
     const btnSubmit = form.querySelector('button[type="submit"]');
     const textoOriginalBtn = btnSubmit.innerHTML;
@@ -292,7 +280,6 @@ document.getElementById('formContratacion').addEventListener('submit', function(
     btnSubmit.disabled = true;
     btnSubmit.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Guardando...';
 
-    // ⬇️ [AQUÍ PEGAMOS EL TRUCO]: Apagamos los loaders comunes de plantillas a la fuerza
     const loadersComunes = ['.preloader', '#preloader', '.loader-wrapper', '.loading', '#loader'];
     loadersComunes.forEach(selector => {
         const elementoLoader = document.querySelector(selector);
