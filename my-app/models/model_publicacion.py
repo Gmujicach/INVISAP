@@ -9,11 +9,11 @@ class PublicacionModel:
         self.__responsable = responsable
         self.__tipo = tipo
         self.__id_informe = id_informe
+        self.__cuerpo = 'Contenido pendiente'
         self.__estado = 1
         self.__regex_titulo = r"^[a-zA-Z0-9\sÁÉÍÓÚáéíóúñÑ.,-]{5,150}$"
         self.__regex_nombre = r"^[a-zA-Z\sÁÉÍÓÚáéíóúñÑ]{3,45}$"
 
-    # Getters y Setters con validaciones Regex
     @property
     def titulo(self): return self.__titulo
     
@@ -28,7 +28,7 @@ class PublicacionModel:
     
     @responsable.setter
     def responsable(self, value):
-        if not re.match(self.__regex_nombre, value):
+        if value and not re.match(self.__regex_nombre, value):
             raise ValueError("El nombre del responsable es inválido.")
         self.__responsable = value
 
@@ -42,9 +42,32 @@ class PublicacionModel:
     @id_informe.setter
     def id_informe(self, v): self.__id_informe = v
 
-    # Métodos Públicos (Capa de Seguridad)
     def obtener_todas_las_publicaciones(self):
         return self.__obtener_publicaciones_db()
+
+    def registrar_publicacion(self, data):
+        try:
+            self.titulo = data.get('titulo_publicacion')
+            self.responsable = data.get('nombre_responsable') or data.get('autor_publicacion')
+            self.tipo = data.get('tipo_publicacion', 'General')
+            self.__id_informe = data.get('informe_avance_obra_id_informe') or data.get('id_informe') or data.get('evidencias')
+            return 1 if self.__registrar_db() else 0
+        except Exception as e:
+            print(f"Error en registrar_publicacion: {e}")
+            return 0
+
+    def actualizar_publicacion(self, id_publicacion, data):
+        try:
+            self.__id_publicacion = id_publicacion
+            self.titulo = data.get('titulo_publicacion')
+            self.responsable = data.get('nombre_responsable') or data.get('autor_publicacion')
+            self.tipo = data.get('tipo_publicacion', 'General')
+            self.__id_informe = data.get('informe_avance_obra_id_informe') or data.get('id_informe') or data.get('evidencias')
+            self.__cuerpo = data.get('cuerpo_publicacion', 'Contenido pendiente')
+            return self.__actualizar_db()
+        except Exception as e:
+            print(f"Error en actualizar_publicacion: {e}")
+            return False
 
     def obtener_publicacion_por_id(self, id_pub):
         return self.__obtener_por_id_db(id_pub)
@@ -70,15 +93,13 @@ class PublicacionModel:
     def obtener_por_id(self, id_pub):
         return self.__obtener_por_id_db(id_pub)
 
-    # Métodos Privados de Persistencia
     def __obtener_publicaciones_db(self):
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor(dictionary=True)
-            # Solo traemos las que tienen estado 1 (Borrado Lógico)
             sql = """SELECT id_publicacion, titulo_publicacion, 
-                            autor_publicacion AS nombre_responsable, tipo_publicacion, 
-                            fecha_publicacion, evidencias AS id_informe, estado 
+                            nombre_responsable, tipo_publicacion, 
+                            fecha_publicacion, informe_avance_obra_id_informe AS id_informe, estado 
                      FROM publicacion WHERE estado = 1 ORDER BY fecha_publicacion DESC"""
             cursor.execute(sql)
             return cursor.fetchall()
@@ -90,11 +111,9 @@ class PublicacionModel:
             if conexion: conexion.close()
 
     def __obtener_informes_db(self):
-        """Consulta los informes de avance de obra en la BD invilara."""
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor(dictionary=True)
-            # Se usa el alias 'nombre_proyecto' para compatibilidad con la vista
             sql = "SELECT id_informe, tipo_informe AS nombre_proyecto FROM informe_avance_obra"
             cursor.execute(sql)
             return cursor.fetchall()
@@ -112,8 +131,8 @@ class PublicacionModel:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor(dictionary=True)
             sql = """SELECT id_publicacion, titulo_publicacion, 
-                            autor_publicacion AS nombre_responsable, tipo_publicacion, 
-                            fecha_publicacion, evidencias AS id_informe, estado 
+                            nombre_responsable, tipo_publicacion, 
+                            fecha_publicacion, informe_avance_obra_id_informe AS id_informe, estado 
                      FROM publicacion WHERE id_publicacion = %s AND estado = 1"""
             cursor.execute(sql, (id_pub,))
             return cursor.fetchone()
@@ -128,14 +147,12 @@ class PublicacionModel:
         conexion = None
         cursor = None
         try:
-            # Asegurar que el id_informe sea un entero o None (NULL en SQL)
-            id_inf_val = int(self.__id_informe) if str(self.__id_informe).isdigit() else None
-
+            id_inf_val = int(self.__id_informe) if self.__id_informe and str(self.__id_informe).isdigit() else None
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
             sql = """UPDATE publicacion SET 
-                     titulo_publicacion = %s, autor_publicacion = %s, 
-                     tipo_publicacion = %s, evidencias = %s 
+                     titulo_publicacion = %s, nombre_responsable = %s, 
+                     tipo_publicacion = %s, informe_avance_obra_id_informe = %s 
                      WHERE id_publicacion = %s"""
             valores = (self.__titulo, self.__responsable, self.__tipo, 
                        id_inf_val, self.__id_publicacion)
@@ -149,24 +166,20 @@ class PublicacionModel:
             if cursor: cursor.close()
             if conexion: conexion.close()
 
-    # Métodos Privados de Persistencia
     def __registrar_db(self):
         conexion = None
         cursor = None
         try:
-            # Asegurar que el id_informe sea un entero o None (NULL en SQL)
-            id_inf_val = int(self.__id_informe) if str(self.__id_informe).isdigit() else None
-            
+            id_inf_val = int(self.__id_informe) if self.__id_informe and str(self.__id_informe).isdigit() else None
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
-            # Se añade cuerpo_publicacion con valor por defecto para evitar errores de integridad
             sql = """INSERT INTO publicacion 
-                     (titulo_publicacion, autor_publicacion, tipo_publicacion, 
-                      fecha_publicacion, evidencias, estado, cuerpo_publicacion) 
-                     VALUES (%s, %s, %s, %s, %s, %s, %s)"""
+                     (titulo_publicacion, nombre_responsable, tipo_publicacion, 
+                      fecha_publicacion, informe_avance_obra_id_informe, estado) 
+                     VALUES (%s, %s, %s, %s, %s, %s)"""
             valores = (self.__titulo, self.__responsable, self.__tipo, 
                        datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 
-                       id_inf_val, 1, 'Contenido pendiente')
+                       id_inf_val, 1)
             cursor.execute(sql, valores)
             conexion.commit()
             return cursor.rowcount > 0
@@ -192,11 +205,9 @@ class PublicacionModel:
             if 'conexion' in locals(): conexion.close()
 
     def __verificar_existencia_informe(self, id_informe):
-        """Valida en tiempo real que el informe asociado exista."""
         if id_informe is None or str(id_informe).strip() in ['', 'None', '0', 'null']:
             print(f"DEBUG: id_informe inválido recibido: {id_informe}")
             return False
-            
         val_id = str(id_informe).strip()
         conexion = None
         cursor = None

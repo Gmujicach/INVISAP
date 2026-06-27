@@ -14,7 +14,7 @@ from controllers.funciones_solicitud import (
     actualizar_solicitud, eliminar_solicitud
 )
 from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, obtener_estadisticas_bitacora
-from models.model_publicaciones import PublicacionModel
+from models.model_publicacion import PublicacionModel
 from services.bitacora_service import BitacoraService
 from controllers.controller_empleado import empleado_bp
 from controllers.controller_evidencia import evidencia_bp
@@ -165,7 +165,7 @@ def formRegistrarPublicacion():
         # Llamamos a la BD
         resultado = modelo.registrar_publicacion(datos_insertar)
         
-        if resultado > 0:
+        if resultado:
             flash('Publicación registrada correctamente', 'success')
         else:
             flash('Error al guardar la publicación. Revisa la consola para más detalles.', 'error')
@@ -194,28 +194,26 @@ def viewEditarPublicacion(id_publicacion):
 def formActualizarPublicacion():
     if 'conectado' not in session:
         return redirect(url_for('login_bp.inicio'))
-        
+
     try:
         data = request.form
-        # Capturamos el ID del input hidden que corregimos antes
         id_pub = data.get('id_publicacion')
-        
+
         if not id_pub:
             flash('Error: No se pudo identificar la publicación a actualizar.', 'error')
             return redirect(url_for('home_bp.viewFormPublicaciones'))
 
         modelo = PublicacionModel()
-        
-        # Pasamos el ID y el diccionario de datos al modelo
-        if modelo.actualizar_publicacion(id_pub, data) > 0:
+
+        if modelo.actualizar_publicacion(id_pub, data):
             flash('Publicación actualizada correctamente', 'success')
         else:
             flash('No se realizaron cambios o hubo un error en la base de datos.', 'warning')
-            
+
     except Exception as e:
         print(f"Error técnico en actualización: {e}")
         flash(f'Error al actualizar: {str(e)}', 'error')
-        
+
     return redirect(url_for('home_bp.viewFormPublicaciones'))
     
 @home_bp.route('/eliminar-publicacion/<int:id_publicacion>', methods=['GET'])
