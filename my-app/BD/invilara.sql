@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 25-06-2026 a las 04:22:31
+-- Tiempo de generación: 26-06-2026 a las 10:26:41
 -- Versión del servidor: 9.4.0
 -- Versión de PHP: 8.3.30
 
@@ -187,8 +187,18 @@ CREATE TABLE `evidencia` (
 CREATE TABLE `gravedad_obra` (
   `id_gravedad` int NOT NULL,
   `nivel_gravedad` varchar(20) NOT NULL,
-  `criticidad` varchar(10) NOT NULL
+  `criticidad` varchar(10) NOT NULL,
+  `estado` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `gravedad_obra`
+--
+
+INSERT INTO `gravedad_obra` (`id_gravedad`, `nivel_gravedad`, `criticidad`, `estado`) VALUES
+(1, 'Alta', 'Crítica', 1),
+(2, 'Media', 'Moderada', 1),
+(3, 'Baja', 'Leve', 1);
 
 -- --------------------------------------------------------
 
@@ -474,8 +484,7 @@ CREATE TABLE `publicacion` (
   `nombre_responsable` varchar(45) NOT NULL,
   `tipo_publicacion` varchar(15) NOT NULL,
   `fecha_publicacion` datetime NOT NULL COMMENT 'Tabla de gestion de publicaciones',
-  `informe_avance_obra_id_informe` int NOT NULL,
-  `estado` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1: Activo, 0: Inactivo'
+  `informe_avance_obra_id_informe` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -792,7 +801,7 @@ ALTER TABLE `evidencia`
 -- AUTO_INCREMENT de la tabla `gravedad_obra`
 --
 ALTER TABLE `gravedad_obra`
-  MODIFY `id_gravedad` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_gravedad` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `informe_avance_obra`

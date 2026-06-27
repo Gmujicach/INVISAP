@@ -1,79 +1,174 @@
-/* Atomic Design: Atoms */
+/* ============================================
+   Estilos para el módulo de Evidencias
+   Compatible con modo oscuro y responsive
+   ============================================ */
+
 .file-drop-zone {
-    border: 3px dashed #08b324;
+    border: 2px dashed #ccc;
     border-radius: 12px;
-    padding: 40px;
+    padding: 2.5rem 1.5rem;
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    background-color: #f8f9fa;
-    position: relative;
+    background-color: rgba(0,0,0,0.02);
+    margin-bottom: 1.5rem;
+}
+
+.file-drop-zone:hover {
+    border-color: #08b324;
+    background-color: rgba(8, 179, 36, 0.05);
 }
 
 .file-drop-zone.dragover {
-    background-color: #e9f7eb;
-    border-color: #067d1a;
+    border-color: #08b324;
+    background-color: rgba(8, 179, 36, 0.1);
+    transform: scale(1.02);
+}
+
+.file-drop-zone i {
+    font-size: 3.5rem;
+    color: #08b324;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+/* Modo oscuro */
+[data-bs-theme="dark"] .file-drop-zone {
+    background-color: rgba(255,255,255,0.03);
+    border-color: #555;
+}
+
+[data-bs-theme="dark"] .file-drop-zone:hover {
+    border-color: #08b324;
+    background-color: rgba(8, 179, 36, 0.15);
 }
 
 .preview-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 20px;
+    gap: 1.2rem;
+    justify-content: flex-start;
+    margin-top: 1.2rem;
+}
+
+.preview-card {
+    width: 150px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    background: #fff;
+    border: 1px solid #eee;
+    transition: transform 0.2s;
+}
+
+.preview-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.preview-card img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    display: block;
+}
+
+.preview-card .text-muted {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.5rem;
+    background: #f8f9fa;
+    text-align: center;
+    margin: 0;
 }
 
 .preview-card-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 150px;
 }
 
-.preview-card {
-    width: 120px;
-    height: 120px;
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.preview-card img {
+.preview-card-container select {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.4rem;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
 }
 
-/* Placeholders amarillos visibles (Ley de Hick) */
-.custom-placeholder::placeholder {
-    color: #cca025 !important;
+/* Modo oscuro */
+[data-bs-theme="dark"] .preview-card {
+    background: #2b2b2b;
+    border-color: #444;
+}
+
+[data-bs-theme="dark"] .preview-card .text-muted {
+    background: #333;
+    color: #aaa !important;
+}
+
+[data-bs-theme="dark"] .preview-card-container select {
+    background-color: #333;
+    color: #eee;
+    border-color: #555;
+}
+
+/* Placeholder amarillo visible */
+input::placeholder,
+select::placeholder,
+textarea::placeholder {
+    color: #f0b400 !important;
     opacity: 0.9 !important;
-    font-weight: 500 !important;
-    font-style: italic;
-    font-size: 0.88rem;
-}
-
-.custom-placeholder:-ms-input-placeholder {
-    color: #cca025 !important;
-    font-weight: 500 !important;
     font-style: italic;
 }
 
-.custom-placeholder::-ms-input-placeholder {
-    color: #cca025 !important;
-    font-weight: 500 !important;
-    font-style: italic;
+/* Responsive */
+@media (max-width: 576px) {
+    .file-drop-zone {
+        padding: 1.5rem 1rem;
+    }
+    .file-drop-zone i {
+        font-size: 2.5rem;
+    }
+    .preview-card,
+    .preview-card-container {
+        width: 120px;
+    }
+    .preview-card img {
+        height: 100px;
+    }
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
+    }
 }
 
-/* Botones y transiciones */
+/* Botones de acción en tabla */
 .btn-icon-only {
-    width: 36px;
-    height: 36px;
-    padding: 0;
+    width: 32px;
+    height: 32px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+    border: none;
 }
 
-.transition-all {
-    transition: all 0.3s ease-in-out !important;
+.btn-icon-only i {
+    font-size: 1rem;
+}
+
+.btn-icon-only.btn-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.btn-icon-only.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.btn-icon-only:hover {
+    opacity: 0.85;
 }

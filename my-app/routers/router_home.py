@@ -330,14 +330,6 @@ def eliminarMaquinaria(id_maquinaria):
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-@home_bp.route('/registrar-mortadela', methods=['GET'])
-def viewFormMortadela():
-    if 'conectado' in session:
-        return render_template(f'{PATH_URL}/form_mortadela.html')
-    else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-
 @home_bp.route('/gestionar-obras', methods=['GET'])
 def viewFormGestionarObras():
     if 'conectado' in session:
@@ -469,7 +461,13 @@ def api_crear_solicitud():
 
     resultado = crear_solicitud(request.form)
     if resultado.get('success'):
-        return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud creada'), 'id': resultado.get('id')}), 200
+        nuevo_id = resultado.get('id')
+        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'CREAR',
+            f'Solicitud #{nuevo_id} creada por {nombre_usr}'
+        )
+        return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud creada'), 'id': nuevo_id}), 200
     return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo crear la solicitud')}), 400
 
 @home_bp.route('/api/solicitudes/<int:id_solicitud>', methods=['GET'])
@@ -494,6 +492,11 @@ def api_actualizar_solicitud():
 
     resultado = actualizar_solicitud(id_solicitud, datos)
     if resultado.get('success'):
+        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'EDITAR',
+            f'Solicitud #{id_solicitud} actualizada por {nombre_usr}'
+        )
         return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud actualizada')}), 200
     return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo actualizar la solicitud')}), 400
 
@@ -503,7 +506,17 @@ def api_eliminar_solicitud(id_solicitud):
         return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
 
     resultado = eliminar_solicitud(id_solicitud)
-    if resultado.get('success'):
+    if isinstance(resultado, dict):
+        success = resultado.get('success')
+    else:
+        success = bool(resultado)
+
+    if success:
+        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'ELIMINAR',
+            f'Solicitud #{id_solicitud} eliminada por {nombre_usr}'
+        )
         return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud eliminada')}), 200
     return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo eliminar la solicitud')}), 400
 
@@ -521,7 +534,6 @@ def gestionar_contrataciones():
     if 'conectado' in session:
         modelo = ContratacionModel()
         lista = modelo.obtener_todas_las_contrataciones()
-        # Estado = 1
         return render_template('contratacion/form_contratacion.html', contrataciones=lista)
     return redirect(url_for('login_bp.inicio'))
 
@@ -561,13 +573,16 @@ def procesar_registro():
         
         exito, mensaje = modelo.registrar_contrataciones(request.form)
         
-        # En lugar de flash y redirect, devolvemos JSON para que el JS (SweetAlert) lo entienda
         if exito:
+            num_contrato = request.form.get('numero_contrato', 'S/N')
+            BitacoraService.registrar_accion(
+                session, 'Contrataciones', 'CREAR',
+                f'Contratación contrato #{num_contrato} registrada con éxito'
+            )
             return jsonify({'status': 'success', 'message': mensaje})
         else:
             return jsonify({'status': 'error', 'message': mensaje})
             
-    # Si no hay sesión, devolvemos un error en JSON
     return jsonify({'status': 'error', 'message': 'Sesión expirada. Por favor, inicie sesión nuevamente.'}), 401
 
 
@@ -579,6 +594,11 @@ def procesar_actualizacion():
         exito, mensaje = modelo.actualizar_contratacion(request.form)
         
         if exito:
+            id_contratacion = request.form.get('id_contratacion') or request.form.get('id', 'S/I')
+            BitacoraService.registrar_accion(
+                session, 'Contrataciones', 'EDITAR',
+                f'Contratación #{id_contratacion} actualizada con éxito'
+            )
             return jsonify({'status': 'success', 'message': mensaje})
         else:
             return jsonify({'status': 'error', 'message': mensaje})
@@ -592,6 +612,10 @@ def eliminar_contratacion(id):
         modelo = ContratacionModel()
         
         if modelo.eliminar_contratacion(id):
+            BitacoraService.registrar_accion(
+                session, 'Contrataciones', 'ELIMINAR',
+                f'Contratación #{id} eliminada (Archivada)'
+            )
             flash('Contratación eliminada correctamente (Archivada)', 'success')
         else:
             flash('Error al intentar eliminar el registro.', 'error')
@@ -628,6 +652,14 @@ def procesar_registro():
     
     exito, mensaje, categoria = procesar_registro_empresa(request.form)
     
+    if exito:
+        rif = request.form.get('rif', 'S/R')
+        nombre_empresa = request.form.get('nombre_empresa', '')
+        BitacoraService.registrar_accion(
+            session, 'Empresas', 'CREAR',
+            f'Empresa {nombre_empresa} (RIF: {rif}) registrada con éxito'
+        )
+    
     return jsonify({
         'exito': exito,
         'mensaje': mensaje,
@@ -663,6 +695,12 @@ def update_empresa():
     from controllers.controller_empresa import update_empresa
     
     if update_empresa(request.form):
+        rif = request.form.get('rif', 'S/R')
+        nombre_empresa = request.form.get('nombre_empresa', '')
+        BitacoraService.registrar_accion(
+            session, 'Empresas', 'EDITAR',
+            f'Empresa {nombre_empresa} (RIF: {rif}) actualizada con éxito'
+        )
         return jsonify({'exito': True, 'mensaje': 'Empresa actualizada correctamente.'})
     else:
         return jsonify({'exito': False, 'mensaje': 'Error al actualizar la empresa.', 'categoria': 'error'})
@@ -673,11 +711,16 @@ def eliminar_empresa(rif):
         from controllers.controller_empresa import eliminar_empresa_por_rif
         
         if eliminar_empresa_por_rif(rif):
+            BitacoraService.registrar_accion(
+                session, 'Empresas', 'ELIMINAR',
+                f'Empresa con RIF: {rif} eliminada con éxito (Borrado Lógico)'
+            )
             return jsonify({'exito': True, 'mensaje': 'Empresa eliminada correctamente.'})
         else:
             return jsonify({'exito': False, 'mensaje': 'Error al intentar eliminar la empresa.', 'categoria': 'error'})
     else:
         return jsonify({'exito': False, 'mensaje': 'Debes iniciar sesión.', 'categoria': 'error'})
+
 
 @home_bp.route('/bitacora', methods=['GET'])
 def viewBitacora():
@@ -720,17 +763,19 @@ def formSolicitud():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-    nuevo_id = False
+    resultado = {'success': False}
     try:
-        nuevo_id = crear_solicitud(request.form)
+        resultado = crear_solicitud(request.form) or {'success': False}
     except Exception as e:
         print(f"[Router] Error al crear solicitud: {e}")
-        nuevo_id = False
+        resultado = {'success': False}
 
-    if nuevo_id:
+    if resultado.get('success'):
+        nuevo_id = resultado.get('id')
+        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
         BitacoraService.registrar_accion(
             session, 'Solicitudes', 'CREAR',
-            f'Solicitud #{nuevo_id} creada por {session.get("nombre", "")}'
+            f'Solicitud #{nuevo_id} creada por {nombre_usr}'
         )
         flash('Solicitud registrada exitosamente.', 'success')
         return redirect(url_for('lista_solicitudes'))
@@ -759,10 +804,17 @@ def eliminar_solicitud_route(id_solicitud):
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-    if eliminar_solicitud(id_solicitud):
+    resultado = eliminar_solicitud(id_solicitud)
+    if isinstance(resultado, dict):
+        success = resultado.get('success')
+    else:
+        success = bool(resultado)
+
+    if success:
+        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
         BitacoraService.registrar_accion(
             session, 'Solicitudes', 'ELIMINAR',
-            f'Solicitud #{id_solicitud} eliminada'
+            f'Solicitud #{id_solicitud} eliminada por {nombre_usr}'
         )
         flash('Solicitud eliminada correctamente.', 'success')
     else:
@@ -789,10 +841,17 @@ def update_solicitud():
     if 'conectado' not in session:
         return redirect(url_for('login_bp.inicio'))
     id_solicitud = request.form.get('id_solicitud')
-    if actualizar_solicitud(id_solicitud, request.form):
+    resultado = actualizar_solicitud(id_solicitud, request.form)
+    if isinstance(resultado, dict):
+        success = resultado.get('success')
+    else:
+        success = bool(resultado)
+
+    if success:
+        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
         BitacoraService.registrar_accion(
             session, 'Solicitudes', 'EDITAR',
-            f'Solicitud #{id_solicitud} actualizada'
+            f'Solicitud #{id_solicitud} actualizada por {nombre_usr}'
         )
         flash('Solicitud actualizada correctamente.', 'success')
     else:

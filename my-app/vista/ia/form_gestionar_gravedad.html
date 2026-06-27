@@ -1,1 +1,330 @@
-Gestionando la gravedad :)
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | Gestión de Gravedad de Obra{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/gravedad.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="gravedad-container">
+
+  <!-- Encabezado -->
+  <div class="gravedad-header">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div>
+        <h3 class="fw-bold mb-1 text-primary">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>Gestión de Gravedad de Obra
+        </h3>
+        <p class="mb-0 text-muted" style="font-size:0.9rem;">
+          Catálogo de niveles de gravedad para clasificar la criticidad de los proyectos
+        </p>
+      </div>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalGravedad" onclick="resetForm()">
+        <i class="bi bi-plus-circle me-1"></i> Nuevo Nivel
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtro / búsqueda rápida -->
+  <div class="gravedad-filter-card">
+    <div class="row g-3 align-items-center">
+      <div class="col-md-4">
+        <input type="text" id="buscarGravedad" class="form-control form-control-sm"
+               placeholder="🔍 Buscar por nivel o criticidad..." />
+      </div>
+      <div class="col-md-8 text-end">
+        <span class="badge bg-secondary me-2" id="contadorRegistros">0 registros</span>
+        <button class="btn btn-outline-secondary btn-sm" onclick="recargarTabla()">
+          <i class="bi bi-arrow-clockwise"></i> Actualizar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de gravedades -->
+  <div class="card border-0 shadow-sm gravedad-table-card">
+    <div class="card-header d-flex align-items-center justify-content-between py-3">
+      <span class="fw-semibold text-dark">
+        <i class="bi bi-table me-2 text-primary"></i> Listado de Niveles
+      </span>
+    </div>
+    <div class="table-responsive">
+      <table id="tablaGravedad" class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nivel de Gravedad</th>
+            <th>Criticidad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="cuerpoTabla">
+          <!-- Renderizado dinámico vía JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal para Crear / Editar -->
+<div class="modal fade" id="modalGravedad" tabindex="-1" aria-labelledby="modalGravedadLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 2px solid #f1c40f;">
+        <h5 class="modal-title fw-bold" id="modalGravedadLabel">
+          <i class="bi bi-pencil-square me-2"></i> <span id="modalTitle">Nuevo Nivel de Gravedad</span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formGravedad" novalidate>
+          <input type="hidden" id="id_gravedad" value="">
+
+          <div class="mb-3">
+            <label for="nivel_gravedad" class="form-label fw-semibold">Nivel de Gravedad</label>
+            <input type="text" class="form-control" id="nivel_gravedad"
+                   placeholder="👉 Ej: Alta, Media, Baja, Crítica"
+                   maxlength="20" required>
+            <div class="invalid-feedback">Solo letras y espacios (3-20 caracteres).</div>
+            <div id="nivelFeedback" class="form-text text-muted" style="font-size:0.8rem;">
+              <i class="bi bi-info-circle"></i> Debe ser único en el catálogo.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="criticidad" class="form-label fw-semibold">Criticidad</label>
+            <input type="text" class="form-control" id="criticidad"
+                   placeholder="👉 Ej: Crítico, Alto, Medio, Bajo"
+                   maxlength="10" required>
+            <div class="invalid-feedback">Ingrese un valor de criticidad válido (máx. 10 caracteres).</div>
+          </div>
+
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="estado" checked>
+            <label class="form-check-label" for="estado">Activo</label>
+            <div class="form-text text-muted" style="font-size:0.8rem;">
+              <i class="bi bi-info-circle"></i> Desactive para inhabilitar el nivel sin eliminar.
+            </div>
+          </div>
+
+          <div id="mensajeFeedback" class="alert d-none" role="alert"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnGuardarGravedad">
+          <i class="bi bi-check2-circle me-1"></i> Guardar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='assets/js/gravedad.js') }}"></script>
+<script>
+  // Inicialización al cargar la página
+  document.addEventListener('DOMContentLoaded', function() {
+    cargarGravedades();
+  });
+
+  // Función para cargar la tabla vía Fetch
+  function cargarGravedades() {
+    fetch('/api/gravedad/listar')
+      .then(response => response.json())
+      .then(data => {
+        renderizarTabla(data);
+        document.getElementById('contadorRegistros').textContent = data.length + ' registros';
+      })
+      .catch(error => {
+        console.error('Error al cargar gravedades:', error);
+        mostrarAlerta('Error al cargar los datos.', 'danger');
+      });
+  }
+
+  function renderizarTabla(registros) {
+    const tbody = document.getElementById('cuerpoTabla');
+    tbody.innerHTML = '';
+    if (registros.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center py-4 text-muted">
+            <i class="bi bi-inbox" style="font-size:2rem; display:block; margin-bottom:0.5rem;"></i>
+            No hay niveles de gravedad registrados.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+    registros.forEach((r, index) => {
+      const estadoBadge = r.estado == 1 
+        ? '<span class="badge bg-success">Activo</span>' 
+        : '<span class="badge bg-secondary">Inactivo</span>';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${r.id_gravedad}</td>
+        <td><strong>${r.nivel_gravedad}</strong></td>
+        <td>${r.criticidad}</td>
+        <td>${estadoBadge}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary me-1" onclick="editarGravedad(${r.id_gravedad})">
+            <i class="bi bi-pencil"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" onclick="eliminarGravedad(${r.id_gravedad})">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Búsqueda rápida
+  document.getElementById('buscarGravedad').addEventListener('keyup', function() {
+    const filtro = this.value.toLowerCase();
+    const filas = document.querySelectorAll('#cuerpoTabla tr');
+    filas.forEach(fila => {
+      const texto = fila.textContent.toLowerCase();
+      fila.style.display = texto.includes(filtro) ? '' : 'none';
+    });
+  });
+
+  // Resetear formulario modal
+  function resetForm() {
+    document.getElementById('modalTitle').textContent = 'Nuevo Nivel de Gravedad';
+    document.getElementById('id_gravedad').value = '';
+    document.getElementById('nivel_gravedad').value = '';
+    document.getElementById('criticidad').value = '';
+    document.getElementById('estado').checked = true;
+    document.getElementById('formGravedad').classList.remove('was-validated');
+    ocultarFeedback();
+  }
+
+  // Editar: cargar datos en el modal
+  function editarGravedad(id) {
+    fetch(`/api/gravedad/obtener/${id}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data) {
+          document.getElementById('modalTitle').textContent = 'Editar Nivel de Gravedad';
+          document.getElementById('id_gravedad').value = data.id_gravedad;
+          document.getElementById('nivel_gravedad').value = data.nivel_gravedad;
+          document.getElementById('criticidad').value = data.criticidad;
+          document.getElementById('estado').checked = data.estado == 1;
+          document.getElementById('formGravedad').classList.remove('was-validated');
+          ocultarFeedback();
+          // Abrir modal
+          const modal = new bootstrap.Modal(document.getElementById('modalGravedad'));
+          modal.show();
+        } else {
+          mostrarAlerta('No se encontró el registro.', 'warning');
+        }
+      })
+      .catch(error => {
+        console.error('Error al obtener gravedad:', error);
+        mostrarAlerta('Error al cargar los datos para editar.', 'danger');
+      });
+  }
+
+  // Eliminar (borrado lógico)
+  function eliminarGravedad(id) {
+    if (!confirm('¿Está seguro de desactivar este nivel de gravedad? (No se eliminará físicamente)')) return;
+    fetch(`/api/gravedad/eliminar/${id}`, { method: 'DELETE' })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          mostrarAlerta('Nivel desactivado correctamente.', 'success');
+          cargarGravedades();
+        } else {
+          mostrarAlerta(data.message || 'Error al desactivar.', 'danger');
+        }
+      })
+      .catch(error => {
+        console.error('Error al eliminar:', error);
+        mostrarAlerta('Error de conexión.', 'danger');
+      });
+  }
+
+  // Guardar (crear o actualizar)
+  document.getElementById('btnGuardarGravedad').addEventListener('click', function() {
+    const form = document.getElementById('formGravedad');
+    if (!form.checkValidity()) {
+      form.classList.add('was-validated');
+      return;
+    }
+
+    const id = document.getElementById('id_gravedad').value;
+    const nivel = document.getElementById('nivel_gravedad').value.trim();
+    const criticidad = document.getElementById('criticidad').value.trim();
+    const estado = document.getElementById('estado').checked ? 1 : 0;
+
+    const payload = { nivel_gravedad: nivel, criticidad, estado };
+    const url = id ? `/api/gravedad/actualizar/${id}` : '/api/gravedad/registrar';
+    const method = id ? 'PUT' : 'POST';
+
+    fetch(url, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        mostrarAlerta(data.message, 'success');
+        // Cerrar modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalGravedad'));
+        modal.hide();
+        cargarGravedades();
+      } else {
+        mostrarAlerta(data.message || 'Error al guardar.', 'danger');
+      }
+    })
+    .catch(error => {
+      console.error('Error al guardar:', error);
+      mostrarAlerta('Error de conexión.', 'danger');
+    });
+  });
+
+  // Mostrar alerta en el modal
+  function mostrarAlerta(mensaje, tipo) {
+    const alertDiv = document.getElementById('mensajeFeedback');
+    alertDiv.className = `alert alert-${tipo} d-block`;
+    alertDiv.textContent = mensaje;
+  }
+
+  function ocultarFeedback() {
+    const alertDiv = document.getElementById('mensajeFeedback');
+    alertDiv.className = 'alert d-none';
+  }
+
+  function recargarTabla() {
+    cargarGravedades();
+  }
+
+  // Validación en tiempo real: al perder el foco del campo nivel, verificar duplicado
+  document.getElementById('nivel_gravedad').addEventListener('blur', function() {
+    const nivel = this.value.trim();
+    const idActual = document.getElementById('id_gravedad').value;
+    if (nivel.length < 3) return;
+
+    fetch(`/api/gravedad/validar-nivel?nivel=${encodeURIComponent(nivel)}&excluir=${idActual}`)
+      .then(response => response.json())
+      .then(data => {
+        const feedback = document.getElementById('nivelFeedback');
+        if (data.existe) {
+          feedback.innerHTML = '<i class="bi bi-exclamation-triangle-fill text-warning"></i> Este nivel ya existe en el catálogo.';
+          feedback.className = 'form-text text-warning';
+          document.getElementById('nivel_gravedad').classList.add('is-invalid');
+        } else {
+          feedback.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i> Nivel disponible.';
+          feedback.className = 'form-text text-success';
+          document.getElementById('nivel_gravedad').classList.remove('is-invalid');
+        }
+      })
+      .catch(() => {});
+  });
+</script>
+{% endblock %}

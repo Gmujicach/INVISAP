@@ -3,6 +3,7 @@ from conexion.conexionBD import connectionBD_seguridad
 from werkzeug.security import check_password_hash, generate_password_hash
 from controllers.funciones_login import *
 from controllers.strategies import AuthContext, DatabaseLoginStrategy
+from services.bitacora_service import BitacoraService
 import re
 
 # Importar el servicio de email
@@ -115,6 +116,14 @@ def loginCliente():
                 session['name_surname'] = account['nombre']
                 session['email_user'] = account['correo']
                 flash('¡Inicio de sesión exitoso!', 'success')
+
+                BitacoraService.registrar_accion(
+                    session=session,
+                    accion='LOGIN',
+                    modulo='Login',
+                    descripcion=f'Usuario {account["nombre"]} inició sesión.'
+                )
+
                 return redirect(url_for('login_bp.inicio'))
             else:
                 flash('Credenciales incorrectas o usuario inactivo.', 'danger')
@@ -298,6 +307,13 @@ def logout():
             session.pop('email_user', None)
             session.pop('recovery_email', None)
             session.pop('otp_verified', None)
+
+            BitacoraService.registrar_accion(
+                session=session,
+                accion='LOGOUT',
+                modulo='Login',
+                descripcion='Usuario cerró la sesión.'
+            )
             flash('Tu sesión fue cerrada correctamente.', 'success')
             return redirect(url_for('login_bp.inicio'))
         else:
