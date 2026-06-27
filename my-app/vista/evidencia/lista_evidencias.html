@@ -35,12 +35,12 @@
                             <td><span class="fw-bold">{{ evidencia.id_evidencia }}</span></td>
                             <td>{{ evidencia.fotos }}</td>
                             <td>
-                                {% set urls = evidencia.url_archivos.split(',') if evidencia.url_archivos else [] %}
-                                <span class="badge bg-label-primary">{{ urls|length }} Imágenes</span>
+                                <a href="{{ url_for('static', filename=evidencia.url_archivos) }}" target="_blank" class="d-block shadow-sm rounded overflow-hidden" style="border: 1px solid #eee; width: 45px;">
+                                    <img src="{{ url_for('static', filename=evidencia.url_archivos) }}" alt="Evidencia" style="width: 45px; height: 45px; object-fit: cover;" title="Click para ver">
+                                </a>
                             </td>
                             <td>
-                                {% set etapas = evidencia.etapa.split(',') if evidencia.etapa else [] %}
-                                <span class="badge bg-label-secondary">{{ etapas|join(', ') }}</span>
+                                <span class="badge bg-label-secondary text-capitalize">{{ evidencia.etapa }}</span>
                             </td>
                             <td>{{ evidencia.fecha_registro.strftime('%Y-%m-%d %H:%M') }}</td>
                             <td class="text-center">

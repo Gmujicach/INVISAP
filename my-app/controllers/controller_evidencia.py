@@ -1,7 +1,7 @@
-"""
-Controller de Evidencias - Implementa comunicación asíncrona con Fetch/Ajax.
+\"\"\"
+Controller de Evidencias - Implementa comunicaciÃ³n asÃncrona con Fetch/Ajax.
 Rutas de vistas y API.
-"""
+\"\"\"
 
 from flask import Blueprint, render_template, request, jsonify, session, flash, redirect, url_for
 from models.model_evidencia import EvidenciaModel
@@ -12,18 +12,18 @@ evidencia_bp = Blueprint('evidencia_bp', __name__, template_folder='../vista')
 # ========== RUTAS DE VISTAS (GET) ==========
 @evidencia_bp.route('/evidencias/registrar', methods=['GET'])
 def show_registrar_evidencia():
-    """Muestra el formulario de registro de evidencias."""
+    \"\"\"Muestra el formulario de registro de evidencias.\"\"\"
     if 'conectado' not in session:
-        flash('Primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesiÃ³n.', 'error')
         return redirect(url_for('login_bp.inicio'))
     return render_template('evidencia/evidencia.html')
 
 
 @evidencia_bp.route('/evidencias/listar', methods=['GET'])
 def show_listar_evidencias():
-    """Muestra el listado de evidencias activas."""
+    \"\"\"Muestra el listado de evidencias activas.\"\"\"
     if 'conectado' not in session:
-        flash('Primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesiÃ³n.', 'error')
         return redirect(url_for('login_bp.inicio'))
     
     modelo = EvidenciaModel()
@@ -33,9 +33,9 @@ def show_listar_evidencias():
 
 @evidencia_bp.route('/evidencias/modificar/<int:id_evidencia>', methods=['GET'])
 def show_modificar_evidencia(id_evidencia):
-    """Muestra el formulario de modificación de evidencia."""
+    \"\"\"Muestra el formulario de modificaciÃ³n de evidencia.\"\"\"
     if 'conectado' not in session:
-        flash('Primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesiÃ³n.', 'error')
         return redirect(url_for('login_bp.inicio'))
     
     modelo = EvidenciaModel()
@@ -48,23 +48,19 @@ def show_modificar_evidencia(id_evidencia):
     return render_template('evidencia/evidencia_modificar.html', evidencia=evidencia)
 
 
-# ========== RUTAS API (POST/DELETE) - Comunicación Asíncrona ==========
+# ========== RUTAS API (POST/DELETE) - ComunicaciÃ³n AsÃncrona ==========
 @evidencia_bp.route('/api/evidencias/subir', methods=['POST'])
 def api_subir_evidencias():
-    """
+    \"\"\"
     API para subir evidencias mediante Fetch/Ajax.
-    Evita recargas de página según instrucciones del profesor.
-    """
+    Evita recargas de pÃ¡gina segÃºn instrucciones del profesor.
+    \"\"\"
     if 'conectado' not in session:
         return jsonify({'status': 'error', 'message': 'No autorizado'}), 401
 
     try:
         files = request.files.getlist('fotos')
         form_data = request.form
-
-        print(f"[DEBUG] Archivos recibidos: {len(files)}")
-        for f in files:
-            print(f"  - {f.filename}, tamaño: {f.content_length}, tipo: {f.content_type}")
 
         if not files:
             return jsonify({'status': 'error', 'message': 'No se recibieron archivos.'}), 400
@@ -85,30 +81,22 @@ def api_subir_evidencias():
             }), 500
 
     except ValueError as ve:
-        print(f"[ERROR] ValueError: {ve}")
         return jsonify({'status': 'error', 'message': str(ve)}), 400
     except Exception as e:
-        print(f"[ERROR] Excepción general: {e}")
-        import traceback
-        traceback.print_exc()
         return jsonify({'status': 'error', 'message': f'Error interno: {str(e)}'}), 500
 
 
 @evidencia_bp.route('/api/evidencias/actualizar/<int:id_evidencia>', methods=['POST'])
 def api_actualizar_evidencia(id_evidencia):
-    """
+    \"\"\"
     API para actualizar evidencias mediante Fetch/Ajax.
-    """
+    \"\"\"
     if 'conectado' not in session:
         return jsonify({'status': 'error', 'message': 'No autorizado'}), 401
 
     try:
         files = request.files.getlist('fotos')
         form_data = request.form
-
-        print(f"[DEBUG] Actualizando ID {id_evidencia}, archivos: {len(files)}")
-        for f in files:
-            print(f"  - {f.filename}")
 
         if not files:
             return jsonify({
@@ -118,7 +106,7 @@ def api_actualizar_evidencia(id_evidencia):
 
         modelo = EvidenciaModel()
         
-        # Validación de existencia en tiempo real
+        # ValidaciÃ³n de existencia en tiempo real
         if not modelo.validar_evidencia_activa(id_evidencia):
             return jsonify({
                 'status': 'error',
@@ -139,21 +127,17 @@ def api_actualizar_evidencia(id_evidencia):
             }), 500
 
     except ValueError as ve:
-        print(f"[ERROR] ValueError: {ve}")
         return jsonify({'status': 'error', 'message': str(ve)}), 400
     except Exception as e:
-        print(f"[ERROR] Excepción general: {e}")
-        import traceback
-        traceback.print_exc()
         return jsonify({'status': 'error', 'message': f'Error interno: {str(e)}'}), 500
 
 
 @evidencia_bp.route('/api/evidencias/validar/<int:id_evidencia>', methods=['GET'])
 def api_validar_evidencia(id_evidencia):
-    """
+    \"\"\"
     API para validar existencia de evidencia en tiempo real.
     Usado por eventos 'change' en selectores (Ajax).
-    """
+    \"\"\"
     modelo = EvidenciaModel()
     existe = modelo.validar_evidencia_activa(id_evidencia)
     return jsonify({'existe': existe, 'id': id_evidencia})
@@ -161,26 +145,25 @@ def api_validar_evidencia(id_evidencia):
 
 @evidencia_bp.route('/evidencias/eliminar/<int:id_evidencia>', methods=['GET'])
 def eliminar_evidencia(id_evidencia):
-    """
-    Ruta para borrado lógico de evidencias.
-    Cambia el estado a 0 sin eliminar físicamente.
-    """
+    \"\"\"
+    Ruta para borrado lÃ³gico de evidencias.
+    Cambia el estado a 0 sin eliminar fÃsicamente.
+    \"\"\"
     if 'conectado' not in session:
-        flash('Primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesiÃ³n.', 'error')
         return redirect(url_for('login_bp.inicio'))
     
     try:
         modelo = EvidenciaModel()
         
         if modelo.eliminar_evidencia(id_evidencia):
-            flash('Evidencia desactivada correctamente (Borrado Lógico).', 'success')
+            flash('Evidencia desactivada correctamente (Borrado LÃ³gico).', 'success')
         else:
             flash('No se pudo desactivar la evidencia.', 'error')
             
     except ValueError as ve:
         flash(str(ve), 'error')
     except Exception as e:
-        print(f"[ERROR] eliminar_evidencia: {e}")
         flash('Error interno del servidor.', 'error')
     
     return redirect(url_for('evidencia_bp.show_listar_evidencias'))

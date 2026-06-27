@@ -60,6 +60,16 @@ document.addEventListener('DOMContentLoaded', function () {
         selectedFiles = filesArray;
         updatePreviews();
         validateFileCount();
+        
+        // Mostrar texto de ayuda para etapas si hay archivos seleccionados
+        const helpEtapa = document.getElementById('helpEtapa');
+        if (helpEtapa) {
+            if (selectedFiles.length > 0) {
+                helpEtapa.classList.remove('d-none');
+            } else if (!isEditMode) {
+                helpEtapa.classList.add('d-none');
+            }
+        }
     }
 
     // ========== PREVISUALIZACIÓN ==========
@@ -111,7 +121,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getStaticUrl(relativePath) {
-        return '/' + relativePath;
+        // Asegurar que la URL sea relativa a /static/ para que Flask la sirva correctamente
+        return '/static/' + relativePath;
     }
 
     // ========== VALIDACIÓN DE CANTIDAD ==========
@@ -129,16 +140,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ========== ENVÍO ASÍNCRONO (REGISTRO) ==========
-    window.registrarEvidenciasFetch = async function(event) {
-        event.preventDefault();
-        if (btnSubmit.disabled) {
-            mostrarError('Complete todos los campos requeridos.');
-            return;
-        }
+    function getSelectoresEtapa() {
+        return document.querySelectorAll('select[name^="etapa-foto-"]');
+    }
 
-        const selectoresEtapa = document.querySelectorAll('select[name^="etapa-foto-"]');
+    function validarEtapas() {
+        const selectoresEtapa = getSelectoresEtapa();
         let etapasCompletas = true;
+
         selectoresEtapa.forEach(select => {
             if (!select.value) {
                 etapasCompletas = false;
@@ -147,15 +156,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 select.classList.remove('is-invalid');
             }
         });
+
+        return { etapasCompletas, selectoresEtapa };
+    }
+
+    function agregarArchivosYEtapas(formData) {
+        const selectoresEtapa = getSelectoresEtapa();
+        selectedFiles.forEach((file, index) => {
+            formData.append('fotos', file);
+            formData.append('etapas[]', selectoresEtapa[index].value);
+        });
+    }
+
+    // ========== ENVÍO ASÍNCRONO (REGISTRO) ==========
+    window.registrarEvidenciasFetch = async function(event) {
+        event.preventDefault();
+
+        if (btnSubmit.disabled) {
+            mostrarError('Complete todos los campos requeridos.');
+            return;
+        }
+
+        const { etapasCompletas } = validarEtapas();
         if (!etapasCompletas) {
             mostrarError('Debe seleccionar la etapa para cada imagen.');
             return;
         }
 
         const formData = new FormData(formEvidencias);
-        selectedFiles.forEach((file) => {
-            formData.append('fotos', file);
-        });
+        agregarArchivosYEtapas(formData);
 
         btnSubmit.disabled = true;
         btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Registrando...';
@@ -188,12 +217,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // ========== ENVÍO ASÍNCRONO (ACTUALIZACIÓN) ==========
     window.actualizarEvidenciasFetch = async function(event) {
         event.preventDefault();
+
         if (btnSubmit.disabled) {
             mostrarError('Complete todos los campos requeridos.');
             return;
         }
 
-        const idEvidencia = document.getElementById('idEvidencia').value;
+        const idEvidenciaInput = document.getElementById('idEvidencia');
+        const idEvidencia = idEvidenciaInput ? idEvidenciaInput.value : '';
         if (!idEvidencia) {
             mostrarError('ID de evidencia no válido.');
             return;
@@ -216,25 +247,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const selectoresEtapa = document.querySelectorAll('select[name^="etapa-foto-"]');
-        let etapasCompletas = true;
-        selectoresEtapa.forEach(select => {
-            if (!select.value) {
-                etapasCompletas = false;
-                select.classList.add('is-invalid');
-            } else {
-                select.classList.remove('is-invalid');
-            }
-        });
+        const { etapasCompletas } = validarEtapas();
         if (!etapasCompletas) {
             mostrarError('Debe seleccionar la etapa para cada imagen.');
             return;
         }
 
         const formData = new FormData(formEvidencias);
-        selectedFiles.forEach((file) => {
-            formData.append('fotos', file);
-        });
+        agregarArchivosYEtapas(formData);
 
         btnSubmit.disabled = true;
         btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Actualizando...';
@@ -268,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.eliminarEvidenciaJS = function(id_evidencia) {
         Swal.fire({
             title: '¿Estás seguro?',
-            text: "La evidencia será desactivada (borrado lógico) y no aparecerá en el listado activo.",
+            text: 'La evidencia será desactivada (borrado lógico) y no aparecerá en el listado activo.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc3545',
