@@ -4,11 +4,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const imagePreviewContainer = document.getElementById('imagePreview');
     const formEvidencias = document.getElementById('formEvidencias') || document.getElementById('formEvidenciasUpdate');
     const btnSubmit = document.getElementById('btnSubir') || document.getElementById('btnModificar');
-    let selectedFiles = [];
+    
+    let selectedFiles = []; // Aquí acumularemos las imágenes
     let isEditMode = formEvidencias && formEvidencias.id === 'formEvidenciasUpdate';
     const MIN_IMAGENES = 3;
     const MAX_IMAGENES = 5;
 
+    // Validación inicial para modo edición
     if (isEditMode && window.evidenciaData) {
         const existingUrls = window.evidenciaData.url_archivos ? window.evidenciaData.url_archivos.split(',') : [];
         if (existingUrls.length >= 1) {
@@ -20,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Configuración de la zona Drag & Drop
     if (dropZone && fileInput) {
         dropZone.addEventListener('click', () => fileInput.click());
         dropZone.addEventListener('dragover', (e) => {
@@ -36,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         fileInput.addEventListener('change', () => {
             handleFiles(fileInput.files);
+            fileInput.value = ''; // Limpiamos el input para permitir seleccionar el mismo archivo si se borra
         });
     }
 
@@ -43,19 +47,26 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isEditMode) {
             if (files.length > 1) {
                 mostrarError('Solo se permite una imagen para modificar');
-                fileInput.value = '';
                 return;
             }
-            if (files.length === 0) {
-                selectedFiles = [];
-            } else {
+            if (files.length > 0) {
                 selectedFiles = [files[0]];
             }
         } else {
-            selectedFiles = Array.from(files);
+            // SOLUCIÓN 1: Concatenar archivos en lugar de sobreescribir (Permite selección individual)
+            const newFiles = Array.from(files);
+            if (selectedFiles.length + newFiles.length > MAX_IMAGENES) {
+                mostrarError(`Límite alcanzado. Solo puedes tener un máximo de ${MAX_IMAGENES} imágenes.`);
+                const allowed = MAX_IMAGENES - selectedFiles.length;
+                selectedFiles = selectedFiles.concat(newFiles.slice(0, allowed));
+            } else {
+                selectedFiles = selectedFiles.concat(newFiles);
+            }
         }
+        
         updatePreviews();
         validateFileCount();
+        
         const helpEtapa = document.getElementById('helpEtapa');
         if (helpEtapa) {
             if (selectedFiles.length > 0) {
@@ -66,40 +77,67 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Nueva función para eliminar imágenes seleccionadas individualmente
+    window.removeFile = function(index) {
+        selectedFiles.splice(index, 1);
+        updatePreviews();
+        validateFileCount();
+    };
+
     function updatePreviews() {
+        // SOLUCIÓN 2: Guardar el estado de los selectores antes de repintar el HTML
+        const currentSelectStates = {};
+        document.querySelectorAll('select[data-index]').forEach(select => {
+            currentSelectStates[select.dataset.index] = select.value;
+        });
+
         imagePreviewContainer.innerHTML = '';
+        
         if (selectedFiles.length === 0 && isEditMode && window.evidenciaData && window.evidenciaData.url_archivos) {
             const existingUrls = window.evidenciaData.url_archivos.split(',');
             existingUrls.forEach(url => {
-                imagePreviewContainer.innerHTML += crearCardPreview('/static/' + url, 'Evidencia existente', true);
+                imagePreviewContainer.innerHTML += crearCardPreviewExistente('/static/' + url, 'Evidencia existente');
             });
             return;
         }
+        
         selectedFiles.forEach((file, index) => {
+            const containerDiv = document.createElement('div');
+            containerDiv.className = 'preview-card-container';
+            containerDiv.dataset.index = index;
+            
+            // Recuperamos el valor guardado (si existe) para no perder la selección
+            const val = currentSelectStates[index] || '';
+            
+            containerDiv.innerHTML = `
+                <div class="preview-card position-relative">
+                    <img id="img-prev-${index}" src="" alt="${file.name}" title="${file.name}">
+                    <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 px-2 py-0" 
+                            onclick="removeFile(${index})" style="line-height: 1.2; border-radius: 50%; font-weight: bold;" title="Eliminar">&times;</button>
+                </div>
+                <select class="form-select form-select-sm mt-2 custom-placeholder" data-index="${index}" required>
+                    <option value="" disabled ${val === '' ? 'selected' : ''}>Seleccione etapa</option>
+                    <option value="antes" ${val === 'antes' ? 'selected' : ''}>Antes</option>
+                    <option value="durante" ${val === 'durante' ? 'selected' : ''}>Durante</option>
+                    <option value="despues" ${val === 'despues' ? 'selected' : ''}>Después</option>
+                </select>
+            `;
+            imagePreviewContainer.appendChild(containerDiv);
+
+            // Cargar la imagen usando FileReader
             const reader = new FileReader();
             reader.onload = function (e) {
-                imagePreviewContainer.innerHTML += crearCardPreview(e.target.result, file.name, false, index);
-                agregarEventoSelect(index);
+                const img = document.getElementById(`img-prev-${index}`);
+                if (img) img.src = e.target.result;
             };
             reader.readAsDataURL(file);
+
+            agregarEventoSelect(index);
         });
     }
 
-    function crearCardPreview(src, alt, esExistente, index = 0) {
-        if (esExistente) {
-            return `<div class="preview-card"><img src="${src}" alt="${alt}" title="${alt}"><p class="text-muted small mt-1">Imagen actual</p></div>`;
-        }
-        return `<div class="preview-card-container" data-index="${index}">
-                    <div class="preview-card">
-                        <img src="${src}" alt="${alt}" title="${alt}">
-                    </div>
-                    <select class="form-select form-select-sm mt-2 custom-placeholder" data-index="${index}" required>
-                        <option value="" disabled selected>Seleccione etapa</option>
-                        <option value="antes">Antes</option>
-                        <option value="durante">Durante</option>
-                        <option value="despues">Despues</option>
-                    </select>
-                </div>`;
+    function crearCardPreviewExistente(src, alt) {
+        return `<div class="preview-card"><img src="${src}" alt="${alt}" title="${alt}"><p class="text-muted small mt-1">Imagen actual</p></div>`;
     }
 
     function agregarEventoSelect(index) {
@@ -107,18 +145,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (select) {
             select.addEventListener('change', function() {
                 validateFileCount();
-                const allSelects = document.querySelectorAll('select[data-index]');
-                let allSelected = true;
-                allSelects.forEach(s => {
-                    if (!s.value) allSelected = false;
-                });
-                if (allSelected && selectedFiles.length >= MIN_IMAGENES) {
-                    btnSubmit.disabled = false;
-                    if (dropZone) dropZone.style.borderColor = '#08b324';
-                } else {
-                    btnSubmit.disabled = true;
-                    if (dropZone) dropZone.style.borderColor = '#dc3545';
-                }
             });
         }
     }
@@ -128,11 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isEditMode) {
             if (count === 1) {
                 const select = document.querySelector('select[data-index]');
-                if (select && select.value) {
-                    btnSubmit.disabled = false;
-                } else {
-                    btnSubmit.disabled = true;
-                }
+                btnSubmit.disabled = !(select && select.value);
                 if (dropZone) dropZone.style.borderColor = '#08b324';
             } else {
                 btnSubmit.disabled = true;
@@ -140,23 +162,25 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             return;
         }
+        
+        // Validación del límite (3 a 5 imágenes)
         if (count >= MIN_IMAGENES && count <= MAX_IMAGENES) {
             const allSelects = document.querySelectorAll('select[data-index]');
             let allSelected = true;
             allSelects.forEach(s => {
                 if (!s.value) allSelected = false;
             });
+            
             if (allSelected) {
                 btnSubmit.disabled = false;
                 if (dropZone) dropZone.style.borderColor = '#08b324';
             } else {
                 btnSubmit.disabled = true;
-                if (dropZone) dropZone.style.borderColor = '#dc3545';
+                if (dropZone) dropZone.style.borderColor = '#ffc107'; // Amarillo si falta etapa
             }
         } else {
             btnSubmit.disabled = true;
             if (dropZone) dropZone.style.borderColor = '#dc3545';
-            if (count > 0) mostrarError(`Seleccione entre ${MIN_IMAGENES} y ${MAX_IMAGENES} imagenes`);
         }
     }
 
@@ -180,11 +204,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function generarFormDataLimpio() {
         const formData = new FormData();
-        const selectoresEtapa = getSelectoresEtapa();
         selectedFiles.forEach((file, index) => {
             const select = document.querySelector(`select[data-index="${index}"]`);
             formData.append('fotos', file);
-            if (select) {
+            if (select && select.value) {
                 formData.append('etapas[]', select.value);
             } else {
                 formData.append('etapas[]', '');
@@ -193,14 +216,22 @@ document.addEventListener('DOMContentLoaded', function () {
         return formData;
     }
 
+    // Funciones de conexión Fetch
     window.registrarEvidenciasFetch = async function(event) {
         event.preventDefault();
         if (btnSubmit.disabled) return;
-        if (!validarEtapas()) return mostrarError('Seleccione la etapa para cada imagen');
+        
+        if (selectedFiles.length < MIN_IMAGENES || selectedFiles.length > MAX_IMAGENES) {
+            return mostrarError(`Debe subir entre ${MIN_IMAGENES} y ${MAX_IMAGENES} imágenes.`);
+        }
+        if (!validarEtapas()) return mostrarError('Seleccione la etapa para cada imagen seleccionada');
+        
         const formData = generarFormDataLimpio();
         
         btnSubmit.disabled = true;
+        const textoOriginal = btnSubmit.innerHTML;
         btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
+        
         try {
             const response = await fetch('/api/evidencias/subir', { method: 'POST', body: formData });
             const result = await response.json();
@@ -210,12 +241,12 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 mostrarError(result.message);
                 btnSubmit.disabled = false;
-                btnSubmit.innerHTML = 'Registrar Evidencias';
+                btnSubmit.innerHTML = textoOriginal;
             }
         } catch (error) {
             mostrarError('Error de red: ' + error.message);
             btnSubmit.disabled = false;
-            btnSubmit.innerHTML = 'Registrar Evidencias';
+            btnSubmit.innerHTML = textoOriginal;
         }
     };
 
@@ -225,11 +256,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const idEvidencia = document.getElementById('idEvidencia').value;
         const existeResp = await fetch(`/api/evidencias/validar/${idEvidencia}`);
         const existeData = await existeResp.json();
-        if (!existeData.existe) return mostrarError('Evidencia no valida');
+        
+        if (!existeData.existe) return mostrarError('Evidencia no válida');
         if (!validarEtapas()) return mostrarError('Seleccione la etapa para la imagen');
         const formData = generarFormDataLimpio();
         
         btnSubmit.disabled = true;
+        const textoOriginal = btnSubmit.innerHTML;
         btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
         try {
             const response = await fetch(`/api/evidencias/actualizar/${idEvidencia}`, { method: 'POST', body: formData });
@@ -240,19 +273,19 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 mostrarError(result.message);
                 btnSubmit.disabled = false;
-                btnSubmit.innerHTML = 'Modificar Evidencia';
+                btnSubmit.innerHTML = textoOriginal;
             }
         } catch (error) {
             mostrarError('Error de red: ' + error.message);
             btnSubmit.disabled = false;
-            btnSubmit.innerHTML = 'Modificar Evidencia';
+            btnSubmit.innerHTML = textoOriginal;
         }
     };
 
     window.eliminarEvidenciaJS = function(id_evidencia) {
         Swal.fire({
             title: '¿Desactivar registro?',
-            text: 'Se aplicara borrado logico',
+            text: 'Se aplicará borrado lógico',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc3545',
@@ -266,6 +299,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    function mostrarExito(msj) { Swal.fire({ icon: 'success', title: 'Exito', text: msj, timer: 2000, showConfirmButton: false }); }
+    function mostrarExito(msj) { Swal.fire({ icon: 'success', title: 'Éxito', text: msj, timer: 2000, showConfirmButton: false }); }
     function mostrarError(msj) { Swal.fire({ icon: 'error', title: 'Error', text: msj }); }
 });
