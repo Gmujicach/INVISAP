@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <img src="${src}" alt="${alt}" title="${alt}">
                     </div>
                     <select class="form-select form-select-sm mt-2 custom-placeholder" data-index="${index}" required>
-                        <option value="" disabled selected>👉 Seleccione etapa</option>
+                        <option value="" disabled selected>Seleccione etapa</option>
                         <option value="antes">Antes</option>
                         <option value="durante">Durante</option>
                         <option value="despues">Despues</option>
