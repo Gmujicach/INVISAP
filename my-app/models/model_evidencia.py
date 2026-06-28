@@ -1,7 +1,7 @@
-\"\"\"
+"""
 EvidenciaModel — Modelo SOLID/POO para gestión de evidencias fotográficas.
 Implementa encapsulamiento, validaciones Regex, borrado lógico, compresión de imágenes.
-\"\"\"
+"""
 
 import os
 import re
@@ -14,7 +14,7 @@ from conexion.conexionBD import connectionBD_invilara
 
 
 class EvidenciaModel:
-    \"\"\"Repositorio de evidencias fotográficas con compresión y validación.\"\"\"
+    """Repositorio de evidencias fotográficas con compresión y validación."""
 
     # Regex para validar nombres y URLs (VARCHAR 45 y 90 en la BD)
     _RE_NOMBRE_ARCHIVO = re.compile(r'^[\w\-. áéíóúÁÉÍÓÚñÑ()]{1,100}\.[a-zA-Z0-9]{1,5}$')
@@ -44,7 +44,7 @@ class EvidenciaModel:
 
     def set_id_evidencia(self, valor):
         if not isinstance(valor, int) or valor <= 0:
-            raise ValueError(\"ID de evidencia debe ser un entero positivo.\")
+            raise ValueError("ID de evidencia debe ser un entero positivo.")
         self.__id_evidencia = valor
 
     def get_estado(self):
@@ -52,7 +52,7 @@ class EvidenciaModel:
 
     def set_estado(self, valor):
         if valor not in (0, 1):
-            raise ValueError(\"Estado debe ser 0 o 1.\")
+            raise ValueError("Estado debe ser 0 o 1.")
         self.__estado = valor
 
     # ========== MÉTODOS PRIVADOS DE VALIDACIÓN ==========
@@ -71,11 +71,11 @@ class EvidenciaModel:
     def __extraer_etapas(self, form_data, num_files):
         etapas = []
         for i in range(num_files):
-            etapa = form_data.get(f\"etapa-foto-{i}\")
+            etapa = form_data.get(f"etapa-foto-{i}")
             if etapa:
                 etapa = etapa.strip().lower()
                 if etapa not in self._ETAPAS_VALIDAS:
-                    raise ValueError(f\"Etapa '{etapa}' no válida.\")
+                    raise ValueError(f"Etapa '{etapa}' no válida.")
                 etapas.append(etapa)
         
         # Fallback para otros formatos
@@ -97,13 +97,13 @@ class EvidenciaModel:
         
         # Truncar nombre base para que la URL completa no exceda 90 chars
         base_name = base_name[:50]
-        unique_name = f\"{uuid.uuid4().hex[:12]}_{base_name}.jpg\"
+        unique_name = f"{uuid.uuid4().hex[:12]}_{base_name}.jpg"
         path = os.path.join(self.__upload_folder, unique_name)
 
         try:
             file_bytes = file.read()
             if not file_bytes:
-                raise ValueError(f\"El archivo '{filename}' está vacío.\")
+                raise ValueError(f"El archivo '{filename}' está vacío.")
             
             img = Image.open(io.BytesIO(file_bytes))
 
@@ -123,32 +123,32 @@ class EvidenciaModel:
                 img.thumbnail((self.MAX_DIMENSION, self.MAX_DIMENSION), Image.Resampling.LANCZOS)
 
             img.save(path, format='JPEG', optimize=True, quality=self.CALIDAD_COMPRESION)
-            return f\"uploads/evidencias/{unique_name}\"
+            return f"uploads/evidencias/{unique_name}"
 
         except Exception as e:
-            raise ValueError(f\"Error al procesar '{filename}': {e}\")
+            raise ValueError(f"Error al procesar '{filename}': {e}")
 
     # ========== MÉTODOS PRIVADOS DE BASE DE DATOS ==========
     def __guardar_evidencias_db(self):
-        \"\"\"
+        """
         Guarda cada imagen como una fila independiente en la BD.
         Cumple con el tipo ENUM de la columna 'etapa' y el límite VARCHAR(90).
-        \"\"\"
+        """
         conn = None
         cur = None
         ids_insertados = []
         try:
             conn = connectionBD_invilara()
             if not conn:
-                raise Exception(\"Error de conexión a la base de datos.\")
+                raise Exception("Error de conexión a la base de datos.")
             cur = conn.cursor()
 
-            sql = \"INSERT INTO evidencia (fotos, url_archivos, fecha_registro, estado, etapa) VALUES (%s, %s, %s, %s, %s)\"
+            sql = "INSERT INTO evidencia (fotos, url_archivos, fecha_registro, estado, etapa) VALUES (%s, %s, %s, %s, %s)"
             
             for i, file in enumerate(self.__archivos):
                 url = self.__comprimir_y_guardar_imagen(file)
                 if not self._validar_url(url):
-                    raise ValueError(f\"URL inválida: {url}\")
+                    raise ValueError(f"URL inválida: {url}")
                 
                 etapa = self.__etapas[i]
                 nombre_referencia = self._limpiar_texto(file.filename, 45)
@@ -167,16 +167,16 @@ class EvidenciaModel:
             if conn: conn.close()
 
     def __actualizar_evidencias_db(self, id_evidencia):
-        \"\"\"Actualiza un registro específico de evidencia (1:1).\"\"\"
+        """Actualiza un registro específico de evidencia (1:1)."""
         conn = None
         cur = None
         try:
             conn = connectionBD_invilara()
             cur = conn.cursor(dictionary=True)
 
-            cur.execute(\"SELECT url_archivos FROM evidencia WHERE id_evidencia = %s AND estado = 1\", (id_evidencia,))
+            cur.execute("SELECT url_archivos FROM evidencia WHERE id_evidencia = %s AND estado = 1", (id_evidencia,))
             row = cur.fetchone()
-            if not row: raise ValueError(\"No existe el registro activo.\")
+            if not row: raise ValueError("No existe el registro activo.")
 
             # Eliminar físico antiguo
             p = os.path.join(os.path.dirname(__file__), '..', 'static', row['url_archivos'])
@@ -187,7 +187,7 @@ class EvidenciaModel:
             etapa = self.__etapas[0]
             nombre_referencia = self._limpiar_texto(file.filename, 45)
 
-            sql = \"UPDATE evidencia SET fotos = %s, url_archivos = %s, etapa = %s WHERE id_evidencia = %s\"
+            sql = "UPDATE evidencia SET fotos = %s, url_archivos = %s, etapa = %s WHERE id_evidencia = %s"
             cur.execute(sql, (nombre_referencia, url, etapa, id_evidencia))
             conn.commit()
             return cur.rowcount > 0
@@ -201,7 +201,7 @@ class EvidenciaModel:
         try:
             conn = connectionBD_invilara()
             cur = conn.cursor()
-            cur.execute(\"UPDATE evidencia SET estado = 0 WHERE id_evidencia = %s\", (id_evidencia,))
+            cur.execute("UPDATE evidencia SET estado = 0 WHERE id_evidencia = %s", (id_evidencia,))
             conn.commit()
             return cur.rowcount > 0
         finally:
@@ -214,7 +214,7 @@ class EvidenciaModel:
         try:
             conn = connectionBD_invilara()
             cur = conn.cursor(dictionary=True)
-            cur.execute(\"SELECT * FROM evidencia WHERE id_evidencia = %s AND estado = 1\", (id_evidencia,))
+            cur.execute("SELECT * FROM evidencia WHERE id_evidencia = %s AND estado = 1", (id_evidencia,))
             return cur.fetchone()
         finally:
             if cur: cur.close()
@@ -226,7 +226,7 @@ class EvidenciaModel:
         try:
             conn = connectionBD_invilara()
             cur = conn.cursor(dictionary=True)
-            cur.execute(\"SELECT * FROM evidencia WHERE estado = 1 ORDER BY fecha_registro DESC\")
+            cur.execute("SELECT * FROM evidencia WHERE estado = 1 ORDER BY fecha_registro DESC")
             return cur.fetchall()
         finally:
             if cur: cur.close()
@@ -238,7 +238,7 @@ class EvidenciaModel:
         try:
             conn = connectionBD_invilara()
             cur = conn.cursor()
-            cur.execute(\"SELECT id_evidencia FROM evidencia WHERE id_evidencia = %s AND estado = 1\", (id_evidencia,))
+            cur.execute("SELECT id_evidencia FROM evidencia WHERE id_evidencia = %s AND estado = 1", (id_evidencia,))
             return cur.fetchone() is not None
         finally:
             if cur: cur.close()
@@ -247,16 +247,16 @@ class EvidenciaModel:
     # ========== MÉTODOS PÚBLICOS ==========
     def registrar_evidencias(self, files, form_data):
         if not (self.MIN_IMAGENES <= len(files) <= self.MAX_IMAGENES):
-            raise ValueError(f\"Debe subir entre {self.MIN_IMAGENES} y {self.MAX_IMAGENES} fotos.\")
+            raise ValueError(f"Debe subir entre {self.MIN_IMAGENES} y {self.MAX_IMAGENES} fotos.")
         self.__archivos = list(files)
         self.__etapas = self.__extraer_etapas(form_data, len(files))
         return self.__guardar_evidencias_db()
 
     def actualizar_evidencia(self, id_evidencia, files, form_data):
         if not self.__validar_evidencia_activa_db(id_evidencia):
-            raise ValueError(\"No existe.\")
+            raise ValueError("No existe.")
         if not files:
-            raise ValueError(\"Debe seleccionar una foto.\")
+            raise ValueError("Debe seleccionar una foto.")
         self.__archivos = list(files)
         self.__etapas = self.__extraer_etapas(form_data, len(files))
         return self.__actualizar_evidencias_db(id_evidencia)
