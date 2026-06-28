@@ -41,17 +41,10 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="autor_publicacion" class="form-label">Autor</label>
+                                <label for="nombre_responsable" class="form-label">Responsable</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="bi bi-person-badge"></i></span>
-                                    <select name="autor_publicacion" id="autor_publicacion" class="form-select" required>
-                                        <option value="Presidencia" {% if publicacion.autor_publicacion == 'Presidencia' %}selected{% endif %}>Presidencia</option>
-                                        <option value="Gerencia General" {% if publicacion.autor_publicacion == 'Gerencia General' %}selected{% endif %}>Gerencia General</option>
-                                        <option value="Gerencia de Proyectos" {% if publicacion.autor_publicacion == 'Gerencia de Proyectos' %}selected{% endif %}>Gerencia de Proyectos</option>
-                                        <option value="Gerencia de Desarrollo Social" {% if publicacion.autor_publicacion == 'Gerencia de Desarrollo Social' %}selected{% endif %}>Gerencia de Desarrollo Social</option>
-                                        <option value="Oficina de Atención al Ciudadano" {% if publicacion.autor_publicacion == 'Oficina de Atención al Ciudadano' %}selected{% endif %}>Oficina de Atención al Ciudadano</option>
-                                        <option value="{{ publicacion.autor_publicacion }}" {% if publicacion.autor_publicacion not in ['Presidencia', 'Gerencia General', 'Gerencia de Proyectos', 'Gerencia de Desarrollo Social', 'Oficina de Atención al Ciudadano'] %}selected{% endif %}>{{ publicacion.autor_publicacion }} (Actual)</option>
-                                    </select>
+                                    <input type="text" name="nombre_responsable" id="nombre_responsable" class="form-control" value="{{ publicacion.nombre_responsable }}" required>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -64,13 +57,13 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="evidencias" class="form-label">Vincular Evidencias (Fotos de Obra)</label>
+                            <label for="informe_avance_obra_id_informe" class="form-label">Vincular Informe (Fotos de Obra)</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light"><i class="bi bi-images"></i></span>
-                                <select name="evidencias" id="evidencias" class="form-select">
-                                    <option value="">-- Sin evidencias vinculadas --</option>
+                                <select name="informe_avance_obra_id_informe" id="informe_avance_obra_id_informe" class="form-select">
+                                    <option value="">-- Sin informes vinculados --</option>
                                     {% for informe in informes %}
-                                        <option value="{{ informe.id_informe }}" {% if publicacion.evidencias == informe.id_informe|string %}selected{% endif %}>Informe #{{ informe.id_informe }} - {{ informe.nombre_proyecto }}</option>
+                                        <option value="{{ informe.id_informe }}" {% if publicacion.id_informe == informe.id_informe|string %}selected{% endif %}>Informe #{{ informe.id_informe }} - {{ informe.nombre_proyecto }}</option>
                                     {% endfor %}
                                 </select>
                             </div>

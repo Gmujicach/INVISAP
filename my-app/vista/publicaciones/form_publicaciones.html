@@ -40,18 +40,10 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="autor_publicacion" class="form-label">Autor</label>
+                                <label for="nombre_responsable" class="form-label">Responsable</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light"><i class="bi bi-person-badge"></i></span>
-                                    <select name="autor_publicacion" id="autor_publicacion" class="form-select" required>
-                                        <option value="" disabled>Seleccione la oficina emisora...</option>
-                                        <option value="Presidencia">Presidencia</option>
-                                        <option value="Gerencia General">Gerencia General</option>
-                                        <option value="Gerencia de Proyectos">Gerencia de Proyectos</option>
-                                        <option value="Gerencia de Desarrollo Social">Gerencia de Desarrollo Social</option>
-                                        <option value="Oficina de Atención al Ciudadano">Oficina de Atención al Ciudadano</option>
-                                        <option value="{{ session.get('nombre', 'Administrador') }}" selected>{{ session.get('nombre', 'Administrador') }} (Usuario Actual)</option>
-                                    </select>
+                                    <input type="text" name="nombre_responsable" id="nombre_responsable" class="form-control" value="{{ session.get('nombre', 'Administrador') }}" placeholder="Nombre del responsable" required>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
@@ -64,11 +56,11 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="evidencias" class="form-label">Vincular Evidencias (Fotos de Obra)</label>
+                            <label for="informe_avance_obra_id_informe" class="form-label">Vincular Informe (Fotos de Obra)</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light"><i class="bi bi-images"></i></span>
-                                <select name="evidencias" id="evidencias" class="form-select">
-                                    <option value="" selected>-- Sin evidencias vinculadas --</option>
+                                <select name="id_informe" id="informe_avance_obra_id_informe" class="form-select" required>
+                                    <option value="" selected disabled>-- Seleccione un informe --</option>
                                     {% for informe in informes %}
                                         <option value="{{ informe.id_informe }}">Informe #{{ informe.id_informe }} - {{ informe.nombre_proyecto }}</option>
                                     {% endfor %}
