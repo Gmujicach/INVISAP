@@ -1,68 +1,99 @@
 {% extends 'base_cpanel.html' %}
-{% block title %}Listar Evidencias{% endblock %}
+
+{% block title %}Listado de Evidencias{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/evidencia.css') }}">
+{% endblock %}
 
 {% block body %}
-<div class="container-xxl flex-grow-1 container-p-y">
+<div class="evidencia-container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold py-3 mb-0">
-            <span class="text-muted fw-light">Gestión /</span> Listado de Evidencias
+        <h4 class="fw-bold">
+            <span class="text-muted fw-light">Gestion /</span> Evidencias
         </h4>
-        <a href="{{ url_for('evidencia_bp.show_registrar_evidencia') }}" class="btn btn-primary shadow-sm">
-            <i class="bi bi-plus-circle-fill me-2"></i>Registrar Nuevas
+        <a href="{{ url_for('evidencia_bp.nuevo') }}" class="btn btn-primary">
+            Nueva Evidencia
         </a>
     </div>
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-header bg-transparent border-bottom">
-            <h5 class="mb-0 fw-semibold text-primary">Registros de Evidencias</h5>
+    <div class="card-modern">
+        <div class="card-header">
+            <h5 class="mb-0">Registros de Evidencias</h5>
         </div>
-        <div class="table-responsive text-nowrap p-3">
-            <table class="table table-hover align-middle" id="tablaEvidencias">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Descripción</th>
-                        <th>Imágenes</th>
-                        <th>Etapas</th>
-                        <th>Fecha de Registro</th>
-                        <th class="text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tbodyEvidencias" class="table-border-bottom-0">
-                    {% if evidencias %}
-                        {% for evidencia in evidencias %}
+        <div class="p-4">
+            {% if evidencias %}
+            <div class="table-responsive">
+                <table class="table-evidencias">
+                    <thead>
                         <tr>
-                            <td><span class="fw-bold">{{ evidencia.id_evidencia }}</span></td>
-                            <td>{{ evidencia.fotos }}</td>
-                            <td>
-                                <a href="{{ url_for('static', filename=evidencia.url_archivos) }}" target="_blank" class="d-block shadow-sm rounded overflow-hidden" style="border: 1px solid #eee; width: 45px;">
-                                    <img src="{{ url_for('static', filename=evidencia.url_archivos) }}" alt="Evidencia" style="width: 45px; height: 45px; object-fit: cover;" title="Click para ver">
-                                </a>
-                            </td>
-                            <td>
-                                <span class="badge bg-label-secondary text-capitalize">{{ evidencia.etapa }}</span>
-                            </td>
-                            <td>{{ evidencia.fecha_registro.strftime('%Y-%m-%d %H:%M') }}</td>
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <a href="{{ url_for('evidencia_bp.show_modificar_evidencia', id_evidencia=evidencia.id_evidencia) }}" class="btn btn-warning btn-icon-only btn-sm" title="Modificar Evidencia">
-                                        <i class="bi bi-pencil-square text-white"></i>
-                                    </a>
-                                    <a href="javascript:void(0);" onclick="eliminarEvidenciaJS({{ evidencia.id_evidencia }})" class="btn btn-danger btn-icon-only btn-sm" title="Eliminar (Borrado Lógico)">
-                                        <i class="bi bi-trash3-fill text-white"></i>
-                                    </a>
-                                </div>
-                            </td>
+                            <th>ID</th>
+                            <th>Descripcion</th>
+                            <th>Imagen</th>
+                            <th>Etapa</th>
+                            <th>Fecha Registro</th>
+                            <th class="text-center">Acciones</th>
                         </tr>
-                        {% endfor %}
-                    {% else %}
+                    </thead>
+                <tbody>
+                    {% for evidencia in evidencias %}
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">No hay evidencias registradas.</td>
+                        <td>
+                            <span class="fw-bold text-primary">{{ evidencia.id_evidencia }}</span>
+                        </td>
+                        <td>
+                            <span class="text-truncate" style="max-width: 150px; display: inline-block;">
+                                {{ evidencia.fotos }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('static', filename=evidencia.url_archivos) }}" target="_blank">
+                                <img src="{{ url_for('static', filename=evidencia.url_archivos) }}" 
+                                     class="thumbnail" 
+                                     alt="Evidencia {{ evidencia.id_evidencia }}">
+                            </a>
+                        </td>
+                        <td>
+                            <span class="badge-etapa {{ evidencia.etapa }}">
+                                {{ evidencia.etapa }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="text-muted" style="font-size: 13px;">
+                                {{ evidencia.fecha_registro.strftime('%Y-%m-%d %H:%M') }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ url_for('evidencia_bp.editar', id_evidencia=evidencia.id_evidencia) }}" 
+                               class="btn-action btn-edit">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <button onclick="eliminarEvidencia({{ evidencia.id_evidencia }})" 
+                                    class="btn-action btn-delete">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </td>
                     </tr>
-                    {% endif %}
+                    {% endfor %}
                 </tbody>
             </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="icon">📸</div>
+                <h5>No hay evidencias registradas</h5>
+                <p class="text-muted">Comienza registrando tu primera evidencia</p>
+                <a href="{{ url_for('evidencia_bp.nuevo') }}" class="btn btn-primary mt-3">
+                    Registrar Primera Evidencia
+                </a>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block customJS %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='assets/js/evidencia.js') }}"></script>
 {% endblock %}

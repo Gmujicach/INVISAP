@@ -3,47 +3,41 @@
 
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/evidencia.css') }}">
+<style>
+    .custom-placeholder::placeholder, .custom-placeholder option:disabled {
+        color: #cca025 !important;
+        opacity: 1;
+    }
+</style>
 {% endblock %}
 
 {% block body %}
 <div class="container-xxl flex-grow-1 container-p-y">
-    <h4 class="fw-bold py-3 mb-4">
-        <span class="text-muted fw-light">Gestión /</span> Registrar Evidencias Fotográficas
-    </h4>
-
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Gestión /</span> Registrar Evidencias</h4>
     <div class="row">
         <div class="col-xl">
             <div class="card mb-4 shadow-sm border-0">
-                <div class="card-header d-flex justify-content-between align-items-center bg-transparent border-bottom">
-                    <h5 class="mb-0 fw-semibold text-primary"><i class="bi bi-camera-fill me-2"></i>Carga de Evidencias</h5>
-                    <small class="text-muted float-end">Arrastre o seleccione de 3 a 5 imágenes</small>
+                <div class="card-header border-bottom">
+                    <h5 class="mb-0 text-primary">Carga de Evidencias Fotográficas</h5>
                 </div>
                 <div class="card-body pt-4">
-                    <form id="formEvidencias" class="needs-validation" novalidate 
-                          onsubmit="registrarEvidenciasFetch(event)"
-                          enctype="multipart/form-data">
+                    <form id="formEvidencias" onsubmit="registrarEvidenciasFetch(event)" enctype="multipart/form-data">
                         <div id="dropZone" class="file-drop-zone">
                             <i class="bi bi-cloud-arrow-up-fill fs-1 text-success"></i>
-                            <p class="mt-3 mb-0 fw-semibold">Arrastre y suelte las imágenes aquí</p>
-                            <p class="text-muted small">o haga clic para seleccionar los archivos</p>
+                            <p class="mt-3 mb-0 fw-semibold">Arrastre imágenes aquí o haga clic para seleccionarlas</p>
+                            <small class="text-muted mt-1 d-block">Puede seleccionarlas una por una. Mínimo 3, máximo 5 imágenes permitidas.</small>
                             <input type="file" id="fileInput" multiple accept="image/*" class="d-none">
-                            <div class="mt-2 text-center">
-                                <small class="text-warning fw-bold"><i class="bi bi-info-circle-fill me-1"></i> Instrucciones: Seleccione de 3 a 5 imágenes (JPG, PNG, WEBP). El sistema optimizará el tamaño automáticamente.</small>
-                            </div>
                         </div>
-
+                        
                         <div id="imagePreview" class="preview-container mt-4"></div>
+                        
                         <div id="helpEtapa" class="mt-2 d-none text-center">
-                            <small class="text-warning fw-bold"><i class="bi bi-exclamation-triangle-fill me-1"></i> Importante: Debe asignar la etapa correspondiente (Antes, Durante o Después) a cada foto cargada para procesar el informe.</small>
+                            <small class="text-warning fw-bold">Obligatorio asignar etapas a todas las imágenes seleccionadas</small>
                         </div>
-
+                        
                         <div class="mt-5 d-flex justify-content-end gap-2">
-                            <a href="{{ url_for('evidencia_bp.show_listar_evidencias') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-circle me-1"></i>Cancelar
-                            </a>
-                            <button type="submit" id="btnSubir" class="btn btn-primary px-4 shadow-sm" disabled>
-                                <i class="bi bi-check-circle me-1"></i>Registrar Evidencias
-                            </button>
+                            <a href="{{ url_for('evidencia_bp.show_listar_evidencias') }}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" id="btnSubir" class="btn btn-primary" disabled>Registrar Evidencias</button>
                         </div>
                     </form>
                 </div>
