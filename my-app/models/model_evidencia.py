@@ -1,11 +1,8 @@
-<<<<<<< HEAD
 """
 EvidenciaModel — Modelo SOLID/POO para gestión de evidencias fotográficas.
 Implementa encapsulamiento, validaciones Regex, borrado lógico, compresión de imágenes.
 """
 
-=======
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
 import os
 import re
 import uuid
@@ -15,17 +12,13 @@ from PIL import Image
 from conexion.conexionBD import connectionBD_invilara
 
 class EvidenciaModel:
-<<<<<<< HEAD
     """Repositorio de evidencias fotográficas con compresión y validación."""
 
-    # Regex para validar nombres y URLs (VARCHAR 45 y 90 en la BD)
     _RE_NOMBRE_ARCHIVO = re.compile(r'^[\w\-. áéíóúÁÉÍÓÚñÑ()]{1,100}\.[a-zA-Z0-9]{1,5}$')
-    _RE_URL = re.compile(r'^[\w\-/. ]{10,90}$')  
+    _RE_URL = re.compile(r'^[\w\-/. ]{10,90}$')
     _ETAPAS_VALIDAS = {'antes', 'durante', 'despues'}
-    
-=======
     _RE_ETAPA = re.compile(r'^(antes|durante|despues)$')
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
+    
     MAX_IMAGENES = 5
     MIN_IMAGENES = 3
     CALIDAD_COMPRESION = 80
@@ -45,11 +38,7 @@ class EvidenciaModel:
 
     def set_id_evidencia(self, valor):
         if not isinstance(valor, int) or valor <= 0:
-<<<<<<< HEAD
             raise ValueError("ID de evidencia debe ser un entero positivo.")
-=======
-            raise ValueError("ID invalido")
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
         self.__id_evidencia = valor
 
     def __validar_etapas_regex(self, etapas):
@@ -63,7 +52,6 @@ class EvidenciaModel:
                 raise ValueError(f"Etapa invalida: '{etapa}' - Debe ser 'antes', 'durante' o 'despues'")
         return True
 
-<<<<<<< HEAD
     def set_estado(self, valor):
         if valor not in (0, 1):
             raise ValueError("Estado debe ser 0 o 1.")
@@ -106,25 +94,18 @@ class EvidenciaModel:
 
     # ========== COMPRESIÓN Y GUARDADO DE IMAGEN ==========
     def __comprimir_y_guardar_imagen(self, file):
-        filename = secure_filename(file.filename)
+        filename = file.filename
         base_name = os.path.splitext(filename)[0]
         
         # Truncar nombre base para que la URL completa no exceda 90 chars
         base_name = base_name[:50]
         unique_name = f"{uuid.uuid4().hex[:12]}_{base_name}.jpg"
-=======
-    def __comprimir_y_guardar_imagen(self, file):
-        unique_name = f"{uuid.uuid4().hex}.jpg"
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
         path = os.path.join(self.__upload_folder, unique_name)
         try:
             file_bytes = file.read()
-<<<<<<< HEAD
             if not file_bytes:
                 raise ValueError(f"El archivo '{filename}' está vacío.")
             
-=======
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
             img = Image.open(io.BytesIO(file_bytes))
             if img.mode in ('RGBA', 'LA', 'P'):
                 background = Image.new('RGB', img.size, (255, 255, 255))
@@ -141,17 +122,11 @@ class EvidenciaModel:
                 img.thumbnail((self.MAX_DIMENSION, self.MAX_DIMENSION), Image.Resampling.LANCZOS)
             img.save(path, format='JPEG', optimize=True, quality=self.CALIDAD_COMPRESION)
             return f"uploads/evidencias/{unique_name}"
-<<<<<<< HEAD
 
         except Exception as e:
             raise ValueError(f"Error al procesar '{filename}': {e}")
-=======
-        except Exception as e:
-            raise ValueError(f"Error al procesar la imagen: {str(e)}")
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
 
     def __guardar_evidencias_db(self):
-<<<<<<< HEAD
         """
         Guarda cada imagen como una fila independiente en la BD.
         Cumple con el tipo ENUM de la columna 'etapa' y el límite VARCHAR(90).
@@ -175,31 +150,22 @@ class EvidenciaModel:
                 etapa = self.__etapas[i]
                 nombre_referencia = self._limpiar_texto(file.filename, 45)
                 
-=======
-        conn = connectionBD_invilara()
-        cur = conn.cursor()
-        ids_insertados = []
-        try:
-            sql = "INSERT INTO evidencia (fotos, url_archivos, fecha_registro, estado, etapa) VALUES (%s, %s, %s, %s, %s)"
-            for i, file in enumerate(self.__archivos):
-                url = self.__comprimir_y_guardar_imagen(file)
-                etapa = self.__etapas[i].strip().lower()
-                nombre_referencia = re.sub(r'[<>\'";\\]', '', file.filename).strip()[:45]
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
                 params = (nombre_referencia, url, datetime.now(), 1, etapa)
                 cur.execute(sql, params)
                 ids_insertados.append(cur.lastrowid)
             conn.commit()
             return ids_insertados
         except Exception as e:
-            conn.rollback()
+            if conn:
+                conn.rollback()
             raise ValueError(f"Error en base de datos: {str(e)}")
         finally:
-            cur.close()
-            conn.close()
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
 
     def __actualizar_evidencias_db(self, id_evidencia):
-<<<<<<< HEAD
         """Actualiza un registro específico de evidencia (1:1)."""
         conn = None
         cur = None
@@ -209,11 +175,13 @@ class EvidenciaModel:
 
             cur.execute("SELECT url_archivos FROM evidencia WHERE id_evidencia = %s AND estado = 1", (id_evidencia,))
             row = cur.fetchone()
-            if not row: raise ValueError("No existe el registro activo.")
+            if not row:
+                raise ValueError("No existe el registro activo.")
 
             # Eliminar físico antiguo
             p = os.path.join(os.path.dirname(__file__), '..', 'static', row['url_archivos'])
-            if os.path.exists(p): os.remove(p)
+            if os.path.exists(p):
+                os.remove(p)
 
             file = self.__archivos[0]
             url = self.__comprimir_y_guardar_imagen(file)
@@ -221,35 +189,23 @@ class EvidenciaModel:
             nombre_referencia = self._limpiar_texto(file.filename, 45)
 
             sql = "UPDATE evidencia SET fotos = %s, url_archivos = %s, etapa = %s WHERE id_evidencia = %s"
-=======
-        conn = connectionBD_invilara()
-        cur = conn.cursor()
-        try:
-            file = self.__archivos[0]
-            url = self.__comprimir_y_guardar_imagen(file)
-            etapa = self.__etapas[0].strip().lower()
-            nombre_referencia = re.sub(r'[<>\'";\\]', '', file.filename).strip()[:45]
-            sql = "UPDATE evidencia SET fotos = %s, url_archivos = %s, etapa = %s WHERE id_evidencia = %s AND estado = 1"
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
             cur.execute(sql, (nombre_referencia, url, etapa, id_evidencia))
             conn.commit()
             return cur.rowcount > 0
         except Exception as e:
-            conn.rollback()
+            if conn:
+                conn.rollback()
             raise ValueError(f"Error en base de datos: {str(e)}")
         finally:
-            cur.close()
-            conn.close()
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
 
     def __eliminar_logico_db(self, id_evidencia):
         conn = connectionBD_invilara()
         cur = conn.cursor()
         try:
-<<<<<<< HEAD
-            conn = connectionBD_invilara()
-            cur = conn.cursor()
-=======
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
             cur.execute("UPDATE evidencia SET estado = 0 WHERE id_evidencia = %s", (id_evidencia,))
             conn.commit()
             return cur.rowcount > 0
@@ -261,11 +217,6 @@ class EvidenciaModel:
         conn = connectionBD_invilara()
         cur = conn.cursor(dictionary=True)
         try:
-<<<<<<< HEAD
-            conn = connectionBD_invilara()
-            cur = conn.cursor(dictionary=True)
-=======
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
             cur.execute("SELECT * FROM evidencia WHERE id_evidencia = %s AND estado = 1", (id_evidencia,))
             return cur.fetchone()
         finally:
@@ -276,11 +227,6 @@ class EvidenciaModel:
         conn = connectionBD_invilara()
         cur = conn.cursor(dictionary=True)
         try:
-<<<<<<< HEAD
-            conn = connectionBD_invilara()
-            cur = conn.cursor(dictionary=True)
-=======
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
             cur.execute("SELECT * FROM evidencia WHERE estado = 1 ORDER BY fecha_registro DESC")
             return cur.fetchall()
         finally:
@@ -291,13 +237,7 @@ class EvidenciaModel:
         conn = connectionBD_invilara()
         cur = conn.cursor()
         try:
-<<<<<<< HEAD
-            conn = connectionBD_invilara()
-            cur = conn.cursor()
             cur.execute("SELECT id_evidencia FROM evidencia WHERE id_evidencia = %s AND estado = 1", (id_evidencia,))
-=======
-            cur.execute("SELECT 1 FROM evidencia WHERE id_evidencia = %s AND estado = 1", (id_evidencia,))
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
             return cur.fetchone() is not None
         finally:
             cur.close()
@@ -311,27 +251,14 @@ class EvidenciaModel:
         if len(files) != len(etapas):
             raise ValueError(f"Inconsistencia: {len(files)} imagenes vs {len(etapas)} etapas")
         if not (self.MIN_IMAGENES <= len(files) <= self.MAX_IMAGENES):
-<<<<<<< HEAD
             raise ValueError(f"Debe subir entre {self.MIN_IMAGENES} y {self.MAX_IMAGENES} fotos.")
-        self.__archivos = list(files)
-        self.__etapas = self.__extraer_etapas(form_data, len(files))
-=======
-            raise ValueError(f"Debe subir entre {self.MIN_IMAGENES} y {self.MAX_IMAGENES} imagenes")
         self.__validar_etapas_regex(etapas)
         self.__archivos = files
         self.__etapas = etapas
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
         return self.__guardar_evidencias_db()
 
     def actualizar_evidencia(self, id_evidencia, files, etapas):
         if not self.__validar_evidencia_activa_db(id_evidencia):
-<<<<<<< HEAD
-            raise ValueError("No existe.")
-        if not files:
-            raise ValueError("Debe seleccionar una foto.")
-        self.__archivos = list(files)
-        self.__etapas = self.__extraer_etapas(form_data, len(files))
-=======
             raise ValueError("La evidencia no existe")
         if not files or len(files) == 0:
             raise ValueError("Debe seleccionar una imagen para modificar")
@@ -344,7 +271,6 @@ class EvidenciaModel:
         self.__validar_etapas_regex(etapas)
         self.__archivos = files
         self.__etapas = etapas
->>>>>>> 2403694eeee3cf3342e685fba13279be51fc44ac
         return self.__actualizar_evidencias_db(id_evidencia)
 
     def eliminar_evidencia(self, id_evidencia):
