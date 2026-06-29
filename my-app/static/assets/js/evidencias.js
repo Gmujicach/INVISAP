@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!s.value) allSelected = false;
             });
             
-            if (allSelected) {
+            if (allSelected && allSelects.length > 0) {
                 btnSubmit.disabled = false;
                 if (dropZone) dropZone.style.borderColor = '#08b324';
             } else {
@@ -207,11 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
         selectedFiles.forEach((file, index) => {
             const select = document.querySelector(`select[data-index="${index}"]`);
             formData.append('fotos', file);
-            if (select && select.value) {
-                formData.append('etapas[]', select.value);
-            } else {
-                formData.append('etapas[]', '');
-            }
+            formData.append('etapas[]', select && select.value ? select.value : 'antes');
         });
         return formData;
     }
@@ -221,19 +217,26 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
         if (btnSubmit.disabled) return;
         
+        const textoOriginal = btnSubmit.innerHTML;
+        
         if (selectedFiles.length < MIN_IMAGENES || selectedFiles.length > MAX_IMAGENES) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = textoOriginal;
             return mostrarError(`Debe subir entre ${MIN_IMAGENES} y ${MAX_IMAGENES} imágenes.`);
         }
-        if (!validarEtapas()) return mostrarError('Seleccione la etapa para cada imagen seleccionada');
+        if (!validarEtapas()) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = textoOriginal;
+            return mostrarError('Seleccione la etapa para cada imagen seleccionada');
+        }
         
         const formData = generarFormDataLimpio();
         
         btnSubmit.disabled = true;
-        const textoOriginal = btnSubmit.innerHTML;
         btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
         
         try {
-            const response = await fetch('/api/evidencias/subir', { method: 'POST', body: formData });
+            const response = await fetch('/api/evidencias/subir', { method: 'POST', body: formData, credentials: 'include' });
             const result = await response.json();
             if (result.status === 'success') {
                 mostrarExito(result.message);
@@ -253,19 +256,27 @@ document.addEventListener('DOMContentLoaded', function () {
     window.actualizarEvidenciasFetch = async function(event) {
         event.preventDefault();
         if (btnSubmit.disabled) return;
+        const textoOriginal = btnSubmit.innerHTML;
         const idEvidencia = document.getElementById('idEvidencia').value;
         const existeResp = await fetch(`/api/evidencias/validar/${idEvidencia}`);
         const existeData = await existeResp.json();
         
-        if (!existeData.existe) return mostrarError('Evidencia no válida');
-        if (!validarEtapas()) return mostrarError('Seleccione la etapa para la imagen');
+        if (!existeData.existe) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = textoOriginal;
+            return mostrarError('Evidencia no válida');
+        }
+        if (!validarEtapas()) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = textoOriginal;
+            return mostrarError('Seleccione la etapa para la imagen');
+        }
         const formData = generarFormDataLimpio();
         
         btnSubmit.disabled = true;
-        const textoOriginal = btnSubmit.innerHTML;
         btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Procesando...';
         try {
-            const response = await fetch(`/api/evidencias/actualizar/${idEvidencia}`, { method: 'POST', body: formData });
+            const response = await fetch(`/api/evidencias/actualizar/${idEvidencia}`, { method: 'POST', body: formData, credentials: 'include' });
             const result = await response.json();
             if (result.status === 'success') {
                 mostrarExito(result.message);

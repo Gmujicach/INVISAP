@@ -51,11 +51,6 @@ def api_subir_evidencias():
         files = request.files.getlist('fotos')
         etapas = request.form.getlist('etapas[]')
         
-        if not files or len(files) == 0:
-            return jsonify({'status': 'error', 'message': 'No se recibieron archivos'}), 400
-        if not etapas or len(etapas) == 0:
-            return jsonify({'status': 'error', 'message': 'No se recibieron etapas'}), 400
-            
         modelo = EvidenciaModel()
         ids_insertados = modelo.registrar_evidencias(files, etapas)
         
@@ -79,11 +74,6 @@ def api_actualizar_evidencia(id_evidencia):
         files = request.files.getlist('fotos')
         etapas = request.form.getlist('etapas[]')
         
-        if not files or len(files) == 0:
-            return jsonify({'status': 'error', 'message': 'Debe seleccionar una imagen nueva'}), 400
-        if not etapas or len(etapas) == 0:
-            return jsonify({'status': 'error', 'message': 'Debe seleccionar una etapa'}), 400
-            
         modelo = EvidenciaModel()
         exito = modelo.actualizar_evidencia(id_evidencia, files, etapas)
         

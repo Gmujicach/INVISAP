@@ -12,7 +12,7 @@
         <h4 class="fw-bold">
             <span class="text-muted fw-light">Gestion /</span> Evidencias
         </h4>
-        <a href="{{ url_for('evidencia_bp.nuevo') }}" class="btn btn-primary">
+        <a href="{{ url_for('evidencia_bp.show_registrar_evidencia') }}" class="btn btn-primary">
             Nueva Evidencia
         </a>
     </div>
@@ -64,11 +64,11 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            <a href="{{ url_for('evidencia_bp.editar', id_evidencia=evidencia.id_evidencia) }}" 
+                            <a href="{{ url_for('evidencia_bp.show_modificar_evidencia', id_evidencia=evidencia.id_evidencia) }}" 
                                class="btn-action btn-edit">
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
-                            <button onclick="eliminarEvidencia({{ evidencia.id_evidencia }})" 
+                            <button onclick="eliminarEvidenciaJS({{ evidencia.id_evidencia }})" 
                                     class="btn-action btn-delete">
                                 <i class="bi bi-trash-fill"></i>
                             </button>
@@ -83,7 +83,7 @@
                 <div class="icon">📸</div>
                 <h5>No hay evidencias registradas</h5>
                 <p class="text-muted">Comienza registrando tu primera evidencia</p>
-                <a href="{{ url_for('evidencia_bp.nuevo') }}" class="btn btn-primary mt-3">
+                <a href="{{ url_for('evidencia_bp.show_registrar_evidencia') }}" class="btn btn-primary mt-3">
                     Registrar Primera Evidencia
                 </a>
             </div>

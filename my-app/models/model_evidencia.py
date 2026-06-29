@@ -32,6 +32,36 @@ class EvidenciaModel:
         self.__upload_folder = os.path.join(os.path.dirname(__file__), '..', 'static', 'uploads', 'evidencias')
         if not os.path.exists(self.__upload_folder):
             os.makedirs(self.__upload_folder, exist_ok=True)
+        self.__asegurar_tabla_evidencia()
+
+    def __asegurar_tabla_evidencia(self):
+        """Asegura que la tabla evidencia tenga las columnas necesarias."""
+        try:
+            conn = connectionBD_invilara()
+            if conn:
+                cur = conn.cursor()
+                try:
+                    # Verificar y agregar columna estado
+                    cur.execute("SHOW COLUMNS FROM evidencia LIKE 'estado'")
+                    if not cur.fetchone():
+                        cur.execute("ALTER TABLE evidencia ADD COLUMN estado TINYINT NOT NULL DEFAULT 1")
+                        conn.commit()
+                        print("[DB] Columna 'estado' agregada a tabla evidencia")
+                    
+                    # Verificar y agregar columna etapa
+                    cur.execute("SHOW COLUMNS FROM evidencia LIKE 'etapa'")
+                    if not cur.fetchone():
+                        cur.execute("ALTER TABLE evidencia ADD COLUMN etapa ENUM('antes','durante','despues') NOT NULL DEFAULT 'antes' AFTER `estado`")
+                        conn.commit()
+                        print("[DB] Columna 'etapa' agregada a tabla evidencia")
+                        
+                except Exception as e:
+                    print(f"[DB] Error al verificar tabla: {e}")
+                finally:
+                    cur.close()
+                    conn.close()
+        except Exception as e:
+            print(f"[DB] No se pudo asegurar tabla: {e}")
 
     def get_id_evidencia(self):
         return self.__id_evidencia
@@ -137,7 +167,7 @@ class EvidenciaModel:
         try:
             conn = connectionBD_invilara()
             if not conn:
-                raise Exception("Error de conexión a la base de datos.")
+                raise Exception("Error de conexión a la base de datos. Verifique que MySQL esté activo y la base 'invilara' exista.")
             cur = conn.cursor()
 
             sql = "INSERT INTO evidencia (fotos, url_archivos, fecha_registro, estado, etapa) VALUES (%s, %s, %s, %s, %s)"
@@ -171,6 +201,8 @@ class EvidenciaModel:
         cur = None
         try:
             conn = connectionBD_invilara()
+            if not conn:
+                raise Exception("Error de conexión a la base de datos.")
             cur = conn.cursor(dictionary=True)
 
             cur.execute("SELECT url_archivos FROM evidencia WHERE id_evidencia = %s AND estado = 1", (id_evidencia,))
@@ -204,6 +236,8 @@ class EvidenciaModel:
 
     def __eliminar_logico_db(self, id_evidencia):
         conn = connectionBD_invilara()
+        if not conn:
+            raise Exception("Error de conexión a la base de datos.")
         cur = conn.cursor()
         try:
             cur.execute("UPDATE evidencia SET estado = 0 WHERE id_evidencia = %s", (id_evidencia,))
@@ -215,6 +249,8 @@ class EvidenciaModel:
 
     def __obtener_evidencia_por_id_db(self, id_evidencia):
         conn = connectionBD_invilara()
+        if not conn:
+            raise Exception("Error de conexión a la base de datos.")
         cur = conn.cursor(dictionary=True)
         try:
             cur.execute("SELECT * FROM evidencia WHERE id_evidencia = %s AND estado = 1", (id_evidencia,))
@@ -225,6 +261,8 @@ class EvidenciaModel:
 
     def __obtener_todas_evidencias_db(self):
         conn = connectionBD_invilara()
+        if not conn:
+            raise Exception("Error de conexión a la base de datos.")
         cur = conn.cursor(dictionary=True)
         try:
             cur.execute("SELECT * FROM evidencia WHERE estado = 1 ORDER BY fecha_registro DESC")
@@ -235,6 +273,8 @@ class EvidenciaModel:
 
     def __validar_evidencia_activa_db(self, id_evidencia):
         conn = connectionBD_invilara()
+        if not conn:
+            raise Exception("Error de conexión a la base de datos.")
         cur = conn.cursor()
         try:
             cur.execute("SELECT id_evidencia FROM evidencia WHERE id_evidencia = %s AND estado = 1", (id_evidencia,))

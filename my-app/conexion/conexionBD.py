@@ -2,18 +2,37 @@ import os
 import mysql.connector
 from mysql.connector import Error
 
+def _load_env():
+    """Simple .env loader without external dependencies."""
+    env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+    if os.path.exists(env_path):
+        with open(env_path, 'r') as f:
+            for line in f:
+                line = line.strip()
+                if '=' in line and not line.startswith('#'):
+                    key, value = line.split('=', 1)
+                    os.environ.setdefault(key.strip(), value.strip())
+
+_load_env()
+
+def _get_env(key, default=''):
+    """Obtener variable de entorno o valor por defecto."""
+    val = os.getenv(key, '')
+    return val if val else default
 
 def connectionBD():
     """Return a new MySQL connection. Reads configuration from env vars with sane defaults."""
     db_config = {
-        'host': os.getenv('DB_HOST', 'localhost'),
-        'user': os.getenv('DB_USER', 'root'),
-        'password': os.getenv('DB_PASSWORD', ''),
-        'database': os.getenv('DB_NAME', 'invilara'),
+        'host': _get_env('DB_HOST', 'localhost'),
+        'user': _get_env('DB_USER', 'root'),
+        'password': _get_env('DB_PASSWORD', '1234'),
+        'database': _get_env('DB_NAME', 'invilara'),
         'charset': 'utf8mb4',
         'use_unicode': True,
-        'auth_plugin': os.getenv('DB_AUTH_PLUGIN', 'mysql_native_password')
+        'auth_plugin': _get_env('DB_AUTH_PLUGIN', 'mysql_native_password')
     }
+    
+    print(f"[DEBUG] Conectando a MySQL: host={db_config['host']}, user={db_config['user']}, db={db_config['database']}")
 
     try:
         connection = mysql.connector.connect(**db_config)
@@ -40,7 +59,7 @@ def connectionBD_seguridad():
     db_config = {
         'host': os.getenv('DB_HOST', 'localhost'),
         'user': os.getenv('DB_USER', 'root'),
-        'password': os.getenv('DB_PASSWORD', ''),
+        'password': os.getenv('DB_PASSWORD', '1234'),
         'database': os.getenv('DB_NAME_SEGURIDAD', 'invilara_seguridad'),
         'charset': 'utf8mb4',
         'use_unicode': True,
