@@ -604,45 +604,40 @@ html {
    REFACTORIZACIÓN: UNIFICACIÓN DE COLOR CORPORATIVO Y LEGIBILIDAD (MODO CLARO)
    ========================================================================== */
 
-/* 1. Eliminar el degradado y forzar el verde sólido del formulario en la tabla */
-.table-informe-avance,
-.table-informe-avance thead,
-.table-informe-avance thead tr,
-.table-informe-avance tbody tr {
-    background: var(--invilara-verde) !important;
-    background-color: var(--invilara-verde) !important;
-    background-image: none !important; /* Aplasta por completo cualquier degradado anterior */
+/* Legibilidad de la tabla y contraste correcto */
+.table-informe-avance thead th {
+    background: linear-gradient(135deg, var(--invilara-verde) 0%, var(--invilara-verde-oscuro) 100%);
+    color: var(--invilara-blanco) !important;
     border-color: var(--invilara-verde-oscuro) !important;
 }
 
-/* 2. Forzar texto, enlaces, iconos y clases secundarias a blanco puro (#ffffff) */
-.table-informe-avance th,
-.table-informe-avance td,
-.table-informe-avance td a,
-.table-informe-avance td i,
-.table-informe-avance td span,
-.table-informe-avance td .text-muted,
-.table-informe-avance td .text-secondary {
-    color: #ffffff !important;
+.table-informe-avance tbody tr {
+    background-color: var(--invilara-blanco) !important;
+    color: var(--invilara-negro) !important;
 }
 
-/* 3. Optimización del Hover: Feedback visual usando el verde oscuro de la paleta */
+.table-informe-avance tbody td {
+    color: var(--invilara-negro) !important;
+}
+
+.table-informe-avance tbody td .text-muted,
+.table-informe-avance tbody td .text-secondary {
+    color: var(--invilara-gris) !important;
+}
+
 .table-informe-avance tbody tr:hover {
-    background-color: var(--invilara-verde-oscuro) !important;
-    background-image: none !important;
+    background-color: #f4fbf6 !important;
     cursor: pointer;
 }
 
-/* 4. Ajuste de contraste para Badges de estado dentro de la tabla */
 .table-informe-avance td .badge {
-    color: #ffffff !important; /* Texto blanco para badges generales */
+    color: var(--invilara-blanco) !important;
 }
 
 .table-informe-avance td .badge.bg-warning {
-    color: var(--invilara-negro) !important; /* El badge amarillo requiere texto oscuro por norma WCAG */
+    color: var(--invilara-negro) !important;
 }
 
-/* 5. Tarjetas de Estadísticas (Aprobados, Ejecución, Culminados) Textos en blanco */
 .card-aprobados,
 .card-aprobados h6,
 .card-aprobados h3,
@@ -653,6 +648,66 @@ html {
 .card-culminados h6,
 .card-culminados h3 {
     color: #ffffff !important;
+}
+
+.modal-detail-card {
+    border: 1px solid rgba(45, 106, 79, 0.16);
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff 0%, #f7fcf9 100%);
+}
+
+/* ============================================
+   CORRECCIÓN VISIBILIDAD TABLA (Bootstrap override)
+   ============================================ */
+.table-informe-avance.table-striped tbody tr {
+    color: #212529 !important;
+}
+.table-informe-avance.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #ffffff !important;
+}
+.table-informe-avance.table-striped tbody tr:nth-of-type(even) {
+    background-color: #f8f9fa !important;
+}
+.table-informe-avance.table-striped tbody tr:hover {
+    background-color: #f4fbf6 !important;
+    color: #212529 !important;
+}
+.table-informe-avance tbody td {
+    background-color: transparent !important;
+    color: #212529 !important;
+}
+.table-informe-avance tbody td .text-muted,
+.table-informe-avance tbody td .text-secondary {
+    color: #6c757d !important;
+}
+.table-informe-avance .btn {
+    color: inherit;
+}
+
+/* Modo oscuro - tabla */
+body.dark-mode .table-informe-avance.table-striped tbody tr {
+    color: #cfcde9 !important;
+}
+body.dark-mode .table-informe-avance.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #2b2c40 !important;
+}
+body.dark-mode .table-informe-avance.table-striped tbody tr:nth-of-type(even) {
+    background-color: #323248 !important;
+}
+body.dark-mode .table-informe-avance.table-striped tbody tr:hover {
+    background-color: rgba(82, 183, 136, 0.15) !important;
+    color: #cfcde9 !important;
+}
+body.dark-mode .table-informe-avance tbody td {
+    background-color: transparent !important;
+    color: #cfcde9 !important;
+}
+body.dark-mode .table-informe-avance tbody td .text-muted,
+body.dark-mode .table-informe-avance tbody td .text-secondary {
+    color: #8c8ea3 !important;
+}
+body.dark-mode .table-informe-avance .btn {
+    color: #cfcde9 !important;
 }
 
 /* ========== INTEGRACIÓN DEL MODO OSCURO (INVISAP) ========== */

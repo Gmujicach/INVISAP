@@ -34,6 +34,7 @@ class InformeAvanceModel:
         self.__tipo_informe = None
         self.__observaciones = None
         self.__avance_id = None
+        self.__porcentaje_avance = 0
         self.__evidencias_antes = []  # Lista de IDs
         self.__evidencias_durante = []
         self.__evidencias_despues = []
@@ -124,6 +125,16 @@ class InformeAvanceModel:
             self.__avance_id = None
         else:
             self.__avance_id = str(valor)
+
+    def set_porcentaje_avance(self, valor):
+        try:
+            porcentaje = int(valor or 0)
+        except (TypeError, ValueError):
+            porcentaje = 0
+        self.__porcentaje_avance = max(0, min(100, porcentaje))
+
+    def get_porcentaje_avance(self):
+        return self.__porcentaje_avance
     
     def get_avance_id(self):
         return self.__avance_id
@@ -252,6 +263,13 @@ class InformeAvanceModel:
                 ev_despues,
                 self.__avance_id
             ))
+
+            if self.__avance_id:
+                obs = self._limpiar_texto(self.__observaciones or '', 500) or 'Sin observaciones'
+                cur.execute(
+                    "UPDATE avance SET descripcion = %s, porcentaje_avance = %s WHERE id_avance = %s",
+                    (obs, self.__porcentaje_avance, self.__avance_id)
+                )
             
             conn.commit()
             return cur.lastrowid
@@ -299,6 +317,15 @@ class InformeAvanceModel:
                 ev_despues,
                 self.__id_informe
             ))
+
+            cur.execute("SELECT avance_id_avance FROM informe_avance_obra WHERE id_informe = %s", (self.__id_informe,))
+            avance_row = cur.fetchone()
+            if avance_row and avance_row[0]:
+                obs = self._limpiar_texto(self.__observaciones or '', 500) or 'Sin observaciones'
+                cur.execute(
+                    "UPDATE avance SET descripcion = %s, porcentaje_avance = %s WHERE id_avance = %s",
+                    (obs, self.__porcentaje_avance, avance_row[0])
+                )
             
             conn.commit()
             return cur.rowcount > 0
@@ -394,9 +421,11 @@ class InformeAvanceModel:
             cur = conn.cursor(dictionary=True)
             
             sql = """
-                SELECT i.*, a.porcentaje_avance, a.gerente, a.descripcion as avance_descripcion
+                SELECT i.*, a.porcentaje_avance, a.gerente, a.descripcion as observaciones,
+                       e.nombre_empleado as gerente_nombre
                 FROM informe_avance_obra i
                 LEFT JOIN avance a ON i.avance_id_avance = a.id_avance
+                LEFT JOIN empleados e ON a.gerente = e.id_empleados
                 WHERE i.id_informe = %s
             """
             
@@ -501,6 +530,7 @@ class InformeAvanceModel:
             self.set_tipo_informe(data.get('tipo_informe'))
             self.set_observaciones(data.get('observaciones', ''))
             self.set_fecha(data.get('fecha'))
+            self.set_porcentaje_avance(data.get('porcentaje_avance', 0))
             
             avance_id = data.get('avance_id_avance')
             gerente_id = data.get('gerente_responsable_id')
@@ -543,6 +573,8 @@ class InformeAvanceModel:
             self.set_poblacion_beneficiada(data.get('poblacion_beneficiada'))
             self.set_tipo_informe(data.get('tipo_informe'))
             self.set_observaciones(data.get('observaciones', ''))
+            self.set_avance_id(data.get('avance_id_avance'))
+            self.set_porcentaje_avance(data.get('porcentaje_avance', 0))
             
             return self.__actualizar_informe_db()
             

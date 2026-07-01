@@ -233,11 +233,14 @@
             </td>
             <td class="text-center">
               <div class="btn-group" role="group">
-                <a href="/informe-detalle/{{ informe.id_informe }}" 
-                   class="btn btn-outline-info btn-sm" 
+                <button type="button"
+                   class="btn btn-outline-info btn-sm btn-ver-informe"
+                   data-id="{{ informe.id_informe }}"
+                   data-bs-toggle="modal"
+                   data-bs-target="#modalDetalleInforme"
                    title="Ver detalle completo">
                   <i class="bx bx-show"></i>
-                </a>
+                </button>
                 <a href="/editar-informe/{{ informe.id_informe }}" 
                    class="btn btn-outline-warning btn-sm btn-editar-informe" 
                    data-id="{{ informe.id_informe }}"
@@ -594,6 +597,26 @@
   </div>
 </div>
 
+<!-- ========== MODAL: DETALLE DEL INFORME ========== -->
+<div class="modal fade" id="modalDetalleInforme" tabindex="-1" aria-labelledby="modalDetalleInformeLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-invilara-verde text-white">
+        <h5 class="modal-title" id="modalDetalleInformeLabel">
+          <i class="bx bx-file me-2"></i>Detalle del Informe de Avance
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="detalleInformeBody">
+        <div class="text-center py-4">
+          <div class="spinner-border text-success" role="status"></div>
+          <p class="text-muted mt-2">Cargando información...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %} 
 
 {% block customJS %}
@@ -641,7 +664,7 @@ async function cargarInspectores() {
     inspectores.forEach(inspector => {
       const card = `
         <div class="col-md-6 mb-3">
-          <div class="card inspector-card h-100" onclick="seleccionarInspector(${inspector.id_empleados}, '${inspector.nombre_empleado}', '${inspector.gerencia_asignada || 'Sin asignar'}')">
+          <div class="card inspector-card h-100" onclick="seleccionarInspector(${inspector.id_empleados}, '${inspector.nombre_empleado}', '${inspector.gerencia_asignada || 'Sin asignar'}', event)">
             <div class="card-body">
               <div class="d-flex align-items-center">
                 <div class="avatar avatar-lg bg-label-primary rounded-circle me-3">
@@ -678,20 +701,24 @@ async function cargarInspectores() {
   }
 }
 
-function seleccionarInspector(id, nombre, gerencia) {
+function seleccionarInspector(id, nombre, gerencia, event) {
   document.getElementById('gerente_responsable_id').value = id;
   document.getElementById('inspector_nombre_display').value = `${nombre} - ${gerencia}`;
   
   document.querySelectorAll('.inspector-card').forEach(card => {
     card.classList.remove('selected');
-    card.querySelector('.check-icon').classList.add('d-none');
+    const icon = card.querySelector('.check-icon');
+    if (icon) icon.classList.add('d-none');
   });
   
-  event.currentTarget.classList.add('selected');
-  event.currentTarget.querySelector('.check-icon').classList.remove('d-none');
+  if (event && event.currentTarget) {
+    event.currentTarget.classList.add('selected');
+    const icon = event.currentTarget.querySelector('.check-icon');
+    if (icon) icon.classList.remove('d-none');
+  }
   
   const modal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionarInspector'));
-  modal.hide();
+  if (modal) modal.hide();
 }
 
 // ============================================
@@ -735,7 +762,7 @@ async function cargarEvidencias(etapa) {
         <div class="col-md-3 mb-3">
           <div class="card modal-evidencia-item ${isSelected ? 'selected' : ''}" 
                data-id="${evidencia.id_evidencia}"
-               onclick="toggleEvidencia('${etapa}', ${evidencia.id_evidencia}, '${evidencia.url_archivos}')">
+               onclick="toggleEvidencia('${etapa}', ${evidencia.id_evidencia}, '${evidencia.url_archivos}', event)">
             <div class="position-relative">
               <span class="badge badge-etapa bg-${etapa === 'antes' ? 'success' : etapa === 'durante' ? 'warning' : 'info'}">
                 ${etapa.toUpperCase()}
@@ -771,14 +798,17 @@ async function cargarEvidencias(etapa) {
   }
 }
 
-function toggleEvidencia(etapa, id, url) {
+function toggleEvidencia(etapa, id, url, event) {
   const index = evidenciasSeleccionadas[etapa].indexOf(id);
-  const card = event.currentTarget;
+  const card = event && event.currentTarget ? event.currentTarget : null;
   
   if (index > -1) {
     evidenciasSeleccionadas[etapa].splice(index, 1);
-    card.classList.remove('selected');
-    card.querySelector('.check-icon').classList.add('d-none');
+    if (card) {
+      card.classList.remove('selected');
+      const icon = card.querySelector('.check-icon');
+      if (icon) icon.classList.add('d-none');
+    }
   } else {
     if (evidenciasSeleccionadas[etapa].length >= 5) {
       alert(`Solo puede seleccionar un máximo de 5 evidencias para la etapa "${etapa.toUpperCase()}".`);
@@ -786,8 +816,11 @@ function toggleEvidencia(etapa, id, url) {
     }
     
     evidenciasSeleccionadas[etapa].push(id);
-    card.classList.add('selected');
-    card.querySelector('.check-icon').classList.remove('d-none');
+    if (card) {
+      card.classList.add('selected');
+      const icon = card.querySelector('.check-icon');
+      if (icon) icon.classList.remove('d-none');
+    }
   }
   
   document.getElementById(`count_${etapa}`).textContent = evidenciasSeleccionadas[etapa].length;

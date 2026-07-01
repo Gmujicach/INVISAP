@@ -178,10 +178,29 @@ def ver_detalle_informe(id_informe):
         return redirect(url_for('informe_avance_bp.listar_informes'))
 
 
+@informe_avance_bp.route('/api/informes/detalle/<int:id_informe>', methods=['GET'])
+def api_detalle_informe(id_informe):
+    """Devuelve el detalle completo de un informe como JSON para el modal."""
+    if 'conectado' not in session:
+        return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
+
+    try:
+        modelo = InformeAvanceModel()
+        informe = modelo.obtener_informe_por_id(id_informe)
+
+        if not informe:
+            return jsonify({'status': 'error', 'message': 'Informe no encontrado'}), 404
+
+        return jsonify({'status': 'success', 'data': informe})
+    except Exception as e:
+        print(f"Error api_detalle_informe: {e}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+
 @informe_avance_bp.route('/editar-informe/<int:id_informe>', methods=['GET'])
 def editar_informe(id_informe):
     """
-    Muestra formulario de edición de informe
+    Muestra formulario de edición de informe en una pantalla dedicada.
     """
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
@@ -196,14 +215,13 @@ def editar_informe(id_informe):
             flash('El informe no existe.', 'error')
             return redirect(url_for('informe_avance_bp.listar_informes'))
         
-        # Registrar en bitácora
         BitacoraService.registrar_accion(
             session, 'Informes de Avance', 'VER',
             f'Accedió a editar Informe #{id_informe}'
         )
         
         return render_template(
-            'inf_avance_obra/editar_informe.html',
+            'inf_avance_obra/Inf_avance_obra_modificar.html',
             informe=informe,
             gerentes=gerentes
         )

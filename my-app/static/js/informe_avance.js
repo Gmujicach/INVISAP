@@ -12,12 +12,13 @@ function inicializarModuloInformes() {
     
     // 1. Interceptar formulario de registro
     const formInforme = document.querySelector('form[action="/form-registrar-informe-avance-obra"]');
-    if (formInforme) {
+    if (formInforme && !formInforme.dataset.fetchBound) {
         // Usar Fetch en lugar de submit tradicional (Prof. Escalona - OBLIGATORIO)
         formInforme.addEventListener('submit', function(e) {
             e.preventDefault(); // Evitar recarga de página
             registrarInformeConFetch(this);
         });
+        formInforme.dataset.fetchBound = 'true';
         console.log('✓ Formulario interceptado para usar Fetch');
     }
     
@@ -68,7 +69,14 @@ function inicializarModuloInformes() {
             window.location.href = `/editar-informe/${idInforme}`;
         });
     });
-    console.log('✓ Botones de editar configurados');
+
+    // 7. Botones para ver detalle en modal
+    document.querySelectorAll('.btn-ver-informe').forEach(btn => {
+        btn.addEventListener('click', async function() {
+            await abrirModalDetalle(this.dataset.id);
+        });
+    });
+    console.log('✓ Botones de ver detalle configurados');
     
     console.log('✓✓✓ Módulo completamente inicializado');
 }
@@ -515,9 +523,9 @@ function crearFilaInforme(informe) {
         <td>${informe.gerente_nombre || 'No asignado'}</td>
         <td>${formatearFecha(informe.fecha)}</td>
         <td class="text-center">
-            <a href="/informe-detalle/${informe.id_informe}" class="btn btn-outline-info btn-sm" title="Ver detalle">
+            <button type="button" class="btn btn-outline-info btn-sm btn-ver-informe" data-id="${informe.id_informe}" data-bs-toggle="modal" data-bs-target="#modalDetalleInforme" title="Ver detalle">
                 <i class="bx bx-show"></i>
-            </a>
+            </button>
             <a href="/editar-informe/${informe.id_informe}" class="btn btn-outline-warning btn-sm" title="Editar">
                 <i class="bx bx-edit"></i>
             </a>
@@ -528,6 +536,95 @@ function crearFilaInforme(informe) {
     `;
     
     return tr;
+}
+
+// ======================
+// DETALLE EN MODAL
+// ======================
+
+async function abrirModalDetalle(idInforme) {
+    const body = document.getElementById('detalleInformeBody');
+    if (!body) return;
+
+    body.innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-success" role="status"></div>
+            <p class="text-muted mt-2">Cargando información...</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(`/api/informes/detalle/${idInforme}`);
+        const result = await response.json();
+
+        if (!response.ok || result.status !== 'success') {
+            body.innerHTML = `<div class="alert alert-danger">${result.message || 'No se pudo cargar el detalle.'}</div>`;
+            return;
+        }
+
+        const informe = result.data;
+        const evidencias = informe.evidencias || [];
+        const etapas = ['antes', 'durante', 'despues'];
+        const htmlEvidencias = etapas.map(etapa => {
+            const items = evidencias.filter(item => item.etapa === etapa);
+            if (!items.length) return '';
+            return `
+                <div class="mt-3">
+                    <h6 class="text-capitalize text-invilara-verde"><i class="bx bx-image me-1"></i>${etapa}</h6>
+                    <div class="row g-2">
+                        ${items.map(item => `
+                            <div class="col-md-4">
+                                <div class="card modal-detail-card h-100">
+                                    <img src="/${item.url_archivos}" class="card-img-top" style="height: 140px; object-fit: cover;" alt="${item.fotos}" />
+                                    <div class="card-body p-2">
+                                        <small class="fw-bold d-block">${item.fotos || 'Evidencia'}</small>
+                                        <small class="text-muted">${item.fecha_registro ? new Date(item.fecha_registro).toLocaleDateString('es-VE') : ''}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        body.innerHTML = `
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="card modal-detail-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <h5 class="mb-0 text-invilara-verde">${informe.tipo_informe || 'Sin tipo'}</h5>
+                                <span class="badge bg-success">${informe.estado || 'Sin estado'}</span>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Fecha:</strong> ${formatearFecha(informe.fecha)}</p>
+                                    <p class="mb-1"><strong>Población beneficiada:</strong> ${informe.poblacion_beneficiada || 'No especificado'}</p>
+                                    <p class="mb-1"><strong>Avance:</strong> ${informe.porcentaje_avance || 0}%</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Inspector / gerente:</strong> ${informe.gerente_nombre || 'No asignado'}</p>
+                                    <p class="mb-1"><strong>Observaciones:</strong> ${informe.observaciones || 'Sin observaciones'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card modal-detail-card">
+                        <div class="card-body">
+                            <h6 class="text-invilara-verde"><i class="bx bx-camera me-1"></i>Evidencias registradas</h6>
+                            ${htmlEvidencias || '<p class="text-muted mb-0">No hay evidencias registradas para este informe.</p>'}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Error al cargar detalle:', error);
+        body.innerHTML = '<div class="alert alert-danger">No se pudo cargar el detalle del informe.</div>';
+    }
 }
 
 // ======================
