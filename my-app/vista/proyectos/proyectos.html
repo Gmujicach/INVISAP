@@ -78,10 +78,13 @@
                 <i class="bx bx-show"></i>
               </button>
               <a href="{{ url_for('home_bp.viewEditarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
-              <a href="{{ url_for('home_bp.eliminarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}" 
-                 class="btn btn-outline-danger btn-sm" 
-                 title="Eliminar"
-                 onclick="return confirm('¿Estás seguro de que deseas eliminar este proyecto?')"><i class="bx bx-trash"></i></a>
+         <a href="#" 
+   class="btn btn-outline-danger btn-sm" 
+   title="Eliminar"
+   data-delete-url="{{ url_for('home_bp.eliminarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}"
+   onclick="confirmarEliminacion(this)">
+   <i class="bx bx-trash"></i>
+</a>
             </td>
           </tr>
           {% else %}
@@ -299,6 +302,7 @@
 
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/proyectoregister.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 // 2. Control de la carga de Solicitudes Activas vía AJAX (Fetch)

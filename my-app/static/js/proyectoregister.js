@@ -145,3 +145,23 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+function confirmarEliminacion(elemento) {
+    const url = elemento.getAttribute('data-delete-url');
+    
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "¡No podrás revertir esta acción!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+           
+            window.location.href = url;
+        }
+    });
+}
