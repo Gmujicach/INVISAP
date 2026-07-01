@@ -2,13 +2,13 @@ from models.model_proyecto import ProyectoModel
 from services.bitacora_service import BitacoraService
 from flask import request
 
-# --- Validación interna avanzada ---
+
 def _validar_input(datos, es_actualizacion=False):
    
     if not isinstance(datos, dict):
         return False
     
-    # Validar campo obligatorio (Codigo_p)
+    
     codigo = datos.get('Codigo_p')
     if not codigo or not str(codigo).strip():
         return False
@@ -54,7 +54,7 @@ def listar_proyectos_controller(session_flask):
     return proyectos, contadores
 
 def actualizar_proyecto_controller(codigo_proyecto_actual, datos, session_flask):
-    # Validación de entrada antes de proceder
+   
     if not codigo_proyecto_actual or not _validar_input(datos, es_actualizacion=True):
         return False
         
