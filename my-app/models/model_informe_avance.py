@@ -3,6 +3,7 @@ InformeAvanceModel — Modelo SOLID/POO para gestión de informes de avance de o
 Implementa encapsulamiento, validaciones Regex, borrado lógico y comunicación con evidencias.
 """
 import re
+import uuid
 from datetime import datetime
 from conexion.conexionBD import connectionBD_invilara
 from PIL import Image
@@ -16,7 +17,7 @@ class InformeAvanceModel:
     _RE_PORCENTAJE = re.compile(r'^([0-9]|[1-9][0-9]|100)$')  # 0-100
     _RE_TEXTO_CORTO = re.compile(r'^[\w\s\.,\-áéíóúÁÉÍÓÚñÑ]{3,100}$', re.UNICODE)
     _RE_OBSERVACIONES = re.compile(r'^[\w\s\.,\!\?\-áéíóúÁÉÍÓÚñÑ]{0,500}$', re.UNICODE)
-    _RE_POBLACION = re.compile(r'^[\w\s\.,\-áéíóúÁÉÍÓÚñÑ]{3,200}$', re.UNICODE)
+    _RE_POBLACION = re.compile(r'^[\w\s\.,\-\(\)/áéíóúÁÉÍÓÚñÑ]{3,200}$', re.UNICODE)
     
     # Catálogos válidos (TODO: migrar a tablas catálogo según Prof. Cadenas)
     ESTADOS_VALIDOS = {'Aprobado', 'En Ejecucion', 'Culminado', 'Paralizado'}
@@ -77,9 +78,9 @@ class InformeAvanceModel:
     
     def set_poblacion_beneficiada(self, valor):
         """Validación con Regex"""
-        valor = self._limpiar_texto(valor, 200)
-        if not self._RE_POBLACION.match(valor):
-            raise ValueError("Población beneficiada inválida. Debe tener entre 3 y 200 caracteres.")
+        valor = self._limpiar_texto(valor, 45)
+        if not valor or len(valor) < 3:
+            raise ValueError("Población beneficiada inválida. Debe tener al menos 3 caracteres.")
         self.__poblacion_beneficiada = valor
     
     def get_tipo_informe(self):
@@ -118,7 +119,14 @@ class InformeAvanceModel:
             raise ValueError(f"Máximo {self.MAX_IMAGENES_POR_ETAPA} imágenes permitidas en 'después'")
         self.__evidencias_despues = lista_ids
 
-    # ========== MÉTODOS AUXILIARES ==========
+    def set_avance_id(self, valor):
+        if valor is None:
+            self.__avance_id = None
+        else:
+            self.__avance_id = str(valor)
+    
+    def get_avance_id(self):
+        return self.__avance_id
     
     @staticmethod
     def _limpiar_texto(texto, max_len=255):
@@ -127,6 +135,86 @@ class InformeAvanceModel:
             texto = str(texto or '')
         return re.sub(r'[<>\'";\\]', '', texto).strip()[:max_len]
 
+    def __crear_avance_db(self, gerente_id, porcentaje, observaciones):
+        """Crea un registro en tabla avance resolviendo dependencias automáticamente"""
+        conn = None
+        cur = None
+        try:
+            conn = connectionBD_invilara()
+            if not conn:
+                raise ValueError("No se pudo conectar a BD para crear avance")
+            cur = conn.cursor()
+
+            id_avance = str(uuid.uuid4().hex[:12])
+
+            descripcion = (observaciones or 'Sin descripción')[:45]
+
+            try:
+                porcentaje = int(porcentaje) if porcentaje else 0
+            except (ValueError, TypeError):
+                porcentaje = 0
+            porcentaje = max(0, min(100, porcentaje))
+
+            cur.execute("SELECT MAX(id_semaforo) FROM semaforo")
+            max_sem = cur.fetchone()[0]
+            id_semaforo = (max_sem or 0) + 1
+            cur.execute(
+                "INSERT IGNORE INTO semaforo (id_semaforo, estado, color, descripcion) VALUES (%s, %s, %s, %s)",
+                (id_semaforo, 'Activo', 'VERDE', 'Semáforo generado automáticamente')
+            )
+
+            cur.execute(
+                "SELECT id_obra FROM obra WHERE semaforo_id_semaforo=%s AND contratacion_id_contratacion=%s AND gestionar_proyectos_codigo_proyecto=%s",
+                (id_semaforo, 1, 'FRE-001')
+            )
+            row = cur.fetchone()
+            if row:
+                id_obra = row[0]
+            else:
+                cur.execute("SELECT MAX(id_obra) FROM obra")
+                max_obra = cur.fetchone()[0]
+                id_obra = (max_obra or 0) + 1
+                cur.execute(
+                    """INSERT INTO obra (id_obra, titulo_obra, ubicacion_obra, periodo_ejecucion, fecha_inicio, fecha_fin,
+                                       mediciones_obra, valuaciones, modificaciones_contrato,
+                                       certificaciones_obras_ejecutadas, numero_contrato,
+                                       porcentaje_avance_obra, semaforo_id_semaforo,
+                                       contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto)
+                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                    (id_obra, 'Obra Generada', 'Sin ubicacion', 1, datetime.now().date(), datetime.now().date(),
+                     'N/A', 'N/A', 'N/A', 0, 'N/A', porcentaje, id_semaforo, 1, 'FRE-001')
+                )
+
+            sql = """
+                INSERT INTO avance (id_avance, descripcion, porcentaje_avance, gerente, fecha_avance,
+                                    obra_id_obra, obra_semaforo_id_semaforo,
+                                    obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            params = (
+                id_avance,
+                descripcion,
+                porcentaje,
+                str(gerente_id),
+                datetime.now().date(),
+                id_obra,
+                id_semaforo,
+                1,
+                'FRE-001'
+            )
+            cur.execute(sql, params)
+            conn.commit()
+            return str(id_avance)
+        except Exception as e:
+            if conn:
+                conn.rollback()
+            raise ValueError(f"Error al crear avance: {str(e)}")
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+    
     # ========== MÉTODOS PRIVADOS DE BASE DE DATOS ==========
     
     def __registrar_informe_db(self):
@@ -172,7 +260,7 @@ class InformeAvanceModel:
             print(f"Error __registrar_informe_db: {e}")
             if conn:
                 conn.rollback()
-            return None
+            raise ValueError(f"Error en base de datos al registrar informe: {str(e)}")
         finally:
             if cur:
                 cur.close()
@@ -414,7 +502,18 @@ class InformeAvanceModel:
             self.set_observaciones(data.get('observaciones', ''))
             self.set_fecha(data.get('fecha'))
             
-            # Evidencias (opcional)
+            avance_id = data.get('avance_id_avance')
+            gerente_id = data.get('gerente_responsable_id')
+            if not avance_id:
+                avance_id = self.__crear_avance_db(
+                    gerente_id or 1,
+                    data.get('porcentaje_avance', 0),
+                    data.get('observaciones', '') or 'Sin descripción'
+                )
+            self.set_avance_id(avance_id)
+            
+            self.__avance_id = avance_id
+            
             if data.get('evidencias_antes'):
                 self.set_evidencias_antes(data.get('evidencias_antes').split(','))
             if data.get('evidencias_durante'):
@@ -429,7 +528,7 @@ class InformeAvanceModel:
             raise ve
         except Exception as e:
             print(f"Error inesperado al registrar informe: {e}")
-            return None
+            raise ValueError(f"Error interno al registrar: {str(e)}")
     
     def actualizar_informe(self, data):
         """Método PÚBLICO para actualizar informe"""

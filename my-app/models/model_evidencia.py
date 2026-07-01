@@ -7,6 +7,7 @@ import os
 import re
 import uuid
 import io
+import unicodedata
 from datetime import datetime
 from PIL import Image
 from conexion.conexionBD import connectionBD_invilara
@@ -29,7 +30,7 @@ class EvidenciaModel:
         self.__archivos = []
         self.__etapas = []
         self.__estado = 1
-        self.__upload_folder = os.path.join(os.path.dirname(__file__), '..', 'static', 'uploads', 'evidencias')
+        self.__upload_folder = os.path.join(os.path.dirname(__file__), '../', 'static', 'uploads', 'evidencias')
         if not os.path.exists(self.__upload_folder):
             os.makedirs(self.__upload_folder, exist_ok=True)
         self.__asegurar_tabla_evidencia()
@@ -127,8 +128,17 @@ class EvidenciaModel:
         filename = file.filename
         base_name = os.path.splitext(filename)[0]
         
-        # Truncar nombre base para que la URL completa no exceda 90 chars
         base_name = base_name[:50]
+        if not base_name:
+            base_name = 'img'
+        
+        nfkd_form = unicodedata.normalize('NFD', base_name)
+        base_name = ''.join(c for c in nfkd_form if not unicodedata.combining(c))
+        base_name = re.sub(r'[^a-zA-Z0-9_-]', '_', base_name)
+        base_name = re.sub(r'_+', '_', base_name).strip('_')
+        if not base_name:
+            base_name = 'img'
+        
         unique_name = f"{uuid.uuid4().hex[:12]}_{base_name}.jpg"
         path = os.path.join(self.__upload_folder, unique_name)
         try:

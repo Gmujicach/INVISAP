@@ -259,21 +259,21 @@ def api_crear_informe():
         
         return jsonify({
             'status': 'error', 
-            'message': 'Error al guardar el informe en la base de datos'
+            'message': 'No se pudo guardar el informe'
         }), 500
         
     except ValueError as ve:
         # Errores de validación (Regex, campos requeridos, etc.)
         return jsonify({
             'status': 'error', 
-            'message': f'Error de validación: {str(ve)}'
+            'message': str(ve)
         }), 400
         
     except Exception as e:
         print(f"Error api_crear_informe: {e}")
         return jsonify({
             'status': 'error', 
-            'message': 'Error interno del servidor'
+            'message': str(e)
         }), 500
 
 
