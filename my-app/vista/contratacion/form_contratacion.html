@@ -2,6 +2,12 @@
 {% block title %}Gestión de Contrataciones{% endblock %}
 
 {% block customCSS %}
+<style>
+  /* Efecto hover suave para las filas agrupadas */
+  .table-hover tbody tr:hover td {
+      background-color: #f8f9fa;
+  }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -19,41 +25,69 @@
     </div>
   </div>
   
-  <div class="card-body">
+  <div class="card-body p-0"> 
     <div class="table-responsive">
-      <table class="table table-bordered table-striped table-hover align-middle" style="font-size: 0.85rem;">
+      <table class="table table-bordered table-striped table-hover align-middle mb-0" style="font-size: 0.85rem;">
         <thead class="table-light">
         <tr>
-            <th>#</th>
-            <th>Descripción</th>
-            <th>Empresa Ganadora</th>
-            <th>RIF</th>
+            <th>Descripción y Observaciones</th>
+            <th>Empresa / RIF</th>
             <th>N° Contrato</th>
             <th>Monto</th>
-            <th>Fechas (Inicio/Adj.)</th>
-            <th>Modalidad</th>      
-            <th>Tipo Contrato</th>  
-            <th class="text-center">Acciones</th>
+            <th>Clasificación</th>
+            <th>Fechas del Proceso</th>
+            <th class="text-center" style="width: 90px;">Acciones</th>
         </tr>
         </thead>
         <tbody>
           {% for c in contrataciones %}
           <tr>
-            <td>{{ c.id_contratacion }}</td>
-            <td style="max-width: 200px; white-space: normal;">{{ c.descripcion }}</td>
-            <td class="fw-bold text-secondary">{{ c.empresa_ganadora }}</td>
-            <td>{{ c.empresa_rif }}</td>
-            <td><span class="badge bg-dark">{{ c.numero_contrato }}</span></td>
-            <td class="text-success fw-bold">{{ c.monto }}</td>
-            <td>
-                <small class="d-block"><strong>Ini:</strong> {{ c.fecha_inicio_procedimiento }}</small>
-                <small class="d-block"><strong>Adj:</strong> {{ c.fecha_adjudicacion }}</small>
+            <!-- COLUMNA 1: DESCRIPCIÓN AGRUPADA -->
+            <td style="max-width: 250px; white-space: normal;">
+                <div class="fw-semibold text-dark mb-1">{{ c.descripcion }}</div>
+                <div class="text-muted" style="font-size: 0.78rem; line-height: 1.2;">
+                    <i class="bx bx-info-circle align-middle"></i> {{ c.observacion }}
+                </div>
             </td>
-            
-            <td><span class="badge bg-info text-dark text-uppercase">{{ c.modalidad }}</span></td>
-            <td><span class="text-secondary text-capitalize">{{ c.tipo_contrato }}</span></td>
-            
-            <td class="text-center">
+
+            <!-- COLUMNA 2: EMPRESA AGRUPADA -->
+            <td>
+                <div class="fw-bold text-secondary text-uppercase">{{ c.empresa_ganadora }}</div>
+                <div class="text-muted mt-1"><small><strong>RIF:</strong> {{ c.empresa_rif }}</small></div>
+            </td>
+
+            <!-- COLUMNA 3: N° CONTRATO -->
+            <td class="text-nowrap">
+                <span class="badge bg-dark">N° {{ c.numero_contrato }}</span>
+            </td>
+
+            <!-- COLUMNA 4: MONTO -->
+            <td class="text-nowrap">
+                <span class="text-success fw-bold">{{ c.monto }}</span>
+            </td>
+
+            <!-- COLUMNA 5: CLASIFICACIÓN AGRUPADA -->
+            <td style="font-size: 0.8rem; line-height: 1.5;">
+                <span class="d-block text-truncate" style="max-width: 160px;" title="{{ c.tipo_contrato }}">
+                    <strong class="text-secondary">Tipo:</strong> {{ c.tipo_contrato }}
+                </span>
+                <span class="d-block text-truncate" style="max-width: 160px;" title="{{ c.modalidad }}">
+                    <strong class="text-secondary">Mod:</strong> {{ c.modalidad }}
+                </span>
+                <span class="d-block text-truncate" style="max-width: 160px;" title="{{ c.objeto }}">
+                    <strong class="text-secondary">Obj:</strong> {{ c.objeto }}
+                </span>
+            </td>
+
+            <!-- COLUMNA 6: FECHAS AGRUPADAS -->
+            <td style="font-size: 0.8rem; line-height: 1.5; white-space: nowrap;">
+                <span class="d-block"><strong class="text-primary">Reg:</strong> {{ c.fecha_registro }}</span>
+                <span class="d-block"><strong class="text-secondary">Ini:</strong> {{ c.fecha_inicio_procedimiento }}</span>
+                <span class="d-block"><strong class="text-success">Adj:</strong> {{ c.fecha_adjudicacion }}</span>
+            </td>
+
+            <!-- COLUMNA 7: ACCIONES (A la derecha) -->
+            <td class="text-center text-nowrap">
              <a href="{{ url_for('contrataciones_bp.vista_editar', id=c.id_contratacion) }}" class="btn btn-outline-warning btn-sm" title="Editar">
                 <i class="bx bx-edit"></i>
             </a>
@@ -66,7 +100,7 @@
             </td>
           </tr>
           {% else %}
-          <tr><td colspan="10" class="text-center text-muted py-4">NO SE ENCUENTRAN CONTRATACIONES REGISTRADAS</td></tr>
+          <tr><td colspan="7" class="text-center text-muted py-5"><i class="bx bx-folder-open fs-2 d-block mb-2"></i>NO SE ENCUENTRAN CONTRATACIONES REGISTRADAS</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -74,6 +108,7 @@
   </div>
 </div>
 
+<!-- MODAL REGISTRO CONTRATACIÓN -->
 <div class="modal fade" id="modalContratacion" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content" style="border-radius: 0px !important">
@@ -161,7 +196,9 @@
                         <option value="Contrato de Bienes">Bienes</option>
                     </select>
                 </div>
-            </div> <div class="row mb-3">
+            </div> 
+            
+            <div class="row mb-3">
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Modalidad</label>
                     <select id="modalidad" name="modalidad" class="form-select shadow-sm" required>
@@ -185,7 +222,9 @@
                     <label class="form-label fw-semibold text-secondary">Observación</label>
                     <input type="text" id="observacion" name="observacion" class="form-control shadow-sm" required>
                 </div>
-            </div> <div class="row mb-3">
+            </div> 
+            
+            <div class="row mb-3">
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Inicio Procedimiento</label>
                     <input type="date" id="fecha_inicio_procedimiento" name="fecha_inicio_procedimiento" class="form-control shadow-sm" required>
@@ -215,6 +254,7 @@
   </div>
 </div>
 
+<!-- MODAL DIRECTORIO EMPRESAS -->
 <div class="modal fade" id="modalEmpresas" tabindex="-1" aria-labelledby="modalEmpresasLabel" aria-hidden="true" style="background-color: rgba(0,0,0,0.4);">
   <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered"> 
     <div class="modal-content" style="border-radius: 0px !important; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
@@ -254,6 +294,7 @@
   </div>
 </div>
 {% endblock %} 
+
 {% block customJS %}
 <script src="{{ url_for('static', filename ='js/contratacion.js') }}"></script>
-{% endblock %} 
+{% endblock %}

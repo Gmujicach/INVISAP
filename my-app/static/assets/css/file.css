@@ -51,3 +51,11 @@
   text-align: center;
   color: #222;
 }
+
+.modal-header .btn-close {
+    margin-top: 0 !important;
+    transform: none !important;
+    position: static !important;
+   
+    display: inline-block !important; 
+}

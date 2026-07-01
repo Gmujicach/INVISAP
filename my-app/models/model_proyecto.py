@@ -12,11 +12,11 @@ class ProyectoModel:
             conexion = connectionBD()
             cursor = conexion.cursor(dictionary=True)
             
-            # 1. Insertar en la tabla principal 'proyecto'
+            
             sql = """INSERT INTO proyecto 
-                (codigo_proyecto, fecha_planificacion, descripcion_tecnica,
-                 computos_metricos, estimacion_costo) 
-                VALUES (%s, %s, %s, %s, %s)"""
+         (codigo_proyecto, fecha_planificacion, descripcion_tecnica, 
+          computos_metricos, estimacion_costo, estado) 
+         VALUES (%s, %s, %s, %s, %s, 1)"""
             
             codigo_proy = datos.get('Codigo_p', '')[:15]
             fecha_plan = datos.get('fecha_p')
@@ -33,7 +33,7 @@ class ProyectoModel:
 
             cursor.execute(sql, valores)
 
-            # 2. Buscar datos obligatorios de la clave compuesta de la tabla 'solicitudes'
+           
             id_solicitud = datos.get('solicitud_id_p')
             if id_solicitud:
                 cursor.execute("""
@@ -47,7 +47,7 @@ class ProyectoModel:
                     id_persona = resultado_solicitud['persona_id_persona']
                     id_prioridad = resultado_solicitud['prioridad_id_gestion_prioridad']
                     
-                    # Insertamos usando el mapeo completo de claves foráneas de tu tabla puente
+                    
                     sql_solicitud = """INSERT INTO proyecto_has_solicitudes 
                         (proyecto_codigo_proyecto, solicitudes_id_solicitudes, 
                          solicitudes_persona_id_persona, solicitudes_prioridad_id_gestion_prioridad) 
@@ -56,7 +56,7 @@ class ProyectoModel:
                 else:
                     raise Exception(f"No se encontraron los datos compuestos para la solicitud ID: {id_solicitud}")
 
-            # 3. Relación con maquinaria
+         
             id_maquinaria = datos.get('maquinaria_p')
             if id_maquinaria and str(id_maquinaria).isdigit():
                 sql_maquinaria = "INSERT INTO proyecto_has_maquinaria (proyecto_codigo_proyecto, maquinaria_id_maquinaria) VALUES (%s, %s)"
@@ -79,7 +79,6 @@ class ProyectoModel:
             conexion = connectionBD()
             cursor = conexion.cursor(dictionary=True)
             
-            # Cruce de JOINS adaptado al uso de las columnas compuestas guardadas en el puente
             sql = """SELECT 
                         p.codigo_proyecto, p.fecha_planificacion, p.descripcion_tecnica, 
                         p.computos_metricos, p.estimacion_costo,
@@ -95,6 +94,7 @@ class ProyectoModel:
                      LEFT JOIN comunidad com ON pers.id_persona = com.persona_id_persona
                      LEFT JOIN proyecto_has_maquinaria phm ON p.codigo_proyecto = phm.proyecto_codigo_proyecto
                      LEFT JOIN maquinaria m ON phm.maquinaria_id_maquinaria = m.id_maquinaria 
+                     WHERE p.estado = 1
                      ORDER BY p.codigo_proyecto DESC"""
             cursor.execute(sql)
             return cursor.fetchall()
@@ -150,8 +150,7 @@ class ProyectoModel:
             if not fecha_plan:
                 fecha_plan = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-            # 💡 CORRECCIÓN AQUÍ: Buscamos tanto 'observaciones_p' como 'observaciones' 
-            # para asegurar que capture el textarea de tu formulario HTML.
+         
             descripcion = datos.get('observaciones_p') or datos.get('observaciones') or ''
 
             valores = (
@@ -164,7 +163,7 @@ class ProyectoModel:
             )
             cursor.execute(sql, valores)
 
-            # MANEJO SEGURO DE LA TABLA PUENTE DE SOLICITUDES
+           
             id_solicitud = datos.get('solicitud_id_p')
             if id_solicitud:
                 cursor.execute("DELETE FROM proyecto_has_solicitudes WHERE proyecto_codigo_proyecto = %s", (codigo_proyecto_actual,))
@@ -188,7 +187,7 @@ class ProyectoModel:
                         WHERE proyecto_codigo_proyecto = %s
                     """, (codigo_nuevo, codigo_proyecto_actual))
 
-            # MANEJO SEGURO DE LA TABLA PUENTE DE MAQUINARIAS
+         
             id_maquinaria = datos.get('maquinaria_p')
             if id_maquinaria and str(id_maquinaria).isdigit():
                 cursor.execute("DELETE FROM proyecto_has_maquinaria WHERE proyecto_codigo_proyecto = %s", (codigo_proyecto_actual,))
@@ -203,7 +202,7 @@ class ProyectoModel:
                     """, (codigo_nuevo, codigo_proyecto_actual))
 
             conexion.commit()
-            # 💡 RETORNO SEGURO: Retornamos True porque la operación fue exitosa en la base de datos
+            
             return True
         except Exception as e:
             if conexion: conexion.rollback()
@@ -218,13 +217,12 @@ class ProyectoModel:
             conexion = connectionBD()
             cursor = conexion.cursor()
             
-            # Eliminación preventiva de las referencias en las tablas hijas por integridad referencial
-            cursor.execute("DELETE FROM proyecto_has_solicitudes WHERE proyecto_codigo_proyecto = %s", (codigo_proyecto,))
-            cursor.execute("DELETE FROM proyecto_has_maquinaria WHERE proyecto_codigo_proyecto = %s", (codigo_proyecto,))
-            cursor.execute("DELETE FROM proyecto WHERE codigo_proyecto = %s", (codigo_proyecto,))
+           
+            sql = "UPDATE proyecto SET estado = 0 WHERE codigo_proyecto = %s"
+            cursor.execute(sql, (codigo_proyecto,))
             
             conexion.commit()
-            return cursor.rowcount
+            return cursor.rowcount > 0 
         except Exception as e:
             if conexion: conexion.rollback()
             print(f"Error en ProyectoModel.eliminar_proyecto: {e}")
@@ -238,12 +236,16 @@ class ProyectoModel:
             conexion = connectionBD()
             cursor = conexion.cursor(dictionary=True)
             
+            
             sql = """SELECT s.tipo_solicitud 
                      FROM proyecto p
                      INNER JOIN proyecto_has_solicitudes phs ON p.codigo_proyecto = phs.proyecto_codigo_proyecto
-                     INNER JOIN solicitudes s ON phs.solicitudes_id_solicitudes = s.id_solicitudes"""
+                     INNER JOIN solicitudes s ON phs.solicitudes_id_solicitudes = s.id_solicitudes
+                     WHERE p.estado = 1""" 
+            
             cursor.execute(sql)
             proyectos_vinculados = cursor.fetchall()
+            
             
             total_registrados = len(proyectos_vinculados)
             en_proceso = 0
