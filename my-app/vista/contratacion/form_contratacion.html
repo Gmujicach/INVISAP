@@ -116,7 +116,9 @@
         <h5 class="modal-title fw-bold text-secondary" id="modalLabel">
             <i class="bx bx-folder-plus me-1 text-primary"></i> Registrar Nueva Contratación
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+    <i class="bx bx-x" style="font-size: 24px;"></i>
+</button>
       </div>
       
       <form method="POST" action="{{ url_for('contrataciones_bp.procesar_registro') }}" id="formContratacion" autocomplete="off">
@@ -265,7 +267,9 @@
           </h5>
           <small class="text-light-50">Seleccione la empresa ganadora para esta contratación</small>
         </div>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+    <i class="bx bx-x" style="font-size: 24px;"></i>
+</button>
       </div>
       <div class="modal-body">
         <div class="table-responsive">
