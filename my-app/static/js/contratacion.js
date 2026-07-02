@@ -55,11 +55,9 @@ function seleccionarEmpresa(rif, nombre) {
     document.getElementById('empresa_rif').value = rif;
     document.getElementById('empresa_ganadora').value = nombre;
 
-    // Ocultamos modal empresas
     const modalEmpresas = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEmpresas'));
     modalEmpresas.hide();
     
-    // Mostramos nuevamente el modal del formulario
     const elModalContratacion = document.getElementById('modalContratacion');
     if (elModalContratacion) {
         const modalRegistro = bootstrap.Modal.getOrCreateInstance(elModalContratacion);
@@ -67,7 +65,6 @@ function seleccionarEmpresa(rif, nombre) {
     }
 }
 
-// Limpiar la empresa seleccionada
 document.getElementById('btn_limpiar_seleccion').addEventListener('click', function() {
     const inputEmpresa = document.getElementById('empresa_ganadora');
     const inputRif = document.getElementById('empresa_rif');
@@ -80,9 +77,6 @@ document.getElementById('btn_limpiar_seleccion').addEventListener('click', funct
 });
 
 
-// 2. VALIDACIONES EN TIEMPO REAL (INPUTS COPIADOS EXACTAMENTE)
-
-// Validación de Descripción
 const descInput = document.getElementById('descripcion');
 if (descInput) {
     descInput.addEventListener('input', function() {
@@ -118,7 +112,6 @@ if (descInput) {
     });
 }
 
-// Validación de Número de Contrato
 const numContratoInput = document.getElementById('numero_contrato');
 if (numContratoInput) {
     numContratoInput.addEventListener('input', function() {
@@ -141,7 +134,6 @@ if (numContratoInput) {
     });
 }
 
-// Validación de Monto
 const montoInput = document.getElementById('monto');
 if (montoInput) {
     montoInput.addEventListener('input', function() {
@@ -164,7 +156,6 @@ if (montoInput) {
     });
 }
 
-// Validación Selects y Fechas al cambiar
 const camposGenerales = [
     'tipo_contrato', 'modalidad', 'objeto', 
     'fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro'
@@ -186,7 +177,6 @@ camposGenerales.forEach(id => {
 });
 
 
-// ELIMINACIÓN DE REGISTROS (SWEETALERT DELEGADO)
 document.addEventListener('click', function(event) {
     const boton = event.target.closest('.btn-eliminar');
     
@@ -230,7 +220,6 @@ document.addEventListener('click', function(event) {
 });
 
 
-// ENVÍO UNIFICADO DEL FORMULARIO
 document.getElementById('formContratacion').addEventListener('submit', function(event) {
     event.preventDefault(); 
     event.stopPropagation();
@@ -297,7 +286,6 @@ document.getElementById('formContratacion').addEventListener('submit', function(
 
         if (data.status === 'success') {
             
-            // Cierra modal si existe (aplica para registrar)
             const modalEl = document.getElementById('modalContratacion');
             if (modalEl) {
                 const modalInstancia = bootstrap.Modal.getInstance(modalEl);
@@ -313,10 +301,8 @@ document.getElementById('formContratacion').addEventListener('submit', function(
             }).then(() => {
                 
                 if (data.redirect) {
-                    // Si el servidor mandó redirección (Editar), vamos a la lista
                     window.location.href = data.redirect;
                 } else {
-                    // Si no (Registrar), limpiamos formulario y tabla sin recargar
                     form.reset();
                     form.querySelectorAll('.is-valid, .is-invalid').forEach(el => el.classList.remove('is-valid', 'is-invalid'));
                     
@@ -332,12 +318,22 @@ document.getElementById('formContratacion').addEventListener('submit', function(
             });
 
         } else {
-            Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+            Swal.fire({ 
+                icon: 'error', 
+                title: 'Error', 
+                text: data.message,
+                target: document.getElementById('modalContratacion')
+            });
         }
     })
     .catch(error => {
         btnSubmit.disabled = false;
         btnSubmit.innerHTML = textoBtn;
-        Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo procesar la solicitud.'});
+        Swal.fire({ 
+            icon: 'error', 
+            title: 'Error de conexión', 
+            text: 'No se pudo procesar la solicitud.',
+            target: document.getElementById('modalContratacion')
+        });
     });
 });
