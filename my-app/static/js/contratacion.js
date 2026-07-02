@@ -50,7 +50,6 @@ document.getElementById('btnCargarEmpresas').addEventListener('click', function(
         });
 });
 
-
 function seleccionarEmpresa(rif, nombre) {
     document.getElementById('empresa_rif').value = rif;
     document.getElementById('empresa_ganadora').value = nombre;
@@ -75,7 +74,6 @@ document.getElementById('btn_limpiar_seleccion').addEventListener('click', funct
     inputEmpresa.classList.remove('is-valid', 'is-invalid');
     inputRif.classList.remove('is-valid', 'is-invalid');
 });
-
 
 const descInput = document.getElementById('descripcion');
 if (descInput) {
@@ -134,26 +132,62 @@ if (numContratoInput) {
     });
 }
 
-const montoInput = document.getElementById('monto');
-if (montoInput) {
-    montoInput.addEventListener('input', function() {
-        const input = this;
-        input.value = input.value.replace(/[^a-zA-Z0-9.,\s]/g, '');
-        const longitud = input.value.trim().length;
+function formatearMonto(valor) {
+    let num = valor.replace(/\D/g, '');
+    if (num === '') return '';
+    num = parseInt(num, 10).toString();
+    if (num.length === 0) num = '0';
+    num = num.padStart(3, '0');
+    let entero = num.slice(0, -2);
+    let decimal = num.slice(-2);
+    return entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ',' + decimal;
+}
 
-        if (longitud === 0) {
-            input.classList.remove('is-valid', 'is-invalid');
+const montoHidden = document.getElementById('monto');
+const montoDisplay = document.getElementById('monto_display');
+const monedaSelect = document.getElementById('moneda_select');
+
+if (montoHidden && montoDisplay && monedaSelect) {
+    if (montoHidden.value) {
+        let val = montoHidden.value.trim();
+        let match = val.match(/^(BS|USD|EUR)\s+(.*)$/i);
+        if (match) {
+            monedaSelect.value = match[1].toUpperCase();
+            montoDisplay.value = match[2];
+        } else {
+            montoDisplay.value = formatearMonto(val);
+        }
+        montoHidden.value = monedaSelect.value + ' ' + montoDisplay.value;
+    }
+
+    function actualizarMonto() {
+        if(montoDisplay.value) {
+            montoHidden.value = monedaSelect.value + ' ' + montoDisplay.value;
+        } else {
+            montoHidden.value = '';
+        }
+    }
+
+    montoDisplay.addEventListener('input', function() {
+        this.value = formatearMonto(this.value);
+        actualizarMonto();
+        
+        let rawNum = parseInt(this.value.replace(/\D/g, ''), 10) || 0;
+        
+        if (this.value.length === 0) {
+            this.classList.remove('is-valid', 'is-invalid');
             return;
         }
-
-        if (longitud < 3) {
-            input.classList.add('is-invalid');
-            input.classList.remove('is-valid');
+        if (rawNum < 100) {
+            this.classList.add('is-invalid');
+            this.classList.remove('is-valid');
         } else {
-            input.classList.add('is-valid');
-            input.classList.remove('is-invalid');
+            this.classList.add('is-valid');
+            this.classList.remove('is-invalid');
         }
     });
+
+    monedaSelect.addEventListener('change', actualizarMonto);
 }
 
 const camposGenerales = [
@@ -175,7 +209,6 @@ camposGenerales.forEach(id => {
         });
     }
 });
-
 
 document.addEventListener('click', function(event) {
     const boton = event.target.closest('.btn-eliminar');
@@ -219,7 +252,6 @@ document.addEventListener('click', function(event) {
     }
 });
 
-
 document.getElementById('formContratacion').addEventListener('submit', function(event) {
     event.preventDefault(); 
     event.stopPropagation();
@@ -241,11 +273,14 @@ document.getElementById('formContratacion').addEventListener('submit', function(
         primerError = primerError || numContrato;
     }
 
-    const monto = document.getElementById('monto');
-    if (monto && monto.value.trim().length < 3) {
-        monto.classList.add('is-invalid');
-        hayErrores = true;
-        primerError = primerError || monto;
+    const montoDisplayValidar = document.getElementById('monto_display');
+    if (montoDisplayValidar) {
+        let rawNum = parseInt(montoDisplayValidar.value.replace(/\D/g, ''), 10) || 0;
+        if (rawNum < 100) {
+            montoDisplayValidar.classList.add('is-invalid');
+            hayErrores = true;
+            primerError = primerError || montoDisplayValidar;
+        }
     }
 
     const camposAValidar = ['tipo_contrato', 'modalidad', 'objeto', 'fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro'];
