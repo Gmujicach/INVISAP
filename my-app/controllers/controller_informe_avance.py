@@ -245,12 +245,17 @@ def api_crear_informe():
     
     try:
         # Obtener datos del request (soporta JSON y FormData)
-        data = request.get_json() if request.is_json else request.form.to_dict()
-        
+        data = request.get_json(silent=True) if request.is_json else request.form.to_dict()
+        if not isinstance(data, dict):
+            data = {}
+
+        # Normalizar valores del formulario para evitar errores por datos vacíos o no strings
+        data = {k: (v if v is not None else '') for k, v in data.items()}
+
         modelo = InformeAvanceModel()
-        
+
         # Validación de existencia de gerente en tiempo real (Prof. Escalona)
-        gerente_id = data.get('gerente_responsable_id')
+        gerente_id = str(data.get('gerente_responsable_id') or '').strip()
         if gerente_id:
             modelo_empleado = EmpleadoModel()
             if not modelo_empleado.validar_empleado_activo(gerente_id):
@@ -258,7 +263,7 @@ def api_crear_informe():
                     'status': 'error', 
                     'message': 'El gerente/inspector seleccionado no existe o fue eliminado.'
                 }), 400
-        
+
         # Registrar informe usando el modelo
         nuevo_id = modelo.registrar_informe(data)
         
@@ -291,7 +296,7 @@ def api_crear_informe():
         print(f"Error api_crear_informe: {e}")
         return jsonify({
             'status': 'error', 
-            'message': str(e)
+            'message': 'No se pudo registrar el informe. Revise los datos o contacte al administrador.'
         }), 500
 
 

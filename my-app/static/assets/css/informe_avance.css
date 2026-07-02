@@ -22,6 +22,126 @@
     --invilara-azul: #0d6efd;
 }
 
+/* ========== ESTILOS PARA MODALES DE SELECCIÓN ========== */
+.modal {
+    overflow-y: auto;
+}
+
+.modal-dialog {
+    max-height: calc(100vh - 1rem);
+}
+
+.modal-content {
+    max-height: calc(100vh - 1rem);
+}
+
+.modal-dialog.modal-dialog-scrollable .modal-content {
+    max-height: 90vh;
+}
+
+.modal-dialog.modal-dialog-scrollable .modal-header,
+.modal-dialog.modal-dialog-scrollable .modal-footer {
+    flex-shrink: 0;
+}
+
+.modal-dialog.modal-dialog-scrollable .modal-body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(90vh - 140px);
+    min-height: 0;
+}
+
+.modal-evidencia-item {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+}
+
+.modal-evidencia-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.modal-evidencia-item.selected {
+    border-color: #28a745;
+    background-color: #d4edda;
+}
+
+.modal-evidencia-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    background-color: #f8f9fa;
+}
+
+.badge-etapa {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+.inspector-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.inspector-card:hover {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+    transform: translateY(-2px);
+}
+
+.inspector-card.selected {
+    border-color: #28a745;
+    background-color: #d4edda;
+}
+
+.evidencias-seleccionadas-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.evidencia-preview-item {
+    position: relative;
+    width: 92px;
+    height: 92px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #28a745;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.evidencia-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.evidencia-preview-item .remove-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+}
+
 /* ========== PLACEHOLDERS MEJORADOS (Prof. Escalona - OBLIGATORIO) ========== */
 .form-control::placeholder,
 .form-select::placeholder {
@@ -118,10 +238,16 @@ textarea.form-control::placeholder {
 }
 
 /* ========== TABLA RESPONSIVE ========== */
+.table-informe-avance-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .table-informe-avance {
     font-size: 0.9rem;
     border-collapse: separate;
     border-spacing: 0;
+    min-width: 860px;
 }
 
 .table-informe-avance thead th {
@@ -140,6 +266,58 @@ textarea.form-control::placeholder {
 .table-informe-avance tbody td {
     vertical-align: middle;
     padding: 0.75rem;
+}
+
+/* ========== PAGINACIÓN Y COMPORTAMIENTO RESPONSIVE ========== */
+.pagination .page-link {
+    color: var(--invilara-verde);
+    border-color: #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--invilara-verde);
+    border-color: var(--invilara-verde);
+    color: white;
+}
+
+.table-informe-avance .btn-group {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.table-informe-avance .btn-group .btn {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .table-informe-avance {
+        min-width: 760px;
+        font-size: 0.8rem;
+    }
+
+    .table-informe-avance thead th,
+    .table-informe-avance tbody td {
+        padding: 0.6rem 0.45rem;
+    }
+
+    .card-header.d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .table-informe-avance {
+        min-width: 680px;
+    }
+
+    .table-informe-avance thead th:nth-child(3),
+    .table-informe-avance tbody td:nth-child(3),
+    .table-informe-avance thead th:nth-child(6),
+    .table-informe-avance tbody td:nth-child(6) {
+        display: none;
+    }
 }
 
 /* ========== BADGES DE ESTADO ========== */

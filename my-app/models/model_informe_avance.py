@@ -265,7 +265,7 @@ class InformeAvanceModel:
             ))
 
             if self.__avance_id:
-                obs = self._limpiar_texto(self.__observaciones or '', 500) or 'Sin observaciones'
+                obs = self._limpiar_texto(self.__observaciones or '', 45) or 'Sin observaciones'
                 cur.execute(
                     "UPDATE avance SET descripcion = %s, porcentaje_avance = %s WHERE id_avance = %s",
                     (obs, self.__porcentaje_avance, self.__avance_id)
@@ -321,7 +321,7 @@ class InformeAvanceModel:
             cur.execute("SELECT avance_id_avance FROM informe_avance_obra WHERE id_informe = %s", (self.__id_informe,))
             avance_row = cur.fetchone()
             if avance_row and avance_row[0]:
-                obs = self._limpiar_texto(self.__observaciones or '', 500) or 'Sin observaciones'
+                obs = self._limpiar_texto(self.__observaciones or '', 45) or 'Sin observaciones'
                 cur.execute(
                     "UPDATE avance SET descripcion = %s, porcentaje_avance = %s WHERE id_avance = %s",
                     (obs, self.__porcentaje_avance, avance_row[0])
@@ -525,32 +525,40 @@ class InformeAvanceModel:
     def registrar_informe(self, data):
         """Método PÚBLICO que actúa como interfaz para registrar informes"""
         try:
-            self.set_estado(data.get('estado'))
-            self.set_poblacion_beneficiada(data.get('poblacion_beneficiada'))
-            self.set_tipo_informe(data.get('tipo_informe'))
-            self.set_observaciones(data.get('observaciones', ''))
-            self.set_fecha(data.get('fecha'))
-            self.set_porcentaje_avance(data.get('porcentaje_avance', 0))
-            
-            avance_id = data.get('avance_id_avance')
-            gerente_id = data.get('gerente_responsable_id')
+            if not isinstance(data, dict):
+                raise ValueError('Datos del informe inválidos.')
+
+            payload = {k: (v if v is not None else '') for k, v in data.items()}
+
+            self.set_estado(payload.get('estado'))
+            self.set_poblacion_beneficiada(payload.get('poblacion_beneficiada'))
+            self.set_tipo_informe(payload.get('tipo_informe'))
+            self.set_observaciones(payload.get('observaciones', ''))
+            self.set_fecha(payload.get('fecha'))
+            self.set_porcentaje_avance(payload.get('porcentaje_avance', 0))
+
+            avance_id = payload.get('avance_id_avance')
+            gerente_id = payload.get('gerente_responsable_id')
             if not avance_id:
                 avance_id = self.__crear_avance_db(
                     gerente_id or 1,
-                    data.get('porcentaje_avance', 0),
-                    data.get('observaciones', '') or 'Sin descripción'
+                    payload.get('porcentaje_avance', 0),
+                    payload.get('observaciones', '') or 'Sin descripción'
                 )
             self.set_avance_id(avance_id)
-            
+
             self.__avance_id = avance_id
-            
-            if data.get('evidencias_antes'):
-                self.set_evidencias_antes(data.get('evidencias_antes').split(','))
-            if data.get('evidencias_durante'):
-                self.set_evidencias_durante(data.get('evidencias_durante').split(','))
-            if data.get('evidencias_despues'):
-                self.set_evidencias_despues(data.get('evidencias_despues').split(','))
-            
+
+            if payload.get('evidencias_antes'):
+                evidencias_antes = [item for item in str(payload.get('evidencias_antes', '')).split(',') if item]
+                self.set_evidencias_antes(evidencias_antes)
+            if payload.get('evidencias_durante'):
+                evidencias_durante = [item for item in str(payload.get('evidencias_durante', '')).split(',') if item]
+                self.set_evidencias_durante(evidencias_durante)
+            if payload.get('evidencias_despues'):
+                evidencias_despues = [item for item in str(payload.get('evidencias_despues', '')).split(',') if item]
+                self.set_evidencias_despues(evidencias_despues)
+
             return self.__registrar_informe_db()
             
         except ValueError as ve:
