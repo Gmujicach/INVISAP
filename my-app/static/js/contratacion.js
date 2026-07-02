@@ -193,23 +193,37 @@ document.addEventListener('click', function(event) {
     if (boton) {
         event.preventDefault();
         const urlEliminar = boton.getAttribute('data-url');
+        const filaTabla = boton.closest('tr');
 
         Swal.fire({
             title: '¿Estás completamente seguro?',
-            text: "Esta acción eliminará la contratación por completo y no se puede deshacer.",
+            text: "Esta acción no se puede deshacer.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc3545', 
             cancelButtonColor: '#6c757d',  
             confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar',
-            reverseButtons: true,
-            didOpen: () => { 
-                document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
-            }
+            reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = urlEliminar;
+                fetch(urlEliminar, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exito) {
+                        filaTabla.remove(); 
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Eliminado!',
+                            text: data.mensaje,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire('Error', data.mensaje, 'error');
+                    }
+                })
+                .catch(error => Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error'));
             }
         });
     }
@@ -222,120 +236,108 @@ document.getElementById('formContratacion').addEventListener('submit', function(
     event.stopPropagation();
 
     let hayErrores = false;
-    let primerElementoConError = null;
+    let primerError = null;
 
-    // EVALUACIÓN ANTES DE ENVIAR
-    const descripcionInput = document.getElementById('descripcion');
-    if (descripcionInput && descripcionInput.value.trim().length < 5) {
-        descripcionInput.classList.add('is-invalid');
+    const descripcion = document.getElementById('descripcion');
+    if (descripcion && descripcion.value.trim().length < 5) {
+        descripcion.classList.add('is-invalid');
         hayErrores = true;
-        primerElementoConError = primerElementoConError || descripcionInput;
+        primerError = primerError || descripcion;
     }
 
-    const numeroContratoInputSubmit = document.getElementById('numero_contrato');
-    if (numeroContratoInputSubmit && numeroContratoInputSubmit.value.trim().length < 3) {
-        numeroContratoInputSubmit.classList.add('is-invalid');
+    const numContrato = document.getElementById('numero_contrato');
+    if (numContrato && numContrato.value.trim().length < 3) {
+        numContrato.classList.add('is-invalid');
         hayErrores = true;
-        primerElementoConError = primerElementoConError || numeroContratoInputSubmit;
+        primerError = primerError || numContrato;
     }
 
-    const montoInputSubmit = document.getElementById('monto');
-    if (montoInputSubmit && montoInputSubmit.value.trim().length < 3) {
-        montoInputSubmit.classList.add('is-invalid');
+    const monto = document.getElementById('monto');
+    if (monto && monto.value.trim().length < 3) {
+        monto.classList.add('is-invalid');
         hayErrores = true;
-        primerElementoConError = primerElementoConError || montoInputSubmit;
+        primerError = primerError || monto;
     }
 
-    const camposAValidar = [
-        'tipo_contrato', 'modalidad', 'objeto', 
-        'fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro'
-    ];
-
+    const camposAValidar = ['tipo_contrato', 'modalidad', 'objeto', 'fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro'];
     camposAValidar.forEach(id => {
-        const elemento = document.getElementById(id);
-        if (elemento) {
-            if (elemento.value.trim() === "") {
-                elemento.classList.add('is-invalid'); 
+        const el = document.getElementById(id);
+        if (el) {
+            if (el.value.trim() === "") {
+                el.classList.add('is-invalid'); 
                 hayErrores = true;
-                primerElementoConError = primerElementoConError || elemento;
+                primerError = primerError || el;
             } else {
-                elemento.classList.remove('is-invalid');
-                elemento.classList.add('is-valid');
+                el.classList.remove('is-invalid');
+                el.classList.add('is-valid');
             }
         }
     });
 
     if (hayErrores) {
-        if (primerElementoConError) {
-            primerElementoConError.focus();
-        }
+        if (primerError) primerError.focus();
         return; 
     }
 
-    // PETICIÓN FETCH AL SERVIDOR
     const form = this;
     const btnSubmit = form.querySelector('button[type="submit"]');
-    const textoOriginalBtn = btnSubmit.innerHTML;
+    const textoBtn = btnSubmit.innerHTML;
 
     btnSubmit.disabled = true;
     btnSubmit.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Guardando...';
-
-    const loadersComunes = ['.preloader', '#preloader', '.loader-wrapper', '.loading', '#loader'];
-    loadersComunes.forEach(selector => {
-        const elementoLoader = document.querySelector(selector);
-        if (elementoLoader) {
-            elementoLoader.style.setProperty('display', 'none', 'important');
-            elementoLoader.style.setProperty('opacity', '0', 'important');
-            elementoLoader.style.setProperty('visibility', 'hidden', 'important');
-        }
-    });
 
     fetch(form.getAttribute('action'), {
         method: 'POST',
         body: new FormData(form)
     })
-    .then(response => {
-        if (!response.ok) throw new Error('Error crítico en el servidor');
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         btnSubmit.disabled = false;
-        btnSubmit.innerHTML = textoOriginalBtn;
+        btnSubmit.innerHTML = textoBtn;
 
         if (data.status === 'success') {
+            
+            // Cierra modal si existe (aplica para registrar)
+            const modalEl = document.getElementById('modalContratacion');
+            if (modalEl) {
+                const modalInstancia = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstancia) modalInstancia.hide();
+            }
+
             Swal.fire({ 
                 icon: 'success', 
                 title: '¡Éxito!', 
                 text: data.message,
-                didOpen: () => { 
-                    document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
-                }
+                timer: 2000,
+                showConfirmButton: false
             }).then(() => {
-                window.location.href = '/contrataciones'; 
-            });
-        } else {
-            Swal.fire({ 
-                icon: 'error', 
-                title: 'Error', 
-                text: data.message,
-                didOpen: () => { 
-                    document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
+                
+                if (data.redirect) {
+                    // Si el servidor mandó redirección (Editar), vamos a la lista
+                    window.location.href = data.redirect;
+                } else {
+                    // Si no (Registrar), limpiamos formulario y tabla sin recargar
+                    form.reset();
+                    form.querySelectorAll('.is-valid, .is-invalid').forEach(el => el.classList.remove('is-valid', 'is-invalid'));
+                    
+                    fetch(window.location.href)
+                    .then(res => res.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const nuevaTabla = doc.querySelector('.table-responsive').innerHTML;
+                        document.querySelector('.table-responsive').innerHTML = nuevaTabla;
+                    });
                 }
             });
+
+        } else {
+            Swal.fire({ icon: 'error', title: 'Error', text: data.message });
         }
     })
     .catch(error => {
         btnSubmit.disabled = false;
-        btnSubmit.innerHTML = textoOriginalBtn;
-        console.error('Error capturado en el formulario:', error);
-        
-        Swal.fire({ 
-            icon: 'error', 
-            title: 'Error de conexión', 
-            text: 'No se pudo procesar la solicitud en el servidor.',
-            didOpen: () => { 
-                document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
-            }
-        });
+        btnSubmit.innerHTML = textoBtn;
+        Swal.fire({ icon: 'error', title: 'Error de conexión', text: 'No se pudo procesar la solicitud.'});
     });
 });
