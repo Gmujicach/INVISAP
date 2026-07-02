@@ -604,59 +604,43 @@ def obtener_empresas_json():
 def procesar_registro():
     if 'conectado' in session:
         modelo = ContratacionModel()
-        
         exito, mensaje = modelo.registrar_contrataciones(request.form)
         
         if exito:
-            num_contrato = request.form.get('numero_contrato', 'S/N')
-            BitacoraService.registrar_accion(
-                session, 'Contrataciones', 'CREAR',
-                f'Contratación contrato #{num_contrato} registrada con éxito'
-            )
             return jsonify({'status': 'success', 'message': mensaje})
-        else:
-            return jsonify({'status': 'error', 'message': mensaje})
+        return jsonify({'status': 'error', 'message': mensaje})
             
-    return jsonify({'status': 'error', 'message': 'Sesión expirada. Por favor, inicie sesión nuevamente.'}), 401
+    return jsonify({'status': 'error', 'message': 'Sesión expirada.'}), 401
 
 
-@contrataciones_bp.route('/actualizar-contratacion', methods=['POST'])
+@contrataciones_bp.route('/procesar-actualizacion', methods=['POST'])
 def procesar_actualizacion():
     if 'conectado' in session:
         modelo = ContratacionModel()
         
-        exito, mensaje = modelo.actualizar_contratacion(request.form)
+        # Ajusta el nombre de tu función de actualizar si es diferente
+        exito, mensaje = modelo.actualizar_contratacion(request.form) 
         
         if exito:
-            id_contratacion = request.form.get('id_contratacion') or request.form.get('id', 'S/I')
-            BitacoraService.registrar_accion(
-                session, 'Contrataciones', 'EDITAR',
-                f'Contratación #{id_contratacion} actualizada con éxito'
-            )
-            return jsonify({'status': 'success', 'message': mensaje})
-        else:
-            return jsonify({'status': 'error', 'message': mensaje})
+            return jsonify({
+                'status': 'success', 
+                'message': mensaje,
+                'redirect': url_for('contrataciones_bp.gestionar_contrataciones') # Aquí le decimos a dónde ir
+            })
+        return jsonify({'status': 'error', 'message': mensaje})
             
-    return jsonify({'status': 'error', 'message': 'Sesión expirada. Por favor, inicie sesión nuevamente.'}), 401
+    return jsonify({'status': 'error', 'message': 'Sesión expirada.'}), 401
 
 
-@contrataciones_bp.route('/eliminar-contratacion/<int:id>', methods=['GET'])
+@contrataciones_bp.route('/eliminar-contratacion/<int:id>', methods=['POST'])
 def eliminar_contratacion(id):
     if 'conectado' in session:
         modelo = ContratacionModel()
-        
         if modelo.eliminar_contratacion(id):
-            BitacoraService.registrar_accion(
-                session, 'Contrataciones', 'ELIMINAR',
-                f'Contratación #{id} eliminada (Archivada)'
-            )
-            flash('Contratación eliminada correctamente (Archivada)', 'success')
-        else:
-            flash('Error al intentar eliminar el registro.', 'error')
+            return jsonify({'exito': True, 'mensaje': 'Contratación eliminada correctamente.'})
+        return jsonify({'exito': False, 'mensaje': 'Error al intentar eliminar el registro.'})
             
-        return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
-        
-    return redirect(url_for('login_bp.inicio'))
+    return jsonify({'exito': False, 'mensaje': 'Sesión expirada.'}), 401
 
 @home_bp.route('/inspectores', methods=['GET'])
 def viewFormInspectores():
