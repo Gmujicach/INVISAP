@@ -11,7 +11,7 @@ def _load_env():
                 line = line.strip()
                 if '=' in line and not line.startswith('#'):
                     key, value = line.split('=', 1)
-                    os.environ.setdefault(key.strip(), value.strip())
+                    os.environ[key.strip()] = value.strip()
 
 _load_env()
 

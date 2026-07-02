@@ -15,6 +15,7 @@ from controllers.funciones_solicitud import (
 )
 from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, obtener_estadisticas_bitacora
 from models.model_publicacion import PublicacionModel
+from models.model_informe_avance import InformeAvanceModel
 from services.bitacora_service import BitacoraService
 from controllers.controller_empleado import empleado_bp
 from controllers.controller_evidencia import evidencia_bp
@@ -257,6 +258,39 @@ def lista_publicaciones():
     return render_template(f'{PATH_URL_PUB}/lista_publicaciones.html', 
                            publicaciones=publicaciones, 
                            estadisticas=estadisticas)
+
+@home_bp.route('/detalles-publicacion/', methods=['GET'])
+@home_bp.route('/detalles-publicacion/<int:id_publicacion>', methods=['GET'])
+def viewDetallesPublicacion(id_publicacion=None):
+    if 'conectado' not in session:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    
+    if id_publicacion is None:
+        return redirect(url_for('home_bp.lista_publicaciones'))
+    
+    modelo = PublicacionModel()
+    detalle_publicacion = modelo.obtener_publicacion_por_id(id_publicacion)
+    
+    informe_evidencias = []
+    if detalle_publicacion and detalle_publicacion.get('id_informe'):
+        try:
+            informe_modelo = InformeAvanceModel()
+            informe = informe_modelo.obtener_informe_por_id(detalle_publicacion['id_informe'])
+            if informe:
+                informe_evidencias = informe.get('evidencias', [])
+        except Exception as e:
+            print(f"Error al cargar evidencias del informe: {e}")
+    
+    if detalle_publicacion:
+        BitacoraService.registrar_accion(
+            session, 'Publicaciones', 'VER',
+            f'Detalles de Publicación #{id_publicacion}'
+        )
+    
+    return render_template(f'{PATH_URL_PUB}/detalles_publicacion.html',
+                           detalle_publicacion=detalle_publicacion or {},
+                           informe_evidencias=informe_evidencias)
 
 @home_bp.route('/administrar-respaldos', methods=['GET'])
 def viewFormRespaldos():

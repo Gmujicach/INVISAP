@@ -1,0 +1,98 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | Detalles de la Publicación{% endblock %}
+{% block body %}
+
+<div class="card" style="border-radius: 0px !important">
+  <div class="row justify-content-center mb-2">
+    <div class="col-md-12 mb-4">
+      <h3 class="text-center mt-5 mb-3">DETALLES DE LA PUBLICACIÓN</h3>
+      <hr />
+    </div>
+
+    <div class="col-md-10 mb-4">
+      {% if detalle_publicacion %}
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h5 class="mb-0 text-white"><i class="bi bi-journal-text"></i> Publicación #{{ detalle_publicacion.id_publicacion }}</h5>
+          <span class="badge bg-light text-dark">{{ detalle_publicacion.fecha_publicacion }}</span>
+        </div>
+        <div class="card-body">
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <h6 class="text-muted border-bottom pb-2">Información de la Publicación</h6>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Título:</strong> {{ detalle_publicacion.titulo_publicacion or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Responsable:</strong> {{ detalle_publicacion.nombre_responsable or detalle_publicacion.autor_publicacion or 'N/A' }}</li>
+                <li class="list-group-item"><strong>Tipo:</strong> {{ detalle_publicacion.tipo_publicacion or 'General' }}</li>
+                <li class="list-group-item">
+                  <strong>Estado:</strong>
+                  {% if detalle_publicacion.estado == 1 or detalle_publicacion.estado == 'Activo' %}
+                    <span class="badge rounded-pill bg-success"><i class="bi bi-check-circle me-1"></i>Activo</span>
+                  {% else %}
+                    <span class="badge rounded-pill bg-danger"><i class="bi bi-x-circle me-1"></i>Inactivo</span>
+                  {% endif %}
+                </li>
+              </ul>
+            </div>
+            
+            <div class="col-md-6">
+              <h6 class="text-muted border-bottom pb-2">Informe Asociado</h6>
+              <ul class="list-group list-group-flush">
+                {% if detalle_publicacion.id_informe %}
+                <li class="list-group-item"><strong>ID Informe:</strong> #{{ detalle_publicacion.id_informe }}</li>
+                {% else %}
+                <li class="list-group-item text-muted">No hay informe asociado a esta publicación.</li>
+                {% endif %}
+              </ul>
+              
+              {% if informe_evidencias %}
+              <h6 class="text-muted border-bottom pb-2 mt-4">Evidencias Fotográficas</h6>
+              <div class="d-flex flex-wrap gap-3 mt-3">
+                {% for evidencia in informe_evidencias %}
+                <div class="card border-0 shadow-sm" style="width: 180px; border-radius: 12px !important;">
+                  <img src="{{ url_for('static', filename=evidencia.url_archivos) }}" 
+                       class="card-img-top" 
+                       alt="{{ evidencia.fotos }}"
+                       style="height: 140px; object-fit: cover; border-radius: 12px 12px 0 0;" />
+                  <div class="card-body p-2">
+                    <p class="card-text small text-truncate mb-0" title="{{ evidencia.fotos }}">
+                      <i class="bi bi-image me-1"></i>{{ evidencia.fotos }}
+                    </p>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              {% elif detalle_publicacion.id_informe %}
+              <p class="text-muted mt-3">No hay evidencias registradas para este informe.</p>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="row mt-4">
+            <div class="col-12">
+              <h6 class="text-muted border-bottom pb-2">Contenido de la Publicación</h6>
+              <div class="p-3 bg-light rounded" style="min-height: 120px;">
+                {{ detalle_publicacion.cuerpo_publicacion or detalle_publicacion.contenido or 'No se registró contenido adicional.' }}
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="card-footer bg-white text-end">
+          <a href="{{ url_for('home_bp.lista_publicaciones') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver a la Lista</a>
+          <a href="/editar-publicacion/{{ detalle_publicacion.id_publicacion }}" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Editar</a>
+        </div>
+      </div>
+      {% else %}
+      <div class="alert alert-warning text-center">
+        No se encontraron los datos de la publicación especificada.
+      </div>
+      <div class="text-center mt-3">
+        <a href="{{ url_for('home_bp.lista_publicaciones') }}" class="btn btn-secondary">Volver a la Lista</a>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}
