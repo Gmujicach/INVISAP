@@ -1,7 +1,7 @@
 {% extends 'base_cpanel.html' %}
 {% block title %}Invilara | Editar Contratación{% endblock %}
 {% block customCSS %}
-<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+<link class="rtl" rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
 {% endblock %}
 
 {% block body %}
@@ -77,8 +77,16 @@
                 <small class="text-muted">No editable por seguridad.</small>
               </div>
               <div class="col-md-4">
-                <label class="form-label fw-bold text-secondary">Monto ($ / Bs)</label>
-                <input type="text" class="form-control shadow-sm" id="monto" name="monto" value="{{ contratacion.monto }}" minlength="3" maxlength="20" required />
+                <label class="form-label fw-bold text-secondary">Monto</label>
+                <div class="input-group shadow-sm">
+                    <select id="moneda_select" class="form-select text-center" style="max-width: 80px;" required>
+                        <option value="BS">BS</option>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                    </select>
+                    <input type="text" id="monto_display" class="form-control" placeholder="0,00" maxlength="16" required>
+                    <input type="hidden" id="monto" name="monto" value="{{ contratacion.monto }}">
+                </div>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-bold text-secondary">Tipo de Contrato</label>
@@ -179,8 +187,8 @@
         </div>
       </div>
       <div class="modal-footer bg-light">
-        <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-dismiss="modal">
-          <i class="bx bx-arrow-back me-1"></i> Cerrar
+        <button type="button" class="btn btn-secondary btn-sm px-4" data-bs-toggle="modal" data-bs-target="#modalContratacion">
+          <i class="bx bx-arrow-back me-1"></i> Volver al Formulario
         </button>
       </div>
     </div>
