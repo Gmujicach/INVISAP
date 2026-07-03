@@ -13,6 +13,26 @@ class PublicacionModel:
         self.__estado = 1
         self.__regex_titulo = r"^[a-zA-Z0-9\sÁÉÍÓÚáéíóúñÑ.,-]{5,150}$"
         self.__regex_nombre = r"^[a-zA-Z\sÁÉÍÓÚáéíóúñÑ]{3,45}$"
+        self.__asegurar_tabla_publicacion()
+
+    def __asegurar_tabla_publicacion(self):
+        try:
+            conn = connectionBD_invilara()
+            if conn:
+                cur = conn.cursor()
+                try:
+                    cur.execute("SHOW COLUMNS FROM publicacion LIKE 'cuerpo_publicacion'")
+                    if not cur.fetchone():
+                        cur.execute("ALTER TABLE publicacion ADD COLUMN cuerpo_publicacion TEXT")
+                        conn.commit()
+                        print("[DB] Columna 'cuerpo_publicacion' agregada a tabla publicacion")
+                except Exception as e:
+                    print(f"[DB] Error al verificar tabla: {e}")
+                finally:
+                    cur.close()
+                    conn.close()
+        except Exception as e:
+            print(f"[DB] No se pudo asegurar tabla: {e}")
 
     @property
     def titulo(self): return self.__titulo
@@ -42,6 +62,11 @@ class PublicacionModel:
     @id_informe.setter
     def id_informe(self, v): self.__id_informe = v
 
+    @property
+    def cuerpo(self): return self.__cuerpo
+    @cuerpo.setter
+    def cuerpo(self, v): self.__cuerpo = v or 'Contenido pendiente'
+
     def obtener_todas_las_publicaciones(self):
         return self.__obtener_publicaciones_db()
 
@@ -51,6 +76,7 @@ class PublicacionModel:
             self.responsable = data.get('nombre_responsable') or data.get('autor_publicacion')
             self.tipo = data.get('tipo_publicacion', 'General')
             self.__id_informe = data.get('informe_avance_obra_id_informe') or data.get('id_informe') or data.get('evidencias')
+            self.cuerpo = data.get('cuerpo_publicacion', 'Contenido pendiente')
             return 1 if self.__registrar_db() else 0
         except Exception as e:
             print(f"Error en registrar_publicacion: {e}")
@@ -63,7 +89,7 @@ class PublicacionModel:
             self.responsable = data.get('nombre_responsable') or data.get('autor_publicacion')
             self.tipo = data.get('tipo_publicacion', 'General')
             self.__id_informe = data.get('informe_avance_obra_id_informe') or data.get('id_informe') or data.get('evidencias')
-            self.__cuerpo = data.get('cuerpo_publicacion', 'Contenido pendiente')
+            self.cuerpo = data.get('cuerpo_publicacion', 'Contenido pendiente')
             return self.__actualizar_db()
         except Exception as e:
             print(f"Error en actualizar_publicacion: {e}")
@@ -99,7 +125,7 @@ class PublicacionModel:
             cursor = conexion.cursor(dictionary=True)
             sql = """SELECT id_publicacion, titulo_publicacion, 
                             nombre_responsable, tipo_publicacion, 
-                            fecha_publicacion, informe_avance_obra_id_informe AS id_informe, estado 
+                            fecha_publicacion, informe_avance_obra_id_informe AS id_informe, estado, cuerpo_publicacion
                      FROM publicacion WHERE estado = 1 ORDER BY fecha_publicacion DESC"""
             cursor.execute(sql)
             return cursor.fetchall()
@@ -132,7 +158,8 @@ class PublicacionModel:
             cursor = conexion.cursor(dictionary=True)
             sql = """SELECT id_publicacion, titulo_publicacion, 
                             nombre_responsable, tipo_publicacion, 
-                            fecha_publicacion, informe_avance_obra_id_informe AS id_informe, estado 
+                            fecha_publicacion, informe_avance_obra_id_informe AS id_informe, 
+                            estado, cuerpo_publicacion
                      FROM publicacion WHERE id_publicacion = %s AND estado = 1"""
             cursor.execute(sql, (id_pub,))
             return cursor.fetchone()
@@ -152,10 +179,10 @@ class PublicacionModel:
             cursor = conexion.cursor()
             sql = """UPDATE publicacion SET 
                      titulo_publicacion = %s, nombre_responsable = %s, 
-                     tipo_publicacion = %s, informe_avance_obra_id_informe = %s 
+                     tipo_publicacion = %s, informe_avance_obra_id_informe = %s, cuerpo_publicacion = %s
                      WHERE id_publicacion = %s"""
             valores = (self.__titulo, self.__responsable, self.__tipo, 
-                       id_inf_val, self.__id_publicacion)
+                       id_inf_val, self.__cuerpo, self.__id_publicacion)
             cursor.execute(sql, valores)
             conexion.commit()
             return cursor.rowcount > 0
@@ -175,11 +202,11 @@ class PublicacionModel:
             cursor = conexion.cursor()
             sql = """INSERT INTO publicacion 
                      (titulo_publicacion, nombre_responsable, tipo_publicacion, 
-                      fecha_publicacion, informe_avance_obra_id_informe, estado) 
-                     VALUES (%s, %s, %s, %s, %s, %s)"""
+                      fecha_publicacion, informe_avance_obra_id_informe, estado, cuerpo_publicacion) 
+                     VALUES (%s, %s, %s, %s, %s, %s, %s)"""
             valores = (self.__titulo, self.__responsable, self.__tipo, 
                        datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 
-                       id_inf_val, 1)
+                       id_inf_val, 1, self.__cuerpo)
             cursor.execute(sql, valores)
             conexion.commit()
             return cursor.rowcount > 0

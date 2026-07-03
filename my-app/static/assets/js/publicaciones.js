@@ -37,8 +37,6 @@ function initializePublicacionValidation() {
     if (inputFecha) {
         inputFecha.addEventListener('change', validateFecha);
     }
-    
-    formPublicacion.addEventListener('submit', handlePublicacionSubmit);
 }
 
 const REGEX_TITULO = /^[a-zA-Z0-9\sÁÉÍÓÚáéíóúñÑ.,-]{5,150}$/;
