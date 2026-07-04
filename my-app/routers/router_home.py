@@ -26,8 +26,8 @@ from controllers.funciones_maquinaria import *
 from models.model_empresas import EmpresaModel
 
 ## Informe de Avance de Obra
+from controllers.controller_informe_avance import informe_avance_bp
 app.register_blueprint(informe_avance_bp)
-informe_avance_bp = Blueprint('informe_avance_bp', __name__)
 
 ## Empresas
 from controllers.controller_empresa import empresa_bp

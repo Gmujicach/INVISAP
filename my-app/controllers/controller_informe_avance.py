@@ -293,10 +293,12 @@ def api_crear_informe():
         }), 400
         
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print(f"Error api_crear_informe: {e}")
         return jsonify({
-            'status': 'error', 
-            'message': 'No se pudo registrar el informe. Revise los datos o contacte al administrador.'
+            'status': 'error',
+            'message': str(e)
         }), 500
 
 

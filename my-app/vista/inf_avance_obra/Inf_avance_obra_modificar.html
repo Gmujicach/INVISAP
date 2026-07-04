@@ -135,9 +135,9 @@
   <form method="POST" action="{{ url_for('informe_avance_bp.form_actualizar_informe') }}" class="row g-4" id="formModificarInforme">
     <input type="hidden" name="id_informe" value="{{ informe.id_informe }}" />
     <input type="hidden" name="avance_id_avance" id="avance_id_avance" value="{{ informe.avance_id_avance or '' }}" />
-    <input type="hidden" id="evidencias_antes_json" value="{{ informe.evidencias_antes|default('') }}" />
-    <input type="hidden" id="evidencias_durante_json" value="{{ informe.evidencias_durante|default('') }}" />
-    <input type="hidden" id="evidencias_despues_json" value="{{ informe.evidencias_despues|default('') }}" />
+    <input type="hidden" id="evidencias_antes_json" value="{{ informe.evidencia_antes|default('') }}" />
+    <input type="hidden" id="evidencias_durante_json" value="{{ informe.evidencia_durante|default('') }}" />
+    <input type="hidden" id="evidencias_despues_json" value="{{ informe.evidencia_despues|default('') }}" />
 
     <div class="col-lg-8">
       <div class="card shadow-sm border-0 rounded-4 mb-4">
@@ -389,6 +389,13 @@
 
   const idInforme = '{{ informe.id_informe }}';
 
+  function getEvidenciaImageUrl(path) {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    const cleanPath = String(path).replace(/^\/+/, '').replace(/^static\//, '');
+    return `/static/${cleanPath}`;
+  }
+
   function parseEvidencias(raw) {
     if (Array.isArray(raw)) {
       return raw;
@@ -463,33 +470,33 @@
         return;
       }
 
-      evidencias.forEach(evidencia => {
-        const isSelected = window.evidenciasSeleccionadas[etapa].includes(evidencia.id_evidencia);
-        const card = `
-          <div class="col-md-3 mb-3">
-            <div class="card modal-evidencia-item h-100 ${isSelected ? 'selected' : ''}" 
-                 data-id="${evidencia.id_evidencia}"
-                 onclick="toggleEvidencia('${etapa}', ${evidencia.id_evidencia}, '${evidencia.url_archivos}', event)">
-              <div class="position-relative">
-                <span class="badge badge-etapa bg-${etapa === 'antes' ? 'success' : etapa === 'durante' ? 'warning' : 'info'}">
-                  ${etapa.toUpperCase()}
-                </span>
-                <img src="/${evidencia.url_archivos}" alt="${evidencia.fotos}" class="card-img-top" />
-              </div>
-              <div class="card-body p-2">
-                <p class="mb-1 small text-truncate" title="${evidencia.fotos}">
-                  <i class="bx bx-file me-1"></i>${evidencia.fotos}
-                </p>
-                <small class="text-muted">
-                  <i class="bx bx-calendar me-1"></i>${new Date(evidencia.fecha_registro).toLocaleDateString('es-VE')}
-                </small>
-                <div class="text-center mt-2">
-                  <i class="bx bx-check-circle text-success fs-4 ${isSelected ? '' : 'd-none'} check-icon"></i>
+        evidencias.forEach(evidencia => {
+          const isSelected = window.evidenciasSeleccionadas[etapa].includes(evidencia.id_evidencia);
+          const card = `
+            <div class="col-md-3 mb-3">
+              <div class="card modal-evidencia-item h-100 ${isSelected ? 'selected' : ''}" 
+                   data-id="${evidencia.id_evidencia}"
+                   onclick="toggleEvidencia('${etapa}', ${evidencia.id_evidencia}, '${evidencia.url_archivos}', event)">
+                <div class="position-relative">
+                  <span class="badge badge-etapa bg-${etapa === 'antes' ? 'success' : etapa === 'durante' ? 'warning' : 'info'}">
+                    ${etapa.toUpperCase()}
+                  </span>
+                  <img src="${getEvidenciaImageUrl(evidencia.url_archivos)}" alt="${evidencia.fotos}" class="card-img-top" />
+                </div>
+                <div class="card-body p-2">
+                  <p class="mb-1 small text-truncate" title="${evidencia.fotos}">
+                    <i class="bx bx-file me-1"></i>${evidencia.fotos}
+                  </p>
+                  <small class="text-muted">
+                    <i class="bx bx-calendar me-1"></i>${new Date(evidencia.fecha_registro).toLocaleDateString('es-VE')}
+                  </small>
+                  <div class="text-center mt-2">
+                    <i class="bx bx-check-circle text-success fs-4 ${isSelected ? '' : 'd-none'} check-icon"></i>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        `;
+          `;
         container.innerHTML += card;
       });
     } catch (error) {
