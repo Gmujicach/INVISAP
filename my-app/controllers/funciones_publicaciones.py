@@ -6,8 +6,6 @@ def listar_publicaciones_controller():
 
 def registrar_publicacion_controller(data):
     data_form = data.to_dict()
-    if not data_form.get('evidencias'):
-        data_form['evidencias'] = None
     modelo = PublicacionModel()
     return modelo.registrar_publicacion(data_form)
 
@@ -21,7 +19,5 @@ def obtener_publicacion_por_id_controller(id_publicacion):
 
 def actualizar_publicacion_controller(id_publicacion, data):
     data_form = data.to_dict()
-    if not data_form.get('evidencias'):
-        data_form['evidencias'] = None
     modelo = PublicacionModel()
     return modelo.actualizar_publicacion(id_publicacion, data_form)

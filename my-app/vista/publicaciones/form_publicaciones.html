@@ -59,7 +59,7 @@
                             <label for="informe_avance_obra_id_informe" class="form-label">Vincular Informe (Fotos de Obra)</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light"><i class="bi bi-images"></i></span>
-                                <select name="id_informe" id="informe_avance_obra_id_informe" class="form-select" required>
+                                <select name="informe_avance_obra_id_informe" id="informe_avance_obra_id_informe" class="form-select" required>
                                     <option value="" selected disabled>-- Seleccione un informe --</option>
                                     {% for informe in informes %}
                                         <option value="{{ informe.id_informe }}">Informe #{{ informe.id_informe }} - {{ informe.nombre_proyecto }}</option>

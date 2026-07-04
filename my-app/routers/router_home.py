@@ -91,12 +91,10 @@ def api_crear_publicacion():
     try:
         data = request.form
         modelo = PublicacionModel()
-        # Soportar ambos nombres posibles del campo (id_informe o evidencias)
-        id_inf = data.get('id_informe') or data.get('evidencias')
+        id_inf = data.get('informe_avance_obra_id_informe') or data.get('id_informe') or data.get('evidencias')
         
-        # Validación de existencia en tiempo real (Backend)
-        if not modelo.validar_informe_activo(id_inf):
-            return jsonify({'status': 'error', 'message': 'El informe seleccionado no existe o fue eliminado.'}), 400
+        if not id_inf:
+            return jsonify({'status': 'error', 'message': 'Debe seleccionar un informe válido.'}), 400
 
         # Aplicación de setters con validación Regex integrada
         modelo.titulo = data.get('titulo_publicacion')
@@ -141,10 +139,8 @@ def formRegistrarPublicacion():
         data = request.form
         modelo = PublicacionModel()
         
-        # Soportar el ID del informe que viene del HTML
-        id_inf = data.get('id_informe') or data.get('evidencias')
+        id_inf = data.get('informe_avance_obra_id_informe') or data.get('id_informe') or data.get('evidencias')
         
-        # Validación 1: Verificar que el usuario realmente seleccionó un informe
         if not id_inf:
             flash('Debe seleccionar un Informe de Avance de Obra válido.', 'warning')
             return redirect(url_for('home_bp.viewFormPublicaciones'))
@@ -160,7 +156,8 @@ def formRegistrarPublicacion():
             'nombre_responsable': data.get('nombre_responsable') or data.get('autor_publicacion'),
             'tipo_publicacion': data.get('tipo_publicacion', 'General'),
             'fecha_publicacion': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'informe_avance_obra_id_informe': id_inf
+            'informe_avance_obra_id_informe': id_inf,
+            'cuerpo_publicacion': data.get('cuerpo_publicacion', 'Contenido pendiente')
         }
         
         # Llamamos a la BD
