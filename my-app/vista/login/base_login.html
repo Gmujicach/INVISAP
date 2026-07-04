@@ -51,6 +51,9 @@
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='assets/css/my_style.css') }}" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='assets/css/notifications.css') }}" />
 
     <script src="{{ url_for('static', filename='assets/vendor/js/helpers.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
@@ -74,5 +77,6 @@
 
     <!-- Scripts al final del body para mejor rendimiento -->
     <script src="{{ url_for('static', filename='assets/customJS/home.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/notifications.js') }}"></script>
   </body>
 </html>

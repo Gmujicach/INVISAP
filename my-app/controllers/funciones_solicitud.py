@@ -60,5 +60,14 @@ def eliminar_solicitud(id_solicitud) -> dict:
     return {'success': False, 'message': 'No se pudo eliminar la solicitud.'}
 
 def obtener_estadisticas_solicitudes() -> dict:
-    """Retorna estadísticas agrupadas por estatus."""
-    return SolicitudModel.obtener_estadisticas()
+    """Retorna estadísticas agrupadas por estatus con total."""
+    stats = SolicitudModel.obtener_estadisticas()
+    stats['total_solicitudes'] = sum(stats.values()) if stats else 0
+    return stats
+
+def obtener_dashboard_datos() -> dict:
+    stats = obtener_estadisticas_solicitudes()
+    stats['por_tipo'] = SolicitudModel.obtener_estadisticas_por_tipo()
+    stats['por_parroquia'] = SolicitudModel.obtener_estadisticas_por_parroquia()
+    stats['pendientes_priorizadas'] = SolicitudModel.obtener_solicitudes_priorizadas(8)
+    return stats

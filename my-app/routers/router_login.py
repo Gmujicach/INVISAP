@@ -5,6 +5,7 @@ from controllers.funciones_login import *
 from controllers.strategies import AuthContext, DatabaseLoginStrategy
 from services.bitacora_service import BitacoraService
 import re
+from controllers.funciones_solicitud import obtener_dashboard_datos
 
 # Importar el servicio de email
 from app import mail
@@ -25,7 +26,11 @@ PASSWORD_REGEX = r'^(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍ
 @login_bp.route('/', methods=['GET'])
 def inicio():
     if 'conectado' in session:
-        return render_template('base_cpanel.html', dataLogin=dataLoginSesion())
+        stats = obtener_dashboard_datos()
+        return render_template('home/dashboard.html', 
+                               dataLogin=dataLoginSesion(),
+                               stats=stats,
+                               solicitudes_priorizadas=stats.get('pendientes_priorizadas', []))
     else:
         return render_template(f'{PATH_URL_LOGIN}/base_login.html')
 
@@ -115,6 +120,7 @@ def loginCliente():
                 session['id'] = account['id_usuarios']
                 session['name_surname'] = account['nombre']
                 session['email_user'] = account['correo']
+                session['rol'] = account.get('rol', 'Usuario')
                 flash('¡Inicio de sesión exitoso!', 'success')
 
                 BitacoraService.registrar_accion(

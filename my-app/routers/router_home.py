@@ -1,6 +1,7 @@
 from app import app
-from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify, Response
 from mysql.connector.errors import Error
+from conexion.conexionBD import connectionBD
 
 
 # Importando conexión a BD y controladores
@@ -21,6 +22,7 @@ from controllers.controller_empleado import empleado_bp
 from controllers.controller_evidencia import evidencia_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
+from controllers.controller_reportesEstadistico import reporte_estadistico_bp
 from controllers.funciones_proyecto import *
 from controllers.funciones_maquinaria import *
 from models.model_empresas import EmpresaModel
@@ -59,8 +61,9 @@ PATH_URL_REPORTE_ESTADISTICO = "reportes"
 app.register_blueprint(user_bp)
 app.register_blueprint(empleado_bp)
 app.register_blueprint(reporte_excel_bp)
-app.register_blueprint(evidencia_bp)
 app.register_blueprint(reporte_pdf_bp)
+app.register_blueprint(reporte_estadistico_bp)
+app.register_blueprint(evidencia_bp)
 
 @home_bp.route('/registrar-solicitud', methods=['GET'])
 def viewFormSolicitud():
@@ -377,14 +380,6 @@ def viewFormGravedad():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
     
-@home_bp.route('/priorizar-solicitudes', methods=['GET'])
-def viewPriorizarSolicitudes():
-    if 'conectado' in session:
-        return render_template(f'{PATH_URL_IA}/form_priorizar_solicitudes.html')
-    else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-
 @home_bp.route('/gestionar-prioridad', methods=['GET'])
 def viewFormPrioridad():
     if 'conectado' in session:
@@ -954,6 +949,104 @@ def viewFormReportesEstadisticos():
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+
+
+@app.route('/api/dashboard/grafico-tipos', methods=['GET'])
+def api_dashboard_grafico_tipos():
+    if 'conectado' not in session:
+        return Response('No autorizado', status=401)
+    
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from io import BytesIO
+    
+    try:
+        datos = SolicitudModel.obtener_estadisticas_por_tipo()
+    except Exception:
+        datos = {}
+    
+    labels = list(datos.keys()) if datos else ['Sin datos']
+    valores = [int(v) for v in datos.values()] if datos else [0]
+    
+    buffer = BytesIO()
+    fig, ax = plt.subplots(figsize=(6, 3))
+    colores = ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1', '#20c997']
+    ax.bar(labels, valores, color=colores[:len(labels)])
+    ax.set_title('Solicitudes por Tipo')
+    ax.set_ylabel('Cantidad')
+    ax.set_xlabel('Tipo')
+    fig.tight_layout()
+    fig.savefig(buffer, format='png', dpi=100)
+    buffer.seek(0)
+    plt.close(fig)
+    return Response(buffer.read(), mimetype='image/png')
+
+
+@app.route('/api/dashboard/grafico-estatus', methods=['GET'])
+def api_dashboard_grafico_estatus():
+    if 'conectado' not in session:
+        return Response('No autorizado', status=401)
+    
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from io import BytesIO
+    
+    try:
+        datos = SolicitudModel.obtener_estadisticas()
+    except Exception:
+        datos = {}
+    
+    labels = list(datos.keys()) if datos else ['Sin datos']
+    valores = [int(v) for v in datos.values()] if datos else [0]
+    
+    buffer = BytesIO()
+    fig, ax = plt.subplots(figsize=(5, 3))
+    colores = ['#ffc107', '#0dcaf0', '#198754', '#6f42c1', '#dc3545']
+    wedges, texts, autotexts = ax.pie(valores, labels=labels, autopct='%1.1f%%', colors=colores[:len(labels)], startangle=90)
+    ax.set_title('Distribución por Estatus')
+    fig.tight_layout()
+    fig.savefig(buffer, format='png', dpi=100)
+    buffer.seek(0)
+    plt.close(fig)
+    return Response(buffer.read(), mimetype='image/png')
+
+
+@app.route('/api/dashboard/grafico-parroquias', methods=['GET'])
+def api_dashboard_grafico_parroquias():
+    if 'conectado' not in session:
+        return Response('No autorizado', status=401)
+    
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from io import BytesIO
+    
+    try:
+        rows = SolicitudModel.obtener_estadisticas_por_parroquia()
+    except Exception:
+        rows = []
+    
+    if rows:
+        labels = [r['parroquia'] for r in rows]
+        valores = [int(r['total']) for r in rows]
+    else:
+        labels = ['Sin datos']
+        valores = [0]
+    
+    buffer = BytesIO()
+    fig, ax = plt.subplots(figsize=(6, 3))
+    colores = ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1', '#20c997', '#fd7e14', '#20c997']
+    ax.barh(labels, valores, color=colores[:len(labels)])
+    ax.set_title('Solicitudes por Parroquia')
+    ax.set_xlabel('Cantidad')
+    fig.tight_layout()
+    fig.savefig(buffer, format='png', dpi=100)
+    buffer.seek(0)
+    plt.close(fig)
+    return Response(buffer.read(), mimetype='image/png')
+
 
 # Registrar el blueprint en la aplicación
 app.register_blueprint(home_bp)

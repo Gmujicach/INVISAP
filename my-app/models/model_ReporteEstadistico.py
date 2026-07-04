@@ -1,17 +1,44 @@
-class ReporteEstadisticoModel:
-    def __init__(self, db_connection):
-        self.conn = db_connection
+from conexion.conexionBD import connectionBD
 
-    def obtener_estadisticas_por_modulo(self, tabla_modulo):
-        """
-        Consulta parametrizada para evitar inyecciones.
-        Recibe el nombre de la tabla y retorna datos para los gráficos.
-        """
-        cursor = self.conn.cursor(dictionary=True)
-        query = "SELECT fecha_registro as label, COUNT(*) as valor FROM %s GROUP BY fecha_registro" % tabla_modulo
-        
+
+class ReporteEstadisticoModel:
+    def __init__(self):
+        pass
+
+    def obtener_estadisticas_solicitudes(self, filtro=None):
+        conexion = connectionBD()
+        cursor = conexion.cursor(dictionary=True)
         try:
-            cursor.execute(query) # OJO: Si el nombre de tabla es variable, valida siempre antes
-            return cursor.fetchall()
+            stats = {}
+
+            cursor.execute("""
+                SELECT tipo_solicitud as label, COUNT(*) as valor 
+                FROM solicitudes 
+                GROUP BY tipo_solicitud
+            """)
+            stats['por_tipo'] = cursor.fetchall()
+
+            cursor.execute("""
+                SELECT estatus_solicitud as label, COUNT(*) as valor 
+                FROM solicitudes 
+                GROUP BY estatus_solicitud
+            """)
+            stats['por_estatus'] = cursor.fetchall()
+
+            query_fecha = """
+                SELECT DATE(fecha) as label, COUNT(*) as valor 
+                FROM solicitudes 
+            """
+            params = []
+            if filtro:
+                query_fecha += " WHERE tipo_solicitud LIKE %s OR estatus_solicitud LIKE %s"
+                search = f"%{filtro}%"
+                params = [search, search]
+            query_fecha += " GROUP BY DATE(fecha) ORDER BY label ASC"
+            cursor.execute(query_fecha, params)
+            stats['por_fecha'] = cursor.fetchall()
+
+            return stats
         finally:
             cursor.close()
+            conexion.close()

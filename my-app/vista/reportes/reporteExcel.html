@@ -40,26 +40,26 @@
         </form>
       </div>
 
-      {% if empleados %}
+      {% if publicaciones %}
       <div class="card-footer bg-white p-4">
-        <h5 class="fw-bold mb-3">Vista Previa de Empleados</h5>
+        <h5 class="fw-bold mb-3">Vista Previa de Publicaciones</h5>
         <div class="table-responsive">
           <table class="table table-striped table-hover">
             <thead class="table-dark">
               <tr>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Profesión</th>
-                <th>Salario</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Fecha</th>
+                <th>Tipo</th>
               </tr>
             </thead>
             <tbody>
-              {% for emp in empleados %}
+              {% for pub in publicaciones %}
               <tr>
-                <td>{{ emp.nombre_empleado }} {{ emp.apellido_empleado }}</td>
-                <td>{{ emp.email_empleado }}</td>
-                <td>{{ emp.profesion_empleado }}</td>
-                <td>{{ "{:,.0f}".format(emp.salario_empleado) }}</td>
+                <td class="fw-bold">{{ pub.titulo_publicacion }}</td>
+                <td>{{ pub.autor_publicacion }}</td>
+                <td>{{ pub.fecha_formateada }}</td>
+                <td>{{ pub.tipo_publicacion }}</td>
               </tr>
               {% endfor %}
             </tbody>

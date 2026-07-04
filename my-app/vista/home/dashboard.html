@@ -1,0 +1,154 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}Sistema de Control de Solicitudes | Dashboard{% endblock %}
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+  <div class="row align-items-center mb-4">
+    <div class="col">
+      <h2 class="fw-bold mb-1 text-heading">Sistema de Información para el Control de Solicitudes</h2>
+      <p class="text-muted mb-0">Módulo de Análisis y Priorización - Gerencia de Gestión Comunicacional<br>
+      Instituto de Vialidad del Estado Lara (INVILARA) - Barquisimeto, Edo. Lara - Parroquia Concepción</p>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-md-3 col-sm-6">
+      <div class="dashboard-card h-100">
+        <div class="card-body d-flex align-items-center">
+          <div class="card-icon bg-primary-soft">
+            <i class="bi bi-list-task text-primary"></i>
+          </div>
+          <div class="ms-3">
+            <h6 class="text-muted text-uppercase mb-1" style="font-size: 0.75rem;">Total Solicitudes</h6>
+            <h3 class="mb-0 fw-bold">{{ stats.get('total_solicitudes', 0) }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="dashboard-card h-100">
+        <div class="card-body d-flex align-items-center">
+          <div class="card-icon bg-warning-soft">
+            <i class="bi bi-clock-history text-warning"></i>
+          </div>
+          <div class="ms-3">
+            <h6 class="text-muted text-uppercase mb-1" style="font-size: 0.75rem;">Pendientes</h6>
+            <h3 class="mb-0 fw-bold">{{ stats.get('Pendiente', 0) + stats.get('PENDIENTE', 0) }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="dashboard-card h-100">
+        <div class="card-body d-flex align-items-center">
+          <div class="card-icon bg-info-soft">
+            <i class="bi bi-arrow-repeat text-info"></i>
+          </div>
+          <div class="ms-3">
+            <h6 class="text-muted text-uppercase mb-1" style="font-size: 0.75rem;">En Proceso</h6>
+            <h3 class="mb-0 fw-bold">{{ stats.get('En Proceso', 0) }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+      <div class="dashboard-card h-100">
+        <div class="card-body d-flex align-items-center">
+          <div class="card-icon bg-success-soft">
+            <i class="bi bi-check-circle text-success"></i>
+          </div>
+          <div class="ms-3">
+            <h6 class="text-muted text-uppercase mb-1" style="font-size: 0.75rem;">Completadas / Procesadas</h6>
+            <h3 class="mb-0 fw-bold">{{ stats.get('Completada', 0) + stats.get('Procesada', 0) }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-lg-6">
+      <div class="dashboard-card h-100">
+        <div class="card-header border-0 py-3">
+          <h5 class="mb-0 fw-semibold"><i class="bi bi-bar-chart text-primary me-2"></i>Análisis por Tipo de Solicitud</h5>
+        </div>
+        <div class="card-body text-center py-3">
+          <img src="{{ url_for('api_dashboard_grafico_tipos') }}" class="img-fluid" alt="Gráfico Tipos de Solicitud" style="max-height: 300px;">
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="dashboard-card h-100">
+        <div class="card-header border-0 py-3">
+          <h5 class="mb-0 fw-semibold"><i class="bi bi-pie-chart text-info me-2"></i>Distribución por Estatus</h5>
+        </div>
+        <div class="card-body text-center py-3">
+          <img src="{{ url_for('api_dashboard_grafico_estatus') }}" class="img-fluid" alt="Gráfico Estatus de Solicitud" style="max-height: 300px;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-lg-6">
+      <div class="dashboard-card h-100">
+        <div class="card-header border-0 py-3">
+          <h5 class="mb-0 fw-semibold"><i class="bi bi-map text-success me-2"></i>Análisis por Parroquia</h5>
+        </div>
+        <div class="card-body text-center py-3">
+          <img src="{{ url_for('api_dashboard_grafico_parroquias') }}" class="img-fluid" alt="Gráfico por Parroquia" style="max-height: 300px;">
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="dashboard-card h-100">
+        <div class="card-header border-0 py-3">
+          <h5 class="mb-0 fw-semibold"><i class="bi bi-fire text-danger me-2"></i>Módulo de Priorización</h5>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>#</th>
+                  <th>Fecha</th>
+                  <th>Tipo</th>
+                  <th>Problemática</th>
+                  <th>Parroquia</th>
+                  <th>Prioridad</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for sol in solicitudes_priorizadas %}
+                <tr>
+                  <td class="fw-bold">{{ sol.id_solicitudes }}</td>
+                  <td>{{ sol.fecha_formateada }}</td>
+                  <td>
+                    <span class="badge bg-{% if sol.tipo_solicitud == 'Comunidad' %}info{% elif sol.tipo_solicitud == 'Particular' %}warning{% else %}secondary{% endif %}">
+                      {{ sol.tipo_solicitud }}
+                    </span>
+                  </td>
+                  <td>{{ sol.problematica[:60] }}{% if sol.problematica|length > 60 %}...{% endif %}</td>
+                  <td>{{ sol.parroquia }}</td>
+                  <td>
+                    <span class="badge bg-{% if sol.prioridad <= 2 %}danger{% elif sol.prioridad <= 4 %}warning{% else %}success{% endif %}">
+                      {{ sol.prioridad }}
+                    </span>
+                  </td>
+                </tr>
+                {% else %}
+                <tr>
+                  <td colspan="6" class="text-center text-muted py-4">No hay solicitudes pendientes para priorizar.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

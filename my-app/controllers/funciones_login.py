@@ -167,9 +167,24 @@ def updatePefilSinPass(id_user, name_surname):
 
 
 def dataLoginSesion():
-    inforLogin = {
-        "id": session['id'],
-        "name_surname": session['name_surname'],
-        "email_user": session['email_user']
-    }
-    return inforLogin
+    try:
+        conexion_MySQLdb = connectionBD_seguridad()
+        cursor = conexion_MySQLdb.cursor(dictionary=True)
+        try:
+            querySQL = "SELECT nombre, correo, rol FROM usuarios WHERE id_usuarios = %s"
+            cursor.execute(querySQL, (session['id'],))
+            info_perfil = cursor.fetchone()
+            if not info_perfil:
+                return {}
+            return {
+                "id": session['id'],
+                "name_surname": session['name_surname'],
+                "email_user": session['email_user'],
+                "rol": info_perfil.get('rol', 'Usuario')
+            }
+        finally:
+            cursor.close()
+            conexion_MySQLdb.close()
+    except Exception as e:
+        print(f"Error en info_perfil_session : {e}")
+        return {}

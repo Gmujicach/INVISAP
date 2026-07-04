@@ -1,0 +1,84 @@
+/* Dashboard Home Styles - Sistema Invilara */
+
+:root {
+  --dashboard-bg: #f5f7fa;
+  --dashboard-surface: #ffffff;
+  --dashboard-accent: #08b324;
+  --dashboard-border-radius: 12px;
+}
+
+body.dark-mode {
+  --dashboard-bg: #232333;
+  --dashboard-surface: #2b2c40;
+}
+
+.dashboard-wrapper {
+  background: var(--dashboard-bg);
+  min-height: 100vh;
+}
+
+.dashboard-card {
+  background: var(--dashboard-surface);
+  border-radius: var(--dashboard-border-radius);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.bg-primary-soft { background: rgba(105, 110, 255, 0.12); }
+.bg-warning-soft { background: rgba(255, 193, 7, 0.12); }
+.bg-info-soft { background: rgba(23, 162, 184, 0.12); }
+.bg-success-soft { background: rgba(40, 167, 69, 0.12); }
+.bg-purple { color: #6f42c1; }
+
+.action-card {
+  background: var(--dashboard-surface);
+  border-radius: var(--dashboard-border-radius);
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+.action-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.15);
+  border-color: var(--dashboard-accent);
+}
+
+.action-card:hover i {
+  transform: scale(1.1);
+  color: var(--dashboard-accent) !important;
+}
+
+.action-card i {
+  transition: all 0.25s ease;
+}
+
+.text-heading {
+  color: #222;
+}
+
+body.dark-mode .text-heading {
+  color: #cfcde9;
+}
+
+.card-header {
+  background: transparent;
+}
