@@ -34,10 +34,10 @@ class EmailService:
     
     def __generate_otp(self):
         """
-        Método privado para generar código OTP de 6 dígitos
+        Método privado para generar código OTP de 4 dígitos
         Aplicando encapsulamiento según Prof. Escalona
         """
-        return ''.join(random.choices(string.digits, k=6))
+        return ''.join(random.choices(string.digits, k=4))
     
     def __get_email_template(self, otp_code, nombre_usuario):
         """
@@ -116,7 +116,7 @@ class EmailService:
                     font-size: 48px;
                     font-weight: bold;
                     color: #2ecc71;
-                    letter-spacing: 8px;
+                    letter-spacing: 12px;
                     font-family: 'Courier New', monospace;
                     text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
                 }}
@@ -293,26 +293,40 @@ class EmailService:
         """
         Método público para enviar email con OTP
         Retorna: (success: bool, otp_code: str, message: str)
+        El OTP se guarda en BD independientemente de si se envía el email
         """
         try:
             # Generar OTP
             otp_code = self.__generate_otp()
             
-            # Guardar en BD
+            # Guardar en BD primero
             if not self.__save_otp_to_database(correo, otp_code):
                 return False, None, "Error al guardar el código de verificación"
             
-            # Preparar email
-            msg = Message(
-                subject="Código de Recuperación - Sistema INVILARA",
-                recipients=[correo],
-                html=self.__get_email_template(otp_code, nombre_usuario)
+            # Verificar si el email está configurado
+            mail_username = self.__mail.app.config.get('MAIL_USERNAME', '')
+            mail_password = self.__mail.app.config.get('MAIL_PASSWORD', '')
+            is_email_configured = (
+                mail_username and 
+                mail_password and 
+                mail_username != 'tu-correo@gmail.com' and
+                mail_password != 'tu-contraseña-de-aplicacion'
             )
             
-            # Enviar email
-            self.__mail.send(msg)
-            
-            return True, otp_code, "Código enviado exitosamente"
+            if is_email_configured:
+                # Preparar y enviar email
+                msg = Message(
+                    subject="Código de Recuperación - Sistema INVILARA",
+                    recipients=[correo],
+                    html=self.__get_email_template(otp_code, nombre_usuario)
+                )
+                self.__mail.send(msg)
+                return True, otp_code, "Código enviado exitosamente"
+            else:
+                # Modo testing/demo: OTP guardado pero no enviado por email
+                # El código se mostrará en la interfaz
+                print(f"[TESTING] OTP generado para {correo}: {otp_code}")
+                return True, otp_code, "Código generado (modo prueba - ver en consola)"
             
         except Exception as e:
             print(f"Error al enviar email: {e}")
