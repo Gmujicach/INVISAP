@@ -5,7 +5,6 @@
 {% block body %}
 <div class="row justify-content-center">
   <div class="col-xl-10 col-lg-12">
-    <!-- Organism: Profile Container -->
     <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 15px !important">
       <div class="card-header bg-primary py-4">
         <h3 class="text-white text-center mb-0 fw-bold"><i class="bi bi-person-workspace me-2"></i>AJUSTES DE MI PERFIL</h3>
@@ -15,36 +14,35 @@
         <form class="organism-profile-form" method="POST" action="{{ url_for('login_bp.actualizarPerfil') }}" enctype="multipart/form-data">
           <div class="row">
             
-            <!-- Molecule: Avatar Section -->
             <div class="col-lg-4 mb-5 mb-lg-0 border-end-lg d-flex flex-column align-items-center justify-content-center">
-                <div class="position-relative molecule-avatar-upload">
-                    <img id="avatar-preview" 
-                         src="{{ url_for('static', filename='assets/img/avatars/1.png') }}" 
-                         class="rounded-circle shadow-sm border p-1 atom-avatar" 
-                         style="width: 180px; height: 180px; object-fit: cover;"
-                         alt="Avatar">
-                    <label for="profile_img" class="btn btn-primary btn-icon rounded-circle position-absolute bottom-0 end-0 shadow" 
-                           style="width: 45px; height: 45px; cursor: pointer;">
-                        <i class="bi bi-camera-fill fs-5"></i>
-                        <input type="file" id="profile_img" name="profile_img" hidden accept="image/*">
-                    </label>
-                </div>
-                <div class="text-center mt-3">
-                  <h5 class="fw-bold mb-1">{{ info_perfil_session[0]['name_surname'] }}</h5>
-                  <span class="badge bg-label-primary rounded-pill px-3">Usuario del Sistema</span>
-                </div>
+              <div class="position-relative molecule-avatar-upload">
+                <img id="avatar-preview" 
+                     src="{{ url_for('static', filename=info_perfil_session[0]['avatar'] if info_perfil_session[0].get('avatar') else 'assets/img/avatars/1.png') }}" 
+                     class="rounded-circle shadow-sm border p-1 atom-avatar" 
+                     style="width: 180px; height: 180px; object-fit: cover;"
+                     alt="Avatar"
+                     onerror="this.src='{{ url_for('static', filename='assets/img/avatars/1.png') }}'">
+                <label for="profile_img" class="btn btn-primary btn-icon rounded-circle position-absolute bottom-0 end-0 shadow" 
+                       style="width: 45px; height: 45px; cursor: pointer;">
+                  <i class="bi bi-camera-fill fs-5"></i>
+                  <input type="file" id="profile_img" name="profile_img" hidden accept="image/*">
+                </label>
+              </div>
+              <div class="text-center mt-3">
+                <h5 class="fw-bold mb-1">{{ info_perfil_session[0]['name_surname'] }}</h5>
+                <span class="badge bg-label-primary rounded-pill px-3">Usuario del Sistema</span>
+              </div>
             </div>
 
-            <!-- Molecule: Data Section -->
             <div class="col-lg-8">
               <div class="row g-4">
                 <div class="col-md-6">
-                  <label class="atom-label form-label fw-bold"><i class="bi bi-person me-1"></i>Nombre de Usuario</label>
-                  <input type="text" name="name_surname" value="{{ info_perfil_session[0]['name_surname'] }}" class="atom-input form-control" required>
+                  <label for="name_surname" class="atom-label form-label fw-bold"><i class="bi bi-person me-1"></i>Nombre de Usuario</label>
+                  <input type="text" id="name_surname" name="name_surname" value="{{ info_perfil_session[0]['name_surname'] }}" class="atom-input form-control" required>
                 </div>
                 <div class="col-md-6">
-                  <label class="atom-label form-label fw-bold"><i class="bi bi-envelope me-1"></i>Email</label>
-                  <input class="atom-input form-control bg-light" type="email" name="email_user" value="{{ info_perfil_session[0]['email_user'] }}" readonly>
+                  <label for="email_user" class="atom-label form-label fw-bold"><i class="bi bi-envelope me-1"></i>Email</label>
+                  <input id="email_user" class="atom-input form-control bg-light" type="email" name="email_user" value="{{ info_perfil_session[0]['email_user'] }}" readonly>
                 </div>
                 
                 <div class="col-12 mt-4 pt-2">
@@ -52,11 +50,10 @@
                   <hr class="mt-1">
                 </div>
 
-                <!-- Molecule: Password Groups -->
                 <div class="col-12 molecule-password-field">
-                  <label class="atom-label form-label fw-bold text-danger">Contraseña Actual <span class="text-muted fw-normal">(Obligatorio para cambios)</span></label>
+                  <label for="pass_actual" class="atom-label form-label fw-bold text-danger">Contraseña Actual <span class="text-muted fw-normal">(Obligatorio para cambios)</span></label>
                   <div class="input-group input-group-merge">
-                    <input type="password" name="pass_actual" class="atom-input form-control password-input" placeholder="Confirma tu clave para validar cambios" required>
+                    <input type="password" id="pass_actual" name="pass_actual" class="atom-input form-control password-input" placeholder="Confirma tu clave para validar cambios" required>
                     <button class="btn btn-outline-secondary password-toggle-btn border-start-0" type="button">
                       <i class="bi bi-eye-slash toggle-icon fs-5"></i>
                     </button>
@@ -64,9 +61,9 @@
                 </div>
 
                 <div class="col-md-6 molecule-password-field">
-                  <label class="atom-label form-label fw-bold">Nueva Contraseña</label>
+                  <label for="new_pass_user" class="atom-label form-label fw-bold">Nueva Contraseña</label>
                   <div class="input-group input-group-merge">
-                    <input type="password" name="new_pass_user" class="atom-input form-control password-input" placeholder="Min. 8 caracteres">
+                    <input type="password" id="new_pass_user" name="new_pass_user" class="atom-input form-control password-input" placeholder="Min. 8 caracteres">
                     <button class="btn btn-outline-secondary password-toggle-btn border-start-0" type="button">
                       <i class="bi bi-eye-slash toggle-icon fs-5"></i>
                     </button>
@@ -74,9 +71,9 @@
                 </div>
 
                 <div class="col-md-6 molecule-password-field">
-                  <label class="atom-label form-label fw-bold">Repetir Nueva Contraseña</label>
+                  <label for="repetir_pass_user" class="atom-label form-label fw-bold">Repetir Nueva Contraseña</label>
                   <div class="input-group input-group-merge">
-                    <input type="password" name="repetir_pass_user" class="atom-input form-control password-input" placeholder="Repite la clave nueva">
+                    <input type="password" id="repetir_pass_user" name="repetir_pass_user" class="atom-input form-control password-input" placeholder="Repite la clave nueva">
                     <button class="btn btn-outline-secondary password-toggle-btn border-start-0" type="button">
                       <i class="bi bi-eye-slash toggle-icon fs-5"></i>
                     </button>
@@ -86,7 +83,7 @@
 
               <div class="mt-5 d-flex flex-column flex-sm-row gap-3 justify-content-center justify-content-lg-start">
                 <button type="submit" class="atom-button btn btn-primary px-5 py-2 rounded-pill shadow-sm fw-bold">
-                  <i class="bi bi-arrow-repeat me-2"></i> ACTUALIZAR MIS DATOS
+                  <i class="bi bi-arrow-clockwise me-2"></i> GUARDAR CAMBIOS
                 </button>
                 <button type="reset" class="btn btn-outline-secondary px-5 py-2 rounded-pill fw-bold">
                   <i class="bi bi-x-circle me-2"></i> CANCELAR

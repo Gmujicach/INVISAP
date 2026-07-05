@@ -1,14 +1,21 @@
 from werkzeug.security import generate_password_hash
+import os
 from conexion.conexionBD import connectionBD_seguridad
 
+DEFAULT_AVATAR = 'assets/img/avatars/1.png'
+
 class UsuarioModel:
-    def __init__(self, id_usuarios=None, nombre=None, correo=None, contrasena=None, cedula=None, rol='Usuario'):
+    def __init__(self, id_usuarios=None, nombre=None, correo=None, contrasena=None, cedula=None, rol='Usuario', avatar=None):
         self.__id_usuarios = id_usuarios # Privado
         self.__nombre = nombre           # Privado
         self.__correo = correo           # Privado
         self.__contrasena = contrasena   # Privado
         self.__cedula = cedula           # Privado
         self.__rol = rol                 # Privado
+        self.__avatar = avatar           # Privado
+    
+    def get_avatar(self): return self.__avatar
+    def set_avatar(self, val): self.__avatar = val
 
     # --- GETTERS Y SETTERS ---
     def get_id(self): return self.__id_usuarios
@@ -65,9 +72,14 @@ class UsuarioModel:
         if not conn: return []
         try:
             cursor = conn.cursor(dictionary=True)
-            sql = "SELECT id_usuarios, nombre, correo, cedula_usuario, rol FROM usuarios"
+            sql = "SELECT id_usuarios, nombre, correo, cedula_usuario, rol, avatar FROM usuarios"
             cursor.execute(sql)
-            return cursor.fetchall()
+            users = cursor.fetchall()
+            # Asignar avatar por defecto si no tiene
+            for user in users:
+                if not user.get('avatar'):
+                    user['avatar'] = DEFAULT_AVATAR
+            return users
         finally:
             cursor.close()
             conn.close()
@@ -77,9 +89,13 @@ class UsuarioModel:
         if not conn: return None
         try:
             cursor = conn.cursor(dictionary=True)
-            sql = "SELECT id_usuarios, nombre, correo, cedula_usuario, rol FROM usuarios WHERE id_usuarios = %s"
+            sql = "SELECT id_usuarios, nombre, correo, cedula_usuario, rol, avatar FROM usuarios WHERE id_usuarios = %s"
             cursor.execute(sql, (id_usuario,))
-            return cursor.fetchone()
+            user = cursor.fetchone()
+            # Asignar avatar por defecto si no tiene
+            if user and not user.get('avatar'):
+                user['avatar'] = DEFAULT_AVATAR
+            return user
         finally:
             cursor.close()
             conn.close()

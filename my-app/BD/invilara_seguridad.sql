@@ -281,16 +281,17 @@ INSERT INTO `bitacora` (`id_bitacora`, `usuario`, `id_modulo`, `modulo`, `accion
 --
 
 CREATE TABLE `usuarios` (
-  `id_usuarios` int NOT NULL,
+  `id_usuarios` int NOT NULL AUTO_INCREMENT,
   `nombre` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
   `cedula_usuario` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
   `contrasena` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
   `correo` varchar(45) COLLATE utf8mb4_general_ci NOT NULL,
   `rol` varchar(20) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Tabla de los usuarios.',
-  `otp_code` varchar(6) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Código OTP de 6 dígitos',
+  `otp_code` varchar(4) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Código OTP de 4 dígitos',
   `otp_expiry` datetime DEFAULT NULL COMMENT 'Fecha de expiración del OTP',
   `otp_attempts` int DEFAULT '0' COMMENT 'Intentos fallidos de OTP',
-  `estado` tinyint(1) NOT NULL
+  `estado` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1 para activo, 0 para inactivo',
+  `avatar` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'assets/img/avatars/1.png' COMMENT 'Foto de perfil del usuario'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla de usuarios';
 
 --
@@ -298,11 +299,11 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuarios`, `nombre`, `cedula_usuario`, `contrasena`, `correo`, `rol`, `otp_code`, `otp_expiry`, `otp_attempts`, `estado`) VALUES
-(1, 'admin', '12345678', 'pbkdf2:sha256:600000$55dFI8r0mPOkdiR2$a437b96290e42be3cc8c847fb37c088aafc6894dddc904465813a5e849da2e6d', 'admin@gmail.com', 'Super Usuario', NULL, NULL, 0, 0),
-(2, 'David Peña', '30304373', 'pbkdf2:sha256:600000$vrPeCy7DriZsqNf1$261a031113df36adffa0ccf133b61b5fcbb7080e3ae6d163d47704bbf6e12955', 'davidalejandropegaso@gmail.com', 'Usuario', NULL, NULL, 0, 0),
-(3, 'prueba1', '09321765', 'pbkdf2:sha256:600000$MLVBG6gIQHOhds5b$206e5507217733b5cd32f778b54b56fa95ce47f9aab8f0ea48257e3fde959562', 'prueba@gmail.com', 'Usuario', NULL, NULL, 0, 0),
-(4, 'Lenny Reyes', '10841560', 'pbkdf2:sha256:600000$A8g1Hf9g4gUXVJld$d2f0cf10d88ab5ad03b13c4221dd86425f555076bd0dffe355c0f4ab79999cfb', 'reyeslennyf72@gmail.com', 'Usuario', NULL, NULL, 0, 0),
-(5, 'Frangher Pereira', '30553759', 'pbkdf2:sha256:600000$9RdO5FjhNZDoOLuo$de664dbbbba289ba9504edab378fbd6eca14c1b1cb982e5ce8284e18920365f7', 'frangher200@gmail.com', 'Usuario', NULL, NULL, 0, 0);
+(1, 'admin', '12345678', 'pbkdf2:sha256:600000$55dFI8r0mPOkdiR2$a437b96290e42be3cc8c847fb37c088aafc6894dddc904465813a5e849da2e6d', 'admin@gmail.com', 'Super Usuario', NULL, NULL, 0, 1),
+(2, 'David Peña', '30304373', 'pbkdf2:sha256:600000$vrPeCy7DriZsqNf1$261a031113df36adffa0ccf133b61b5fcbb7080e3ae6d163d47704bbf6e12955', 'davidalejandropegaso@gmail.com', 'Usuario', NULL, NULL, 0, 1),
+(3, 'prueba1', '09321765', 'pbkdf2:sha256:600000$MLVBG6gIQHOhds5b$206e5507217733b5cd32f778b54b56fa95ce47f9aab8f0ea48257e3fde959562', 'prueba@gmail.com', 'Usuario', NULL, NULL, 0, 1),
+(4, 'Lenny Reyes', '10841560', 'pbkdf2:sha256:600000$A8g1Hf9g4gUXVJld$d2f0cf10d88ab5ad03b13c4221dd86425f555076bd0dffe355c0f4ab79999cfb', 'reyeslennyf72@gmail.com', 'Usuario', NULL, NULL, 0, 1),
+(5, 'Frangher Pereira', '30553759', 'pbkdf2:sha256:600000$9RdO5FjhNZDoOLuo$de664dbbbba289ba9504edab378fbd6eca14c1b1cb982e5ce8284e18920365f7', 'frangher200@gmail.com', 'Usuario', NULL, NULL, 0, 1);
 
 --
 -- Índices para tablas volcadas

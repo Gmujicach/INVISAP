@@ -9,7 +9,7 @@
           <div class="app-brand justify-content-center">
             <span class="app-brand-logo">
               <img
-                src="{{ url_for('static', filename ='assets/img/NUEVO LOGO GOBERNACION DE LARA JUNIO 2025.png') }}"
+                src="{{ url_for('static', filename='assets/img/NUEVO LOGO GOBERNACION DE LARA JUNIO 2025.png') }}"
                 alt="Logo" 
                 style="max-height: 85px; max-width: 160px; object-fit: contain; width: auto; height: auto;" />
             </span>
@@ -58,7 +58,6 @@
                 </button>
               </div>
 
-              <!-- ✅ Indicador de fortaleza (añadido) -->
               <div class="password-strength-widget d-none mt-2">
                 <ul class="list-unstyled mb-2">
                   <li class="rule-item transition-all" data-rule="length">
@@ -80,6 +79,33 @@
               </div>
             </div>
 
+            <!-- CAPTCHA: No Soy Robot -->
+            <div class="captcha-container">
+              <div class="captcha-checkbox">
+                <input type="checkbox" id="captcha-checkbox" required />
+                <label for="captcha-checkbox">
+                  <i class="bi bi-shield-check text-primary me-1"></i>
+                  Confirmo que <strong>no soy un robot</strong>
+                </label>
+              </div>
+
+              <!-- Desafío de imágenes (se activa si se detecta comportamiento de bot) -->
+              <div class="image-challenge" id="image-challenge">
+                <div class="challenge-title">
+                  Selecciona todas las imágenes con <strong>infraestructura</strong>
+                </div>
+                <div class="image-grid">
+                  <!-- Las imágenes se generan dinámicamente con JavaScript -->
+                </div>
+                <div id="image-challenge-error" class="captcha-error" style="display: none;"></div>
+                <button type="button" id="verify-captcha" class="btn btn-primary btn-sm w-100">
+                  <i class="bi bi-check-circle me-1"></i>Verificar selección
+                </button>
+              </div>
+
+              <div id="captcha-error" class="captcha-error" style="display: none;"></div>
+            </div>
+
             <div class="mb-3 pt-2">
               <button class="btn btn-primary w-100 py-2 fw-semibold d-flex align-items-center justify-content-center" type="submit">
                 <span>Iniciar Sesión</span>
@@ -99,6 +125,5 @@
   </div>
 </div>
 
-<!-- Script de JS-->
 <script src="{{ url_for('static', filename='assets/js/login.js') }}"></script>
 {% endblock %}
