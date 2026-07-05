@@ -78,6 +78,9 @@ class ProyectoModel:
                          solicitudes_persona_id_persona, solicitudes_prioridad_id_gestion_prioridad) 
                         VALUES (%s, %s, %s, %s)"""
                     cursor.execute(sql_solicitud, (codigo_proy, id_solicitud, id_persona, id_prioridad))
+                    
+                    # Actualizar estado de la solicitud a 'En Proceso'
+                    cursor.execute("UPDATE solicitudes SET estatus_solicitud = %s WHERE id_solicitudes = %s", ('En Proceso', id_solicitud))
                 else:
                     raise Exception(f"No se encontraron los datos compuestos para la solicitud ID: {id_solicitud}")
 

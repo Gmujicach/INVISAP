@@ -120,8 +120,8 @@
         <div class="modal-body">
           <div class="d-flex justify-content-between align-items-center p-3 mb-4 rounded" style="background-color: #f8f9fa; border-left: 4px solid #F9A800;">
             <div>
-              <span class="fw-bold d-block text-dark" style="font-size: 0.9rem;">¿Necesitas asociar una solicitud activa?</span>
-              <small class="text-muted">Consulta el historial de solicitudes registradas y su estado</small>
+              <span class="fw-bold d-block text-dark" style="font-size: 0.9rem;">¿Necesitas asociar una solicitud pendiente?</span>
+              <small class="text-muted">Las solicitudes se actualizarán automáticamente a "En Proceso" al seleccionarlas</small>
               <div id="solicitud_error_message" class="text-danger fw-bold mt-2 d-none">
                 Debe seleccionar una solicitud para registrar un proyecto.
               </div>
@@ -132,7 +132,7 @@
                     data-bs-toggle="modal" 
                     data-bs-target="#modalSolicitudes"
                     style="background-color: #F9A800; transition: background 0.3s ease;">
-              <i class="bx bx-list-ul me-1 align-middle"></i> Ver Solicitudes
+              <i class="bx bx-list-ul me-1 align-middle"></i> Ver Solicitudes Pendientes
             </button>
           </div>
 
@@ -225,9 +225,9 @@
       <div class="modal-header bg-dark text-white">
         <div>
           <h5 class="modal-title fw-bold text-white" id="modalSolicitudesLabel">
-            <i class="bx bx-transfer me-1 text-warning"></i> Historial de Solicitudes Activas
+            <i class="bx bx-transfer me-1 text-warning"></i> Solicitudes Pendientes
           </h5>
-          <small class="text-light-50">Transacciones de inspección técnica registradas</small>
+          <small class="text-light-50">Solicitudes con estado 'Pendiente' disponibles para asociar a proyecto</small>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
     <i class="bx bx-x" style="font-size: 24px;"></i>
@@ -330,7 +330,7 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
         </tr>`;
 
     // Realizamos la petición a tu endpoint de Flask
-    fetch("{{ url_for('home_bp.api_obtener_solicitudes_json') }}")
+    fetch("{{ url_for('home_bp.api_obtener_solicitudes_pendientes_json') }}")
         .then(response => {
             if (!response.ok) throw new Error('Error en la respuesta del servidor');
             return response.json();
@@ -339,7 +339,7 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
             let contenidoHTML = ''; 
 
             if (!data || data.length === 0) {
-                tablaCuerpo.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">No hay solicitudes registradas en este momento.</td></tr>`;
+                tablaCuerpo.innerHTML = `<tr><td colspan="7" class="text-center text-muted py-4">No hay solicitudes pendientes en este momento.</td></tr>`;
                 return;
             }
 
@@ -397,6 +397,27 @@ function seleccionarSolicitud(id, solicitante, tipo, problematica) {
     document.getElementById('solicitante_p').value = solicitante;
     document.getElementById('tipo_solicitud_p').value = tipo;
     document.getElementById('problematica_p').value = problematica;
+
+    // Actualizar el estado de la solicitud a 'En Proceso'
+    fetch(`/api/solicitudes/${id}/actualizar-estatus`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estatus: 'En Proceso' })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Ocultar la fila seleccionada de la tabla
+            const filas = document.querySelectorAll('#tablaSolicitudesCuerpo tr');
+            filas.forEach(fila => {
+                const btnSeleccionar = fila.querySelector('button[onclick*="seleccionarSolicitud"]');
+                if (btnSeleccionar && btnSeleccionar.getAttribute('onclick').includes(`'${id}'`)) {
+                    fila.remove();
+                }
+            });
+        }
+    })
+    .catch(error => console.error('Error al actualizar estatus:', error));
 
     // Obtenemos instancias de los modales mediante Bootstrap JS nativo
     const modalSolicitudesEl = document.getElementById('modalSolicitudes');

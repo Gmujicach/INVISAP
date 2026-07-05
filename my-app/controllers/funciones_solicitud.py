@@ -8,6 +8,10 @@ def obtener_solicitudes() -> list:
     """Retorna todas las solicitudes registradas."""
     return SolicitudModel.obtener_todas()
 
+def obtener_solicitudes_pendientes() -> list:
+    """Retorna solo las solicitudes con estatus 'Pendiente'."""
+    return SolicitudModel.obtener_solicitudes_pendientes()
+
 def crear_solicitud(datos_formulario: dict) -> dict:
     """
     Crea una nueva solicitud instanciando el modelo.

@@ -13,11 +13,12 @@ from controllers.controller_contratacion import contrataciones_bp
 from controllers.UserController import user_bp
 from controllers.funciones_solicitud import (
     obtener_solicitudes, crear_solicitud, obtener_solicitud_por_id,
-    actualizar_solicitud, eliminar_solicitud
+    actualizar_solicitud, eliminar_solicitud, obtener_solicitudes_pendientes
 )
 from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, obtener_estadisticas_bitacora
 from models.model_publicacion import PublicacionModel
 from models.model_informe_avance import InformeAvanceModel
+from models.model_solicitudes import SolicitudModel
 from services.bitacora_service import BitacoraService
 from controllers.controller_empleado import empleado_bp
 from controllers.controller_evidencia import evidencia_bp
@@ -491,6 +492,13 @@ def api_obtener_solicitudes_json():
     else:
         return jsonify([]), 401
 
+@home_bp.route('/api/obtener-solicitudes-pendientes-json', methods=['GET'])
+def api_obtener_solicitudes_pendientes_json():
+    if 'conectado' in session:
+        return jsonify(obtener_solicitudes_pendientes())
+    else:
+        return jsonify([]), 401
+
 @home_bp.route('/api/solicitudes/crear', methods=['POST'])
 def api_crear_solicitud():
     if 'conectado' not in session:
@@ -536,6 +544,19 @@ def api_actualizar_solicitud():
         )
         return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud actualizada')}), 200
     return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo actualizar la solicitud')}), 400
+
+@home_bp.route('/api/solicitudes/<int:id_solicitud>/actualizar-estatus', methods=['POST'])
+def api_actualizar_estatus_solicitud(id_solicitud):
+    if 'conectado' not in session:
+        return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
+
+    datos = request.get_json(silent=True) or {}
+    nuevo_estatus = datos.get('estatus', 'En Proceso')
+    
+    resultado = SolicitudModel.actualizar_estatus(id_solicitud, nuevo_estatus)
+    if resultado:
+        return jsonify({'success': True, 'message': 'Estado actualizado correctamente'}), 200
+    return jsonify({'success': False, 'message': 'No se pudo actualizar el estado'}), 400
 
 @home_bp.route('/api/solicitudes/eliminar/<int:id_solicitud>', methods=['DELETE'])
 def api_eliminar_solicitud(id_solicitud):

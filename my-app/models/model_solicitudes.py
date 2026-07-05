@@ -287,6 +287,25 @@ class SolicitudModel:
         finally:
             self._cerrar(conn, cursor)
 
+    @classmethod
+    def actualizar_estatus(cls, id_solicitud: int, nuevo_estatus: str) -> bool:
+        """Actualiza el estatus de una solicitud específica."""
+        conn = cursor = None
+        try:
+            conn = cls._con()
+            if not conn: return False
+            cursor = conn.cursor()
+            sql = "UPDATE solicitudes SET estatus_solicitud = %s WHERE id_solicitudes = %s"
+            cursor.execute(sql, (nuevo_estatus, id_solicitud))
+            conn.commit()
+            return cursor.rowcount > 0
+        except Exception as e:
+            print(f"Error actualizar_estatus: {e}")
+            if conn: conn.rollback()
+            return False
+        finally:
+            cls._cerrar(conn, cursor)
+
     def eliminar(self) -> bool:
         """Elimina la solicitud actual de la BD."""
         if not self._id_solicitudes:
@@ -448,3 +467,35 @@ class SolicitudModel:
             return rows
         except Exception: return []
         finally: cls._cerrar(conn, cursor)
+
+    @classmethod
+    def obtener_solicitudes_pendientes(cls) -> list:
+        conn = cursor = None
+        try:
+            conn = cls._con()
+            if not conn: return []
+            cursor = conn.cursor(dictionary=True)
+            sql = """
+                SELECT s.id_solicitudes AS id_solicitud, s.fecha, s.tipo_solicitud, s.estatus_solicitud,
+                       s.problematica, p.cedula_persona, p.direccion AS direccion_solicitante, p.telefono AS telefono_solicitante, p.correo,
+                       p.municipio, p.parroquia,
+                       COALESCE(CONCAT(part.nombre, ' ', part.apellido), inst.razon_social, com.nombre_comunidad) as nombre_solicitante
+                FROM solicitudes s
+                LEFT JOIN persona p ON s.persona_id_persona = p.id_persona
+                LEFT JOIN particular part ON p.id_persona = part.persona_id_persona
+                LEFT JOIN institucion inst ON p.id_persona = inst.persona_id_persona
+                LEFT JOIN comunidad com ON p.id_persona = com.persona_id_persona
+                WHERE s.estatus_solicitud = 'Pendiente'
+                ORDER BY s.fecha DESC
+            """
+            cursor.execute(sql)
+            rows = cursor.fetchall()
+            instancia_temp = cls()
+            for row in rows:
+                row['fecha_formateada'] = instancia_temp._formatear_fecha(row.get('fecha'))
+            return rows
+        except Exception as e:
+            print(f"Error obtener_solicitudes_pendientes: {e}")
+            return []
+        finally:
+            cls._cerrar(conn, cursor)
