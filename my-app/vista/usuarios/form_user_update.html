@@ -9,24 +9,33 @@
         <h4 class="text-white mb-0">Actualizar Datos de Usuario</h4>
       </div>
       <div class="card-body mt-4">
-        <form action="{{ url_for('user_bp.update_user') }}" method="POST">
+        <form action="{{ url_for('user_bp.update_user') }}" method="POST" id="formUpdateUser">
           <input type="hidden" name="id_user" value="{{ usuario.id_usuarios }}">
           <div class="row">
             <div class="col-md-12 mb-3">
-              <label class="form-label">Nombre y Apellido</label>
-              <input type="text" name="nombre" class="form-control" value="{{ usuario.nombre }}" required>
+              <label for="nombre" class="form-label">Nombre y Apellido</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                <input type="text" id="nombre" name="nombre" class="form-control" value="{{ usuario.nombre }}" required>
+              </div>
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Cédula</label>
-              <input type="text" name="cedula_usuario" class="form-control" value="{{ usuario.cedula_usuario }}" required maxlength="10">
+              <label for="cedula_usuario" class="form-label">Cédula</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                <input type="text" id="cedula_usuario" name="cedula_usuario" class="form-control" value="{{ usuario.cedula_usuario }}" required maxlength="10">
+              </div>
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Correo Electrónico</label>
-              <input type="email" name="correo" class="form-control" value="{{ usuario.correo }}" required>
+              <label for="correo" class="form-label">Correo Electrónico</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="email" id="correo" name="correo" class="form-control" value="{{ usuario.correo }}" required>
+              </div>
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Rol</label>
-              <select name="rol" class="form-control" required>
+              <label for="rol" class="form-label">Rol</label>
+              <select id="rol" name="rol" class="form-control" required>
                 <option value="Super Usuario" {% if usuario.rol == 'Super Usuario' %}selected{% endif %}>Super Usuario</option>
                 <option value="Administrador" {% if usuario.rol == 'Administrador' %}selected{% endif %}>Administrador</option>
                 <option value="Recepcionista" {% if usuario.rol == 'Recepcionista' %}selected{% endif %}>Recepcionista</option>
@@ -35,30 +44,19 @@
                 <option value="Asistente" {% if usuario.rol == 'Asistente' %}selected{% endif %}>Asistente</option>
               </select>
             </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Nueva Contraseña <small>(Opcional)</small></label>
-              <div class="password-input-wrapper input-group">
-                <span class="input-group-text"><i class="bi bi-key"></i></span>
-                <input id="pass_user_update" type="password" name="pass_user" class="form-control password-reveal-input" placeholder="Opcional: 8-12 caracteres, letras y al menos un carácter especial">
-                <button type="button" class="btn btn-outline-secondary btn-password-toggle" tabindex="-1" aria-label="Mostrar contraseña">
-                  <span class="password-eye" aria-hidden="true">
-                    <svg class="button-password-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path class="lid lid--upper" d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                      <path class="lid lid--lower" d="M1 12C1 12 5 20 12 20C19 20 23 12 23 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                      <g class="eye">
-                        <circle cy="12" cx="12" r="4" fill="currentColor" />
-                        <circle cy="11" cx="13" r="1" fill="#000" />
-                      </g>
-                    </svg>
-                  </span>
-                  <span class="sr-only visually-hidden">Mostrar contraseña</span>
+            <div class="col-md-6 mb-3 molecule-password-field">
+              <label for="pass_user" class="form-label">Nueva Contraseña <small class="text-muted">(Opcional)</small></label>
+              <div class="input-group input-group-merge">
+                <input type="password" id="pass_user" name="pass_user" class="form-control password-input custom-placeholder" placeholder="Opcional: 8-12 caracteres, letras y símbolo" minlength="8" maxlength="12">
+                <button type="button" class="btn btn-outline-secondary password-toggle-btn" aria-label="Mostrar contraseña">
+                  <i class="bi bi-eye-slash toggle-icon fs-5"></i>
                 </button>
               </div>
             </div>
           </div>
           <div class="text-center mt-3">
             <button type="submit" class="btn btn-info px-5">
-              <i class="bi bi-arrow-repeat"></i> Modificar Usuario
+              <i class="bi bi-arrow-clockwise"></i> Modificar Usuario
             </button>
             <a href="{{ url_for('user_bp.list_users') }}" class="btn btn-secondary">
               Volver

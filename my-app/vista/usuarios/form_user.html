@@ -1,10 +1,6 @@
 {% extends 'base_cpanel.html' %}
 {% block title %}Registrar Usuarios{% endblock %}
 
-{% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='my-app/static/css/usuarios.css') }}">
-{% endblock %}
-
 {% block body %}
 <div class="row justify-content-center">
   <div class="col-md-9">
@@ -13,32 +9,32 @@
         <h4 class="text-white mb-0">Registrar Nuevo Usuario</h4>
       </div>
       <div class="card-body mt-4">
-        <form action="{{ url_for('user_bp.register_user') }}" method="POST">
+        <form action="{{ url_for('user_bp.register_user') }}" method="POST" id="formRegisterUser">
           <div class="row">
             <div class="col-md-12 mb-3">
-              <label class="form-label">Nombre y Apellido</label>
+              <label for="nombre" class="form-label">Nombre y Apellido</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                <input type="text" name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required>
+                <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ej: Juan Pérez" required>
               </div>
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Cédula</label>
+              <label for="cedula_usuario" class="form-label">Cédula</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                <input type="text" name="cedula_usuario" class="form-control" placeholder="Ej: 12345678" required maxlength="10">
+                <input type="text" id="cedula_usuario" name="cedula_usuario" class="form-control" placeholder="Ej: 12345678" required maxlength="10">
               </div>
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Correo Electrónico</label>
+              <label for="correo" class="form-label">Correo Electrónico</label>
               <div class="input-group">
                 <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                <input type="email" name="correo" class="form-control" placeholder="correo@ejemplo.com" required>
+                <input type="email" id="correo" name="correo" class="form-control" placeholder="correo@ejemplo.com" required>
               </div>
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Rol</label>
-              <select name="rol" class="form-control" required>
+              <label for="rol" class="form-label">Rol</label>
+              <select id="rol" name="rol" class="form-control" required>
                 <option value="Asistente">Asistente</option>
                 <option value="Recepcionista">Recepcionista</option>
                 <option value="Gerente">Gerente</option>
@@ -49,14 +45,15 @@
               </select>
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label" for="pass_user">Contraseña</label>
+              <label for="pass_user" class="form-label">Contraseña</label>
               <div class="input-group input-group-merge">
-                <input id="pass_user" type="password" name="pass_user" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}">
+                <span class="input-group-text"><i class="bi bi-key"></i></span>
+                <input id="pass_user" type="password" name="pass_user" class="form-control" placeholder="Mín. 8 caracteres, letras y símbolo" required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}">
               </div>
-              <div id="pass_user_feedback" class="invalid-feedback" aria-live="polite"></div>
+              <small class="form-text text-muted">Formato: 8-12 caracteres, al menos una letra y un símbolo especial</small>
             </div>
           </div>
-          <div class="text-center mt-3">
+          <div class="text-center mt-4">
             <button type="submit" class="btn btn-success px-5">
               <i class="bi bi-save"></i> Registrar Usuario
             </button>
@@ -69,8 +66,4 @@
     </div>
   </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/usuarios.js') }}"></script>
 {% endblock %}

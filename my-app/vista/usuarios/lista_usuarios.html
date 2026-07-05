@@ -1,10 +1,11 @@
 {% extends 'base_cpanel.html' %}
-<!--Cambiando el title-->
-{% block title %}Sistema Invilara  🐍 | Lista de Usuarios{% endblock %}
-<!---->
-{% block body %} {% if (resp_usuariosBD) %}
 
-<div class="card content_consignaciones" style="border-radius: 0px !important">
+{% block title %}Sistema Invilara | Lista de Usuarios{% endblock %}
+
+{% block body %}
+{% if resp_usuariosBD %}
+
+<div class="card">
   <section id="respuestaFiltroMes">
     <h2 class="text-center mt-0 mb-5" style="background-color: #08b324; color: #ffffff; padding: 40px 0 10px 0;">
       Lista de Usuarios Creados
@@ -14,32 +15,42 @@
       <table class="table table-hover">
         <thead>
           <tr style="background-color: #ddd">
+            <th>Avatar</th>
             <th>Nombre y Apellido</th>
-            <th>C&eacute;dula</th>
-            <th>Correo Electr&oacute;nico</th>
+            <th>Cédula</th>
+            <th>Correo Electrónico</th>
             <th>Rol</th>
-            <th>Accci&oacute;n</th>
+            <th>Acción</th>
           </tr>
         </thead>
         <tbody>
           {% for usuario in resp_usuariosBD %}
           <tr>
+            <td>
+              <img src="{{ url_for('static', filename=usuario.avatar) }}" 
+                   class="rounded-circle" 
+                   style="width: 40px; height: 40px; object-fit: cover;" 
+                   alt="Avatar"
+                   onerror="this.src='{{ url_for('static', filename='assets/img/avatars/1.png') }}'">
+            </td>
             <td>{{ usuario.nombre }}</td>
             <td>{{ usuario.cedula_usuario }}</td>
             <td>{{ usuario.correo }}</td>
             <td>{{ usuario.rol }}</td>
             <td>
-              <button
-                class="btn rounded-pill btn-warning me-2"
-                onclick="editarUsuario('{{ usuario.id_usuarios }}');"
-                {% if usuario.rol == 'Super Usuario' %}disabled title="Protegido por seguridad"{% endif %}>
+              <button type="button"
+                      class="btn rounded-pill btn-warning me-2"
+                      onclick="editarUsuario('{{ usuario.id_usuarios }}');"
+                      {% if usuario.rol == 'Super Usuario' %}disabled title="Protegido por seguridad"{% endif %}>
                 <i class="bi bi-pencil"></i>
+                <span class="visually-hidden">Editar</span>
               </button>
-              <button
-                class="btn rounded-pill btn-danger"
-                onclick="eliminarUsuario('{{ usuario.id_usuarios }}');"
-                {% if usuario.rol == 'Super Usuario' %}disabled title="Protegido por seguridad"{% endif %}>
+              <button type="button"
+                      class="btn rounded-pill btn-danger"
+                      onclick="eliminarUsuarioConfirm('{{ usuario.id_usuarios }}');"
+                      {% if usuario.rol == 'Super Usuario' %}disabled title="Protegido por seguridad"{% endif %}>
                 <i class="bi bi-trash3"></i>
+                <span class="visually-hidden">Eliminar</span>
               </button>
             </td>
           </tr>
@@ -49,33 +60,29 @@
     </div>
   </section>
 </div>
+
 {% else %}
 <div class="container mt-3 mb-3" style="width: 100% !important">
   <div class="row justify-content-md-center mb-2">
     <div class="col-12">
-      <h2 class="text-center">No hay usuarios 😭</h2>
+      <h2 class="text-center">No hay usuarios registrados</h2>
     </div>
   </div>
 </div>
 {% endif %}
-<!--Fin del Block-->
 {% endblock %}
 
-<!--Script Custom-->
 {% block customJS %}
 <script>
   function editarUsuario(id) {
     if (id) {
-      window.location.href = `/users/edit/${id}`;
+      window.location.href = '/users/edit/' + id;
     }
   }
 
-  function eliminarUsuario(id) {
-    if (confirm("¿Estas seguro que deseas eliminar el Usuario?")) {
-      let url = `/users/delete/${id}`;
-      if (url) {
-        window.location.href = url;
-      }
+  function eliminarUsuarioConfirm(id) {
+    if (id && confirm('⚠️ ¿Estás seguro que deseas eliminar el Usuario?\n\nSe borrarán todos sus datos permanentemente.')) {
+      window.location.href = '/users/delete/' + id + '?confirm=yes';
     }
   }
 </script>

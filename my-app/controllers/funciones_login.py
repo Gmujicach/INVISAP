@@ -75,10 +75,15 @@ def info_perfil_session():
         conexion_MySQLdb = connectionBD_seguridad()
         cursor = conexion_MySQLdb.cursor(dictionary=True)
         try:
-            querySQL = "SELECT nombre, correo FROM usuarios WHERE id_usuarios = %s"
+            querySQL = "SELECT nombre, correo, avatar FROM usuarios WHERE id_usuarios = %s"
             cursor.execute(querySQL, (session['id'],))
-            info_perfil = cursor.fetchall()
-            return info_perfil
+            info_perfil = cursor.fetchone()
+            # Retornar como lista para compatibilidad con template
+            if info_perfil:
+                if not info_perfil.get('avatar'):
+                    info_perfil['avatar'] = 'assets/img/avatars/1.png'
+                return [info_perfil]
+            return []
         finally:
             cursor.close()
             conexion_MySQLdb.close()
