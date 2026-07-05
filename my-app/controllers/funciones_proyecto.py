@@ -22,20 +22,22 @@ def _validar_input(datos, es_actualizacion=False):
 
 
 def registrar_proyecto_controller(datos, session_flask):
-  
     if not _validar_input(datos):
-        return False
+        return {'success': False, 'message': 'Datos inválidos'} 
 
     modelo = ProyectoModel()
-    resultado = modelo.registrar_proyecto(datos)
-    
-    if resultado:
-        codigo_proy = datos.get('Codigo_p')
-        BitacoraService.registrar_accion(
-            session_flask, 'Proyectos', 'CREAR',
-            f'Registró un nuevo proyecto con código: {codigo_proy}'
-        )
-    return resultado
+    try:
+        resultado = modelo.registrar_proyecto(datos)
+        if resultado:
+            codigo_proy = datos.get('Codigo_p')
+            BitacoraService.registrar_accion(
+                session_flask, 'Proyectos', 'CREAR',
+                f'Registró un nuevo proyecto con código: {codigo_proy}'
+            )
+            return {'success': True, 'message': 'Proyecto registrado correctamente'}
+        return {'success': False, 'message': 'Error al registrar el proyecto'}
+    except Exception as e:
+        return {'success': False, 'message': str(e)}
 
 def listar_proyectos_controller(session_flask):
     modelo = ProyectoModel()

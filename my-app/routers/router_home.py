@@ -416,21 +416,28 @@ def formRegistrarProyecto():
     if 'conectado' not in session:
         return jsonify({'success': False, 'message': 'Sesión no iniciada'}), 401
     
-   
     resultado = registrar_proyecto_controller(request.form, session)
     
-    if resultado:
-       
+    if resultado.get('success'):
         modelo = ProyectoModel()
         nuevo_proyecto = modelo.obtener_proyecto_por_id(request.form.get('Codigo_p'))
         
         return jsonify({
             'success': True, 
-            'message': 'Proyecto registrado correctamente',
+            'message': resultado.get('message', 'Proyecto registrado correctamente'),
             'data': nuevo_proyecto 
         })
     else:
-        return jsonify({'success': False, 'message': 'Error al procesar el registro'})
+        return jsonify({'success': False, 'message': resultado.get('message', 'Error al procesar el registro')})
+
+@home_bp.route('/api/proyecto/validar-codigo/<string:codigo>', methods=['GET'])
+def api_validar_codigo_proyecto(codigo):
+    if 'conectado' not in session:
+        return jsonify({'error': 'No autorizado'}), 401
+    
+    modelo = ProyectoModel()
+    resultado = modelo.validar_codigo_proyecto(codigo)
+    return jsonify(resultado)
 
 @home_bp.route('/editar-proyecto/<string:codigo_proyecto>', methods=['GET'])
 def viewEditarProyecto(codigo_proyecto):

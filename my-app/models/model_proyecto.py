@@ -5,22 +5,45 @@ class ProyectoModel:
     def __init__(self):
         pass
 
+    def validar_codigo_proyecto(self, codigo_proyecto):
+        conexion = None
+        try:
+            conexion = connectionBD()
+            cursor = conexion.cursor(dictionary=True)
+            cursor.execute("SELECT estado FROM proyecto WHERE codigo_proyecto = %s", (codigo_proyecto,))
+            fila = cursor.fetchone()
+            if fila:
+                if fila['estado'] == 0:
+                    return {'existe_eliminado': True}
+                return {'existe_activo': True}
+            return {'disponible': True}
+        except Exception as e:
+            print(f"Error en ProyectoModel.validar_codigo_proyecto: {e}")
+            return {'error': True}
+        finally:
+            if conexion: conexion.close()
+
     def registrar_proyecto(self, datos):
         conexion = None
         valores = None
         try:
+            codigo_proy = datos.get('Codigo_p', '')[:15]
+            
+            val_result = self.validar_codigo_proyecto(codigo_proy)
+            if val_result.get('existe_activo'):
+                raise Exception(f"El código {codigo_proy} ya existe en otro proyecto activo.")
+            if val_result.get('existe_eliminado'):
+                raise Exception(f"El código {codigo_proy} fue usado en un proyecto eliminado anteriormente. No se pueden reutilizar códigos.")
+            
             conexion = connectionBD()
             cursor = conexion.cursor(dictionary=True)
             
-            
             sql = """INSERT INTO proyecto 
-         (codigo_proyecto, fecha_planificacion, descripcion_tecnica, 
-          computos_metricos, estimacion_costo, estado) 
-         VALUES (%s, %s, %s, %s, %s, 1)"""
+          (codigo_proyecto, fecha_planificacion, descripcion_tecnica, 
+           computos_metricos, estimacion_costo, estado) 
+          VALUES (%s, %s, %s, %s, %s, 1)"""
             
-            codigo_proy = datos.get('Codigo_p', '')[:15]
             fecha_plan = datos.get('fecha_p')
-            print(f"[DEBUG] Fecha recibida: '{fecha_plan}' (tipo: {type(fecha_plan).__name__})")
             if not fecha_plan:
                 fecha_plan = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             elif len(fecha_plan) == 10:
@@ -37,7 +60,6 @@ class ProyectoModel:
 
             cursor.execute(sql, valores)
 
-           
             id_solicitud = datos.get('solicitud_id_p')
             if id_solicitud:
                 cursor.execute("""
@@ -51,7 +73,6 @@ class ProyectoModel:
                     id_persona = resultado_solicitud['persona_id_persona']
                     id_prioridad = resultado_solicitud['prioridad_id_gestion_prioridad']
                     
-                    
                     sql_solicitud = """INSERT INTO proyecto_has_solicitudes 
                         (proyecto_codigo_proyecto, solicitudes_id_solicitudes, 
                          solicitudes_persona_id_persona, solicitudes_prioridad_id_gestion_prioridad) 
@@ -60,7 +81,6 @@ class ProyectoModel:
                 else:
                     raise Exception(f"No se encontraron los datos compuestos para la solicitud ID: {id_solicitud}")
 
-         
             id_maquinaria = datos.get('maquinaria_p')
             if id_maquinaria and str(id_maquinaria).isdigit():
                 sql_maquinaria = "INSERT INTO proyecto_has_maquinaria (proyecto_codigo_proyecto, maquinaria_id_maquinaria) VALUES (%s, %s)"
@@ -129,7 +149,7 @@ class ProyectoModel:
                      LEFT JOIN comunidad com ON pers.id_persona = com.persona_id_persona
                      LEFT JOIN proyecto_has_maquinaria phm ON p.codigo_proyecto = phm.proyecto_codigo_proyecto
                      LEFT JOIN maquinaria m ON phm.maquinaria_id_maquinaria = m.id_maquinaria 
-WHERE p.codigo_proyecto = %s"""
+                     WHERE p.codigo_proyecto = %s"""
             cursor.execute(sql, (codigo_proyecto,))
             return cursor.fetchone()
         except Exception as e:
@@ -225,7 +245,6 @@ WHERE p.codigo_proyecto = %s"""
             conexion = connectionBD()
             cursor = conexion.cursor()
             
-           
             sql = "UPDATE proyecto SET estado = 0 WHERE codigo_proyecto = %s"
             cursor.execute(sql, (codigo_proyecto,))
             
@@ -244,7 +263,6 @@ WHERE p.codigo_proyecto = %s"""
             conexion = connectionBD()
             cursor = conexion.cursor(dictionary=True)
             
-            
             sql = """SELECT s.tipo_solicitud 
                      FROM proyecto p
                      INNER JOIN proyecto_has_solicitudes phs ON p.codigo_proyecto = phs.proyecto_codigo_proyecto
@@ -253,7 +271,6 @@ WHERE p.codigo_proyecto = %s"""
             
             cursor.execute(sql)
             proyectos_vinculados = cursor.fetchall()
-            
             
             total_registrados = len(proyectos_vinculados)
             en_proceso = 0

@@ -15,6 +15,19 @@ function formatFecha(fecha) {
     return `${año}-${mes}-${dia} ${hora}:${min}:${seg}`;
 }
 
+function marcarInvalidoCustom(input, mensaje) {
+    if (!input) return;
+    input.classList.add('is-invalid');
+    let cont = input.parentElement;
+    while (cont && !cont.classList.contains('col-md-6') && !cont.classList.contains('col-md-4') && !cont.classList.contains('form-group')) {
+        cont = cont.parentElement;
+    }
+    if (cont && cont.classList.contains('input-group')) cont = cont.parentElement;
+    let fb = cont && cont.querySelector('.invalid-feedback');
+    if (!fb && cont) { fb = document.createElement('div'); fb.className = 'invalid-feedback d-block'; cont.appendChild(fb); }
+    if (fb) fb.textContent = mensaje;
+}
+
 document.getElementById('btnGuardarProyecto').addEventListener('click', function() {
     const form = document.getElementById('formRegistrarProyecto');
     if (!form) return;
@@ -27,19 +40,6 @@ document.getElementById('btnGuardarProyecto').addEventListener('click', function
     const maquinaria = document.getElementById('maquinaria_p');
     const computos = document.getElementById('computos_p');
     const estimacion = document.getElementById('estimacion_p');
-
-    function marcarInvalidoCustom(input, mensaje) {
-        if (!input) return;
-        input.classList.add('is-invalid');
-        let cont = input.parentElement;
-        while (cont && !cont.classList.contains('col-md-6') && !cont.classList.contains('col-md-4') && !cont.classList.contains('form-group') && cont !== form) {
-            cont = cont.parentElement;
-        }
-        if (cont && cont.classList.contains('input-group')) cont = cont.parentElement;
-        let fb = cont && cont.querySelector('.invalid-feedback');
-        if (!fb) { fb = document.createElement('div'); fb.className = 'invalid-feedback d-block'; cont.appendChild(fb); }
-        fb.textContent = mensaje;
-    }
 
     let tieneErrores = false;
 
@@ -111,6 +111,29 @@ document.getElementById('btnGuardarProyecto').addEventListener('click', function
         estimacion.value = estimacion.value.replace(/\./g, "").replace(",", ".");
     }
 
+    if (codigoProyecto && codigoProyecto.value.trim() !== '') {
+        const validarCodigo = codigoProyecto.value.trim();
+        fetch(`/api/proyecto/validar-codigo/${validarCodigo}`, { method: 'GET' })
+        .then(r => r.json())
+        .then(val => {
+            if (val.existe_eliminado) {
+                marcarInvalidoCustom(codigoProyecto, 'Este código se usó en un proyecto eliminado anteriormente. Elija otro código.');
+                codigoProyecto.focus();
+                return;
+            }
+            if (val.existe_activo) {
+                marcarInvalidoCustom(codigoProyecto, 'El código ya existe en un proyecto activo. Elija otro código.');
+                codigoProyecto.focus();
+                return;
+            }
+            enviarFormulario(form);
+        });
+    } else {
+        enviarFormulario(form);
+    }
+});
+
+function enviarFormulario(form) {
     const formData = new FormData(form);
     fetch(form.action, { method: 'POST', body: formData })
     .then(response => response.json())
@@ -154,7 +177,7 @@ document.getElementById('btnGuardarProyecto').addEventListener('click', function
             Swal.fire('Error', data.message, 'error');
         }
     });
-});
+}
 
 function confirmarEliminacion(btn) {
     const url = btn.getAttribute('data-delete-url');
@@ -177,7 +200,7 @@ function confirmarEliminacion(btn) {
                     actualizarContador(-1);
                     if (tableBody.querySelectorAll('tr').length === 0) {
                         tableBody.insertAdjacentHTML('beforeend', 
-                            '<tr id="mensaje-vacio"><td colspan="9" class="text-center text-muted py-4">NO SE ENCUENTRAN PROYECTOS GESTIONADOS</td></tr>');
+                            '<tr id="mensaje-vacio"><td colspan="10" class="text-center text-muted py-4">NO SE ENCUENTRAN PROYECTOS GESTIONADOS</td></tr>');
                     }
                     Swal.fire('Eliminado', 'Proyecto eliminado.', 'success');
                 }
