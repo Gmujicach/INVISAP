@@ -102,8 +102,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     formulario.addEventListener("submit", function (e) {
+        e.preventDefault();
         let tieneErrores = false;
-
 
         if (solicitudId && !solicitudId.value) {
             if (errorSolicitudDiv) errorSolicitudDiv.classList.remove("d-none");
@@ -112,7 +112,6 @@ document.addEventListener("DOMContentLoaded", function () {
             if (errorSolicitudDiv) errorSolicitudDiv.classList.add("d-none");
         }
 
-        
         if (fechaPlan && !fechaPlan.value) {
             marcarInvalido(fechaPlan, "Debe seleccionar una fecha de planificación.");
             tieneErrores = true;
@@ -120,28 +119,38 @@ document.addEventListener("DOMContentLoaded", function () {
             marcarValido(fechaPlan);
         }
 
-
         if (observaciones && observaciones.value.trim().length < 10) {
             marcarInvalido(observaciones, "La descripción técnica debe tener al menos 10 caracteres.");
             tieneErrores = true;
+        } else if (observaciones) {
+            marcarValido(observaciones);
         }
 
-       
+        const maquinaria = document.getElementById("maquinaria_p");
+        if (maquinaria && (!maquinaria.value || maquinaria.value === "")) {
+            marcarInvalido(maquinaria, "Debe seleccionar una maquinaria.");
+            tieneErrores = true;
+        } else if (maquinaria) {
+            marcarValido(maquinaria);
+        }
+
         if (codigoProyecto && codigoProyecto.value.trim() === "") {
             marcarInvalido(codigoProyecto, "El código del proyecto es obligatorio (Ej: PRY-001).");
             tieneErrores = true;
+        } else if (codigoProyecto && codigoProyecto.value.trim().length < 5) {
+            marcarInvalido(codigoProyecto, "El formato debe comenzar con 3 letras seguido de un guion y el número (Ej: PRY-001).");
+            tieneErrores = true;
         }
 
-      
         if (tieneErrores) {
-            e.preventDefault(); 
             const primerError = formulario.querySelector(".is-invalid");
             if (primerError) primerError.focus();
+            return false;
         } else {
-        
             if (estimacion && estimacion.value.trim() !== "") {
                 estimacion.value = estimacion.value.replace(/\./g, "").replace(",", ".");
             }
+            return true;
         }
     });
 });

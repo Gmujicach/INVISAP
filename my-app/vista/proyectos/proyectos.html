@@ -47,6 +47,7 @@
             <th>Fecha Planif.</th>
             <th>Solicitante</th>
             <th>Descripción Técnica</th>
+            <th>Computos Metricos</th>
             <th>Problemática</th>
             <th>Maquinaria</th>
             <th>Est. Costo</th>
@@ -61,37 +62,40 @@
             <td>{{ proyecto.fecha_planificacion }}</td>
             <td class="text-uppercase" style="font-size: 0.85rem;">{{ proyecto.nombre_solicitante or '—' }}</td>
             <td style="max-width: 250px; white-space: normal;">{{ proyecto.descripcion_tecnica or '—' }}</td>
+            <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.computos_metricos or '—' }}</td>
             <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.problematica or '—' }}</td>
             <td><span class="badge bg-dark">{{ proyecto.nombre_maquinaria or 'Sin asignar' }}</span></td>
             <td class="text-success fw-bold">{{ proyecto.estimacion_costo or '0.00' }}</td>
-            <td class="text-center">
-              <button type="button" class="btn btn-outline-info btn-sm" title="Ver detalle"
-                      data-bs-toggle="modal" 
-                      data-bs-target="#modalDetalleProyecto"
-                      data-codigo="{{ proyecto.codigo_proyecto }}"
-                      data-fecha="{{ proyecto.fecha_planificacion }}"
-                      data-solicitante="{{ proyecto.nombre_solicitante or 'N/A' }}"
-                      data-tipo="{{ proyecto.tipo_solicitud or 'N/A' }}"
-                      data-descripcion="{{ proyecto.descripcion_tecnica or 'N/A' }}"
-                      data-problematica="{{ proyecto.problematica or 'N/A' }}"
-                      data-computos="{{ proyecto.computos_metricos or 'N/A' }}"
-                      data-costo="{{ proyecto.estimacion_costo or '0.00' }}"
-                      data-maquinaria="{{ proyecto.nombre_maquinaria or 'Sin asignar' }}">
-                <i class="bx bx-show"></i>
-              </button>
-              <a href="{{ url_for('home_bp.viewEditarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
-         <a href="#" 
-   class="btn btn-outline-danger btn-sm" 
-   title="Eliminar"
-   data-delete-url="{{ url_for('home_bp.eliminarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}"
-   onclick="confirmarEliminacion(this)">
-   <i class="bx bx-trash"></i>
-</a>
+<td class="text-center">
+              <div class="d-flex gap-1 justify-content-center">
+                <button type="button" class="btn btn-outline-info btn-sm" title="Ver detalle"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalDetalleProyecto"
+                        data-codigo="{{ proyecto.codigo_proyecto }}"
+                        data-fecha="{{ proyecto.fecha_planificacion }}"
+                        data-solicitante="{{ proyecto.nombre_solicitante or 'N/A' }}"
+                        data-tipo="{{ proyecto.tipo_solicitud or 'N/A' }}"
+                        data-descripcion="{{ proyecto.descripcion_tecnica or 'N/A' }}"
+                        data-problematica="{{ proyecto.problematica or 'N/A' }}"
+                        data-computos="{{ proyecto.computos_metricos or 'N/A' }}"
+                        data-costo="{{ proyecto.estimacion_costo or '0.00' }}"
+                        data-maquinaria="{{ proyecto.nombre_maquinaria or 'Sin asignar' }}">
+                  <i class="bx bx-show"></i>
+                </button>
+                <a href="{{ url_for('home_bp.viewEditarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
+                <a href="#" 
+                   class="btn btn-outline-danger btn-sm" 
+                   title="Eliminar"
+                   data-delete-url="{{ url_for('home_bp.eliminarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}"
+                   onclick="confirmarEliminacion(this)">
+                  <i class="bx bx-trash"></i>
+                </a>
+              </div>
             </td>
           </tr>
           {% else %}
 <tr id="mensaje-vacio">
-    <td colspan="9" class="text-center text-muted py-4">NO SE ENCUENTRAN PROYECTOS GESTIONADOS</td>
+    <td colspan="10" class="text-center text-muted py-4">NO SE ENCUENTRAN PROYECTOS GESTIONADOS</td>
 </tr>
 {% endfor %}
         </tbody>
@@ -165,12 +169,12 @@
                 <span class="input-group-text bg-white border-end-0 text-muted">
                   <i class="bx bx-calendar fs-5"></i>
                 </span>
-                <input type="date" class="form-control border-start-0 ps-0" name="fecha_p" id="fecha_p" required />
+                <input type="date" class="form-control border-start-0 ps-0" name="fecha_p" id="fecha_p" />
               </div>
             </div>
             <div class="col-md-6">
               <label for="observaciones" class="form-label fw-semibold text-secondary">Descripción Técnica</label>
-              <input type="text" class="form-control shadow-sm" name="observaciones" id="observaciones" maxlength="200" placeholder="Motivos y problemáticas" />
+              <input type="text" class="form-control shadow-sm" name="observaciones" id="observaciones" maxlength="200" placeholder="Motivos y problemáticas"  required/>
             </div>
           </div>
       

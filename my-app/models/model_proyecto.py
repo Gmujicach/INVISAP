@@ -20,8 +20,12 @@ class ProyectoModel:
             
             codigo_proy = datos.get('Codigo_p', '')[:15]
             fecha_plan = datos.get('fecha_p')
+            print(f"[DEBUG] Fecha recibida: '{fecha_plan}' (tipo: {type(fecha_plan).__name__})")
             if not fecha_plan:
                 fecha_plan = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            elif len(fecha_plan) == 10:
+                ahora = datetime.datetime.now()
+                fecha_plan = f"{fecha_plan} {ahora.strftime('%H:%M:%S')}"
 
             valores = (
                 codigo_proy, 
@@ -125,7 +129,7 @@ class ProyectoModel:
                      LEFT JOIN comunidad com ON pers.id_persona = com.persona_id_persona
                      LEFT JOIN proyecto_has_maquinaria phm ON p.codigo_proyecto = phm.proyecto_codigo_proyecto
                      LEFT JOIN maquinaria m ON phm.maquinaria_id_maquinaria = m.id_maquinaria 
-                     WHERE p.codigo_proyecto = %s"""
+WHERE p.codigo_proyecto = %s"""
             cursor.execute(sql, (codigo_proyecto,))
             return cursor.fetchone()
         except Exception as e:
@@ -140,6 +144,10 @@ class ProyectoModel:
             conexion = connectionBD()
             cursor = conexion.cursor(dictionary=True)
             
+            cursor.execute("SELECT fecha_planificacion FROM proyecto WHERE codigo_proyecto = %s", (codigo_proyecto_actual,))
+            fila = cursor.fetchone()
+            fecha_existente = fila['fecha_planificacion'] if fila else None
+            
             sql = """UPDATE proyecto SET 
                 codigo_proyecto=%s, fecha_planificacion=%s, descripcion_tecnica=%s,
                 computos_metricos=%s, estimacion_costo=%s
@@ -148,9 +156,11 @@ class ProyectoModel:
             codigo_nuevo = datos.get('Codigo_p', '')[:15]
             fecha_plan = datos.get('fecha_p')
             if not fecha_plan:
-                fecha_plan = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-         
+                fecha_plan = fecha_existente
+            elif len(fecha_plan) == 10:
+                ahora = datetime.datetime.now()
+                fecha_plan = f"{fecha_plan} {ahora.strftime('%H:%M:%S')}"
+          
             descripcion = datos.get('observaciones_p') or datos.get('observaciones') or ''
 
             valores = (
@@ -163,7 +173,6 @@ class ProyectoModel:
             )
             cursor.execute(sql, valores)
 
-           
             id_solicitud = datos.get('solicitud_id_p')
             if id_solicitud:
                 cursor.execute("DELETE FROM proyecto_has_solicitudes WHERE proyecto_codigo_proyecto = %s", (codigo_proyecto_actual,))
@@ -187,12 +196,11 @@ class ProyectoModel:
                         WHERE proyecto_codigo_proyecto = %s
                     """, (codigo_nuevo, codigo_proyecto_actual))
 
-         
             id_maquinaria = datos.get('maquinaria_p')
             if id_maquinaria and str(id_maquinaria).isdigit():
                 cursor.execute("DELETE FROM proyecto_has_maquinaria WHERE proyecto_codigo_proyecto = %s", (codigo_proyecto_actual,))
                 cursor.execute("INSERT INTO proyecto_has_maquinaria (proyecto_codigo_proyecto, maquinaria_id_maquinaria) VALUES (%s, %s)", 
-                               (codigo_nuevo, int(id_maquinaria)))
+                             (codigo_nuevo, int(id_maquinaria)))
             else:
                 if codigo_nuevo != codigo_proyecto_actual:
                     cursor.execute("""
@@ -202,7 +210,7 @@ class ProyectoModel:
                     """, (codigo_nuevo, codigo_proyecto_actual))
 
             conexion.commit()
-            
+
             return True
         except Exception as e:
             if conexion: conexion.rollback()
