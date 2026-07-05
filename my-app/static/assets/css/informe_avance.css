@@ -101,6 +101,35 @@
     background-color: #d4edda;
 }
 
+.avatar.avatar-lg {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inspector-card .avatar.avatar-lg {
+    width: 48px;
+    height: 48px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-label-primary {
+    background-color: rgba(45, 106, 79, 0.12) !important;
+    color: var(--invilara-verde) !important;
+}
+
+.avatar.avatar-lg i.bx {
+    font-size: 1.5rem;
+    display: block;
+    text-align: center;
+    width: 100%;
+    line-height: 1;
+}
+
 .evidencias-seleccionadas-preview {
     display: flex;
     flex-wrap: wrap;

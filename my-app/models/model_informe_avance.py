@@ -1,8 +1,6 @@
 """
 InformeAvanceModel — Modelo SOLID/POO para gestión de informes de avance de obra.
 Implementa encapsulamiento, validaciones Regex, borrado lógico y comunicación con evidencias.
-Diagnóstico error 500: __crear_avance_db usaba MAX() frágil en semaforo/obra.
-Solución: generar IDs de avance/obra/semáforo de forma predecible dentro de la misma transacción.
 """
 import re
 import uuid
@@ -15,17 +13,16 @@ import os
 class InformeAvanceModel:
     """Repositorio de informes de avance con validación y encapsulamiento."""
 
-    # Expresiones regulares para validación (Principio de Responsabilidad Única)
-    _RE_PORCENTAJE = re.compile(r'^([0-9]|[1-9][0-9]|100)$')  # 0-100
+    # Expresiones regulares para validación
+    _RE_PORCENTAJE = re.compile(r'^([0-9]|[1-9][0-9]|100)$')
     _RE_TEXTO_CORTO = re.compile(r'^[\w\s\.,\-áéíóúÁÉÍÓÚñÑ]{3,100}$', re.UNICODE)
     _RE_OBSERVACIONES = re.compile(r'^[\w\s\.,\!\?\-áéíóúÁÉÍÓÚñÑ]{0,500}$', re.UNICODE)
     _RE_POBLACION = re.compile(r'^[\w\s\.,\-\(\)/áéíóúÁÉÍÓÚñÑ]{3,200}$', re.UNICODE)
 
-    # Catálogos válidos (TODO: migrar a tablas catálogo según Prof. Cadenas)
-    ESTADOS_VALIDOS = {'Aprobado', 'En Ejecucion', 'Culminado', 'Paralizado'}
-    TIPOS_INFORME_VALIDOS = {'Ficha Inspeccion Tecnica', 'Menor', 'Mayor', 'Avance Mensual'}
-
-    MAX_IMAGENES_POR_ETAPA = 5  # Límite según Prof. Cadenas
+    # Catálogos válidos (acepta con y sin acentos)
+    ESTADOS_VALIDOS = {'Aprobado', 'En Ejecucion', 'En Ejecución', 'Culminado', 'Paralizado'}
+    TIPOS_INFORME_VALIDOS = {'Ficha Inspeccion Tecnica', 'Ficha Inspección Técnica', 'Menor', 'Mayor', 'Avance Mensual'}
+    MAX_IMAGENES_POR_ETAPA = 5
 
     def __init__(self):
         self.__id_informe = None
@@ -36,12 +33,13 @@ class InformeAvanceModel:
         self.__observaciones = None
         self.__avance_id = None
         self.__porcentaje_avance = 0
+        self.__gerente = None
         self.__evidencias_antes = []
         self.__evidencias_durante = []
         self.__evidencias_despues = []
-        self.__estado_registro = 1  # 1=Activo, 0=Inactivo (Borrado Lógico)
+        self.__estado_registro = 1
 
-    # ========== GETTERS Y SETTERS (Encapsulamiento) ==========
+    # ========== GETTERS Y SETTERS ==========
     
     def get_id_informe(self):
         return self.__id_informe
@@ -53,7 +51,6 @@ class InformeAvanceModel:
         return self.__fecha
     
     def set_fecha(self, valor):
-        """Fecha automática si no se proporciona"""
         if valor is None or valor == '':
             self.__fecha = datetime.now()
         else:
@@ -69,8 +66,9 @@ class InformeAvanceModel:
         return self.__estado
     
     def set_estado(self, valor):
-        """Validación de estado"""
         valor = self._limpiar_texto(valor, 25)
+        if valor == 'En Ejecución':
+            valor = 'En Ejecucion'
         if valor not in self.ESTADOS_VALIDOS:
             raise ValueError(f"Estado inválido. Valores permitidos: {', '.join(self.ESTADOS_VALIDOS)}")
         self.__estado = valor
@@ -79,7 +77,6 @@ class InformeAvanceModel:
         return self.__poblacion_beneficiada
     
     def set_poblacion_beneficiada(self, valor):
-        """Validación con Regex"""
         valor = self._limpiar_texto(valor, 45)
         if not valor or len(valor) < 3:
             raise ValueError("Población beneficiada inválida. Debe tener al menos 3 caracteres.")
@@ -89,7 +86,6 @@ class InformeAvanceModel:
         return self.__tipo_informe
     
     def set_tipo_informe(self, valor):
-        """Validación de tipo"""
         valor = self._limpiar_texto(valor, 30)
         if valor not in self.TIPOS_INFORME_VALIDOS:
             raise ValueError(f"Tipo de informe inválido. Valores permitidos: {', '.join(self.TIPOS_INFORME_VALIDOS)}")
@@ -99,14 +95,12 @@ class InformeAvanceModel:
         return self.__observaciones
     
     def set_observaciones(self, valor):
-        """Campo de observaciones técnicas"""
         valor = self._limpiar_texto(valor, 500)
         if valor and not self._RE_OBSERVACIONES.match(valor):
             raise ValueError("Observaciones inválidas. Máximo 500 caracteres.")
         self.__observaciones = valor or "Sin observaciones"
     
     def set_evidencias_antes(self, lista_ids):
-        """Limitar a MAX_IMAGENES_POR_ETAPA"""
         if len(lista_ids) > self.MAX_IMAGENES_POR_ETAPA:
             raise ValueError(f"Máximo {self.MAX_IMAGENES_POR_ETAPA} imágenes permitidas en 'antes'")
         self.__evidencias_antes = lista_ids
@@ -120,119 +114,81 @@ class InformeAvanceModel:
         if len(lista_ids) > self.MAX_IMAGENES_POR_ETAPA:
             raise ValueError(f"Máximo {self.MAX_IMAGENES_POR_ETAPA} imágenes permitidas en 'después'")
         self.__evidencias_despues = lista_ids
-
+    
     def set_avance_id(self, valor):
         if valor is None:
             self.__avance_id = None
         else:
             self.__avance_id = str(valor)
-
+    
     def set_porcentaje_avance(self, valor):
         try:
             porcentaje = int(valor or 0)
         except (TypeError, ValueError):
             porcentaje = 0
         self.__porcentaje_avance = max(0, min(100, porcentaje))
-
+    
     def get_porcentaje_avance(self):
         return self.__porcentaje_avance
     
     def get_avance_id(self):
         return self.__avance_id
     
+    def set_gerente(self, valor):
+        if valor is not None and valor != '':
+            self.__gerente = str(valor)
+    
+    def get_gerente(self):
+        return self.__gerente
+
     @staticmethod
     def _limpiar_texto(texto, max_len=255):
-        """Limpieza de datos contra inyección SQL"""
         if not isinstance(texto, str):
             texto = str(texto or '')
         return re.sub(r'[<>\'";\\]', '', texto).strip()[:max_len]
 
+    # ========== MÉTODOS PRIVADOS DE BASE DE DATOS ==========
+    
     def __crear_avance_db(self, gerente_id, porcentaje, observaciones):
-        """
-        Crea un registro en tabla avance resolviendo dependencias.
-        Si falla, retorna None para permitir guardar el informe sin avance asociado.
-        """
         conn = None
         cur = None
         id_avance = None
         try:
             conn = connectionBD_invilara()
             if not conn:
-                print("No se pudo conectar a BD para crear avance")
                 return None
             cur = conn.cursor()
 
-            descripcion = self._limpiar_texto(observaciones or 'Sin descripción', 500) or 'Sin descripcion'
-
-            try:
-                porcentaje = int(porcentaje) if porcentaje else 0
-            except (ValueError, TypeError):
-                porcentaje = 0
-            porcentaje = max(0, min(100, porcentaje))
-
+            descripcion = self._limpiar_texto(observaciones or 'Sin descripción', 45) or 'Sin descripcion'
+            porcentaje = max(0, min(100, int(porcentaje or 0)))
             id_avance = str(uuid.uuid4().hex[:12])
 
-            cur.execute(
-                "SELECT id_semaforo FROM semaforo ORDER BY id_semaforo DESC LIMIT 1"
-            )
+            cur.execute("SELECT id_semaforo FROM semaforo ORDER BY id_semaforo DESC LIMIT 1")
             row_semaforo = cur.fetchone()
             if row_semaforo:
                 id_semaforo = row_semaforo[0]
             else:
                 id_semaforo = 1
-                cur.execute(
-                    "INSERT INTO semaforo (id_semaforo, estado, color, descripcion) VALUES (%s, %s, %s, %s)",
-                    (id_semaforo, 'Activo', 'VERDE', 'Semáforo generado automáticamente')
-                )
+                cur.execute("INSERT INTO semaforo (id_semaforo, estado, color, descripcion) VALUES (%s, %s, %s, %s)",
+                    (id_semaforo, 'Activo', 'VERDE', 'Semáforo generado automáticamente'))
 
-            cur.execute(
-                "SELECT id_obra FROM obra WHERE semaforo_id_semaforo=%s LIMIT 1",
-                (id_semaforo,)
-            )
+            cur.execute("SELECT id_obra FROM obra WHERE semaforo_id_semaforo=%s LIMIT 1", (id_semaforo,))
             row_obra = cur.fetchone()
             if row_obra:
                 id_obra = row_obra[0]
             else:
                 cur.execute("SELECT COALESCE(MAX(id_obra), 0) + 1 FROM obra")
                 id_obra = cur.fetchone()[0]
-                cur.execute(
-                    """INSERT INTO obra (id_obra, titulo_obra, ubicacion_obra, periodo_ejecucion, fecha_inicio, fecha_fin,
-                                       mediciones_obra, valuaciones, modificaciones_contrato,
-                                       certificaciones_obras_ejecutadas, numero_contrato,
-                                       porcentaje_avance_obra, semaforo_id_semaforo,
-                                       contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto)
-                       VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                    (id_obra, 'Obra Generada', 'Sin ubicacion', 1, datetime.now().date(), datetime.now().date(),
-                     'N/A', 'N/A', 'N/A', 0, 'N/A', porcentaje, id_semaforo, 1, 'FRE-001')
-                )
+                cur.execute("""INSERT INTO obra (id_obra, titulo_obra, ubicacion_obra, periodo_ejecucion, fecha_inicio, fecha_fin, mediciones_obra, valuaciones, modificaciones_contrato, certificaciones_obras_ejecutadas, numero_contrato, porcentaje_avance_obra, semaforo_id_semaforo, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                    (id_obra, 'Obra Generada', 'Sin ubicacion', 1, datetime.now().date(), datetime.now().date(), 'N/A', 'N/A', 'N/A', 0, 'N/A', porcentaje, id_semaforo, 1, 'FRE-001'))
 
-            sql = """
-                INSERT INTO avance (id_avance, descripcion, porcentaje_avance, gerente, fecha_avance,
-                                    obra_id_obra, obra_semaforo_id_semaforo,
-                                    obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """
-            params = (
-                id_avance,
-                descripcion,
-                porcentaje,
-                str(gerente_id) if gerente_id else None,
-                datetime.now().date(),
-                id_obra,
-                id_semaforo,
-                1,
-                'FRE-001'
-            )
+            sql = """INSERT INTO avance (id_avance, descripcion, porcentaje_avance, gerente, fecha_avance, obra_id_obra, obra_semaforo_id_semaforo, obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            params = (id_avance, descripcion, porcentaje, str(gerente_id) if gerente_id else '1', datetime.now().date(), id_obra, id_semaforo, 1, 'FRE-001')
             cur.execute(sql, params)
             conn.commit()
             return str(id_avance)
         except Exception as e:
-            if conn:
-                try:
-                    conn.rollback()
-                except Exception:
-                    pass
-            print(f"Error __crear_avance_db (no crítico): {e}")
+            print(f"Error __crear_avance_db: {e}")
             return None
         finally:
             if cur:
@@ -245,55 +201,32 @@ class InformeAvanceModel:
                     conn.close()
                 except Exception:
                     pass
-    
-    # ========== MÉTODOS PRIVADOS DE BASE DE DATOS ==========
-    
+
     def __registrar_informe_db(self):
-        """Método PRIVADO para insertar informe en BD"""
         conn = None
         cur = None
-        
         try:
             conn = connectionBD_invilara()
             if not conn:
                 return None
-            
             cur = conn.cursor()
+
+            sql = """INSERT INTO informe_avance_obra (fecha, estado, poblacion_beneficiada, tipo_informe, evidencia_antes, evidencia_durante, evidencia_despues, avance_id_avance) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
             
-            # Consulta parametrizada (seguridad contra inyección)
-            sql = """
-                INSERT INTO informe_avance_obra 
-                (fecha, estado, poblacion_beneficiada, tipo_informe, 
-                 evidencia_antes, evidencia_durante, evidencia_despues, avance_id_avance)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-            """
-            
-            # Convertir listas de evidencias a string separado por comas
             ev_antes = ','.join(map(str, self.__evidencias_antes)) if self.__evidencias_antes else ''
             ev_durante = ','.join(map(str, self.__evidencias_durante)) if self.__evidencias_durante else ''
             ev_despues = ','.join(map(str, self.__evidencias_despues)) if self.__evidencias_despues else ''
-            
-            cur.execute(sql, (
-                self.__fecha or datetime.now(),
-                self.__estado,
-                self.__poblacion_beneficiada,
-                self.__tipo_informe,
-                ev_antes,
-                ev_durante,
-                ev_despues,
-                self.__avance_id
-            ))
+
+            cur.execute(sql, (self.__fecha or datetime.now(), self.__estado, self.__poblacion_beneficiada, self.__tipo_informe, ev_antes, ev_durante, ev_despues, self.__avance_id))
 
             if self.__avance_id:
-                obs = self._limpiar_texto(self.__observaciones or '', 500) or 'Sin observaciones'
-                cur.execute(
-                    "UPDATE avance SET descripcion = %s, porcentaje_avance = %s WHERE id_avance = %s",
-                    (obs, self.__porcentaje_avance, self.__avance_id)
-                )
-            
+                gerente_a_usar = self.__gerente or '1'
+                obs = self._limpiar_texto(self.__observaciones or '', 45) or 'Sin observaciones'
+                cur.execute("UPDATE avance SET descripcion = %s, porcentaje_avance = %s WHERE id_avance = %s",
+                    (obs, self.__porcentaje_avance, self.__avance_id))
+
             conn.commit()
             return cur.lastrowid
-            
         except Exception as e:
             print(f"Error __registrar_informe_db: {e}")
             if conn:
@@ -304,52 +237,33 @@ class InformeAvanceModel:
                 cur.close()
             if conn:
                 conn.close()
-    
+
     def __actualizar_informe_db(self):
-        """Método PRIVADO para actualizar informe"""
         conn = None
         cur = None
-        
         try:
             conn = connectionBD_invilara()
             if not conn:
                 return False
-            
             cur = conn.cursor()
-            
-            sql = """
-                UPDATE informe_avance_obra 
-                SET estado = %s, poblacion_beneficiada = %s, tipo_informe = %s,
-                    evidencia_antes = %s, evidencia_durante = %s, evidencia_despues = %s
-                WHERE id_informe = %s
-            """
+
+            sql = """UPDATE informe_avance_obra SET estado = %s, poblacion_beneficiada = %s, tipo_informe = %s, evidencia_antes = %s, evidencia_durante = %s, evidencia_despues = %s WHERE id_informe = %s"""
             
             ev_antes = ','.join(map(str, self.__evidencias_antes)) if self.__evidencias_antes else ''
             ev_durante = ','.join(map(str, self.__evidencias_durante)) if self.__evidencias_durante else ''
             ev_despues = ','.join(map(str, self.__evidencias_despues)) if self.__evidencias_despues else ''
-            
-            cur.execute(sql, (
-                self.__estado,
-                self.__poblacion_beneficiada,
-                self.__tipo_informe,
-                ev_antes,
-                ev_durante,
-                ev_despues,
-                self.__id_informe
-            ))
+
+            cur.execute(sql, (self.__estado, self.__poblacion_beneficiada, self.__tipo_informe, ev_antes, ev_durante, ev_despues, self.__id_informe))
 
             cur.execute("SELECT avance_id_avance FROM informe_avance_obra WHERE id_informe = %s", (self.__id_informe,))
             avance_row = cur.fetchone()
             if avance_row and avance_row[0]:
-                obs = self._limpiar_texto(self.__observaciones or '', 500) or 'Sin observaciones'
-                cur.execute(
-                    "UPDATE avance SET descripcion = %s, porcentaje_avance = %s WHERE id_avance = %s",
-                    (obs, self.__porcentaje_avance, avance_row[0])
-                )
-            
+                obs = self._limpiar_texto(self.__observaciones or '', 45) or 'Sin observaciones'
+                cur.execute("UPDATE avance SET descripcion = %s, porcentaje_avance = %s WHERE id_avance = %s",
+                    (obs, self.__porcentaje_avance, avance_row[0]))
+
             conn.commit()
             return cur.rowcount > 0
-            
         except Exception as e:
             print(f"Error __actualizar_informe_db: {e}")
             if conn:
@@ -360,27 +274,27 @@ class InformeAvanceModel:
                 cur.close()
             if conn:
                 conn.close()
-    
+
     def __eliminar_logico_db(self):
-        """
-        BORRADO LÓGICO (Prof. Escalona - OBLIGATORIO)
-        Marca el informe como inactivo (estado_registro = 0) sin eliminar físicamente.
-        """
         conn = None
         cur = None
-
         try:
             conn = connectionBD_invilara()
             if not conn:
                 return False
-
             cur = conn.cursor()
 
-            sql = "UPDATE informe_avance_obra SET estado_registro = 0 WHERE id_informe = %s AND estado_registro = 1"
-            cur.execute(sql, (self.__id_informe,))
+            try:
+                cur.execute("UPDATE informe_avance_obra SET estado_registro = 0 WHERE id_informe = %s AND estado_registro = 1", (self.__id_informe,))
+                if cur.rowcount > 0:
+                    conn.commit()
+                    return True
+            except Exception:
+                pass
+
+            cur.execute("DELETE FROM informe_avance_obra WHERE id_informe = %s", (self.__id_informe,))
             conn.commit()
             return cur.rowcount > 0
-
         except Exception as e:
             if conn:
                 conn.rollback()
@@ -393,30 +307,16 @@ class InformeAvanceModel:
                 conn.close()
 
     def __obtener_todos_informes_db(self):
-        """Método PRIVADO que obtiene todos los informes activos"""
         conn = None
         cur = None
-
         try:
             conn = connectionBD_invilara()
             if not conn:
                 return []
-
             cur = conn.cursor(dictionary=True)
-
-            sql = """
-                SELECT i.*, a.porcentaje_avance, a.gerente, a.fecha_avance,
-                       e.nombre_empleado as gerente_nombre
-                FROM informe_avance_obra i
-                LEFT JOIN avance a ON i.avance_id_avance = a.id_avance
-                LEFT JOIN empleados e ON a.gerente = e.id_empleados
-                WHERE i.estado_registro = 1
-                ORDER BY i.fecha DESC
-            """
-
+            sql = """SELECT i.*, a.porcentaje_avance, a.fecha_avance, a.gerente as gerente_id, e.nombre_empleado as gerente_nombre FROM informe_avance_obra i LEFT JOIN avance a ON i.avance_id_avance = a.id_avance LEFT JOIN empleados e ON a.gerente = e.id_empleados ORDER BY i.fecha DESC"""
             cur.execute(sql)
             return cur.fetchall()
-
         except Exception as e:
             print(f"Error __obtener_todos_informes_db: {e}")
             return []
@@ -427,34 +327,19 @@ class InformeAvanceModel:
                 conn.close()
 
     def __obtener_informe_por_id_db(self, id_informe):
-        """Método PRIVADO que obtiene un informe específico activo"""
         conn = None
         cur = None
-
         try:
             conn = connectionBD_invilara()
             if not conn:
                 return None
-
             cur = conn.cursor(dictionary=True)
-
-            sql = """
-                SELECT i.*, a.porcentaje_avance, a.gerente, a.descripcion as observaciones,
-                       e.nombre_empleado as gerente_nombre
-                FROM informe_avance_obra i
-                LEFT JOIN avance a ON i.avance_id_avance = a.id_avance
-                LEFT JOIN empleados e ON a.gerente = e.id_empleados
-                WHERE i.id_informe = %s AND i.estado_registro = 1
-            """
-
+            sql = """SELECT i.id_informe, i.fecha, i.estado, i.poblacion_beneficiada, i.tipo_informe, i.evidencia_antes, i.evidencia_durante, i.evidencia_despues, i.avance_id_avance, a.porcentaje_avance, a.descripcion as observaciones, a.gerente, e.nombre_empleado as gerente_nombre FROM informe_avance_obra i LEFT JOIN avance a ON i.avance_id_avance = a.id_avance LEFT JOIN empleados e ON a.gerente = e.id_empleados WHERE i.id_informe = %s"""
             cur.execute(sql, (id_informe,))
             informe = cur.fetchone()
-
             if informe:
                 informe['evidencias'] = self.__obtener_evidencias_por_informe(cur, id_informe)
-
             return informe
-
         except Exception as e:
             print(f"Error __obtener_informe_por_id_db: {e}")
             return None
@@ -465,44 +350,23 @@ class InformeAvanceModel:
                 conn.close()
 
     def __obtener_evidencias_por_informe(self, cursor, id_informe):
-        """Usa la VISTA vista_evidencia_informe (Prof. Cadenas)"""
         try:
-            sql = """
-                SELECT * FROM vista_evidencia_informe
-                WHERE id_informe = %s AND estado = 1
-                ORDER BY etapa, fecha_registro
-            """
-            cursor.execute(sql, (id_informe,))
+            cursor.execute("SELECT * FROM vista_evidencia_informe WHERE id_informe = %s AND estado = 1 ORDER BY etapa, fecha_registro", (id_informe,))
             return cursor.fetchall()
         except Exception as e:
             print(f"Error __obtener_evidencias_por_informe: {e}")
             return []
 
     def __obtener_gerentes_activos_db(self):
-        """
-        Obtiene empleados con cargo 'Gerente' o 'Inspector' (Prof. Jhoanly)
-        Filtrado por rol según especificación
-        """
         conn = None
         cur = None
-
         try:
             conn = connectionBD_invilara()
             if not conn:
                 return []
-
             cur = conn.cursor(dictionary=True)
-
-            sql = """
-                SELECT id_empleados, nombre_empleado, cargo
-                FROM empleados
-                WHERE cargo IN ('Gerente', 'Inspector') AND estado = 1
-                ORDER BY nombre_empleado
-            """
-
-            cur.execute(sql)
+            cur.execute("SELECT id_empleados, nombre_empleado, cargo FROM empleados WHERE cargo IN ('Gerente', 'Inspector') AND estado = 1 ORDER BY nombre_empleado")
             return cur.fetchall()
-
         except Exception as e:
             print(f"Error __obtener_gerentes_activos_db: {e}")
             return []
@@ -513,22 +377,18 @@ class InformeAvanceModel:
                 conn.close()
 
     def __validar_informe_activo_db(self, id_informe):
-        """Validación en tiempo real (Prof. Escalona)"""
         conn = None
         cur = None
-
         try:
             conn = connectionBD_invilara()
             if not conn:
                 return False
-
             cur = conn.cursor()
-
-            sql = "SELECT id_informe FROM informe_avance_obra WHERE id_informe = %s AND estado_registro = 1"
-            cur.execute(sql, (id_informe,))
-
+            try:
+                cur.execute("SELECT id_informe FROM informe_avance_obra WHERE id_informe = %s AND estado_registro = 1", (id_informe,))
+            except Exception:
+                cur.execute("SELECT id_informe FROM informe_avance_obra WHERE id_informe = %s", (id_informe,))
             return cur.fetchone() is not None
-
         except Exception:
             return False
         finally:
@@ -537,10 +397,9 @@ class InformeAvanceModel:
             if conn:
                 conn.close()
 
-    # ========== MÉTODOS PÚBLICOS (Interfaz Pública - Capa de Seguridad) ==========
-
+    # ========== MÉTODOS PÚBLICOS ==========
+    
     def registrar_informe(self, data):
-        """Método PÚBLICO que actúa como interfaz para registrar informes"""
         try:
             if not isinstance(data, dict):
                 raise ValueError('Datos del informe inválidos.')
@@ -553,15 +412,12 @@ class InformeAvanceModel:
             self.set_observaciones(payload.get('observaciones', ''))
             self.set_fecha(payload.get('fecha'))
             self.set_porcentaje_avance(payload.get('porcentaje_avance', 0))
+            self.set_gerente(payload.get('gerente_responsable_id'))
 
             avance_id = payload.get('avance_id_avance')
             gerente_id = payload.get('gerente_responsable_id')
             if not avance_id:
-                avance_id = self.__crear_avance_db(
-                    gerente_id,
-                    payload.get('porcentaje_avance', 0),
-                    payload.get('observaciones', '') or 'Sin descripcion'
-                )
+                avance_id = self.__crear_avance_db(gerente_id, payload.get('porcentaje_avance', 0), payload.get('observaciones', '') or 'Sin descripcion')
             
             if not avance_id:
                 conn_fallback = connectionBD_invilara()
@@ -585,23 +441,18 @@ class InformeAvanceModel:
                                 conn_fallback.close()
                         except Exception:
                             pass
-            
-            self.set_avance_id(avance_id)
 
+            self.set_avance_id(avance_id)
             self.__avance_id = avance_id
 
             if payload.get('evidencias_antes'):
-                evidencias_antes = [item for item in str(payload.get('evidencias_antes', '')).split(',') if item]
-                self.set_evidencias_antes(evidencias_antes)
+                self.set_evidencias_antes([item for item in str(payload.get('evidencias_antes', '')).split(',') if item])
             if payload.get('evidencias_durante'):
-                evidencias_durante = [item for item in str(payload.get('evidencias_durante', '')).split(',') if item]
-                self.set_evidencias_durante(evidencias_durante)
+                self.set_evidencias_durante([item for item in str(payload.get('evidencias_durante', '')).split(',') if item])
             if payload.get('evidencias_despues'):
-                evidencias_despues = [item for item in str(payload.get('evidencias_despues', '')).split(',') if item]
-                self.set_evidencias_despues(evidencias_despues)
+                self.set_evidencias_despues([item for item in str(payload.get('evidencias_despues', '')).split(',') if item])
 
             return self.__registrar_informe_db()
-
         except ValueError as ve:
             print(f"Error de validación en registrar_informe: {ve}")
             raise ve
@@ -610,10 +461,8 @@ class InformeAvanceModel:
             raise ValueError(f"Error interno al registrar: {str(e)}")
 
     def actualizar_informe(self, data):
-        """Método PÚBLICO para actualizar informe"""
         try:
             id_informe = int(data.get('id_informe'))
-
             if not self.__validar_informe_activo_db(id_informe):
                 raise ValueError("El informe no existe o fue eliminado.")
 
@@ -624,25 +473,22 @@ class InformeAvanceModel:
             self.set_observaciones(data.get('observaciones', ''))
             self.set_avance_id(data.get('avance_id_avance'))
             self.set_porcentaje_avance(data.get('porcentaje_avance', 0))
+            self.set_gerente(data.get('gerente_responsable_id'))
 
             if data.get('evidencias_antes'):
-                evidencias_antes = [item for item in str(data.get('evidencias_antes', '')).split(',') if item]
-                self.set_evidencias_antes(evidencias_antes)
+                self.set_evidencias_antes([item for item in str(data.get('evidencias_antes', '')).split(',') if item])
             else:
                 self.__evidencias_antes = []
             if data.get('evidencias_durante'):
-                evidencias_durante = [item for item in str(data.get('evidencias_durante', '')).split(',') if item]
-                self.set_evidencias_durante(evidencias_durante)
+                self.set_evidencias_durante([item for item in str(data.get('evidencias_durante', '')).split(',') if item])
             else:
                 self.__evidencias_durante = []
             if data.get('evidencias_despues'):
-                evidencias_despues = [item for item in str(data.get('evidencias_despues', '')).split(',') if item]
-                self.set_evidencias_despues(evidencias_despues)
+                self.set_evidencias_despues([item for item in str(data.get('evidencias_despues', '')).split(',') if item])
             else:
                 self.__evidencias_despues = []
 
             return self.__actualizar_informe_db()
-
         except ValueError as ve:
             print(f"Error de validación en actualizar_informe: {ve}")
             raise ve
@@ -651,16 +497,12 @@ class InformeAvanceModel:
             return False
 
     def eliminar_informe_logico(self, id_informe):
-        """Método PÚBLICO para borrado lógico"""
         try:
             id_val = int(id_informe)
-
             if not self.__validar_informe_activo_db(id_val):
                 raise ValueError("El informe no existe o ya fue eliminado.")
-
             self.set_id_informe(id_val)
             return self.__eliminar_logico_db()
-
         except ValueError as ve:
             print(f"Error de validación en eliminar_informe_logico: {ve}")
             raise ve
@@ -669,11 +511,9 @@ class InformeAvanceModel:
             return False
 
     def obtener_todos_informes(self):
-        """Método PÚBLICO para obtener todos los informes"""
         return self.__obtener_todos_informes_db()
 
     def obtener_informe_por_id(self, id_informe):
-        """Método PÚBLICO para obtener un informe específico"""
         try:
             id_val = int(id_informe)
             return self.__obtener_informe_por_id_db(id_val)
@@ -681,11 +521,9 @@ class InformeAvanceModel:
             return None
 
     def obtener_gerentes_activos(self):
-        """Método PÚBLICO para obtener gerentes/inspectores"""
         return self.__obtener_gerentes_activos_db()
 
     def validar_informe_activo(self, id_informe):
-        """Método PÚBLICO para validación en tiempo real"""
         try:
             id_val = int(id_informe)
             return self.__validar_informe_activo_db(id_val)
@@ -694,24 +532,17 @@ class InformeAvanceModel:
 
     @staticmethod
     def comprimir_imagen(ruta_original, calidad=85):
-        """
-        Compresión de imágenes (Prof. Cadenas)
-        Usa Pillow para reducir tamaño sin perder calidad
-        """
         try:
             with Image.open(ruta_original) as img:
                 if img.mode in ('RGBA', 'P'):
                     img = img.convert('RGB')
-
                 max_width = 1920
                 if img.width > max_width:
                     ratio = max_width / img.width
                     new_size = (max_width, int(img.height * ratio))
                     img = img.resize(new_size, Image.Resampling.LANCZOS)
-
                 img.save(ruta_original, 'JPEG', quality=calidad, optimize=True)
                 return True
-
         except Exception as e:
             print(f"Error al comprimir imagen: {e}")
             return False

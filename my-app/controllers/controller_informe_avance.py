@@ -82,7 +82,7 @@ def api_obtener_inspectores():
         sql = """
             SELECT id_empleados, nombre_empleado, cargo, gerencia_asignada
             FROM empleados
-            WHERE cargo = 'Inspector' AND estado = 1
+            WHERE cargo IN ('Inspector', 'Gerente') AND estado = 1
             ORDER BY nombre_empleado ASC
         """
         
@@ -298,7 +298,7 @@ def api_crear_informe():
         print(f"Error api_crear_informe: {e}")
         return jsonify({
             'status': 'error',
-            'message': str(e)
+            'message': f'Error interno del servidor: {str(e)}'
         }), 500
 
 
@@ -329,6 +329,16 @@ def api_actualizar_informe():
                 'message': 'El informe no existe o fue eliminado'
             }), 404
         
+        # Validación de gerente
+        gerente_id = data.get('gerente_responsable_id')
+        if gerente_id:
+            modelo_empleado = EmpleadoModel()
+            if not modelo_empleado.validar_empleado_activo(gerente_id):
+                return jsonify({
+                    'status': 'error', 
+                    'message': 'El gerente/inspector seleccionado no existe o fue eliminado'
+                }), 400
+        
         # Actualizar informe
         if modelo.actualizar_informe(data):
             # Registrar en bitácora
@@ -354,10 +364,12 @@ def api_actualizar_informe():
         }), 400
         
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print(f"Error api_actualizar_informe: {e}")
         return jsonify({
             'status': 'error', 
-            'message': 'Error interno del servidor'
+            'message': f'Error interno del servidor: {str(e)}'
         }), 500
 
 
@@ -548,6 +560,20 @@ def form_actualizar_informe():
         data = request.form.to_dict()
         
         id_informe = data.get('id_informe')
+        
+        # Validar que el informe existe
+        if not modelo.validar_informe_activo(id_informe):
+            flash('El informe no existe o fue eliminado.', 'error')
+            return redirect(url_for('informe_avance_bp.listar_informes'))
+        
+        # Validación de gerente
+        gerente_id = data.get('gerente_responsable_id')
+        if gerente_id:
+            from models.empleado_model import EmpleadoModel
+            modelo_empleado = EmpleadoModel()
+            if not modelo_empleado.validar_empleado_activo(gerente_id):
+                flash('El gerente/inspector seleccionado no existe.', 'error')
+                return redirect(url_for('informe_avance_bp.listar_informes'))
         
         if modelo.actualizar_informe(data):
             # Registrar en bitácora

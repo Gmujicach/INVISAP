@@ -132,12 +132,12 @@
     </div>
   </div>
 
-  <form method="POST" action="{{ url_for('informe_avance_bp.form_actualizar_informe') }}" class="row g-4" id="formModificarInforme">
-    <input type="hidden" name="id_informe" value="{{ informe.id_informe }}" />
-    <input type="hidden" name="avance_id_avance" id="avance_id_avance" value="{{ informe.avance_id_avance or '' }}" />
-    <input type="hidden" id="evidencias_antes_json" value="{{ informe.evidencia_antes|default('') }}" />
-    <input type="hidden" id="evidencias_durante_json" value="{{ informe.evidencia_durante|default('') }}" />
-    <input type="hidden" id="evidencias_despues_json" value="{{ informe.evidencia_despues|default('') }}" />
+<form method="POST" action="{{ url_for('informe_avance_bp.form_actualizar_informe') }}" class="row g-4" id="formEditarInforme">
+     <input type="hidden" name="id_informe" value="{{ informe.id_informe }}" />
+     <input type="hidden" name="avance_id_avance" id="avance_id_avance" value="{{ informe.avance_id_avance or '' }}" />
+     <input type="hidden" id="evidencias_antes_json" value="{{ informe.evidencia_antes|default('') }}" />
+     <input type="hidden" id="evidencias_durante_json" value="{{ informe.evidencia_durante|default('') }}" />
+     <input type="hidden" id="evidencias_despues_json" value="{{ informe.evidencia_despues|default('') }}" />
 
     <div class="col-lg-8">
       <div class="card shadow-sm border-0 rounded-4 mb-4">
@@ -233,17 +233,17 @@
       <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body p-4">
           <h5 class="form-section-title"><i class="bx bx-user-check me-2"></i>Responsable</h5>
-          <div class="mb-3">
-            <label class="form-label">Inspector / Gerente</label>
-            <div class="inspector-display" data-bs-toggle="modal" data-bs-target="#modalSeleccionarInspector" id="inspectorDisplay">
-              <i class="bx bx-search me-2 text-muted"></i>
-              <span class="text-muted" id="inspectorDisplayText">Haga clic para seleccionar un inspector...</span>
-            </div>
-            <input type="hidden" name="gerente_responsable_id" id="gerente_responsable_id" value="{{ informe.gerente or '' }}" />
-            <small class="form-text text-muted mt-2 d-block">
-              <i class="bx bx-info-circle"></i> Solo se muestran empleados activos con cargo Inspector
-            </small>
-          </div>
+<div class="mb-3">
+             <label class="form-label">Inspector / Gerente</label>
+             <div class="inspector-display" data-bs-toggle="modal" data-bs-target="#modalSeleccionarInspector" id="inspectorDisplay">
+               <i class="bx bx-search me-2 text-muted"></i>
+               <span class="text-muted" id="inspectorDisplayText">Haga clic para seleccionar un inspector...</span>
+             </div>
+             <input type="hidden" name="gerente_responsable_id" id="gerente_responsable_id" value="{{ informe.gerente|default('') }}" required />
+             <small class="form-text text-muted mt-2 d-block">
+               <i class="bx bx-info-circle"></i> Solo se muestran empleados activos con cargo Inspector
+             </small>
+           </div>
           <div class="alert alert-info small mb-3">
             <i class="bx bx-info-circle me-1"></i> Revise el estado, el avance y las observaciones antes de guardar.
           </div>
@@ -424,14 +424,18 @@
     despues: parseEvidencias(leerJsonOculto('evidencias_despues_json'))
   };
 
-  const inspectorNombre = '{{ informe.gerente_nombre|default("") }}';
-  const inspectorDisplay = document.getElementById('inspectorDisplayText');
-  const inspectorInput = document.getElementById('gerente_responsable_id');
+const inspectorNombre = '{{ informe.gerente_nombre|default("") }}';
+   const inspectorId = '{{ informe.gerente|default("") }}';
+   const inspectorDisplay = document.getElementById('inspectorDisplayText');
+   const inspectorInput = document.getElementById('gerente_responsable_id');
 
-  if (inspectorNombre && inspectorInput.value) {
-    if (inspectorDisplay) inspectorDisplay.textContent = inspectorNombre;
-    if (inspectorDisplay) inspectorDisplay.classList.remove('text-muted');
-  }
+   if (inspectorNombre && inspectorNombre !== '') {
+     if (inspectorDisplay) inspectorDisplay.textContent = inspectorNombre;
+     if (inspectorDisplay) inspectorDisplay.classList.remove('text-muted');
+   }
+   if (inspectorId && inspectorId !== '') {
+     if (inspectorInput) inspectorInput.value = inspectorId;
+   }
 
   function setInspectorSeleccionado(id, nombre, gerencia, event) {
     inspectorInput.value = id;
@@ -553,36 +557,36 @@
     }
   };
 
-  async function actualizarPreview(etapa) {
-    const previewContainer = document.getElementById(`preview_${etapa}`);
-    previewContainer.innerHTML = '';
+async function actualizarPreview(etapa) {
+     const previewContainer = document.getElementById(`preview_${etapa}`);
+     previewContainer.innerHTML = '';
 
-    if (!window.evidenciasSeleccionadas[etapa] || window.evidenciasSeleccionadas[etapa].length === 0) {
-      return;
-    }
+     if (!window.evidenciasSeleccionadas[etapa] || window.evidenciasSeleccionadas[etapa].length === 0) {
+       return;
+     }
 
-    try {
-      const response = await fetch(`/api/obtener-evidencias?etapa=${etapa}`);
-      const todasEvidencias = await response.json();
+     try {
+       const response = await fetch(`/api/obtener-evidencias?etapa=${etapa}`);
+       const todasEvidencias = await response.json();
 
-      window.evidenciasSeleccionadas[etapa].forEach(id => {
-        const evidencia = todasEvidencias.find(e => e.id_evidencia === id);
-        if (evidencia) {
-          const preview = document.createElement('div');
-          preview.className = 'preview-evidencia-item';
-          preview.innerHTML = `
-            <img src="/${evidencia.url_archivos}" alt="${evidencia.fotos}" title="${evidencia.fotos}" />
-            <div class="remove-btn" onclick="removerEvidencia('${etapa}', ${id})">
-              <i class="bx bx-x"></i>
-            </div>
-          `;
-          previewContainer.appendChild(preview);
-        }
-      });
-    } catch (error) {
-      console.error('Error al actualizar preview:', error);
-    }
-  }
+       window.evidenciasSeleccionadas[etapa].forEach(id => {
+         const evidencia = todasEvidencias.find(e => e.id_evidencia === id);
+         if (evidencia) {
+           const preview = document.createElement('div');
+           preview.className = 'preview-evidencia-item';
+           preview.innerHTML = `
+             <img src="${getEvidenciaImageUrl(evidencia.url_archivos)}" alt="${evidencia.fotos}" title="${evidencia.fotos}" />
+             <div class="remove-btn" onclick="removerEvidencia('${etapa}', ${id})">
+               <i class="bx bx-x"></i>
+             </div>
+           `;
+           previewContainer.appendChild(preview);
+         }
+       });
+     } catch (error) {
+       console.error('Error al actualizar preview:', error);
+     }
+   }
 
   document.getElementById('modalSeleccionarInspector').addEventListener('show.bs.modal', function() {
     cargarInspectores();
@@ -654,9 +658,9 @@
     }
   }
 
-  ['antes', 'durante', 'despues'].forEach(etapa => {
-    actualizarPreview(etapa);
-  });
+['antes', 'durante', 'despues'].forEach(etapa => {
+     actualizarPreview(etapa);
+   });
 })();
 </script>
 {% endblock %}

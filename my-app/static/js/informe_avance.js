@@ -72,9 +72,9 @@ function inicializarModuloInformes() {
         console.log('✓ Modal de detalle configurado');
     }
     
-    // 6. Formulario de edición por fetch si existe en la página
+    // 6. Formulario de edición por fetch si existe en la página (usar solo en /editar-informe)
     const formEditarInforme = document.getElementById('formEditarInforme');
-    if (formEditarInforme && !formEditarInforme.dataset.fetchBound) {
+    if (formEditarInforme && window.location.pathname.startsWith('/editar-informe') && !formEditarInforme.dataset.fetchBound) {
         formEditarInforme.addEventListener('submit', function(e) {
             e.preventDefault();
             actualizarInformeConFetch(this);

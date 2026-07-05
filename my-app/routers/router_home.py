@@ -29,7 +29,6 @@ from models.model_empresas import EmpresaModel
 
 ## Informe de Avance de Obra
 from controllers.controller_informe_avance import informe_avance_bp
-app.register_blueprint(informe_avance_bp)
 
 ## Empresas
 from controllers.controller_empresa import empresa_bp
@@ -64,6 +63,7 @@ app.register_blueprint(reporte_excel_bp)
 app.register_blueprint(reporte_pdf_bp)
 app.register_blueprint(reporte_estadistico_bp)
 app.register_blueprint(evidencia_bp)
+app.register_blueprint(informe_avance_bp)
 
 @home_bp.route('/registrar-solicitud', methods=['GET'])
 def viewFormSolicitud():

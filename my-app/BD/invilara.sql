@@ -217,16 +217,20 @@ CREATE TABLE `gravedad_obra_has_prioridad` (
 -- Estructura de tabla para la tabla `informe_avance_obra`
 --
 
+DROP TABLE IF EXISTS `informe_avance_obra`;
+
 CREATE TABLE `informe_avance_obra` (
-  `id_informe` int NOT NULL,
+  `id_informe` int NOT NULL AUTO_INCREMENT,
   `fecha` datetime NOT NULL,
   `estado` varchar(25) NOT NULL,
   `poblacion_beneficiada` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `tipo_informe` varchar(30) NOT NULL,
-  `evidencia_antes` varchar(50) NOT NULL,
-  `evidencia_durante` varchar(50) NOT NULL,
-  `evidencia_despues` varchar(50) NOT NULL,
-  `avance_id_avance` varchar(45) NOT NULL
+  `evidencia_antes` varchar(255) DEFAULT NULL,
+  `evidencia_durante` varchar(255) DEFAULT NULL,
+  `evidencia_despues` varchar(255) DEFAULT NULL,
+  `avance_id_avance` varchar(45) DEFAULT NULL,
+  `gerente` varchar(45) DEFAULT NULL,
+  `estado_registro` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de informes de avances de obras';
 
 -- --------------------------------------------------------
@@ -652,7 +656,9 @@ ALTER TABLE `gravedad_obra_has_prioridad`
 --
 ALTER TABLE `informe_avance_obra`
   ADD PRIMARY KEY (`id_informe`),
-  ADD KEY `fk_informe_avance_obra_avance1_idx` (`avance_id_avance`);
+  ADD KEY `fk_informe_avance_obra_avance1_idx` (`avance_id_avance`),
+  ADD KEY `idx_estado_registro` (`estado_registro`),
+  ADD KEY `idx_gerente` (`gerente`);
 
 --
 -- Indices de la tabla `inspeccion`
@@ -875,6 +881,20 @@ ALTER TABLE `semaforo`
 --
 ALTER TABLE `solicitudes`
   MODIFY `id_solicitudes` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- MIGRACIÓN: Agregar columnas faltantes a informe_avance_obra (si no existen)
+--
+ALTER TABLE `informe_avance_obra`
+  ADD COLUMN `gerente` varchar(45) DEFAULT NULL AFTER `avance_id_avance`,
+  ADD COLUMN `estado_registro` tinyint NOT NULL DEFAULT '1' AFTER `gerente`;
+
+--
+-- Índices para las nuevas columnas
+--
+ALTER TABLE `informe_avance_obra`
+  ADD KEY `idx_estado_registro` (`estado_registro`),
+  ADD KEY `idx_gerente` (`gerente`);
 
 -- --------------------------------------------------------
 

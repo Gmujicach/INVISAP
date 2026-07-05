@@ -195,7 +195,7 @@
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <form class="form-horizontal" method="POST" action="/form-registrar-informe-avance-obra" 
-            autocomplete="off" enctype="multipart/form-data" id="formInformeAvance">
+            autocomplete="off" id="formInformeAvance">
         <div class="modal-header bg-primary text-white">
           <h5 class="modal-title" id="modalRegistrarInformeLabel">
             <i class="bx bx-file-blank me-2"></i>Registrar Informe de Avance de Obra
@@ -283,11 +283,11 @@
                 Inspector Responsable
               </label>
               <div class="input-group">
-                <input type="text" class="form-control shadow-sm" id="inspector_nombre_display" 
+                <input type="text" class="form-control shadow-sm" id="inspector_nombre_display"
                        placeholder="Haga clic en el botón para seleccionar un inspector..." readonly required />
-                <input type="hidden" name="gerente_responsable_id" id="gerente_responsable_id" />
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalSeleccionarInspector">
-                  <i class="bx bx-search"></i> Seleccionar Inspector
+                <input type="hidden" name="gerente_responsable_id" id="gerente_responsable_id" required />
+                <button class="btn btn-outline-primary d-flex align-items-center" type="button" data-bs-toggle="modal" data-bs-target="#modalSeleccionarInspector">
+                  <i class="bx bx-search me-1"></i> <span>Seleccionar Inspector</span>
                 </button>
               </div>
               <small class="form-text text-muted">
