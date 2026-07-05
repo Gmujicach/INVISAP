@@ -114,11 +114,53 @@
         color: #fff !important;
       }
       
-      /* Dark Mode Base Styles */
-      body.dark-mode {
-        background-color: #232333;
-        color: #cfcde9;
-      }
+       /* Dark Mode Sidebar Menu Styles */
+       body.dark-mode .layout-menu {
+         background-color: #1e1e2d !important;
+         border-right: 1px solid #2b2c40 !important;
+       }
+       body.dark-mode .menu-link {
+         color: #a2a3b7 !important;
+       }
+       body.dark-mode .menu-link:hover {
+         color: #fff !important;
+       }
+       body.dark-mode .menu-item .menu-icon {
+         color: #a2a3b7 !important;
+       }
+       body.dark-mode .menu-item .menu-link:hover .menu-icon,
+       body.dark-mode .menu-item.active > .menu-link .menu-icon {
+         color: #fff !important;
+       }
+       body.dark-mode .menu-sub {
+         background-color: #1e1e2d !important;
+       }
+       body.dark-mode .menu-sub .menu-link {
+         color: #a2a3b7 !important;
+       }
+       body.dark-mode .menu-sub .menu-item.active > .menu-link {
+         color: #fff !important;
+       }
+       body.dark-mode .app-brand-link {
+         border-bottom: 1px solid #2b2c40 !important;
+       }
+       body.dark-mode .menu-inner {
+         color: #a2a3b7 !important;
+       }
+       body.dark-mode .menu-item.active > .menu-link {
+         background: linear-gradient(90deg, #08b324 0%, #2b2c40 100%) !important;
+         color: #fff !important;
+       }
+       body.dark-mode .menu-item.active > .menu-link .menu-icon {
+         color: #fff !important;
+       }
+       /* Fin Dark Mode Sidebar Menu Styles */
+
+       /* Dark Mode Base Styles */
+       body.dark-mode {
+         background-color: #232333;
+         color: #cfcde9;
+       }
     </style>
   </head>
   <body class="transition-all">
