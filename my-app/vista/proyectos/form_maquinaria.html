@@ -1,6 +1,10 @@
 {% extends 'base_cpanel.html' %}
 {% block title %}Registrar Maquinaria{% endblock %}
 
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+{% endblock %}
+
 {% block body %}
 <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="fw-bold py-3 mb-4 text-primary">GESTIÓN DE MAQUINARIA</h4>
@@ -11,11 +15,11 @@
             <h5 class="mb-0 fw-bold"><i class="bx bx-plus me-1"></i> Registrar Nueva Maquinaria</h5>
         </div>
         <div class="card-body mt-3">
-            <form action="{{ url_for('home_bp.formRegistrarMaquinaria') }}" method="POST" autocomplete="off">
+            <form action="{{ url_for('home_bp.api_crear_maquinaria') }}" method="POST" autocomplete="off" id="formRegistrarMaquinaria">
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold">Nombre de la Maquinaria</label>
-                        <input type="text" name="nombre_maquinaria" class="form-control" placeholder="Ej: Excavadora CAT 320" required>
+                        <input type="text" name="nombre_maquinaria" id="nombre_maquinaria" class="form-control" placeholder="Ej: Excavadora CAT 320" required>
                     </div>
                     <div class="col-md-4 mb-3">
                         <label class="form-label fw-semibold">Tipo de Maquinaria</label>
@@ -37,7 +41,7 @@
         </div>
     </div>
 
-    <!-- Sección de Lista (Ancho Completo) -->
+    <!-- Sección de Lista con Paginación (Ancho Completo) -->
     <div class="card shadow-sm" style="border-radius: 0px !important">
         <div class="card-header bg-white border-bottom py-3">
             <h5 class="mb-0 fw-bold text-secondary"><i class="bx bx-list-ul me-1"></i> Inventario de Maquinaria</h5>
@@ -46,31 +50,27 @@
             <table class="table table-hover align-middle">
                 <thead class="table-light">
                     <tr>
-        
+                        <th>#</th>
                         <th>Nombre de Maquinaria</th>
                         <th>Tipo</th>
                         <th class="text-center">Acciones</th>
                     </tr>
                 </thead>
-                <tbody class="table-border-bottom-0">
-                    {% for maq in maquinarias %}
-                    <tr>
-                        
-                        <td>{{ maq.nombre_maquinaria|upper }}</td>
-                        <td><span class="badge bg-dark">{{ maq.tipo_maquinaria }}</span></td>
-                        <td class="text-center">
-                            <a class="btn btn-sm btn-outline-warning" href="{{ url_for('home_bp.viewEditarMaquinaria', id_maquinaria=maq.id_maquinaria) }}" title="Editar">
-                                <i class="bx bx-edit-alt"></i> Editar
-                            </a>
-                            <a class="btn btn-sm btn-outline-danger" href="{{ url_for('home_bp.eliminarMaquinaria', id_maquinaria=maq.id_maquinaria) }}" onclick="return confirm('¿Eliminar esta maquinaria?')" title="Eliminar">
-                                <i class="bx bx-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
+                <tbody class="table-border-bottom-0" id="tablaMaquinaria">
                 </tbody>
             </table>
         </div>
+        <div class="card-footer bg-white border-top py-2">
+            <nav aria-label="Navegación de páginas">
+                <ul class="pagination pagination-sm justify-content-center mb-0" id="paginacionMaquinaria">
+                </ul>
+            </nav>
+        </div>
     </div>
 </div>
+{% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='js/maquinaria.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 {% endblock %}

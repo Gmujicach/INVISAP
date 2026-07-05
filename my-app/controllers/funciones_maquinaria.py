@@ -7,13 +7,25 @@ def registrar_maquinaria_controller(datos):
         datos.get('tipo_maquinaria')
     )
 
-def listar_maquinarias_controller():
+def listar_maquinarias_controller(page=1, per_page=10):
     modelo = MaquinariaModel()
-    return modelo.obtener_maquinarias()
+    return modelo.obtener_maquinarias(page, per_page)
+
+def contar_maquinarias_controller():
+    modelo = MaquinariaModel()
+    return modelo.contar_maquinarias()
 
 def obtener_maquinaria_controller(id_maquinaria):
     modelo = MaquinariaModel()
-    return modelo.obtener_maquinaria_por_id(id_maquinaria) # Ahora el método existe en el modelo
+    return modelo.obtener_maquinaria_por_id(id_maquinaria)
+
+def listar_maquinarias_eliminadas_controller():
+    modelo = MaquinariaModel()
+    return modelo.obtener_maquinarias_eliminadas()
+
+def restaurar_maquinaria_controller(id_maquinaria):
+    modelo = MaquinariaModel()
+    return modelo.restaurar_maquinaria(id_maquinaria)
 
 def actualizar_maquinaria_controller(id_maquinaria, datos):
     modelo = MaquinariaModel()

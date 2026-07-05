@@ -15,6 +15,12 @@ from controllers.funciones_solicitud import (
     obtener_solicitudes, crear_solicitud, obtener_solicitud_por_id,
     actualizar_solicitud, eliminar_solicitud, obtener_solicitudes_pendientes
 )
+from controllers.funciones_maquinaria import (
+    registrar_maquinaria_controller, listar_maquinarias_controller, 
+    obtener_maquinaria_controller, listar_maquinarias_eliminadas_controller,
+    restaurar_maquinaria_controller, actualizar_maquinaria_controller,
+    eliminar_maquinaria_controller, contar_maquinarias_controller
+)
 from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, obtener_estadisticas_bitacora
 from models.model_publicacion import PublicacionModel
 from models.model_informe_avance import InformeAvanceModel
@@ -303,10 +309,26 @@ def viewFormRespaldos():
         return redirect(url_for('login_bp.inicio'))
 
 @home_bp.route('/registrar-maquinaria', methods=['GET'])
+@home_bp.route('/api/maquinaria/listar', methods=['GET'])
+def api_listar_maquinarias():
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+
+    try:
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+        maquinarias = listar_maquinarias_controller(page, per_page)
+        total = contar_maquinarias_controller()
+        total_pages = (total + per_page - 1) // per_page
+        return jsonify({'success': True, 'data': maquinarias, 'total': total, 'page': page, 'total_pages': total_pages})
+    except Exception as e:
+        print(f"Error en api_listar_maquinarias: {e}")
+        return jsonify({'success': False, 'message': 'Error al listar maquinarias'})
+
 @home_bp.route('/maquinaria', methods=['GET'])
 def viewFormMaquinaria():
     if 'conectado' in session:
-        maquinarias = listar_maquinarias_controller()
+        maquinarias = listar_maquinarias_controller(1, 1000)
         return render_template(f'{PATH_URL_PROY}/form_maquinaria.html', maquinarias=maquinarias)
     else:
         flash('primero debes iniciar sesión.', 'error')
@@ -365,6 +387,54 @@ def eliminarMaquinaria(id_maquinaria):
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+
+@home_bp.route('/api/maquinaria/crear', methods=['POST'])
+def api_crear_maquinaria():
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+
+    try:
+        resultado = registrar_maquinaria_controller(request.form)
+        if resultado.get('success'):
+            return jsonify({'success': True, 'message': resultado.get('message', 'Maquinaria registrada correctamente'), 'id': resultado.get('id')})
+        return jsonify({'success': False, 'message': resultado.get('message', 'No se pudo registrar')})
+    except Exception as e:
+        print(f"Error en api_crear_maquinaria: {e}")
+        return jsonify({'success': False, 'message': 'Error interno del servidor'})
+
+@home_bp.route('/api/maquinaria/<int:id_maquinaria>/eliminar', methods=['DELETE'])
+def api_eliminar_maquinaria(id_maquinaria):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+
+    res = eliminar_maquinaria_controller(id_maquinaria)
+    if res == "utilizada":
+        return jsonify({'success': False, 'message': 'No se puede eliminar: Esta maquinaria está asignada a uno o más proyectos.'}), 400
+    elif res == "eliminada":
+        return jsonify({'success': True, 'message': 'Maquinaria eliminada correctamente'}), 200
+    return jsonify({'success': False, 'message': 'Error al eliminar la maquinaria'}), 400
+
+@home_bp.route('/api/maquinaria/eliminadas', methods=['GET'])
+def api_maquinarias_eliminadas():
+    if 'conectado' not in session:
+        return jsonify([]), 401
+    
+    try:
+        resultado = listar_maquinarias_eliminadas_controller()
+        return jsonify(resultado)
+    except Exception as e:
+        print(f"Error en api_maquinarias_eliminadas: {e}")
+        return jsonify([])
+
+@home_bp.route('/api/maquinaria/<int:id_maquinaria>/restaurar', methods=['POST'])
+def api_restaurar_maquinaria(id_maquinaria):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+
+    resultado = restaurar_maquinaria_controller(id_maquinaria)
+    if resultado.get('success'):
+        return jsonify({'success': True, 'message': resultado.get('message')}), 200
+    return jsonify({'success': False, 'message': resultado.get('message', 'Error al restaurar')}), 400
 
 @home_bp.route('/gestionar-obras', methods=['GET'])
 def viewFormGestionarObras():
