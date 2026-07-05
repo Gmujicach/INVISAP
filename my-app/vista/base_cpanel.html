@@ -99,20 +99,33 @@
         color: #cfcde9 !important;
       }
       
-      /* Sidebar Dark Mode Hover Effects */
-      body.dark-mode .menu-item .menu-link:hover,
-      .menu-item:hover > .menu-link {
-        background: linear-gradient(90deg, #08b324 0%, transparent 100%) !important;
-        color: #fff !important;
-      }
-      body.dark-mode .menu-item .menu-link:hover i,
-      .menu-item:hover > .menu-link i {
-        color: #fff !important;
-      }
-      body.dark-mode .menu-item.active > .menu-link {
-        background: linear-gradient(90deg, #08b324 0%, #2b2c40 100%) !important;
-        color: #fff !important;
-      }
+       /* Sidebar Dark Mode Hover Effects */
+       body.dark-mode .menu-item .menu-link:hover,
+       .menu-item:hover > .menu-link {
+         background-color: #08b324 !important;
+         color: #fff !important;
+       }
+       body.dark-mode .menu-item .menu-link:hover i,
+       .menu-item:hover > .menu-link i {
+         color: #fff !important;
+       }
+       body.dark-mode .menu-item.active > .menu-link {
+         background: linear-gradient(90deg, #08b324 0%, #2b2c40 100%) !important;
+         color: #fff !important;
+       }
+       body.dark-mode .layout-menu {
+         scrollbar-color: #2b2c40 transparent;
+       }
+       body.dark-mode .layout-menu::-webkit-scrollbar {
+         width: 6px;
+       }
+       body.dark-mode .layout-menu::-webkit-scrollbar-track {
+         background: transparent;
+       }
+       body.dark-mode .layout-menu::-webkit-scrollbar-thumb {
+         background-color: #2b2c40;
+         border-radius: 10px;
+       }
       
        /* Dark Mode Sidebar Menu Styles */
        body.dark-mode .layout-menu {
@@ -154,6 +167,9 @@
        body.dark-mode .menu-item.active > .menu-link .menu-icon {
          color: #fff !important;
        }
+       body.dark-mode .app-brand-logo img {
+         /* Se maneja el cambio de imagen vía data-dark-src para preservar verde/amarillo */
+       }
        /* Fin Dark Mode Sidebar Menu Styles */
 
        /* Dark Mode Base Styles */
@@ -166,8 +182,26 @@
   <body class="transition-all">
     <script>
       (function() {
+        var logo = document.querySelector('.app-brand-logo img');
+        var darkSwitch = document.getElementById('dark-mode-switch');
+
+        function updateLogo() {
+          if (document.body.classList.contains('dark-mode') && logo && logo.dataset.darkSrc) {
+            logo.src = logo.dataset.darkSrc;
+          } else if (logo && logo.dataset.lightSrc) {
+            logo.src = logo.dataset.lightSrc;
+          }
+        }
+
         if (localStorage.getItem('theme') === 'dark') {
           document.body.classList.add('dark-mode');
+        }
+        updateLogo();
+
+        if (darkSwitch) {
+          darkSwitch.addEventListener('change', function() {
+            setTimeout(updateLogo, 50);
+          });
         }
       })();
     </script>

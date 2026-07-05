@@ -1,45 +1,244 @@
 {% extends 'base_cpanel.html' %}
 {% block title %}Reportes Estadísticos | INVILARA{% endblock %}
 
+{% block customCSS %}{% endblock %}
+
 {% block body %}
 <div class="row justify-content-center">
-  <div class="col-md-11">
-    <div class="card shadow border-0">
-      <div class="card-header bg-primary py-4 px-5">
-        <h4 class="text-white mb-0 fw-bold">
-          <i class="bi bi-graph-up-arrow me-2"></i> Análisis Estadístico
-        </h4>
+  <div class="col-md-12">
+    <div class="card shadow border-0 mb-4">
+      <div class="card-header bg-primary py-4 px-5 d-flex justify-content-between align-items-center">
+        <div>
+          <h4 class="text-white mb-0 fw-bold">
+            <i class="bi bi-graph-up-arrow me-2"></i> Análisis Estadístico
+          </h4>
+          <p class="text-white-50 small mb-0 mt-1">Generador de reportes estadísticos para apoyo a la toma de decisiones</p>
+        </div>
+        <a href="{{ url_for('reporte_estadistico_bp.generarReporteEstadistico') }}" class="btn btn-light text-primary fw-bold shadow-sm">
+          <i class="bi bi-file-earmark-pdf me-1"></i> Descargar PDF
+        </a>
       </div>
       <div class="card-body mt-4 p-5">
-        <form action="{{ url_for('reporte_estadistico_bp.generarReporteEstadistico') }}" method="POST">
-          <div class="row justify-content-center">
-            
-            <div class="col-md-12 text-center mb-5">
-              <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm fw-bold">
-                <i class="bi bi-file-earmark-pdf me-2"></i> GENERAR REPORTE PDF ESTADÍSTICO
-              </button>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-8">
+            <label class="form-label fw-bold text-dark fs-6 mb-2">
+              <i class="bi bi-funnel me-1 text-primary"></i> Filtro de Datos
+            </label>
+            <div class="input-group input-group-lg shadow-sm">
+              <span class="input-group-text bg-light border-end-0 text-primary"><i class="bi bi-search"></i></span>
+              <input type="text" id="filtroBusqueda" class="form-control border-start-0" placeholder="Módulo a analizar (ej: solicitudes). Vacío para análisis global.">
             </div>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <button id="btnAplicarFiltro" class="btn btn-primary btn-lg px-4 shadow-sm fw-bold w-100 w-md-auto">
+              <i class="bi bi-search me-1"></i> Aplicar Filtro
+            </button>
+          </div>
+        </div>
 
-            <div class="col-md-10 mb-4">
-              <label class="form-label fw-bold text-dark fs-5">Filtro de Datos</label>
-              <div class="input-group input-group-lg shadow-sm">
-                <span class="input-group-text bg-light border-end-0 text-primary"><i class="bi bi-search"></i></span>
-                <input type="text" name="filtro_busqueda" class="form-control border-start-0" 
-                       placeholder="Módulo a analizar (ej: solicitudes). Vacío para análisis global.">
+        <div id="dashboardGraficos" class="row g-4 mt-3">
+          <div class="col-md-12 col-lg-6">
+            <div class="card shadow border-0 h-100">
+              <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0 text-primary"><i class="bi bi-bar-chart-fill me-2"></i>Tipo de Solicitud</h6>
+                <select class="form-select form-select-sm chart-type-select" data-target="tipoChart" style="width: auto;">
+                  <option value="bar">Barra</option>
+                  <option value="line">Línea</option>
+                  <option value="pie">Circular</option>
+                  <option value="doughnut">Dona</option>
+                  <option value="polarArea">Polar</option>
+                  <option value="radar">Radar</option>
+                </select>
+              </div>
+              <div class="card-body">
+                <canvas id="tipoChart"></canvas>
               </div>
             </div>
+          </div>
+          <div class="col-md-12 col-lg-6">
+            <div class="card shadow border-0 h-100">
+              <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0 text-success"><i class="bi bi-check-circle-fill me-2"></i>Estatus de Solicitud</h6>
+                <select class="form-select form-select-sm chart-type-select" data-target="estatusChart" style="width: auto;">
+                  <option value="bar">Barra</option>
+                  <option value="line">Línea</option>
+                  <option value="pie">Circular</option>
+                  <option value="doughnut">Dona</option>
+                  <option value="polarArea">Polar</option>
+                  <option value="radar">Radar</option>
+                </select>
+              </div>
+              <div class="card-body">
+                <canvas id="estatusChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="card shadow border-0">
+              <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0 text-danger"><i class="bi bi-calendar-check me-2"></i>Tendencia por Fecha</h6>
+                <select class="form-select form-select-sm chart-type-select" data-target="fechaChart" style="width: auto;">
+                  <option value="line">Línea</option>
+                  <option value="bar">Barra</option>
+                  <option value="pie">Circular</option>
+                  <option value="doughnut">Dona</option>
+                  <option value="polarArea">Polar</option>
+                  <option value="radar">Radar</option>
+                </select>
+              </div>
+              <div class="card-body">
+                <canvas id="fechaChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          </div>
-          
-          <div class="text-center mt-5">
-            <hr class="w-75 mx-auto mb-4">
-            <a href="{{ url_for('login_bp.inicio') }}" class="btn btn-secondary px-5">
-              <i class="bi bi-arrow-left me-1"></i> Volver al Inicio
-            </a>
-          </div>
-        </form>
+        <div class="text-center mt-5">
+          <hr class="w-75 mx-auto mb-4">
+          <a href="{{ url_for('login_bp.inicio') }}" class="btn btn-secondary px-5">
+            <i class="bi bi-arrow-left me-1"></i> Volver al Inicio
+          </a>
+        </div>
       </div>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block customJS %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+(function() {
+  var tipoChartInstance = null;
+  var estatusChartInstance = null;
+  var fechaChartInstance = null;
+
+  var filtroInput = document.getElementById('filtroBusqueda');
+  var btnAplicar = document.getElementById('btnAplicarFiltro');
+
+  function obtenerFiltro() {
+    return filtroInput ? filtroInput.value.trim() : '';
+  }
+
+  function cargarDatos(filtro) {
+    var params = new URLSearchParams();
+    if (filtro) params.append('filtro_busqueda', filtro);
+
+    fetch('{{ url_for("reporte_estadistico_bp.datosEstadisticos") }}?' + params.toString())
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        actualizarGrafico('tipoChart', data.por_tipo || [], 'Tipo', '#0d6efd');
+        actualizarGrafico('estatusChart', data.por_estatus || [], 'Estatus', '#198754');
+        actualizarGrafico('fechaChart', data.por_fecha || [], 'Fecha', '#dc3545');
+      })
+      .catch(function() {
+        mostrarNotificacion('Error al cargar datos estadísticos', 'danger');
+      });
+  }
+
+  function mostrarNotificacion(mensaje, tipo) {
+    var area = document.getElementById('notification-area');
+    if (!area) return;
+    var div = document.createElement('div');
+    div.className = 'alert alert-' + (tipo === 'danger' ? 'danger' : tipo) + ' alert-molecule alert-dismissible fade show bg-white mb-2';
+    div.setAttribute('role', 'alert');
+    div.innerHTML = '<div class="d-flex align-items-center"><i class="bi bi-' + (tipo === 'success' ? 'check-circle-fill text-success' : 'exclamation-triangle-fill text-danger') + ' fs-4 me-3"></i><div class="text-dark small fw-semibold">' + mensaje + '</div></div><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+    area.appendChild(div);
+    setTimeout(function() { if (window.bootstrap) new bootstrap.Alert(div).close(); }, 4000);
+  }
+
+  function actualizarGrafico(canvasId, items, nombreDefault, colorHex) {
+    var canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    var labels = items.map(function(item) { return item.label; });
+    var valores = items.map(function(item) { return item.valor; });
+
+    var ctx = canvas.getContext('2d');
+    var targetId = canvasId;
+    var chartType = 'bar';
+    var select = document.querySelector('.chart-type-select[data-target="' + targetId + '"]');
+    if (select) chartType = select.value;
+
+    var colorBase = colorHex;
+
+    if (tipoChartInstance && tipoChartInstance.canvas && tipoChartInstance.canvas.id === canvasId) {
+      tipoChartInstance.destroy();
+      tipoChartInstance = null;
+    }
+    if (estatusChartInstance && estatusChartInstance.canvas && estatusChartInstance.canvas.id === canvasId) {
+      estatusChartInstance.destroy();
+      estatusChartInstance = null;
+    }
+    if (fechaChartInstance && fechaChartInstance.canvas && fechaChartInstance.canvas.id === canvasId) {
+      fechaChartInstance.destroy();
+      fechaChartInstance = null;
+    }
+
+    var config = {
+      type: chartType,
+      data: {
+        labels: labels,
+        datasets: [{
+          label: nombreDefault,
+          data: valores,
+          backgroundColor: generarColores(labels.length, colorBase),
+          borderColor: colorBase,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            display: chartType === 'pie' || chartType === 'doughnut' || chartType === 'polarArea' || chartType === 'radar' || labels.length <= 6,
+            position: 'bottom'
+          }
+        },
+        scales: (chartType === 'pie' || chartType === 'doughnut' || chartType === 'polarArea' || chartType === 'radar') ? {} : {
+          y: { beginAtZero: true, ticks: { precision: 0 } },
+          x: { ticks: { autoSkip: true, maxRotation: 45, minRotation: 0 } }
+        }
+      }
+    };
+
+    var chart = new Chart(ctx, config);
+    if (canvasId === 'tipoChart') tipoChartInstance = chart;
+    if (canvasId === 'estatusChart') estatusChartInstance = chart;
+    if (canvasId === 'fechaChart') fechaChartInstance = chart;
+  }
+
+  function generarColores(count, baseColor) {
+    var colors = [];
+    for (var i = 0; i < count; i++) {
+      colors.push(hexToRgba(baseColor, 0.7 + (i % 3) * 0.1));
+    }
+    return colors;
+  }
+
+  function hexToRgba(hex, alpha) {
+    var r = parseInt(hex.slice(1, 3), 16);
+    var g = parseInt(hex.slice(3, 5), 16);
+    var b = parseInt(hex.slice(5, 7), 16);
+    return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
+  }
+
+  if (btnAplicar) {
+    btnAplicar.addEventListener('click', function() {
+      cargarDatos(obtenerFiltro());
+    });
+  }
+
+  document.querySelectorAll('.chart-type-select').forEach(function(select) {
+    select.addEventListener('change', function() {
+      var target = this.getAttribute('data-target');
+      var filtro = obtenerFiltro();
+      cargarDatos(filtro);
+    });
+  });
+
+  cargarDatos('');
+})();
+</script>
 {% endblock %}
