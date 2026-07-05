@@ -149,15 +149,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    /**
-     * Maneja el evento paste para pegar código completo
-     */
+/**
+      * Maneja el evento paste para pegar código completo
+      */
     function handleOTPPaste(event) {
         event.preventDefault();
         const pastedData = event.clipboardData.getData('text').trim();
         
-        // Validar que sean 6 dígitos
-        if (/^\d{6}$/.test(pastedData)) {
+        // Validar que sean 4 dígitos
+        if (/^\d{4}$/.test(pastedData)) {
             // Distribuir los dígitos en los inputs
             pastedData.split('').forEach((digit, index) => {
                 if (otpInputs[index]) {
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Verificar campos llenos
             checkAllFieldsFilled();
         } else {
-            showAlert('El código debe contener exactamente 6 dígitos', 'error');
+            showAlert('El código debe contener exactamente 4 dígitos', 'error');
         }
     }
 

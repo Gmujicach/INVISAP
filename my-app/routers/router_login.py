@@ -178,9 +178,12 @@ def enviarOTP():
                 )
                 
                 if success:
-                    # Guardar el correo en sesión temporal para la verificación
+                    # Guardar el correo y el código en sesión temporal para la verificación
                     session['recovery_email'] = correo
-                    flash('Se ha enviado un código de verificación a tu correo electrónico.', 'success')
+                    session['otp_code_temp'] = otp_code  # Guardar el código para mostrar en pantalla
+                    flash(message, 'success')
+                    if 'modo prueba' in message:
+                        flash(f'Tu código de verificación es: {otp_code}. Guárdalo para ingresarlo.', 'info')
                     return redirect(url_for('login_bp.verificarOTP'))
                 else:
                     flash(f'Error al enviar el código: {message}', 'danger')
@@ -212,9 +215,9 @@ def verificarOTP():
         otp_ingresado = request.form.get('otp_code', '').strip()
         correo = session.get('recovery_email')
         
-        # Validar formato del OTP (6 dígitos)
-        if not re.match(r'^\d{6}$', otp_ingresado):
-            flash('El código debe contener exactamente 6 dígitos.', 'error')
+        # Validar formato del OTP (4 dígitos)
+        if not re.match(r'^\d{4}$', otp_ingresado):
+            flash('El código debe contener exactamente 4 dígitos.', 'error')
             return render_template(f'{PATH_URL_LOGIN}/auth_verify_otp.html')
         
         # Verificar OTP
@@ -223,6 +226,7 @@ def verificarOTP():
         if valid:
             # OTP válido - permitir cambio de contraseña
             session['otp_verified'] = True
+            session.pop('otp_code_temp', None)  # Limpiar código temporal
             flash('Código verificado correctamente. Ahora puedes cambiar tu contraseña.', 'success')
             return redirect(url_for('login_bp.restablecerClave'))
         else:
@@ -313,6 +317,7 @@ def logout():
             session.pop('email_user', None)
             session.pop('recovery_email', None)
             session.pop('otp_verified', None)
+            session.pop('otp_code_temp', None)
 
             BitacoraService.registrar_accion(
                 session=session,
