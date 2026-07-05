@@ -1,6 +1,7 @@
 from app import app
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from mysql.connector.errors import Error
+from flask import jsonify
 
 
 # Importando conexión a BD y controladores
@@ -291,7 +292,7 @@ def formRegistrarMaquinaria():
 @home_bp.route('/editar-maquinaria/<int:id_maquinaria>', methods=['GET'])
 def viewEditarMaquinaria(id_maquinaria):
     if 'conectado' in session:
-        # Se asume que obtener_maquinaria_controller existe en funciones_maquinaria.py
+     
         maquinaria = obtener_maquinaria_controller(id_maquinaria)
         if maquinaria:
             return render_template(f'{PATH_URL_PROY}/form_maquinaria-update.html', maquinaria=maquinaria)
@@ -365,15 +366,14 @@ def viewFormPrioridad():
 @home_bp.route('/gestionar-proyectos', methods=['GET'])
 def viewFormProyectos():
     if 'conectado' in session:
-        # 1. Llamamos a tu controlador modificado para capturar la tupla (proyectos, contadores)
+       
         proyectos, contadores = listar_proyectos_controller(session)
         
         
-        # 2. Las demás consultas se mantienen igual
         maquinarias = listar_maquinarias_controller()
         solicitudes = obtener_solicitudes()  
         
-        # 3. Enviamos 'contadores=contadores' a la plantilla HTML
+        
         return render_template(
             f'{PATH_URL_PROY}/proyectos.html', 
             proyectos=proyectos, 
@@ -387,19 +387,24 @@ def viewFormProyectos():
 
 @home_bp.route('/form-registrar-proyecto', methods=['POST'])
 def formRegistrarProyecto():
-    if 'conectado' in session:
-        try:
-            if registrar_proyecto_controller(request.form, session):
-                flash('Proyecto registrado satisfactoriamente.', 'success')
-            else:
-                flash('Error al registrar el proyecto en la base de datos.', 'error')
-        except Exception as e:
-            print(f"Excepción en router: {e}")
-            flash(f'Ocurrió un error inesperado: {e}', 'error')
-        return redirect(url_for('home_bp.viewFormProyectos'))
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no iniciada'}), 401
+    
+   
+    resultado = registrar_proyecto_controller(request.form, session)
+    
+    if resultado:
+       
+        modelo = ProyectoModel()
+        nuevo_proyecto = modelo.obtener_proyecto_por_id(request.form.get('Codigo_p'))
+        
+        return jsonify({
+            'success': True, 
+            'message': 'Proyecto registrado correctamente',
+            'data': nuevo_proyecto 
+        })
     else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
+        return jsonify({'success': False, 'message': 'Error al procesar el registro'})
 
 @home_bp.route('/editar-proyecto/<string:codigo_proyecto>', methods=['GET'])
 def viewEditarProyecto(codigo_proyecto):
@@ -420,12 +425,11 @@ def viewEditarProyecto(codigo_proyecto):
 @home_bp.route('/actualizar-proyecto', methods=['POST'])
 def formActualizarProyecto():
     if 'conectado' in session:
-        # IMPORTANTE: Importamos el controlador, NO el modelo directo
+        
         from controllers.funciones_proyecto import actualizar_proyecto_controller
         
         codigo_proyecto_actual = request.form.get('codigo_proyecto_actual')
-        
-        # Ejecutamos la lógica que sí incluye el guardado en BitacoraService
+
         if actualizar_proyecto_controller(codigo_proyecto_actual, request.form, session):
             flash('Proyecto actualizado satisfactoriamente.', 'success')
         else:
@@ -436,10 +440,10 @@ def formActualizarProyecto():
 @home_bp.route('/eliminar-proyecto/<string:codigo_proyecto>', methods=['GET'])
 def eliminarProyecto(codigo_proyecto):
     if 'conectado' in session:
-        # 1. Importamos la función correcta del controlador
+        
         from controllers.funciones_proyecto import eliminar_proyecto_controller
         
-        # 2. Llamamos al controlador pasándole el código y la sesión
+        
         if eliminar_proyecto_controller(codigo_proyecto, session):
             flash('Proyecto eliminado correctamente.', 'success')
         else:
