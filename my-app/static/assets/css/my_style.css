@@ -234,3 +234,26 @@ tbody tr:hover {
   min-width: 44% !important;
   background-color: #f3efef !important;
 }
+
+/* Sidebar Dark Mode Hover */
+body.dark-mode .menu-item > .menu-link:hover,
+body.dark-mode .menu-item:hover > .menu-link {
+  background: linear-gradient(90deg, #08b324 0%, #2b2c40 100%) !important;
+  color: #fff !important;
+}
+
+body.dark-mode .menu-item > .menu-link:hover i,
+body.dark-mode .menu-item:hover > .menu-link i {
+  color: #fff !important;
+}
+
+.menu-item > .menu-link:hover,
+.menu-item:hover > .menu-link {
+  background: linear-gradient(90deg, #08b324 0%, #f5f7fa 100%) !important;
+  color: #fff !important;
+}
+
+.menu-item > .menu-link:hover i,
+.menu-item:hover > .menu-link i {
+  color: #fff !important;
+}

@@ -3,7 +3,6 @@
 
 {% block customCSS %}
 <style>
-  /* Efecto hover suave para las filas agrupadas */
   .table-hover tbody tr:hover td {
       background-color: #f8f9fa;
   }
@@ -42,7 +41,6 @@
         <tbody>
           {% for c in contrataciones %}
           <tr>
-            <!-- COLUMNA 1: DESCRIPCIÓN AGRUPADA -->
             <td style="max-width: 250px; white-space: normal;">
                 <div class="fw-semibold text-dark mb-1">{{ c.descripcion }}</div>
                 <div class="text-muted" style="font-size: 0.78rem; line-height: 1.2;">
@@ -50,23 +48,19 @@
                 </div>
             </td>
 
-            <!-- COLUMNA 2: EMPRESA AGRUPADA -->
             <td>
                 <div class="fw-bold text-secondary text-uppercase">{{ c.empresa_ganadora }}</div>
                 <div class="text-muted mt-1"><small><strong>RIF:</strong> {{ c.empresa_rif }}</small></div>
             </td>
 
-            <!-- COLUMNA 3: N° CONTRATO -->
             <td class="text-nowrap">
                 <span class="badge bg-dark">N° {{ c.numero_contrato }}</span>
             </td>
 
-            <!-- COLUMNA 4: MONTO -->
             <td class="text-nowrap">
                 <span class="text-success fw-bold">{{ c.monto }}</span>
             </td>
 
-            <!-- COLUMNA 5: CLASIFICACIÓN AGRUPADA -->
             <td style="font-size: 0.8rem; line-height: 1.5;">
                 <span class="d-block text-truncate" style="max-width: 160px;" title="{{ c.tipo_contrato }}">
                     <strong class="text-secondary">Tipo:</strong> {{ c.tipo_contrato }}
@@ -79,14 +73,12 @@
                 </span>
             </td>
 
-            <!-- COLUMNA 6: FECHAS AGRUPADAS -->
             <td style="font-size: 0.8rem; line-height: 1.5; white-space: nowrap;">
                 <span class="d-block"><strong class="text-primary">Reg:</strong> {{ c.fecha_registro }}</span>
                 <span class="d-block"><strong class="text-secondary">Ini:</strong> {{ c.fecha_inicio_procedimiento }}</span>
                 <span class="d-block"><strong class="text-success">Adj:</strong> {{ c.fecha_adjudicacion }}</span>
             </td>
 
-            <!-- COLUMNA 7: ACCIONES (A la derecha) -->
             <td class="text-center text-nowrap">
              <a href="{{ url_for('contrataciones_bp.vista_editar', id=c.id_contratacion) }}" class="btn btn-outline-warning btn-sm" title="Editar">
                 <i class="bx bx-edit"></i>
@@ -108,7 +100,6 @@
   </div>
 </div>
 
-<!-- MODAL REGISTRO CONTRATACIÓN -->
 <div class="modal fade" id="modalContratacion" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content" style="border-radius: 0px !important">
@@ -117,8 +108,8 @@
             <i class="bx bx-folder-plus me-1 text-primary"></i> Registrar Nueva Contratación
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-    <i class="bx bx-x" style="font-size: 24px;"></i>
-</button>
+            <i class="bx bx-x" style="font-size: 24px;"></i>
+        </button>
       </div>
       
       <form method="POST" action="{{ url_for('contrataciones_bp.procesar_registro') }}" id="formContratacion" autocomplete="off">
@@ -139,15 +130,15 @@
                 </button>
             </div>
 
-          <div class="row mb-3">
+            <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label fw-semibold text-secondary">Empresa Ganadora</label>
                     <div class="input-group shadow-sm">
                         <span class="input-group-text bg-light border-end-0"><i class="bx bx-building"></i></span>
                         <input type="text" class="form-control border-start-0 bg-light text-muted" 
-                   name="empresa_ganadora" id="empresa_ganadora" readonly tabindex="-1"
-                   placeholder="Selecciona desde el botón Ver Empresas" 
-                   style="user-select: none; pointer-events: none;" required>
+                               name="empresa_ganadora" id="empresa_ganadora" readonly tabindex="-1"
+                               placeholder="Selecciona desde el botón Ver Empresas" 
+                               style="user-select: none; pointer-events: none;" required>
                     </div>
                 </div>
     
@@ -156,9 +147,9 @@
                     <div class="input-group shadow-sm">
                         <span class="input-group-text bg-light border-end-0"><i class="bx bx-id-card"></i></span>
                         <input type="text" class="form-control border-start-0 bg-light text-muted" 
-                   name="empresa_rif" id="empresa_rif" readonly tabindex="-1"
-                   placeholder="Autocompletada por Empresas Registradas" 
-                   style="user-select: none; pointer-events: none;" required>
+                               name="empresa_rif" id="empresa_rif" readonly tabindex="-1"
+                               placeholder="Autocompletada por Empresas Registradas" 
+                               style="user-select: none; pointer-events: none;" required>
             
                         <button class="btn btn-outline-secondary border-start-0" type="button" id="btn_limpiar_seleccion" title="Eliminar empresa seleccionada">
                             <i class="bx bx-x fs-5 align-middle"></i>
@@ -174,8 +165,8 @@
                     <label class="form-label fw-semibold text-secondary">Descripción de la Contratación</label>
                     <textarea class="form-control shadow-sm" id="descripcion" name="descripcion" rows="5" maxlength="100" required></textarea>
                     <div class="d-flex justify-content-between mt-1">
-                    <small id="descripcionFeedback" class="text-danger d-none">Descripción minima de 5 caracteres.</small>
-                    <small id="descripcionContador" class="text-muted ms-auto">0 / 100 caracteres</small>
+                        <small id="descripcionFeedback" class="text-danger d-none">Descripción minima de 5 caracteres.</small>
+                        <small id="descripcionContador" class="text-muted ms-auto">0 / 100 caracteres</small>
                     </div>
                 </div>
             </div>
@@ -187,12 +178,20 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Monto</label>
-                    <input type="text" id="monto" name="monto" class="form-control shadow-sm" placeholder="Ej: 1000.00" minlength="3" maxlength="20" required>
+                    <div class="input-group shadow-sm">
+                        <select id="moneda_select" class="form-select text-center" style="max-width: 80px;" required>
+                            <option value="BS" selected>BS</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                        </select>
+                        <input type="text" id="monto_display" class="form-control" placeholder="0,00" maxlength="16" required>
+                        <input type="hidden" id="monto" name="monto">
+                    </div>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label fw-semibold text-secondary">Tipo de Contrato</label>
                     <select id="tipo_contrato" name="tipo_contrato" class="form-select shadow-sm" required>
-                        <option value="" disabled selected>Seleccione una opción...</option>
+                        <option value="" disabled center selected>Seleccione una opción...</option>
                         <option value="Contrato de Obra">Obra</option>
                         <option value="Contrato de Servicio">Servicio</option>
                         <option value="Contrato de Bienes">Bienes</option>
@@ -256,7 +255,6 @@
   </div>
 </div>
 
-<!-- MODAL DIRECTORIO EMPRESAS -->
 <div class="modal fade" id="modalEmpresas" tabindex="-1" aria-labelledby="modalEmpresasLabel" aria-hidden="true" style="background-color: rgba(0,0,0,0.4);">
   <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered"> 
     <div class="modal-content" style="border-radius: 0px !important; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
@@ -268,8 +266,8 @@
           <small class="text-light-50">Seleccione la empresa ganadora para esta contratación</small>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-    <i class="bx bx-x" style="font-size: 24px;"></i>
-</button>
+            <i class="bx bx-x" style="font-size: 24px;"></i>
+        </button>
       </div>
       <div class="modal-body">
         <div class="table-responsive">

@@ -26,17 +26,23 @@
         </thead>
         <tbody>
           {% for pub in publicaciones %}
-          <tr>
-            <td>{{ pub.id_publicaciones }}</td>
-            <td>{{ pub.titulo_publicacion }}</td>
-            <td>{{ pub.nombre_responsable }}</td>
-            <td><span class="badge bg-info text-dark">{{ pub.tipo_publicacion }}</span></td>
-            <td>{{ pub.fecha_publicacion }}</td>
-            <td class="text-center">
-              <a href="/eliminar-publicacion/{{ pub.id_publicaciones }}" class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="return confirm('¿Estás seguro de eliminar esta publicación?')">
-                <i class="bx bx-trash"></i>
-              </a>
-            </td>
+          <tr data-id="{{ pub.id_publicacion }}">
+             <td>{{ pub.id_publicacion }}</td>
+             <td>{{ pub.titulo_publicacion }}</td>
+             <td>{{ pub.nombre_responsable }}</td>
+             <td><span class="badge bg-info text-dark">{{ pub.tipo_publicacion }}</span></td>
+             <td>{{ pub.fecha_publicacion }}</td>
+             <td class="text-center">
+               <a href="/detalles-publicacion/{{ pub.id_publicacion }}" class="btn btn-outline-info btn-sm" title="Ver detalles">
+                 <i class="bx bx-show"></i>
+               </a>
+               <a href="/editar-publicacion/{{ pub.id_publicacion }}" class="btn btn-outline-warning btn-sm" title="Editar">
+                 <i class="bx bx-edit"></i>
+               </a>
+               <button type="button" class="btn btn-outline-danger btn-sm" title="Eliminar" onclick="eliminarPublicacionAjax({{ pub.id_publicacion }})">
+                 <i class="bx bx-trash"></i>
+               </button>
+             </td>
           </tr>
           {% else %}
           <tr>
@@ -97,4 +103,5 @@
     </div>
   </div>
 </div>
+<script src="{{ url_for('static', filename='assets/js/publicaciones.js') }}"></script>
 {% endblock %}

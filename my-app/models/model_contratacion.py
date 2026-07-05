@@ -78,7 +78,7 @@ class ContratacionModel:
             
         except Exception as e:
             print(f"--- [MODELO] ERROR SQL INSERT: {e} ---") 
-            return False, "Error interno al guardar en la base de datos."
+            return False, "Número de Contrato ya se Encuentra Registrado."
         finally:
             if conexion: conexion.close()
 

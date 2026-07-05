@@ -50,16 +50,13 @@ document.getElementById('btnCargarEmpresas').addEventListener('click', function(
         });
 });
 
-
 function seleccionarEmpresa(rif, nombre) {
     document.getElementById('empresa_rif').value = rif;
     document.getElementById('empresa_ganadora').value = nombre;
 
-    // Ocultamos modal empresas
     const modalEmpresas = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEmpresas'));
     modalEmpresas.hide();
     
-    // Mostramos nuevamente el modal del formulario
     const elModalContratacion = document.getElementById('modalContratacion');
     if (elModalContratacion) {
         const modalRegistro = bootstrap.Modal.getOrCreateInstance(elModalContratacion);
@@ -67,7 +64,6 @@ function seleccionarEmpresa(rif, nombre) {
     }
 }
 
-// Limpiar la empresa seleccionada
 document.getElementById('btn_limpiar_seleccion').addEventListener('click', function() {
     const inputEmpresa = document.getElementById('empresa_ganadora');
     const inputRif = document.getElementById('empresa_rif');
@@ -79,10 +75,6 @@ document.getElementById('btn_limpiar_seleccion').addEventListener('click', funct
     inputRif.classList.remove('is-valid', 'is-invalid');
 });
 
-
-// 2. VALIDACIONES EN TIEMPO REAL (INPUTS COPIADOS EXACTAMENTE)
-
-// Validación de Descripción
 const descInput = document.getElementById('descripcion');
 if (descInput) {
     descInput.addEventListener('input', function() {
@@ -118,7 +110,6 @@ if (descInput) {
     });
 }
 
-// Validación de Número de Contrato
 const numContratoInput = document.getElementById('numero_contrato');
 if (numContratoInput) {
     numContratoInput.addEventListener('input', function() {
@@ -141,30 +132,64 @@ if (numContratoInput) {
     });
 }
 
-// Validación de Monto
-const montoInput = document.getElementById('monto');
-if (montoInput) {
-    montoInput.addEventListener('input', function() {
-        const input = this;
-        input.value = input.value.replace(/[^a-zA-Z0-9.,\s]/g, '');
-        const longitud = input.value.trim().length;
-
-        if (longitud === 0) {
-            input.classList.remove('is-valid', 'is-invalid');
-            return;
-        }
-
-        if (longitud < 3) {
-            input.classList.add('is-invalid');
-            input.classList.remove('is-valid');
-        } else {
-            input.classList.add('is-valid');
-            input.classList.remove('is-invalid');
-        }
-    });
+function formatearMonto(valor) {
+    let num = valor.replace(/\D/g, '');
+    if (num === '') return '';
+    num = parseInt(num, 10).toString();
+    if (num.length === 0) num = '0';
+    num = num.padStart(3, '0');
+    let entero = num.slice(0, -2);
+    let decimal = num.slice(-2);
+    return entero.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ',' + decimal;
 }
 
-// Validación Selects y Fechas al cambiar
+const montoHidden = document.getElementById('monto');
+const montoDisplay = document.getElementById('monto_display');
+const monedaSelect = document.getElementById('moneda_select');
+
+if (montoHidden && montoDisplay && monedaSelect) {
+    if (montoHidden.value) {
+        let val = montoHidden.value.trim();
+        let match = val.match(/^(BS|USD|EUR)\s+(.*)$/i);
+        if (match) {
+            monedaSelect.value = match[1].toUpperCase();
+            montoDisplay.value = match[2];
+        } else {
+            montoDisplay.value = formatearMonto(val);
+        }
+        montoHidden.value = monedaSelect.value + ' ' + montoDisplay.value;
+    }
+
+    function actualizarMonto() {
+        if(montoDisplay.value) {
+            montoHidden.value = monedaSelect.value + ' ' + montoDisplay.value;
+        } else {
+            montoHidden.value = '';
+        }
+    }
+
+    montoDisplay.addEventListener('input', function() {
+        this.value = formatearMonto(this.value);
+        actualizarMonto();
+        
+        let rawNum = parseInt(this.value.replace(/\D/g, ''), 10) || 0;
+        
+        if (this.value.length === 0) {
+            this.classList.remove('is-valid', 'is-invalid');
+            return;
+        }
+        if (rawNum < 100) {
+            this.classList.add('is-invalid');
+            this.classList.remove('is-valid');
+        } else {
+            this.classList.add('is-valid');
+            this.classList.remove('is-invalid');
+        }
+    });
+
+    monedaSelect.addEventListener('change', actualizarMonto);
+}
+
 const camposGenerales = [
     'tipo_contrato', 'modalidad', 'objeto', 
     'fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro'
@@ -185,157 +210,165 @@ camposGenerales.forEach(id => {
     }
 });
 
-
-// ELIMINACIÓN DE REGISTROS (SWEETALERT DELEGADO)
 document.addEventListener('click', function(event) {
     const boton = event.target.closest('.btn-eliminar');
     
     if (boton) {
         event.preventDefault();
         const urlEliminar = boton.getAttribute('data-url');
+        const filaTabla = boton.closest('tr');
 
         Swal.fire({
             title: '¿Estás completamente seguro?',
-            text: "Esta acción eliminará la contratación por completo y no se puede deshacer.",
+            text: "Esta acción no se puede deshacer.",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#dc3545', 
             cancelButtonColor: '#6c757d',  
             confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar',
-            reverseButtons: true,
-            didOpen: () => { 
-                document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
-            }
+            reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = urlEliminar;
+                fetch(urlEliminar, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exito) {
+                        filaTabla.remove(); 
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Eliminado!',
+                            text: data.mensaje,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire('Error', data.mensaje, 'error');
+                    }
+                })
+                .catch(error => Swal.fire('Error', 'No se pudo conectar con el servidor.', 'error'));
             }
         });
     }
 });
 
-
-// ENVÍO UNIFICADO DEL FORMULARIO
 document.getElementById('formContratacion').addEventListener('submit', function(event) {
     event.preventDefault(); 
     event.stopPropagation();
 
     let hayErrores = false;
-    let primerElementoConError = null;
+    let primerError = null;
 
-    // EVALUACIÓN ANTES DE ENVIAR
-    const descripcionInput = document.getElementById('descripcion');
-    if (descripcionInput && descripcionInput.value.trim().length < 5) {
-        descripcionInput.classList.add('is-invalid');
+    const descripcion = document.getElementById('descripcion');
+    if (descripcion && descripcion.value.trim().length < 5) {
+        descripcion.classList.add('is-invalid');
         hayErrores = true;
-        primerElementoConError = primerElementoConError || descripcionInput;
+        primerError = primerError || descripcion;
     }
 
-    const numeroContratoInputSubmit = document.getElementById('numero_contrato');
-    if (numeroContratoInputSubmit && numeroContratoInputSubmit.value.trim().length < 3) {
-        numeroContratoInputSubmit.classList.add('is-invalid');
+    const numContrato = document.getElementById('numero_contrato');
+    if (numContrato && numContrato.value.trim().length < 3) {
+        numContrato.classList.add('is-invalid');
         hayErrores = true;
-        primerElementoConError = primerElementoConError || numeroContratoInputSubmit;
+        primerError = primerError || numContrato;
     }
 
-    const montoInputSubmit = document.getElementById('monto');
-    if (montoInputSubmit && montoInputSubmit.value.trim().length < 3) {
-        montoInputSubmit.classList.add('is-invalid');
-        hayErrores = true;
-        primerElementoConError = primerElementoConError || montoInputSubmit;
+    const montoDisplayValidar = document.getElementById('monto_display');
+    if (montoDisplayValidar) {
+        let rawNum = parseInt(montoDisplayValidar.value.replace(/\D/g, ''), 10) || 0;
+        if (rawNum < 100) {
+            montoDisplayValidar.classList.add('is-invalid');
+            hayErrores = true;
+            primerError = primerError || montoDisplayValidar;
+        }
     }
 
-    const camposAValidar = [
-        'tipo_contrato', 'modalidad', 'objeto', 
-        'fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro'
-    ];
-
+    const camposAValidar = ['tipo_contrato', 'modalidad', 'objeto', 'fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro'];
     camposAValidar.forEach(id => {
-        const elemento = document.getElementById(id);
-        if (elemento) {
-            if (elemento.value.trim() === "") {
-                elemento.classList.add('is-invalid'); 
+        const el = document.getElementById(id);
+        if (el) {
+            if (el.value.trim() === "") {
+                el.classList.add('is-invalid'); 
                 hayErrores = true;
-                primerElementoConError = primerElementoConError || elemento;
+                primerError = primerError || el;
             } else {
-                elemento.classList.remove('is-invalid');
-                elemento.classList.add('is-valid');
+                el.classList.remove('is-invalid');
+                el.classList.add('is-valid');
             }
         }
     });
 
     if (hayErrores) {
-        if (primerElementoConError) {
-            primerElementoConError.focus();
-        }
+        if (primerError) primerError.focus();
         return; 
     }
 
-    // PETICIÓN FETCH AL SERVIDOR
     const form = this;
     const btnSubmit = form.querySelector('button[type="submit"]');
-    const textoOriginalBtn = btnSubmit.innerHTML;
+    const textoBtn = btnSubmit.innerHTML;
 
     btnSubmit.disabled = true;
     btnSubmit.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Guardando...';
-
-    const loadersComunes = ['.preloader', '#preloader', '.loader-wrapper', '.loading', '#loader'];
-    loadersComunes.forEach(selector => {
-        const elementoLoader = document.querySelector(selector);
-        if (elementoLoader) {
-            elementoLoader.style.setProperty('display', 'none', 'important');
-            elementoLoader.style.setProperty('opacity', '0', 'important');
-            elementoLoader.style.setProperty('visibility', 'hidden', 'important');
-        }
-    });
 
     fetch(form.getAttribute('action'), {
         method: 'POST',
         body: new FormData(form)
     })
-    .then(response => {
-        if (!response.ok) throw new Error('Error crítico en el servidor');
-        return response.json();
-    })
+    .then(response => response.json())
     .then(data => {
         btnSubmit.disabled = false;
-        btnSubmit.innerHTML = textoOriginalBtn;
+        btnSubmit.innerHTML = textoBtn;
 
         if (data.status === 'success') {
+            
+            const modalEl = document.getElementById('modalContratacion');
+            if (modalEl) {
+                const modalInstancia = bootstrap.Modal.getInstance(modalEl);
+                if (modalInstancia) modalInstancia.hide();
+            }
+
             Swal.fire({ 
                 icon: 'success', 
                 title: '¡Éxito!', 
                 text: data.message,
-                didOpen: () => { 
-                    document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
-                }
+                timer: 2000,
+                showConfirmButton: false
             }).then(() => {
-                window.location.href = '/contrataciones'; 
+                
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    form.reset();
+                    form.querySelectorAll('.is-valid, .is-invalid').forEach(el => el.classList.remove('is-valid', 'is-invalid'));
+                    
+                    fetch(window.location.href)
+                    .then(res => res.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const nuevaTabla = doc.querySelector('.table-responsive').innerHTML;
+                        document.querySelector('.table-responsive').innerHTML = nuevaTabla;
+                    });
+                }
             });
+
         } else {
             Swal.fire({ 
                 icon: 'error', 
                 title: 'Error', 
                 text: data.message,
-                didOpen: () => { 
-                    document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
-                }
+                target: document.getElementById('modalContratacion')
             });
         }
     })
     .catch(error => {
         btnSubmit.disabled = false;
-        btnSubmit.innerHTML = textoOriginalBtn;
-        console.error('Error capturado en el formulario:', error);
-        
+        btnSubmit.innerHTML = textoBtn;
         Swal.fire({ 
             icon: 'error', 
             title: 'Error de conexión', 
-            text: 'No se pudo procesar la solicitud en el servidor.',
-            didOpen: () => { 
-                document.querySelector('.swal2-container').style.setProperty('z-index', '9999', 'important'); 
-            }
+            text: 'No se pudo procesar la solicitud.',
+            target: document.getElementById('modalContratacion')
         });
     });
 });

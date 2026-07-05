@@ -22,6 +22,158 @@
     --invilara-azul: #0d6efd;
 }
 
+/* ========== ESTILOS PARA MODALES DE SELECCIÓN ========== */
+.modal {
+    overflow-y: auto;
+}
+
+.modal-dialog {
+    max-height: calc(100vh - 1rem);
+}
+
+.modal-content {
+    max-height: calc(100vh - 1rem);
+}
+
+.modal-dialog.modal-dialog-scrollable .modal-content {
+    max-height: 90vh;
+}
+
+.modal-dialog.modal-dialog-scrollable .modal-header,
+.modal-dialog.modal-dialog-scrollable .modal-footer {
+    flex-shrink: 0;
+}
+
+.modal-dialog.modal-dialog-scrollable .modal-body {
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(90vh - 140px);
+    min-height: 0;
+}
+
+.modal-evidencia-item {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+}
+
+.modal-evidencia-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.modal-evidencia-item.selected {
+    border-color: #28a745;
+    background-color: #d4edda;
+}
+
+.modal-evidencia-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: block;
+    background-color: #f8f9fa;
+}
+
+.badge-etapa {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+}
+
+.inspector-card {
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.inspector-card:hover {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+    transform: translateY(-2px);
+}
+
+.inspector-card.selected {
+    border-color: #28a745;
+    background-color: #d4edda;
+}
+
+.avatar.avatar-lg {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inspector-card .avatar.avatar-lg {
+    width: 48px;
+    height: 48px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-label-primary {
+    background-color: rgba(45, 106, 79, 0.12) !important;
+    color: var(--invilara-verde) !important;
+}
+
+.avatar.avatar-lg i.bx {
+    font-size: 1.5rem;
+    display: block;
+    text-align: center;
+    width: 100%;
+    line-height: 1;
+}
+
+.evidencias-seleccionadas-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.evidencia-preview-item {
+    position: relative;
+    width: 92px;
+    height: 92px;
+    border-radius: 8px;
+    overflow: visible;
+    border: 2px solid #28a745;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.evidencia-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.evidencia-preview-item .remove-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    z-index: 10;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
 /* ========== PLACEHOLDERS MEJORADOS (Prof. Escalona - OBLIGATORIO) ========== */
 .form-control::placeholder,
 .form-select::placeholder {
@@ -118,10 +270,16 @@ textarea.form-control::placeholder {
 }
 
 /* ========== TABLA RESPONSIVE ========== */
+.table-informe-avance-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .table-informe-avance {
     font-size: 0.9rem;
     border-collapse: separate;
     border-spacing: 0;
+    min-width: 860px;
 }
 
 .table-informe-avance thead th {
@@ -140,6 +298,58 @@ textarea.form-control::placeholder {
 .table-informe-avance tbody td {
     vertical-align: middle;
     padding: 0.75rem;
+}
+
+/* ========== PAGINACIÓN Y COMPORTAMIENTO RESPONSIVE ========== */
+.pagination .page-link {
+    color: var(--invilara-verde);
+    border-color: #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--invilara-verde);
+    border-color: var(--invilara-verde);
+    color: white;
+}
+
+.table-informe-avance .btn-group {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.table-informe-avance .btn-group .btn {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .table-informe-avance {
+        min-width: 760px;
+        font-size: 0.8rem;
+    }
+
+    .table-informe-avance thead th,
+    .table-informe-avance tbody td {
+        padding: 0.6rem 0.45rem;
+    }
+
+    .card-header.d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .table-informe-avance {
+        min-width: 680px;
+    }
+
+    .table-informe-avance thead th:nth-child(3),
+    .table-informe-avance tbody td:nth-child(3),
+    .table-informe-avance thead th:nth-child(6),
+    .table-informe-avance tbody td:nth-child(6) {
+        display: none;
+    }
 }
 
 /* ========== BADGES DE ESTADO ========== */
@@ -604,45 +814,40 @@ html {
    REFACTORIZACIÓN: UNIFICACIÓN DE COLOR CORPORATIVO Y LEGIBILIDAD (MODO CLARO)
    ========================================================================== */
 
-/* 1. Eliminar el degradado y forzar el verde sólido del formulario en la tabla */
-.table-informe-avance,
-.table-informe-avance thead,
-.table-informe-avance thead tr,
-.table-informe-avance tbody tr {
-    background: var(--invilara-verde) !important;
-    background-color: var(--invilara-verde) !important;
-    background-image: none !important; /* Aplasta por completo cualquier degradado anterior */
+/* Legibilidad de la tabla y contraste correcto */
+.table-informe-avance thead th {
+    background: linear-gradient(135deg, var(--invilara-verde) 0%, var(--invilara-verde-oscuro) 100%);
+    color: var(--invilara-blanco) !important;
     border-color: var(--invilara-verde-oscuro) !important;
 }
 
-/* 2. Forzar texto, enlaces, iconos y clases secundarias a blanco puro (#ffffff) */
-.table-informe-avance th,
-.table-informe-avance td,
-.table-informe-avance td a,
-.table-informe-avance td i,
-.table-informe-avance td span,
-.table-informe-avance td .text-muted,
-.table-informe-avance td .text-secondary {
-    color: #ffffff !important;
+.table-informe-avance tbody tr {
+    background-color: var(--invilara-blanco) !important;
+    color: var(--invilara-negro) !important;
 }
 
-/* 3. Optimización del Hover: Feedback visual usando el verde oscuro de la paleta */
+.table-informe-avance tbody td {
+    color: var(--invilara-negro) !important;
+}
+
+.table-informe-avance tbody td .text-muted,
+.table-informe-avance tbody td .text-secondary {
+    color: var(--invilara-gris) !important;
+}
+
 .table-informe-avance tbody tr:hover {
-    background-color: var(--invilara-verde-oscuro) !important;
-    background-image: none !important;
+    background-color: #f4fbf6 !important;
     cursor: pointer;
 }
 
-/* 4. Ajuste de contraste para Badges de estado dentro de la tabla */
 .table-informe-avance td .badge {
-    color: #ffffff !important; /* Texto blanco para badges generales */
+    color: var(--invilara-blanco) !important;
 }
 
 .table-informe-avance td .badge.bg-warning {
-    color: var(--invilara-negro) !important; /* El badge amarillo requiere texto oscuro por norma WCAG */
+    color: var(--invilara-negro) !important;
 }
 
-/* 5. Tarjetas de Estadísticas (Aprobados, Ejecución, Culminados) Textos en blanco */
 .card-aprobados,
 .card-aprobados h6,
 .card-aprobados h3,
@@ -653,6 +858,66 @@ html {
 .card-culminados h6,
 .card-culminados h3 {
     color: #ffffff !important;
+}
+
+.modal-detail-card {
+    border: 1px solid rgba(45, 106, 79, 0.16);
+    border-radius: 14px;
+    background: linear-gradient(180deg, #ffffff 0%, #f7fcf9 100%);
+}
+
+/* ============================================
+   CORRECCIÓN VISIBILIDAD TABLA (Bootstrap override)
+   ============================================ */
+.table-informe-avance.table-striped tbody tr {
+    color: #212529 !important;
+}
+.table-informe-avance.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #ffffff !important;
+}
+.table-informe-avance.table-striped tbody tr:nth-of-type(even) {
+    background-color: #f8f9fa !important;
+}
+.table-informe-avance.table-striped tbody tr:hover {
+    background-color: #f4fbf6 !important;
+    color: #212529 !important;
+}
+.table-informe-avance tbody td {
+    background-color: transparent !important;
+    color: #212529 !important;
+}
+.table-informe-avance tbody td .text-muted,
+.table-informe-avance tbody td .text-secondary {
+    color: #6c757d !important;
+}
+.table-informe-avance .btn {
+    color: inherit;
+}
+
+/* Modo oscuro - tabla */
+body.dark-mode .table-informe-avance.table-striped tbody tr {
+    color: #cfcde9 !important;
+}
+body.dark-mode .table-informe-avance.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #2b2c40 !important;
+}
+body.dark-mode .table-informe-avance.table-striped tbody tr:nth-of-type(even) {
+    background-color: #323248 !important;
+}
+body.dark-mode .table-informe-avance.table-striped tbody tr:hover {
+    background-color: rgba(82, 183, 136, 0.15) !important;
+    color: #cfcde9 !important;
+}
+body.dark-mode .table-informe-avance tbody td {
+    background-color: transparent !important;
+    color: #cfcde9 !important;
+}
+body.dark-mode .table-informe-avance tbody td .text-muted,
+body.dark-mode .table-informe-avance tbody td .text-secondary {
+    color: #8c8ea3 !important;
+}
+body.dark-mode .table-informe-avance .btn {
+    color: #cfcde9 !important;
 }
 
 /* ========== INTEGRACIÓN DEL MODO OSCURO (INVISAP) ========== */
@@ -760,4 +1025,14 @@ body.dark-mode .alert-info {
     background-color: #232333 !important;
     border-color: #444564 !important;
     color: #cfcde9 !important;
+}
+
+/* ========== CORRECCIÓN btn-close EN MODALES OSCUROS (Bootstrap 5.1.3) ========== */
+.modal-header.text-white .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+    opacity: 0.9;
+}
+.modal-header.text-white .btn-close:hover {
+    filter: invert(1) grayscale(100%) brightness(200%) drop-shadow(0 0 3px rgba(255,255,255,0.6));
+    opacity: 1;
 }

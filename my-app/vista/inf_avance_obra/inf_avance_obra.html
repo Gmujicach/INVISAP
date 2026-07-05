@@ -3,93 +3,6 @@
 
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/informe_avance.css') }}" />
-<style>
-  /* Estilos para los modales de selección */
-  .modal-evidencia-item {
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-    position: relative;
-  }
-  
-  .modal-evidencia-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  }
-  
-  .modal-evidencia-item.selected {
-    border-color: #28a745;
-    background-color: #d4edda;
-  }
-  
-  .modal-evidencia-item img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  .badge-etapa {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 10;
-  }
-  
-  .inspector-card {
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-  }
-  
-  .inspector-card:hover {
-    border-color: #007bff;
-    background-color: #e7f3ff;
-    transform: translateY(-2px);
-  }
-  
-  .inspector-card.selected {
-    border-color: #28a745;
-    background-color: #d4edda;
-  }
-  
-  .evidencias-seleccionadas-preview {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-  }
-  
-  .evidencia-preview-item {
-    position: relative;
-    width: 80px;
-    height: 80px;
-  }
-  
-  .evidencia-preview-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 4px;
-    border: 2px solid #28a745;
-  }
-  
-  .evidencia-preview-item .remove-btn {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #dc3545;
-    color: white;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 12px;
-  }
-</style>
 {% endblock %}
 
 {% block body %}
@@ -103,8 +16,7 @@
         </h5>
         
         <button class="btn btn-invilara-primary btn-sm" type="button" 
-                data-bs-toggle="collapse" data-bs-target="#contenedorFormulario" 
-                aria-expanded="false" aria-controls="contenedorFormulario">
+                data-bs-toggle="modal" data-bs-target="#modalRegistrarInforme">
           <i class="bx bx-plus"></i> Registrar Informe
         </button>
       </div>
@@ -162,7 +74,7 @@
 <!-- ========== TABLA DE INFORMES ========== -->
 <div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
   <div class="card-body">
-    <div class="table-responsive">
+    <div class="table-responsive table-informe-avance-wrapper">
       <table class="table table-bordered table-striped table-hover align-middle table-informe-avance" id="tablaInformes">
         <thead>
           <tr>
@@ -176,9 +88,9 @@
             <th class="text-center">Acciones</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="tbodyInformes">
           {% for informe in informes %}
-          <tr class="fade-in">
+          <tr class="fila-informe fade-in">
             <td class="fw-bold">{{ informe.id_informe }}</td>
             <td>
               <i class="bx bx-file-blank me-1 text-primary"></i>
@@ -211,9 +123,10 @@
             </td>
             <td>
               <div class="progress" style="height: 25px;">
-                <div class="progress-bar bg-success" role="progressbar" 
-                     style="width: {{ informe.porcentaje_avance or 0 }}%;" 
-                     aria-valuenow="{{ informe.porcentaje_avance or 0 }}" 
+                <div class="progress-bar bg-success" role="progressbar"
+                     data-progress="{{ informe.porcentaje_avance or 0 }}"
+                     style="width: 0%;"
+                     aria-valuenow="{{ informe.porcentaje_avance or 0 }}"
                      aria-valuemin="0" aria-valuemax="100">
                   {{ informe.porcentaje_avance or 0 }}%
                 </div>
@@ -233,19 +146,23 @@
             </td>
             <td class="text-center">
               <div class="btn-group" role="group">
-                <a href="/informe-detalle/{{ informe.id_informe }}" 
-                   class="btn btn-outline-info btn-sm" 
+                <button type="button"
+                   class="btn btn-outline-info btn-sm btn-ver-informe"
+                   data-id="{{ informe.id_informe }}"
+                   data-bs-toggle="modal"
+                   data-bs-target="#modalDetalleInforme"
                    title="Ver detalle completo">
                   <i class="bx bx-show"></i>
-                </a>
-                <a href="/editar-informe/{{ informe.id_informe }}" 
-                   class="btn btn-outline-warning btn-sm btn-editar-informe" 
+                </button>
+                <a href="/editar-informe/{{ informe.id_informe }}"
+                   class="btn btn-outline-warning btn-sm btn-editar-informe"
                    data-id="{{ informe.id_informe }}"
                    title="Editar informe">
                   <i class="bx bx-edit"></i>
                 </a>
-                <button class="btn btn-outline-danger btn-sm btn-eliminar-informe" 
-                        data-id="{{ informe.id_informe }}" 
+                <button type="button"
+                        class="btn btn-outline-danger btn-sm btn-eliminar-informe"
+                        data-id="{{ informe.id_informe }}"
                         title="Eliminar informe (borrado lógico)">
                   <i class="bx bx-trash"></i>
                 </button>
@@ -253,7 +170,7 @@
             </td>
           </tr>
           {% else %}
-          <tr>
+          <tr id="emptyStateRow">
             <td colspan="8" class="text-center text-muted py-5">
               <i class="bx bx-info-circle bx-lg mb-2"></i><br>
               <strong>No hay informes registrados en el sistema.</strong><br>
@@ -264,214 +181,213 @@
         </tbody>
       </table>
     </div>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 mt-3">
+      <div class="text-muted small" id="infoPaginacionInformes"></div>
+      <nav aria-label="Paginación de informes">
+        <ul class="pagination pagination-sm mb-0" id="paginacionInformes"></ul>
+      </nav>
+    </div>
   </div>
 </div>
 
-<!-- ========== FORMULARIO DE REGISTRO (COLLAPSE) ========== -->
-<div class="collapse mt-3" id="contenedorFormulario">
-  <div class="card shadow-sm fade-in-up" style="border-radius: 0px !important">
-    <div class="card-header bg-primary text-white">
-      <h5 class="mb-0">
-        <i class="bx bx-file-blank me-2"></i>Registrar Informe de Avance de Obra
-      </h5>
-    </div>
-
-    <div class="card-body">
+<!-- ========== MODAL: REGISTRAR INFORME ========== -->
+<div class="modal fade" id="modalRegistrarInforme" tabindex="-1" aria-labelledby="modalRegistrarInformeLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
       <form class="form-horizontal" method="POST" action="/form-registrar-informe-avance-obra" 
-            autocomplete="off" enctype="multipart/form-data" id="formInformeAvance">
-        
-        <!-- ========== SECCIÓN 1: INFORMACIÓN BÁSICA ========== -->
-        <div class="row mb-4">
-          <div class="col-12">
-            <h6 class="text-secondary border-bottom pb-2 mb-3">
-              <i class="bx bx-info-circle me-2"></i>Información Básica del Informe
-            </h6>
-          </div>
+            autocomplete="off" id="formInformeAvance">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="modalRegistrarInformeLabel">
+            <i class="bx bx-file-blank me-2"></i>Registrar Informe de Avance de Obra
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="tipo_informe" class="form-label required">Tipo de Informe</label>
-            <select class="form-select shadow-sm" name="tipo_informe" id="tipo_informe" required>
-              <option value="" selected disabled>Seleccione el tipo de informe...</option>
-              <option value="Ficha Inspeccion Tecnica">Ficha Inspección Técnica</option>
-              <option value="Menor">Informe Menor</option>
-              <option value="Mayor">Informe Mayor</option>
-              <option value="Avance Mensual">Avance Mensual</option>
-            </select>
-            <small class="form-text text-muted">
-              <i class="bx bx-info-circle"></i> Seleccione el tipo según la naturaleza del avance
-            </small>
-          </div>
-
-          <div class="col-md-6">
-            <label for="estado" class="form-label required">Estado de la Obra</label>
-            <select class="form-select shadow-sm" name="estado" id="estado" required>
-              <option value="" selected disabled>Seleccione el estado actual...</option>
-              <option value="Aprobado">✓ Aprobado</option>
-              <option value="En Ejecucion">⏳ En Ejecución</option>
-              <option value="Culminado">✓✓ Culminado</option>
-              <option value="Paralizado">⏸ Paralizado</option>
-            </select>
-            <small class="form-text text-muted">
-              <i class="bx bx-info-circle"></i> Estado actual de la obra o proyecto
-            </small>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-8">
-            <label for="poblacion_beneficiada" class="form-label required">Población Beneficiada</label>
-            <input type="text" class="form-control shadow-sm" name="poblacion_beneficiada" 
-                   id="poblacion_beneficiada" maxlength="200" 
-                   placeholder="Ej: Comunidad La Salle, Sector El Cuji (aprox. 500 familias)" 
-                   required />
-            <small class="form-text text-muted">
-              <i class="bx bx-info-circle"></i> Describa la población o comunidad beneficiada (3-200 caracteres)
-            </small>
-          </div>
-
-          <div class="col-md-4">
-            <label for="porcentaje_avance" class="form-label">% de Avance</label>
-            <div class="input-group shadow-sm">
-              <input type="number" class="form-control" name="porcentaje_avance" 
-                     id="porcentaje_avance" min="0" max="100" value="0"
-                     placeholder="0-100" />
-              <span class="input-group-text">%</span>
+        <div class="modal-body">
+          <!-- ========== SECCIÓN 1: INFORMACIÓN BÁSICA ========== -->
+          <div class="row mb-4">
+            <div class="col-12">
+              <h6 class="text-secondary border-bottom pb-2 mb-3">
+                <i class="bx bx-info-circle me-2"></i>Información Básica del Informe
+              </h6>
             </div>
-            <small class="form-text text-muted">
-              <i class="bx bx-info-circle"></i> Porcentaje de avance (0-100)
-            </small>
           </div>
-        </div>
 
-        <!-- ========== SECCIÓN 2: RESPONSABLE (CON MODAL) ========== -->
-        <div class="row mb-4 mt-4">
-          <div class="col-12">
-            <h6 class="text-secondary border-bottom pb-2 mb-3">
-              <i class="bx bx-user me-2"></i>Responsable del Informe
-            </h6>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label for="tipo_informe" class="form-label required">Tipo de Informe</label>
+              <select class="form-select shadow-sm" name="tipo_informe" id="tipo_informe" required>
+                <option value="" selected disabled>Seleccione el tipo de informe...</option>
+                <option value="Ficha Inspeccion Tecnica">Ficha Inspección Técnica</option>
+                <option value="Menor">Informe Menor</option>
+                <option value="Mayor">Informe Mayor</option>
+                <option value="Avance Mensual">Avance Mensual</option>
+              </select>
+              <small class="form-text text-muted">
+                <i class="bx bx-info-circle"></i> Seleccione el tipo según la naturaleza del avance
+              </small>
+            </div>
+
+            <div class="col-md-6">
+              <label for="estado" class="form-label required">Estado de la Obra</label>
+              <select class="form-select shadow-sm" name="estado" id="estado" required>
+                <option value="" selected disabled>Seleccione el estado actual...</option>
+                <option value="Aprobado">✓ Aprobado</option>
+                <option value="En Ejecucion">⏳ En Ejecución</option>
+                <option value="Culminado">✓✓ Culminado</option>
+                <option value="Paralizado">⏸ Paralizado</option>
+              </select>
+              <small class="form-text text-muted">
+                <i class="bx bx-info-circle"></i> Estado actual de la obra o proyecto
+              </small>
+            </div>
           </div>
-        </div>
 
-        <div class="row mb-3">
-          <div class="col-md-12">
-            <label for="gerente_responsable_id" class="form-label required">
-              Inspector Responsable
-            </label>
-            <div class="input-group">
-              <input type="text" class="form-control shadow-sm" id="inspector_nombre_display" 
-                     placeholder="Haga clic en el botón para seleccionar un inspector..." readonly required />
-              <input type="hidden" name="gerente_responsable_id" id="gerente_responsable_id" />
-              <button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#modalSeleccionarInspector">
-                <i class="bx bx-search"></i> Seleccionar Inspector
+          <div class="row mb-3">
+            <div class="col-md-8">
+              <label for="poblacion_beneficiada" class="form-label required">Población Beneficiada</label>
+              <input type="text" class="form-control shadow-sm" name="poblacion_beneficiada" 
+                     id="poblacion_beneficiada" maxlength="45" 
+                     placeholder="Ej: Comunidad La Salle, Sector El Cuji" 
+                     required />
+              <small class="form-text text-muted">
+                <i class="bx bx-info-circle"></i> Describa la población o comunidad beneficiada (3-45 caracteres)
+              </small>
+            </div>
+
+            <div class="col-md-4">
+              <label for="porcentaje_avance" class="form-label">% de Avance</label>
+              <div class="input-group shadow-sm">
+                <input type="number" class="form-control" name="porcentaje_avance" 
+                       id="porcentaje_avance" min="0" max="100" value="0"
+                       placeholder="0-100" />
+                <span class="input-group-text">%</span>
+              </div>
+              <small class="form-text text-muted">
+                <i class="bx bx-info-circle"></i> Porcentaje de avance (0-100)
+              </small>
+            </div>
+          </div>
+
+          <!-- ========== SECCIÓN 2: RESPONSABLE (CON MODAL) ========== -->
+          <div class="row mb-4 mt-4">
+            <div class="col-12">
+              <h6 class="text-secondary border-bottom pb-2 mb-3">
+                <i class="bx bx-user me-2"></i>Responsable del Informe
+              </h6>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <label for="gerente_responsable_id" class="form-label required">
+                Inspector Responsable
+              </label>
+              <div class="input-group">
+                <input type="text" class="form-control shadow-sm" id="inspector_nombre_display"
+                       placeholder="Haga clic en el botón para seleccionar un inspector..." readonly required />
+                <input type="hidden" name="gerente_responsable_id" id="gerente_responsable_id" required />
+                <button class="btn btn-outline-primary d-flex align-items-center" type="button" data-bs-toggle="modal" data-bs-target="#modalSeleccionarInspector">
+                  <i class="bx bx-search me-1"></i> <span>Seleccionar Inspector</span>
+                </button>
+              </div>
+              <small class="form-text text-muted">
+                <i class="bx bx-info-circle"></i> Solo se muestran empleados con cargo de Inspector activos
+              </small>
+            </div>
+          </div>
+
+          <!-- ========== SECCIÓN 3: OBSERVACIONES TÉCNICAS ========== -->
+          <div class="row mb-4 mt-4">
+            <div class="col-12">
+              <h6 class="text-secondary border-bottom pb-2 mb-3">
+                <i class="bx bx-edit me-2"></i>Observaciones Técnicas
+              </h6>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <label for="observaciones" class="form-label">
+                Observaciones del Inspector
+              </label>
+              <textarea class="form-control shadow-sm" name="observaciones" id="observaciones" 
+                        rows="8" maxlength="500" 
+                        placeholder="Describa las observaciones técnicas captadas en campo (máx. 500 caracteres)"></textarea>
+              <small class="form-text text-muted">
+                <i class="bx bx-info-circle"></i> Campo opcional para detalles técnicos adicionales
+              </small>
+            </div>
+          </div>
+
+          <!-- ========== SECCIÓN 4: EVIDENCIAS FOTOGRÁFICAS (CON MODALES) ========== -->
+          <div class="row mb-4 mt-4">
+            <div class="col-12">
+              <h6 class="text-secondary border-bottom pb-2 mb-3">
+                <i class="bx bx-camera me-2"></i>Evidencias Fotográficas (Antes, Durante, Después)
+              </h6>
+              <div class="alert alert-info" role="alert">
+                <i class="bx bx-info-circle me-2"></i>
+                <strong>Importante:</strong> Seleccione las evidencias fotográficas registradas en el sistema. Máximo 5 imágenes por etapa.
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <!-- FOTOS ANTES -->
+            <div class="col-md-4">
+              <label class="form-label">
+                <i class="bx bx-image-add me-1"></i>Fotos ANTES
+              </label>
+              <button type="button" class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasAntes">
+                <i class="bx bx-folder-open"></i> Seleccionar Evidencias ANTES
               </button>
+              <input type="hidden" name="evidencias_antes" id="evidencias_antes_ids" />
+              <div id="preview_antes" class="evidencias-seleccionadas-preview"></div>
+              <small class="form-text text-muted">
+                <span id="count_antes">0</span> evidencias seleccionadas (máx. 5)
+              </small>
             </div>
-            <small class="form-text text-muted">
-              <i class="bx bx-info-circle"></i> Solo se muestran empleados con cargo de Inspector activos
-            </small>
-          </div>
-        </div>
 
-        <!-- ========== SECCIÓN 3: OBSERVACIONES TÉCNICAS ========== -->
-        <div class="row mb-4 mt-4">
-          <div class="col-12">
-            <h6 class="text-secondary border-bottom pb-2 mb-3">
-              <i class="bx bx-edit me-2"></i>Observaciones Técnicas
-            </h6>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-12">
-            <label for="observaciones" class="form-label">
-              Observaciones del Inspector
-            </label>
-            <textarea class="form-control shadow-sm" name="observaciones" id="observaciones" 
-                      rows="5" maxlength="500" 
-                      placeholder="Describa las observaciones técnicas captadas en campo, incidencias, recomendaciones, estado de materiales, avance de trabajos, etc. (Máximo 500 caracteres)"></textarea>
-            <small class="form-text text-muted">
-              <i class="bx bx-info-circle"></i> Campo opcional para detalles técnicos adicionales
-            </small>
-          </div>
-        </div>
-
-        <!-- ========== SECCIÓN 4: EVIDENCIAS FOTOGRÁFICAS (CON MODALES) ========== -->
-        <div class="row mb-4 mt-4">
-          <div class="col-12">
-            <h6 class="text-secondary border-bottom pb-2 mb-3">
-              <i class="bx bx-camera me-2"></i>Evidencias Fotográficas (Antes, Durante, Después)
-            </h6>
-            <div class="alert alert-info" role="alert">
-              <i class="bx bx-info-circle me-2"></i>
-              <strong>Importante:</strong> Seleccione las evidencias fotográficas registradas en el sistema. Máximo 5 imágenes por etapa.
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <!-- FOTOS ANTES -->
-          <div class="col-md-4">
-            <label class="form-label">
-              <i class="bx bx-image-add me-1"></i>Fotos ANTES
-            </label>
-            <button type="button" class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasAntes">
-              <i class="bx bx-folder-open"></i> Seleccionar Evidencias ANTES
-            </button>
-            <input type="hidden" name="evidencias_antes" id="evidencias_antes_ids" />
-            <div id="preview_antes" class="evidencias-seleccionadas-preview"></div>
-            <small class="form-text text-muted">
-              <span id="count_antes">0</span> evidencias seleccionadas (máx. 5)
-            </small>
-          </div>
-
-          <!-- FOTOS DURANTE -->
-          <div class="col-md-4">
-            <label class="form-label">
-              <i class="bx bx-image-add me-1"></i>Fotos DURANTE
-            </label>
-            <button type="button" class="btn btn-outline-warning w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasDurante">
-              <i class="bx bx-folder-open"></i> Seleccionar Evidencias DURANTE
-            </button>
-            <input type="hidden" name="evidencias_durante" id="evidencias_durante_ids" />
-            <div id="preview_durante" class="evidencias-seleccionadas-preview"></div>
-            <small class="form-text text-muted">
-              <span id="count_durante">0</span> evidencias seleccionadas (máx. 5)
-            </small>
-          </div>
-
-          <!-- FOTOS DESPUÉS -->
-          <div class="col-md-4">
-            <label class="form-label">
-              <i class="bx bx-image-add me-1"></i>Fotos DESPUÉS
-            </label>
-            <button type="button" class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasDespues">
-              <i class="bx bx-folder-open"></i> Seleccionar Evidencias DESPUÉS
-            </button>
-            <input type="hidden" name="evidencias_despues" id="evidencias_despues_ids" />
-            <div id="preview_despues" class="evidencias-seleccionadas-preview"></div>
-            <small class="form-text text-muted">
-              <span id="count_despues">0</span> evidencias seleccionadas (máx. 5)
-            </small>
-          </div>
-        </div>
-
-        <!-- ========== BOTONES DE ACCIÓN ========== -->
-        <div class="row mt-5">
-          <div class="col-12">
-            <hr class="mb-4">
-            <div class="text-center">
-              <button type="submit" class="btn rounded-pill btn-invilara-primary px-5 me-2">
-                <i class="bx bx-save me-1"></i>Registrar Informe
+            <!-- FOTOS DURANTE -->
+            <div class="col-md-4">
+              <label class="form-label">
+                <i class="bx bx-image-add me-1"></i>Fotos DURANTE
+              </label>
+              <button type="button" class="btn btn-outline-warning w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasDurante">
+                <i class="bx bx-folder-open"></i> Seleccionar Evidencias DURANTE
               </button>
-              <button class="btn rounded-pill btn-outline-secondary px-4" type="button" 
-                      data-bs-toggle="collapse" data-bs-target="#contenedorFormulario">
-                <i class="bx bx-x me-1"></i>Cancelar
+              <input type="hidden" name="evidencias_durante" id="evidencias_durante_ids" />
+              <div id="preview_durante" class="evidencias-seleccionadas-preview"></div>
+              <small class="form-text text-muted">
+                <span id="count_durante">0</span> evidencias seleccionadas (máx. 5)
+              </small>
+            </div>
+
+            <!-- FOTOS DESPUÉS -->
+            <div class="col-md-4">
+              <label class="form-label">
+                <i class="bx bx-image-add me-1"></i>Fotos DESPUÉS
+              </label>
+              <button type="button" class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasDespues">
+                <i class="bx bx-folder-open"></i> Seleccionar Evidencias DESPUÉS
               </button>
+              <input type="hidden" name="evidencias_despues" id="evidencias_despues_ids" />
+              <div id="preview_despues" class="evidencias-seleccionadas-preview"></div>
+              <small class="form-text text-muted">
+                <span id="count_despues">0</span> evidencias seleccionadas (máx. 5)
+              </small>
             </div>
           </div>
         </div>
-        
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <i class="bx bx-x me-1"></i>Cancelar
+          </button>
+          <button type="submit" class="btn btn-invilara-primary">
+            <i class="bx bx-save me-1"></i>Registrar Informe
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -594,6 +510,52 @@
   </div>
 </div>
 
+<!-- ========== MODAL: CONFIRMAR ELIMINACIÓN ========== -->
+<div class="modal fade" id="modalConfirmarEliminarInforme" tabindex="-1" aria-labelledby="modalConfirmarEliminarInformeLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="modalConfirmarEliminarInformeLabel">
+          <i class="bx bx-trash me-2"></i>Eliminar informe
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="mb-2">¿Está seguro que desea eliminar este informe?</p>
+        <p class="mb-0 text-muted small">
+          Esta acción marcará el informe como inactivo y podrá revertirse desde el panel de administración.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmarEliminarInforme">
+          <i class="bx bx-trash me-1"></i>Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: DETALLE DEL INFORME ========== -->
+<div class="modal fade" id="modalDetalleInforme" tabindex="-1" aria-labelledby="modalDetalleInformeLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-invilara-verde text-white">
+        <h5 class="modal-title" id="modalDetalleInformeLabel">
+          <i class="bx bx-file me-2"></i>Detalle del Informe de Avance
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="detalleInformeBody">
+        <div class="text-center py-4">
+          <div class="spinner-border text-success" role="status"></div>
+          <p class="text-muted mt-2">Cargando información...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %} 
 
 {% block customJS %}
@@ -612,6 +574,13 @@ let evidenciasSeleccionadas = {
   durante: [],
   despues: []
 };
+
+function getEvidenciaImageUrl(path) {
+  if (!path) return '';
+  if (/^https?:\/\//i.test(path)) return path;
+  const cleanPath = String(path).replace(/^\/+/, '').replace(/^static\//, '');
+  return `/static/${cleanPath}`;
+}
 
 // ============================================
 // CARGAR INSPECTORES AL ABRIR EL MODAL
@@ -641,7 +610,7 @@ async function cargarInspectores() {
     inspectores.forEach(inspector => {
       const card = `
         <div class="col-md-6 mb-3">
-          <div class="card inspector-card h-100" onclick="seleccionarInspector(${inspector.id_empleados}, '${inspector.nombre_empleado}', '${inspector.gerencia_asignada || 'Sin asignar'}')">
+          <div class="card inspector-card h-100" onclick="seleccionarInspector(${inspector.id_empleados}, '${inspector.nombre_empleado}', '${inspector.gerencia_asignada || 'Sin asignar'}', event)">
             <div class="card-body">
               <div class="d-flex align-items-center">
                 <div class="avatar avatar-lg bg-label-primary rounded-circle me-3">
@@ -678,20 +647,24 @@ async function cargarInspectores() {
   }
 }
 
-function seleccionarInspector(id, nombre, gerencia) {
+function seleccionarInspector(id, nombre, gerencia, event) {
   document.getElementById('gerente_responsable_id').value = id;
   document.getElementById('inspector_nombre_display').value = `${nombre} - ${gerencia}`;
   
   document.querySelectorAll('.inspector-card').forEach(card => {
     card.classList.remove('selected');
-    card.querySelector('.check-icon').classList.add('d-none');
+    const icon = card.querySelector('.check-icon');
+    if (icon) icon.classList.add('d-none');
   });
   
-  event.currentTarget.classList.add('selected');
-  event.currentTarget.querySelector('.check-icon').classList.remove('d-none');
+  if (event && event.currentTarget) {
+    event.currentTarget.classList.add('selected');
+    const icon = event.currentTarget.querySelector('.check-icon');
+    if (icon) icon.classList.remove('d-none');
+  }
   
   const modal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionarInspector'));
-  modal.hide();
+  if (modal) modal.hide();
 }
 
 // ============================================
@@ -735,12 +708,12 @@ async function cargarEvidencias(etapa) {
         <div class="col-md-3 mb-3">
           <div class="card modal-evidencia-item ${isSelected ? 'selected' : ''}" 
                data-id="${evidencia.id_evidencia}"
-               onclick="toggleEvidencia('${etapa}', ${evidencia.id_evidencia}, '${evidencia.url_archivos}')">
+               onclick="toggleEvidencia('${etapa}', ${evidencia.id_evidencia}, '${evidencia.url_archivos}', event)">
             <div class="position-relative">
               <span class="badge badge-etapa bg-${etapa === 'antes' ? 'success' : etapa === 'durante' ? 'warning' : 'info'}">
                 ${etapa.toUpperCase()}
               </span>
-              <img src="/${evidencia.url_archivos}" alt="${evidencia.fotos}" class="card-img-top" />
+              <img src="${getEvidenciaImageUrl(evidencia.url_archivos)}" alt="${evidencia.fotos}" class="card-img-top" />
             </div>
             <div class="card-body p-2">
               <p class="mb-1 small text-truncate" title="${evidencia.fotos}">
@@ -771,14 +744,17 @@ async function cargarEvidencias(etapa) {
   }
 }
 
-function toggleEvidencia(etapa, id, url) {
+function toggleEvidencia(etapa, id, url, event) {
   const index = evidenciasSeleccionadas[etapa].indexOf(id);
-  const card = event.currentTarget;
+  const card = event && event.currentTarget ? event.currentTarget : null;
   
   if (index > -1) {
     evidenciasSeleccionadas[etapa].splice(index, 1);
-    card.classList.remove('selected');
-    card.querySelector('.check-icon').classList.add('d-none');
+    if (card) {
+      card.classList.remove('selected');
+      const icon = card.querySelector('.check-icon');
+      if (icon) icon.classList.add('d-none');
+    }
   } else {
     if (evidenciasSeleccionadas[etapa].length >= 5) {
       alert(`Solo puede seleccionar un máximo de 5 evidencias para la etapa "${etapa.toUpperCase()}".`);
@@ -786,8 +762,11 @@ function toggleEvidencia(etapa, id, url) {
     }
     
     evidenciasSeleccionadas[etapa].push(id);
-    card.classList.add('selected');
-    card.querySelector('.check-icon').classList.remove('d-none');
+    if (card) {
+      card.classList.add('selected');
+      const icon = card.querySelector('.check-icon');
+      if (icon) icon.classList.remove('d-none');
+    }
   }
   
   document.getElementById(`count_${etapa}`).textContent = evidenciasSeleccionadas[etapa].length;
@@ -815,7 +794,7 @@ async function actualizarPreview(etapa) {
       if (evidencia) {
         const preview = `
           <div class="evidencia-preview-item">
-            <img src="/${evidencia.url_archivos}" alt="${evidencia.fotos}" title="${evidencia.fotos}" />
+            <img src="${getEvidenciaImageUrl(evidencia.url_archivos)}" alt="${evidencia.fotos}" title="${evidencia.fotos}" />
             <div class="remove-btn" onclick="removerEvidencia('${etapa}', ${id})">
               <i class="bx bx-x"></i>
             </div>
@@ -839,7 +818,140 @@ function removerEvidencia(etapa, id) {
   }
 }
 
+function aplicarPorcentajesDeProgreso() {
+  document.querySelectorAll('.progress-bar[data-progress]').forEach(bar => {
+    const valor = parseInt(bar.getAttribute('data-progress') || '0', 10);
+    const porcentaje = Math.max(0, Math.min(100, isNaN(valor) ? 0 : valor));
+    bar.style.width = `${porcentaje}%`;
+    bar.setAttribute('aria-valuenow', porcentaje.toString());
+  });
+}
+
+let informeIdAEliminar = null;
+
+function mostrarModalEliminar(id) {
+  informeIdAEliminar = id;
+  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarEliminarInforme'));
+  modal.show();
+}
+
+async function eliminarInformeSeleccionado() {
+  if (!informeIdAEliminar) return;
+
+  const botonConfirmar = document.getElementById('btnConfirmarEliminarInforme');
+  if (botonConfirmar) {
+    botonConfirmar.disabled = true;
+    botonConfirmar.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Eliminando...';
+  }
+
+  try {
+    const response = await fetch(`/api/informes/eliminar/${informeIdAEliminar}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data.message || 'No se pudo eliminar el informe');
+    }
+
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalConfirmarEliminarInforme'));
+    if (modal) modal.hide();
+
+    window.location.reload();
+  } catch (error) {
+    console.error('Error al eliminar informe:', error);
+    alert(error.message || 'No se pudo eliminar el informe');
+  } finally {
+    if (botonConfirmar) {
+      botonConfirmar.disabled = false;
+      botonConfirmar.innerHTML = '<i class="bx bx-trash me-1"></i>Eliminar';
+    }
+  }
+}
+
+let paginaInformesActual = 1;
+const tamanoPaginaInformes = 8;
+
+function inicializarPaginacionInformes() {
+  const filas = Array.from(document.querySelectorAll('#tablaInformes tbody tr.fila-informe'));
+  const emptyState = document.getElementById('emptyStateRow');
+  const paginacion = document.getElementById('paginacionInformes');
+  const info = document.getElementById('infoPaginacionInformes');
+
+  if (!paginacion || filas.length === 0) {
+    if (paginacion) paginacion.innerHTML = '';
+    if (info) info.textContent = '';
+    if (emptyState) emptyState.style.display = '';
+    return;
+  }
+
+  const totalPaginas = Math.max(1, Math.ceil(filas.length / tamanoPaginaInformes));
+  if (paginaInformesActual > totalPaginas) {
+    paginaInformesActual = totalPaginas;
+  }
+
+  const inicio = (paginaInformesActual - 1) * tamanoPaginaInformes;
+  const fin = inicio + tamanoPaginaInformes;
+
+  filas.forEach((fila, index) => {
+    fila.style.display = index >= inicio && index < fin ? '' : 'none';
+  });
+
+  if (emptyState) emptyState.style.display = 'none';
+
+  const desde = filas.length === 0 ? 0 : inicio + 1;
+  const hasta = Math.min(fin, filas.length);
+  if (info) {
+    info.textContent = `Mostrando ${desde}-${hasta} de ${filas.length} informes`;
+  }
+
+  paginacion.innerHTML = '';
+
+  const crearItem = (texto, pagina, disabled = false, activo = false) => {
+    const li = document.createElement('li');
+    li.className = `page-item ${disabled ? 'disabled' : ''} ${activo ? 'active' : ''}`;
+    const boton = document.createElement('button');
+    boton.className = 'page-link';
+    boton.type = 'button';
+    boton.textContent = texto;
+    boton.disabled = disabled;
+    boton.addEventListener('click', () => {
+      paginaInformesActual = pagina;
+      inicializarPaginacionInformes();
+    });
+    li.appendChild(boton);
+    return li;
+  };
+
+  paginacion.appendChild(crearItem('«', Math.max(1, paginaInformesActual - 1), paginaInformesActual === 1));
+
+  for (let i = 1; i <= totalPaginas; i += 1) {
+    paginacion.appendChild(crearItem(i.toString(), i, false, i === paginaInformesActual));
+  }
+
+  paginacion.appendChild(crearItem('»', Math.min(totalPaginas, paginaInformesActual + 1), paginaInformesActual === totalPaginas));
+}
+
+document.addEventListener('click', function(event) {
+  const botonEliminar = event.target.closest('.btn-eliminar-informe');
+  if (!botonEliminar) return;
+
+  event.preventDefault();
+  const id = botonEliminar.getAttribute('data-id');
+  if (id) {
+    mostrarModalEliminar(id);
+  }
+});
+
+document.getElementById('btnConfirmarEliminarInforme').addEventListener('click', eliminarInformeSeleccionado);
+
 document.addEventListener('DOMContentLoaded', function() {
+  aplicarPorcentajesDeProgreso();
+  inicializarPaginacionInformes();
   console.log('✅ Módulo Informe de Avance cargado correctamente');
 });
 </script>

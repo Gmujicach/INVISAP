@@ -82,7 +82,7 @@ def api_obtener_inspectores():
         sql = """
             SELECT id_empleados, nombre_empleado, cargo, gerencia_asignada
             FROM empleados
-            WHERE cargo = 'Inspector' AND estado = 1
+            WHERE cargo IN ('Inspector', 'Gerente') AND estado = 1
             ORDER BY nombre_empleado ASC
         """
         
@@ -178,10 +178,29 @@ def ver_detalle_informe(id_informe):
         return redirect(url_for('informe_avance_bp.listar_informes'))
 
 
+@informe_avance_bp.route('/api/informes/detalle/<int:id_informe>', methods=['GET'])
+def api_detalle_informe(id_informe):
+    """Devuelve el detalle completo de un informe como JSON para el modal."""
+    if 'conectado' not in session:
+        return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
+
+    try:
+        modelo = InformeAvanceModel()
+        informe = modelo.obtener_informe_por_id(id_informe)
+
+        if not informe:
+            return jsonify({'status': 'error', 'message': 'Informe no encontrado'}), 404
+
+        return jsonify({'status': 'success', 'data': informe})
+    except Exception as e:
+        print(f"Error api_detalle_informe: {e}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+
 @informe_avance_bp.route('/editar-informe/<int:id_informe>', methods=['GET'])
 def editar_informe(id_informe):
     """
-    Muestra formulario de edición de informe
+    Muestra formulario de edición de informe en una pantalla dedicada.
     """
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
@@ -196,14 +215,13 @@ def editar_informe(id_informe):
             flash('El informe no existe.', 'error')
             return redirect(url_for('informe_avance_bp.listar_informes'))
         
-        # Registrar en bitácora
         BitacoraService.registrar_accion(
             session, 'Informes de Avance', 'VER',
             f'Accedió a editar Informe #{id_informe}'
         )
         
         return render_template(
-            'inf_avance_obra/editar_informe.html',
+            'inf_avance_obra/Inf_avance_obra_modificar.html',
             informe=informe,
             gerentes=gerentes
         )
@@ -227,12 +245,17 @@ def api_crear_informe():
     
     try:
         # Obtener datos del request (soporta JSON y FormData)
-        data = request.get_json() if request.is_json else request.form.to_dict()
-        
+        data = request.get_json(silent=True) if request.is_json else request.form.to_dict()
+        if not isinstance(data, dict):
+            data = {}
+
+        # Normalizar valores del formulario para evitar errores por datos vacíos o no strings
+        data = {k: (v if v is not None else '') for k, v in data.items()}
+
         modelo = InformeAvanceModel()
-        
+
         # Validación de existencia de gerente en tiempo real (Prof. Escalona)
-        gerente_id = data.get('gerente_responsable_id')
+        gerente_id = str(data.get('gerente_responsable_id') or '').strip()
         if gerente_id:
             modelo_empleado = EmpleadoModel()
             if not modelo_empleado.validar_empleado_activo(gerente_id):
@@ -240,7 +263,7 @@ def api_crear_informe():
                     'status': 'error', 
                     'message': 'El gerente/inspector seleccionado no existe o fue eliminado.'
                 }), 400
-        
+
         # Registrar informe usando el modelo
         nuevo_id = modelo.registrar_informe(data)
         
@@ -270,10 +293,12 @@ def api_crear_informe():
         }), 400
         
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print(f"Error api_crear_informe: {e}")
         return jsonify({
-            'status': 'error', 
-            'message': str(e)
+            'status': 'error',
+            'message': f'Error interno del servidor: {str(e)}'
         }), 500
 
 
@@ -304,6 +329,16 @@ def api_actualizar_informe():
                 'message': 'El informe no existe o fue eliminado'
             }), 404
         
+        # Validación de gerente
+        gerente_id = data.get('gerente_responsable_id')
+        if gerente_id:
+            modelo_empleado = EmpleadoModel()
+            if not modelo_empleado.validar_empleado_activo(gerente_id):
+                return jsonify({
+                    'status': 'error', 
+                    'message': 'El gerente/inspector seleccionado no existe o fue eliminado'
+                }), 400
+        
         # Actualizar informe
         if modelo.actualizar_informe(data):
             # Registrar en bitácora
@@ -329,10 +364,12 @@ def api_actualizar_informe():
         }), 400
         
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         print(f"Error api_actualizar_informe: {e}")
         return jsonify({
             'status': 'error', 
-            'message': 'Error interno del servidor'
+            'message': f'Error interno del servidor: {str(e)}'
         }), 500
 
 
@@ -523,6 +560,20 @@ def form_actualizar_informe():
         data = request.form.to_dict()
         
         id_informe = data.get('id_informe')
+        
+        # Validar que el informe existe
+        if not modelo.validar_informe_activo(id_informe):
+            flash('El informe no existe o fue eliminado.', 'error')
+            return redirect(url_for('informe_avance_bp.listar_informes'))
+        
+        # Validación de gerente
+        gerente_id = data.get('gerente_responsable_id')
+        if gerente_id:
+            from models.empleado_model import EmpleadoModel
+            modelo_empleado = EmpleadoModel()
+            if not modelo_empleado.validar_empleado_activo(gerente_id):
+                flash('El gerente/inspector seleccionado no existe.', 'error')
+                return redirect(url_for('informe_avance_bp.listar_informes'))
         
         if modelo.actualizar_informe(data):
             # Registrar en bitácora

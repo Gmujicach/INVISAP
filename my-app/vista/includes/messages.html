@@ -1,12 +1,19 @@
-{%- with messages = get_flashed_messages(with_categories=true) -%}
-  {%- if messages -%}
-    <div class="flash-messages">
-      {%- for category, msg in messages -%}
-        <div class="alert alert-{{ 'danger' if category in ['error','danger'] else category }} alert-dismissible fade show" role="alert">
-          {{ msg }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+{# Notificaciones Flash modernas con animación slide #}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="notification-container" id="flashToastContainer">
+      {% for category, msg in messages %}
+        <div class="toast-custom {{ 'error' if category in ['error','danger'] else category }}" role="alert">
+          <div class="toast-content">
+            <div class="toast-icon" style="color: {{ '#ff3e1d' if category in ['error','danger'] else '#08b324' }};">
+              <i class="bi {{ 'bi-exclamation-triangle-fill' if category in ['error','danger'] else 'bi-check-circle-fill' }}"></i>
+            </div>
+            <span class="toast-message">{{ msg }}</span>
+            <button class="toast-close" aria-label="Cerrar">&times;</button>
+          </div>
+          <div class="toast-progress"></div>
         </div>
-      {%- endfor -%}
+      {% endfor %}
     </div>
-  {%- endif -%}
-{%- endwith -%}
+  {% endif %}
+{% endwith %}

@@ -11,7 +11,7 @@ def _load_env():
                 line = line.strip()
                 if '=' in line and not line.startswith('#'):
                     key, value = line.split('=', 1)
-                    os.environ.setdefault(key.strip(), value.strip())
+                    os.environ[key.strip()] = value.strip()
 
 _load_env()
 
@@ -25,7 +25,7 @@ def connectionBD():
     db_config = {
         'host': _get_env('DB_HOST', 'localhost'),
         'user': _get_env('DB_USER', 'root'),
-        'password': _get_env('DB_PASSWORD', '1234'),
+        'password': _get_env('DB_PASSWORD', ''),
         'database': _get_env('DB_NAME', 'invilara'),
         'charset': 'utf8mb4',
         'use_unicode': True,
@@ -59,7 +59,7 @@ def connectionBD_seguridad():
     db_config = {
         'host': os.getenv('DB_HOST', 'localhost'),
         'user': os.getenv('DB_USER', 'root'),
-        'password': os.getenv('DB_PASSWORD', '1234'),
+        'password': os.getenv('DB_PASSWORD', ''),
         'database': os.getenv('DB_NAME_SEGURIDAD', 'invilara_seguridad'),
         'charset': 'utf8mb4',
         'use_unicode': True,

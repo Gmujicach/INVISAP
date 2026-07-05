@@ -1,0 +1,666 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}Modificar Informe de Avance{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/informe_avance.css') }}" />
+<style>
+  .page-shell {
+    background: linear-gradient(135deg, #f6fcf8 0%, #ffffff 100%);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 12px 35px rgba(45, 106, 79, 0.12);
+  }
+  .hero-card {
+    border: none;
+    border-radius: 18px;
+    background: linear-gradient(135deg, var(--invilara-verde) 0%, var(--invilara-verde-oscuro) 100%);
+    color: white;
+  }
+  .form-section-title {
+    color: var(--invilara-verde);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+    border-bottom: 2px solid var(--invilara-gris-claro);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .inspector-display {
+    background: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+  }
+  .inspector-display:hover {
+    border-color: var(--invilara-verde);
+    background: #f4fbf6;
+  }
+  body.dark-mode .inspector-display {
+    background: #2b2c40;
+    border-color: #444564;
+    color: #cfcde9;
+  }
+  body.dark-mode .inspector-display:hover {
+    background: #323248;
+    border-color: var(--invilara-verde-claro);
+  }
+  .evidencia-stage-card {
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1rem;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+  body.dark-mode .evidencia-stage-card {
+    background: #2b2c40;
+    border-color: #444564;
+  }
+  .evidencia-stage-card .stage-header {
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+  }
+  .preview-evidencia-item {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #28a745;
+    display: inline-block;
+    margin: 0.25rem;
+  }
+  .preview-evidencia-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .preview-evidencia-item .remove-btn {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 11px;
+    border: 2px solid white;
+  }
+  .empty-stage {
+    text-align: center;
+    padding: 1.5rem 0.5rem;
+    color: #adb5bd;
+    font-size: 0.9rem;
+    border: 2px dashed #e9ecef;
+    border-radius: 8px;
+  }
+  body.dark-mode .empty-stage {
+    color: #8c8ea3;
+    border-color: #444564;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="page-shell">
+  <div class="card hero-card mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <h3 class="mb-1"><i class="bx bx-edit-alt me-2"></i>Modificar Informe de Avance</h3>
+          <p class="mb-0 opacity-75">Actualice los datos del informe seleccionado.</p>
+        </div>
+        <a href="{{ url_for('informe_avance_bp.listar_informes') }}" class="btn btn-light text-success">
+          <i class="bx bx-arrow-back me-1"></i> Volver a la lista
+        </a>
+      </div>
+    </div>
+  </div>
+
+<form method="POST" action="{{ url_for('informe_avance_bp.form_actualizar_informe') }}" class="row g-4" id="formEditarInforme">
+     <input type="hidden" name="id_informe" value="{{ informe.id_informe }}" />
+     <input type="hidden" name="avance_id_avance" id="avance_id_avance" value="{{ informe.avance_id_avance or '' }}" />
+     <input type="hidden" id="evidencias_antes_json" value="{{ informe.evidencia_antes|default('') }}" />
+     <input type="hidden" id="evidencias_durante_json" value="{{ informe.evidencia_durante|default('') }}" />
+     <input type="hidden" id="evidencias_despues_json" value="{{ informe.evidencia_despues|default('') }}" />
+
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0 rounded-4 mb-4">
+        <div class="card-body p-4">
+          <h5 class="form-section-title"><i class="bx bx-info-circle me-2"></i>Datos del informe</h5>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label required">Tipo de informe</label>
+              <select class="form-select" name="tipo_informe" required>
+                <option value="Ficha Inspeccion Tecnica" {% if informe.tipo_informe == 'Ficha Inspeccion Tecnica' %}selected{% endif %}>Ficha Inspección Técnica</option>
+                <option value="Menor" {% if informe.tipo_informe == 'Menor' %}selected{% endif %}>Informe Menor</option>
+                <option value="Mayor" {% if informe.tipo_informe == 'Mayor' %}selected{% endif %}>Informe Mayor</option>
+                <option value="Avance Mensual" {% if informe.tipo_informe == 'Avance Mensual' %}selected{% endif %}>Avance Mensual</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label required">Estado</label>
+              <select class="form-select" name="estado" required>
+                <option value="Aprobado" {% if informe.estado == 'Aprobado' %}selected{% endif %}>Aprobado</option>
+                <option value="En Ejecucion" {% if informe.estado == 'En Ejecucion' %}selected{% endif %}>En Ejecución</option>
+                <option value="Culminado" {% if informe.estado == 'Culminado' %}selected{% endif %}>Culminado</option>
+                <option value="Paralizado" {% if informe.estado == 'Paralizado' %}selected{% endif %}>Paralizado</option>
+              </select>
+            </div>
+            <div class="col-md-8">
+              <label class="form-label required">Población beneficiada</label>
+              <input type="text" class="form-control" name="poblacion_beneficiada" value="{{ informe.poblacion_beneficiada or '' }}" placeholder="Ej: Comunidad La Salle, Sector El Cuji" required maxlength="45" />
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">% de Avance</label>
+              <div class="input-group">
+                <input type="number" class="form-control" name="porcentaje_avance" value="{{ informe.porcentaje_avance or 0 }}" min="0" max="100" placeholder="0-100" />
+                <span class="input-group-text">%</span>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Observaciones</label>
+              <textarea class="form-control" name="observaciones" rows="5" placeholder="Describa las observaciones técnicas o recomendaciones del informe" maxlength="500">{{ informe.observaciones or '' }}</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4">
+          <h5 class="form-section-title"><i class="bx bx-camera me-2"></i>Evidencias fotográficas</h5>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="evidencia-stage-card">
+                <div class="stage-header text-success"><i class="bx bx-image-add me-1"></i> Fotos ANTES</div>
+                <button type="button" class="btn btn-outline-success w-100 btn-sm" data-bs-toggle="modal" data-bs-target="#modalEvidenciasAntes">
+                  <i class="bx bx-folder-open"></i> Seleccionar
+                </button>
+                <input type="hidden" name="evidencias_antes" id="evidencias_antes_ids" value="{{ informe.evidencias_antes|default('') }}" />
+                <div id="preview_antes" class="mt-2"></div>
+                <small class="text-muted d-block mt-2 text-center">
+                  <span id="count_antes">0</span> seleccionadas (máx. 5)
+                </small>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="evidencia-stage-card">
+                <div class="stage-header text-warning"><i class="bx bx-image-add me-1"></i> Fotos DURANTE</div>
+                <button type="button" class="btn btn-outline-warning w-100 btn-sm" data-bs-toggle="modal" data-bs-target="#modalEvidenciasDurante">
+                  <i class="bx bx-folder-open"></i> Seleccionar
+                </button>
+                <input type="hidden" name="evidencias_durante" id="evidencias_durante_ids" value="{{ informe.evidencias_durante|default('') }}" />
+                <div id="preview_durante" class="mt-2"></div>
+                <small class="text-muted d-block mt-2 text-center">
+                  <span id="count_durante">0</span> seleccionadas (máx. 5)
+                </small>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="evidencia-stage-card">
+                <div class="stage-header text-info"><i class="bx bx-image-add me-1"></i> Fotos DESPUÉS</div>
+                <button type="button" class="btn btn-outline-info w-100 btn-sm" data-bs-toggle="modal" data-bs-target="#modalEvidenciasDespues">
+                  <i class="bx bx-folder-open"></i> Seleccionar
+                </button>
+                <input type="hidden" name="evidencias_despues" id="evidencias_despues_ids" value="{{ informe.evidencias_despues|default('') }}" />
+                <div id="preview_despues" class="mt-2"></div>
+                <small class="text-muted d-block mt-2 text-center">
+                  <span id="count_despues">0</span> seleccionadas (máx. 5)
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4">
+          <h5 class="form-section-title"><i class="bx bx-user-check me-2"></i>Responsable</h5>
+<div class="mb-3">
+             <label class="form-label">Inspector / Gerente</label>
+             <div class="inspector-display" data-bs-toggle="modal" data-bs-target="#modalSeleccionarInspector" id="inspectorDisplay">
+               <i class="bx bx-search me-2 text-muted"></i>
+               <span class="text-muted" id="inspectorDisplayText">Haga clic para seleccionar un inspector...</span>
+             </div>
+             <input type="hidden" name="gerente_responsable_id" id="gerente_responsable_id" value="{{ informe.gerente|default('') }}" required />
+             <small class="form-text text-muted mt-2 d-block">
+               <i class="bx bx-info-circle"></i> Solo se muestran empleados activos con cargo Inspector
+             </small>
+           </div>
+          <div class="alert alert-info small mb-3">
+            <i class="bx bx-info-circle me-1"></i> Revise el estado, el avance y las observaciones antes de guardar.
+          </div>
+        </div>
+      </div>
+
+      <div class="d-grid gap-2 mt-3">
+        <button type="submit" class="btn btn-invilara-primary btn-lg">
+          <i class="bx bx-save me-1"></i> Guardar cambios
+        </button>
+        <a href="{{ url_for('informe_avance_bp.listar_informes') }}" class="btn btn-outline-secondary">
+          <i class="bx bx-x me-1"></i> Cancelar
+        </a>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- ========== MODAL: SELECCIONAR INSPECTOR ========== -->
+<div class="modal fade" id="modalSeleccionarInspector" tabindex="-1" aria-labelledby="modalSeleccionarInspectorLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalSeleccionarInspectorLabel">
+          <i class="bx bx-user-check me-2"></i>Seleccionar Inspector Responsable
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row" id="listaInspectores">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="text-muted mt-2">Cargando inspectores...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: EVIDENCIAS ANTES ========== -->
+<div class="modal fade" id="modalEvidenciasAntes" tabindex="-1" aria-labelledby="modalEvidenciasAntesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="modalEvidenciasAntesLabel">
+          <i class="bx bx-image me-2"></i>Seleccionar Evidencias ANTES (Máx. 5)
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row" id="listaEvidenciasAntes">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-success" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="text-muted mt-2">Cargando evidencias...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success" onclick="confirmarSeleccionEvidencias('antes')" data-bs-dismiss="modal">
+          <i class="bx bx-check"></i> Confirmar Selección
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: EVIDENCIAS DURANTE ========== -->
+<div class="modal fade" id="modalEvidenciasDurante" tabindex="-1" aria-labelledby="modalEvidenciasDuranteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title" id="modalEvidenciasDuranteLabel">
+          <i class="bx bx-image me-2"></i>Seleccionar Evidencias DURANTE (Máx. 5)
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row" id="listaEvidenciasDurante">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-warning" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="text-muted mt-2">Cargando evidencias...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-warning" onclick="confirmarSeleccionEvidencias('durante')" data-bs-dismiss="modal">
+          <i class="bx bx-check"></i> Confirmar Selección
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: EVIDENCIAS DESPUÉS ========== -->
+<div class="modal fade" id="modalEvidenciasDespues" tabindex="-1" aria-labelledby="modalEvidenciasDespuesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title" id="modalEvidenciasDespuesLabel">
+          <i class="bx bx-image me-2"></i>Seleccionar Evidencias DESPUÉS (Máx. 5)
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row" id="listaEvidenciasDespues">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-info" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="text-muted mt-2">Cargando evidencias...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-info" onclick="confirmarSeleccionEvidencias('despues')" data-bs-dismiss="modal">
+          <i class="bx bx-check"></i> Confirmar Selección
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='js/informe_avance.js') }}"></script>
+<script>
+(function() {
+  'use strict';
+
+  const idInforme = '{{ informe.id_informe }}';
+
+  function getEvidenciaImageUrl(path) {
+    if (!path) return '';
+    if (/^https?:\/\//i.test(path)) return path;
+    const cleanPath = String(path).replace(/^\/+/, '').replace(/^static\//, '');
+    return `/static/${cleanPath}`;
+  }
+
+  function parseEvidencias(raw) {
+    if (Array.isArray(raw)) {
+      return raw;
+    }
+    if (typeof raw === 'string' && raw.trim().startsWith('[')) {
+      try {
+        return JSON.parse(raw);
+      } catch (error) {
+        return [];
+      }
+    }
+    if (typeof raw === 'string') {
+      return raw.split(',').map(v => parseInt(v, 10)).filter(Number.isInteger);
+    }
+    return [];
+  }
+
+  function leerJsonOculto(id) {
+    const element = document.getElementById(id);
+    return element ? element.value : '[]';
+  }
+
+  window.evidenciasSeleccionadas = {
+    antes: parseEvidencias(leerJsonOculto('evidencias_antes_json')),
+    durante: parseEvidencias(leerJsonOculto('evidencias_durante_json')),
+    despues: parseEvidencias(leerJsonOculto('evidencias_despues_json'))
+  };
+
+const inspectorNombre = '{{ informe.gerente_nombre|default("") }}';
+   const inspectorId = '{{ informe.gerente|default("") }}';
+   const inspectorDisplay = document.getElementById('inspectorDisplayText');
+   const inspectorInput = document.getElementById('gerente_responsable_id');
+
+   if (inspectorNombre && inspectorNombre !== '') {
+     if (inspectorDisplay) inspectorDisplay.textContent = inspectorNombre;
+     if (inspectorDisplay) inspectorDisplay.classList.remove('text-muted');
+   }
+   if (inspectorId && inspectorId !== '') {
+     if (inspectorInput) inspectorInput.value = inspectorId;
+   }
+
+  function setInspectorSeleccionado(id, nombre, gerencia, event) {
+    inspectorInput.value = id;
+    if (inspectorDisplay) {
+      inspectorDisplay.textContent = [nombre, gerencia].filter(Boolean).join(' - ');
+      inspectorDisplay.classList.remove('text-muted');
+    }
+    document.querySelectorAll('#modalSeleccionarInspector .inspector-card').forEach(c => c.classList.remove('selected'));
+    if (event && event.currentTarget) {
+      event.currentTarget.classList.add('selected');
+    }
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionarInspector'));
+    if (modal) modal.hide();
+  }
+
+  window.seleccionarInspectorParaEdicion = function(id, nombre, gerencia, event) {
+    setInspectorSeleccionado(id, nombre, gerencia, event);
+  };
+
+  async function cargarEvidencias(etapa) {
+    try {
+      const response = await fetch(`/api/obtener-evidencias?etapa=${etapa}`);
+      const evidencias = await response.json();
+      const containerId = `listaEvidencias${etapa.charAt(0).toUpperCase() + etapa.slice(1)}`;
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+
+      if (evidencias.length === 0) {
+        container.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="bx bx-image-alt bx-lg text-muted mb-3"></i>
+            <p class="text-muted">No hay evidencias registradas para la etapa "<strong>${etapa.toUpperCase()}</strong>".</p>
+            <small class="text-muted">Registre evidencias en el módulo correspondiente.</small>
+          </div>
+        `;
+        return;
+      }
+
+        evidencias.forEach(evidencia => {
+          const isSelected = window.evidenciasSeleccionadas[etapa].includes(evidencia.id_evidencia);
+          const card = `
+            <div class="col-md-3 mb-3">
+              <div class="card modal-evidencia-item h-100 ${isSelected ? 'selected' : ''}" 
+                   data-id="${evidencia.id_evidencia}"
+                   onclick="toggleEvidencia('${etapa}', ${evidencia.id_evidencia}, '${evidencia.url_archivos}', event)">
+                <div class="position-relative">
+                  <span class="badge badge-etapa bg-${etapa === 'antes' ? 'success' : etapa === 'durante' ? 'warning' : 'info'}">
+                    ${etapa.toUpperCase()}
+                  </span>
+                  <img src="${getEvidenciaImageUrl(evidencia.url_archivos)}" alt="${evidencia.fotos}" class="card-img-top" />
+                </div>
+                <div class="card-body p-2">
+                  <p class="mb-1 small text-truncate" title="${evidencia.fotos}">
+                    <i class="bx bx-file me-1"></i>${evidencia.fotos}
+                  </p>
+                  <small class="text-muted">
+                    <i class="bx bx-calendar me-1"></i>${new Date(evidencia.fecha_registro).toLocaleDateString('es-VE')}
+                  </small>
+                  <div class="text-center mt-2">
+                    <i class="bx bx-check-circle text-success fs-4 ${isSelected ? '' : 'd-none'} check-icon"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        container.innerHTML += card;
+      });
+    } catch (error) {
+      console.error(`Error al cargar evidencias ${etapa}:`, error);
+      const containerId = `listaEvidencias${etapa.charAt(0).toUpperCase() + etapa.slice(1)}`;
+      document.getElementById(containerId).innerHTML = `
+        <div class="col-12 text-center py-5">
+          <i class="bx bx-error bx-lg text-danger mb-3"></i>
+          <p class="text-danger">Error al cargar las evidencias. Por favor, intente nuevamente.</p>
+        </div>
+      `;
+    }
+  }
+
+  window.toggleEvidencia = function(etapa, id, url, event) {
+    const index = window.evidenciasSeleccionadas[etapa].indexOf(id);
+    const card = event && event.currentTarget ? event.currentTarget : null;
+
+    if (index > -1) {
+      window.evidenciasSeleccionadas[etapa].splice(index, 1);
+      if (card) {
+        card.classList.remove('selected');
+        const icon = card.querySelector('.check-icon');
+        if (icon) icon.classList.add('d-none');
+      }
+    } else {
+      if (window.evidenciasSeleccionadas[etapa].length >= 5) {
+        alert(`Solo puede seleccionar un máximo de 5 evidencias para la etapa "${etapa.toUpperCase()}".`);
+        return;
+      }
+      window.evidenciasSeleccionadas[etapa].push(id);
+      if (card) {
+        card.classList.add('selected');
+        const icon = card.querySelector('.check-icon');
+        if (icon) icon.classList.remove('d-none');
+      }
+    }
+
+    document.getElementById(`count_${etapa}`).textContent = window.evidenciasSeleccionadas[etapa].length;
+  };
+
+  window.confirmarSeleccionEvidencias = function(etapa) {
+    document.getElementById(`evidencias_${etapa}_ids`).value = window.evidenciasSeleccionadas[etapa].join(',');
+    actualizarPreview(etapa);
+  };
+
+  window.removerEvidencia = function(etapa, id) {
+    const index = window.evidenciasSeleccionadas[etapa].indexOf(id);
+    if (index > -1) {
+      window.evidenciasSeleccionadas[etapa].splice(index, 1);
+      document.getElementById(`evidencias_${etapa}_ids`).value = window.evidenciasSeleccionadas[etapa].join(',');
+      document.getElementById(`count_${etapa}`).textContent = window.evidenciasSeleccionadas[etapa].length;
+      actualizarPreview(etapa);
+    }
+  };
+
+async function actualizarPreview(etapa) {
+     const previewContainer = document.getElementById(`preview_${etapa}`);
+     previewContainer.innerHTML = '';
+
+     if (!window.evidenciasSeleccionadas[etapa] || window.evidenciasSeleccionadas[etapa].length === 0) {
+       return;
+     }
+
+     try {
+       const response = await fetch(`/api/obtener-evidencias?etapa=${etapa}`);
+       const todasEvidencias = await response.json();
+
+       window.evidenciasSeleccionadas[etapa].forEach(id => {
+         const evidencia = todasEvidencias.find(e => e.id_evidencia === id);
+         if (evidencia) {
+           const preview = document.createElement('div');
+           preview.className = 'preview-evidencia-item';
+           preview.innerHTML = `
+             <img src="${getEvidenciaImageUrl(evidencia.url_archivos)}" alt="${evidencia.fotos}" title="${evidencia.fotos}" />
+             <div class="remove-btn" onclick="removerEvidencia('${etapa}', ${id})">
+               <i class="bx bx-x"></i>
+             </div>
+           `;
+           previewContainer.appendChild(preview);
+         }
+       });
+     } catch (error) {
+       console.error('Error al actualizar preview:', error);
+     }
+   }
+
+  document.getElementById('modalSeleccionarInspector').addEventListener('show.bs.modal', function() {
+    cargarInspectores();
+  });
+
+  document.getElementById('modalEvidenciasAntes').addEventListener('show.bs.modal', function() {
+    cargarEvidencias('antes');
+  });
+  document.getElementById('modalEvidenciasDurante').addEventListener('show.bs.modal', function() {
+    cargarEvidencias('durante');
+  });
+  document.getElementById('modalEvidenciasDespues').addEventListener('show.bs.modal', function() {
+    cargarEvidencias('despues');
+  });
+
+  async function cargarInspectores() {
+    try {
+      const response = await fetch('/api/obtener-inspectores');
+      const inspectores = await response.json();
+      const container = document.getElementById('listaInspectores');
+      container.innerHTML = '';
+
+      if (inspectores.length === 0) {
+        container.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="bx bx-user-x bx-lg text-muted mb-3"></i>
+            <p class="text-muted">No hay inspectores registrados en el sistema.</p>
+          </div>
+        `;
+        return;
+      }
+
+      inspectores.forEach(inspector => {
+        const card = document.createElement('div');
+        card.className = 'col-md-6 mb-3';
+        card.innerHTML = `
+          <div class="card inspector-card h-100" onclick="seleccionarInspectorParaEdicion(${inspector.id_empleados}, '${inspector.nombre_empleado}', '${inspector.gerencia_asignada || 'Sin asignar'}', event)">
+            <div class="card-body">
+              <div class="d-flex align-items-center">
+                <div class="avatar avatar-lg bg-label-primary rounded-circle me-3">
+                  <i class="bx bx-user fs-3"></i>
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="mb-1">${inspector.nombre_empleado}</h6>
+                  <p class="mb-0 text-muted small">
+                    <i class="bx bx-briefcase me-1"></i>${inspector.cargo}
+                  </p>
+                  <p class="mb-0 text-muted small">
+                    <i class="bx bx-buildings me-1"></i>${inspector.gerencia_asignada || 'Sin asignar'}
+                  </p>
+                </div>
+                <div>
+                  <i class="bx bx-check-circle text-success fs-4 d-none check-icon"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    } catch (error) {
+      console.error('Error al cargar inspectores:', error);
+      document.getElementById('listaInspectores').innerHTML = `
+        <div class="col-12 text-center py-5">
+          <i class="bx bx-error bx-lg text-danger mb-3"></i>
+          <p class="text-danger">Error al cargar los inspectores. Por favor, intente nuevamente.</p>
+        </div>
+      `;
+    }
+  }
+
+['antes', 'durante', 'despues'].forEach(etapa => {
+     actualizarPreview(etapa);
+   });
+})();
+</script>
+{% endblock %}

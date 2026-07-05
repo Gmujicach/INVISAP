@@ -21,14 +21,15 @@ class PublicacionModel:
             cursor = conexion.cursor()
             # Ajustado a las columnas EXACTAS de invilara.sql
             sql = """INSERT INTO publicacion 
-                     (titulo_publicacion, nombre_responsable, tipo_publicacion, fecha_publicacion, informe_avance_obra_id_informe)
-                     VALUES (%s, %s, %s, %s, %s)"""
+                     (titulo_publicacion, nombre_responsable, tipo_publicacion, fecha_publicacion, informe_avance_obra_id_informe, cuerpo_publicacion)
+                     VALUES (%s, %s, %s, %s, %s, %s)"""
             valores = (
                 data['titulo_publicacion'], 
                 data['nombre_responsable'], 
                 data['tipo_publicacion'], 
                 data['fecha_publicacion'],
-                data['informe_avance_obra_id_informe']
+                data['informe_avance_obra_id_informe'],
+                data.get('cuerpo_publicacion', 'Contenido pendiente')
             )
             cursor.execute(sql, valores)
             conexion.commit()
@@ -44,7 +45,7 @@ class PublicacionModel:
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor(dictionary=True)
-            cursor.execute("SELECT * FROM publicacion WHERE id_publicacion = %s", (id_publicacion,))
+            cursor.execute("SELECT *, cuerpo_publicacion FROM publicacion WHERE id_publicacion = %s", (id_publicacion,))
             return cursor.fetchone()
         except Exception as e:
             print(f"Error en obtener_publicacion_por_id: {e}")
@@ -57,15 +58,16 @@ class PublicacionModel:
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
-            # Ajustado a las columnas EXACTAS de invilara.sql (id_publicacion en lugar de id_publicacion)
+            # Ajustado a las columnas EXACTAS de invilara.sql
             sql = """UPDATE publicacion 
-                     SET titulo_publicacion=%s, nombre_responsable=%s, tipo_publicacion=%s, informe_avance_obra_id_informe=%s
+                     SET titulo_publicacion=%s, nombre_responsable=%s, tipo_publicacion=%s, informe_avance_obra_id_informe=%s, cuerpo_publicacion=%s
                      WHERE id_publicacion=%s"""
             valores = (
                 data['titulo_publicacion'], 
                 data['nombre_responsable'], 
                 data['tipo_publicacion'], 
                 data['informe_avance_obra_id_informe'], 
+                data.get('cuerpo_publicacion', 'Contenido pendiente'),
                 id_publicacion
             )
             cursor.execute(sql, valores)

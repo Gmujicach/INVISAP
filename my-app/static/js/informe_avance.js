@@ -1,30 +1,25 @@
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('✓ Módulo Informe de Avance de Obra cargado correctamente');
-    inicializarModuloInformes();
-});
-
 /**
  * Función principal que inicializa todos los componentes del módulo
  * Se ejecuta cuando el DOM está completamente cargado
  */
 function inicializarModuloInformes() {
+    console.log('✓ Módulo Informe de Avance de Obra cargado correctamente');
     console.log('Inicializando componentes del módulo...');
     
     // 1. Interceptar formulario de registro
     const formInforme = document.querySelector('form[action="/form-registrar-informe-avance-obra"]');
-    if (formInforme) {
-        // Usar Fetch en lugar de submit tradicional (Prof. Escalona - OBLIGATORIO)
+    if (formInforme && !formInforme.dataset.fetchBound) {
         formInforme.addEventListener('submit', function(e) {
-            e.preventDefault(); // Evitar recarga de página
+            e.preventDefault();
             registrarInformeConFetch(this);
         });
+        formInforme.dataset.fetchBound = 'true';
         console.log('✓ Formulario interceptado para usar Fetch');
     }
     
     // 2. Validación en tiempo real del gerente/inspector
     const selectGerente = document.getElementById('gerente_responsable_id');
     if (selectGerente) {
-        // Evento 'change' para validar cuando el usuario selecciona (Prof. Escalona)
         selectGerente.addEventListener('change', validarGerenteEnTiempoReal);
         console.log('✓ Validación en tiempo real activada para gerente');
     }
@@ -36,7 +31,7 @@ function inicializarModuloInformes() {
         console.log('✓ Contador de caracteres agregado');
     }
     
-    // 4. Validación de límite de imágenes (Prof. Cadenas - máximo 5 por etapa)
+    // 4. Validación de límite de imágenes
     const inputAntes = document.getElementById('evidencias_antes');
     const inputDurante = document.getElementById('evidencias_durante');
     const inputDespues = document.getElementById('evidencias_despues');
@@ -54,13 +49,7 @@ function inicializarModuloInformes() {
         console.log('✓ Validación de imágenes DESPUÉS activada');
     }
     
-    // 5. Botones de eliminar en la tabla
-    document.querySelectorAll('.btn-eliminar-informe').forEach(btn => {
-        btn.addEventListener('click', eliminarInformeConFetch);
-    });
-    console.log('✓ Botones de eliminar configurados');
-    
-    // 6. Botones de editar
+    // 5. Botones de editar
     document.querySelectorAll('.btn-editar-informe').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -68,9 +57,75 @@ function inicializarModuloInformes() {
             window.location.href = `/editar-informe/${idInforme}`;
         });
     });
-    console.log('✓ Botones de editar configurados');
     
-    console.log('✓✓✓ Módulo completamente inicializado');
+    // 6. Modal de detalle del informe
+    const modalDetalle = document.getElementById('modalDetalleInforme');
+    if (modalDetalle && !modalDetalle.dataset.detailBound) {
+        modalDetalle.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const idInforme = button ? button.getAttribute('data-id') : null;
+            if (idInforme) {
+                abrirModalDetalle(idInforme);
+            }
+        });
+        modalDetalle.dataset.detailBound = 'true';
+        console.log('✓ Modal de detalle configurado');
+    }
+    
+    // 6. Formulario de edición por fetch si existe en la página (usar solo en /editar-informe)
+    const formEditarInforme = document.getElementById('formEditarInforme');
+    if (formEditarInforme && window.location.pathname.startsWith('/editar-informe') && !formEditarInforme.dataset.fetchBound) {
+        formEditarInforme.addEventListener('submit', function(e) {
+            e.preventDefault();
+            actualizarInformeConFetch(this);
+        });
+        formEditarInforme.dataset.fetchBound = 'true';
+        console.log('✓ Formulario de edición conectado a Fetch');
+    }
+}
+
+// Asegurar ejecución incluso si el DOM ya está listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', inicializarModuloInformes);
+} else {
+    inicializarModuloInformes();
+}
+
+async function actualizarInformeConFetch(form) {
+    console.log('Iniciando actualización con Fetch...');
+
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    const btnSubmit = form.querySelector('button[type="submit"]');
+    const textoOriginal = btnSubmit.innerHTML;
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+
+    try {
+        const response = await fetch('/api/informes/actualizar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        console.log('Respuesta actualización:', result);
+
+        if (response.ok && result.status === 'success') {
+            mostrarAlerta('success', result.message);
+            setTimeout(() => {
+                window.location.href = '/inf_avance_obra';
+            }, 1200);
+        } else {
+            mostrarAlerta('error', result.message || 'Error al actualizar el informe');
+        }
+    } catch (error) {
+        console.error('Error de conexión en actualización:', error);
+        mostrarAlerta('error', 'Error de conexión con el servidor.');
+    } finally {
+        btnSubmit.disabled = false;
+        btnSubmit.innerHTML = textoOriginal;
+    }
 }
 
 // =================================
@@ -117,18 +172,9 @@ async function registrarInformeConFetch(form) {
         
         // 5. Procesar respuesta
         if (response.ok && result.status === 'success') {
-            // Éxito: Mostrar mensaje y limpiar formulario
             mostrarAlerta('success', result.message);
             form.reset();
             
-            // Cerrar el formulario (collapse de Bootstrap)
-            const collapse = document.getElementById('contenedorFormulario');
-            if (collapse && typeof bootstrap !== 'undefined') {
-                const bsCollapse = bootstrap.Collapse.getInstance(collapse) || new bootstrap.Collapse(collapse);
-                bsCollapse.hide();
-            }
-            
-            // Recargar solo la tabla (sin recargar toda la página)
             setTimeout(() => {
                 recargarTablaInformes();
             }, 1500);
@@ -222,67 +268,6 @@ async function validarGerenteEnTiempoReal(event) {
         console.error('Error validando gerente:', error);
         if (loadingIndicator) loadingIndicator.remove();
         mostrarAlerta('error', 'Error al validar el empleado. Intente nuevamente.');
-    }
-}
-
-// ================
-// ELIMINAR INFORME
-// ================
-
-/**
- * Elimina un informe usando borrado lógico
- * 
- * @param {Event} event - Evento click del botón eliminar
- */
-async function eliminarInformeConFetch(event) {
-    event.preventDefault();
-    
-    const idInforme = this.dataset.id;
-    console.log(`Intentando eliminar informe ID: ${idInforme}`);
-    
-    // 1. Confirmar acción (seguridad)
-    const confirmacion = await confirmarAccion(
-        '¿Está seguro de eliminar este informe?',
-        'Esta acción se puede revertir desde el panel de administración.'
-    );
-    
-    if (!confirmacion) {
-        console.log('Eliminación cancelada por el usuario');
-        return;
-    }
-    
-    try {
-        // 2. Enviar petición DELETE al servidor
-        const response = await fetch(`/api/informes/eliminar/${idInforme}`, {
-            method: 'DELETE' // Método HTTP para eliminar
-        });
-        
-        const result = await response.json();
-        console.log('Resultado eliminación:', result);
-        
-        if (response.ok && result.status === 'success') {
-            // 3. Éxito: Mostrar mensaje y remover fila con animación
-            mostrarAlerta('success', result.message);
-            
-            const fila = this.closest('tr');
-            if (fila) {
-                // Animación de desvanecimiento
-                fila.style.transition = 'opacity 0.3s';
-                fila.style.opacity = '0';
-                
-                setTimeout(() => {
-                    fila.remove();
-                    actualizarContadorInformes();
-                }, 300);
-            }
-            
-        } else {
-            mostrarAlerta('error', result.message || 'Error al eliminar el informe');
-        }
-        
-    } catch (error) {
-        console.error('Error:', error);
-        mostrarAlerta('error', 'Error al eliminar el informe. Verifique su conexión.');
     }
 }
 
@@ -515,9 +500,9 @@ function crearFilaInforme(informe) {
         <td>${informe.gerente_nombre || 'No asignado'}</td>
         <td>${formatearFecha(informe.fecha)}</td>
         <td class="text-center">
-            <a href="/informe-detalle/${informe.id_informe}" class="btn btn-outline-info btn-sm" title="Ver detalle">
+            <button type="button" class="btn btn-outline-info btn-sm btn-ver-informe" data-id="${informe.id_informe}" data-bs-toggle="modal" data-bs-target="#modalDetalleInforme" title="Ver detalle">
                 <i class="bx bx-show"></i>
-            </a>
+            </button>
             <a href="/editar-informe/${informe.id_informe}" class="btn btn-outline-warning btn-sm" title="Editar">
                 <i class="bx bx-edit"></i>
             </a>
@@ -528,6 +513,103 @@ function crearFilaInforme(informe) {
     `;
     
     return tr;
+}
+
+// ======================
+// DETALLE EN MODAL
+// ======================
+
+async function abrirModalDetalle(idInforme) {
+    const body = document.getElementById('detalleInformeBody');
+    if (!body) return;
+
+    body.innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-success" role="status"></div>
+            <p class="text-muted mt-2">Cargando información...</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(`/api/informes/detalle/${idInforme}`);
+        const result = await response.json();
+
+        if (!response.ok || result.status !== 'success') {
+            body.innerHTML = `<div class="alert alert-danger">${result.message || 'No se pudo cargar el detalle.'}</div>`;
+            return;
+        }
+
+        const informe = result.data;
+        const evidencias = informe.evidencias || [];
+        const etapas = ['antes', 'durante', 'despues'];
+
+        function getEvidenciaImageUrl(path) {
+            if (!path) return '';
+            if (/^https?:\/\//i.test(path)) return path;
+            const cleanPath = String(path).replace(/^\/+/, '').replace(/^static\//, '');
+            return `/static/${cleanPath}`;
+        }
+
+        const htmlEvidencias = etapas.map(etapa => {
+            const items = evidencias.filter(item => item.etapa === etapa);
+            if (!items.length) return '';
+            return `
+                <div class="mt-3">
+                    <h6 class="text-capitalize text-invilara-verde"><i class="bx bx-image me-1"></i>${etapa}</h6>
+                    <div class="row g-2">
+                        ${items.map(item => `
+                            <div class="col-md-4">
+                                <div class="card modal-detail-card h-100">
+                                    <img src="${getEvidenciaImageUrl(item.url_archivos)}" class="card-img-top" style="height: 140px; object-fit: cover;" alt="${item.fotos}" />
+                                    <div class="card-body p-2">
+                                        <small class="fw-bold d-block">${item.fotos || 'Evidencia'}</small>
+                                        <small class="text-muted">${item.fecha_registro ? new Date(item.fecha_registro).toLocaleDateString('es-VE') : ''}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        body.innerHTML = `
+            <div class="row g-3">
+                <div class="col-12">
+                    <div class="card modal-detail-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                                <h5 class="mb-0 text-invilara-verde">${informe.tipo_informe || 'Sin tipo'}</h5>
+                                <span class="badge bg-success">${informe.estado || 'Sin estado'}</span>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Fecha:</strong> ${formatearFecha(informe.fecha)}</p>
+                                    <p class="mb-1"><strong>Población beneficiada:</strong> ${informe.poblacion_beneficiada || 'No especificado'}</p>
+                                    <p class="mb-1"><strong>Avance:</strong> ${informe.porcentaje_avance || 0}%</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="mb-1"><strong>Inspector / gerente:</strong> ${informe.gerente_nombre || 'No asignado'}</p>
+                                    <p class="mb-1"><strong>Observaciones:</strong> ${informe.observaciones || 'Sin observaciones'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card modal-detail-card">
+                        <div class="card-body">
+                            <h6 class="text-invilara-verde"><i class="bx bx-camera me-1"></i>Evidencias registradas</h6>
+                            ${htmlEvidencias || '<p class="text-muted mb-0">No hay evidencias registradas para este informe.</p>'}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Error al cargar detalle:', error);
+        body.innerHTML = '<div class="alert alert-danger">No se pudo cargar el detalle del informe.</div>';
+    }
 }
 
 // ======================
@@ -668,20 +750,6 @@ function crearToastBootstrap(tipo, mensaje) {
     });
 }
 
-/**
- * Confirma una acción con el usuario
- * 
- * USA: confirm() nativo del navegador
- * 
- * @param {string} titulo - Título de la confirmación
- * @param {string} texto - Texto descriptivo
- * @returns {Promise<boolean>} - true si confirma, false si cancela
- */
-async function confirmarAccion(titulo, texto) {
-    // confirm() nativo: Muestra un diálogo con OK/Cancelar
-    return confirm(`${titulo}\n\n${texto}`);
-}
-
 // ==================
 // EXPORTAR MÓDULO
 // ==================
@@ -689,11 +757,9 @@ async function confirmarAccion(titulo, texto) {
 window.InformeAvanceModule = {
     registrarInformeConFetch,
     validarGerenteEnTiempoReal,
-    eliminarInformeConFetch,
     validarLimiteImagenes,
     recargarTablaInformes,
-    mostrarAlerta,
-    confirmarAccion
+    mostrarAlerta
 };
 
 console.log('✓✓✓ Módulo InformeAvanceModule exportado globalmente');

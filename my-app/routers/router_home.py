@@ -1,7 +1,8 @@
 from app import app
-from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify, Response
 from mysql.connector.errors import Error
 from flask import jsonify
+from conexion.conexionBD import connectionBD
 
 
 # Importando conexión a BD y controladores
@@ -16,18 +17,19 @@ from controllers.funciones_solicitud import (
 )
 from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, obtener_estadisticas_bitacora
 from models.model_publicacion import PublicacionModel
+from models.model_informe_avance import InformeAvanceModel
 from services.bitacora_service import BitacoraService
 from controllers.controller_empleado import empleado_bp
 from controllers.controller_evidencia import evidencia_bp
 from controllers.controller_reportesExcel import reporte_excel_bp
 from controllers.controller_reportesPDF import reporte_pdf_bp
+from controllers.controller_reportesEstadistico import reporte_estadistico_bp
 from controllers.funciones_proyecto import *
 from controllers.funciones_maquinaria import *
 from models.model_empresas import EmpresaModel
 
 ## Informe de Avance de Obra
-app.register_blueprint(informe_avance_bp)
-informe_avance_bp = Blueprint('informe_avance_bp', __name__)
+from controllers.controller_informe_avance import informe_avance_bp
 
 ## Empresas
 from controllers.controller_empresa import empresa_bp
@@ -59,8 +61,10 @@ PATH_URL_REPORTE_ESTADISTICO = "reportes"
 app.register_blueprint(user_bp)
 app.register_blueprint(empleado_bp)
 app.register_blueprint(reporte_excel_bp)
-app.register_blueprint(evidencia_bp)
 app.register_blueprint(reporte_pdf_bp)
+app.register_blueprint(reporte_estadistico_bp)
+app.register_blueprint(evidencia_bp)
+app.register_blueprint(informe_avance_bp)
 
 @home_bp.route('/registrar-solicitud', methods=['GET'])
 def viewFormSolicitud():
@@ -91,12 +95,10 @@ def api_crear_publicacion():
     try:
         data = request.form
         modelo = PublicacionModel()
-        # Soportar ambos nombres posibles del campo (id_informe o evidencias)
-        id_inf = data.get('id_informe') or data.get('evidencias')
+        id_inf = data.get('informe_avance_obra_id_informe') or data.get('id_informe') or data.get('evidencias')
         
-        # Validación de existencia en tiempo real (Backend)
-        if not modelo.validar_informe_activo(id_inf):
-            return jsonify({'status': 'error', 'message': 'El informe seleccionado no existe o fue eliminado.'}), 400
+        if not id_inf:
+            return jsonify({'status': 'error', 'message': 'Debe seleccionar un informe válido.'}), 400
 
         # Aplicación de setters con validación Regex integrada
         modelo.titulo = data.get('titulo_publicacion')
@@ -141,10 +143,8 @@ def formRegistrarPublicacion():
         data = request.form
         modelo = PublicacionModel()
         
-        # Soportar el ID del informe que viene del HTML
-        id_inf = data.get('id_informe') or data.get('evidencias')
+        id_inf = data.get('informe_avance_obra_id_informe') or data.get('id_informe') or data.get('evidencias')
         
-        # Validación 1: Verificar que el usuario realmente seleccionó un informe
         if not id_inf:
             flash('Debe seleccionar un Informe de Avance de Obra válido.', 'warning')
             return redirect(url_for('home_bp.viewFormPublicaciones'))
@@ -160,7 +160,8 @@ def formRegistrarPublicacion():
             'nombre_responsable': data.get('nombre_responsable') or data.get('autor_publicacion'),
             'tipo_publicacion': data.get('tipo_publicacion', 'General'),
             'fecha_publicacion': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'informe_avance_obra_id_informe': id_inf
+            'informe_avance_obra_id_informe': id_inf,
+            'cuerpo_publicacion': data.get('cuerpo_publicacion', 'Contenido pendiente')
         }
         
         # Llamamos a la BD
@@ -259,6 +260,39 @@ def lista_publicaciones():
                            publicaciones=publicaciones, 
                            estadisticas=estadisticas)
 
+@home_bp.route('/detalles-publicacion/', methods=['GET'])
+@home_bp.route('/detalles-publicacion/<int:id_publicacion>', methods=['GET'])
+def viewDetallesPublicacion(id_publicacion=None):
+    if 'conectado' not in session:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    
+    if id_publicacion is None:
+        return redirect(url_for('home_bp.lista_publicaciones'))
+    
+    modelo = PublicacionModel()
+    detalle_publicacion = modelo.obtener_publicacion_por_id(id_publicacion)
+    
+    informe_evidencias = []
+    if detalle_publicacion and detalle_publicacion.get('id_informe'):
+        try:
+            informe_modelo = InformeAvanceModel()
+            informe = informe_modelo.obtener_informe_por_id(detalle_publicacion['id_informe'])
+            if informe:
+                informe_evidencias = informe.get('evidencias', [])
+        except Exception as e:
+            print(f"Error al cargar evidencias del informe: {e}")
+    
+    if detalle_publicacion:
+        BitacoraService.registrar_accion(
+            session, 'Publicaciones', 'VER',
+            f'Detalles de Publicación #{id_publicacion}'
+        )
+    
+    return render_template(f'{PATH_URL_PUB}/detalles_publicacion.html',
+                           detalle_publicacion=detalle_publicacion or {},
+                           informe_evidencias=informe_evidencias)
+
 @home_bp.route('/administrar-respaldos', methods=['GET'])
 def viewFormRespaldos():
     if 'conectado' in session:
@@ -347,14 +381,6 @@ def viewFormGravedad():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
     
-@home_bp.route('/priorizar-solicitudes', methods=['GET'])
-def viewPriorizarSolicitudes():
-    if 'conectado' in session:
-        return render_template(f'{PATH_URL_IA}/form_priorizar_solicitudes.html')
-    else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-
 @home_bp.route('/gestionar-prioridad', methods=['GET'])
 def viewFormPrioridad():
     if 'conectado' in session:
@@ -574,59 +600,43 @@ def obtener_empresas_json():
 def procesar_registro():
     if 'conectado' in session:
         modelo = ContratacionModel()
-        
         exito, mensaje = modelo.registrar_contrataciones(request.form)
         
         if exito:
-            num_contrato = request.form.get('numero_contrato', 'S/N')
-            BitacoraService.registrar_accion(
-                session, 'Contrataciones', 'CREAR',
-                f'Contratación contrato #{num_contrato} registrada con éxito'
-            )
             return jsonify({'status': 'success', 'message': mensaje})
-        else:
-            return jsonify({'status': 'error', 'message': mensaje})
+        return jsonify({'status': 'error', 'message': mensaje})
             
-    return jsonify({'status': 'error', 'message': 'Sesión expirada. Por favor, inicie sesión nuevamente.'}), 401
+    return jsonify({'status': 'error', 'message': 'Sesión expirada.'}), 401
 
 
-@contrataciones_bp.route('/actualizar-contratacion', methods=['POST'])
+@contrataciones_bp.route('/procesar-actualizacion', methods=['POST'])
 def procesar_actualizacion():
     if 'conectado' in session:
         modelo = ContratacionModel()
         
-        exito, mensaje = modelo.actualizar_contratacion(request.form)
+        # Ajusta el nombre de tu función de actualizar si es diferente
+        exito, mensaje = modelo.actualizar_contratacion(request.form) 
         
         if exito:
-            id_contratacion = request.form.get('id_contratacion') or request.form.get('id', 'S/I')
-            BitacoraService.registrar_accion(
-                session, 'Contrataciones', 'EDITAR',
-                f'Contratación #{id_contratacion} actualizada con éxito'
-            )
-            return jsonify({'status': 'success', 'message': mensaje})
-        else:
-            return jsonify({'status': 'error', 'message': mensaje})
+            return jsonify({
+                'status': 'success', 
+                'message': mensaje,
+                'redirect': url_for('contrataciones_bp.gestionar_contrataciones') # Aquí le decimos a dónde ir
+            })
+        return jsonify({'status': 'error', 'message': mensaje})
             
-    return jsonify({'status': 'error', 'message': 'Sesión expirada. Por favor, inicie sesión nuevamente.'}), 401
+    return jsonify({'status': 'error', 'message': 'Sesión expirada.'}), 401
 
 
-@contrataciones_bp.route('/eliminar-contratacion/<int:id>', methods=['GET'])
+@contrataciones_bp.route('/eliminar-contratacion/<int:id>', methods=['POST'])
 def eliminar_contratacion(id):
     if 'conectado' in session:
         modelo = ContratacionModel()
-        
         if modelo.eliminar_contratacion(id):
-            BitacoraService.registrar_accion(
-                session, 'Contrataciones', 'ELIMINAR',
-                f'Contratación #{id} eliminada (Archivada)'
-            )
-            flash('Contratación eliminada correctamente (Archivada)', 'success')
-        else:
-            flash('Error al intentar eliminar el registro.', 'error')
+            return jsonify({'exito': True, 'mensaje': 'Contratación eliminada correctamente.'})
+        return jsonify({'exito': False, 'mensaje': 'Error al intentar eliminar el registro.'})
             
-        return redirect(url_for('contrataciones_bp.gestionar_contrataciones'))
-        
-    return redirect(url_for('login_bp.inicio'))
+    return jsonify({'exito': False, 'mensaje': 'Sesión expirada.'}), 401
 
 @home_bp.route('/inspectores', methods=['GET'])
 def viewFormInspectores():
@@ -943,6 +953,104 @@ def viewFormReportesEstadisticos():
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+
+
+@app.route('/api/dashboard/grafico-tipos', methods=['GET'])
+def api_dashboard_grafico_tipos():
+    if 'conectado' not in session:
+        return Response('No autorizado', status=401)
+    
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from io import BytesIO
+    
+    try:
+        datos = SolicitudModel.obtener_estadisticas_por_tipo()
+    except Exception:
+        datos = {}
+    
+    labels = list(datos.keys()) if datos else ['Sin datos']
+    valores = [int(v) for v in datos.values()] if datos else [0]
+    
+    buffer = BytesIO()
+    fig, ax = plt.subplots(figsize=(6, 3))
+    colores = ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1', '#20c997']
+    ax.bar(labels, valores, color=colores[:len(labels)])
+    ax.set_title('Solicitudes por Tipo')
+    ax.set_ylabel('Cantidad')
+    ax.set_xlabel('Tipo')
+    fig.tight_layout()
+    fig.savefig(buffer, format='png', dpi=100)
+    buffer.seek(0)
+    plt.close(fig)
+    return Response(buffer.read(), mimetype='image/png')
+
+
+@app.route('/api/dashboard/grafico-estatus', methods=['GET'])
+def api_dashboard_grafico_estatus():
+    if 'conectado' not in session:
+        return Response('No autorizado', status=401)
+    
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from io import BytesIO
+    
+    try:
+        datos = SolicitudModel.obtener_estadisticas()
+    except Exception:
+        datos = {}
+    
+    labels = list(datos.keys()) if datos else ['Sin datos']
+    valores = [int(v) for v in datos.values()] if datos else [0]
+    
+    buffer = BytesIO()
+    fig, ax = plt.subplots(figsize=(5, 3))
+    colores = ['#ffc107', '#0dcaf0', '#198754', '#6f42c1', '#dc3545']
+    wedges, texts, autotexts = ax.pie(valores, labels=labels, autopct='%1.1f%%', colors=colores[:len(labels)], startangle=90)
+    ax.set_title('Distribución por Estatus')
+    fig.tight_layout()
+    fig.savefig(buffer, format='png', dpi=100)
+    buffer.seek(0)
+    plt.close(fig)
+    return Response(buffer.read(), mimetype='image/png')
+
+
+@app.route('/api/dashboard/grafico-parroquias', methods=['GET'])
+def api_dashboard_grafico_parroquias():
+    if 'conectado' not in session:
+        return Response('No autorizado', status=401)
+    
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    from io import BytesIO
+    
+    try:
+        rows = SolicitudModel.obtener_estadisticas_por_parroquia()
+    except Exception:
+        rows = []
+    
+    if rows:
+        labels = [r['parroquia'] for r in rows]
+        valores = [int(r['total']) for r in rows]
+    else:
+        labels = ['Sin datos']
+        valores = [0]
+    
+    buffer = BytesIO()
+    fig, ax = plt.subplots(figsize=(6, 3))
+    colores = ['#0d6efd', '#198754', '#ffc107', '#dc3545', '#6f42c1', '#20c997', '#fd7e14', '#20c997']
+    ax.barh(labels, valores, color=colores[:len(labels)])
+    ax.set_title('Solicitudes por Parroquia')
+    ax.set_xlabel('Cantidad')
+    fig.tight_layout()
+    fig.savefig(buffer, format='png', dpi=100)
+    buffer.seek(0)
+    plt.close(fig)
+    return Response(buffer.read(), mimetype='image/png')
+
 
 # Registrar el blueprint en la aplicación
 app.register_blueprint(home_bp)

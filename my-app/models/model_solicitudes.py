@@ -383,3 +383,68 @@ class SolicitudModel:
             return {r['estatus_solicitud']: r['total'] for r in cursor.fetchall()}
         except Exception: return {}
         finally: cls._cerrar(conn, cursor)
+
+    @classmethod
+    def obtener_estadisticas_por_tipo(cls) -> dict:
+        conn = cursor = None
+        try:
+            conn = cls._con()
+            if not conn: return {}
+            cursor = conn.cursor(dictionary=True)
+            sql = "SELECT tipo_solicitud, COUNT(*) as total FROM solicitudes GROUP BY tipo_solicitud"
+            cursor.execute(sql)
+            return {r['tipo_solicitud']: r['total'] for r in cursor.fetchall()}
+        except Exception: return {}
+        finally: cls._cerrar(conn, cursor)
+
+    @classmethod
+    def obtener_estadisticas_por_parroquia(cls) -> list:
+        conn = cursor = None
+        try:
+            conn = cls._con()
+            if not conn: return []
+            cursor = conn.cursor(dictionary=True)
+            sql = """
+                SELECT p.parroquia, COUNT(s.id_solicitudes) as total
+                FROM solicitudes s
+                JOIN persona p ON s.persona_id_persona = p.id_persona
+                GROUP BY p.parroquia
+                ORDER BY total DESC
+            """
+            cursor.execute(sql)
+            return cursor.fetchall()
+        except Exception: return []
+        finally: cls._cerrar(conn, cursor)
+
+    @classmethod
+    def obtener_solicitudes_priorizadas(cls, limite=10) -> list:
+        conn = cursor = None
+        try:
+            conn = cls._con()
+            if not conn: return []
+            cursor = conn.cursor(dictionary=True)
+            sql = """
+                SELECT 
+                    s.id_solicitudes,
+                    DATE_FORMAT(s.fecha, '%d/%m/%Y %H:%i') as fecha,
+                    s.tipo_solicitud,
+                    s.estatus_solicitud,
+                    s.problematica,
+                    p.parroquia,
+                    p.municipio,
+                    pr.rango_prioridad as prioridad
+                FROM solicitudes s
+                JOIN persona p ON s.persona_id_persona = p.id_persona
+                JOIN prioridad pr ON s.prioridad_id_gestion_prioridad = pr.id_gestion_prioridad
+                WHERE s.estatus_solicitud IN ('Pendiente', 'En Proceso')
+                ORDER BY pr.rango_prioridad ASC, s.fecha DESC
+                LIMIT %s
+            """
+            cursor.execute(sql, (limite,))
+            rows = cursor.fetchall()
+            instancia = cls()
+            for row in rows:
+                row['fecha_formateada'] = instancia._formatear_fecha(row.get('fecha'))
+            return rows
+        except Exception: return []
+        finally: cls._cerrar(conn, cursor)

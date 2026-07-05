@@ -1,20 +1,54 @@
 /**
  * GESTIÓN DE NOTIFICACIONES ELEGANTES
- * Transforma alertas estáticas en Toasts modernos con auto-cierre de 3s.
+ * Transforma alertas estáticas y flash-toast en notificaciones modernas con auto-cierre.
  */
 document.addEventListener('DOMContentLoaded', function() {
+    // Manejar elementos .alert-to-toast existentes
     const alerts = document.querySelectorAll('.alert-to-toast');
-    
     alerts.forEach(alert => {
         const message = alert.textContent.trim();
-        // Mapear 'danger' de Flask a 'error' para consistencia en CSS
         const type = alert.dataset.type === 'danger' ? 'error' : (alert.dataset.type || 'success');
-        createToast(message, type);
+        createToastNotification(message, type);
         alert.remove();
     });
+    
+    // Manejar toast-custom renderizados desde Flask (flash messages)
+    const existingToasts = document.querySelectorAll('.toast-custom');
+    if (existingToasts.length > 0) {
+        existingToasts.forEach((toast, index) => {
+            // Agregar evento click al botón cerrar
+            const closeBtn = toast.querySelector('.toast-close');
+            if (closeBtn) {
+                closeBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    toast.classList.remove('show');
+                    toast.classList.add('hide');
+                    setTimeout(() => {
+                        if (toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 400);
+                };
+            }
+            
+            const delay = 5000;
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100 + (index * 100));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.classList.add('hide');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 400);
+            }, delay + 100 + (index * 100));
+        });
+    }
 });
 
-function createToast(message, type) {
+function createToastNotification(message, type) {
     let container = document.querySelector('.notification-container');
     if (!container) {
         container = document.createElement('div');
@@ -31,7 +65,6 @@ function createToast(message, type) {
 
     const toast = document.createElement('div');
     toast.className = `toast-custom ${type}`;
-    // Aplicar color de la barra de progreso dinámicamente según el tipo
     const progressColor = type === 'error' ? '#ff3e1d' : type === 'warning' ? '#ffab00' : type === 'info' ? '#03c3ec' : '#08b324';
     
     toast.innerHTML = `
@@ -47,14 +80,12 @@ function createToast(message, type) {
 
     container.appendChild(toast);
 
-    // Funcionalidad del botón cerrar
     const closeBtn = toast.querySelector('.toast-close');
     closeBtn.onclick = () => {
         toast.classList.add('hide');
         setTimeout(() => toast.remove(), 500);
     };
 
-    // Auto-eliminar después de 3 segundos
     setTimeout(() => {
         if (!toast.parentNode) return;
         toast.classList.add('hide');
