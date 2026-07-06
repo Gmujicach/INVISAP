@@ -302,11 +302,7 @@ def viewDetallesPublicacion(id_publicacion=None):
 
 @home_bp.route('/administrar-respaldos', methods=['GET'])
 def viewFormRespaldos():
-    if 'conectado' in session:
-        return render_template(f'{PATH_URL_RES}/form_respaldo.html')
-    else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
+    return redirect(url_for('respaldo_bp.listar_respaldos_view'))
 
 @home_bp.route('/registrar-maquinaria', methods=['GET'])
 @home_bp.route('/api/maquinaria/listar', methods=['GET'])

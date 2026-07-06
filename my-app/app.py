@@ -28,10 +28,9 @@ mail = Mail(app)
 # Import routers to register routes and blueprints on app startup
 from routers.router_login import *
 from routers.router_home import *
+from routers.router_respaldo import *
 from routers.router_page_not_found import *
 
-# Registrar blueprint de login si está disponible
-try:
-    app.register_blueprint(login_bp)
-except NameError:
-    pass
+# Registrar blueprints
+app.register_blueprint(login_bp)
+app.register_blueprint(respaldo_bp)

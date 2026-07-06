@@ -85,6 +85,13 @@ window.exportarRespaldo = function () {
         if (result.status === 'success') {
             mostrarAlerta('success', result.message);
             setTimeout(() => {
+                if (result.download_url) {
+                    const a = document.createElement('a');
+                    a.href = result.download_url;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
                 recargarTabla();
                 const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalExportarRespaldo'));
                 if (modal) modal.hide();
@@ -248,3 +255,9 @@ function mostrarAlerta(tipo, mensaje) {
     const toast = new bootstrap.Toast(el, { autohide: true, delay: 3000 });
     toast.show();
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (typeof inicializarModuloRespaldo === 'function') {
+        inicializarModuloRespaldo();
+    }
+});
