@@ -2,7 +2,95 @@
 {% block title %}INVISAP | Bitácora del Sistema{% endblock %}
 
 {% block customCSS %}
-<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bitacora.css') }}">
+<style>
+  .bitacora-header {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: #333333;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+  }
+  .bitacora-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 50%;
+  }
+  .stat-card {
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+  }
+  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+  .stat-card .stat-number { font-size: 2.2rem; font-weight: 800; line-height: 1; }
+  .stat-card .stat-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.4rem; opacity: 0.85; }
+
+  .action-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.35em 0.75em;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-crear  { background: #d4edda; color: #155724; }
+  .badge-editar { background: #cce5ff; color: #004085; }
+  .badge-eliminar { background: #f8d7da; color: #721c24; }
+  .badge-ver    { background: #e2e3e5; color: #383d41; }
+  .badge-login  { background: #d1ecf1; color: #0c5460; }
+  .badge-logout { background: #fff3cd; color: #856404; }
+
+  .filter-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+  #tabla-bitacora tbody tr {
+    transition: background 0.15s ease;
+  }
+  #tabla-bitacora tbody tr:hover {
+    background-color: #f0f4ff;
+  }
+  .table-bitacora th {
+    background: #f8f9fa;
+    color: #495057;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #dee2e6;
+  }
+  .usuario-chip {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    border-radius: 20px;
+    padding: 0.2em 0.8em;
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+  .modulo-chip {
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 6px;
+    padding: 0.2em 0.65em;
+    font-size: 0.78rem;
+    font-weight: 500;
+    border: 1px solid #e2e8f0;
+  }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -19,9 +107,9 @@
       </p>
     </div>
     <div class="d-flex gap-2">
-      <button type="button" id="btnActualizar" class="btn btn-sm btn-outline-primary" style="border-radius:20px;">
+      <a href="{{ url_for('home_bp.viewBitacora') }}" class="btn btn-sm btn-outline-primary" style="border-radius:20px;">
         <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
-      </button>
+      </a>
     </div>
   </div>
 
@@ -29,25 +117,25 @@
   <div class="row g-3 mt-3">
     <div class="col-6 col-md-3">
       <div class="stat-card" style="background:#fff; border-left: 4px solid #10b981; color:#333; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-        <div class="stat-number" id="stat-crear">{{ estadisticas.get('CREAR', 0) }}</div>
+        <div class="stat-number">{{ estadisticas.get('CREAR', 0) }}</div>
         <div class="stat-label text-muted"><i class="bi bi-plus-circle me-1" style="color:#10b981;"></i>Creaciones</div>
       </div>
     </div>
     <div class="col-6 col-md-3">
       <div class="stat-card" style="background:#fff; border-left: 4px solid #3b82f6; color:#333; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-        <div class="stat-number" id="stat-editar">{{ estadisticas.get('EDITAR', 0) }}</div>
+        <div class="stat-number">{{ estadisticas.get('EDITAR', 0) }}</div>
         <div class="stat-label text-muted"><i class="bi bi-pencil me-1" style="color:#3b82f6;"></i>Ediciones</div>
       </div>
     </div>
     <div class="col-6 col-md-3">
       <div class="stat-card" style="background:#fff; border-left: 4px solid #ef4444; color:#333; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-        <div class="stat-number" id="stat-eliminar">{{ estadisticas.get('ELIMINAR', 0) }}</div>
+        <div class="stat-number">{{ estadisticas.get('ELIMINAR', 0) }}</div>
         <div class="stat-label text-muted"><i class="bi bi-trash me-1" style="color:#ef4444;"></i>Eliminaciones</div>
       </div>
     </div>
     <div class="col-6 col-md-3">
       <div class="stat-card" style="background:#fff; border-left: 4px solid #f59e0b; color:#333; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-        <div class="stat-number" id="stat-total">{{ registros|length }}</div>
+        <div class="stat-number">{{ registros|length }}</div>
         <div class="stat-label text-muted"><i class="bi bi-list-ul me-1" style="color:#f59e0b;"></i>Total Mostrados</div>
       </div>
     </div>
@@ -56,8 +144,8 @@
 
 <!-- Filtros -->
 <div class="filter-card">
-  <form id="formFiltrosBitacora" method="GET" action="{{ url_for('home_bp.viewBitacora') }}" class="row g-3 align-items-end" autocomplete="off">
-    <div class="col-12 col-md-3">
+  <form method="GET" action="{{ url_for('home_bp.viewBitacora') }}" class="row g-3 align-items-end">
+    <div class="col-md-3">
       <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">
         <i class="bi bi-person me-1"></i>Usuario
       </label>
@@ -65,7 +153,7 @@
              placeholder="Buscar por usuario..." value="{{ filtro_usuario }}"
              maxlength="15" />
     </div>
-    <div class="col-12 col-md-3">
+    <div class="col-md-3">
       <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">
         <i class="bi bi-grid me-1"></i>Módulo
       </label>
@@ -76,7 +164,7 @@
         {% endfor %}
       </select>
     </div>
-    <div class="col-12 col-md-3">
+    <div class="col-md-3">
       <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">
         <i class="bi bi-lightning me-1"></i>Acción
       </label>
@@ -87,7 +175,7 @@
         {% endfor %}
       </select>
     </div>
-    <div class="col-12 col-md-3 d-flex gap-2">
+    <div class="col-md-3 d-flex gap-2">
       <button type="submit" class="btn btn-primary btn-sm flex-fill">
         <i class="bi bi-search me-1"></i>Filtrar
       </button>
@@ -98,20 +186,79 @@
   </form>
 </div>
 
-<!-- Tabla y paginación reactivos -->
+<!-- Tabla -->
 <div class="card border-0 shadow-sm" style="border-radius:16px; overflow:hidden;">
-  <div class="card-header d-flex align-items-center justify-content-between flex-column flex-md-row gap-2 py-3" style="background:#fff; border-bottom: 1px solid #e2e8f0;">
+  <div class="card-header d-flex align-items-center justify-content-between py-3" style="background:#fff; border-bottom: 1px solid #e2e8f0;">
     <span class="fw-semibold text-dark">
       <i class="bi bi-table me-2 text-primary"></i>
       Registros
-      <span class="badge bg-primary ms-2" style="border-radius:20px;" id="registros-count">{{ registros|length }}</span>
+      <span class="badge bg-primary ms-2" style="border-radius:20px;">{{ registros|length }}</span>
     </span>
-    <input type="search" id="buscarBitacora" class="form-control form-control-sm w-100 w-md-auto"
+    <input type="search" id="buscarBitacora" class="form-control form-control-sm w-auto"
            placeholder="Búsqueda rápida..." style="min-width:200px;" />
   </div>
-
-  <div id="bitacora-content">
-    {% include 'bitacora/_tabla_bitacora.html' %}
+  <div class="table-responsive">
+    <table id="tabla-bitacora" class="table table-hover mb-0">
+      <thead>
+        <tr class="table-bitacora">
+          <th style="padding: 1rem 1.2rem;">#</th>
+          <th style="padding: 1rem 1.2rem;">Usuario</th>
+          <th style="padding: 1rem 1.2rem;">Módulo</th>
+          <th style="padding: 1rem 1.2rem;">Acción</th>
+          <th style="padding: 1rem 1.2rem;">Fecha y Hora</th>
+          <th style="padding: 1rem 1.2rem;">Inicio Sesión</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if registros %}
+          {% for r in registros %}
+          <tr>
+            <td class="text-muted" style="padding: 0.85rem 1.2rem; font-size:0.8rem;">{{ loop.index }}</td>
+            <td style="padding: 0.85rem 1.2rem;">
+              <span class="usuario-chip">{{ r.usuario or '—' }}</span>
+            </td>
+            <td style="padding: 0.85rem 1.2rem;">
+              <span class="modulo-chip">{{ r.modulo or '—' }}</span>
+            </td>
+            <td style="padding: 0.85rem 1.2rem;">
+              {% set accion = (r.accion or 'VER').upper() %}
+              {% if accion == 'CREAR' %}
+                <span class="action-badge badge-crear"><i class="bi bi-plus-circle-fill me-1"></i>CREAR</span>
+              {% elif accion == 'EDITAR' %}
+                <span class="action-badge badge-editar"><i class="bi bi-pencil-fill me-1"></i>EDITAR</span>
+              {% elif accion == 'ELIMINAR' %}
+                <span class="action-badge badge-eliminar"><i class="bi bi-trash-fill me-1"></i>ELIMINAR</span>
+              {% elif accion == 'LOGIN' %}
+                <span class="action-badge badge-login"><i class="bi bi-box-arrow-in-right me-1"></i>LOGIN</span>
+              {% elif accion == 'LOGOUT' %}
+                <span class="action-badge badge-logout"><i class="bi bi-box-arrow-right me-1"></i>LOGOUT</span>
+              {% else %}
+                <span class="action-badge badge-ver"><i class="bi bi-eye-fill me-1"></i>VER</span>
+              {% endif %}
+            </td>
+            <td style="padding: 0.85rem 1.2rem; font-size:0.83rem; color:#475569;">
+              <i class="bi bi-calendar3 me-1 text-primary opacity-50"></i>
+              {{ r.fecha.strftime('%d/%m/%Y %H:%M') if r.fecha else '—' }}
+            </td>
+            <td style="padding: 0.85rem 1.2rem; font-size:0.83rem; color:#475569;">
+              {{ r.hora_inicio_sesion.strftime('%H:%M:%S') if r.hora_inicio_sesion else '—' }}
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="text-center py-5 text-muted">
+              <i class="bi bi-journal-x" style="font-size:3rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
+              No hay registros en la bitácora
+              {% if filtro_usuario or filtro_modulo or filtro_accion %}
+                para los filtros aplicados.
+                <br><a href="{{ url_for('home_bp.viewBitacora') }}" class="btn btn-outline-primary btn-sm mt-3">Ver todos los registros</a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
   </div>
 </div>
 
@@ -119,8 +266,14 @@
 
 {% block customJS %}
 <script>
-  window._bitacoraConfig = window._bitacoraConfig || {};
-  window._bitacoraConfig.ajaxUrl = "{{ url_for('home_bp.bitacora_ajax') }}";
+  // Búsqueda rápida en tabla
+  document.getElementById('buscarBitacora').addEventListener('keyup', function () {
+    const filtro = this.value.toLowerCase();
+    const filas = document.querySelectorAll('#tabla-bitacora tbody tr');
+    filas.forEach(fila => {
+      fila.style.display = fila.textContent.toLowerCase().includes(filtro) ? '' : 'none';
+    });
+  });
+
 </script>
-<script src="{{ url_for('static', filename='assets/js/bitacora.js') }}"></script>
 {% endblock %}
