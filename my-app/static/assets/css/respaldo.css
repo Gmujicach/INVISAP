@@ -1,0 +1,205 @@
+/*
+ * Estilos para Módulo de Respaldo y Restauración de Base de Datos
+ * Mantiene la identidad INVILARA con paleta verde/amarilla
+ * Responsive y compatible con modo oscuro
+ */
+
+:root {
+    --respaldo-verde: #2d6a4f;
+    --respaldo-verde-claro: #52b788;
+    --respaldo-verde-oscuro: #1b4332;
+    --respaldo-amarillo: #ffd60a;
+    --respaldo-amarillo-oscuro: #ffc300;
+    --respaldo-rojo: #dc3545;
+    --respaldo-azul: #0d6efd;
+    --respaldo-gris: #6c757d;
+    --respaldo-gris-claro: #e9ecef;
+    --respaldo-negro: #212529;
+}
+
+.card-respaldo {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-respaldo:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+}
+
+.btn-respaldo-exportar {
+    background: var(--respaldo-verde);
+    border-color: var(--respaldo-verde);
+    color: #fff;
+    font-weight: 600;
+}
+
+.btn-respaldo-exportar:hover {
+    background: var(--respaldo-verde-claro);
+    border-color: var(--respaldo-verde-claro);
+    color: #fff;
+}
+
+.btn-respaldo-importar {
+    background: var(--respaldo-azul);
+    border-color: var(--respaldo-azul);
+    color: #fff;
+    font-weight: 600;
+}
+
+.btn-respaldo-importar:hover {
+    background: #0b5ed7;
+    border-color: #0a58ca;
+    color: #fff;
+}
+
+.table-respaldo {
+    font-size: 0.95rem;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table-respaldo thead th {
+    background: linear-gradient(135deg, var(--respaldo-verde) 0%, var(--respaldo-verde-oscuro) 100%);
+    color: #fff !important;
+    border: none;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.table-respaldo tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table-respaldo tbody tr:hover {
+    background-color: rgba(45, 106, 79, 0.06);
+}
+
+.table-respaldo td {
+    vertical-align: middle;
+    padding: 0.9rem 0.75rem;
+}
+
+.drop-zone {
+    border: 2px dashed var(--respaldo-verde-claro);
+    border-radius: 12px;
+    padding: 2.5rem 1rem;
+    text-align: center;
+    background-color: rgba(82, 183, 120, 0.06);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.drop-zone:hover {
+    background-color: rgba(82, 183, 120, 0.12);
+    border-color: var(--respaldo-verde);
+}
+
+.badge-tamano {
+    background: #f1f3f5;
+    color: #495057;
+    padding: 0.35rem 0.6rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.toast-container {
+    z-index: 9999;
+}
+
+.form-section-title {
+    color: var(--respaldo-verde);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+    border-bottom: 2px solid var(--respaldo-gris-claro);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .card-header.d-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
+
+body.dark-mode {
+    background-color: #232333 !important;
+    color: #cfcde9 !important;
+}
+
+body.dark-mode .card-respaldo {
+    background-color: #2b2c40 !important;
+    border-color: #444564 !important;
+}
+
+body.dark-mode .table-respaldo thead th {
+    background: var(--respaldo-verde-oscuro) !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .table-respaldo tbody tr {
+    background-color: #2b2c40 !important;
+    color: #cfcde9 !important;
+}
+
+body.dark-mode .table-respaldo tbody tr:hover {
+    background-color: rgba(82, 183, 136, 0.12) !important;
+}
+
+body.dark-mode .table-respaldo td {
+    color: #cfcde9 !important;
+}
+
+body.dark-mode .badge-tamano {
+    background: #323248;
+    color: #cfcde9;
+}
+
+body.dark-mode .drop-zone {
+    background-color: rgba(82, 183, 136, 0.08);
+    border-color: #444564;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: #232333 !important;
+    border-color: #444564 !important;
+    color: #cfcde9 !important;
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+    border-color: var(--respaldo-verde-claro) !important;
+    box-shadow: 0 0 0 0.2rem rgba(82, 183, 136, 0.25) !important;
+}
+
+body.dark-mode .modal-content {
+    background-color: #2b2c40;
+    color: #cfcde9;
+}
+
+body.dark-mode .modal-header {
+    border-bottom-color: #444564;
+}
+
+body.dark-mode .modal-footer {
+    border-top-color: #444564;
+}
+
+body.dark-mode .form-text {
+    color: #8c8ea3 !important;
+}
+
+body.dark-mode .alert-info {
+    background-color: #232333 !important;
+    border-color: #444564 !important;
+    color: #cfcde9 !important;
+}

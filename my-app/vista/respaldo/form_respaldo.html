@@ -1,102 +1,157 @@
 {% extends 'base_cpanel.html' %}
-{% block title %}Crud con Python 🐍 | Administracion de Respaldos {% endblock %}
+{% block title %}Respaldo y Restauración de Base de Datos{% endblock %}
 {% block customCSS %}
-<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/respaldo.css') }}" />
 {% endblock %}
 
 {% block body %}
-<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
-  <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
-    <h5 class="mb-0 text-primary fw-bold">LISTADO DE RESPALDOS</h5>
-    
-    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario" aria-expanded="false" aria-controls="contenedorFormulario">
-      <i class="bx bx-plus"></i> Gerenerar Respaldo
-    </button>
-  </div>
-  
-  <div class="card-body">
-    <div class="table-responsive">
-      <table class="table table-bordered table-striped table-hover align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>#</th>
-            <th>Fecha Creación</th>
-            <th class="text-center">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for respaldos in respaldos %}
-          <tr>
-            <td>{{ respaldos.id_respaldos }}</td>
-            <td>{{ respaldos.fecha_respaldo }}</td>
-            <td class="text-center">
-              <a href="#" class="btn btn-outline-info btn-sm" title="Ver detalle"><i class="bx bx-show"></i></a>
-              <a href="#" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
-              <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar"><i class="bx bx-trash"></i></a>
-            </td>
-          </tr>
-          {% else %}
-          <tr>
-            <td colspan="8" class="text-center text-muted py-4">No hay Respaldos en el sistema.</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+<div class="card card-respaldo mb-4" style="border-radius: 12px">
+    <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+        <h5 class="mb-0 text-respaldo-verde fw-bold"><i class="bx bx-data me-2"></i>RESPALDOS DE BASE DE DATOS</h5>
+        <div class="d-flex gap-2">
+            <button class="btn btn-respaldo-exportar btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalExportarRespaldo">
+                <i class="bx bx-save me-1"></i> Generar Respaldo
+            </button>
+            <button class="btn btn-respaldo-importar btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalImportarRespaldo">
+                <i class="bx bx-import me-1"></i> Restaurar Respaldo
+            </button>
+        </div>
     </div>
-  </div>
+    <div class="card-body">
+        <div class="alert alert-info d-flex align-items-center" role="alert">
+            <i class="bx bx-info-circle me-2 fs-4"></i>
+            <div>
+                Módulo de mantenimiento para respaldo y restauración de la base de datos.
+                <strong>Exportar:</strong> genera un archivo <code>.sql</code> completo. <strong>Importar:</strong> restaura desde un archivo <code>.sql</code> válido.
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover align-middle table-respaldo" id="tablaRespaldos">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre Archivo</th>
+                        <th>Fecha Creación</th>
+                        <th>Tamaño</th>
+                        <th>Descripción</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyRespaldos">
+                    {% if respaldos %}
+                        {% for respaldo in respaldos %}
+                        <tr>
+                            <td class="fw-bold">{{ loop.index }}</td>
+                            <td><i class="bx bx-data me-1 text-respaldo-verde"></i>{{ respaldo.nombre_archivo }}</td>
+                            <td>{{ respaldo.fecha_respaldo.strftime('%d/%m/%Y %H:%M:%S') if respaldo.fecha_respaldo else 'N/A' }}</td>
+                            <td><span class="badge-tamano">{{ respaldo.tamano_formateado }}</span></td>
+                            <td>{{ respaldo.descripcion or '-' }}</td>
+                            <td class="text-center">
+                                <a href="{{ url_for('respaldo_bp.descargar_respaldo', nombre_archivo=respaldo.nombre_archivo) }}" class="btn btn-outline-success btn-sm me-1" title="Descargar"><i class="bx bx-download"></i></a>
+                                <button class="btn btn-outline-danger btn-sm btn-eliminar-respaldo" data-id="{{ respaldo.id_respaldo }}" title="Eliminar"><i class="bx bx-trash"></i></button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="bx bx-folder-open bx-lg mb-2"></i><br>
+                                No hay respaldos registrados en el sistema.
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<div class="collapse mt-3" id="contenedorFormulario">
-  <div class="card shadow-sm" style="border-radius: 0px !important">
-    <div class="row justify-content-center mb-2">
-      <div class="col-md-12">
-        <h4 class="text-center mt-5 mb-3 text-secondary">Generar nuevo Respaldos</h4>
-        <hr class="w-75 mx-auto"/>
-      </div>
+<div class="row text-end mb-2">
+    <div class="col-12">
+        <span class="text-muted small">Total respaldos: <strong id="contadorRespaldos">{{ respaldos|length }}</strong></span>
     </div>
-
-    <div class="row justify-content-center mb-4">
-      <div class="col-md-10">
-        <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-empresa" autocomplete="off">
-          <div class="card-body pt-0">
-            
-            <div class="row mb-3 mt-3">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                <label for="fecha_respaldo" class="form-label">Fecha Respaldo</label>
-                <input type="date" class="form-control" name="fecha_respaldo" id="fecha_respaldo" maxlength="100" required />
-              </div>              
-            </div>
-            
-
-            <!--<div class="row mb-4">
-              <div class="col-md-6">
-                <label for="fecha_creada" class="form-label">Fecha Creada</label>
-                <input type="date" class="form-control" name="fecha_creada" id="fecha_creada" required />
-              </div>
-              <div class="col-md-6">
-                <label for="fecha_actualizacion" class="form-label">Fecha Actualización</label>
-                <input type="date" class="form-control" name="fecha_actualizacion" id="fecha_actualizacion" />
-              </div>
-            </div> -->
-
-            <div class="mb-3 text-center">
-              <button type="submit" class="btn rounded-pill btn-primary px-5 me-2">
-                Generar Respaldo
-                <i class="bx bx-save ms-1"></i>
-              </button>
-              <button class="btn rounded-pill btn-outline-secondary px-4" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario">
-                Cancelar
-              </button>
-            </div>
-            
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
 </div>
-{% endblock %} 
+
+<!-- Modal Exportar -->
+<div class="modal fade" id="modalExportarRespaldo" tabindex="-1" aria-labelledby="modalExportarRespaldoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formExportarRespaldo">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalExportarRespaldoLabel"><i class="bx bx-save me-2"></i>Generar Respaldo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="descripcionRespaldo" class="form-label">Descripción (opcional)</label>
+                        <input type="text" class="form-control" id="descripcionRespaldo" name="descripcion" placeholder="Ej: Respaldo semanal" maxlength="255">
+                        <div class="form-text">Puede agregar una nota para identificar este respaldo.</div>
+                    </div>
+                    <div class="alert alert-warning">
+                        <i class="bx bx-error me-1"></i> El proceso puede tardar algunos segundos dependiendo del tamaño de la base de datos. Por favor no cierre la ventana.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success" id="btnExportar"><i class="bx bx-download me-1"></i> Generar y Descargar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Importar -->
+<div class="modal fade" id="modalImportarRespaldo" tabindex="-1" aria-labelledby="modalImportarRespaldoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="formImportarRespaldo" enctype="multipart/form-data">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="modalImportarRespaldoLabel"><i class="bx bx-import me-2"></i>Restaurar Respaldo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="dropZoneImportar" class="drop-zone mb-3">
+                        <i class="bx bx-cloud-upload bx-lg text-respaldo-verde mb-2"></i>
+                        <p class="mb-0 text-muted">Arrastre un archivo <strong>.sql</strong> aquí o haga clic para seleccionarlo</p>
+                        <small class="text-muted" id="nombreArchivoImportar"></small>
+                        <input type="file" id="archivoRespaldo" name="archivo" accept=".sql" class="d-none">
+                    </div>
+                    <div class="alert alert-danger">
+                        <i class="bx bx-error me-1"></i> <strong>Advertencia:</strong> La importación sobrescribe los datos actuales de la base de datos. Asegúrese de tener un respaldo previo antes de continuar.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="btnImportar"><i class="bx bx-upload me-1"></i> Importar y Restaurar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal fade" id="modalEliminarRespaldo" tabindex="-1" aria-labelledby="modalEliminarRespaldoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="modalEliminarRespaldoLabel"><i class="bx bx-trash me-2"></i>Eliminar Respaldo</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2">¿Está seguro de eliminar este respaldo?</p>
+                <p class="mb-0 text-muted small">Esta acción no se puede deshacer y eliminará el archivo .sql físico.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarEliminarRespaldo"><i class="bx bx-trash me-1"></i>Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="inputIdEliminar" value="">
+{% endblock %}
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/respaldo.js') }}"></script>
 {% endblock %}
