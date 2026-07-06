@@ -1,105 +1,17 @@
-{% extends 'base_cpanel.html' %}
-{% block title %}INVISAP | Bitácora del Sistema{% endblock %}
+{% extends 'base_cpanel.html' %} 
+{% block title %}INVISAP | Bitácora del Sistema{% endblock %} 
 
-{% block customCSS %}
-<style>
-  .bitacora-header {
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    color: #333333;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e2e8f0;
-  }
-  .bitacora-header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -10%;
-    width: 300px;
-    height: 300px;
-    background: rgba(0, 0, 0, 0.02);
-    border-radius: 50%;
-  }
-  .stat-card {
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    padding: 1.25rem;
-    text-align: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    cursor: default;
-  }
-  .stat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-  .stat-card .stat-number { font-size: 2.2rem; font-weight: 800; line-height: 1; }
-  .stat-card .stat-label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0.4rem; opacity: 0.85; }
+{% block customCSS %} 
+<!-- Importación del archivo CSS externo -->
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bitacora.css') }}">
+{% endblock %} 
 
-  .action-badge {
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 0.35em 0.75em;
-    border-radius: 20px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-  .badge-crear  { background: #d4edda; color: #155724; }
-  .badge-editar { background: #cce5ff; color: #004085; }
-  .badge-eliminar { background: #f8d7da; color: #721c24; }
-  .badge-ver    { background: #e2e3e5; color: #383d41; }
-  .badge-login  { background: #d1ecf1; color: #0c5460; }
-  .badge-logout { background: #fff3cd; color: #856404; }
-
-  .filter-card {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 1.5rem;
-  }
-  #tabla-bitacora tbody tr {
-    transition: background 0.15s ease;
-  }
-  #tabla-bitacora tbody tr:hover {
-    background-color: #f0f4ff;
-  }
-  .table-bitacora th {
-    background: #f8f9fa;
-    color: #495057;
-    font-weight: 700;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid #dee2e6;
-  }
-  .usuario-chip {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    color: #fff;
-    border-radius: 20px;
-    padding: 0.2em 0.8em;
-    font-size: 0.78rem;
-    font-weight: 600;
-  }
-  .modulo-chip {
-    background: #f1f5f9;
-    color: #475569;
-    border-radius: 6px;
-    padding: 0.2em 0.65em;
-    font-size: 0.78rem;
-    font-weight: 500;
-    border: 1px solid #e2e8f0;
-  }
-</style>
-{% endblock %}
-
-{% block body %}
-
-<!-- Encabezado -->
+{% block body %} 
+<!-- Encabezado --> 
 <div class="bitacora-header">
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
     <div>
-      <h3 class="fw-bold mb-1 text-primary" style="font-size:1.6rem;">
+      <h3 class="fw-bold mb-1 text-primary">
         <i class="bi bi-journal-check me-2"></i>Bitácora del Sistema
       </h3>
       <p class="mb-0 text-muted" style="font-size:0.9rem;">
@@ -116,45 +28,43 @@
   <!-- Estadísticas -->
   <div class="row g-3 mt-3">
     <div class="col-6 col-md-3">
-      <div class="stat-card" style="background:#fff; border-left: 4px solid #10b981; color:#333; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+      <div class="stat-card" style="border-left: 4px solid #10b981;">
         <div class="stat-number">{{ estadisticas.get('CREAR', 0) }}</div>
         <div class="stat-label text-muted"><i class="bi bi-plus-circle me-1" style="color:#10b981;"></i>Creaciones</div>
       </div>
     </div>
     <div class="col-6 col-md-3">
-      <div class="stat-card" style="background:#fff; border-left: 4px solid #3b82f6; color:#333; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+      <div class="stat-card" style="border-left: 4px solid #3b82f6;">
         <div class="stat-number">{{ estadisticas.get('EDITAR', 0) }}</div>
         <div class="stat-label text-muted"><i class="bi bi-pencil me-1" style="color:#3b82f6;"></i>Ediciones</div>
       </div>
     </div>
     <div class="col-6 col-md-3">
-      <div class="stat-card" style="background:#fff; border-left: 4px solid #ef4444; color:#333; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+      <div class="stat-card" style="border-left: 4px solid #ef4444;">
         <div class="stat-number">{{ estadisticas.get('ELIMINAR', 0) }}</div>
         <div class="stat-label text-muted"><i class="bi bi-trash me-1" style="color:#ef4444;"></i>Eliminaciones</div>
       </div>
     </div>
     <div class="col-6 col-md-3">
-      <div class="stat-card" style="background:#fff; border-left: 4px solid #f59e0b; color:#333; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-        <div class="stat-number">{{ registros|length }}</div>
+      <div class="stat-card" style="border-left: 4px solid #f59e0b;">
+        <div class="stat-number" id="total-registros">{{ registros|length }}</div>
         <div class="stat-label text-muted"><i class="bi bi-list-ul me-1" style="color:#f59e0b;"></i>Total Mostrados</div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Filtros -->
+<!-- Filtros Backend --> 
 <div class="filter-card">
-  <form method="GET" action="{{ url_for('home_bp.viewBitacora') }}" class="row g-3 align-items-end">
+  <form method="GET" action="{{ url_for('home_bp.viewBitacora') }}" class="row g-3 align-items-end" id="formFiltrosBitacora">
     <div class="col-md-3">
-      <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">
+      <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase;">
         <i class="bi bi-person me-1"></i>Usuario
       </label>
-      <input type="text" name="usuario" class="form-control form-control-sm"
-             placeholder="Buscar por usuario..." value="{{ filtro_usuario }}"
-             maxlength="15" />
+      <input type="text" name="usuario" class="form-control form-control-sm" placeholder="Buscar por usuario..." value="{{ filtro_usuario }}" maxlength="15" />
     </div>
     <div class="col-md-3">
-      <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">
+      <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase;">
         <i class="bi bi-grid me-1"></i>Módulo
       </label>
       <select name="modulo" class="form-select form-select-sm">
@@ -165,7 +75,7 @@
       </select>
     </div>
     <div class="col-md-3">
-      <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase; letter-spacing:0.5px;">
+      <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase;">
         <i class="bi bi-lightning me-1"></i>Acción
       </label>
       <select name="accion" class="form-select form-select-sm">
@@ -186,17 +96,17 @@
   </form>
 </div>
 
-<!-- Tabla -->
+<!-- Tabla y Paginación --> 
 <div class="card border-0 shadow-sm" style="border-radius:16px; overflow:hidden;">
   <div class="card-header d-flex align-items-center justify-content-between py-3" style="background:#fff; border-bottom: 1px solid #e2e8f0;">
     <span class="fw-semibold text-dark">
       <i class="bi bi-table me-2 text-primary"></i>
-      Registros
-      <span class="badge bg-primary ms-2" style="border-radius:20px;">{{ registros|length }}</span>
+      Registros <span class="badge bg-primary ms-2" style="border-radius:20px;">{{ registros|length }}</span>
     </span>
-    <input type="search" id="buscarBitacora" class="form-control form-control-sm w-auto"
-           placeholder="Búsqueda rápida..." style="min-width:200px;" />
+    <!-- Búsqueda rápida en frontend -->
+    <input type="search" id="buscarBitacora" class="form-control form-control-sm w-auto" placeholder="Búsqueda rápida..." style="min-width:200px;" />
   </div>
+
   <div class="table-responsive">
     <table id="tabla-bitacora" class="table table-hover mb-0">
       <thead>
@@ -212,13 +122,14 @@
       <tbody>
         {% if registros %}
           {% for r in registros %}
-          <tr>
+          <!-- La clase "fila-registro" es fundamental para que JS identifique qué ocultar/mostrar -->
+          <tr class="fila-registro">
             <td class="text-muted" style="padding: 0.85rem 1.2rem; font-size:0.8rem;">{{ loop.index }}</td>
             <td style="padding: 0.85rem 1.2rem;">
-              <span class="usuario-chip">{{ r.usuario or '—' }}</span>
+              <span class="usuario-chip">{{ r.usuario or ' ' }}</span>
             </td>
             <td style="padding: 0.85rem 1.2rem;">
-              <span class="modulo-chip">{{ r.modulo or '—' }}</span>
+              <span class="modulo-chip">{{ r.modulo or ' ' }}</span>
             </td>
             <td style="padding: 0.85rem 1.2rem;">
               {% set accion = (r.accion or 'VER').upper() %}
@@ -238,15 +149,15 @@
             </td>
             <td style="padding: 0.85rem 1.2rem; font-size:0.83rem; color:#475569;">
               <i class="bi bi-calendar3 me-1 text-primary opacity-50"></i>
-              {{ r.fecha.strftime('%d/%m/%Y %H:%M') if r.fecha else '—' }}
+              {{ r.fecha.strftime('%d/%m/%Y %H:%M') if r.fecha else ' ' }}
             </td>
             <td style="padding: 0.85rem 1.2rem; font-size:0.83rem; color:#475569;">
-              {{ r.hora_inicio_sesion.strftime('%H:%M:%S') if r.hora_inicio_sesion else '—' }}
+              {{ r.hora_inicio_sesion.strftime('%H:%M:%S') if r.hora_inicio_sesion else ' ' }}
             </td>
           </tr>
           {% endfor %}
         {% else %}
-          <tr>
+          <tr class="fila-vacia">
             <td colspan="6" class="text-center py-5 text-muted">
               <i class="bi bi-journal-x" style="font-size:3rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
               No hay registros en la bitácora
@@ -260,20 +171,15 @@
       </tbody>
     </table>
   </div>
+  
+  <!-- Contenedor dinámico para los botones de Paginación -->
+  <div class="card-footer bg-white border-0 py-3 d-flex justify-content-end">
+      <nav id="paginacion-container" aria-label="Navegación de páginas"></nav>
+  </div>
 </div>
+{% endblock %} 
 
-{% endblock %}
-
-{% block customJS %}
-<script>
-  // Búsqueda rápida en tabla
-  document.getElementById('buscarBitacora').addEventListener('keyup', function () {
-    const filtro = this.value.toLowerCase();
-    const filas = document.querySelectorAll('#tabla-bitacora tbody tr');
-    filas.forEach(fila => {
-      fila.style.display = fila.textContent.toLowerCase().includes(filtro) ? '' : 'none';
-    });
-  });
-
-</script>
+{% block customJS %} 
+<!-- Importación del script JS externo -->
+<script src="{{ url_for('static', filename='assets/js/bitacora.js') }}"></script>
 {% endblock %}

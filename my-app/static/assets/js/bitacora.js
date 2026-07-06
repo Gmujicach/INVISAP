@@ -1,181 +1,141 @@
-(function () {
-  'use strict';
+/* =========================================
+   LÓGICA DE PAGINACIÓN Y BÚSQUEDA DEL CLIENTE
+   ========================================= */
+document.addEventListener('DOMContentLoaded', function() {
+    const busquedaRapida = document.getElementById('buscarBitacora');
+    const tbody = document.querySelector('#tabla-bitacora tbody');
+    
+    // Verificamos si existe el tbody (por si hay un error en la carga HTML)
+    if (!tbody) return;
 
-  var DEBUG = false;
+    // Convertimos la lista de nodos (tr) a un Array. Ignoramos la fila vacía de aviso.
+    const filas = Array.from(tbody.querySelectorAll('tr.fila-registro'));
+    
+    // Variables de Estado de la Paginación
+    const filasPorPagina = 5;
+    let paginaActual = 1;
+    let filasVisibles = [];
 
-  function log() {
-    if (DEBUG && console && console.log) {
-      console.log.apply(console, arguments);
-    }
-  }
+    /**
+     * Paso 1: Configurar el estado base y el total de páginas.
+     * Esta función se llama al inicio y cada vez que el usuario hace una búsqueda rápida.
+     */
+    function inicializarPaginacion() {
+        // Obtenemos solo las filas que NO tienen la clase oculta (Las que coinciden con la búsqueda)
+        filasVisibles = filas.filter(fila => !fila.classList.contains('oculto-por-busqueda'));
 
-  var btnActualizar = document.getElementById('btnActualizar');
-  var busquedaRapida = document.getElementById('buscarBitacora');
-  var urlBase = '';
-
-  if (window._bitacoraConfig && window._bitacoraConfig.ajaxUrl) {
-    urlBase = window._bitacoraConfig.ajaxUrl.replace(/\/$/, '');
-  }
-
-  if (!urlBase) {
-    urlBase = (window._bitacoraUrlBase || '').replace(/\/$/, '');
-  }
-
-  var debounceTimer = null;
-
-  function serializeForm(formEl) {
-    var data = new URLSearchParams();
-    var elements = formEl.querySelectorAll('input[name], select[name]');
-    elements.forEach(function (el) {
-      if (el.name) {
-        data.append(el.name, el.value || '');
-      }
-    });
-    return data.toString();
-  }
-
-  function buildUrl(queryString) {
-    if (!urlBase) {
-      return '';
-    }
-    return urlBase + (queryString ? '?' + queryString : '');
-  }
-
-  function loadBitacora(queryString) {
-    var url = buildUrl(queryString);
-    if (!url) {
-      log('[bitacora] URL base no configurada');
-      return;
-    }
-    log('[bitacora] GET', url);
-
-    fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-      .then(function (response) {
-        if (!response.ok) {
-          return response.text().then(function (text) {
-            throw new Error('Status: ' + response.status + ' | ' + text);
-          });
+        // Si no se encuentra ningún registro, limpiamos los botones
+        if (filasVisibles.length === 0) {
+            document.getElementById('paginacion-container').innerHTML = '';
+            filas.forEach(f => f.style.display = 'none');
+            return;
         }
-        return response.json();
-      })
-      .then(function (data) {
-        if (!data || !data.html) {
-          log('[bitacora] Respuesta sin HTML');
-          return;
-        }
-        var contentWrapper = document.getElementById('bitacora-content');
-        if (contentWrapper) {
-          contentWrapper.innerHTML = data.html;
-        }
-        if (data.estadisticas) {
-          actualizarEstadisticas(data.estadisticas, data.total_mostrados);
-        }
-      })
-      .catch(function (error) {
-        console.error('[bitacora] Error al cargar bitácora:', error);
-      });
-  }
 
-  function actualizarEstadisticas(estadisticas, total_mostrados) {
-    var contador = document.getElementById('registros-count');
-    if (contador && typeof total_mostrados !== 'undefined') {
-      contador.textContent = total_mostrados;
+        const totalPaginas = Math.ceil(filasVisibles.length / filasPorPagina);
+        
+        // Prevención de errores de índice al realizar búsquedas fuertes
+        if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+        if (paginaActual < 1) paginaActual = 1;
+
+        mostrarFilasActuales();
+        renderizarBotonesPaginacion(totalPaginas);
     }
 
-    var statCrear = document.getElementById('stat-crear');
-    var statEditar = document.getElementById('stat-editar');
-    var statEliminar = document.getElementById('stat-eliminar');
-    if (statCrear && typeof estadisticas.CREAR !== 'undefined') statCrear.textContent = estadisticas.CREAR;
-    if (statEditar && typeof estadisticas.EDITAR !== 'undefined') statEditar.textContent = estadisticas.EDITAR;
-    if (statEliminar && typeof estadisticas.ELIMINAR !== 'undefined') statEliminar.textContent = estadisticas.ELIMINAR;
-  }
+    /**
+     * Paso 2: Iterar sobre los registros y mostrar solo los 10 que tocan en la página actual.
+     */
+    function mostrarFilasActuales() {
+        // Restablecemos el display en none para todos los registros del Array original
+        filas.forEach(fila => fila.style.display = 'none');
 
-  function buscarRapidaLocal() {
-    if (!busquedaRapida) return;
-    var filtro = busquedaRapida.value.toLowerCase();
-    var filas = document.querySelectorAll('#tabla-bitacora tbody tr');
-    filas.forEach(function (fila) {
-      fila.style.display = fila.textContent.toLowerCase().includes(filtro) ? '' : 'none';
-    });
-  }
+        // Calculamos los offsets
+        const inicio = (paginaActual - 1) * filasPorPagina;
+        const fin = inicio + filasPorPagina;
 
-  function LimpiarFormulario(formEl) {
-    if (!formEl) return;
-    var inputs = formEl.querySelectorAll('input[name], select[name]');
-    inputs.forEach(function (el) {
-      if (el.tagName === 'SELECT') {
-        el.selectedIndex = 0;
-      } else {
-        el.value = '';
-      }
-    });
-  }
-
-  function init() {
-    var contentWrapper = document.getElementById('bitacora-content');
-    var formFiltros = document.getElementById('formFiltrosBitacora');
-
-    if (contentWrapper) {
-      contentWrapper.addEventListener('click', function (e) {
-        var link = e.target.closest('.page-link');
-        if (!link) return;
-        e.preventDefault();
-        var href = link.getAttribute('href');
-        if (!href) return;
-        var queryString = href.split('?')[1] || '';
-        loadBitacora(queryString);
-      });
+        // Visualizamos el segmento correspondiente
+        for (let i = inicio; i < fin && i < filasVisibles.length; i++) {
+            filasVisibles[i].style.display = '';
+        }
     }
 
-    if (formFiltros) {
-      formFiltros.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var queryString = serializeForm(formFiltros);
-        loadBitacora(queryString);
-      });
+    /**
+     * Paso 3: Renderizar la estructura HTML de la botonera dinámica de Bootstrap.
+     */
+    function renderizarBotonesPaginacion(totalPaginas) {
+        const contenedor = document.getElementById('paginacion-container');
+        
+        if (totalPaginas <= 1) {
+            contenedor.innerHTML = '';
+            return;
+        }
 
-      var usuarioInput = formFiltros.querySelector('input[name="usuario"]');
-      if (usuarioInput) {
-        usuarioInput.addEventListener('input', function () {
-          clearTimeout(debounceTimer);
-          debounceTimer = setTimeout(function () {
-            var queryString = serializeForm(formFiltros);
-            loadBitacora(queryString);
-          }, 400);
+        let html = '<ul class="pagination pagination-sm">';
+
+        // Configuración de Botón "Anterior"
+        html += `<li class="page-item ${paginaActual === 1 ? 'disabled' : ''}">
+                    <a class="page-link shadow-none" href="#" data-page="${paginaActual - 1}">Anterior</a>
+                 </li>`;
+
+        // Lógica para limitar a 5 botones numerados como máximo y no saturar la vista
+        let paginaInicio = Math.max(1, paginaActual - 2);
+        let paginaFin = Math.min(totalPaginas, paginaActual + 2);
+
+        if (paginaActual <= 3 && totalPaginas >= 5) { paginaFin = 5; }
+        if (paginaActual >= totalPaginas - 2 && totalPaginas >= 5) { paginaInicio = totalPaginas - 4; }
+
+        for (let i = paginaInicio; i <= paginaFin; i++) {
+            html += `<li class="page-item ${i === paginaActual ? 'active' : ''}">
+                        <a class="page-link shadow-none" href="#" data-page="${i}">${i}</a>
+                     </li>`;
+        }
+
+        // Configuración de Botón "Siguiente"
+        html += `<li class="page-item ${paginaActual === totalPaginas ? 'disabled' : ''}">
+                    <a class="page-link shadow-none" href="#" data-page="${paginaActual + 1}">Siguiente</a>
+                 </li>`;
+
+        html += '</ul>';
+        contenedor.innerHTML = html;
+
+        // Escucha de eventos de clic sobre los botones creados
+        contenedor.querySelectorAll('.page-link').forEach(boton => {
+            boton.addEventListener('click', function(e) {
+                e.preventDefault();
+                const nuevaPagina = parseInt(this.getAttribute('data-page'));
+                
+                if (!isNaN(nuevaPagina) && nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
+                    paginaActual = nuevaPagina;
+                    mostrarFilasActuales();
+                    renderizarBotonesPaginacion(totalPaginas);
+                }
+            });
         });
-      }
-
-      [formFiltros.querySelector('select[name="modulo"]'), formFiltros.querySelector('select[name="accion"]')].forEach(function (selectEl) {
-        if (!selectEl) return;
-        selectEl.addEventListener('change', function () {
-          var queryString = serializeForm(formFiltros);
-          loadBitacora(queryString);
-        });
-      });
     }
 
-    if (btnActualizar) {
-      btnActualizar.addEventListener('click', function () {
-        if (!formFiltros) return;
-        var queryString = serializeForm(formFiltros);
-        if (!queryString) {
-          LimpiarFormulario(formFiltros);
-          queryString = serializeForm(formFiltros);
-        }
-        loadBitacora(queryString);
-      });
-    }
-
+    /**
+     * Paso 4: Lógica combinada entre Paginación y Barra de Búsqueda Rápida Frontend
+     */
     if (busquedaRapida) {
-      busquedaRapida.addEventListener('keyup', buscarRapidaLocal);
+        busquedaRapida.addEventListener('keyup', function () {
+            const filtro = this.value.toLowerCase();
+            
+            filas.forEach(fila => {
+                // Comparamos los caracteres tipeados con todo el string de la tabla
+                if(fila.textContent.toLowerCase().includes(filtro)) {
+                    fila.classList.remove('oculto-por-busqueda');
+                } else {
+                    fila.classList.add('oculto-por-busqueda');
+                }
+            });
+
+            // Forzamos la tabla a retornar a la página 1 cuando cambia el set de datos
+            paginaActual = 1; 
+            inicializarPaginacion();
+        });
     }
 
-    log('[bitacora] inicializado');
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
+    // Arranque inicial cuando la página carga los registros de tu base de datos Flask
+    if (filas.length > 0) {
+        inicializarPaginacion();
+    }
+});

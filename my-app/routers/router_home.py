@@ -835,31 +835,56 @@ def eliminar_empresa(rif):
 
 
 @home_bp.route('/bitacora', methods=['GET'])
+@home_bp.route('/bitacora', methods=['GET'])
 def viewBitacora():
     if 'conectado' not in session:
-        flash('Primero debes iniciar sesión.', 'error')
+        flash('Primero debes iniciar sesi n.', 'error')
         return redirect(url_for('login_bp.inicio'))
-
-    # Obtener filtros
+    
+    # Obtener filtros actuales de la URL
     filtro_usuario = request.args.get('usuario', '').strip()
     filtro_modulo = request.args.get('modulo', '').strip()
     filtro_accion = request.args.get('accion', '').strip()
     
-
+    # 1. Obtener la página actual (por defecto 1) y definir límite
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    
+    # Traer todos los registros filtrados
     registros = filtrar_bitacora(
         usuario=filtro_usuario or None,
         modulo=filtro_modulo or None,
         accion=filtro_accion or None
     )
+    
+    # 2. Calcular el total de páginas
+    total_registros = len(registros)
+    total_pages = (total_registros + per_page - 1) // per_page
+    
+    # Validar que la página solicitada esté en un rango válido
+    if page < 1:
+        page = 1
+    elif page > total_pages and total_pages > 0:
+        page = total_pages
+        
+    # 3. Extraer solo los 10 registros correspondientes a la página actual
+    inicio = (page - 1) * per_page
+    fin = inicio + per_page
+    registros_paginados = registros[inicio:fin]
+    
     estadisticas = obtener_estadisticas_bitacora()
-
+    
+    # 4. Enviar las variables de paginación a la vista
     return render_template(
         'bitacora/lista_bitacora.html',
-        registros=registros,
+        registros=registros_paginados,
         estadisticas=estadisticas,
         filtro_usuario=filtro_usuario,
         filtro_modulo=filtro_modulo,
-        filtro_accion=filtro_accion
+        filtro_accion=filtro_accion,
+        page=page,
+        total_pages=total_pages,
+        total_registros=total_registros
     )
 
 
