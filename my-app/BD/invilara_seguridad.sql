@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 06-07-2026 a las 01:50:45
+-- Tiempo de generación: 06-07-2026 a las 02:10:34
 -- Versión del servidor: 9.4.0
 -- Versión de PHP: 8.3.30
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `invilara_seguridad`
 --
+CREATE DATABASE IF NOT EXISTS `invilara_seguridad` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE `invilara_seguridad`;
 
 -- --------------------------------------------------------
 

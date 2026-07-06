@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 05-07-2026 a las 06:35:44
+-- Tiempo de generación: 06-07-2026 a las 02:11:17
 -- Versión del servidor: 9.4.0
 -- Versión de PHP: 8.3.30
 
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `invilara`
 --
+CREATE DATABASE IF NOT EXISTS `invilara` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE `invilara`;
 
 -- --------------------------------------------------------
 
@@ -390,40 +392,41 @@ INSERT INTO `institucion` (`id_institucion`, `nombre_representante`, `razon_soci
 CREATE TABLE `maquinaria` (
   `id_maquinaria` int NOT NULL,
   `nombre_maquinaria` varchar(50) NOT NULL COMMENT 'Tabla de nombres de maquinarias',
-  `tipo_maquinaria` varchar(45) NOT NULL
+  `tipo_maquinaria` varchar(45) NOT NULL,
+  `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `maquinaria`
 --
 
-INSERT INTO `maquinaria` (`id_maquinaria`, `nombre_maquinaria`, `tipo_maquinaria`) VALUES
-(1, 'Excavadora CAT 320', 'Pesada'),
-(2, 'Retroexcavadora', 'Pesada'),
-(3, 'Motoniveladora', 'Pesada'),
-(4, 'Bulldozer (Topadora)', 'Pesada'),
-(5, 'Compactador Rodillo liso', 'Pesada'),
-(6, 'Pavimentadora (Terminadora de asfalto)', 'Pesada'),
-(7, 'Fresadora de pavimento', 'Pesada'),
-(8, 'Mototraílla (Scraper)', 'Pesada'),
-(9, 'Mini cargadora (tipo Bobcat)', 'Liviana'),
-(10, 'Placa vibratoria Wacker Neuson', 'Liviana'),
-(11, 'Pisón vibratorio (Canguro)', 'Liviana'),
-(12, 'Cortadora de pavimento (Suelo/Asfalto)', 'Liviana'),
-(13, 'Generador eléctrico', 'Liviana'),
-(14, 'Barredora mecánica', 'Liviana'),
-(15, 'Motosierra', 'Herramienta'),
-(16, 'Taladro percutor / Rotomartillo', 'Herramienta'),
-(17, 'Esmeriladora', 'Herramienta'),
-(18, 'Estación total Leica TS06', 'Herramienta'),
-(19, 'Palas', 'Herramienta'),
-(20, 'Picos', 'Herramienta'),
-(21, 'rastrillos', 'Herramienta'),
-(22, 'macetas', 'Herramienta'),
-(23, 'Camión volquete (Dúmper) Mack Granite', 'Vehículo'),
-(24, 'Camión cisterna', 'Vehículo'),
-(25, 'Camión hormigonera (Mixer)', 'Vehículo'),
-(26, 'Camión plataforma', 'Vehículo');
+INSERT INTO `maquinaria` (`id_maquinaria`, `nombre_maquinaria`, `tipo_maquinaria`, `estado`) VALUES
+(1, 'Excavadora CAT 320', 'Pesada', 1),
+(2, 'Retroexcavadora', 'Pesada', 1),
+(3, 'Motoniveladora', 'Pesada', 1),
+(4, 'Bulldozer (Topadora)', 'Pesada', 1),
+(5, 'Compactador Rodillo liso', 'Pesada', 1),
+(6, 'Pavimentadora (Terminadora de asfalto)', 'Pesada', 1),
+(7, 'Fresadora de pavimento', 'Pesada', 1),
+(8, 'Mototraílla (Scraper)', 'Pesada', 1),
+(9, 'Mini cargadora (tipo Bobcat)', 'Liviana', 1),
+(10, 'Placa vibratoria Wacker Neuson', 'Liviana', 1),
+(11, 'Pisón vibratorio (Canguro)', 'Liviana', 1),
+(12, 'Cortadora de pavimento (Suelo/Asfalto)', 'Liviana', 1),
+(13, 'Generador eléctrico', 'Liviana', 1),
+(14, 'Barredora mecánica', 'Liviana', 1),
+(15, 'Motosierra', 'Herramienta', 1),
+(16, 'Taladro percutor / Rotomartillo', 'Herramienta', 1),
+(17, 'Esmeriladora', 'Herramienta', 1),
+(18, 'Estación total Leica TS06', 'Herramienta', 1),
+(19, 'Palas', 'Herramienta', 1),
+(20, 'Picos', 'Herramienta', 1),
+(21, 'rastrillos', 'Herramienta', 1),
+(22, 'macetas', 'Herramienta', 1),
+(23, 'Camión volquete (Dúmper) Mack Granite', 'Vehículo', 1),
+(24, 'Camión cisterna', 'Vehículo', 1),
+(25, 'Camión hormigonera (Mixer)', 'Vehículo', 1),
+(26, 'Camión plataforma', 'Vehículo', 0);
 
 -- --------------------------------------------------------
 
@@ -631,7 +634,8 @@ CREATE TABLE `publicacion` (
   `nombre_responsable` varchar(45) NOT NULL,
   `tipo_publicacion` varchar(15) NOT NULL,
   `fecha_publicacion` datetime NOT NULL COMMENT 'Tabla de gestion de publicaciones',
-  `informe_avance_obra_id_informe` int NOT NULL
+  `informe_avance_obra_id_informe` int NOT NULL,
+  `cuerpo_publicacion` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -742,16 +746,16 @@ INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_evidencia_informe` (
-`estado` tinyint
-,`estado_informe` varchar(25)
-,`etapa` enum('antes','durante','despues')
-,`fecha_informe` datetime
-,`fecha_registro` datetime
+`id_evidencia` int
 ,`fotos` varchar(255)
-,`id_evidencia` int
-,`id_informe` int
-,`tipo_informe` varchar(30)
 ,`url_archivos` varchar(255)
+,`fecha_registro` datetime
+,`etapa` enum('antes','durante','despues')
+,`estado` tinyint
+,`id_informe` int
+,`fecha_informe` datetime
+,`tipo_informe` varchar(30)
+,`estado_informe` varchar(25)
 );
 
 --
