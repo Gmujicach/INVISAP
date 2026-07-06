@@ -7,31 +7,31 @@
     <div class="card shadow border-0">
       <div class="card-header bg-success py-4 px-5">
         <h4 class="text-white mb-0 fw-bold">
-          <i class="bi bi-file-earmark-excel me-2"></i> Generar Reporte Excel
+          <i class="bi bi-file-earmark-excel me-2"></i> Generador de Reportes Excel para la Toma de Decisiones
         </h4>
+        <p class="text-white-50 small mb-0 mt-1">Exporta información institucional consolidada por módulo o general para análisis gerencial.</p>
       </div>
       <div class="card-body mt-4 p-5">
         <form action="{{ url_for('reporte_excel_bp.generarReporteExcel') }}" method="POST">
           <div class="row justify-content-center">
-            
-            <div class="col-md-12 text-center mb-5">
+            <div class="col-md-12 text-center mb-4">
               <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm fw-bold">
-                <i class="bi bi-download me-2"></i> GENERAR REPORTE
+                <i class="bi bi-download me-2"></i> GENERAR REPORTE EXCEL
               </button>
             </div>
 
-            <div class="col-md-10 mb-4">
+            <div class="col-md-8 mb-3">
               <label class="form-label fw-bold text-dark fs-5">Filtro de Contenido</label>
               <div class="input-group input-group-lg shadow-sm">
                 <span class="input-group-text bg-light border-end-0 text-success"><i class="bi bi-search"></i></span>
                 <input type="text" name="filtro_busqueda" class="form-control border-start-0" 
-                       placeholder="Escriba el módulo (ej: obras). Vacío para reporte general.">
+                       placeholder="Escriba el módulo (ej: solicitudes, empleados, obras). Vacío para reporte general.">
               </div>
+              <div class="form-text text-muted mt-2">Ingrese el nombre del módulo para generar un reporte específico. Si lo deja vacío se generará el reporte general del sistema.</div>
             </div>
-
           </div>
           
-          <div class="text-center mt-5">
+          <div class="text-center mt-4">
             <hr class="w-75 mx-auto mb-4">
             <a href="{{ url_for('login_bp.inicio') }}" class="btn btn-secondary px-5">
               <i class="bi bi-arrow-left me-1"></i> Volver al Inicio
@@ -42,10 +42,10 @@
 
       {% if publicaciones %}
       <div class="card-footer bg-white p-4">
-        <h5 class="fw-bold mb-3">Vista Previa de Publicaciones</h5>
+        <h5 class="fw-bold mb-3">Publicaciones Destacadas</h5>
         <div class="table-responsive">
-          <table class="table table-striped table-hover">
-            <thead class="table-dark">
+          <table class="table table-bordered table-hover align-middle">
+            <thead class="table-success text-white">
               <tr>
                 <th>Título</th>
                 <th>Autor</th>

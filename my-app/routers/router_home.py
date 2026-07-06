@@ -21,7 +21,7 @@ from controllers.funciones_maquinaria import (
     restaurar_maquinaria_controller, actualizar_maquinaria_controller,
     eliminar_maquinaria_controller, contar_maquinarias_controller
 )
-from controllers.funciones_bitacora import obtener_bitacora, filtrar_bitacora, obtener_estadisticas_bitacora
+from controllers.funciones_bitacora import filtrar_bitacora, obtener_estadisticas_bitacora, obtener_bitacora_paginada
 from models.model_publicacion import PublicacionModel
 from models.model_informe_avance import InformeAvanceModel
 from models.model_solicitudes import SolicitudModel
@@ -840,26 +840,74 @@ def viewBitacora():
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-    # Obtener filtros
     filtro_usuario = request.args.get('usuario', '').strip()
     filtro_modulo = request.args.get('modulo', '').strip()
     filtro_accion = request.args.get('accion', '').strip()
+    page = request.args.get('page', 1, type=int)
 
-    registros = filtrar_bitacora(
+    registros, pagination = obtener_bitacora_paginada(
+        page=page,
         usuario=filtro_usuario or None,
         modulo=filtro_modulo or None,
         accion=filtro_accion or None
     )
+
     estadisticas = obtener_estadisticas_bitacora()
 
     return render_template(
         'bitacora/lista_bitacora.html',
         registros=registros,
         estadisticas=estadisticas,
+        pagination=pagination,
         filtro_usuario=filtro_usuario,
         filtro_modulo=filtro_modulo,
         filtro_accion=filtro_accion
     )
+
+
+@home_bp.route('/bitacora/ajax')
+def bitacora_ajax():
+    if 'conectado' not in session:
+        return jsonify({'error': 'No autorizado'}), 401
+
+    filtro_usuario = request.args.get('usuario', '').strip()
+    filtro_modulo = request.args.get('modulo', '').strip()
+    filtro_accion = request.args.get('accion', '').strip()
+    page = request.args.get('page', 1, type=int)
+
+    registros, pagination = obtener_bitacora_paginada(
+        page=page,
+        usuario=filtro_usuario or None,
+        modulo=filtro_modulo or None,
+        accion=filtro_accion or None
+    )
+
+    estadisticas = obtener_estadisticas_bitacora()
+
+    html = render_template(
+        'bitacora/_tabla_bitacora.html',
+        registros=registros,
+        pagination=pagination,
+        estadisticas=estadisticas,
+        filtro_usuario=filtro_usuario,
+        filtro_modulo=filtro_modulo,
+        filtro_accion=filtro_accion
+    )
+
+    return jsonify({
+        'html': html,
+        'pagination': {
+            'page': pagination['page'],
+            'total_pages': pagination['total_pages'],
+            'has_prev': pagination['has_prev'],
+            'has_next': pagination['has_next'],
+            'prev_num': pagination['prev_num'],
+            'next_num': pagination['next_num'],
+            'pages': pagination['pages'],
+        },
+        'estadisticas': estadisticas,
+        'total_mostrados': pagination['total']
+    })
 
 @home_bp.route('/inf_avance_obra', methods=['GET'])
 def viewFormInforme_avan_obras():

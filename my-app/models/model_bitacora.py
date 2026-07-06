@@ -209,6 +209,55 @@ class BitacoraModel:
                 except Exception:
                     pass
 
+    def _sql_obtener_paginado(self, page=1, per_page=10, usuario=None, modulo=None, accion=None) -> tuple:
+        conn = cursor = None
+        try:
+            conn = self._con()
+            if conn is None:
+                return [], 0
+            cursor = conn.cursor(dictionary=True)
+
+            where = []
+            params = []
+            if usuario:
+                where.append("usuario LIKE %s")
+                params.append(f"%{usuario}%")
+            if modulo:
+                where.append("modulo = %s")
+                params.append(modulo)
+            if accion:
+                where.append("accion = %s")
+                params.append(accion)
+            where_sql = ("WHERE " + " AND ".join(where)) if where else ""
+
+            cursor.execute(f"SELECT COUNT(*) as total FROM bitacora {where_sql}", params)
+            total = cursor.fetchone()['total']
+
+            offset = (page - 1) * per_page
+            sql = f"""
+                SELECT id_bitacora, usuario, modulo, accion,
+                       fecha, hora_inicio_sesion, hora_cierre_sesion,
+                       usuarios_id_usuarios
+                FROM bitacora
+                {where_sql}
+                ORDER BY fecha DESC
+                LIMIT %s OFFSET %s
+            """
+            cursor.execute(sql, params + [per_page, offset])
+            rows = cursor.fetchall()
+            return rows, total
+        except Exception as e:
+            print(f"[BitacoraModel._sql_obtener_paginado] Error: {e}")
+            return [], 0
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                try:
+                    conn.close()
+                except Exception:
+                    pass
+
     # -----------------------------------------------------------------
     # Métodos públicos — Fachada con validación
     # -----------------------------------------------------------------

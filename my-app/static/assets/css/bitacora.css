@@ -1,0 +1,200 @@
+.bitacora-header {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    color: #333333;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+}
+.bitacora-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 50%;
+}
+.bitacora-header h3 {
+    font-size: 1.6rem;
+}
+.stat-card {
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    padding: 1.25rem;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
+    background: #fff;
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+.stat-card .stat-number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1;
+}
+.stat-card .stat-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.4rem;
+    opacity: 0.85;
+}
+.action-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.35em 0.75em;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.badge-crear  { background: #d4edda; color: #155724; }
+.badge-editar { background: #cce5ff; color: #004085; }
+.badge-eliminar { background: #f8d7da; color: #721c24; }
+.badge-ver    { background: #e2e3e5; color: #383d41; }
+.badge-login  { background: #d1ecf1; color: #0c5460; }
+.badge-logout { background: #fff3cd; color: #856404; }
+
+.filter-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+#tabla-bitacora tbody tr {
+    transition: background 0.15s ease;
+}
+#tabla-bitacora tbody tr:hover {
+    background-color: #f0f4ff;
+}
+.table-bitacora th {
+    background: #f8f9fa;
+    color: #495057;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #dee2e6;
+}
+.usuario-chip {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    border-radius: 20px;
+    padding: 0.2em 0.8em;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+.modulo-chip {
+    background: #f1f5f9;
+    color: #475569;
+    border-radius: 6px;
+    padding: 0.2em 0.65em;
+    font-size: 0.78rem;
+    font-weight: 500;
+    border: 1px solid #e2e8f0;
+}
+.pagination {
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.pagination .page-link {
+    color: #495057;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    min-width: 38px;
+    text-align: center;
+    padding: 0.5rem 0.75rem;
+    transition: all 0.2s ease;
+}
+.pagination .page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(13, 110, 253, 0.35);
+}
+.pagination .page-item.disabled .page-link {
+    color: #adb5bd;
+    pointer-events: none;
+    background-color: #fff;
+}
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    color: #0d6efd;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .bitacora-header {
+        padding: 1.5rem;
+    }
+    .bitacora-header h3 {
+        font-size: 1.35rem;
+    }
+    .stat-card {
+        padding: 1rem;
+    }
+    .stat-card .stat-number {
+        font-size: 1.8rem;
+    }
+    .filter-card {
+        padding: 1rem;
+    }
+    .card-header {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .bitacora-header {
+        padding: 1.25rem;
+    }
+    .bitacora-header h3 {
+        font-size: 1.15rem;
+    }
+    .bitacora-header p {
+        font-size: 0.8rem;
+    }
+    .stat-card .stat-number {
+        font-size: 1.5rem;
+    }
+    .stat-card .stat-label {
+        font-size: 0.7rem;
+    }
+    .filter-card .col-12 {
+        margin-bottom: 0.75rem;
+    }
+    .table-bitacora th,
+    .table-bitacora td {
+        padding: 0.6rem 0.5rem !important;
+        font-size: 0.75rem;
+    }
+    .table-bitacora th {
+        font-size: 0.7rem;
+    }
+    .action-badge {
+        font-size: 0.65rem;
+        padding: 0.25em 0.6em;
+    }
+    .usuario-chip, .modulo-chip {
+        font-size: 0.7rem;
+        padding: 0.15em 0.6em;
+    }
+    .pagination {
+        gap: 4px;
+    }
+    .pagination .page-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.85rem;
+        min-width: 34px;
+    }
+}
