@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 05-07-2026 a las 06:35:24
+-- Tiempo de generación: 06-07-2026 a las 01:50:45
 -- Versión del servidor: 9.4.0
 -- Versión de PHP: 8.3.30
 
@@ -42,10 +42,10 @@ CREATE TABLE `administracion_respaldos` (
 
 CREATE TABLE `bitacora` (
   `id_bitacora` int NOT NULL,
-  `usuario` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
+  `usuario` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `id_modulo` int NOT NULL,
-  `modulo` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `accion` varchar(45) COLLATE utf8mb4_general_ci NOT NULL,
+  `modulo` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `accion` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   `fecha` datetime NOT NULL,
   `hora_inicio_sesion` datetime NOT NULL,
   `hora_cierre_sesion` datetime NOT NULL,
@@ -281,16 +281,16 @@ INSERT INTO `bitacora` (`id_bitacora`, `usuario`, `id_modulo`, `modulo`, `accion
 --
 
 CREATE TABLE `usuarios` (
-  `id_usuarios` int NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
-  `cedula_usuario` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
-  `contrasena` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `correo` varchar(45) COLLATE utf8mb4_general_ci NOT NULL,
-  `rol` varchar(20) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Tabla de los usuarios.',
-  `otp_code` varchar(4) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Código OTP de 4 dígitos',
+  `id_usuarios` int NOT NULL,
+  `nombre` varchar(25) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `cedula_usuario` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `contrasena` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `correo` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `rol` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Tabla de los usuarios.',
+  `otp_code` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Código OTP de 4 dígitos',
   `otp_expiry` datetime DEFAULT NULL COMMENT 'Fecha de expiración del OTP',
   `otp_attempts` int DEFAULT '0' COMMENT 'Intentos fallidos de OTP',
-  `estado` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1 para activo, 0 para inactivo',
+  `estado` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 para activo, 0 para inactivo',
   `avatar` varchar(255) COLLATE utf8mb4_general_ci DEFAULT 'assets/img/avatars/1.png' COMMENT 'Foto de perfil del usuario'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla de usuarios';
 
@@ -298,12 +298,12 @@ CREATE TABLE `usuarios` (
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id_usuarios`, `nombre`, `cedula_usuario`, `contrasena`, `correo`, `rol`, `otp_code`, `otp_expiry`, `otp_attempts`, `estado`) VALUES
-(1, 'admin', '12345678', 'pbkdf2:sha256:600000$55dFI8r0mPOkdiR2$a437b96290e42be3cc8c847fb37c088aafc6894dddc904465813a5e849da2e6d', 'admin@gmail.com', 'Super Usuario', NULL, NULL, 0, 1),
-(2, 'David Peña', '30304373', 'pbkdf2:sha256:600000$vrPeCy7DriZsqNf1$261a031113df36adffa0ccf133b61b5fcbb7080e3ae6d163d47704bbf6e12955', 'davidalejandropegaso@gmail.com', 'Usuario', NULL, NULL, 0, 1),
-(3, 'prueba1', '09321765', 'pbkdf2:sha256:600000$MLVBG6gIQHOhds5b$206e5507217733b5cd32f778b54b56fa95ce47f9aab8f0ea48257e3fde959562', 'prueba@gmail.com', 'Usuario', NULL, NULL, 0, 1),
-(4, 'Lenny Reyes', '10841560', 'pbkdf2:sha256:600000$A8g1Hf9g4gUXVJld$d2f0cf10d88ab5ad03b13c4221dd86425f555076bd0dffe355c0f4ab79999cfb', 'reyeslennyf72@gmail.com', 'Usuario', NULL, NULL, 0, 1),
-(5, 'Frangher Pereira', '30553759', 'pbkdf2:sha256:600000$9RdO5FjhNZDoOLuo$de664dbbbba289ba9504edab378fbd6eca14c1b1cb982e5ce8284e18920365f7', 'frangher200@gmail.com', 'Usuario', NULL, NULL, 0, 1);
+INSERT INTO `usuarios` (`id_usuarios`, `nombre`, `cedula_usuario`, `contrasena`, `correo`, `rol`, `otp_code`, `otp_expiry`, `otp_attempts`, `estado`, `avatar`) VALUES
+(1, 'admin', '12345678', 'pbkdf2:sha256:600000$55dFI8r0mPOkdiR2$a437b96290e42be3cc8c847fb37c088aafc6894dddc904465813a5e849da2e6d', 'admin@gmail.com', 'Super Usuario', NULL, NULL, 0, 1, 'assets/img/avatars/1.png'),
+(2, 'David Peña', '30304373', 'pbkdf2:sha256:600000$hNB86qI4PJLFj5zI$a8db74876d9381392452fc144ee2156d98dfb5f30d0b26e0dc7ee93518d9bada', 'davidalejandropegaso@gmail.com', 'Asistente', NULL, NULL, 0, 1, 'assets/img/avatars/1.png'),
+(3, 'prueba1', '09321765', 'pbkdf2:sha256:600000$MLVBG6gIQHOhds5b$206e5507217733b5cd32f778b54b56fa95ce47f9aab8f0ea48257e3fde959562', 'prueba@gmail.com', 'Administrador', NULL, NULL, 0, 1, 'assets/img/avatars/1.png'),
+(4, 'Lenny Reyes', '10841560', 'pbkdf2:sha256:600000$A9tsjRGrOtg7MytU$364943a4dcd71d7093110fe2dc1701c31b56978791f4ad5030247e046ce5a25d', 'reyeslennyf72@gmail.com', 'Recepcionista', NULL, NULL, 0, 1, 'assets/img/avatars/1.png'),
+(5, 'Frangher Pereira', '30553759', 'pbkdf2:sha256:600000$9RdO5FjhNZDoOLuo$de664dbbbba289ba9504edab378fbd6eca14c1b1cb982e5ce8284e18920365f7', 'frangher200@gmail.com', 'Gerente', NULL, NULL, 0, 1, 'assets/img/avatars/1.png');
 
 --
 -- Índices para tablas volcadas
@@ -327,46 +327,17 @@ ALTER TABLE `bitacora`
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`id_usuarios`),
-  ADD UNIQUE KEY `cedula_usuario_UNIQUE` (`cedula_usuario`);
+  ADD PRIMARY KEY (`id_usuarios`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT de la tabla `administracion_respaldos`
---
-ALTER TABLE `administracion_respaldos`
-  MODIFY `id_respaldo` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `bitacora`
---
-ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=217;
-
---
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   MODIFY `id_usuarios` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `administracion_respaldos`
---
-ALTER TABLE `administracion_respaldos`
-  ADD CONSTRAINT `fk_administracion_respaldos_usuarios` FOREIGN KEY (`usuarios_id_usuarios`) REFERENCES `usuarios` (`id_usuarios`);
-
---
--- Filtros para la tabla `bitacora`
---
-ALTER TABLE `bitacora`
-  ADD CONSTRAINT `fk_bitacora_usuarios1` FOREIGN KEY (`usuarios_id_usuarios`) REFERENCES `usuarios` (`id_usuarios`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
