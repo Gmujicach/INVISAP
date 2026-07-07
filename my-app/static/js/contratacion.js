@@ -372,3 +372,44 @@ document.getElementById('formContratacion').addEventListener('submit', function(
         });
     });
 });
+
+$(document).ready(function() {
+    // Inicialización de DataTables corregida con paginación explícita
+    var table = $('#tablaContrataciones').DataTable({
+        dom: 'rt<"d-flex justify-content-end py-3"p>', // Fuerza el renderizado de la paginación de Bootstrap
+        info: false,
+        lengthChange: false,
+        pageLength: 8, // Configurado exactamente a 8 registros por página
+        columnDefs: [
+            { "orderable": false, "targets": 6 }
+        ],
+        language: {
+            "emptyTable": "Ningún dato disponible en esta tabla",
+            "zeroRecords": "No se encontraron resultados",
+            "paginate": {
+                "next": "Siguiente",
+                "previous": "Anterior"
+            }
+        }
+    });
+
+    // Lógica del filtro de búsqueda por columna
+    $('#customBuscador').on('input', function() {
+        var valorBusqueda = this.value;
+        var columnaSeleccionada = $('#columnaBusqueda').val();
+
+        table.search('').columns().search('');
+
+        if (columnaSeleccionada === 'all') {
+            table.search(valorBusqueda).draw();
+        } else {
+            table.column(parseInt(columnaSeleccionada)).search(valorBusqueda).draw();
+        }
+    });
+
+    // Al cambiar la columna del Select, reinicia la búsqueda
+    $('#columnaBusqueda').on('change', function() {
+        $('#customBuscador').val('');
+        table.search('').columns().search('').draw();
+    });
+});

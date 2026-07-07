@@ -6,36 +6,70 @@
   .table-hover tbody tr:hover td {
       background-color: #f8f9fa;
   }
+  .search-modern {
+      min-width: 250px;
+  }
+  .search-modern .input-group-text {
+      background-color: transparent;
+      border-right: none;
+  }
+  .search-modern .form-control {
+      border-left: none;
+  }
+  .search-modern .form-control:focus {
+      box-shadow: none;
+      border-color: #dee2e6;
+  }
+  /* Estilos para la paginación de DataTables */
+  .dataTables_paginate {
+      margin-top: 15px !important;
+      padding-right: 15px !important;
+  }
 </style>
 {% endblock %}
 
 {% block body %}
-<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
+<div class="card mb-4 shadow-sm" style="border-radius: 0px !important; border: none;">
   <div class="card-header bg-white border-bottom py-3">
-    <div class="row align-items-center">
-      <div class="col-md-6 text-start">
-        <h5 class="mb-0 text-primary fw-bold">CONTRATACIONES REGISTRADAS</h5>
-      </div>
-      <div class="col-md-6 text-end">
-        <button class="btn btn-primary btn-sm px-3" type="button" data-bs-toggle="modal" data-bs-target="#modalContratacion">
-          <i class="bx bx-plus"></i> Nueva Contratación
-        </button>
-      </div>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <div class="text-start">
+            <h5 class="mb-0 text-primary fw-bold">CONTRATACIONES REGISTRADAS</h5>
+        </div>
+        
+        <div class="d-flex align-items-center gap-2">
+            <div class="input-group shadow-sm" style="max-width: 450px;">
+                <select class="form-select border-secondary" id="columnaBusqueda" style="max-width: 140px;">
+                    <option value="all">Todo</option>
+                    <option value="2">N° Contrato</option>
+                    <option value="0">Descripción</option>
+                    <option value="3">Monto</option>
+                    <option value="1">Empresa</option>
+                </select>
+                <input type="text" id="customBuscador" class="form-control border-secondary border-end-0" placeholder="Buscar...">
+                <span class="input-group-text bg-white border-secondary border-start-0 text-muted">
+                    <i class="bx bx-search"></i>
+                </span>
+            </div>
+
+            <button class="btn btn-primary px-3 text-nowrap shadow-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalContratacion">
+                <i class="bx bx-plus"></i> Nueva Contratación
+            </button>
+        </div>
     </div>
-  </div>
+</div>
   
   <div class="card-body p-0"> 
     <div class="table-responsive">
-      <table class="table table-bordered table-striped table-hover align-middle mb-0" style="font-size: 0.85rem;">
+      <table id="tablaContrataciones" class="table table-bordered table-striped table-hover align-middle mb-0" style="font-size: 0.85rem; border-top: none;">
         <thead class="table-light">
         <tr>
-            <th>Descripción y Observaciones</th>
-            <th>Empresa / RIF</th>
-            <th>N° Contrato</th>
-            <th>Monto</th>
-            <th>Clasificación</th>
-            <th>Fechas del Proceso</th>
-            <th class="text-center" style="width: 90px;">Acciones</th>
+            <th class="border-top-0">Descripción y Observaciones</th>
+            <th class="border-top-0">Empresa / RIF</th>
+            <th class="border-top-0">N° Contrato</th>
+            <th class="border-top-0">Monto</th>
+            <th class="border-top-0">Clasificación</th>
+            <th class="border-top-0">Fechas del Proceso</th>
+            <th class="text-center border-top-0" style="width: 90px;">Acciones</th>
         </tr>
         </thead>
         <tbody>
@@ -107,9 +141,7 @@
         <h5 class="modal-title fw-bold text-secondary" id="modalLabel">
             <i class="bx bx-folder-plus me-1 text-primary"></i> Registrar Nueva Contratación
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-            <i class="bx bx-x" style="font-size: 24px;"></i>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       
       <form method="POST" action="{{ url_for('contrataciones_bp.procesar_registro') }}" id="formContratacion" autocomplete="off">
@@ -265,9 +297,7 @@
           </h5>
           <small class="text-light-50">Seleccione la empresa ganadora para esta contratación</small>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-            <i class="bx bx-x" style="font-size: 24px;"></i>
-        </button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="table-responsive">
