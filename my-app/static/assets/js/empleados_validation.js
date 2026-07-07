@@ -49,6 +49,13 @@ async function registrarEmpleadoFetch(event) {
     
     if (!form.checkValidity()) {
         form.classList.add('was-validated');
+        
+        // Encontrar el primer campo inválido
+        const primerCampoInvalido = form.querySelector(':invalid');
+        if (primerCampoInvalido) {
+            primerCampoInvalido.focus();
+        }
+        
         mostrarError('Complete todos los campos requeridos correctamente.');
         return;
     }
@@ -95,6 +102,12 @@ async function actualizarEmpleadoFetch(event) {
     
     if (!form.checkValidity()) {
         form.classList.add('was-validated');
+        
+        const primerCampoInvalido = form.querySelector(':invalid');
+        if (primerCampoInvalido) {
+            primerCampoInvalido.focus();
+        }
+        
         mostrarError('Complete todos los campos requeridos correctamente.');
         return;
     }

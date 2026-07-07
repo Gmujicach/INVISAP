@@ -20,7 +20,6 @@
       box-shadow: none;
       border-color: #dee2e6;
   }
-  /* Estilos para la paginación de DataTables */
   .dataTables_paginate {
       margin-top: 15px !important;
       padding-right: 15px !important;
@@ -56,10 +55,10 @@
             </button>
         </div>
     </div>
-</div>
+  </div>
   
   <div class="card-body p-0"> 
-    <div class="table-responsive">
+    <div class="table-responsive" id="tablaContratacionesContenedor">
       <table id="tablaContrataciones" class="table table-bordered table-striped table-hover align-middle mb-0" style="font-size: 0.85rem; border-top: none;">
         <thead class="table-light">
         <tr>
@@ -125,8 +124,6 @@
               </a>
             </td>
           </tr>
-          {% else %}
-          <tr><td colspan="7" class="text-center text-muted py-5"><i class="bx bx-folder-open fs-2 d-block mb-2"></i>NO SE ENCUENTRAN CONTRATACIONES REGISTRADAS</td></tr>
           {% endfor %}
         </tbody>
       </table>

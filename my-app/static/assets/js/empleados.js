@@ -94,6 +94,7 @@ function triggerEmpleadosDashboard() {
                       <option value="Recepcionista">Recepcionista</option>
                       <option value="Ingeniero">Ingeniero</option>
                       <option value="Coordinador">Coordinador</option>
+                      <option value="Operador">Operador</option>
                     </select>
                     <div class="invalid-feedback">Seleccione un cargo.</div>
                   </div>
@@ -254,6 +255,12 @@ async function registrarEmpleadoFetchDashboard(event) {
     // Validar formulario HTML5
     if (!form.checkValidity()) {
         form.classList.add('was-validated');
+        
+        const primerCampoInvalido = form.querySelector(':invalid');
+        if (primerCampoInvalido) {
+            primerCampoInvalido.focus();
+        }
+        
         mostrarNotificacion('Complete todos los campos correctamente.', 'error');
         return;
     }
