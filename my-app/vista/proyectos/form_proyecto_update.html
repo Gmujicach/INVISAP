@@ -86,7 +86,12 @@
                   {% endfor %}
                 </select>
               </div>
-         
+              <div class="col-md-6">
+                <label for="proyectista_p" class="form-label fw-bold text-secondary">Proyectista Asignado</label>
+                <select class="form-select shadow-sm" name="proyectista_p" id="proyectista_p">
+                  <option value="" selected disabled>Cargando proyectistas...</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -107,4 +112,16 @@
 
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/proyecto.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/js/empleados.js') }}"></script>
+<script>
+  // Cargar proyectistas y preseleccionar el asignado al proyecto
+  const proyectistaActual = "{{ proyecto.proyecto_has_empleado if proyecto.proyecto_has_empleado is not none else '' }}";
+  if (typeof cargarEmpleadosPorCargo === 'function') {
+    cargarEmpleadosPorCargo('Proyectista', 'proyectista_p').then(() => {
+      if (proyectistaActual) {
+        document.getElementById('proyectista_p').value = proyectistaActual;
+      }
+    });
+  }
+</script>
 {% endblock %}

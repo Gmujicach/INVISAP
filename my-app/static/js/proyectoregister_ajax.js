@@ -157,6 +157,7 @@ function enviarFormulario(form) {
                         <td>${p.computos_metricos || '—'}</td>
                         <td>${p.problematica || '—'}</td>
                         <td><span class="badge bg-dark">${p.nombre_maquinaria || 'PENDIENTE'}</span></td>
+                        <td><span class="badge bg-info">${p.nombre_proyectista || 'Sin asignar'}</span></td>
                         <td class="text-success fw-bold">${p.estimacion_costo}</td>
                         <td class="text-center">
                             <div class="d-flex gap-1 justify-content-center">
@@ -200,7 +201,7 @@ function confirmarEliminacion(btn) {
                     actualizarContador(-1);
                     if (tableBody.querySelectorAll('tr').length === 0) {
                         tableBody.insertAdjacentHTML('beforeend', 
-                            '<tr id="mensaje-vacio"><td colspan="10" class="text-center text-muted py-4">NO SE ENCUENTRAN PROYECTOS GESTIONADOS</td></tr>');
+                            '<tr id="mensaje-vacio"><td colspan="11" class="text-center text-muted py-4">NO SE ENCUENTRAN PROYECTOS GESTIONADOS</td></tr>');
                     }
                     Swal.fire('Eliminado', 'Proyecto eliminado.', 'success');
                 }
