@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 06-07-2026 a las 02:11:17
+-- Tiempo de generación: 07-07-2026 a las 15:56:27
 -- Versión del servidor: 9.4.0
 -- Versión de PHP: 8.3.30
 
@@ -64,6 +64,7 @@ INSERT INTO `avance` (`id_avance`, `porcentaje_avance`, `descripcion`, `gerente`
 ('6d2ff375fef8', 30, 'Test', '1', '2026-07-05', 24, 24, 1, 'FRE-001'),
 ('7317ea5dba7d', 44, 'Sector La Aguada se necesita asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001'),
 ('752f90f2b837', 100, 'en la urbanizacion hay que asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001'),
+('7a4e67e5c2ce', 40, 'Siguiendo Las Instrucciones del gobernador Cm', '1', '2026-07-06', 24, 24, 1, 'FRE-001'),
 ('7abe4665215b', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 16, 16, 1, 'FRE-001'),
 ('80e3115d8f95', 44, 'Sector La Aguada se necesita asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001'),
 ('83bc77674b51', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 15, 15, 1, 'FRE-001'),
@@ -75,6 +76,7 @@ INSERT INTO `avance` (`id_avance`, `porcentaje_avance`, `descripcion`, `gerente`
 ('ad20d3759114', 13, 'En Av. Intercomunal se hizo un asfaltado y em', '5', '2026-07-03', 24, 24, 1, 'FRE-001'),
 ('ae8c50e964e9', 50, 'reparar la Comunidad', '6', '2026-07-05', 24, 24, 1, 'FRE-001'),
 ('b07c92e0e7ff', 13, 'En Av. Intercomunal se hizo un asfaltado y em', '5', '2026-07-03', 24, 24, 1, 'FRE-001'),
+('b0d8247b2d01', 100, 'en Morán hay que reparar', '1', '2026-07-06', 24, 24, 1, 'FRE-001'),
 ('b25c0cb85384', 16, 'En san francisco se hizo un bache', '6', '2026-07-01', 21, 21, 1, 'FRE-001'),
 ('b70e531c3f5f', 30, 'En Cabudares nos informaron de que no cargan ', '5', '2026-06-30', 2, 2, 1, 'FRE-001'),
 ('b7b4eb5ecb30', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 3, 3, 1, 'FRE-001'),
@@ -83,6 +85,7 @@ INSERT INTO `avance` (`id_avance`, `porcentaje_avance`, `descripcion`, `gerente`
 ('beda52ea9bd1', 50, 'Test obs', '1', '2026-07-05', 24, 24, 1, 'FRE-001'),
 ('bf0e7abdad06', 93, 'En el Cují, en la Calle 3 se realizara un asf', '5', '2026-07-04', 24, 24, 1, 'FRE-001'),
 ('c0ecec782081', 38, 'reparaciones en Cabudares', '1', '2026-07-03', 24, 24, 1, 'FRE-001'),
+('c46ec2a9eb43', 39, 'En el Sector La Aguada se realizaran reparaci', '10', '2026-07-07', 24, 24, 1, 'FRE-001'),
 ('d159b72e9c16', 28, 'En la Salle se comenzo a hacer una obra', '1', '2026-07-04', 24, 24, 1, 'FRE-001'),
 ('d169eb15ef98', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 12, 12, 1, 'FRE-001'),
 ('d3c620ff34ad', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 5, 5, 1, 'FRE-001'),
@@ -203,7 +206,8 @@ INSERT INTO `empleados` (`id_empleados`, `nombre_empleado`, `cargo`, `fecha_ingr
 (6, 'Alejandro Mejia Bautista', 'Inspector', '2026-06-08', 'Gerencia de Obras', 12, 1),
 (7, 'Elena María Riera', 'Proyectista', '2017-02-13', 'Gerencia de Proyectos', 13, 1),
 (8, 'Javier Eduardo Páez', 'Proyectista', '2021-11-14', 'Gerencia de Proyectos', 14, 1),
-(9, 'Sofía Alexandra Guedez', 'Asistente', '2023-08-17', 'Atencion al Ciudadano', 15, 1);
+(9, 'Sofía Alexandra Guedez', 'Asistente', '2023-08-17', 'Atencion al Ciudadano', 15, 1),
+(10, 'José Gregorio Montes', 'Inspector', '2026-07-01', 'Gerencias de Obras', 12, 1);
 
 -- --------------------------------------------------------
 
@@ -306,7 +310,7 @@ CREATE TABLE `informe_avance_obra` (
   `id_informe` int NOT NULL,
   `fecha` datetime NOT NULL,
   `estado` varchar(25) NOT NULL,
-  `poblacion_beneficiada` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `poblacion_beneficiada` varchar(45) NOT NULL DEFAULT 'No especificado',
   `tipo_informe` varchar(30) NOT NULL,
   `evidencia_antes` varchar(50) NOT NULL,
   `evidencia_durante` varchar(50) NOT NULL,
@@ -320,25 +324,28 @@ CREATE TABLE `informe_avance_obra` (
 --
 
 INSERT INTO `informe_avance_obra` (`id_informe`, `fecha`, `estado`, `poblacion_beneficiada`, `tipo_informe`, `evidencia_antes`, `evidencia_durante`, `evidencia_despues`, `avance_id_avance`, `estado_registro`) VALUES
-(1, '2026-06-30 21:13:31', 'Aprobado', 'Pueblo Nuevo Avenida 4 con Calle 5', 'Menor', '12', '15', '', 'fef7ab9d0883', 0),
+(1, '2026-06-30 21:13:31', 'Aprobado', 'Pueblo Nuevo Avenida 4 con Calle 5', 'Menor', '12', '15', '', 'fef7ab9d0883', 1),
 (2, '2026-06-30 22:12:15', 'En Ejecucion', 'Cabudares', 'Mayor', '12', '16', '', 'b70e531c3f5f', 1),
 (18, '2026-07-01 22:31:07', 'Culminado', 'Luis Hurtado', 'Ficha Inspeccion Tecnica', '12', '17', '14', '22a8d98cd659', 1),
 (23, '2026-07-02 20:28:32', 'En Ejecucion', 'Comunidad Nuevo Horizonte en Iribarren', 'Avance Mensual', '21', '18', '24', 'a09e4dfbbe8c', 1),
-(25, '2026-07-03 00:12:09', 'En Ejecucion', 'Palavecino Av. Intercomunal, Conjunto Res', 'Menor', '19', '16', '', 'ad20d3759114', 0),
-(26, '2026-07-03 00:12:14', 'En Ejecucion', 'Palavecino Av. Intercomunal, Conjunto Res', 'Menor', '19', '16', '', 'b07c92e0e7ff', 0),
+(25, '2026-07-03 00:12:09', 'En Ejecucion', 'Palavecino Av. Intercomunal, Conjunto Res', 'Menor', '19', '16', '', 'ad20d3759114', 1),
+(26, '2026-07-03 00:12:14', 'En Ejecucion', 'Palavecino Av. Intercomunal, Conjunto Res', 'Menor', '19', '16', '', 'b07c92e0e7ff', 1),
 (28, '2026-07-03 02:17:51', 'En Ejecucion', 'Iribarren Av. Venezuela, Urb. Fundalara', 'Mayor', '', '', '', 'd9b6d8dfb228', 1),
 (29, '2026-07-03 02:18:12', 'En Ejecucion', 'Cabudare Urb. La Rosaleda Calle 5 Casa 12', 'Menor', '', '', '', 'c0ecec782081', 1),
 (30, '2026-07-04 17:34:27', 'Aprobado', 'La Salle Avenida 4 con Calle 3', 'Mayor', '19,20', '17', '', 'd159b72e9c16', 1),
 (33, '2026-07-04 20:14:59', 'En Ejecucion', 'Urb. El Cují, Calle 3, Lote 14', 'Avance Mensual', '21', '18', '', 'bf0e7abdad06', 1),
-(34, '2026-07-04 21:13:37', 'En Ejecucion', 'Tamaca Urb. El Recreo, Calle Principal, Casa', 'Avance Mensual', '19', '16,17', '', '942e517e2048', 0),
-(35, '2026-07-04 21:17:41', 'Aprobado', 'José Gregorio Bastidas Av. Intercomunal', 'Ficha Inspeccion Tecnica', '19,21,22', '15,16', '', '49143e692fde', 0),
+(34, '2026-07-04 21:13:37', 'En Ejecucion', 'Tamaca Urb. El Recreo, Calle Principal, Casa', 'Avance Mensual', '19', '16,17', '', '942e517e2048', 1),
+(35, '2026-07-04 21:17:41', 'Aprobado', 'José Gregorio Bastidas Av. Intercomunal', 'Ficha Inspeccion Tecnica', '19,21,22', '15,16', '', '49143e692fde', 1),
 (37, '2026-07-04 22:00:18', 'Aprobado', 'Juares Sector La Aguada, Calle Principal', 'Menor', '19,20,21,22', '15,17,16,18', '', '7317ea5dba7d', 1),
-(38, '2026-07-04 22:00:40', 'Aprobado', 'Juares Sector La Aguada, Calle Principal', 'Menor', '19,20,21,22', '15,17,16,18', '', '80e3115d8f95', 0),
+(38, '2026-07-04 22:00:40', 'Aprobado', 'Juares Sector La Aguada, Calle Principal', 'Menor', '19,20,21,22', '15,17,16,18', '', '80e3115d8f95', 1),
 (39, '2026-07-04 23:02:06', 'Culminado', 'Urb. La Piedad, Manzana C, Casa 15', 'Ficha Inspeccion Tecnica', '19,20,21,22,12', '15,16,17,18,13', '23,24,25,26,14', 'e862a33d0c7c', 1),
-(40, '2026-07-04 23:07:05', 'Culminado', 'Urb. La Piedad, Manzana C, Casa 15', 'Ficha Inspeccion Tecnica', '19,20,21,22,12', '15,16,17,18,13', '23,24,25,26,14', '752f90f2b837', 0),
+(40, '2026-07-04 23:07:05', 'Culminado', 'Urb. La Piedad, Manzana C, Casa 15', 'Ficha Inspeccion Tecnica', '19,20,21,22,12', '15,16,17,18,13', '23,24,25,26,14', '752f90f2b837', 1),
 (41, '2026-07-04 23:36:56', 'En Ejecucion', 'Carretera Nacional, Caserío El Copey', 'Avance Mensual', '', '', '', '0780c1c2a553', 1),
 (42, '2026-07-05 00:28:47', 'En Ejecucion', 'El Tocuyo Av. Rotaria, Sector La Montañita', 'Avance Mensual', '20,21', '16,15', '', '0c8eb3a83706', 1),
-(43, '2026-07-05 01:00:13', 'Aprobado', 'para la Comunidad santa la Osa', 'Menor', '20,21', '18,13', '23', 'ae8c50e964e9', 0);
+(43, '2026-07-05 01:00:13', 'Aprobado', 'para la Comunidad santa la Osa', 'Menor', '20,21', '18,13', '23', 'ae8c50e964e9', 1),
+(50, '2026-07-06 04:24:19', 'En Ejecucion', 'Urb. La Piedad, Manzana C, Casa 15', 'Ficha Inspeccion Tecnica', '20', '18,17', '', '7a4e67e5c2ce', 1),
+(51, '2026-07-06 19:53:13', 'Culminado', 'Av. Rotaria, Sector La Montañita en Morán', 'Mayor', '19,21,20', '15,16,17', '', 'b0d8247b2d01', 1),
+(52, '2026-07-07 00:44:24', 'En Ejecucion', 'Sector La Aguada, Calle Principal 20 personas', 'Menor', '19,12,22', '', '', 'c46ec2a9eb43', 1);
 
 -- --------------------------------------------------------
 
@@ -381,7 +388,7 @@ CREATE TABLE `institucion` (
 --
 
 INSERT INTO `institucion` (`id_institucion`, `nombre_representante`, `razon_social`, `persona_id_persona`) VALUES
-(1, 'gabriel', 'youtube', 3);
+(2, 'María Rodríguez', 'U.E.N. Lisandro Alvarado', 16);
 
 -- --------------------------------------------------------
 
@@ -536,7 +543,9 @@ INSERT INTO `persona` (`id_persona`, `cedula_persona`, `direccion`, `parroquia`,
 (12, 8977634, 'Av. Los Horcones con Av. La Salle.', 'Catedral', 'Iribarren', '04125677474', 'MejiAlejandro443@gmail.com'),
 (13, 28542148, 'Calle 9 entre Cra. 20 y 21, Casa N° 20-15', 'Concepción', 'Iribarren', '04163347465', 'Elenaita22Ri@gmail.com'),
 (14, 29723582, 'Urb. La Rosaleda, Calle 5, Casa 12', 'Cabudare', 'Palavecino', '04125543568', 'ElJavivi@gmail.com'),
-(15, 29545867, 'Av. Los Abogados, Res. El Parque, Torre A', 'Santa Rosa', 'Iribarren', '04146564722', 'LaSofi23@gmail.com');
+(15, 29545867, 'Av. Los Abogados, Res. El Parque, Torre A', 'Santa Rosa', 'Iribarren', '04146564722', 'LaSofi23@gmail.com'),
+(16, 12345678, 'Av. Principal, Sector Centro', 'Catedral', 'Iribarren', '0251-2319786', 'contacto@l-alvarado.edu.ve'),
+(17, 25289197, 'Calle Carabobo, Casa N° 34', 'Anzoátegui', 'Morán', '04120896778', 'FranVier@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -635,8 +644,16 @@ CREATE TABLE `publicacion` (
   `tipo_publicacion` varchar(15) NOT NULL,
   `fecha_publicacion` datetime NOT NULL COMMENT 'Tabla de gestion de publicaciones',
   `informe_avance_obra_id_informe` int NOT NULL,
-  `cuerpo_publicacion` text
+  `cuerpo_publicacion` text,
+  `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `publicacion`
+--
+
+INSERT INTO `publicacion` (`id_publicacion`, `titulo_publicacion`, `nombre_responsable`, `tipo_publicacion`, `fecha_publicacion`, `informe_avance_obra_id_informe`, `cuerpo_publicacion`, `estado`) VALUES
+(1, 'Cabudares esta en escaces de agua por varias semanas', 'Administrador', 'General', '2026-07-07 00:55:59', 2, 'Gracias a las orientaciones del gobernador Cmdte. Luis Reyes Reyes, seguimos activos y avanzando con el despliegue estrategico para la reconstrucción y sustitución de las estructuras de alcantarillas en diferentes sectores de la parroquia Cabudare del municipio Palavecino, Estado Lara.', 1);
 
 -- --------------------------------------------------------
 
@@ -737,7 +754,8 @@ INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus
 (2, '2026-06-15 16:40:32', 'Comunidad', 'Completada', '[Salud y Asistencia Médica] En la comunidad necesitamos una jornada de vacunación', 2, 1),
 (3, '2026-06-15 16:46:00', 'Comunidad', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] hueco en la avenida donde salen aguas negras', 4, 1),
 (7, '2026-06-16 17:58:23', 'Comunidad', 'En Proceso', '[Infraestructura y Vialidad] Acondicionamiento vial', 6, 1),
-(8, '2026-06-24 16:04:42', 'Particular', 'En Proceso', '[Servicios Básicos (Agua, Luz, Gas)] No hay agua y todos nos estamos derritiendo, porfis traigan aguita aaaaaaaaa', 11, 1);
+(8, '2026-06-24 16:04:42', 'Particular', 'En Proceso', '[Servicios Básicos (Agua, Luz, Gas)] No hay agua y todos nos estamos derritiendo, porfis traigan aguita aaaaaaaaa', 11, 1),
+(9, '2026-07-05 22:32:39', 'Institucion', 'En Proceso', '[Infraestructura y Vialidad] Reparación de bacheo profundo en el acceso principal de la institución por filtraciones.', 16, 1);
 
 -- --------------------------------------------------------
 
@@ -746,40 +764,52 @@ INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_evidencia_informe` (
-`id_evidencia` int
-,`fotos` varchar(255)
-,`url_archivos` varchar(255)
-,`fecha_registro` datetime
-,`etapa` enum('antes','durante','despues')
-,`estado` tinyint
-,`id_informe` int
-,`fecha_informe` datetime
-,`tipo_informe` varchar(30)
+`estado` tinyint
 ,`estado_informe` varchar(25)
+,`etapa` enum('antes','durante','despues')
+,`fecha_informe` datetime
+,`fecha_registro` datetime
+,`fotos` varchar(255)
+,`id_evidencia` int
+,`id_informe` int
+,`tipo_informe` varchar(30)
+,`url_archivos` varchar(255)
 );
 
 --
 -- Índices para tablas volcadas
 --
 
--- ============================================================
--- MIGRACIÓN: Agregar columna 'estado' a tabla empleados (si no existe)
--- Soluciona error 1054: Unknown column 'estado' in 'field list'
--- ============================================================
--- Verificar si la columna existe antes de agregarla (evita error en re-ejecuciones)
-SET @existe_columna := (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
-  WHERE TABLE_SCHEMA = DATABASE() 
-  AND TABLE_NAME = 'empleados' 
-  AND COLUMN_NAME = 'estado');
+--
+-- Indices de la tabla `avance`
+--
+ALTER TABLE `avance`
+  ADD PRIMARY KEY (`id_avance`),
+  ADD KEY `fk_avance_obra1_idx` (`obra_id_obra`,`obra_semaforo_id_semaforo`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`);
 
-SET @sql := IF(@existe_columna = 0,
-  'ALTER TABLE `empleados` ADD COLUMN `estado` TINYINT NOT NULL DEFAULT 1 COMMENT ''1=Activo, 0=Inactivo (Borrado Lógico)''',
-  'SELECT ''Columna estado ya existe''');
+--
+-- Indices de la tabla `catalogo_cargos`
+--
+ALTER TABLE `catalogo_cargos`
+  ADD PRIMARY KEY (`id_cargo`),
+  ADD UNIQUE KEY `nombre_cargo_UNIQUE` (`nombre_cargo`);
 
-PREPARE stmt FROM @sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
+--
+-- Indices de la tabla `comunidad`
+--
+ALTER TABLE `comunidad`
+  ADD PRIMARY KEY (`id_comunidad`,`persona_id_persona`),
+  ADD KEY `fk_comunidad_persona1_idx` (`persona_id_persona`);
 
+--
+-- Indices de la tabla `contratacion`
+--
+ALTER TABLE `contratacion`
+  ADD PRIMARY KEY (`id_contratacion`),
+  ADD UNIQUE KEY `numero_contrato_UNIQUE` (`numero_contrato`),
+  ADD KEY `fk_contratacion_empresa1_idx` (`empresa_rif`);
+
+--
 -- Indices de la tabla `empleados`
 --
 ALTER TABLE `empleados`
@@ -959,7 +989,7 @@ ALTER TABLE `contratacion`
 -- AUTO_INCREMENT de la tabla `empleados`
 --
 ALTER TABLE `empleados`
-  MODIFY `id_empleados` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_empleados` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `evidencia`
@@ -977,7 +1007,7 @@ ALTER TABLE `gravedad_obra`
 -- AUTO_INCREMENT de la tabla `informe_avance_obra`
 --
 ALTER TABLE `informe_avance_obra`
-  MODIFY `id_informe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id_informe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT de la tabla `inspeccion`
@@ -989,7 +1019,7 @@ ALTER TABLE `inspeccion`
 -- AUTO_INCREMENT de la tabla `institucion`
 --
 ALTER TABLE `institucion`
-  MODIFY `id_institucion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_institucion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `maquinaria`
@@ -1013,7 +1043,7 @@ ALTER TABLE `particular`
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `id_persona` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id_persona` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `prioridad`
@@ -1025,7 +1055,7 @@ ALTER TABLE `prioridad`
 -- AUTO_INCREMENT de la tabla `publicacion`
 --
 ALTER TABLE `publicacion`
-  MODIFY `id_publicacion` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_publicacion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `reporte`
@@ -1043,7 +1073,7 @@ ALTER TABLE `semaforo`
 -- AUTO_INCREMENT de la tabla `solicitudes`
 --
 ALTER TABLE `solicitudes`
-  MODIFY `id_solicitudes` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_solicitudes` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 -- --------------------------------------------------------
 
