@@ -80,11 +80,10 @@ def obtener_modulos_excel_por_filtro(filtro):
     if not filtro:
         return modulos_config
     texto = filtro.lower().strip()
-    seleccionados = []
     for mod in modulos_config:
-        if texto in mod['id'].lower() or any(texto in kw for kw in mod['keywords']) or texto in mod['label'].lower():
-            seleccionados.append(mod)
-    return seleccionados
+        if texto == mod['id'].lower():
+            return [mod]
+    return []
 
 
 @reporte_excel_bp.route('/reporte-excel', methods=['GET', 'POST'])
@@ -105,7 +104,7 @@ def generarReporteExcel():
         wb.remove(wb.active)
 
         for mod in modulos_a_procesar:
-            data = mod['fetch'](filtro if filtro else None)
+            data = mod['fetch']()
             if not data:
                 continue
 
@@ -157,6 +156,10 @@ def generarReporteExcel():
             for col_num, width in column_widths.items():
                 adjusted = min(max(width + 3, 12), 50)
                 ws.column_dimensions[get_column_letter(col_num)].width = adjusted
+
+        if not wb.sheetnames:
+            flash('No hay registros disponibles para generar el reporte con los criterios ingresados.', 'info')
+            return redirect(url_for('reporte_excel_bp.generarReporteExcel'))
 
         filename = f"Reporte_Invilara_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
         base_dir = os.path.dirname(os.path.abspath(__file__))

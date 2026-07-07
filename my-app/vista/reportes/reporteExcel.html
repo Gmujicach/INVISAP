@@ -21,13 +21,17 @@
             </div>
 
             <div class="col-md-8 mb-3">
-              <label class="form-label fw-bold text-dark fs-5">Filtro de Contenido</label>
-              <div class="input-group input-group-lg shadow-sm">
-                <span class="input-group-text bg-light border-end-0 text-success"><i class="bi bi-search"></i></span>
-                <input type="text" name="filtro_busqueda" class="form-control border-start-0" 
-                       placeholder="Escriba el módulo (ej: solicitudes, empleados, obras). Vacío para reporte general.">
-              </div>
-              <div class="form-text text-muted mt-2">Ingrese el nombre del módulo para generar un reporte específico. Si lo deja vacío se generará el reporte general del sistema.</div>
+              <label class="form-label fw-bold text-dark fs-5">Módulo del Reporte</label>
+              <select name="filtro_busqueda" class="form-select form-select-lg shadow-sm">
+                <option value="">-- Reporte general de todos los módulos --</option>
+                <option value="solicitudes">Solicitudes</option>
+                <option value="empleados">Personal / Empleados</option>
+                <option value="usuarios">Usuarios del Sistema</option>
+                <option value="contrataciones">Contrataciones</option>
+                <option value="obras">Obras</option>
+                <option value="publicaciones">Publicaciones</option>
+              </select>
+              <div class="form-text text-muted mt-2">Seleccione el módulo para generar un reporte específico. Si selecciona la opción general se generará un consolidado del sistema.</div>
             </div>
           </div>
           
