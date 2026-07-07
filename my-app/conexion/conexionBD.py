@@ -25,7 +25,7 @@ def connectionBD():
     db_config = {
         'host': _get_env('DB_HOST', 'localhost'),
         'user': _get_env('DB_USER', 'root'),
-        'password': _get_env('DB_PASSWORD', '1234'),
+        'password': _get_env('DB_PASSWORD', ''),
         'database': _get_env('DB_NAME', 'invilara'),
         'charset': 'utf8mb4',
         'use_unicode': True,
@@ -42,8 +42,6 @@ def connectionBD():
     except Error as error:
         raise Error(f"Error al conectar con la base de datos: {error}") from error
 
-
-
 def connectionBD_invilara():
     """Wrapper para connectionBD que retorna None en caso de error para compatibilidad con modelos."""
     try:
@@ -59,7 +57,7 @@ def connectionBD_seguridad():
     db_config = {
         'host': os.getenv('DB_HOST', 'localhost'),
         'user': os.getenv('DB_USER', 'root'),
-        'password': os.getenv('DB_PASSWORD', '1234'),
+        'password': os.getenv('DB_PASSWORD', ''),
         'database': os.getenv('DB_NAME_SEGURIDAD', 'invilara_seguridad'),
         'charset': 'utf8mb4',
         'use_unicode': True,
@@ -75,9 +73,8 @@ def connectionBD_seguridad():
         raise Error(f"Error al conectar con la base de datos: {error}") from error
 
 
-
 def connectionBD_invilara_seguridad():
-    """Wrapper para connectionBD que retorna None en caso de error para compatibilidad con modelos."""
+    """Wrapper para connectionBD_seguridad que retorna None en caso de error para compatibilidad con modelos."""
     try:
         connection = connectionBD_seguridad()
         if connection.is_connected():
