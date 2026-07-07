@@ -105,11 +105,10 @@ def obtener_modulos_por_filtro(filtro):
     if not filtro:
         return modulos_config
     texto = filtro.lower().strip()
-    seleccionados = []
     for mod in modulos_config:
-        if texto in mod['id'].lower() or any(texto in kw for kw in mod['keywords']) or texto in mod['label'].lower():
-            seleccionados.append(mod)
-    return seleccionados
+        if texto == mod['id'].lower():
+            return [mod]
+    return []
 
 
 @reporte_pdf_bp.route('/reporte-pdf', methods=['GET', 'POST'])

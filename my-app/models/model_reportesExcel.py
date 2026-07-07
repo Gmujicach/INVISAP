@@ -145,9 +145,9 @@ class ReporteExcelModel:
         """
         params = []
         if filtro:
-            query += " WHERE titulo_publicacion LIKE %s OR nombre_responsable LIKE %s OR cuerpo_publicacion LIKE %s"
+            query += " WHERE titulo_publicacion LIKE %s OR nombre_responsable LIKE %s"
             search = f"%{filtro}%"
-            params = [search, search, search]
+            params = [search, search]
         query += " ORDER BY fecha_publicacion DESC"
         return self._ejecutar_query(query, params)
 
