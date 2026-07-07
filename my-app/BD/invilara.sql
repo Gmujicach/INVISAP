@@ -347,8 +347,8 @@ INSERT INTO `informe_avance_obra` (`id_informe`, `fecha`, `estado`, `poblacion_b
 --
 
 CREATE TABLE `inspeccion` (
-  `id_inspeccion` int NOT NULL,
-  `inspector` varchar(45) NOT NULL,
+  `id_inspeccion` int NOT NULL AUTO_INCREMENT,
+  `inspector` int NOT NULL,
   `fecha_inspeccion` date NOT NULL,
   `tipo_inspeccion` varchar(45) NOT NULL,
   `observaciones` varchar(255) NOT NULL,
@@ -360,7 +360,8 @@ CREATE TABLE `inspeccion` (
   `obra_semaforo_id_semaforo1` int NOT NULL,
   `obra_contratacion_id_contratacion1` int NOT NULL,
   `obra_gestionar_proyectos_codigo_proyecto1` varchar(15) NOT NULL,
-  `evidencia_id_evidencia` int NOT NULL
+  `evidencia_id_evidencia` int NOT NULL,
+  PRIMARY KEY (`id_inspeccion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -828,9 +829,11 @@ ALTER TABLE `informe_avance_obra`
 --
 ALTER TABLE `inspeccion`
   ADD PRIMARY KEY (`id_inspeccion`,`evidencia_id_evidencia`),
-  ADD UNIQUE KEY `cedula_UNIQUE` (`fecha_inspeccion`),
+  ADD UNIQUE KEY `inspector_fecha_UNIQUE` (`inspector`,`fecha_inspeccion`),
   ADD KEY `fk_inspeccion_obra1_idx` (`obra_id_obra1`,`obra_semaforo_id_semaforo1`,`obra_contratacion_id_contratacion1`,`obra_gestionar_proyectos_codigo_proyecto1`),
-  ADD KEY `fk_inspeccion_evidencia1_idx` (`evidencia_id_evidencia`);
+  ADD KEY `fk_inspeccion_evidencia1_idx` (`evidencia_id_evidencia`),
+  ADD KEY `fk_inspeccion_empleados_idx` (`inspector`),
+  ADD CONSTRAINT `fk_inspeccion_empleados` FOREIGN KEY (`inspector`) REFERENCES `empleados` (`id_empleados`);
 
 --
 -- Indices de la tabla `institucion`

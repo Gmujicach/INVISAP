@@ -40,7 +40,9 @@ from controllers.controller_informe_avance import informe_avance_bp
 
 ## Empresas
 from controllers.controller_empresa import empresa_bp
+from controllers.controller_inspeccion import inspeccion_bp
 app.register_blueprint(empresa_bp)
+app.register_blueprint(inspeccion_bp)
 empresa_bp = Blueprint('empresa_bp', __name__)
 
 # Contrataciones
