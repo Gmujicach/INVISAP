@@ -762,36 +762,24 @@ CREATE TABLE `vista_evidencia_informe` (
 -- Índices para tablas volcadas
 --
 
---
--- Indices de la tabla `avance`
---
-ALTER TABLE `avance`
-  ADD PRIMARY KEY (`id_avance`),
-  ADD KEY `fk_avance_obra1_idx` (`obra_id_obra`,`obra_semaforo_id_semaforo`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`);
+-- ============================================================
+-- MIGRACIÓN: Agregar columna 'estado' a tabla empleados (si no existe)
+-- Soluciona error 1054: Unknown column 'estado' in 'field list'
+-- ============================================================
+-- Verificar si la columna existe antes de agregarla (evita error en re-ejecuciones)
+SET @existe_columna := (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS 
+  WHERE TABLE_SCHEMA = DATABASE() 
+  AND TABLE_NAME = 'empleados' 
+  AND COLUMN_NAME = 'estado');
 
---
--- Indices de la tabla `catalogo_cargos`
---
-ALTER TABLE `catalogo_cargos`
-  ADD PRIMARY KEY (`id_cargo`),
-  ADD UNIQUE KEY `nombre_cargo_UNIQUE` (`nombre_cargo`);
+SET @sql := IF(@existe_columna = 0,
+  'ALTER TABLE `empleados` ADD COLUMN `estado` TINYINT NOT NULL DEFAULT 1 COMMENT ''1=Activo, 0=Inactivo (Borrado Lógico)''',
+  'SELECT ''Columna estado ya existe''');
 
---
--- Indices de la tabla `comunidad`
---
-ALTER TABLE `comunidad`
-  ADD PRIMARY KEY (`id_comunidad`,`persona_id_persona`),
-  ADD KEY `fk_comunidad_persona1_idx` (`persona_id_persona`);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
---
--- Indices de la tabla `contratacion`
---
-ALTER TABLE `contratacion`
-  ADD PRIMARY KEY (`id_contratacion`),
-  ADD UNIQUE KEY `numero_contrato_UNIQUE` (`numero_contrato`),
-  ADD KEY `fk_contratacion_empresa1_idx` (`empresa_rif`);
-
---
 -- Indices de la tabla `empleados`
 --
 ALTER TABLE `empleados`
