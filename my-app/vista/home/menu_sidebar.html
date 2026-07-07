@@ -154,11 +154,23 @@
       </a>
     </li>
     
-    <li class="menu-item {% if request.path == '/inspectores' %} active{% endif %}">
-      <a href="{{ url_for('home_bp.viewFormInspectores') }}" class="menu-link">
-        <i class="menu-icon bi bi-binoculars"></i>
+    <li class="menu-item {% if '/inspecciones' in request.path %} active open {% endif %}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon bi bi-clipboard-check"></i>
         <div data-i18n="Inspections">Inspecciones</div>
       </a>
+      <ul class="menu-sub">
+        <li class="menu-item {% if request.path == '/inspecciones/crear' %} active {% endif %}">
+          <a href="{{ url_for('inspeccion_bp.view_form_inspeccion') }}" class="menu-link">
+            <div data-i18n="Register Inspection">Registrar Inspeccion</div>
+          </a>
+        </li>
+        <li class="menu-item {% if '/inspecciones/' in request.path and '/editar' not in request.path %} active {% endif %}">
+          <a href="{{ url_for('inspeccion_bp.list_inspecciones') }}" class="menu-link">
+            <div data-i18n="List Inspections">Listar Inspecciones</div>
+          </a>
+        </li>
+      </ul>
     </li>
     
     <li class="menu-item {% if request.path == '/inf_avance_obra' %} active {% endif %}">

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 06-07-2026 a las 02:10:34
+-- Tiempo de generación: 07-07-2026 a las 15:56:50
 -- Versión del servidor: 9.4.0
 -- Versión de PHP: 8.3.30
 
@@ -305,7 +305,9 @@ INSERT INTO `usuarios` (`id_usuarios`, `nombre`, `cedula_usuario`, `contrasena`,
 (2, 'David Peña', '30304373', 'pbkdf2:sha256:600000$hNB86qI4PJLFj5zI$a8db74876d9381392452fc144ee2156d98dfb5f30d0b26e0dc7ee93518d9bada', 'davidalejandropegaso@gmail.com', 'Asistente', NULL, NULL, 0, 1, 'assets/img/avatars/1.png'),
 (3, 'prueba1', '09321765', 'pbkdf2:sha256:600000$MLVBG6gIQHOhds5b$206e5507217733b5cd32f778b54b56fa95ce47f9aab8f0ea48257e3fde959562', 'prueba@gmail.com', 'Administrador', NULL, NULL, 0, 1, 'assets/img/avatars/1.png'),
 (4, 'Lenny Reyes', '10841560', 'pbkdf2:sha256:600000$A9tsjRGrOtg7MytU$364943a4dcd71d7093110fe2dc1701c31b56978791f4ad5030247e046ce5a25d', 'reyeslennyf72@gmail.com', 'Recepcionista', NULL, NULL, 0, 1, 'assets/img/avatars/1.png'),
-(5, 'Frangher Pereira', '30553759', 'pbkdf2:sha256:600000$9RdO5FjhNZDoOLuo$de664dbbbba289ba9504edab378fbd6eca14c1b1cb982e5ce8284e18920365f7', 'frangher200@gmail.com', 'Gerente', NULL, NULL, 0, 1, 'assets/img/avatars/1.png');
+(5, 'Frangher Pereira', '30553759', 'pbkdf2:sha256:600000$9RdO5FjhNZDoOLuo$de664dbbbba289ba9504edab378fbd6eca14c1b1cb982e5ce8284e18920365f7', 'frangher200@gmail.com', 'Gerente', NULL, NULL, 0, 1, 'assets/img/avatars/1.png'),
+(6, 'prueba2', '3054125315', 'pbkdf2:sha256:600000$2giL7omaooLb7h6s$a24344c192f7dbce7b8fcdd1e938fefd141b7e59590c8520602b7d37491ab693', 'prueba2@gmail.com', 'Presidente', NULL, NULL, 0, 1, 'assets/img/avatars/1.png'),
+(7, 'prueba3', '29464612', 'pbkdf2:sha256:600000$Q53EtNB6W01MzeJ3$1aa6f08c9eac6039b9c4710ed3c4d4a30735550a9b1aee4a47e55a61a5aa3a85', 'prueba3@gmail.com', 'Usuario', NULL, NULL, 0, 1, 'assets/img/avatars/1.png');
 
 --
 -- Índices para tablas volcadas
@@ -339,7 +341,7 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuarios` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_usuarios` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

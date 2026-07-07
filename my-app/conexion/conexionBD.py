@@ -42,8 +42,6 @@ def connectionBD():
     except Error as error:
         raise Error(f"Error al conectar con la base de datos: {error}") from error
 
-
-
 def connectionBD_invilara():
     """Wrapper para connectionBD que retorna None en caso de error para compatibilidad con modelos."""
     try:
@@ -75,9 +73,8 @@ def connectionBD_seguridad():
         raise Error(f"Error al conectar con la base de datos: {error}") from error
 
 
-
 def connectionBD_invilara_seguridad():
-    """Wrapper para connectionBD que retorna None en caso de error para compatibilidad con modelos."""
+    """Wrapper para connectionBD_seguridad que retorna None en caso de error para compatibilidad con modelos."""
     try:
         connection = connectionBD_seguridad()
         if connection.is_connected():
