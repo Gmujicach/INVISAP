@@ -9,8 +9,15 @@ from werkzeug.security import check_password_hash
 import re
 # Para encriptar contraseña generate_password_hash
 from werkzeug.security import generate_password_hash
+# Para subir y renombrar la imagen de avatar
+from werkzeug.utils import secure_filename
+import os
+import uuid
 
 from services.bitacora_service import BitacoraService
+
+# Regex de correo
+EMAIL_REGEX = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 
 # Regex: 8-12 caracteres, letras y al menos un símbolo especial.
 PASSWORD_REGEX = r'^(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}$'
@@ -200,3 +207,118 @@ def dataLoginSesion():
     except Exception as e:
         print(f"Error en info_perfil_session : {e}")
         return {}
+
+
+# ============================================
+# ACTUALIZACIÓN DE PERFIL VÍA AJAX (Tipo Instagram)
+# Sin contraseña actual obligatoria
+# ============================================
+def procesar_imagen_avatar(foto):
+    """Guarda la imagen de avatar y retorna la ruta relativa para la BD."""
+    extensiones_permitidas = ('.png', '.jpg', '.jpeg', '.gif', '.webp')
+    filename = secure_filename(foto.filename)
+    extension = os.path.splitext(filename)[1].lower()
+    if extension not in extensiones_permitidas:
+        raise ValueError('Formato de imagen no permitido (use PNG, JPG, JPEG, GIF o WEBP).')
+
+    nombre_file = (uuid.uuid4().hex)[:40] + extension
+    basepath = os.path.abspath(os.path.dirname(__file__))
+    upload_dir = os.path.join(basepath, '../static/assets/img/avatars/')
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir)
+        os.chmod(upload_dir, 0o755)
+
+    foto.save(os.path.join(upload_dir, nombre_file))
+    return 'assets/img/avatars/' + nombre_file
+
+
+def procesar_update_perfil_ajax(request):
+    """Actualiza nombre, correo y/o avatar del usuario conectado (sin clave actual)."""
+    id_user = session['id']
+    name_surname = (request.form.get('name_surname') or '').strip()
+    email_user = (request.form.get('email_user') or '').strip()
+    avatar_file = request.files.get('profile_img') if 'profile_img' in request.files else None
+
+    cambios = {}
+
+    if name_surname:
+        if len(name_surname) < 3:
+            raise ValueError('El nombre debe tener al menos 3 caracteres.')
+        cambios['nombre'] = name_surname
+
+    if email_user:
+        if not re.match(EMAIL_REGEX, email_user):
+            raise ValueError('El formato del correo electrónico no es válido.')
+        conexion = connectionBD_seguridad()
+        cursor = conexion.cursor(dictionary=True)
+        try:
+            cursor.execute(
+                "SELECT id_usuarios FROM usuarios WHERE correo = %s AND id_usuarios != %s",
+                (email_user, id_user)
+            )
+            if cursor.fetchone():
+                raise ValueError('El correo ya está registrado por otro usuario.')
+        finally:
+            cursor.close()
+            conexion.close()
+        cambios['correo'] = email_user
+
+    if avatar_file and avatar_file.filename:
+        cambios['avatar'] = procesar_imagen_avatar(avatar_file)
+
+    if not cambios:
+        raise ValueError('No se enviaron cambios válidos.')
+
+    conexion = connectionBD_seguridad()
+    cursor = conexion.cursor()
+    try:
+        campos_sql = ', '.join([f"{campo} = %s" for campo in cambios.keys()])
+        sql = f"UPDATE usuarios SET {campos_sql} WHERE id_usuarios = %s"
+        params = list(cambios.values()) + [id_user]
+        cursor.execute(sql, params)
+        conexion.commit()
+        if cursor.rowcount == 0:
+            raise ValueError('No se pudo actualizar el perfil.')
+    finally:
+        cursor.close()
+        conexion.close()
+
+    if 'nombre' in cambios:
+        session['name_surname'] = cambios['nombre']
+    if 'correo' in cambios:
+        session['email_user'] = cambios['correo']
+
+    return {
+        'success': True,
+        'message': 'Cambios guardados correctamente.',
+        'avatar': cambios.get('avatar')
+    }
+
+
+def procesar_update_clave_ajax(request):
+    """Cambia la contraseña del usuario conectado sin pedir la clave actual."""
+    id_user = session['id']
+    new_pass_user = (request.form.get('new_pass_user') or '').strip()
+    repetir_pass_user = (request.form.get('repetir_pass_user') or '').strip()
+
+    if not new_pass_user or not repetir_pass_user:
+        raise ValueError('Debes completar ambos campos de contraseña.')
+    if new_pass_user != repetir_pass_user:
+        raise ValueError('Las contraseñas no coinciden.')
+    if not re.match(PASSWORD_REGEX, new_pass_user):
+        raise ValueError('La contraseña debe tener entre 8-12 caracteres, incluir letras y al menos un símbolo especial.')
+
+    conexion = connectionBD_seguridad()
+    cursor = conexion.cursor()
+    try:
+        nueva_password = generate_password_hash(new_pass_user)
+        cursor.execute(
+            "UPDATE usuarios SET contrasena = %s WHERE id_usuarios = %s",
+            (nueva_password, id_user)
+        )
+        conexion.commit()
+    finally:
+        cursor.close()
+        conexion.close()
+
+    return {'success': True, 'message': 'Contraseña actualizada correctamente.'}

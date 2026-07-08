@@ -1,0 +1,375 @@
+/* ============================================================
+   INVISAP - Perfil de Usuario (Estilo tipo Instagram)
+   Arquitectura: Atomic Design (átomos, moléculas, organismos)
+   ============================================================ */
+
+:root {
+  --perfil-primary: #08b324;
+  --perfil-primary-soft: #e8f9ec;
+  --perfil-accent: #696cff;
+  --perfil-border: #e7e7ee;
+  --perfil-bg: #ffffff;
+  --perfil-text: #2b2c40;
+  --perfil-muted: #8a8d9f;
+}
+
+.perfil-wrapper {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.perfil-card {
+  width: 100%;
+  max-width: 880px;
+  background: var(--perfil-bg);
+  border-radius: 20px;
+  border: 1px solid var(--perfil-border);
+  overflow: hidden;
+}
+
+/* ---------- Header ---------- */
+.perfil-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.5rem;
+  border-bottom: 1px solid var(--perfil-border);
+  background: linear-gradient(90deg, var(--perfil-primary) 0%, #0a9e26 100%);
+}
+
+.perfil-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.18);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.perfil-back-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  transform: translateX(-2px);
+}
+
+.perfil-title {
+  margin: 0;
+  flex: 1;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.perfil-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-width: 120px;
+  text-align: right;
+  color: #fff;
+}
+.perfil-status.saving { color: #fff; opacity: 0.85; }
+.perfil-status.success { color: #d6ffe0; }
+.perfil-status.error { color: #ffd6d6; }
+
+/* ---------- Body ---------- */
+.perfil-body {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem 1.8rem;
+}
+
+.perfil-avatar-col {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.perfil-data-col {
+  flex: 1 1 320px;
+  min-width: 280px;
+}
+
+/* ---------- Avatar ---------- */
+.perfil-avatar-wrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+}
+
+.perfil-avatar {
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--perfil-primary-soft);
+  box-shadow: 0 6px 18px rgba(8, 179, 36, 0.18);
+  transition: transform 0.25s ease;
+}
+.perfil-avatar-wrapper:hover .perfil-avatar {
+  transform: scale(1.03);
+}
+
+.perfil-avatar-edit {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--perfil-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.perfil-avatar-edit:hover {
+  background: #0a9e26;
+  transform: scale(1.08);
+}
+
+.perfil-avatar-spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 50%;
+}
+
+.perfil-avatar-actions {
+  margin-top: 1rem;
+}
+.perfil-link-btn {
+  border: none;
+  background: transparent;
+  color: var(--perfil-accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+.perfil-link-btn:hover {
+  background: var(--perfil-primary-soft);
+}
+.perfil-link-btn.text-danger {
+  color: #dc3545;
+}
+.perfil-link-btn.text-danger:hover {
+  background: #fde8ea;
+}
+
+.perfil-avatar-hint {
+  margin-top: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--perfil-muted);
+}
+
+/* ---------- Campos ---------- */
+.perfil-field {
+  margin-bottom: 1.4rem;
+}
+
+.perfil-field label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--perfil-text);
+  margin-bottom: 0.45rem;
+}
+
+.perfil-input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid var(--perfil-border);
+  border-radius: 12px;
+  font-size: 0.95rem;
+  color: var(--perfil-text);
+  background: #fbfbfd;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.perfil-input:focus {
+  outline: none;
+  border-color: var(--perfil-primary);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(8, 179, 36, 0.12);
+}
+.perfil-input.is-invalid {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.1);
+}
+.perfil-input.is-valid {
+  border-color: var(--perfil-primary);
+}
+
+.perfil-input:disabled,
+.perfil-input[readonly] {
+  background: #f1f1f4;
+  color: var(--perfil-muted);
+  cursor: not-allowed;
+}
+
+.perfil-feedback {
+  display: block;
+  min-height: 1.1rem;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.perfil-feedback.error { color: #dc3545; }
+.perfil-feedback.success { color: var(--perfil-primary); }
+
+/* ---------- Footer / Acciones ---------- */
+.perfil-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
+  padding: 1.4rem 1.8rem;
+  border-top: 1px solid var(--perfil-border);
+  background: #fafafc;
+}
+
+.perfil-btn {
+  border: none;
+  border-radius: 50px;
+  padding: 0.65rem 1.6rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+}
+.perfil-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.perfil-btn-primary {
+  background: var(--perfil-primary);
+  color: #fff;
+  box-shadow: 0 6px 14px rgba(8, 179, 36, 0.25);
+}
+.perfil-btn-primary:not(:disabled):hover {
+  background: #0a9e26;
+  transform: translateY(-1px);
+}
+.perfil-btn-outline {
+  background: #fff;
+  color: #697a8d;
+  border: 1.5px solid var(--perfil-border);
+}
+.perfil-btn-outline:not(:disabled):hover {
+  background: #f1f1f4;
+  color: #2b2c40;
+}
+
+.perfil-confirm-icon {
+  line-height: 1;
+}
+
+/* ---------- Dark Mode Footer ---------- */
+body.dark-mode .perfil-footer {
+  background: #232333;
+  border-color: #3a3b53;
+}
+body.dark-mode .perfil-btn-outline {
+  background: #2b2c40;
+  color: #cfcde9;
+  border-color: #3a3b53;
+}
+body.dark-mode .perfil-btn-outline:not(:disabled):hover {
+  background: #35364e;
+  color: #fff;
+}
+.perfil-section-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--perfil-primary);
+  margin: 0;
+}
+.perfil-section-sub {
+  margin: 0.3rem 0 0;
+  font-size: 0.8rem;
+  color: var(--perfil-muted);
+}
+
+/* ---------- Grupo input con botón ---------- */
+.perfil-field .input-group-merge .perfil-input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.perfil-field .input-group-merge .password-toggle-btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-color: var(--perfil-border);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 767px) {
+  .perfil-body {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .perfil-avatar-col {
+    flex-basis: auto;
+  }
+  .perfil-data-col {
+    width: 100%;
+  }
+  .perfil-status {
+    min-width: auto;
+    font-size: 0.78rem;
+  }
+}
+
+/* ---------- Dark Mode ---------- */
+body.dark-mode .perfil-card {
+  background: #2b2c40;
+  border-color: #3a3b53;
+}
+body.dark-mode .perfil-header {
+  border-color: #3a3b53;
+}
+body.dark-mode .perfil-input {
+  background: #232333;
+  border-color: #3a3b53;
+  color: #cfcde9;
+}
+body.dark-mode .perfil-input:focus {
+  background: #232333;
+}
+body.dark-mode .perfil-input:disabled,
+body.dark-mode .perfil-input[readonly] {
+  background: #202030;
+  color: #8a8d9f;
+}
+body.dark-mode .perfil-field label,
+body.dark-mode .perfil-section-title {
+  color: #cfcde9;
+}
+body.dark-mode .perfil-divider {
+  border-color: #3a3b53;
+}
+body.dark-mode .perfil-avatar {
+  border-color: #3a3b53;
+}
