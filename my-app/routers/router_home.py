@@ -1178,3 +1178,26 @@ def api_dashboard_grafico_parroquias():
 # Registrar el blueprint en la aplicación
 app.register_blueprint(home_bp)
 app.register_blueprint(contrataciones_bp)
+
+
+# ============================================================
+# MÓDULO: Manual del Sistema
+# Abre el manual (PDF) en una ventana independiente, permitiendo
+# consultarlo por completo sin salir del sistema.
+# ============================================================
+MANUAL_PDF = 'manuals/Manual_del_Sistema_INVILARA.pdf'
+
+@app.route('/manual-sistema', methods=['GET'])
+def manual_sistema():
+    """Muestra el Manual del Sistema en un visor a pantalla completa."""
+    pdf_url = url_for('static', filename=MANUAL_PDF)
+    return render_template('manual/manual_sistema.html', pdf_url=pdf_url)
+
+@app.route('/api/manual-sistema/pdf', methods=['GET'])
+def manual_sistema_pdf():
+    """Sirve el archivo PDF del manual directamente (descarga/visualización)."""
+    import os
+    from flask import send_from_directory
+    directorio = os.path.join(app.root_path, 'static', 'manuals')
+    return send_from_directory(directorio, 'Manual_del_Sistema_INVILARA.pdf',
+                               mimetype='application/pdf')
