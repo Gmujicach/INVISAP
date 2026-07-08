@@ -10,6 +10,8 @@ import re
 # Para encriptar contraseña generate_password_hash
 from werkzeug.security import generate_password_hash
 
+from services.bitacora_service import BitacoraService
+
 # Regex: 8-12 caracteres, letras y al menos un símbolo especial.
 PASSWORD_REGEX = r'^(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}$'
 
@@ -30,6 +32,11 @@ def recibeInsertRegisterUser(nombre, correo, pass_user, cedula, rol='Usuario'):
                 mycursor.execute(sql, valores)
                 conexion_MySQLdb.commit()
                 resultado_insert = mycursor.rowcount
+                if resultado_insert:
+                    BitacoraService.registrar_accion(
+                        session, 'Usuarios', 'CREAR',
+                        f'Registró una nueva cuenta de usuario: {correo}'
+                    )
                 return resultado_insert
             finally:
                 mycursor.close()

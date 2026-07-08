@@ -5,6 +5,7 @@ Rutas de vistas y API.
 
 from flask import Blueprint, render_template, request, jsonify, session, flash, redirect, url_for
 from models.model_evidencia import EvidenciaModel
+from services.bitacora_service import BitacoraService
 
 evidencia_bp = Blueprint('evidencia_bp', __name__, template_folder='../vista')
 
@@ -55,6 +56,10 @@ def api_subir_evidencias():
         ids_insertados = modelo.registrar_evidencias(files, etapas)
         
         if ids_insertados and len(ids_insertados) > 0:
+            BitacoraService.registrar_accion(
+                session, 'Evidencias', 'CREAR',
+                f'Subió {len(ids_insertados)} evidencia(s)'
+            )
             return jsonify({'status': 'success', 'message': f'{len(ids_insertados)} evidencias registradas correctamente'})
         else:
             return jsonify({'status': 'error', 'message': 'Fallo en base de datos'}), 500
@@ -78,6 +83,10 @@ def api_actualizar_evidencia(id_evidencia):
         exito = modelo.actualizar_evidencia(id_evidencia, files, etapas)
         
         if exito:
+            BitacoraService.registrar_accion(
+                session, 'Evidencias', 'EDITAR',
+                f'Actualizó la evidencia ID: {id_evidencia}'
+            )
             return jsonify({'status': 'success', 'message': 'Evidencia actualizada correctamente'})
         else:
             return jsonify({'status': 'error', 'message': 'Fallo al actualizar'}), 500
@@ -108,6 +117,10 @@ def eliminar_evidencia(id_evidencia):
     try:
         modelo = EvidenciaModel()
         if modelo.eliminar_evidencia(id_evidencia):
+            BitacoraService.registrar_accion(
+                session, 'Evidencias', 'ELIMINAR',
+                f'Desactivó la evidencia ID: {id_evidencia}'
+            )
             flash('Evidencia desactivada correctamente', 'success')
         else:
             flash('No se pudo desactivar', 'error')

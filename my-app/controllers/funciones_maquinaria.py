@@ -1,11 +1,19 @@
 from models.model_maquinaria import MaquinariaModel
+from services.bitacora_service import BitacoraService
+from flask import session
 
 def registrar_maquinaria_controller(datos):
     modelo = MaquinariaModel()
-    return modelo.registrar_maquinaria(
+    resultado = modelo.registrar_maquinaria(
         datos.get('nombre_maquinaria'),
         datos.get('tipo_maquinaria')
     )
+    if resultado:
+        BitacoraService.registrar_accion(
+            session, 'Maquinaria', 'CREAR',
+            f'Registró la maquinaria: {datos.get("nombre_maquinaria")}'
+        )
+    return resultado
 
 def listar_maquinarias_controller(page=1, per_page=10):
     modelo = MaquinariaModel()
@@ -29,12 +37,24 @@ def restaurar_maquinaria_controller(id_maquinaria):
 
 def actualizar_maquinaria_controller(id_maquinaria, datos):
     modelo = MaquinariaModel()
-    return modelo.actualizar_maquinaria(
+    resultado = modelo.actualizar_maquinaria(
         id_maquinaria,
         datos.get('nombre_maquinaria'),
         datos.get('tipo_maquinaria')
     )
+    if resultado:
+        BitacoraService.registrar_accion(
+            session, 'Maquinaria', 'EDITAR',
+            f'Modificó la maquinaria ID: {id_maquinaria}'
+        )
+    return resultado
 
 def eliminar_maquinaria_controller(id_maquinaria):
     modelo = MaquinariaModel()
-    return modelo.eliminar_maquinaria(id_maquinaria)
+    resultado = modelo.eliminar_maquinaria(id_maquinaria)
+    if resultado:
+        BitacoraService.registrar_accion(
+            session, 'Maquinaria', 'ELIMINAR',
+            f'Eliminó la maquinaria ID: {id_maquinaria}'
+        )
+    return resultado

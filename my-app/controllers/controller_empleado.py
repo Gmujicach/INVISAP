@@ -3,6 +3,7 @@ Controller de Empleados - Implementa comunicación asíncrona con Fetch/Ajax.
 """
 from flask import Blueprint, render_template, request, jsonify, session, flash, redirect, url_for
 from models.model_empleados import EmpleadoModel
+from services.bitacora_service import BitacoraService
 
 empleado_bp = Blueprint('empleado_bp', __name__, template_folder='../vista', url_prefix='/empleados')
 
@@ -69,6 +70,10 @@ def api_crear_empleado():
         nuevo_id = modelo.registrar_empleado(data)
 
         if nuevo_id:
+            BitacoraService.registrar_accion(
+                session, 'Empleados', 'CREAR',
+                f'Registró un nuevo empleado con ID: {nuevo_id}'
+            )
             return jsonify({
                 'status': 'success',
                 'message': 'Empleado registrado correctamente.',
@@ -114,6 +119,10 @@ def api_actualizar_empleado():
         exito = modelo.actualizar_empleado(data)
 
         if exito:
+            BitacoraService.registrar_accion(
+                session, 'Empleados', 'EDITAR',
+                f'Actualizó el empleado ID: {id_empleado}'
+            )
             return jsonify({
                 'status': 'success',
                 'message': 'Empleado actualizado correctamente.'
@@ -173,6 +182,10 @@ def eliminar_empleado(id_empleado):
         modelo = EmpleadoModel()
         
         if modelo.eliminar_empleado_logico(id_empleado):
+            BitacoraService.registrar_accion(
+                session, 'Empleados', 'ELIMINAR',
+                f'Desactivó el empleado ID: {id_empleado}'
+            )
             flash('Empleado desactivado correctamente (Borrado Lógico).', 'success')
         else:
             flash('No se pudo desactivar el empleado.', 'error')

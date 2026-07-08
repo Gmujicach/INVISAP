@@ -93,10 +93,15 @@ def api_crear_inspeccion():
         print('[API] nuevo_id:', nuevo_id)
 
         if nuevo_id:
+
             nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
             BitacoraService.registrar_accion(
                 session, 'Inspecciones', 'CREAR',
                 f'Inspeccion #{nuevo_id} registrada por {nombre_usr}'
+
+            BitacoraService.registrar_accion(
+                session, 'Inspecciones', 'CREAR',
+                f'Registró la inspección ID: {nuevo_id}'
             )
             return jsonify({
                 'status': 'success',
@@ -142,10 +147,15 @@ def api_actualizar_inspeccion(id_inspeccion):
         exito = modelo.actualizar_inspeccion(data)
 
         if exito:
+
             nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
             BitacoraService.registrar_accion(
                 session, 'Inspecciones', 'EDITAR',
                 f'Inspeccion #{id_inspeccion} actualizada por {nombre_usr}'
+            BitacoraService.registrar_accion(
+                session, 'Inspecciones', 'EDITAR',
+                f'Actualizó la inspección ID: {id_inspeccion}'
+
             )
             return jsonify({
                 'status': 'success',
@@ -252,10 +262,16 @@ def eliminar_inspeccion(id_inspeccion):
     try:
         modelo = InspeccionModel()
         if modelo.eliminar_inspeccion(id_inspeccion):
+
             nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
             BitacoraService.registrar_accion(
                 session, 'Inspecciones', 'ELIMINAR',
                 f'Inspeccion #{id_inspeccion} desactivada (borrado logico) por {nombre_usr}'
+
+            BitacoraService.registrar_accion(
+                session, 'Inspecciones', 'ELIMINAR',
+                f'Desactivó la inspección ID: {id_inspeccion}'
+
             )
             flash('Inspeccion desactivada correctamente (Borrado Logico).', 'success')
         else:

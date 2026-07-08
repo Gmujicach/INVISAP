@@ -50,6 +50,7 @@
             <th>Computos Metricos</th>
             <th>Problemática</th>
             <th>Maquinaria</th>
+            <th>Proyectista</th>
             <th>Est. Costo</th>
             <th class="text-center">Acciones</th>
           </tr>
@@ -65,6 +66,7 @@
             <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.computos_metricos or '—' }}</td>
             <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.problematica or '—' }}</td>
             <td><span class="badge bg-dark">{{ proyecto.nombre_maquinaria or 'Sin asignar' }}</span></td>
+            <td><span class="badge bg-info">{{ proyecto.nombre_proyectista or 'Sin asignar' }}</span></td>
             <td class="text-success fw-bold">{{ proyecto.estimacion_costo or '0.00' }}</td>
 <td class="text-center">
               <div class="d-flex gap-1 justify-content-center">
@@ -79,7 +81,8 @@
                         data-problematica="{{ proyecto.problematica or 'N/A' }}"
                         data-computos="{{ proyecto.computos_metricos or 'N/A' }}"
                         data-costo="{{ proyecto.estimacion_costo or '0.00' }}"
-                        data-maquinaria="{{ proyecto.nombre_maquinaria or 'Sin asignar' }}">
+                        data-maquinaria="{{ proyecto.nombre_maquinaria or 'Sin asignar' }}"
+                        data-proyectista="{{ proyecto.nombre_proyectista or 'Sin asignar' }}">
                   <i class="bx bx-show"></i>
                 </button>
                 <a href="{{ url_for('home_bp.viewEditarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
@@ -95,7 +98,7 @@
           </tr>
           {% else %}
 <tr id="mensaje-vacio">
-    <td colspan="10" class="text-center text-muted py-4">NO SE ENCUENTRAN PROYECTOS GESTIONADOS</td>
+            <td colspan="11" class="text-center text-muted py-4">NO SE ENCUENTRAN PROYECTOS GESTIONADOS</td>
 </tr>
 {% endfor %}
         </tbody>
@@ -187,23 +190,30 @@
               <label for="estimacion_p" class="form-label fw-semibold text-secondary">Estimación de Costo</label>
               <input type="text" class="form-control shadow-sm" name="estimacion_p" id="estimacion_p" maxlength="45" placeholder="Ej: 50.000,00" />
             </div>
-            <div class="col-md-4">
-              <label for="maquinaria_p" class="form-label fw-semibold text-secondary">Maquinaria Requerida</label>
-              <select class="form-select shadow-sm" name="maquinaria_p" id="maquinaria_p" required>
-                <option value="" selected disabled>Seleccione maquinaria...</option> 
-                {% for maquinaria in maquinarias %}
-                  <option value="{{ maquinaria.id_maquinaria }}">{{ maquinaria.nombre_maquinaria|upper }}</option>
-                {% endfor %}
-              </select>
+              <div class="col-md-4">
+                <label for="maquinaria_p" class="form-label fw-semibold text-secondary">Maquinaria Requerida</label>
+                <select class="form-select shadow-sm" name="maquinaria_p" id="maquinaria_p" required>
+                  <option value="" selected disabled>Seleccione maquinaria...</option> 
+                  {% for maquinaria in maquinarias %}
+                    <option value="{{ maquinaria.id_maquinaria }}">{{ maquinaria.nombre_maquinaria|upper }}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
-          </div> 
 
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label for="Codigo_p" class="form-label fw-semibold text-secondary">Código del Proyecto</label>
-              <input type="text" class="form-control shadow-sm" name="Codigo_p" id="Codigo_p" maxlength="15" placeholder="Ej: PRY-001" required />
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="proyectista_p" class="form-label fw-semibold text-secondary">Proyectista Asignado</label>
+                <select class="form-select shadow-sm" name="proyectista_p" id="proyectista_p">
+                  <option value="" selected disabled>Cargando proyectistas...</option>
+                </select>
+                <small class="text-muted">Empleados con cargo "Proyectista" del módulo de personal.</small>
+              </div>
+              <div class="col-md-6">
+                <label for="Codigo_p" class="form-label fw-semibold text-secondary">Código del Proyecto</label>
+                <input type="text" class="form-control shadow-sm" name="Codigo_p" id="Codigo_p" maxlength="15" placeholder="Ej: PRY-001" required />
+              </div>
             </div>
-          </div>
         </div>
 
         <div class="modal-footer bg-light text-center d-flex justify-content-center">
@@ -279,10 +289,11 @@
             <p class="mb-1"><strong>Solicitante:</strong> <span id="det_solicitante"></span></p>
             <p class="mb-1"><strong>Tipo de Solicitud:</strong> <span id="det_tipo"></span></p>
           </div>
-          <div class="col-md-6">
-            <p class="mb-1"><strong>Fecha Planificación:</strong> <span id="det_fecha"></span></p>
-            <p class="mb-1"><strong>Maquinaria:</strong> <span id="det_maquinaria"></span></p>
-          </div>
+            <div class="col-md-6">
+              <p class="mb-1"><strong>Fecha Planificación:</strong> <span id="det_fecha"></span></p>
+              <p class="mb-1"><strong>Maquinaria:</strong> <span id="det_maquinaria"></span></p>
+              <p class="mb-1"><strong>Proyectista:</strong> <span id="det_proyectista"></span></p>
+            </div>
         </div>
         <hr class="my-3">
         <div class="mb-3">
@@ -314,6 +325,7 @@
 <script src="{{ url_for('static', filename='js/proyectoregister.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ url_for('static', filename='js/proyectoregister_ajax.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/js/empleados.js') }}"></script>
 
 <script>
 // 2. Control de la carga de Solicitudes Activas vía AJAX (Fetch)
@@ -434,7 +446,14 @@ function seleccionarSolicitud(id, solicitante, tipo, problematica) {
     });
 }
 
-// 4. Lógica para el modal informativo de Detalles del Proyecto
+// 5. Cargar empleados con cargo "Proyectista" desde el módulo de empleados
+const modalRegistrarProyecto = document.getElementById('modalRegistrarProyecto');
+if (modalRegistrarProyecto && typeof cargarEmpleadosPorCargo === 'function') {
+    modalRegistrarProyecto.addEventListener('shown.bs.modal', function () {
+        cargarEmpleadosPorCargo('Proyectista', 'proyectista_p');
+    });
+}
+
 const modalDetalleProyecto = document.getElementById('modalDetalleProyecto');
 if (modalDetalleProyecto) {
     modalDetalleProyecto.addEventListener('show.bs.modal', function (event) {
@@ -444,7 +463,8 @@ if (modalDetalleProyecto) {
         document.getElementById('det_solicitante').textContent = button.getAttribute('data-solicitante');
         document.getElementById('det_tipo').textContent = button.getAttribute('data-tipo');
         document.getElementById('det_fecha').textContent = button.getAttribute('data-fecha');
-        document.getElementById('det_maquinaria').textContent = button.getAttribute('data-maquinaria');
+         document.getElementById('det_maquinaria').textContent = button.getAttribute('data-maquinaria');
+         document.getElementById('det_proyectista').textContent = button.getAttribute('data-proyectista');
         document.getElementById('det_problematica').textContent = button.getAttribute('data-problematica');
         document.getElementById('det_descripcion').textContent = button.getAttribute('data-descripcion');
         document.getElementById('det_computos').textContent = button.getAttribute('data-computos');

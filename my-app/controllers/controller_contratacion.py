@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for, session
 from models.model_contratacion import ContratacionModel
 from controllers.funciones_maquinaria import *
+from services.bitacora_service import BitacoraService
 import re
 
 contrataciones_bp = Blueprint('contrataciones_bp', __name__)
@@ -27,6 +28,10 @@ def procesar_registro():
     if 'conectado' in session:
         modelo = ContratacionModel()
         if modelo.registrar_contrataciones(request.form):
+            BitacoraService.registrar_accion(
+                session, 'Contrataciones', 'CREAR',
+                f'Registró la contratación N°: {request.form.get("numero_contrato")}'
+            )
             flash('Contratacion Registrada correctamente', 'success')
         else:
             flash('Error al guardar', 'error')

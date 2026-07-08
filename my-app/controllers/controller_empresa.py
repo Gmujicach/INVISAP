@@ -1,5 +1,6 @@
-from flask import Blueprint, session
+from flask import Blueprint, session, request, flash, redirect, url_for
 from models.model_empresas import EmpresaModel
+from services.bitacora_service import BitacoraService
 from conexion.conexionBD import connectionBD_invilara
 from flask import Blueprint, session, request, flash, redirect, url_for
 from flask import request, flash, redirect, url_for, session
@@ -60,6 +61,10 @@ def procesar_registro_empresa(formulario):
     resultado_db = EmpresaModel().registrar_Empresas(datos_limpios)
 
     if resultado_db == True:
+        BitacoraService.registrar_accion(
+            session, 'Empresas', 'CREAR',
+            f'Registró la empresa con RIF: {rif}'
+        )
         return True, '¡La empresa ha sido registrada con éxito!', 'success'
     elif resultado_db == "DUPLICADO":
         return False, f'Error: El RIF {rif} ya se encuentra registrado en el sistema.', 'error'
@@ -67,11 +72,22 @@ def procesar_registro_empresa(formulario):
         return False, 'Error interno del servidor al intentar guardar la empresa.', 'error'
 
 def update_empresa(datos):
-    return EmpresaModel().update_empresa(datos)
+    resultado = EmpresaModel().update_empresa(datos)
+    if resultado:
+        BitacoraService.registrar_accion(
+            session, 'Empresas', 'EDITAR',
+            f'Actualizó la empresa con RIF: {datos.get("rif")}'
+        )
+    return resultado
 
 def eliminar_empresa_por_rif(rif):
     try:
         resultado = EmpresaModel().eliminar_empresa(rif)
+        if resultado:
+            BitacoraService.registrar_accion(
+                session, 'Empresas', 'ELIMINAR',
+                f'Eliminó la empresa con RIF: {rif}'
+            )
         if not resultado:
             print(f"DEBUG: El modelo devolvió False para el RIF: {rif}")
         return resultado

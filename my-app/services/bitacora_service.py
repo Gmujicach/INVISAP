@@ -23,7 +23,12 @@ class BitacoraService:
     MODULOS_VALIDOS = {
         'Solicitudes', 'Usuarios', 'Empleados', 'Proyectos',
         'Contrataciones', 'Empresas', 'Obras', 'Publicaciones', 'Maquinaria',
+
         'Inspecciones', 'Gerencias', 'Respaldos', 'Bitacora', 'Login'
+
+        'Gerencias', 'Respaldos', 'Bitacora', 'Login', 'Reportes', 'Gravedad',
+        'Prioridad', 'Inspecciones', 'Evidencias'
+
     }
 
     @staticmethod

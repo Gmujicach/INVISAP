@@ -1,6 +1,5 @@
 from conexion.conexionBD import connectionBD, connectionBD_seguridad
 
-
 class ReportePDFModel:
     def __init__(self):
         pass
@@ -28,15 +27,15 @@ class ReportePDFModel:
             FROM solicitudes s
             JOIN persona p ON s.persona_id_persona = p.id_persona
             JOIN prioridad pr ON s.prioridad_id_gestion_prioridad = pr.id_gestion_prioridad
+            WHERE s.estado = 1
         """
         params = []
         if filtro:
-            query += " WHERE s.tipo_solicitud LIKE %s OR s.estatus_solicitud LIKE %s OR s.problematica LIKE %s OR p.cedula_persona LIKE %s"
+            query += " AND (s.tipo_solicitud LIKE %s OR s.estatus_solicitud LIKE %s OR s.problematica LIKE %s OR p.cedula_persona LIKE %s)"
             search = f"%{filtro}%"
             params = [search, search, search, search]
         query += " ORDER BY s.fecha DESC"
-        rows = self._ejecutar_query(query, params)
-        return rows
+        return self._ejecutar_query(query, params)
 
     def obtener_solicitantes(self, filtro=None):
         query = """
@@ -47,16 +46,15 @@ class ReportePDFModel:
             FROM particular pa
             JOIN persona p ON pa.persona_id_persona = p.id_persona
             JOIN solicitudes s ON s.persona_id_persona = p.id_persona
-            GROUP BY pa.id_particular, pa.nombre, pa.apellido, p.cedula_persona
+            WHERE pa.estado = 1
         """
         params = []
         if filtro:
-            query += " HAVING pa.nombre LIKE %s OR pa.apellido LIKE %s OR p.cedula_persona LIKE %s"
+            query += " AND (pa.nombre LIKE %s OR pa.apellido LIKE %s OR p.cedula_persona LIKE %s)"
             search = f"%{filtro}%"
             params = [search, search, search]
-        query += " ORDER BY pa.nombre ASC"
-        rows = self._ejecutar_query(query, params)
-        return rows
+        query += " GROUP BY pa.id_particular, pa.nombre, pa.apellido, p.cedula_persona ORDER BY pa.nombre ASC"
+        return self._ejecutar_query(query, params)
 
     def obtener_empleados(self, filtro=None):
         query = """
@@ -67,36 +65,36 @@ class ReportePDFModel:
                 DATE_FORMAT(e.fecha_ingreso, '%d/%m/%Y') AS fecha_ingreso,
                 p.correo AS email_empleado,
                 p.telefono AS telefono_empleado,
-                CASE WHEN e.estado = 1 THEN 'Activo' ELSE 'Inactivo' END AS estado_empleado
+                'Activo' AS estado_empleado
             FROM empleados e
             JOIN persona p ON e.persona_id_persona = p.id_persona
+            WHERE e.estado = 1
         """
         params = []
         if filtro:
-            query += " WHERE e.nombre_empleado LIKE %s OR e.cargo LIKE %s OR e.gerencia_asignada LIKE %s OR p.correo LIKE %s"
+            query += " AND (e.nombre_empleado LIKE %s OR e.cargo LIKE %s OR e.gerencia_asignada LIKE %s OR p.correo LIKE %s)"
             search = f"%{filtro}%"
             params = [search, search, search, search]
         query += " ORDER BY e.nombre_empleado ASC"
-        rows = self._ejecutar_query(query, params)
-        return rows
+        return self._ejecutar_query(query, params)
 
     def obtener_usuarios(self, filtro=None):
         query = """
             SELECT 
                 nombre,
                 cedula_usuario,
-                correo AS email,
+                correo,
                 rol
             FROM usuarios
+            WHERE estado = 1
         """
         params = []
         if filtro:
-            query += " WHERE nombre LIKE %s OR cedula_usuario LIKE %s OR correo LIKE %s OR rol LIKE %s"
+            query += " AND (nombre LIKE %s OR cedula_usuario LIKE %s OR correo LIKE %s OR rol LIKE %s)"
             search = f"%{filtro}%"
             params = [search, search, search, search]
         query += " ORDER BY nombre ASC"
-        rows = self._ejecutar_query(query, params, db_name='seguridad')
-        return rows
+        return self._ejecutar_query(query, params, db_name='seguridad')
 
     def obtener_contrataciones(self, filtro=None):
         query = """
@@ -105,18 +103,24 @@ class ReportePDFModel:
                 c.empresa_rif AS rif_empresa,
                 c.numero_contrato,
                 c.monto,
+                c.descripcion,
+                c.observacion,
                 c.tipo_contrato,
-                c.modalidad
+                c.modalidad,
+                c.objeto,
+                DATE_FORMAT(c.fecha_registro, '%d/%m/%Y') AS fecha_registro,
+                DATE_FORMAT(c.fecha_inicio_procedimiento, '%d/%m/%Y') AS fecha_inicio,
+                DATE_FORMAT(c.fecha_adjudicacion, '%d/%m/%Y') AS fecha_adjudicacion
             FROM contratacion c
+            WHERE c.estado = 1
         """
         params = []
         if filtro:
-            query += " WHERE c.empresa_ganadora LIKE %s OR c.empresa_rif LIKE %s OR c.numero_contrato LIKE %s OR c.tipo_contrato LIKE %s"
+            query += " AND (c.empresa_ganadora LIKE %s OR c.empresa_rif LIKE %s OR c.numero_contrato LIKE %s OR c.tipo_contrato LIKE %s OR c.descripcion LIKE %s)"
             search = f"%{filtro}%"
-            params = [search, search, search, search]
+            params = [search, search, search, search, search]
         query += " ORDER BY c.fecha_registro DESC"
-        rows = self._ejecutar_query(query, params)
-        return rows
+        return self._ejecutar_query(query, params)
 
     def obtener_obras(self, filtro=None):
         query = """
@@ -130,15 +134,15 @@ class ReportePDFModel:
             FROM obra o
             JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
             JOIN contratacion c ON o.contratacion_id_contratacion = c.id_contratacion
+            WHERE o.estado = 1
         """
         params = []
         if filtro:
-            query += " WHERE o.titulo_obra LIKE %s OR o.ubicacion_obra LIKE %s OR s.estado LIKE %s OR c.empresa_ganadora LIKE %s"
+            query += " AND (o.titulo_obra LIKE %s OR o.ubicacion_obra LIKE %s OR s.estado LIKE %s OR c.empresa_ganadora LIKE %s)"
             search = f"%{filtro}%"
             params = [search, search, search, search]
         query += " ORDER BY o.titulo_obra ASC"
-        rows = self._ejecutar_query(query, params)
-        return rows
+        return self._ejecutar_query(query, params)
 
     def obtener_publicaciones_reporte(self, filtro=None):
         query = """
@@ -148,12 +152,12 @@ class ReportePDFModel:
                 DATE_FORMAT(fecha_publicacion, '%d/%m/%Y') AS fecha_formateada,
                 tipo_publicacion
             FROM publicacion
+            WHERE estado = 1
         """
         params = []
         if filtro:
-            query += " WHERE titulo_publicacion LIKE %s OR nombre_responsable LIKE %s"
+            query += " AND (titulo_publicacion LIKE %s OR nombre_responsable LIKE %s)"
             search = f"%{filtro}%"
             params = [search, search]
         query += " ORDER BY fecha_publicacion DESC"
-        rows = self._ejecutar_query(query, params)
-        return rows
+        return self._ejecutar_query(query, params)

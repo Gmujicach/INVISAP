@@ -6,6 +6,7 @@ from openpyxl.utils import get_column_letter
 import os
 import datetime
 from models.model_reportesExcel import ReporteExcelModel
+from services.bitacora_service import BitacoraService
 
 reporte_excel_bp = Blueprint('reporte_excel_bp', __name__, template_folder='../vista')
 modelo_reporte = ReporteExcelModel()
@@ -20,7 +21,6 @@ border = Border(
 )
 header_alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 cell_alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
-
 
 def construir_modulos_config_excel():
     return [
@@ -53,8 +53,8 @@ def construir_modulos_config_excel():
             'label': 'CONTRATACIONES',
             'keywords': ['contrataciones', 'contratacion', 'contratos', 'empresas'],
             'fetch': modelo_reporte.obtener_contrataciones_reporte,
-            'headers': ['Empresa', 'RIF', 'Número Contrato', 'Monto', 'Tipo', 'Modalidad'],
-            'fields': ['nombre_empresa', 'rif_empresa', 'numero_contrato', 'monto', 'tipo_contrato', 'modalidad']
+            'headers': ['Empresa', 'RIF', 'N° Contrato', 'Monto', 'Descripción', 'Observación', 'Tipo', 'Modalidad', 'Objeto', 'Registro', 'Inicio', 'Adjudicación'],
+            'fields': ['nombre_empresa', 'rif_empresa', 'numero_contrato', 'monto', 'descripcion', 'observacion', 'tipo_contrato', 'modalidad', 'objeto', 'fecha_registro', 'fecha_inicio', 'fecha_adjudicacion']
         },
         {
             'id': 'obras',
@@ -74,7 +74,6 @@ def construir_modulos_config_excel():
         }
     ]
 
-
 def obtener_modulos_excel_por_filtro(filtro):
     modulos_config = construir_modulos_config_excel()
     if not filtro:
@@ -84,7 +83,6 @@ def obtener_modulos_excel_por_filtro(filtro):
         if texto == mod['id'].lower():
             return [mod]
     return []
-
 
 @reporte_excel_bp.route('/reporte-excel', methods=['GET', 'POST'])
 def generarReporteExcel():
@@ -133,7 +131,7 @@ def generarReporteExcel():
                 column_widths[col_num] = max(column_widths[col_num], len(str(header)))
             start_row += 1
 
-            date_fields = {'fecha', 'fecha_ingreso', 'fecha_formateada'}
+            date_fields = {'fecha', 'fecha_ingreso', 'fecha_formateada', 'fecha_registro', 'fecha_inicio', 'fecha_adjudicacion'}
 
             for reg in data:
                 for col_num, field in enumerate(mod['fields'], 1):
@@ -168,6 +166,10 @@ def generarReporteExcel():
             os.makedirs(folder_path)
         ruta_archivo = os.path.join(folder_path, filename)
         wb.save(ruta_archivo)
+        BitacoraService.registrar_accion(
+            session, 'Reportes', 'VER',
+            f'Generó un reporte Excel de gestión'
+        )
         return send_file(ruta_archivo, as_attachment=True)
 
     publicaciones_previa = modelo_reporte.obtener_publicaciones_reporte()

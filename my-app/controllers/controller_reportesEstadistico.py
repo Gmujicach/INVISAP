@@ -8,6 +8,7 @@ import matplotlib.dates as mdates
 from PIL import Image, ImageDraw, ImageFont
 
 from models.model_ReporteEstadistico import ReporteEstadisticoModel
+from services.bitacora_service import BitacoraService
 
 reporte_estadistico_bp = Blueprint('reporte_estadistico_bp', __name__, template_folder='../vista')
 modelo_estadistico = ReporteEstadisticoModel()
@@ -156,6 +157,10 @@ def generarReporteEstadistico():
     paginas[0].save(pdf_buffer, format='PDF', resolution=150.0, save_all=True, append_images=paginas[1:])
     pdf_buffer.seek(0)
 
+    BitacoraService.registrar_accion(
+        session, 'Reportes', 'VER',
+        f'Generó un reporte estadístico de solicitudes'
+    )
     return Response(
         pdf_buffer.read(),
         mimetype="application/pdf",
