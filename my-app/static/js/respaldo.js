@@ -85,18 +85,11 @@ window.exportarRespaldo = function () {
         if (result.status === 'success') {
             mostrarAlerta('success', result.message);
             setTimeout(() => {
-                if (result.download_url) {
-                    const a = document.createElement('a');
-                    a.href = result.download_url;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                }
                 recargarTabla();
                 const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('modalExportarRespaldo'));
                 if (modal) modal.hide();
                 form.reset();
-            }, 1200);
+            }, 600);
         } else {
             mostrarAlerta('error', result.message || 'Error al generar respaldo');
         }
@@ -177,7 +170,8 @@ function recargarTabla() {
             if (!resp.ok) throw new Error('No autorizado');
             return resp.json();
         })
-        .then(respaldos => {
+        .then(data => {
+            const respaldos = data.respaldos || [];
             const tbody = document.getElementById('tbodyRespaldos');
             const contador = document.getElementById('contadorRespaldos');
             if (!tbody) return;

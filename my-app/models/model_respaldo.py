@@ -5,8 +5,13 @@ Genera dumps con mysqldump, importa archivos .sql y registra metadatos en respal
 import os
 import re
 import subprocess
+import logging
+import traceback
 from datetime import datetime
-from conexion.conexionBD import connectionBD_invilara
+from decimal import Decimal
+from conexion.conexionBD import connectionBD_invilara, connectionBD_invilara_seguridad
+
+logger = logging.getLogger(__name__)
 
 class RespaldoModel:
     CARPETA_RESPALDOS = os.path.join('static', 'respaldos_bd')
@@ -43,6 +48,74 @@ class RespaldoModel:
             print(f"[DB] No se pudo asegurar tabla respaldo_bd: {e}")
             return False
 
+    def _asegurar_tabla_seguridad(self):
+        """Crea la tabla administracion_respaldos en la BD de seguridad si no existe,
+        con el esquema real (incluye columna estado y PK compuesta)."""
+        conn = connectionBD_invilara_seguridad()
+        if not conn:
+            return
+        cur = conn.cursor()
+        try:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS `administracion_respaldos` (
+                    `id_respaldo` int(11) NOT NULL,
+                    `fecha_respaldo` datetime NOT NULL,
+                    `tamaño_respaldo` decimal(4,2) NOT NULL,
+                    `usuarios_id_usuarios` int(11) NOT NULL,
+                    `estado` tinyint(4) NOT NULL,
+                    PRIMARY KEY (`id_respaldo`, `usuarios_id_usuarios`),
+                    KEY `fk_administracion_respaldos_usuarios_idx` (`usuarios_id_usuarios`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+                COMMENT='Tabla de administracion de respaldos.'
+            """)
+            conn.commit()
+        finally:
+            cur.close()
+            conn.close()
+
+    def _registrar_en_bd_seguridad(self, id_respaldo, tamano_bytes, id_usuario):
+        tamano_mb = Decimal(str(round(tamano_bytes / (1024 * 1024), 2)))
+        tamano_mb = min(tamano_mb, Decimal('99.99'))
+        id_usuario = id_usuario or 1
+
+        conn = connectionBD_invilara_seguridad()
+        if not conn:
+            raise RuntimeError('No se pudo conectar a la base de datos de seguridad.')
+        db_actual = conn.database
+        cur = conn.cursor()
+        try:
+            self._asegurar_tabla_seguridad()
+            # Detectar si la tabla tiene una PK propia (id) o la PK compuesta original.
+            cur.execute("SHOW COLUMNS FROM `administracion_respaldos` LIKE 'id'")
+            tiene_id = cur.fetchone() is not None
+
+            columnas = ("`id_respaldo`, `fecha_respaldo`, `tamaño_respaldo`, "
+                        "`usuarios_id_usuarios`, `estado`")
+            valores = (id_respaldo, datetime.now(), tamano_mb, id_usuario, 1)
+            if tiene_id:
+                cur.execute(
+                    f"INSERT INTO `administracion_respaldos` ({columnas}) VALUES (%s, %s, %s, %s, %s)",
+                    valores
+                )
+            else:
+                # PK compuesta (id_respaldo, usuarios_id_usuarios): evita el choque por id reusado.
+                cur.execute(
+                    f"INSERT INTO `administracion_respaldos` ({columnas}) VALUES (%s, %s, %s, %s, %s) "
+                    "ON DUPLICATE KEY UPDATE "
+                    "`fecha_respaldo` = VALUES(`fecha_respaldo`), "
+                    "`tamaño_respaldo` = VALUES(`tamaño_respaldo`), "
+                    "`estado` = VALUES(`estado`)",
+                    valores
+                )
+            conn.commit()
+            logger.info("[Respaldo] Registro en seguridad OK (BD=%s, tabla=%s).", db_actual,
+                        'id' if tiene_id else 'compuesta')
+        finally:
+            cur.close()
+            conn.close()
+
+        return db_actual
+
     @staticmethod
     def _limpiar_nombre(nombre):
         return re.sub(r'[^A-Za-z0-9_\-]', '_', nombre.strip())[:100]
@@ -59,22 +132,28 @@ class RespaldoModel:
     def _obtener_config_bd():
         host = os.getenv('DB_HOST', 'localhost')
         user = os.getenv('DB_USER', 'root')
-        password = os.getenv('DB_PASSWORD', '')
+        password = os.getenv('DB_PASSWORD', '1234')
         database = os.getenv('DB_NAME', 'invilara')
         charset = 'utf8mb4'
 
         rutas_mysqldump = [
+            r'C:\laragon\bin\mysql\mysql-8.4.3-winx64\bin\mysqldump.exe',
+            r'C:\laragon\bin\mysql\mysql-9.4.0-winx64\bin\mysqldump.exe',
             r'C:\laragon\bin\mysql\mysql-8.0.33\bin\mysqldump.exe',
             r'C:\laragon\bin\mysql\mysql-8.0.31\bin\mysqldump.exe',
             r'C:\laragon\bin\mysql\mysql\bin\mysqldump.exe',
+            r'C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysqldump.exe',
             'mysqldump'
         ]
         mysqldump = next((r for r in rutas_mysqldump if os.path.exists(r)), 'mysqldump')
 
         rutas_mysql = [
+            r'C:\laragon\bin\mysql\mysql-8.4.3-winx64\bin\mysql.exe',
+            r'C:\laragon\bin\mysql\mysql-9.4.0-winx64\bin\mysql.exe',
             r'C:\laragon\bin\mysql\mysql-8.0.33\bin\mysql.exe',
             r'C:\laragon\bin\mysql\mysql-8.0.31\bin\mysql.exe',
             r'C:\laragon\bin\mysql\mysql\bin\mysql.exe',
+            r'C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe',
             'mysql'
         ]
         mysql = next((r for r in rutas_mysql if os.path.exists(r)), 'mysql')
@@ -91,11 +170,12 @@ class RespaldoModel:
 
     def _exportar_dump(self, ruta_salida):
         cfg = self._obtener_config_bd()
+        env = os.environ.copy()
+        env['MYSQL_PWD'] = cfg['password']
         comando = [
             cfg['mysqldump'],
             f"--host={cfg['host']}",
             f"--user={cfg['user']}",
-            f"--password={cfg['password']}",
             f"--default-character-set={cfg['charset']}",
             '--routines',
             '--triggers',
@@ -106,7 +186,7 @@ class RespaldoModel:
             cfg['database']
         ]
         with open(ruta_salida, 'w', encoding='utf-8') as archivo:
-            resultado = subprocess.run(comando, stdout=archivo, stderr=subprocess.PIPE, text=True)
+            resultado = subprocess.run(comando, stdout=archivo, stderr=subprocess.PIPE, text=True, env=env)
 
         if resultado.returncode != 0:
             if not (os.path.exists(ruta_salida) and os.path.getsize(ruta_salida) > 0):
@@ -116,23 +196,24 @@ class RespaldoModel:
 
     def _importar_sql(self, ruta_archivo):
         cfg = self._obtener_config_bd()
+        env = os.environ.copy()
+        env['MYSQL_PWD'] = cfg['password']
         comando = [
             cfg['mysql'],
             f"--host={cfg['host']}",
             f"--user={cfg['user']}",
-            f"--password={cfg['password']}",
             f"--default-character-set={cfg['charset']}",
             '--binary-mode',
             '--auto-rehash',
             cfg['database']
         ]
         with open(ruta_archivo, 'r', encoding='utf-8') as entrada:
-            resultado = subprocess.run(comando, stdin=entrada, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            resultado = subprocess.run(comando, stdin=entrada, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env)
         if resultado.returncode != 0:
             raise RuntimeError(resultado.stderr or 'Error al ejecutar importación mysql.')
         return True
 
-    def crear_respaldo(self, descripcion=''):
+    def crear_respaldo(self, descripcion='', id_usuario=None):
         if not os.path.exists(self.CARPETA_RESPALDOS):
             os.makedirs(self.CARPETA_RESPALDOS, exist_ok=True)
 
@@ -171,6 +252,12 @@ class RespaldoModel:
             cur.close()
             conn.close()
 
+        try:
+            self._registrar_en_bd_seguridad(id_respaldo, tamano, id_usuario)
+        except Exception as e:
+            logger.error("[Respaldo] Error al registrar en BD seguridad:\n%s", traceback.format_exc())
+            print(f"[Respaldo] Error al registrar en BD seguridad: {e}")
+
         return {
             'id_respaldo': id_respaldo,
             'nombre_archivo': nombre_archivo,
@@ -192,7 +279,8 @@ class RespaldoModel:
             for r in respaldos:
                 r['tamano_formateado'] = self._formatear_tamano(r.get('tamano', 0) or 0)
             return respaldos
-        except Exception:
+        except Exception as e:
+            print(f"[Respaldo] Error al listar respaldos: {e}")
             return []
         finally:
             cur.close()
@@ -231,14 +319,38 @@ class RespaldoModel:
         try:
             cur.execute("UPDATE respaldo_bd SET estado=0 WHERE id_respaldo=%s AND estado=1", (id_respaldo,))
             conn.commit()
-            return cur.rowcount > 0
+            afectados = cur.rowcount
         except Exception:
             return False
         finally:
             cur.close()
             conn.close()
 
-    def importar_respaldo(self, ruta_archivo, descripcion=''):
+        # Borrado lógico en la BD de seguridad (estado=0 = eliminado).
+        try:
+            self._marcar_borrado_seguridad(id_respaldo)
+        except Exception as e:
+            print(f"[Respaldo] No se pudo marcar borrado lógico en seguridad: {e}")
+
+        return afectados > 0
+
+    def _marcar_borrado_seguridad(self, id_respaldo):
+        """Borrado lógico del registro en administracion_respaldos (estado=0)."""
+        conn = connectionBD_invilara_seguridad()
+        if not conn:
+            return
+        cur = conn.cursor()
+        try:
+            cur.execute(
+                "UPDATE `administracion_respaldos` SET `estado`=0 WHERE `id_respaldo`=%s AND `estado`=1",
+                (id_respaldo,)
+            )
+            conn.commit()
+        finally:
+            cur.close()
+            conn.close()
+
+    def importar_respaldo(self, ruta_archivo, descripcion='', id_usuario=None):
         try:
             self._importar_sql(ruta_archivo)
         except Exception as e:
@@ -267,4 +379,13 @@ class RespaldoModel:
             cur.close()
             conn.close()
 
-        return id_respaldo
+        advertencia = None
+        db_seguridad = None
+        try:
+            db_seguridad = self._registrar_en_bd_seguridad(id_respaldo, tamano, id_usuario)
+        except Exception as e:
+            advertencia = f"No se pudo registrar el respaldo en la base de datos de seguridad: {e}"
+            logger.error("[Respaldo] Error al registrar importación en BD seguridad:\n%s", traceback.format_exc())
+            print(f"[Respaldo] Error al registrar importación en BD seguridad: {e}")
+
+        return {'id_respaldo': id_respaldo, 'advertencia': advertencia, 'db_seguridad': db_seguridad}

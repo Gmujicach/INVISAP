@@ -46,7 +46,7 @@ def exportar_respaldo():
 
     try:
         descripcion = request.form.get('descripcion', '')
-        resultado = modelo_respaldo.crear_respaldo(descripcion)
+        resultado = modelo_respaldo.crear_respaldo(descripcion, session.get('id'))
         BitacoraService.registrar_accion(
             session, 'Respaldos', 'CREAR',
             f'Generó un respaldo de la base de datos'
@@ -96,11 +96,17 @@ def importar_respaldo():
             os.makedirs(CARPETA_RESPALDOS, exist_ok=True)
 
         archivo.save(ruta_temporal)
-        modelo_respaldo.importar_respaldo(ruta_temporal, descripcion)
+        resultado = modelo_respaldo.importar_respaldo(ruta_temporal, descripcion, session.get('id'))
         BitacoraService.registrar_accion(
             session, 'Respaldos', 'EDITAR',
             f'Importó un respaldo de la base de datos'
         )
+        if resultado.get('advertencia'):
+            db = resultado.get('db_seguridad')
+            msg = f"Respaldo importado correctamente. {resultado['advertencia']}"
+            if db:
+                msg += f" (BD de seguridad usada por la app: '{db}')"
+            return jsonify({'status': 'success', 'warning': True, 'message': msg})
         return jsonify({
             'status': 'success',
             'message': 'Respaldo importado correctamente.'

@@ -7,17 +7,16 @@ from services.bitacora_service import BitacoraService
 from flask import session
 
 
-def _registrar_bitacora(session: dict, accion: str, id_solicitud: int | None, descripcion: str) -> None:
+def _registrar_bitacora(session_data: dict, accion: str, id_solicitud: int | None, descripcion: str) -> None:
     """Registra una acción de solicitudes en la bitácora si el usuario tiene sesión activa."""
-    if not session:
+    if not session_data:
         return
     BitacoraService.registrar_accion(
-        session=session,
+        session=session_data,
         modulo='Solicitudes',
         accion=accion,
         descripcion=f'{descripcion} (Solicitud #{id_solicitud})' if id_solicitud else descripcion,
     )
-
 
 def obtener_solicitudes() -> list:
     """Retorna todas las solicitudes registradas."""
@@ -26,6 +25,7 @@ def obtener_solicitudes() -> list:
 def obtener_solicitudes_pendientes() -> list:
     """Retorna solo las solicitudes con estatus 'Pendiente'."""
     return SolicitudModel.obtener_solicitudes_pendientes()
+
 
 def crear_solicitud(datos_formulario: dict, session: dict | None = None) -> dict:
     """
@@ -46,6 +46,7 @@ def crear_solicitud(datos_formulario: dict, session: dict | None = None) -> dict
                 session, 'Solicitudes', 'CREAR',
                 f'Registró una nueva solicitud con ID: {nuevo_id}'
             )
+
             if session:
                 _registrar_bitacora(
                     session,
@@ -80,6 +81,7 @@ def actualizar_solicitud(id_solicitud, datos_formulario: dict, session: dict | N
                 session, 'Solicitudes', 'EDITAR',
                 f'Modificó la solicitud con ID: {id_solicitud}'
             )
+
             if session:
                 _registrar_bitacora(
                     session,
@@ -101,6 +103,7 @@ def eliminar_solicitud(id_solicitud, session: dict | None = None) -> dict:
             session, 'Solicitudes', 'ELIMINAR',
             f'Eliminó la solicitud con ID: {id_solicitud}'
         )
+
         if session:
             _registrar_bitacora(
                 session,

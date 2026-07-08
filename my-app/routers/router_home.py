@@ -609,11 +609,6 @@ def api_actualizar_solicitud():
 
     resultado = actualizar_solicitud(id_solicitud, datos, session)
     if resultado.get('success'):
-        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
-        BitacoraService.registrar_accion(
-            session, 'Solicitudes', 'EDITAR',
-            f'Solicitud #{id_solicitud} actualizada por {nombre_usr}'
-        )
         return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud actualizada')}), 200
     return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo actualizar la solicitud')}), 400
 
@@ -714,14 +709,13 @@ def procesar_actualizacion():
     if 'conectado' in session:
         modelo = ContratacionModel()
         
-        # Ajusta el nombre de tu función de actualizar si es diferente
         exito, mensaje = modelo.actualizar_contratacion(request.form) 
         
         if exito:
             return jsonify({
                 'status': 'success', 
                 'message': mensaje,
-                'redirect': url_for('contrataciones_bp.gestionar_contrataciones') # Aquí le decimos a dónde ir
+                'redirect': url_for('contrataciones_bp.gestionar_contrataciones')
             })
         return jsonify({'status': 'error', 'message': mensaje})
             
@@ -767,14 +761,7 @@ def procesar_registro():
     exito, mensaje, categoria = procesar_registro_empresa(request.form)
     
     if exito:
-        rif = request.form.get('rif', 'S/R')
-        nombre_empresa = request.form.get('nombre_empresa', '')
-        BitacoraService.registrar_accion(
-            session, 'Empresas', 'CREAR',
-            f'Empresa {nombre_empresa} (RIF: {rif}) registrada con éxito'
-        )
-    
-    return jsonify({
+        return jsonify({
         'exito': exito,
         'mensaje': mensaje,
         'categoria': categoria
@@ -809,12 +796,6 @@ def update_empresa():
     from controllers.controller_empresa import update_empresa
     
     if update_empresa(request.form):
-        rif = request.form.get('rif', 'S/R')
-        nombre_empresa = request.form.get('nombre_empresa', '')
-        BitacoraService.registrar_accion(
-            session, 'Empresas', 'EDITAR',
-            f'Empresa {nombre_empresa} (RIF: {rif}) actualizada con éxito'
-        )
         return jsonify({'exito': True, 'mensaje': 'Empresa actualizada correctamente.'})
     else:
         return jsonify({'exito': False, 'mensaje': 'Error al actualizar la empresa.', 'categoria': 'error'})
@@ -825,10 +806,6 @@ def eliminar_empresa(rif):
         from controllers.controller_empresa import eliminar_empresa_por_rif
         
         if eliminar_empresa_por_rif(rif):
-            BitacoraService.registrar_accion(
-                session, 'Empresas', 'ELIMINAR',
-                f'Empresa con RIF: {rif} eliminada con éxito (Borrado Lógico)'
-            )
             return jsonify({'exito': True, 'mensaje': 'Empresa eliminada correctamente.'})
         else:
             return jsonify({'exito': False, 'mensaje': 'Error al intentar eliminar la empresa.', 'categoria': 'error'})
@@ -848,28 +825,31 @@ def viewBitacora():
     filtro_modulo = request.args.get('modulo', '').strip()
     filtro_accion = request.args.get('accion', '').strip()
     
-    # 1. Obtener la página actual (por defecto 1) y definir límite
-    page = request.args.get('page', 1, type=int)
-    per_page = 10
-    
+    # 1. Obtener la página actual y la cantidad de registros por página
+    page = request.args.get('page', 1, type=int) or 1
+    per_page = request.args.get('per_page', 10, type=int) or 10
+    allowed_per_page = {5, 10, 20, 50, 100}
+    if per_page not in allowed_per_page:
+        per_page = 10
+
     # Traer todos los registros filtrados
     registros = filtrar_bitacora(
         usuario=filtro_usuario or None,
         modulo=filtro_modulo or None,
         accion=filtro_accion or None
     )
-    
+
     # 2. Calcular el total de páginas
     total_registros = len(registros)
-    total_pages = (total_registros + per_page - 1) // per_page
-    
+    total_pages = max(1, (total_registros + per_page - 1) // per_page)
+
     # Validar que la página solicitada esté en un rango válido
     if page < 1:
         page = 1
     elif page > total_pages and total_pages > 0:
         page = total_pages
-        
-    # 3. Extraer solo los 10 registros correspondientes a la página actual
+
+    # 3. Extraer solo los registros correspondientes a la página actual
     inicio = (page - 1) * per_page
     fin = inicio + per_page
     registros_paginados = registros[inicio:fin]
@@ -886,7 +866,10 @@ def viewBitacora():
         filtro_accion=filtro_accion,
         page=page,
         total_pages=total_pages,
-        total_registros=total_registros
+        total_registros=total_registros,
+        per_page=per_page,
+        primera_fila=inicio + 1 if total_registros else 0,
+        ultima_fila=min(fin, total_registros) if total_registros else 0
     )
 
 
@@ -941,12 +924,6 @@ def formSolicitud():
         resultado = {'success': False}
 
     if resultado.get('success'):
-        nuevo_id = resultado.get('id')
-        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
-        BitacoraService.registrar_accion(
-            session, 'Solicitudes', 'CREAR',
-            f'Solicitud #{nuevo_id} creada por {nombre_usr}'
-        )
         flash('Solicitud registrada exitosamente.', 'success')
         return redirect(url_for('lista_solicitudes'))
     else:
@@ -981,11 +958,6 @@ def eliminar_solicitud_route(id_solicitud):
         success = bool(resultado)
 
     if success:
-        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
-        BitacoraService.registrar_accion(
-            session, 'Solicitudes', 'ELIMINAR',
-            f'Solicitud #{id_solicitud} eliminada por {nombre_usr}'
-        )
         flash('Solicitud eliminada correctamente.', 'success')
     else:
         flash('Error al intentar eliminar la solicitud.', 'error')
@@ -1018,11 +990,6 @@ def update_solicitud():
         success = bool(resultado)
 
     if success:
-        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
-        BitacoraService.registrar_accion(
-            session, 'Solicitudes', 'EDITAR',
-            f'Solicitud #{id_solicitud} actualizada por {nombre_usr}'
-        )
         flash('Solicitud actualizada correctamente.', 'success')
     else:
         flash('Error al actualizar la solicitud. Verifique los datos.', 'error')
