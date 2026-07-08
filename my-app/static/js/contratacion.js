@@ -252,6 +252,46 @@ document.addEventListener('click', function(event) {
     }
 });
 
+function inicializarTablaContrataciones() {
+    if ($.fn.DataTable.isDataTable('#tablaContrataciones')) {
+        $('#tablaContrataciones').DataTable().destroy();
+    }
+
+    var table = $('#tablaContrataciones').DataTable({
+        dom: 'rt<"d-flex justify-content-end py-3"p>',
+        info: false,
+        lengthChange: false,
+        pageLength: 8,
+        columnDefs: [
+            { "orderable": false, "targets": 6 }
+        ],
+        language: {
+            "emptyTable": "NO SE ENCUENTRAN CONTRATACIONES REGISTRADAS",
+            "zeroRecords": "No se encontraron resultados en la búsqueda",
+            "paginate": {
+                "next": "Siguiente",
+                "previous": "Anterior"
+            }
+        }
+    });
+
+    $('#customBuscador').off('input').on('input', function() {
+        var valorBusqueda = this.value;
+        var columnaSeleccionada = $('#columnaBusqueda').val();
+        table.search('').columns().search('');
+        if (columnaSeleccionada === 'all') {
+            table.search(valorBusqueda).draw();
+        } else {
+            table.column(parseInt(columnaSeleccionada)).search(valorBusqueda).draw();
+        }
+    });
+
+    $('#columnaBusqueda').off('change').on('change', function() {
+        $('#customBuscador').val('');
+        table.search('').columns().search('').draw();
+    });
+}
+
 document.getElementById('formContratacion').addEventListener('submit', function(event) {
     event.preventDefault(); 
     event.stopPropagation();
@@ -346,8 +386,15 @@ document.getElementById('formContratacion').addEventListener('submit', function(
                     .then(html => {
                         const parser = new DOMParser();
                         const doc = parser.parseFromString(html, 'text/html');
-                        const nuevaTabla = doc.querySelector('.table-responsive').innerHTML;
-                        document.querySelector('.table-responsive').innerHTML = nuevaTabla;
+                        
+                        if ($.fn.DataTable.isDataTable('#tablaContrataciones')) {
+                            $('#tablaContrataciones').DataTable().destroy();
+                        }
+
+                        const nuevaTabla = doc.querySelector('#tablaContratacionesContenedor').innerHTML;
+                        document.querySelector('#tablaContratacionesContenedor').innerHTML = nuevaTabla;
+                        
+                        inicializarTablaContrataciones();
                     });
                 }
             });
@@ -371,4 +418,8 @@ document.getElementById('formContratacion').addEventListener('submit', function(
             target: document.getElementById('modalContratacion')
         });
     });
+});
+
+$(document).ready(function() {
+    inicializarTablaContrataciones();
 });

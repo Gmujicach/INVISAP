@@ -1,0 +1,302 @@
+/* ============================================
+   Estilos para el modulo de Inspecciones
+   Compatible con modo oscuro y responsive
+   ============================================ */
+
+.card-modern {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+}
+
+[data-bs-theme="dark"] .card-modern {
+    background: #252525;
+    border-color: #3a3a3a;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+}
+
+.card-header-custom {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1.1rem 1.5rem;
+    border-bottom: 2px solid #08b324;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+[data-bs-theme="dark"] .card-header-custom {
+    background: linear-gradient(135deg, #2b2b2b 0%, #1e1e1e 100%);
+    border-bottom-color: #08b324;
+}
+
+.header-icon-shield {
+    width: 40px;
+    height: 40px;
+    background: #08b324;
+    color: #fff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.header-icon-shield i {
+    color: #fff !important;
+}
+
+.badge-count {
+    background: rgba(8, 179, 36, 0.1);
+    color: #08b324;
+    font-weight: 700;
+    padding: 0.35rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+}
+
+[data-bs-theme="dark"] .badge-count {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.12);
+}
+
+.card-body-custom {
+    padding: 1rem;
+}
+
+.table-responsive-custom {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table-inspecciones-modern {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 0;
+}
+
+.table-inspecciones-modern thead th {
+    background: #f8f9fa;
+    color: #495057;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.8px;
+    padding: 1rem 1rem;
+    border-bottom: 2px solid #dee2e6;
+    white-space: nowrap;
+}
+
+[data-bs-theme="dark"] .table-inspecciones-modern thead th {
+    background: #1e1e1e;
+    color: #adb5bd;
+    border-bottom-color: #444;
+}
+
+.table-row-animated {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+[data-bs-theme="dark"] .table-row-animated {
+    border-bottom-color: #2e2e2e;
+}
+
+.table-row-animated:hover {
+    background: rgba(8, 179, 36, 0.03);
+}
+
+[data-bs-theme="dark"] .table-row-animated:hover {
+    background: rgba(8, 179, 36, 0.06);
+}
+
+.table-row-animated td {
+    padding: 1rem 1rem;
+    vertical-align: middle;
+}
+
+.fw-bold-id {
+    font-size: 1.1rem;
+    font-weight: 800 !important;
+}
+
+.text-truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-line-orient: vertical;
+    overflow: hidden;
+    color: #495057;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+[data-bs-theme="dark"] .text-truncate-3 {
+    color: #ccc;
+}
+
+.action-group-modern {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-icon-modern {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border: none;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+    cursor: pointer;
+    background: transparent;
+}
+
+.btn-edit-modern {
+    background: rgba(255, 193, 7, 0.12);
+    color: #b78900;
+}
+
+.btn-edit-modern:hover {
+    background: #ffc107;
+    color: #212529;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(255, 193, 7, 0.35);
+}
+
+.btn-delete-modern {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.btn-delete-modern:hover {
+    background: #dc3545;
+    color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(220, 53, 69, 0.35);
+}
+
+[data-bs-theme="dark"] .btn-edit-modern:hover {
+    color: #000;
+}
+
+[data-bs-theme="dark"] .btn-delete-modern:hover {
+    color: #fff;
+}
+
+.btn-icon-modern:active {
+    transform: translateY(0) !important;
+}
+
+.empty-state-modern {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-icon-circle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #08b324 0%, #06a020 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 2.8rem;
+    color: #fff;
+    box-shadow: 0 10px 30px rgba(8, 179, 36, 0.35);
+    animation: float 3s ease-in-out infinite;
+}
+
+[data-bs-theme="dark"] .empty-icon-circle {
+    box-shadow: 0 10px 30px rgba(8, 179, 36, 0.2);
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.text-muted-custom {
+    color: #6c757d !important;
+    font-size: 1rem;
+}
+
+.btn-custom-cta {
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-custom-cta:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(13, 110, 253, 0.45);
+    background: #0b5ed7;
+    color: #fff;
+}
+
+.text-gradient {
+    background: linear-gradient(90deg, #08b324, #04b40e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.inspeccion-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Responsive para lista de inspecciones */
+@media (max-width: 768px) {
+    .table-responsive-custom {
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+    }
+
+    [data-bs-theme="dark"] .table-responsive-custom {
+        border-color: #444;
+    }
+
+    .btn-icon-modern {
+        width: 34px;
+        height: 34px;
+        font-size: 0.9rem;
+        border-radius: 8px;
+    }
+
+    .table-inspecciones-modern thead th {
+        font-size: 0.65rem;
+        padding: 0.8rem;
+    }
+
+    .table-row-animated td {
+        padding: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .d-flex.justify-content-between.align-items-center.mb-4 {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 1rem;
+    }
+
+    .badge-count {
+        align-self: flex-start;
+    }
+
+    .card-header-custom {
+        flex-wrap: wrap;
+    }
+}

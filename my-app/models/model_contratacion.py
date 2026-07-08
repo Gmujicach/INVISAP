@@ -24,7 +24,7 @@ class ContratacionModel:
             if len(str(datos.get('numero_contrato')).strip()) < 3:
                 return False, "El número de contrato debe tener al menos 3 caracteres."
 
-            if datos.get('tipo_contrato') not in ['Contrato de Obra', 'Contrato de Servicio', 'Contrato de Adquisición de Bienes']:
+            if datos.get('tipo_contrato') not in ['Contrato de Obra', 'Contrato de Servicio', 'Contrato de Bienes']:
                 return False, "Tipo de contrato no permitido."
 
             if datos.get('modalidad') not in ['Concurso Abierto', 'Concurso Cerrado', 'Consulta de Precios', 'Contratación Directa']:

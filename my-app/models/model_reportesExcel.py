@@ -1,6 +1,5 @@
 from conexion.conexionBD import connectionBD, connectionBD_seguridad
 
-
 class ReporteExcelModel:
     def __init__(self):
         pass
@@ -28,10 +27,11 @@ class ReporteExcelModel:
             FROM solicitudes s
             JOIN persona p ON s.persona_id_persona = p.id_persona
             JOIN prioridad pr ON s.prioridad_id_gestion_prioridad = pr.id_gestion_prioridad
+            WHERE s.estado = 1
         """
         params = []
         if filtro:
-            query += " WHERE s.tipo_solicitud LIKE %s OR s.estatus_solicitud LIKE %s OR s.problematica LIKE %s OR p.cedula_persona LIKE %s"
+            query += " AND (s.tipo_solicitud LIKE %s OR s.estatus_solicitud LIKE %s OR s.problematica LIKE %s OR p.cedula_persona LIKE %s)"
             search = f"%{filtro}%"
             params = [search, search, search, search]
         query += " ORDER BY s.fecha DESC"
@@ -46,14 +46,14 @@ class ReporteExcelModel:
             FROM particular pa
             JOIN persona p ON pa.persona_id_persona = p.id_persona
             JOIN solicitudes s ON s.persona_id_persona = p.id_persona
-            GROUP BY pa.id_particular, pa.nombre, pa.apellido, p.cedula_persona
+            WHERE pa.estado = 1
         """
         params = []
         if filtro:
-            query += " HAVING pa.nombre LIKE %s OR pa.apellido LIKE %s OR p.cedula_persona LIKE %s"
+            query += " AND (pa.nombre LIKE %s OR pa.apellido LIKE %s OR p.cedula_persona LIKE %s)"
             search = f"%{filtro}%"
             params = [search, search, search]
-        query += " ORDER BY pa.nombre ASC"
+        query += " GROUP BY pa.id_particular, pa.nombre, pa.apellido, p.cedula_persona ORDER BY pa.nombre ASC"
         return self._ejecutar_query(query, params)
 
     def obtener_empleados_reporte(self, filtro=None):
@@ -65,13 +65,14 @@ class ReporteExcelModel:
                 DATE_FORMAT(e.fecha_ingreso, '%d/%m/%Y') AS fecha_ingreso,
                 p.correo AS email_empleado,
                 p.telefono AS telefono_empleado,
-                CASE WHEN e.estado = 1 THEN 'Activo' ELSE 'Inactivo' END AS estado_empleado
+                'Activo' AS estado_empleado
             FROM empleados e
             JOIN persona p ON e.persona_id_persona = p.id_persona
+            WHERE e.estado = 1
         """
         params = []
         if filtro:
-            query += " WHERE e.nombre_empleado LIKE %s OR e.cargo LIKE %s OR e.gerencia_asignada LIKE %s OR p.correo LIKE %s"
+            query += " AND (e.nombre_empleado LIKE %s OR e.cargo LIKE %s OR e.gerencia_asignada LIKE %s OR p.correo LIKE %s)"
             search = f"%{filtro}%"
             params = [search, search, search, search]
         query += " ORDER BY e.nombre_empleado ASC"
@@ -85,10 +86,11 @@ class ReporteExcelModel:
                 correo,
                 rol
             FROM usuarios
+            WHERE estado = 1
         """
         params = []
         if filtro:
-            query += " WHERE nombre LIKE %s OR cedula_usuario LIKE %s OR correo LIKE %s OR rol LIKE %s"
+            query += " AND (nombre LIKE %s OR cedula_usuario LIKE %s OR correo LIKE %s OR rol LIKE %s)"
             search = f"%{filtro}%"
             params = [search, search, search, search]
         query += " ORDER BY nombre ASC"
@@ -101,15 +103,22 @@ class ReporteExcelModel:
                 c.empresa_rif AS rif_empresa,
                 c.numero_contrato,
                 c.monto,
+                c.descripcion,
+                c.observacion,
                 c.tipo_contrato,
-                c.modalidad
+                c.modalidad,
+                c.objeto,
+                DATE_FORMAT(c.fecha_registro, '%d/%m/%Y') AS fecha_registro,
+                DATE_FORMAT(c.fecha_inicio_procedimiento, '%d/%m/%Y') AS fecha_inicio,
+                DATE_FORMAT(c.fecha_adjudicacion, '%d/%m/%Y') AS fecha_adjudicacion
             FROM contratacion c
+            WHERE c.estado = 1
         """
         params = []
         if filtro:
-            query += " WHERE c.empresa_ganadora LIKE %s OR c.empresa_rif LIKE %s OR c.numero_contrato LIKE %s OR c.tipo_contrato LIKE %s"
+            query += " AND (c.empresa_ganadora LIKE %s OR c.empresa_rif LIKE %s OR c.numero_contrato LIKE %s OR c.tipo_contrato LIKE %s OR c.descripcion LIKE %s)"
             search = f"%{filtro}%"
-            params = [search, search, search, search]
+            params = [search, search, search, search, search]
         query += " ORDER BY c.fecha_registro DESC"
         return self._ejecutar_query(query, params)
 
@@ -125,10 +134,11 @@ class ReporteExcelModel:
             FROM obra o
             JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
             JOIN contratacion c ON o.contratacion_id_contratacion = c.id_contratacion
+            WHERE o.estado = 1
         """
         params = []
         if filtro:
-            query += " WHERE o.titulo_obra LIKE %s OR o.ubicacion_obra LIKE %s OR s.estado LIKE %s OR c.empresa_ganadora LIKE %s"
+            query += " AND (o.titulo_obra LIKE %s OR o.ubicacion_obra LIKE %s OR s.estado LIKE %s OR c.empresa_ganadora LIKE %s)"
             search = f"%{filtro}%"
             params = [search, search, search, search]
         query += " ORDER BY o.titulo_obra ASC"
@@ -142,12 +152,13 @@ class ReporteExcelModel:
                 DATE_FORMAT(fecha_publicacion, '%d/%m/%Y') AS fecha_formateada,
                 tipo_publicacion
             FROM publicacion
+            WHERE estado = 1
         """
         params = []
         if filtro:
-            query += " WHERE titulo_publicacion LIKE %s OR nombre_responsable LIKE %s OR cuerpo_publicacion LIKE %s"
+            query += " AND (titulo_publicacion LIKE %s OR nombre_responsable LIKE %s)"
             search = f"%{filtro}%"
-            params = [search, search, search]
+            params = [search, search]
         query += " ORDER BY fecha_publicacion DESC"
         return self._ejecutar_query(query, params)
 
@@ -162,14 +173,15 @@ class ReporteExcelModel:
                     SUM(CASE WHEN sexo_empleado = 2 THEN 1 ELSE 0 END) as mujeres,
                     COUNT(*) as total
                 FROM tbl_empleados
+                WHERE estado = 1
             """)
             stats['empleados'] = cursor.fetchone()
             
-            cursor.execute("SELECT AVG(salario_empleado) as promedio_salarial FROM tbl_empleados")
+            cursor.execute("SELECT AVG(salario_empleado) as promedio_salarial FROM tbl_empleados WHERE estado = 1")
             res_salario = cursor.fetchone()
             stats['promedio_salarial'] = res_salario['promedio_salarial'] if res_salario else 0
             
-            cursor.execute("SELECT COUNT(*) as total_pub FROM tbl_publicaciones")
+            cursor.execute("SELECT COUNT(*) as total_pub FROM tbl_publicaciones WHERE estado = 1")
             res_pub = cursor.fetchone()
             stats['publicaciones'] = res_pub['total_pub'] if res_pub else 0
             

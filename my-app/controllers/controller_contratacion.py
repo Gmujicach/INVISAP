@@ -59,7 +59,7 @@ def validar_datos_contratacion(datos):
     if len(monto) < 3 or len(monto) > 20:
         return False, "El monto debe tener entre 3 y 20 caracteres."
 
-    tipos_validos = ['Contrato de Obra', 'Contrato de Servicio', 'Contrato de Adquisición de Bienes']
+    tipos_validos = ['Contrato de Obra', 'Contrato de Servicio', 'Contrato de Bienes']
     if datos.get('tipo_contrato') not in tipos_validos:
         return False, "El tipo de contrato seleccionado no es válido."
 

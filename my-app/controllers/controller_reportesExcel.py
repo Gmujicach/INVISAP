@@ -21,7 +21,6 @@ border = Border(
 header_alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 cell_alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
 
-
 def construir_modulos_config_excel():
     return [
         {
@@ -53,8 +52,8 @@ def construir_modulos_config_excel():
             'label': 'CONTRATACIONES',
             'keywords': ['contrataciones', 'contratacion', 'contratos', 'empresas'],
             'fetch': modelo_reporte.obtener_contrataciones_reporte,
-            'headers': ['Empresa', 'RIF', 'Número Contrato', 'Monto', 'Tipo', 'Modalidad'],
-            'fields': ['nombre_empresa', 'rif_empresa', 'numero_contrato', 'monto', 'tipo_contrato', 'modalidad']
+            'headers': ['Empresa', 'RIF', 'N° Contrato', 'Monto', 'Descripción', 'Observación', 'Tipo', 'Modalidad', 'Objeto', 'Registro', 'Inicio', 'Adjudicación'],
+            'fields': ['nombre_empresa', 'rif_empresa', 'numero_contrato', 'monto', 'descripcion', 'observacion', 'tipo_contrato', 'modalidad', 'objeto', 'fecha_registro', 'fecha_inicio', 'fecha_adjudicacion']
         },
         {
             'id': 'obras',
@@ -74,18 +73,15 @@ def construir_modulos_config_excel():
         }
     ]
 
-
 def obtener_modulos_excel_por_filtro(filtro):
     modulos_config = construir_modulos_config_excel()
     if not filtro:
         return modulos_config
     texto = filtro.lower().strip()
-    seleccionados = []
     for mod in modulos_config:
-        if texto in mod['id'].lower() or any(texto in kw for kw in mod['keywords']) or texto in mod['label'].lower():
-            seleccionados.append(mod)
-    return seleccionados
-
+        if texto == mod['id'].lower():
+            return [mod]
+    return []
 
 @reporte_excel_bp.route('/reporte-excel', methods=['GET', 'POST'])
 def generarReporteExcel():
@@ -105,7 +101,7 @@ def generarReporteExcel():
         wb.remove(wb.active)
 
         for mod in modulos_a_procesar:
-            data = mod['fetch'](filtro if filtro else None)
+            data = mod['fetch']()
             if not data:
                 continue
 
@@ -134,7 +130,7 @@ def generarReporteExcel():
                 column_widths[col_num] = max(column_widths[col_num], len(str(header)))
             start_row += 1
 
-            date_fields = {'fecha', 'fecha_ingreso', 'fecha_formateada'}
+            date_fields = {'fecha', 'fecha_ingreso', 'fecha_formateada', 'fecha_registro', 'fecha_inicio', 'fecha_adjudicacion'}
 
             for reg in data:
                 for col_num, field in enumerate(mod['fields'], 1):
@@ -157,6 +153,10 @@ def generarReporteExcel():
             for col_num, width in column_widths.items():
                 adjusted = min(max(width + 3, 12), 50)
                 ws.column_dimensions[get_column_letter(col_num)].width = adjusted
+
+        if not wb.sheetnames:
+            flash('No hay registros disponibles para generar el reporte con los criterios ingresados.', 'info')
+            return redirect(url_for('reporte_excel_bp.generarReporteExcel'))
 
         filename = f"Reporte_Invilara_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
         base_dir = os.path.dirname(os.path.abspath(__file__))

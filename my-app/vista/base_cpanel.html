@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/reportesEstadisticos.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/usuarios.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/login.css') }}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     {% block customCSS %} {% endblock %}
     <style>
       /* Estilos para el acceso rápido a Mi Perfil */
@@ -177,6 +178,28 @@
          background-color: #232333;
          color: #cfcde9;
        }
+      .table-hover tbody tr:hover td {
+      background-color: #f8f9fa;
+       }
+      .search-modern {
+          min-width: 250px;
+      }
+      .search-modern .input-group-text {
+          background-color: transparent;
+          border-right: none;
+      }
+      .search-modern .form-control {
+          border-left: none;
+      }
+      .search-modern .form-control:focus {
+          box-shadow: none;
+          border-color: #dee2e6;
+      }
+      /* Estilos para la paginación de DataTables */
+      .dataTables_paginate {
+          margin-top: 15px !important;
+          padding-right: 15px !important;
+      }
     </style>
   </head>
   <body class="transition-all">
@@ -341,6 +364,8 @@
     {% include 'home/js.html' %}
     <script src="{{ url_for('static', filename='assets/js/usuarios.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/login.js') }}"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script>
       // --- Senior Logic: Auto-dismiss Notifications ---
       document.addEventListener('DOMContentLoaded', function() {

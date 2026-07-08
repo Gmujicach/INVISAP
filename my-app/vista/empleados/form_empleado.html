@@ -46,8 +46,7 @@
                   <option value="Recepcionista">Recepcionista</option>
                   <option value="Ingeniero">Ingeniero</option>
                   <option value="Coordinador">Coordinador</option>
-                  <option value="Presidente">Presidente</option>
-                  <option value="Administrador">Administrador</option>
+                  <option value="Operador">Operador</option>
                 </select>
                 <div class="invalid-feedback">Seleccione un cargo válido.</div>
               </div>
@@ -84,17 +83,17 @@
               
               <div class="col-md-4">
                 <label class="form-label fw-medium"><i class="bi bi-telephone me-1"></i>Teléfono</label>
-                <input type="text" name="telefono" class="form-control" 
+                <input type="tel" name="telefono" class="form-control" 
                        placeholder="Ej: 0414-1234567"
                        pattern="^(0414|0424|0412|0416|0426|0251)-?\d{7}$">
-                <div class="invalid-feedback">Formato: 0414-1234567</div>
+                <div class="invalid-feedback">Formato: 0414-1234567 (opcional).</div>
               </div>
               
               <div class="col-md-4">
                 <label class="form-label fw-medium"><i class="bi bi-envelope me-1"></i>Correo Electrónico</label>
                 <input type="email" name="correo" class="form-control" 
                        placeholder="Ej: empleado@invilara.gob.ve">
-                <div class="invalid-feedback">Correo inválido.</div>
+                <div class="invalid-feedback">Correo inválido (opcional).</div>
               </div>
               
               <div class="col-md-12">

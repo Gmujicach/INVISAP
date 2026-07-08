@@ -1,0 +1,123 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}Registrar Inspeccion{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/inspeccion.css') }}">
+<style>
+    .custom-placeholder::placeholder, .custom-placeholder option:disabled {
+        color: #cca025 !important;
+        opacity: 1;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Gestion /</span> Registrar Inspeccion</h4>
+    <div class="row">
+        <div class="col-xl">
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-header border-bottom">
+                    <h5 class="mb-0 text-primary"><i class="bi bi-clipboard-check me-2"></i>Datos de la Inspeccion</h5>
+                </div>
+                <div class="card-body pt-4">
+                    <form id="formInspeccion" class="needs-validation" novalidate>
+
+                        <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3">
+                            <i class="bi bi-person-vcard me-2"></i>Datos del Inspector
+                        </p>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium">
+                                    <i class="bi bi-person me-1"></i>Nombre del Inspector
+                                </label>
+                                <select name="inspector" class="form-select" required>
+                                    <option value="" disabled selected>Seleccione inspector...</option>
+                                </select>
+                                <div class="invalid-feedback">Seleccione un inspector.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium">
+                                    <i class="bi bi-calendar-event me-1"></i>Fecha de Inspeccion
+                                </label>
+                                <input type="date" name="fecha_inspeccion" class="form-control" required>
+                                <div class="invalid-feedback">Fecha obligatoria.</div>
+                            </div>
+                        </div>
+
+                        <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3 mt-4">
+                            <i class="bi bi-clipboard-data me-2"></i>Detalles de la Inspeccion
+                        </p>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium">
+                                    <i class="bi bi-tag me-1"></i>Tipo de Inspeccion
+                                </label>
+                                <select name="tipo_inspeccion" class="form-select" required>
+                                    <option value="" disabled selected>Seleccione tipo...</option>
+                                    {% for tipo in tipos_inspeccion %}
+                                    <option value="{{ tipo }}">{{ tipo }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">Seleccione un tipo valido.</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium">
+                                    <i class="bi bi-building me-1"></i>Obra
+                                </label>
+                                <select name="obra_id_obra" class="form-select" required>
+                                    <option value="" disabled selected>Seleccione obra...</option>
+                                </select>
+                                <div class="invalid-feedback">Seleccione una obra.</div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium">
+                                    <i class="bi bi-images me-1"></i>Evidencia
+                                </label>
+                                <select name="evidencia_id_evidencia" class="form-select" required>
+                                    <option value="" disabled selected>Seleccione evidencia...</option>
+                                </select>
+                                <div class="invalid-feedback">Seleccione una evidencia.</div>
+                            </div>
+                        </div>
+
+                        <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3 mt-4">
+                            <i class="bi bi-chat-left-text me-2"></i>Observaciones
+                        </p>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-12">
+                                <label class="form-label fw-medium">
+                                    <i class="bi bi-text-paragraph me-1"></i>Observaciones
+                                </label>
+                                <textarea name="observaciones" class="form-control" rows="4"
+                                          placeholder="Describa las observaciones de la inspeccion..."
+                                          required minlength="5" maxlength="255"></textarea>
+                                <div class="invalid-feedback">Observaciones obligatorias (5-255 caracteres).</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 d-flex justify-content-end gap-2">
+                            <a href="{{ url_for('inspeccion_bp.list_inspecciones') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle me-1"></i>Cancelar
+                            </a>
+                            <button type="submit" id="btnGuardarInspeccion" class="btn btn-primary px-4 shadow-sm">
+                                <i class="bi bi-check-circle me-1"></i>Registrar Inspeccion
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='assets/js/inspecciones.js') }}"></script>
+{% endblock %}

@@ -4,6 +4,7 @@ Implementa encapsulamiento, validaciones Regex, borrado lógico y comunicación 
 """
 import re
 import uuid
+import traceback
 from datetime import datetime
 from conexion.conexionBD import connectionBD_invilara
 from PIL import Image
@@ -38,6 +39,7 @@ class InformeAvanceModel:
         self.__evidencias_durante = []
         self.__evidencias_despues = []
         self.__estado_registro = 1
+        self.__asegurar_tabla_informe()
 
     # ========== GETTERS Y SETTERS ==========
     
@@ -147,6 +149,50 @@ class InformeAvanceModel:
             texto = str(texto or '')
         return re.sub(r'[<>\'";\\]', '', texto).strip()[:max_len]
 
+    def __asegurar_columna_poblacion(self, cur):
+        """Asegura que exista la columna correcta 'poblacion_beneficiada' y elimina el typo 'poblacion_benefiada'."""
+        cur.execute("SHOW COLUMNS FROM informe_avance_obra LIKE 'poblacion_beneficiada'")
+        tiene_correcta = cur.fetchone()
+        cur.execute("SHOW COLUMNS FROM informe_avance_obra LIKE 'poblacion_benefiada'")
+        tiene_typo = cur.fetchone()
+
+        if tiene_correcta and tiene_typo:
+            cur.execute("UPDATE informe_avance_obra SET poblacion_beneficiada = `poblacion_benefiada` WHERE (poblacion_beneficiada IS NULL OR poblacion_beneficiada = '') AND `poblacion_benefiada` IS NOT NULL AND `poblacion_benefiada` <> ''")
+            cur.execute("ALTER TABLE informe_avance_obra DROP COLUMN poblacion_benefiada")
+            print("[DB] Datos migrados y columna typo 'poblacion_benefiada' eliminada (se conserva 'poblacion_beneficiada')")
+        elif not tiene_correcta and tiene_typo:
+            cur.execute("ALTER TABLE informe_avance_obra CHANGE COLUMN poblacion_benefiada poblacion_beneficiada VARCHAR(45) NOT NULL DEFAULT 'No especificado'")
+            print("[DB] Columna 'poblacion_benefiada' renombrada a 'poblacion_beneficiada'")
+        elif not tiene_correcta and not tiene_typo:
+            cur.execute("ALTER TABLE informe_avance_obra ADD COLUMN poblacion_beneficiada VARCHAR(45) NOT NULL DEFAULT 'No especificado'")
+            print("[DB] Columna 'poblacion_beneficiada' agregada a tabla informe_avance_obra")
+        else:
+            cur.execute("ALTER TABLE informe_avance_obra MODIFY COLUMN poblacion_beneficiada VARCHAR(45) NOT NULL DEFAULT 'No especificado'")
+            print("[DB] Columna 'poblacion_beneficiada' ajustada con DEFAULT")
+
+    def __asegurar_tabla_informe(self):
+        """Corrige el typo de columna y asegura DEFAULT sin intervención manual."""
+        try:
+            conn = connectionBD_invilara()
+            if conn:
+                cur = conn.cursor()
+                try:
+                    self.__asegurar_columna_poblacion(cur)
+                    conn.commit()
+
+                    cur.execute("SHOW COLUMNS FROM informe_avance_obra LIKE 'estado_registro'")
+                    if not cur.fetchone():
+                        cur.execute("ALTER TABLE informe_avance_obra ADD COLUMN estado_registro TINYINT NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (borrado logico)'")
+                        conn.commit()
+                        print("[DB] Columna 'estado_registro' agregada a tabla informe_avance_obra")
+                except Exception as e:
+                    print(f"[DB] Error al verificar columnas informe_avance_obra: {e}")
+                finally:
+                    cur.close()
+                    conn.close()
+        except Exception as e:
+            print(f"[DB] No se pudo asegurar tabla informe_avance_obra: {e}")
+
     # ========== MÉTODOS PRIVADOS DE BASE DE DATOS ==========
     
     def __crear_avance_db(self, gerente_id, porcentaje, observaciones):
@@ -165,30 +211,36 @@ class InformeAvanceModel:
 
             cur.execute("SELECT id_semaforo FROM semaforo ORDER BY id_semaforo DESC LIMIT 1")
             row_semaforo = cur.fetchone()
-            if row_semaforo:
-                id_semaforo = row_semaforo[0]
-            else:
-                id_semaforo = 1
-                cur.execute("INSERT INTO semaforo (id_semaforo, estado, color, descripcion) VALUES (%s, %s, %s, %s)",
-                    (id_semaforo, 'Activo', 'VERDE', 'Semáforo generado automáticamente'))
+            id_semaforo = row_semaforo[0] if row_semaforo else 1
 
-            cur.execute("SELECT id_obra FROM obra WHERE semaforo_id_semaforo=%s LIMIT 1", (id_semaforo,))
+            cur.execute("SELECT id_obra, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto FROM obra WHERE semaforo_id_semaforo=%s LIMIT 1", (id_semaforo,))
             row_obra = cur.fetchone()
             if row_obra:
                 id_obra = row_obra[0]
+                id_contratacion = row_obra[1]
+                codigo_proyecto = row_obra[2]
             else:
-                cur.execute("SELECT COALESCE(MAX(id_obra), 0) + 1 FROM obra")
-                id_obra = cur.fetchone()[0]
-                cur.execute("""INSERT INTO obra (id_obra, titulo_obra, ubicacion_obra, periodo_ejecucion, fecha_inicio, fecha_fin, mediciones_obra, valuaciones, modificaciones_contrato, certificaciones_obras_ejecutadas, numero_contrato, porcentaje_avance_obra, semaforo_id_semaforo, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-                    (id_obra, 'Obra Generada', 'Sin ubicacion', 1, datetime.now().date(), datetime.now().date(), 'N/A', 'N/A', 'N/A', 0, 'N/A', porcentaje, id_semaforo, 1, 'FRE-001'))
+                cur.execute("SELECT id_obra, semaforo_id_semaforo, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto FROM obra ORDER BY id_obra DESC LIMIT 1")
+                row_obra = cur.fetchone()
+                if row_obra:
+                    id_obra = row_obra[0]
+                    id_semaforo = row_obra[1]
+                    id_contratacion = row_obra[2]
+                    codigo_proyecto = row_obra[3]
+                else:
+                    id_obra = 1
+                    id_contratacion = 1
+                    codigo_proyecto = 'FRE-001'
 
             sql = """INSERT INTO avance (id_avance, descripcion, porcentaje_avance, gerente, fecha_avance, obra_id_obra, obra_semaforo_id_semaforo, obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-            params = (id_avance, descripcion, porcentaje, str(gerente_id) if gerente_id else '1', datetime.now().date(), id_obra, id_semaforo, 1, 'FRE-001')
+            params = (id_avance, descripcion, porcentaje, str(gerente_id) if gerente_id else '1', datetime.now().date(), id_obra, id_semaforo, id_contratacion, codigo_proyecto)
             cur.execute(sql, params)
             conn.commit()
             return str(id_avance)
         except Exception as e:
             print(f"Error __crear_avance_db: {e}")
+            if conn:
+                conn.rollback()
             return None
         finally:
             if cur:
@@ -211,13 +263,21 @@ class InformeAvanceModel:
                 return None
             cur = conn.cursor()
 
+            try:
+                self.__asegurar_columna_poblacion(cur)
+                conn.commit()
+            except Exception as e:
+                print(f"[DB] Error al asegurar columna poblacion_beneficiada: {e}")
+
             sql = """INSERT INTO informe_avance_obra (fecha, estado, poblacion_beneficiada, tipo_informe, evidencia_antes, evidencia_durante, evidencia_despues, avance_id_avance) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
             
             ev_antes = ','.join(map(str, self.__evidencias_antes)) if self.__evidencias_antes else ''
             ev_durante = ','.join(map(str, self.__evidencias_durante)) if self.__evidencias_durante else ''
             ev_despues = ','.join(map(str, self.__evidencias_despues)) if self.__evidencias_despues else ''
 
-            cur.execute(sql, (self.__fecha or datetime.now(), self.__estado, self.__poblacion_beneficiada, self.__tipo_informe, ev_antes, ev_durante, ev_despues, self.__avance_id))
+            poblacion = self.__poblacion_beneficiada or 'No especificado'
+            cur.execute(sql, (self.__fecha or datetime.now(), self.__estado, poblacion, self.__tipo_informe, ev_antes, ev_durante, ev_despues, self.__avance_id))
+            nuevo_id = cur.lastrowid
 
             if self.__avance_id:
                 gerente_a_usar = self.__gerente or '1'
@@ -226,7 +286,7 @@ class InformeAvanceModel:
                     (obs, self.__porcentaje_avance, self.__avance_id))
 
             conn.commit()
-            return cur.lastrowid
+            return nuevo_id
         except Exception as e:
             print(f"Error __registrar_informe_db: {e}")
             if conn:
@@ -253,7 +313,7 @@ class InformeAvanceModel:
             ev_durante = ','.join(map(str, self.__evidencias_durante)) if self.__evidencias_durante else ''
             ev_despues = ','.join(map(str, self.__evidencias_despues)) if self.__evidencias_despues else ''
 
-            cur.execute(sql, (self.__estado, self.__poblacion_beneficiada, self.__tipo_informe, ev_antes, ev_durante, ev_despues, self.__id_informe))
+            cur.execute(sql, (self.__estado, self.__poblacion_beneficiada or 'No especificado', self.__tipo_informe, ev_antes, ev_durante, ev_despues, self.__id_informe))
 
             cur.execute("SELECT avance_id_avance FROM informe_avance_obra WHERE id_informe = %s", (self.__id_informe,))
             avance_row = cur.fetchone()
@@ -314,7 +374,7 @@ class InformeAvanceModel:
             if not conn:
                 return []
             cur = conn.cursor(dictionary=True)
-            sql = """SELECT i.*, a.porcentaje_avance, a.fecha_avance, a.gerente as gerente_id, e.nombre_empleado as gerente_nombre FROM informe_avance_obra i LEFT JOIN avance a ON i.avance_id_avance = a.id_avance LEFT JOIN empleados e ON a.gerente = e.id_empleados ORDER BY i.fecha DESC"""
+            sql = """SELECT i.*, a.porcentaje_avance, a.fecha_avance, a.gerente as gerente_id, e.nombre_empleado as gerente_nombre FROM informe_avance_obra i LEFT JOIN avance a ON i.avance_id_avance = a.id_avance LEFT JOIN empleados e ON a.gerente = e.id_empleados WHERE i.estado_registro = 1 ORDER BY i.fecha DESC"""
             cur.execute(sql)
             return cur.fetchall()
         except Exception as e:
@@ -457,6 +517,7 @@ class InformeAvanceModel:
             print(f"Error de validación en registrar_informe: {ve}")
             raise ve
         except Exception as e:
+            traceback.print_exc()
             print(f"Error inesperado al registrar informe: {e}")
             raise ValueError(f"Error interno al registrar: {str(e)}")
 

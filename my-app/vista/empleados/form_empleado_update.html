@@ -45,12 +45,14 @@
                   <option value="{{ cargo }}" {% if empleado.cargo == cargo %}selected{% endif %}>{{ cargo }}</option>
                   {% endfor %}
                 </select>
+                <div class="invalid-feedback">Seleccione un cargo válido.</div>
               </div>
               
               <div class="col-md-6">
                 <label class="form-label fw-medium"><i class="bi bi-calendar-event me-1"></i>Fecha de Ingreso</label>
                 <input type="date" name="fecha_ingreso" class="form-control" 
-                       value="{{ empleado.fecha_ingreso }}" required>
+                       value="{{ empleado.fecha_ingreso.strftime('%Y-%m-%d') if empleado.fecha_ingreso else '' }}" required>
+                <div class="invalid-feedback">La fecha de ingreso es obligatoria.</div>
               </div>
               
               <div class="col-md-6">
@@ -59,6 +61,7 @@
                        value="{{ empleado.gerencia_asignada }}" 
                        placeholder="Gerencia asignada" required
                        pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{5,100}$">
+                <div class="invalid-feedback">Especifique la gerencia (mínimo 5 caracteres).</div>
               </div>
             </div>
 

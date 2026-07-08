@@ -5,7 +5,7 @@ from io import BytesIO
 from datetime import datetime
 
 from models.model_reportesPDF import ReportePDFModel
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -18,13 +18,12 @@ styles = getSampleStyleSheet()
 estilo_celda = ParagraphStyle(
     'CeldaPDF',
     parent=styles['Normal'],
-    fontSize=8,
-    leading=10,
+    fontSize=7,
+    leading=9,
     spaceAfter=0,
     spaceBefore=0,
     wordWrap='CJK'
 )
-
 
 def header_footer(canvas, doc):
     canvas.saveState()
@@ -37,7 +36,6 @@ def header_footer(canvas, doc):
     canvas.setFont('Helvetica-Oblique', 8)
     canvas.drawCentredString(doc.pagesize[0] / 2, doc.bottomMargin - 20, f'Página {canvas.getPageNumber()}')
     canvas.restoreState()
-
 
 def construir_modulos_config():
     return [
@@ -78,8 +76,8 @@ def construir_modulos_config():
             'label': 'CONTRATACIONES',
             'keywords': ['contrataciones', 'contratacion', 'contratos'],
             'fetch': modelo_reporte.obtener_contrataciones,
-            'headers': ['Empresa', 'RIF', 'Número Contrato', 'Monto', 'Tipo', 'Modalidad'],
-            'fields': ['nombre_empresa', 'rif_empresa', 'numero_contrato', 'monto', 'tipo_contrato', 'modalidad']
+            'headers': ['Empresa', 'RIF', 'N° Contrato', 'Monto', 'Descripción', 'Observación', 'Tipo', 'Modalidad', 'Objeto', 'Registro', 'Inicio', 'Adjudicación'],
+            'fields': ['nombre_empresa', 'rif_empresa', 'numero_contrato', 'monto', 'descripcion', 'observacion', 'tipo_contrato', 'modalidad', 'objeto', 'fecha_registro', 'fecha_inicio', 'fecha_adjudicacion']
         },
         {
             'id': 'obras',
@@ -99,18 +97,15 @@ def construir_modulos_config():
         }
     ]
 
-
 def obtener_modulos_por_filtro(filtro):
     modulos_config = construir_modulos_config()
     if not filtro:
         return modulos_config
     texto = filtro.lower().strip()
-    seleccionados = []
     for mod in modulos_config:
-        if texto in mod['id'].lower() or any(texto in kw for kw in mod['keywords']) or texto in mod['label'].lower():
-            seleccionados.append(mod)
-    return seleccionados
-
+        if texto == mod['id'].lower():
+            return [mod]
+    return []
 
 @reporte_pdf_bp.route('/reporte-pdf', methods=['GET', 'POST'])
 def generarReportePDF():
@@ -129,6 +124,10 @@ def generarReportePDF():
         return redirect(url_for('reporte_pdf_bp.generarReportePDF'))
 
     elements = []
+    
+    es_contrataciones = any(mod['id'] == 'contrataciones' for mod in modulos_a_procesar)
+    tamanio_pagina = landscape(letter) if es_contrataciones else letter
+
     for mod in modulos_a_procesar:
         data = mod.get('data_override') or mod['fetch']()
         if not data:
@@ -147,7 +146,7 @@ def generarReportePDF():
                 valores.append(Paragraph(val, estilo_celda))
             filas.append(valores)
 
-        col_w = (letter[0] - 144) / len(mod['headers'])
+        col_w = (tamanio_pagina[0] - 144) / len(mod['headers'])
         tabla = Table(filas, colWidths=[col_w] * len(mod['headers']), repeatRows=1)
         tabla.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#DC3545')),
@@ -155,14 +154,14 @@ def generarReportePDF():
             ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
             ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, 0), 9),
+            ('FONTSIZE', (0, 0), (-1, 0), 8),
             ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
             ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#F8F9FA')),
             ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-            ('LEFTPADDING', (0, 0), (-1, -1), 4),
-            ('RIGHTPADDING', (0, 0), (-1, -1), 4),
-            ('TOPPADDING', (0, 0), (-1, -1), 4),
-            ('BOTTOMPADDING', (0, 1), (-1, -1), 4),
+            ('LEFTPADDING', (0, 0), (-1, -1), 3),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 3),
+            ('TOPPADDING', (0, 0), (-1, -1), 3),
+            ('BOTTOMPADDING', (0, 1), (-1, -1), 3),
         ]))
         elements.append(tabla)
         elements.append(Spacer(1, 12))
@@ -175,7 +174,7 @@ def generarReportePDF():
     buffer = BytesIO()
     doc = SimpleDocTemplate(
         buffer,
-        pagesize=letter,
+        pagesize=tamanio_pagina,
         rightMargin=72,
         leftMargin=72,
         topMargin=80,

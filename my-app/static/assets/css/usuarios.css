@@ -55,3 +55,29 @@
 .input-group .form-control.is-invalid ~ .invalid-feedback {
   display: block;
 }
+
+/* Estilos para validación de formularios (Bootstrap-style) */
+.was-validated .form-control:invalid,
+.was-validated .form-select:invalid {
+  border-color: #ff3e1d;
+}
+
+.was-validated .form-control:invalid:focus,
+.was-validated .form-select:invalid:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.was-validated .form-control:invalid ~ .invalid-feedback,
+.was-validated .form-select:invalid ~ .invalid-feedback {
+  display: block;
+}
+
+.was-validated .form-control.is-valid,
+.was-validated .form-select.is-valid {
+  border-color: #71dd37;
+}
+
+.was-validated .form-control.is-valid:focus,
+.was-validated .form-select.is-valid:focus {
+  box-shadow: 0 0 0 0.2rem rgba(113, 221, 55, 0.25);
+}
