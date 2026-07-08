@@ -9,38 +9,33 @@
 {% block body %} 
 <div class="card mb-4 shadow-sm" style="border-radius: 0px !important">   
   <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">     
-    <h5 class="mb-0 text-primary fw-bold">GESTIÓN DE OBRAS E INSPECCIONES</h5>          
-    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario" aria-expanded="false" aria-controls="contenedorFormulario">       
-      <i class="bx bx-plus"></i> Nueva Gestión     
+    <h5 class="mb-0 text-primary fw-bold">GESTIÓN DE OBRAS Y PROYECTOS</h5>          
+    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalNuevaObra">       
+      <i class="bx bx-plus"></i> Registrar Obra     
     </button>   
   </div>   
+  
   <div class="card-body">     
     <div class="table-responsive">       
       <table class="table table-bordered table-striped table-hover align-middle">         
         <thead class="table-light">           
           <tr>             
-            <th>ID Insp.</th>             
-            <th>N° Contrato</th>             
-            <th>Ing. Inspector</th>             
+            <th>ID</th>             
+            <th>Título</th>             
+            <th>Ubicación</th>             
             <th>Inicio</th>             
-            <th>Fin</th>             
             <th>Avance (%)</th>             
             <th class="text-center">Acciones</th>           
           </tr>         
         </thead>         
         <tbody>           
-          {% for gestion in gestiones %}           
+          {% for obra in obras %}           
           <tr>             
-            <td>{{ gestion.id_inspeccion }}</td>             
-            <td>{{ gestion.numero_contrato }}</td>             
-            <td>{{ gestion.nombre_ing_insp }}</td>             
-            <td>{{ gestion.fecha_inicio }}</td>             
-            <td>{{ gestion.fecha_fin }}</td>             
-            <td>               
-              <div class="progress" style="height: 20px;">
-                <div class="progress-bar bg-success" role="progressbar" style="width: {{ gestion.porcentaje_avance_obra }}%;" aria-valuenow="{{ gestion.porcentaje_avance_obra }}" aria-valuemin="0" aria-valuemax="100">{{ gestion.porcentaje_avance_obra }}%</div>
-              </div>
-            </td>             
+            <td>{{ obra.id_obra }}</td>             
+            <td>{{ obra.titulo_obra }}</td>             
+            <td>{{ obra.ubicacion_obra }}</td>             
+            <td>{{ obra.fecha_inicio }}</td>             
+            <td>{{ obra.porcentaje_avance_obra }}%</td>             
             <td class="text-center">               
               <a href="#" class="btn btn-outline-info btn-sm" title="Ver detalle"><i class="bx bx-show"></i></a>               
               <a href="#" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>               
@@ -49,92 +44,102 @@
           </tr>           
           {% else %}           
           <tr>             
-            <td colspan="7" class="text-center text-muted py-4">No hay gestiones de obra registradas.</td>           
+            <td colspan="6" class="text-center text-muted py-4">No hay obras registradas en el sistema.</td>           
           </tr>           
           {% endfor %}         
         </tbody>       
       </table>     
     </div>   
   </div> 
-</div> 
+</div>
 
-<div class="collapse mt-3" id="contenedorFormulario">   
-  <div class="card shadow-sm" style="border-radius: 0px !important">     
-    <div class="row justify-content-center mb-2">       
-      <div class="col-md-12">         
-        <h4 class="text-center mt-5 mb-3 text-secondary">REGISTRAR GESTIÓN DE OBRA</h4>         
-        <hr class="w-75 mx-auto"/>       
-      </div>     
-    </div>     
-    <div class="row justify-content-center mb-4">       
-      <div class="col-md-10">         
-        <form class="form-horizontal mx-auto" method="POST" action="/form-gestionar-obra" autocomplete="off">           
-          <div class="card-body pt-0">                          
-            
-            <div class="row mb-3 mt-3">               
-              <div class="col-md-3">                 
-                <label for="numero_contrato" class="form-label">N° de Contrato</label>                 
-                <input type="text" class="form-control" name="numero_contrato" id="numero_contrato" maxlength="50" required />               
-              </div>               
-              <div class="col-md-6">                 
-                <label for="nombre_ing_insp" class="form-label">Nombre Ing. Inspector</label>                 
-                <input type="text" class="form-control" name="nombre_ing_insp" id="nombre_ing_insp" maxlength="25" required />               
-              </div>                          
-            </div>             
-            
-            <div class="row mb-3 mt-3">               
-              <div class="col-md-4">                 
-                <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>                 
-                <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio" required />               
-              </div>               
-              <div class="col-md-4">                 
-                <label for="fecha_fin" class="form-label">Fecha de Fin</label>                 
-                <input type="date" class="form-control" name="fecha_fin" id="fecha_fin" />               
-              </div>             
-              <div class="col-md-4">                 
-                <label for="periodo_ejecucion" class="form-label">Período de Ejecución</label>                 
-                <input type="text" class="form-control" name="periodo_ejecucion" id="periodo_ejecucion" placeholder="Ej: 3 meses, 45 días..." maxlength="50" />               
-              </div>             
-            </div>             
-            
-            <div class="row mb-3 mt-3">               
-              <div class="col-md-4">                 
-                <label for="valuaciones" class="form-label">Valuaciones</label>                 
-                <input type="text" class="form-control" name="valuaciones" id="valuaciones" placeholder="N° de valuación o monto" />                 
-              </div>               
-              <div class="col-md-4">                 
-                <label for="porcentaje_avance_obra" class="form-label">Porcentaje de Avance (%)</label>                 
-                <input type="text" class="form-control" name="porcentaje_avance_obra" id="porcentaje_avance_obra" placeholder="xx" required />               
-              </div>
-              <div class="col-md-4">                 
-                <label for="modificaciones_contrato" class="form-label">Modificaciones Contrato</label>                 
-                <input type="text" class="form-control" name="modificaciones_contrato" id="modificaciones_contrato" placeholder="Adendas, prorrogas..." />               
-              </div>             
-            </div>             
-            
-            <div class="row mb-4">                 
-              <div class="col-md-6">                 
-                <label for="mediciones_obra" class="form-label">Mediciones de Obra</label>                 
-                <textarea class="form-control" name="mediciones_obra" id="mediciones_obra" rows="2" placeholder="Detalle de mediciones físicas..."></textarea>               
-              </div>                           
-              <div class="col-md-6">                 
-                <label for="certificaciones_obras_ejecutadas" class="form-label">Certificaciones Obra Ejecutada</label>                 
-                <textarea class="form-control" name="certificaciones_obras_ejecutadas" id="certificaciones_obras_ejecutadas" rows="2" placeholder="Detalle de cantidades de obra ejecutada..."></textarea>               
-              </div>                           
-            </div>                          
-            
-            <div class="mb-3 text-center">               
-              <button type="submit" class="btn rounded-pill btn-primary px-5 me-2">                 
-                Guardar Registro <i class="bx bx-save ms-1"></i>               
-              </button>               
-              <button class="btn rounded-pill btn-outline-secondary px-4" type="button" data-bs-toggle="collapse" data-bs-target="#contenedorFormulario">                 
-                Cancelar               
-              </button>             
-            </div>                        
-          </div>         
-        </form>       
-      </div>     
-    </div>   
-  </div> 
-</div> 
+<div class="modal fade" id="modalNuevaObra" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-primary fw-bold">Registrar Nueva Obra</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <form id="formNuevaObra" action="{{ url_for('obra_bp.registrar_obra') }}" method="POST">
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Título de la Obra</label>
+              <input type="text" name="titulo_obra" class="form-control" maxlength="45" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Ubicación de la Obra</label>
+              <input type="text" name="ubicacion_obra" class="form-control" maxlength="80" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Período Ejecución (Días/Meses)</label>
+              <input type="text" name="periodo_ejecucion" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Fecha de Inicio</label>
+              <input type="date" name="fecha_inicio" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Fecha de Fin</label>
+              <input type="date" name="fecha_fin" class="form-control" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Mediciones Obra</label>
+              <input type="text" name="mediciones_obra" class="form-control" maxlength="45" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Valuaciones</label>
+              <input type="text" name="valuaciones" class="form-control" maxlength="100" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Avance Obra (%)</label>
+              <input type="number" name="porcentaje_avance_obra" class="form-control" min="0" max="100" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Número Contrato</label>
+              <input type="text" name="numero_contrato" class="form-control" maxlength="20" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Modificaciones Contrato</label>
+              <input type="text" name="modificaciones_contrato" class="form-control" maxlength="100" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Certificaciones Ejecutadas</label>
+              <input type="number" name="certificaciones_obras_ejecutadas" class="form-control" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">ID Semáforo</label>
+              <input type="number" name="semaforo_id_semaforo" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">ID Contratación</label>
+              <input type="number" name="contratacion_id_contratacion" class="form-control" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Código de Proyecto</label>
+              <input type="text" name="gestionar_proyectos_codigo_proyecto" class="form-control" maxlength="15" required>
+            </div>
+
+          </div>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar Obra</button>
+        </div>
+      </form>
+      
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='assets/js/sweetalert2.all.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/obra_ajax.js') }}"></script>
 {% endblock %}
