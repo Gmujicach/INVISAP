@@ -17,18 +17,15 @@ class BitacoraService:
     """
 
     # Acciones válidas del sistema
-    ACCIONES_VALIDAS = {'CREAR', 'EDITAR', 'ELIMINAR', 'VER', 'LOGIN', 'LOGOUT', 'ACCESO_DENEGADO'}
+    ACCIONES_VALIDAS = {'CREAR', 'EDITAR', 'ELIMINAR', 'VER', 'LOGIN', 'LOGOUT', 'ACCESO_DENEGADO', 'GENERAR_REPORTE'}
 
     # Módulos válidos del sistema
     MODULOS_VALIDOS = {
         'Solicitudes', 'Usuarios', 'Empleados', 'Proyectos',
         'Contrataciones', 'Empresas', 'Obras', 'Publicaciones', 'Maquinaria',
-
-        'Inspecciones', 'Gerencias', 'Respaldos', 'Bitacora', 'Login'
-
-        'Gerencias', 'Respaldos', 'Bitacora', 'Login', 'Reportes', 'Gravedad',
-        'Prioridad', 'Inspecciones', 'Evidencias'
-
+        'Inspecciones', 'Gerencias', 'Respaldos', 'Bitacora', 'Login',
+        'Reportes', 'Gravedad', 'Prioridad', 'Evidencias', 'Solicitantes',
+        'Informes de Avance'
     }
 
     @staticmethod

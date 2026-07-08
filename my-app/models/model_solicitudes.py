@@ -192,38 +192,55 @@ class SolicitudModel:
         return row['id_persona'] if isinstance(row, dict) else (row[0] if row else None)
 
     def _sql_insertar_persona(self, cursor, datos: dict) -> int:
+        cursor.execute("SELECT COALESCE(MAX(id_persona), 0) + 1 AS siguiente_id FROM persona")
+        fila = cursor.fetchone()
+        siguiente_id = fila['siguiente_id'] if isinstance(fila, dict) else (fila[0] if fila else 1)
+
         sql = """
-            INSERT INTO persona (cedula_persona, direccion, parroquia, municipio, telefono, correo)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO persona (id_persona, cedula_persona, direccion, parroquia, municipio, telefono, correo)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
         cedula = int(''.join(filter(str.isdigit, str(datos['cedula_persona']))) or 0)
         cursor.execute(sql, (
-            cedula, datos['direccion'], datos['parroquia'], 
+            siguiente_id, cedula, datos['direccion'], datos['parroquia'],
             datos['municipio'], datos['telefono'], datos['correo']
         ))
-        return cursor.lastrowid
+        return siguiente_id
 
     def _sql_insertar_subtipo(self, cursor, persona_id: int, datos: dict):
         tipo = datos['tipo_solicitante']
         if tipo == 'Particular':
-            sql = "INSERT INTO particular (nombre, apellido, persona_id_persona) VALUES (%s, %s, %s)"
-            cursor.execute(sql, (datos.get('nombre'), datos.get('apellido'), persona_id))
+            cursor.execute("SELECT COALESCE(MAX(id_particular), 0) + 1 AS siguiente_id FROM particular")
+            fila = cursor.fetchone()
+            siguiente_id = fila['siguiente_id'] if isinstance(fila, dict) else (fila[0] if fila else 1)
+            sql = "INSERT INTO particular (id_particular, nombre, apellido, persona_id_persona) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (siguiente_id, datos.get('nombre'), datos.get('apellido'), persona_id))
         elif tipo == 'Comunidad':
-            sql = "INSERT INTO comunidad (nombre_comunidad, ambito, sector, persona_id_persona) VALUES (%s, %s, %s, %s)"
-            cursor.execute(sql, (datos.get('nombre_comunidad'), datos.get('ambito'), datos.get('sector'), persona_id))
+            cursor.execute("SELECT COALESCE(MAX(id_comunidad), 0) + 1 AS siguiente_id FROM comunidad")
+            fila = cursor.fetchone()
+            siguiente_id = fila['siguiente_id'] if isinstance(fila, dict) else (fila[0] if fila else 1)
+            sql = "INSERT INTO comunidad (id_comunidad, nombre_comunidad, ambito, sector, persona_id_persona) VALUES (%s, %s, %s, %s, %s)"
+            cursor.execute(sql, (siguiente_id, datos.get('nombre_comunidad'), datos.get('ambito'), datos.get('sector'), persona_id))
         elif tipo == 'Institucion':
-            sql = "INSERT INTO institucion (nombre_representante, razon_social, persona_id_persona) VALUES (%s, %s, %s)"
-            cursor.execute(sql, (datos.get('nombre_representante'), datos.get('razon_social'), persona_id))
+            cursor.execute("SELECT COALESCE(MAX(id_institucion), 0) + 1 AS siguiente_id FROM institucion")
+            fila = cursor.fetchone()
+            siguiente_id = fila['siguiente_id'] if isinstance(fila, dict) else (fila[0] if fila else 1)
+            sql = "INSERT INTO institucion (id_institucion, nombre_representante, razon_social, persona_id_persona) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql, (siguiente_id, datos.get('nombre_representante'), datos.get('razon_social'), persona_id))
 
     def _sql_asegurar_prioridad(self, cursor) -> int:
         cursor.execute("SELECT id_gestion_prioridad FROM prioridad LIMIT 1")
         row = cursor.fetchone()
         if row: return row['id_gestion_prioridad'] if isinstance(row, dict) else row[0]
-        
-        sql = """INSERT INTO prioridad (rango_prioridad, fecha_asignacion, responsable_ajuste, justificacion_cambio)
-                 VALUES (%s, %s, %s, %s)"""
-        cursor.execute(sql, (1.0, datetime.now(), 'Sistema', 'Default'))
-        return cursor.lastrowid
+
+        cursor.execute("SELECT COALESCE(MAX(id_gestion_prioridad), 0) + 1 AS siguiente_id FROM prioridad")
+        fila = cursor.fetchone()
+        siguiente_id = fila['siguiente_id'] if isinstance(fila, dict) else (fila[0] if fila else 1)
+
+        sql = """INSERT INTO prioridad (id_gestion_prioridad, rango_prioridad, fecha_asignacion, responsable_ajuste, justificacion_cambio)
+                 VALUES (%s, %s, %s, %s, %s)"""
+        cursor.execute(sql, (siguiente_id, 1.0, datetime.now(), 'Sistema', 'Default'))
+        return siguiente_id
 
 
     # --- MÉTODOS PÚBLICOS (API del Modelo) ---

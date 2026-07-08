@@ -18,7 +18,7 @@ def crear_solicitante(datos):
             conexion.commit()
             if cursor.rowcount:
                 BitacoraService.registrar_accion(
-                    session, 'Gerencias', 'CREAR',
+                    session, 'Solicitantes', 'CREAR',
                     f'Registró un solicitante con cédula: {datos.get("cedula_persona")}'
                 )
             return cursor.rowcount
@@ -84,7 +84,7 @@ def actualizar_solicitante(datos):
             conexion.commit()
             if cursor.rowcount:
                 BitacoraService.registrar_accion(
-                    session, 'Gerencias', 'EDITAR',
+                    session, 'Solicitantes', 'EDITAR',
                     f'Actualizó el solicitante ID: {datos.get("id_persona")}'
                 )
             return cursor.rowcount
@@ -106,7 +106,7 @@ def eliminar_solicitante(id_persona):
             conexion.commit()
             if cursor.rowcount:
                 BitacoraService.registrar_accion(
-                    session, 'Gerencias', 'ELIMINAR',
+                    session, 'Solicitantes', 'ELIMINAR',
                     f'Eliminó el solicitante ID: {id_persona}'
                 )
             return cursor.rowcount
