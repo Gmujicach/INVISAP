@@ -825,28 +825,31 @@ def viewBitacora():
     filtro_modulo = request.args.get('modulo', '').strip()
     filtro_accion = request.args.get('accion', '').strip()
     
-    # 1. Obtener la página actual (por defecto 1) y definir límite
-    page = request.args.get('page', 1, type=int)
-    per_page = 10
-    
+    # 1. Obtener la página actual y la cantidad de registros por página
+    page = request.args.get('page', 1, type=int) or 1
+    per_page = request.args.get('per_page', 10, type=int) or 10
+    allowed_per_page = {5, 10, 20, 50, 100}
+    if per_page not in allowed_per_page:
+        per_page = 10
+
     # Traer todos los registros filtrados
     registros = filtrar_bitacora(
         usuario=filtro_usuario or None,
         modulo=filtro_modulo or None,
         accion=filtro_accion or None
     )
-    
+
     # 2. Calcular el total de páginas
     total_registros = len(registros)
-    total_pages = (total_registros + per_page - 1) // per_page
-    
+    total_pages = max(1, (total_registros + per_page - 1) // per_page)
+
     # Validar que la página solicitada esté en un rango válido
     if page < 1:
         page = 1
     elif page > total_pages and total_pages > 0:
         page = total_pages
-        
-    # 3. Extraer solo los 10 registros correspondientes a la página actual
+
+    # 3. Extraer solo los registros correspondientes a la página actual
     inicio = (page - 1) * per_page
     fin = inicio + per_page
     registros_paginados = registros[inicio:fin]
@@ -863,7 +866,10 @@ def viewBitacora():
         filtro_accion=filtro_accion,
         page=page,
         total_pages=total_pages,
-        total_registros=total_registros
+        total_registros=total_registros,
+        per_page=per_page,
+        primera_fila=inicio + 1 if total_registros else 0,
+        ultima_fila=min(fin, total_registros) if total_registros else 0
     )
 
 
