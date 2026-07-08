@@ -141,6 +141,13 @@ def loginCliente():
             nombre_usuario = str(request.form['nombre'])
             pass_user = str(request.form['pass_user'])
 
+            # Verificar reCAPTCHA (protección contra bots / fuerza bruta)
+            token_recaptcha = request.form.get('g-recaptcha-response')
+            valido, mensaje_recaptcha = verificar_recaptcha(token_recaptcha)
+            if not valido:
+                flash(mensaje_recaptcha, 'danger')
+                return render_template(f'{PATH_URL_LOGIN}/base_login.html')
+
             account = auth_context.login(nombre_usuario, pass_user)
 
             if account:

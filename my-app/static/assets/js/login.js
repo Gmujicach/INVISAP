@@ -153,180 +153,28 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- CAPTCHA: No Soy Robot con detección de comportamiento ---
+    // --- Google reCAPTCHA v2: el widget genera g-recaptcha-response
+    //     y se valida en el servidor (verificar_recaptcha). ---
     const formLogin = document.getElementById('formAuthentication');
-    const captchaCheckbox = document.getElementById('captcha-checkbox');
-    const imageChallenge = document.getElementById('image-challenge');
     const captchaError = document.getElementById('captcha-error');
-    
-    // Análisis de comportamiento del usuario
-    const behavior = {
-        mouseMovements: [],
-        startTime: Date.now(),
-        keystrokes: 0,
-        isSuspicious: false
-    };
-    
-    // Variable global para verificación del CAPTCHA
-    let captchaVerified = false;
-    
-    // Capturar movimientos del mouse
-    document.addEventListener('mousemove', function(e) {
-        behavior.mouseMovements.push({
-            x: e.clientX,
-            y: e.clientY,
-            time: Date.now()
-        });
-        if (behavior.mouseMovements.length > 100) {
-            behavior.mouseMovements.shift();
-        }
-    });
-    
-    // Capturar teclas presionadas
-    document.addEventListener('keydown', function() {
-        behavior.keystrokes++;
-    });
-    
-    // Analizar comportamiento sospechoso
-    function analyzeBehavior() {
-        const movements = behavior.mouseMovements;
-        if (movements.length < 10) {
-            behavior.isSuspicious = true;
-            return;
-        }
-        
-        // Detectar patrones robóticos: movimientos lineales, muy rápidos o muy lentos
-        const distances = [];
-        for (let i = 1; i < movements.length; i++) {
-            const dx = movements[i].x - movements[i-1].x;
-            const dy = movements[i].y - movements[i-1].y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            distances.push(dist);
-        }
-        
-        // Si todos los movimientos son iguales (línea recta perfecta) = robot
-        const avgDist = distances.reduce((a,b) => a+b, 0) / distances.length;
-        const sameDistances = distances.filter(d => d > avgDist * 0.8 && d < avgDist * 1.2).length;
-        if (sameDistances > distances.length * 0.8) {
-            behavior.isSuspicious = true;
-        }
-        
-        // Si muy pocos movimientos en mucho tiempo = robot
-        const elapsed = Date.now() - behavior.startTime;
-        if (movements.length < 20 && elapsed > 3000) {
-            behavior.isSuspicious = true;
-        }
-    }
-    
-    // Generar imágenes SVG dinámicamente
-    function generateCaptchaImages() {
-        const themes = [
-            { name: 'infraestructura', correct: ['🏗️', '🛣️', '🏢', '🌉', '🚧'], wrong: ['🚗', '🐕', '🌳', '🐱', '🍕'] },
-            { name: 'agua', correct: ['💧', '🌊', '🚰', '🚿'], wrong: ['🔥', '🌪️', '⛄', '🌵'] },
-            { name: 'obras', correct: ['🔨', '🪛', '🧰', '🏗️'], wrong: ['🎮', '🎸', '🎹', '🎤'] }
-        ];
-        
-        const theme = themes[Math.floor(Math.random() * themes.length)];
-        const grid = document.querySelector('.image-grid');
-        grid.innerHTML = '';
-        
-        const colors = ['#4CAF50', '#2196F3', '#9C27B0', '#f44336', '#FF9800', '#795548'];
-        const allImages = [...theme.correct, ...theme.wrong].sort(() => Math.random() - 0.5).slice(0, 6);
-        
-        allImages.forEach((emoji, index) => {
-            const isCorrect = theme.correct.includes(emoji);
-            const color = colors[index % colors.length];
-            const div = document.createElement('div');
-            div.className = 'image-option';
-            div.dataset.type = isCorrect ? 'correct' : 'wrong';
-            div.innerHTML = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23${color.substring(1)}' width='100' height='100'/%3E%3Ctext x='50' y='55' font-size='40' text-anchor='middle'%3E${emoji}%3C/text%3E%3C/svg%3E" alt="${emoji}">`;
-            grid.appendChild(div);
-        });
-        
-        // Actualizar título del desafío
-        const challengeTitle = document.querySelector('.challenge-title');
-        challengeTitle.innerHTML = `Selecciona todas las imágenes con <strong>${theme.name}</strong>`;
-    }
-    
-    // Inicializar CAPTCHA
-    generateCaptchaImages();
-    
-    // Actualizar event listeners para imágenes dinámicas
-    function updateImageListeners() {
-        document.querySelectorAll('.image-option').forEach(img => {
-            img.replaceWith(img.cloneNode(true)); // Clonar para eliminar listeners previos
-        });
-    }
-    
-    if (formLogin && captchaCheckbox) {
-        formLogin.addEventListener('submit', function(e) {
-            analyzeBehavior();
-            
-            // Si comportamiento sospechoso, requiere verificación de imágenes
-            if (behavior.isSuspicious && !captchaVerified) {
-                e.preventDefault();
-                generateCaptchaImages();
-                updateImageListeners();
-                imageChallenge.classList.add('active');
-                if (captchaError) captchaError.style.display = 'none';
-                return false;
-            }
-            
-            // Si el checkbox no está marcado
-            if (!captchaCheckbox.checked) {
+    const recaptchaWidget = document.querySelector('.g-recaptcha');
+
+    if (formLogin) {
+        formLogin.addEventListener('submit', function (e) {
+            const response = (typeof grecaptcha !== 'undefined')
+                ? grecaptcha.getResponse()
+                : '';
+            if (!response) {
                 e.preventDefault();
                 if (captchaError) {
                     captchaError.style.display = 'block';
-                    captchaError.textContent = 'Por favor, confirma que no eres un robot marcando la casilla.';
+                    captchaError.textContent = 'Por favor, confirma que no eres un robot.';
                 }
+                if (recaptchaWidget) recaptchaWidget.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 return false;
             }
-            
+            if (captchaError) captchaError.style.display = 'none';
             return true;
-        });
-    }
-    
-    // Usar event delegation para imágenes dinámicas
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.image-option')) {
-            const option = e.target.closest('.image-option');
-            option.classList.toggle('selected');
-        }
-    });
-    
-    // Botón de verificación del captcha de imágenes
-    const verifyCaptchaBtn = document.getElementById('verify-captcha');
-    const requiredSelections = 2;
-    const imageChallengeError = document.getElementById('image-challenge-error');
-    
-    if (verifyCaptchaBtn) {
-        verifyCaptchaBtn.addEventListener('click', function() {
-            const correctSelected = document.querySelectorAll('.image-option.selected[data-type="correct"]').length;
-            const incorrectSelected = document.querySelectorAll('.image-option.selected[data-type="wrong"]').length;
-            
-            // Validar que seleccione solo imágenes correctas
-            if (correctSelected >= requiredSelections && incorrectSelected === 0) {
-                captchaVerified = true;
-                imageChallenge.classList.remove('active');
-                captchaCheckbox.checked = true;
-                
-                // Limpiar selección
-                document.querySelectorAll('.image-option').forEach(img => img.classList.remove('selected'));
-                
-                // Enviar formulario
-                setTimeout(function() {
-                    formLogin.submit();
-                }, 300);
-            } else {
-                if (imageChallengeError) {
-                    imageChallengeError.style.display = 'block';
-                    if (incorrectSelected > 0) {
-                        imageChallengeError.textContent = 'Selecciona solo imágenes correctas. Evita las imágenes incorrectas.';
-                    } else {
-                        imageChallengeError.textContent = `Selecciona al menos ${requiredSelections} imágenes correctas.`;
-                    }
-                }
-            }
         });
     }
 });

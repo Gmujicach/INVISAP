@@ -13,6 +13,12 @@ from werkzeug.security import generate_password_hash
 from werkzeug.utils import secure_filename
 import os
 import uuid
+import json
+import urllib.parse
+import urllib.request
+
+# Claves de seguridad locales (reCAPTCHA) almacenadas en archivo propio
+from claveApi import RECAPTCHA_SECRET_KEY, RECAPTCHA_VERIFY_URL
 
 from services.bitacora_service import BitacoraService
 
@@ -21,6 +27,46 @@ EMAIL_REGEX = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 
 # Regex: 8-12 caracteres, letras y al menos un símbolo especial.
 PASSWORD_REGEX = r'^(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}$'
+
+
+# ============================================
+# VERIFICACIÓN DE Google reCAPTCHA (sin dependencias externas)
+# El token lo genera el widget en el frontend; aquí se valida
+# contra los servidores de Google usando la clave secreta.
+# ============================================
+def verificar_recaptcha(token):
+    """Valida el token g-recaptcha-response. Retorna (bool, mensaje)."""
+    if not token:
+        return False, 'Debes completar el desafío reCAPTCHA (marca "No soy un robot").'
+
+    data = urllib.parse.urlencode({
+        'secret': RECAPTCHA_SECRET_KEY,
+        'response': token
+    }).encode('utf-8')
+
+    req = urllib.request.Request(
+        RECAPTCHA_VERIFY_URL,
+        data=data,
+        headers={'Content-Type': 'application/x-www-form-urlencoded'},
+        method='POST'
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            resultado = json.loads(resp.read().decode('utf-8'))
+    except Exception as e:
+        # Modo degradado: si no hay internet, Google no puede verificar.
+        # Se permite el acceso pero se registra para auditoría.
+        print(f"reCAPTCHA: no se pudo contactar a Google (sin conexión). {e}")
+        return True, 'OK_SIN_CONEXION'
+
+    if resultado.get('success'):
+        return True, 'OK'
+
+    # Token inválido, expirado o score bajo
+    errores = resultado.get('error-codes', [])
+    print(f"reCAPTCHA: verificación fallida. {errores}")
+    return False, 'La verificación reCAPTCHA falló. Inténtalo de nuevo.'
 
 def recibeInsertRegisterUser(nombre, correo, pass_user, cedula, rol='Usuario'):
     if not re.match(PASSWORD_REGEX, pass_user):

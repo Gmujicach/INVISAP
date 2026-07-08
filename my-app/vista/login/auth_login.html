@@ -79,31 +79,10 @@
               </div>
             </div>
 
-            <!-- CAPTCHA: No Soy Robot -->
-            <div class="captcha-container">
-              <div class="captcha-checkbox">
-                <input type="checkbox" id="captcha-checkbox" required />
-                <label for="captcha-checkbox">
-                  <i class="bi bi-shield-check text-primary me-1"></i>
-                  Confirmo que <strong>no soy un robot</strong>
-                </label>
-              </div>
-
-              <!-- Desafío de imágenes (se activa si se detecta comportamiento de bot) -->
-              <div class="image-challenge" id="image-challenge">
-                <div class="challenge-title">
-                  Selecciona todas las imágenes con <strong>infraestructura</strong>
-                </div>
-                <div class="image-grid">
-                  <!-- Las imágenes se generan dinámicamente con JavaScript -->
-                </div>
-                <div id="image-challenge-error" class="captcha-error" style="display: none;"></div>
-                <button type="button" id="verify-captcha" class="btn btn-primary btn-sm w-100">
-                  <i class="bi bi-check-circle me-1"></i>Verificar selección
-                </button>
-              </div>
-
-              <div id="captcha-error" class="captcha-error" style="display: none;"></div>
+            <!-- Google reCAPTCHA v2 (protección contra bots / ataques automatizados) -->
+            <div class="mb-3">
+              <div class="g-recaptcha" data-sitekey="6LdbmUktAAAAAFDMm066Jn94Be8B9uWe2kpbDURo"></div>
+              <div id="captcha-error" class="captcha-error text-danger small mt-1" style="display: none;"></div>
             </div>
 
             <div class="mb-3 pt-2">
@@ -125,5 +104,7 @@
   </div>
 </div>
 
+<!-- API oficial de Google reCAPTCHA (no usa CDN de terceros) -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="{{ url_for('static', filename='assets/js/login.js') }}"></script>
 {% endblock %}
