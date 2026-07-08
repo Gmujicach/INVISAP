@@ -6,6 +6,7 @@ from openpyxl.utils import get_column_letter
 import os
 import datetime
 from models.model_reportesExcel import ReporteExcelModel
+from services.bitacora_service import BitacoraService
 
 reporte_excel_bp = Blueprint('reporte_excel_bp', __name__, template_folder='../vista')
 modelo_reporte = ReporteExcelModel()
@@ -165,6 +166,10 @@ def generarReporteExcel():
             os.makedirs(folder_path)
         ruta_archivo = os.path.join(folder_path, filename)
         wb.save(ruta_archivo)
+        BitacoraService.registrar_accion(
+            session, 'Reportes', 'VER',
+            f'Generó un reporte Excel de gestión'
+        )
         return send_file(ruta_archivo, as_attachment=True)
 
     publicaciones_previa = modelo_reporte.obtener_publicaciones_reporte()

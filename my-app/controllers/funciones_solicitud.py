@@ -3,6 +3,8 @@ funciones_solicitud.py — Controlador de Solicitudes.
 Coordina entre router y modelo, manejando los ValueErrors.
 """
 from models.model_solicitudes import SolicitudModel
+from services.bitacora_service import BitacoraService
+from flask import session
 
 def obtener_solicitudes() -> list:
     """Retorna todas las solicitudes registradas."""
@@ -27,6 +29,10 @@ def crear_solicitud(datos_formulario: dict) -> dict:
         
         nuevo_id = modelo.guardar()
         if nuevo_id:
+            BitacoraService.registrar_accion(
+                session, 'Solicitudes', 'CREAR',
+                f'Registró una nueva solicitud con ID: {nuevo_id}'
+            )
             return {'success': True, 'id': nuevo_id, 'message': 'Solicitud registrada correctamente.'}
         return {'success': False, 'message': 'Error en la base de datos al guardar.'}
     except ValueError as e:
@@ -50,6 +56,10 @@ def actualizar_solicitud(id_solicitud, datos_formulario: dict) -> dict:
         
         exito = modelo.actualizar()
         if exito:
+            BitacoraService.registrar_accion(
+                session, 'Solicitudes', 'EDITAR',
+                f'Modificó la solicitud con ID: {id_solicitud}'
+            )
             return {'success': True, 'message': 'Solicitud actualizada correctamente.'}
         return {'success': False, 'message': 'No se pudo actualizar la solicitud (posible ID no encontrado).'}
     except ValueError as e:
@@ -60,6 +70,10 @@ def eliminar_solicitud(id_solicitud) -> dict:
     modelo = SolicitudModel(id_solicitudes=id_solicitud)
     exito = modelo.eliminar()
     if exito:
+        BitacoraService.registrar_accion(
+            session, 'Solicitudes', 'ELIMINAR',
+            f'Eliminó la solicitud con ID: {id_solicitud}'
+        )
         return {'success': True, 'message': 'Solicitud eliminada correctamente.'}
     return {'success': False, 'message': 'No se pudo eliminar la solicitud.'}
 

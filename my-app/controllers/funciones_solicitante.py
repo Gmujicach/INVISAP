@@ -1,4 +1,6 @@
 from conexion.conexionBD import connectionBD_invilara as connectionBD
+from services.bitacora_service import BitacoraService
+from flask import session
 
 def crear_solicitante(datos):
     try:
@@ -14,6 +16,11 @@ def crear_solicitante(datos):
 
             cursor.execute(sql, valores)
             conexion.commit()
+            if cursor.rowcount:
+                BitacoraService.registrar_accion(
+                    session, 'Gerencias', 'CREAR',
+                    f'Registró un solicitante con cédula: {datos.get("cedula_persona")}'
+                )
             return cursor.rowcount
         finally:
             cursor.close()
@@ -75,6 +82,11 @@ def actualizar_solicitante(datos):
                        datos.get('municipio'), datos.get('telefono'), datos.get('correo'), datos.get('id_persona'))
             cursor.execute(sql, valores)
             conexion.commit()
+            if cursor.rowcount:
+                BitacoraService.registrar_accion(
+                    session, 'Gerencias', 'EDITAR',
+                    f'Actualizó el solicitante ID: {datos.get("id_persona")}'
+                )
             return cursor.rowcount
         finally:
             cursor.close()
@@ -92,6 +104,11 @@ def eliminar_solicitante(id_persona):
             sql = "DELETE FROM persona WHERE id_persona = %s"
             cursor.execute(sql, (id_persona,))
             conexion.commit()
+            if cursor.rowcount:
+                BitacoraService.registrar_accion(
+                    session, 'Gerencias', 'ELIMINAR',
+                    f'Eliminó el solicitante ID: {id_persona}'
+                )
             return cursor.rowcount
         finally:
             cursor.close()

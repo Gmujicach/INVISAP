@@ -1,5 +1,7 @@
 from models.model_prioridad import PrioridadModel
 from services.ia_prioridad_service import calcular_prioridad_con_ia
+from services.bitacora_service import BitacoraService
+from flask import session
 from mysql.connector import Error
 
 def calcular_prioridad_controller(solicitud_id, gravedad_id=None):
@@ -19,4 +21,10 @@ def guardar_prioridad_controller(solicitud_id, prioridad, justificacion, usuario
         responsable=usuario
     )
     # Conexión dinámica y guardado
-    # ...
+    resultado = modelo.guardar()
+    if resultado:
+        BitacoraService.registrar_accion(
+            session, 'Prioridad', 'EDITAR',
+            f'Asignó prioridad "{prioridad}" a la solicitud ID: {solicitud_id}'
+        )
+    return resultado

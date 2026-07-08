@@ -1,6 +1,7 @@
 from flask import render_template, request, flash, redirect, url_for, session, Blueprint
 from models.model_usuarios import UsuarioModel
 from werkzeug.security import generate_password_hash
+from services.bitacora_service import BitacoraService
 
 # Blueprint for user management
 user_bp = Blueprint('user_bp', __name__, template_folder='../vista/usuarios')
@@ -99,6 +100,10 @@ def register_user():
     })
     
     if result:
+        BitacoraService.registrar_accion(
+            session, 'Usuarios', 'CREAR',
+            f'Registró el usuario: {email_user}'
+        )
         flash('✅ Usuario registrado correctamente.', 'success')
     else:
         flash('❌ Error al registrar el usuario. Verifique los datos.', 'error')
@@ -146,6 +151,10 @@ def update_user():
     new_password = request.form.get('pass_user')
 
     if user_model.actualizar(user_id, nombre, correo, cedula, rol, new_password if new_password else None):
+        BitacoraService.registrar_accion(
+            session, 'Usuarios', 'EDITAR',
+            f'Actualizó el usuario ID: {user_id}'
+        )
         flash('✅ Usuario actualizado correctamente.', 'success')
     else:
         flash('❌ Error al actualizar el usuario.', 'error')
@@ -172,6 +181,10 @@ def delete_user(user_id):
         return redirect(url_for('user_bp.list_users'))
 
     if user_model.eliminar(user_id):
+        BitacoraService.registrar_accion(
+            session, 'Usuarios', 'ELIMINAR',
+            f'Eliminó el usuario ID: {user_id}'
+        )
         flash('✅ Usuario eliminado correctamente.', 'success')
     else:
         flash('❌ Error al eliminar el usuario.', 'error')

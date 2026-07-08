@@ -3,6 +3,7 @@ import os
 from datetime import datetime
 from conexion.conexionBD import connectionBD_invilara
 from models.model_respaldo import RespaldoModel
+from services.bitacora_service import BitacoraService
 
 respaldo_bp = Blueprint('respaldo_bp', __name__, template_folder='../vista', url_prefix='/respaldo')
 modelo_respaldo = RespaldoModel()
@@ -46,6 +47,10 @@ def exportar_respaldo():
     try:
         descripcion = request.form.get('descripcion', '')
         resultado = modelo_respaldo.crear_respaldo(descripcion)
+        BitacoraService.registrar_accion(
+            session, 'Respaldos', 'CREAR',
+            f'Generó un respaldo de la base de datos'
+        )
         return jsonify({
             'status': 'success',
             'message': 'Respaldo generado correctamente.',
@@ -92,6 +97,10 @@ def importar_respaldo():
 
         archivo.save(ruta_temporal)
         modelo_respaldo.importar_respaldo(ruta_temporal, descripcion)
+        BitacoraService.registrar_accion(
+            session, 'Respaldos', 'EDITAR',
+            f'Importó un respaldo de la base de datos'
+        )
         return jsonify({
             'status': 'success',
             'message': 'Respaldo importado correctamente.'
@@ -113,6 +122,10 @@ def eliminar_respaldo(id_respaldo):
     try:
         exito = modelo_respaldo.eliminar_respaldo(id_respaldo)
         if exito:
+            BitacoraService.registrar_accion(
+                session, 'Respaldos', 'ELIMINAR',
+                f'Eliminó el respaldo ID: {id_respaldo}'
+            )
             return jsonify({'status': 'success', 'message': 'Respaldo eliminado correctamente.'})
         return jsonify({'status': 'error', 'message': 'No se encontró el respaldo o no se pudo eliminar.'}), 404
     except Exception as e:

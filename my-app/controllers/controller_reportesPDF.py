@@ -5,6 +5,7 @@ from io import BytesIO
 from datetime import datetime
 
 from models.model_reportesPDF import ReportePDFModel
+from services.bitacora_service import BitacoraService
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
@@ -182,6 +183,10 @@ def generarReportePDF():
     )
     doc.build(elements, onFirstPage=header_footer, onLaterPages=header_footer)
     buffer.seek(0)
+    BitacoraService.registrar_accion(
+        session, 'Reportes', 'VER',
+        f'Generó un reporte PDF de gestión'
+    )
     return Response(
         buffer.read(),
         mimetype="application/pdf",

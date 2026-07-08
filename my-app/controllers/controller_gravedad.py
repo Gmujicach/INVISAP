@@ -1,4 +1,6 @@
 from models.model_gravedad import GravedadObraModel
+from services.bitacora_service import BitacoraService
+from flask import session
 
 def registrar_gravedad_controller(datos):
     """
@@ -17,6 +19,10 @@ def registrar_gravedad_controller(datos):
         resultado = modelo.registrar_gravedad()
         
         if resultado:
+            BitacoraService.registrar_accion(
+                session, 'Gravedad', 'CREAR',
+                f'Registró el nivel de gravedad: {datos.get("nivel_gravedad")}'
+            )
             return {"success": True, "message": "Nivel de gravedad registrado exitosamente."}
         else:
             return {"success": False, "message": "No se pudo registrar la gravedad en la base de datos."}
@@ -56,6 +62,10 @@ def actualizar_gravedad_controller(id_gravedad, datos):
         resultado = modelo.actualizar_gravedad()
         
         if resultado:
+            BitacoraService.registrar_accion(
+                session, 'Gravedad', 'EDITAR',
+                f'Actualizó el nivel de gravedad ID: {id_gravedad}'
+            )
             return {"success": True, "message": "Registro actualizado correctamente."}
         else:
             return {"success": False, "message": "No se realizaron cambios."}
@@ -72,6 +82,10 @@ def eliminar_gravedad_controller(id_gravedad):
         resultado = modelo.eliminar_gravedad() # Este método hace un UPDATE estado = 0
         
         if resultado:
+            BitacoraService.registrar_accion(
+                session, 'Gravedad', 'ELIMINAR',
+                f'Eliminó el nivel de gravedad ID: {id_gravedad}'
+            )
             return {"success": True, "message": "Registro eliminado lógicamente del sistema."}
         else:
             return {"success": False, "message": "Error al intentar eliminar el registro."}

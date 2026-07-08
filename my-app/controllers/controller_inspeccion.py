@@ -5,6 +5,7 @@ Rutas de vistas y API.
 
 from flask import Blueprint, render_template, request, jsonify, session, flash, redirect, url_for
 from models.model_inspeccion import InspeccionModel
+from services.bitacora_service import BitacoraService
 
 inspeccion_bp = Blueprint('inspeccion_bp', __name__, template_folder='../vista', url_prefix='/inspecciones')
 
@@ -89,6 +90,10 @@ def api_crear_inspeccion():
         print('[API] nuevo_id:', nuevo_id)
 
         if nuevo_id:
+            BitacoraService.registrar_accion(
+                session, 'Inspecciones', 'CREAR',
+                f'Registró la inspección ID: {nuevo_id}'
+            )
             return jsonify({
                 'status': 'success',
                 'message': 'Inspeccion registrada correctamente.',
@@ -133,6 +138,10 @@ def api_actualizar_inspeccion(id_inspeccion):
         exito = modelo.actualizar_inspeccion(data)
 
         if exito:
+            BitacoraService.registrar_accion(
+                session, 'Inspecciones', 'EDITAR',
+                f'Actualizó la inspección ID: {id_inspeccion}'
+            )
             return jsonify({
                 'status': 'success',
                 'message': 'Inspeccion actualizada correctamente.'
@@ -238,6 +247,10 @@ def eliminar_inspeccion(id_inspeccion):
     try:
         modelo = InspeccionModel()
         if modelo.eliminar_inspeccion(id_inspeccion):
+            BitacoraService.registrar_accion(
+                session, 'Inspecciones', 'ELIMINAR',
+                f'Desactivó la inspección ID: {id_inspeccion}'
+            )
             flash('Inspeccion desactivada correctamente (Borrado Logico).', 'success')
         else:
             flash('No se pudo desactivar la inspeccion.', 'error')

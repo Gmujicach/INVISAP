@@ -209,28 +209,23 @@ class InformeAvanceModel:
             porcentaje = max(0, min(100, int(porcentaje or 0)))
             id_avance = str(uuid.uuid4().hex[:12])
 
-            cur.execute("SELECT id_semaforo FROM semaforo ORDER BY id_semaforo DESC LIMIT 1")
-            row_semaforo = cur.fetchone()
-            id_semaforo = row_semaforo[0] if row_semaforo else 1
-
-            cur.execute("SELECT id_obra, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto FROM obra WHERE semaforo_id_semaforo=%s LIMIT 1", (id_semaforo,))
+            # Usar SIEMPRE la clave compuesta real de una obra existente para
+            # no violar la FK fk_avance_obra1 (avance -> obra). Seleccionamos
+            # las 4 columnas del PK directamente desde una fila real de 'obra'.
+            cur.execute(
+                "SELECT id_obra, semaforo_id_semaforo, contratacion_id_contratacion, "
+                "gestionar_proyectos_codigo_proyecto FROM obra ORDER BY id_obra DESC LIMIT 1"
+            )
             row_obra = cur.fetchone()
             if row_obra:
-                id_obra = row_obra[0]
-                id_contratacion = row_obra[1]
-                codigo_proyecto = row_obra[2]
+                id_obra, id_semaforo, id_contratacion, codigo_proyecto = row_obra
             else:
-                cur.execute("SELECT id_obra, semaforo_id_semaforo, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto FROM obra ORDER BY id_obra DESC LIMIT 1")
-                row_obra = cur.fetchone()
-                if row_obra:
-                    id_obra = row_obra[0]
-                    id_semaforo = row_obra[1]
-                    id_contratacion = row_obra[2]
-                    codigo_proyecto = row_obra[3]
-                else:
-                    id_obra = 1
-                    id_contratacion = 1
-                    codigo_proyecto = 'FRE-001'
+                cur.execute("SELECT id_semaforo FROM semaforo ORDER BY id_semaforo DESC LIMIT 1")
+                row_semaforo = cur.fetchone()
+                id_semaforo = row_semaforo[0] if row_semaforo else 1
+                id_obra = 1
+                id_contratacion = 1
+                codigo_proyecto = 'FRE-001'
 
             sql = """INSERT INTO avance (id_avance, descripcion, porcentaje_avance, gerente, fecha_avance, obra_id_obra, obra_semaforo_id_semaforo, obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
             params = (id_avance, descripcion, porcentaje, str(gerente_id) if gerente_id else '1', datetime.now().date(), id_obra, id_semaforo, id_contratacion, codigo_proyecto)
@@ -501,6 +496,9 @@ class InformeAvanceModel:
                                 conn_fallback.close()
                         except Exception:
                             pass
+
+            if not avance_id:
+                raise ValueError("No se pudo crear ni vincular un avance de obra. Verifique que exista al menos una obra registrada.")
 
             self.set_avance_id(avance_id)
             self.__avance_id = avance_id
