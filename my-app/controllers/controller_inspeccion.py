@@ -5,6 +5,7 @@ Rutas de vistas y API.
 
 from flask import Blueprint, render_template, request, jsonify, session, flash, redirect, url_for
 from models.model_inspeccion import InspeccionModel
+from services.bitacora_service import BitacoraService
 
 inspeccion_bp = Blueprint('inspeccion_bp', __name__, template_folder='../vista', url_prefix='/inspecciones')
 
@@ -23,6 +24,9 @@ def list_inspecciones():
         modelo = InspeccionModel()
         inspecciones = modelo.obtener_todas_inspecciones()
         tipos_inspeccion = modelo.obtener_catalogo_tipos_inspeccion()
+        BitacoraService.registrar_accion(
+            session, 'Inspecciones', 'VER', 'Listado de inspecciones consultado'
+        )
         print(f'[LISTADO] Renderizando listado con {len(inspecciones)} inspecciones')
         if inspecciones:
             print(f'[LISTADO] Ultima inspeccion: id={inspecciones[0].get("id_inspeccion")} fecha={inspecciones[0].get("fecha_inspeccion")}')
@@ -89,6 +93,11 @@ def api_crear_inspeccion():
         print('[API] nuevo_id:', nuevo_id)
 
         if nuevo_id:
+            nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
+            BitacoraService.registrar_accion(
+                session, 'Inspecciones', 'CREAR',
+                f'Inspeccion #{nuevo_id} registrada por {nombre_usr}'
+            )
             return jsonify({
                 'status': 'success',
                 'message': 'Inspeccion registrada correctamente.',
@@ -133,6 +142,11 @@ def api_actualizar_inspeccion(id_inspeccion):
         exito = modelo.actualizar_inspeccion(data)
 
         if exito:
+            nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
+            BitacoraService.registrar_accion(
+                session, 'Inspecciones', 'EDITAR',
+                f'Inspeccion #{id_inspeccion} actualizada por {nombre_usr}'
+            )
             return jsonify({
                 'status': 'success',
                 'message': 'Inspeccion actualizada correctamente.'
@@ -238,6 +252,11 @@ def eliminar_inspeccion(id_inspeccion):
     try:
         modelo = InspeccionModel()
         if modelo.eliminar_inspeccion(id_inspeccion):
+            nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
+            BitacoraService.registrar_accion(
+                session, 'Inspecciones', 'ELIMINAR',
+                f'Inspeccion #{id_inspeccion} desactivada (borrado logico) por {nombre_usr}'
+            )
             flash('Inspeccion desactivada correctamente (Borrado Logico).', 'success')
         else:
             flash('No se pudo desactivar la inspeccion.', 'error')

@@ -353,7 +353,16 @@ INSERT INTO `informe_avance_obra` (`id_informe`, `fecha`, `estado`, `poblacion_b
 -- Estructura de tabla para la tabla `inspeccion`
 --
 
-CREATE TABLE `inspeccion` (
+CREATE TABLE `respaldo_bd` (
+  `id_respaldo` int NOT NULL AUTO_INCREMENT,
+  `nombre_archivo` varchar(255) NOT NULL,
+  `tamano` bigint NOT NULL DEFAULT '0',
+  `descripcion` varchar(255) DEFAULT '',
+  `fecha_respaldo` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `estado` tinyint NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id_respaldo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
   `id_inspeccion` int NOT NULL AUTO_INCREMENT,
   `inspector` int NOT NULL,
   `fecha_inspeccion` date NOT NULL,

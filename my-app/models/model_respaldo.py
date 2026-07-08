@@ -15,6 +15,34 @@ class RespaldoModel:
         if not os.path.exists(self.CARPETA_RESPALDOS):
             os.makedirs(self.CARPETA_RESPALDOS, exist_ok=True)
 
+    def _asegurar_tabla_respaldo(self):
+        """Crea la tabla respaldo_bd si no existe (auto-reparacion)."""
+        try:
+            conn = connectionBD_invilara()
+            if not conn:
+                return False
+            cur = conn.cursor()
+            try:
+                cur.execute("""
+                    CREATE TABLE IF NOT EXISTS respaldo_bd (
+                        id_respaldo INT NOT NULL AUTO_INCREMENT,
+                        nombre_archivo VARCHAR(255) NOT NULL,
+                        tamano BIGINT NOT NULL DEFAULT 0,
+                        descripcion VARCHAR(255) DEFAULT '',
+                        fecha_respaldo TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        estado TINYINT NOT NULL DEFAULT 1,
+                        PRIMARY KEY (id_respaldo)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                """)
+                conn.commit()
+            finally:
+                cur.close()
+                conn.close()
+            return True
+        except Exception as e:
+            print(f"[DB] No se pudo asegurar tabla respaldo_bd: {e}")
+            return False
+
     @staticmethod
     def _limpiar_nombre(nombre):
         return re.sub(r'[^A-Za-z0-9_\-]', '_', nombre.strip())[:100]
@@ -122,6 +150,7 @@ class RespaldoModel:
             raise RuntimeError(f"Error al generar respaldo: {e}")
 
         tamano = os.path.getsize(ruta_salida)
+        self._asegurar_tabla_respaldo()
         descripcion = re.sub(r'[<\'";\\]', '', descripcion).strip()[:255]
 
         conn = connectionBD_invilara()
@@ -152,6 +181,7 @@ class RespaldoModel:
         }
 
     def listar_respaldos(self):
+        self._asegurar_tabla_respaldo()
         conn = connectionBD_invilara()
         if not conn:
             return []
@@ -169,6 +199,7 @@ class RespaldoModel:
             conn.close()
 
     def obtener_por_id(self, id_respaldo):
+        self._asegurar_tabla_respaldo()
         conn = connectionBD_invilara()
         if not conn:
             return None
@@ -183,6 +214,7 @@ class RespaldoModel:
             conn.close()
 
     def eliminar_respaldo(self, id_respaldo):
+        self._asegurar_tabla_respaldo()
         respaldo = self.obtener_por_id(id_respaldo)
         if not respaldo:
             return False
@@ -215,6 +247,7 @@ class RespaldoModel:
         tamano = os.path.getsize(ruta_archivo)
         descripcion = re.sub(r'[<\'";\\]', '', descripcion).strip()[:255] or 'Respaldo importado'
         nombre_archivo = os.path.basename(ruta_archivo)
+        self._asegurar_tabla_respaldo()
 
         conn = connectionBD_invilara()
         if not conn:
