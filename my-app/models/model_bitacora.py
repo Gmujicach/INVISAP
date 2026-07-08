@@ -46,14 +46,24 @@ class BitacoraModel:
                 return False
             cursor = conn.cursor()
             ahora = datetime.now()
+
+            cursor.execute(
+                "SELECT COALESCE(MAX(id_bitacora), 0) + 1 AS siguiente_id FROM bitacora"
+            )
+            fila = cursor.fetchone()
+            if isinstance(fila, dict):
+                siguiente_id = fila.get('siguiente_id', 1)
+            else:
+                siguiente_id = fila[0] if fila else 1
+
             sql = """
                 INSERT INTO bitacora
-                    (usuario, id_modulo, modulo, accion, fecha,
+                    (id_bitacora, usuario, id_modulo, modulo, accion, fecha,
                      hora_inicio_sesion, hora_cierre_sesion, usuarios_id_usuarios)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """
             cursor.execute(sql, (
-                usuario, 0, modulo, accion,
+                siguiente_id, usuario, 0, modulo, accion,
                 ahora, ahora, ahora, id_usuario
             ))
             conn.commit()

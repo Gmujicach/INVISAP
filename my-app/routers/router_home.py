@@ -576,7 +576,7 @@ def api_crear_solicitud():
     if 'conectado' not in session:
         return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
 
-    resultado = crear_solicitud(request.form)
+    resultado = crear_solicitud(request.form, session)
     if resultado.get('success'):
         nuevo_id = resultado.get('id')
         nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
@@ -607,7 +607,7 @@ def api_actualizar_solicitud():
     if not id_solicitud:
         return jsonify({'status': 'error', 'message': 'ID de solicitud requerido'}), 400
 
-    resultado = actualizar_solicitud(id_solicitud, datos)
+    resultado = actualizar_solicitud(id_solicitud, datos, session)
     if resultado.get('success'):
         nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
         BitacoraService.registrar_accion(
@@ -935,7 +935,7 @@ def formSolicitud():
 
     resultado = {'success': False}
     try:
-        resultado = crear_solicitud(request.form) or {'success': False}
+        resultado = crear_solicitud(request.form, session) or {'success': False}
     except Exception as e:
         print(f"[Router] Error al crear solicitud: {e}")
         resultado = {'success': False}
@@ -974,7 +974,7 @@ def eliminar_solicitud_route(id_solicitud):
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-    resultado = eliminar_solicitud(id_solicitud)
+    resultado = eliminar_solicitud(id_solicitud, session)
     if isinstance(resultado, dict):
         success = resultado.get('success')
     else:
@@ -1011,7 +1011,7 @@ def update_solicitud():
     if 'conectado' not in session:
         return redirect(url_for('login_bp.inicio'))
     id_solicitud = request.form.get('id_solicitud')
-    resultado = actualizar_solicitud(id_solicitud, request.form)
+    resultado = actualizar_solicitud(id_solicitud, request.form, session)
     if isinstance(resultado, dict):
         success = resultado.get('success')
     else:
