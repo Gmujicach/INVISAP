@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session
 from flask_mail import Mail
 import os
 
@@ -34,3 +34,26 @@ from routers.router_page_not_found import *
 # Registrar blueprints
 app.register_blueprint(login_bp)
 app.register_blueprint(respaldo_bp)
+
+# ============================================
+# Context Processor: datos del perfil del usuario
+# Inyecta el avatar y nombre en TODAS las plantillas
+# ============================================
+@app.context_processor
+def inject_perfil_usuario():
+    from controllers.funciones_login import info_perfil_session
+    datos = {
+        'perfil_avatar': 'assets/img/avatars/1.png',
+        'perfil_nombre': session.get('name_surname', 'Usuario'),
+        'perfil_correo': session.get('email_user', '')
+    }
+    try:
+        perfiles = info_perfil_session()
+        if perfiles:
+            p = perfiles[0]
+            datos['perfil_avatar'] = p.get('avatar') or datos['perfil_avatar']
+            datos['perfil_nombre'] = p.get('nombre') or datos['perfil_nombre']
+            datos['perfil_correo'] = p.get('correo') or datos['perfil_correo']
+    except Exception:
+        pass
+    return dict(perfil=datos)

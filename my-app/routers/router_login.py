@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, session
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
 from conexion.conexionBD import connectionBD_seguridad
 from werkzeug.security import check_password_hash, generate_password_hash
 from controllers.funciones_login import *
@@ -102,6 +102,34 @@ def actualizarPerfil():
     else:
         flash('Primero debes iniciar sesión.', 'danger')
         return redirect(url_for('login_bp.inicio'))
+
+
+@login_bp.route('/actualizar-perfil-ajax', methods=['POST'])
+def actualizarPerfilAjax():
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Debes iniciar sesión.'}), 401
+    try:
+        resultado = procesar_update_perfil_ajax(request)
+        return jsonify(resultado)
+    except ValueError as ve:
+        return jsonify({'success': False, 'message': str(ve)}), 400
+    except Exception as e:
+        print(f"Error en actualizarPerfilAjax: {e}")
+        return jsonify({'success': False, 'message': 'Ocurrió un error al guardar los cambios.'}), 500
+
+
+@login_bp.route('/actualizar-clave-perfil-ajax', methods=['POST'])
+def actualizarClavePerfilAjax():
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Debes iniciar sesión.'}), 401
+    try:
+        resultado = procesar_update_clave_ajax(request)
+        return jsonify(resultado)
+    except ValueError as ve:
+        return jsonify({'success': False, 'message': str(ve)}), 400
+    except Exception as e:
+        print(f"Error en actualizarClavePerfilAjax: {e}")
+        return jsonify({'success': False, 'message': 'Ocurrió un error al cambiar la contraseña.'}), 500
 
 
 @login_bp.route('/login', methods=['GET', 'POST'])

@@ -40,6 +40,36 @@
         background-color: #08b324;
         color: #fff !important;
       }
+      /* Avatar + nombre en el acceso rápido a Mi Perfil */
+      .corner-profile-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(255,255,255,0.7);
+      }
+      .corner-profile-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+        text-align: left;
+      }
+      .corner-profile-name {
+        font-weight: 600;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        max-width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .corner-profile-sub {
+        font-size: 0.7rem;
+        opacity: 0.75;
+      }
+      .profile-link-fixed:hover .corner-profile-avatar,
+      .corner-profile-container .show > .profile-link-fixed .corner-profile-avatar {
+        border-color: #fff;
+      }
       .dropdown-toggle::after {
         display: none;
       }
@@ -246,8 +276,15 @@
         <div class="corner-profile-container">
           <div class="btn-group">
             <button type="button" class="profile-link-fixed dropdown-toggle border-0 shadow-sm" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle"></i>
-              <span>Mi Perfil</span>
+              <img id="corner-profile-img"
+                   src="{{ url_for('static', filename=perfil.perfil_avatar if perfil.perfil_avatar else 'assets/img/avatars/1.png') }}"
+                   class="corner-profile-avatar"
+                   alt="Foto de perfil"
+                   onerror="this.src='{{ url_for('static', filename='assets/img/avatars/1.png') }}'">
+              <span class="corner-profile-text">
+                <span id="corner-profile-name" class="corner-profile-name">{{ perfil.perfil_nombre }}</span>
+                <span class="corner-profile-sub">Mi Perfil</span>
+              </span>
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2" style="border-radius: 12px; min-width: 220px;">
               <li>
