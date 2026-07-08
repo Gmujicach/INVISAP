@@ -4,9 +4,7 @@ Coordina entre router y modelo, manejando los ValueErrors.
 """
 from models.model_solicitudes import SolicitudModel
 from services.bitacora_service import BitacoraService
-<<<<<<< Updated upstream
 from flask import session
-=======
 
 
 def _registrar_bitacora(session: dict, accion: str, id_solicitud: int | None, descripcion: str) -> None:
@@ -20,7 +18,6 @@ def _registrar_bitacora(session: dict, accion: str, id_solicitud: int | None, de
         descripcion=f'{descripcion} (Solicitud #{id_solicitud})' if id_solicitud else descripcion,
     )
 
->>>>>>> Stashed changes
 
 def obtener_solicitudes() -> list:
     """Retorna todas las solicitudes registradas."""
@@ -45,12 +42,10 @@ def crear_solicitud(datos_formulario: dict, session: dict | None = None) -> dict
         
         nuevo_id = modelo.guardar()
         if nuevo_id:
-<<<<<<< Updated upstream
             BitacoraService.registrar_accion(
                 session, 'Solicitudes', 'CREAR',
                 f'Registró una nueva solicitud con ID: {nuevo_id}'
             )
-=======
             if session:
                 _registrar_bitacora(
                     session,
@@ -58,7 +53,6 @@ def crear_solicitud(datos_formulario: dict, session: dict | None = None) -> dict
                     nuevo_id,
                     'Solicitud creada desde el sistema'
                 )
->>>>>>> Stashed changes
             return {'success': True, 'id': nuevo_id, 'message': 'Solicitud registrada correctamente.'}
         return {'success': False, 'message': 'Error en la base de datos al guardar.'}
     except ValueError as e:
@@ -82,12 +76,10 @@ def actualizar_solicitud(id_solicitud, datos_formulario: dict, session: dict | N
         
         exito = modelo.actualizar()
         if exito:
-<<<<<<< Updated upstream
             BitacoraService.registrar_accion(
                 session, 'Solicitudes', 'EDITAR',
                 f'Modificó la solicitud con ID: {id_solicitud}'
             )
-=======
             if session:
                 _registrar_bitacora(
                     session,
@@ -95,7 +87,6 @@ def actualizar_solicitud(id_solicitud, datos_formulario: dict, session: dict | N
                     id_solicitud,
                     'Solicitud actualizada'
                 )
->>>>>>> Stashed changes
             return {'success': True, 'message': 'Solicitud actualizada correctamente.'}
         return {'success': False, 'message': 'No se pudo actualizar la solicitud (posible ID no encontrado).'}
     except ValueError as e:
@@ -106,12 +97,10 @@ def eliminar_solicitud(id_solicitud, session: dict | None = None) -> dict:
     modelo = SolicitudModel(id_solicitudes=id_solicitud)
     exito = modelo.eliminar()
     if exito:
-<<<<<<< Updated upstream
         BitacoraService.registrar_accion(
             session, 'Solicitudes', 'ELIMINAR',
             f'Eliminó la solicitud con ID: {id_solicitud}'
         )
-=======
         if session:
             _registrar_bitacora(
                 session,
@@ -119,7 +108,6 @@ def eliminar_solicitud(id_solicitud, session: dict | None = None) -> dict:
                 id_solicitud,
                 'Solicitud eliminada'
             )
->>>>>>> Stashed changes
         return {'success': True, 'message': 'Solicitud eliminada correctamente.'}
     return {'success': False, 'message': 'No se pudo eliminar la solicitud.'}
 

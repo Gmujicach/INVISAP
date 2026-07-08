@@ -192,9 +192,20 @@
   /* ---------- Guardar ---------- */
   function guardarPerfil(callback) {
     const fd = new FormData();
-    fd.append('name_surname', nameInput.value.trim());
-    fd.append('email_user', emailInput.value.trim());
+    // Solo enviamos los campos que realmente cambiaron
+    if (nameInput.value.trim() !== original.nombre) {
+      fd.append('name_surname', nameInput.value.trim());
+    }
+    if (emailInput.value.trim() !== original.correo) {
+      fd.append('email_user', emailInput.value.trim());
+    }
     if (avatarPendiente) fd.append('profile_img', avatarPendiente);
+
+    // Nada que actualizar en el perfil: continuamos sin llamar al servidor
+    if ([...fd.keys()].length === 0) {
+      callback && callback(true);
+      return;
+    }
 
     setStatus('Guardando...', 'saving');
     fetch('/actualizar-perfil-ajax', { method: 'POST', body: fd })
@@ -250,29 +261,35 @@
       showToast('Corrige los campos marcados antes de guardar.', 'error');
       return;
     }
+    const cambiosPerfil =
+      nameInput.value.trim() !== original.nombre ||
+      emailInput.value.trim() !== original.correo ||
+      avatarPendiente !== null;
     const cambiaPass = !!(newPassInput.value || repetirPassInput.value);
 
-    guardarPerfil(perfilOk => {
-      if (!perfilOk) {
-        setStatus('Error', 'error');
-        setTimeout(() => setStatus(''), 2500);
-        return;
-      }
-      const finalizar = () => {
-        // Sincronizar valores originales
-        original.nombre = nameInput.value.trim();
-        original.correo = emailInput.value.trim();
-        avatarPendiente = null;
-        actualizarBotones();
-        setStatus('Guardado', 'success');
-        setTimeout(() => setStatus(''), 2500);
-      };
-      if (cambiaPass) {
-        guardarPassword(finalizar);
-      } else {
-        finalizar();
-      }
-    });
+    if (!cambiosPerfil && !cambiaPass) {
+      showToast('No hay cambios para guardar.', 'error');
+      return;
+    }
+
+    const finalizar = (ok) => {
+      original.nombre = nameInput.value.trim();
+      original.correo = emailInput.value.trim();
+      avatarPendiente = null;
+      actualizarBotones();
+      setStatus(ok ? 'Guardado' : 'Error', ok ? 'success' : 'error');
+      setTimeout(() => setStatus(''), 2500);
+    };
+
+    // Guardar perfil (si hubo cambios) y contraseña (si se llenó) de forma independiente
+    if (cambiosPerfil) {
+      guardarPerfil(perfilOk => {
+        if (cambiaPass) guardarPassword(() => finalizar(perfilOk));
+        else finalizar(perfilOk);
+      });
+    } else if (cambiaPass) {
+      guardarPassword(() => finalizar(true));
+    }
   }
 
   function cancelarCambios() {
