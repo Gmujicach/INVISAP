@@ -40,8 +40,8 @@ class ProyectoModel:
             
             sql = """INSERT INTO proyecto 
           (codigo_proyecto, fecha_planificacion, descripcion_tecnica, 
-           computos_metricos, estimacion_costo, estado) 
-          VALUES (%s, %s, %s, %s, %s, 1)"""
+           computos_metricos, estimacion_costo, proyecto_has_empleado, estado) 
+          VALUES (%s, %s, %s, %s, %s, %s, 1)"""
             
             fecha_plan = datos.get('fecha_p')
             if not fecha_plan:
@@ -50,12 +50,16 @@ class ProyectoModel:
                 ahora = datetime.datetime.now()
                 fecha_plan = f"{fecha_plan} {ahora.strftime('%H:%M:%S')}"
 
+            id_proyectista = datos.get('proyectista_p')
+            id_proyectista = int(id_proyectista) if id_proyectista and str(id_proyectista).isdigit() else None
+
             valores = (
                 codigo_proy, 
                 fecha_plan,
                 datos.get('observaciones', '')[:200], 
                 datos.get('computos_p', '')[:255],
-                datos.get('estimacion_p', '')[:45]
+                datos.get('estimacion_p', '')[:45],
+                id_proyectista
             )
 
             cursor.execute(sql, valores)
@@ -108,10 +112,11 @@ class ProyectoModel:
             
             sql = """SELECT 
                         p.codigo_proyecto, p.fecha_planificacion, p.descripcion_tecnica, 
-                        p.computos_metricos, p.estimacion_costo,
+                        p.computos_metricos, p.estimacion_costo, p.proyecto_has_empleado,
                         m.nombre_maquinaria, m.id_maquinaria,
                         s.id_solicitudes, s.tipo_solicitud, s.problematica,
-                        COALESCE(CONCAT(part.nombre, ' ', part.apellido), inst.razon_social, com.nombre_comunidad) as nombre_solicitante
+                        COALESCE(CONCAT(part.nombre, ' ', part.apellido), inst.razon_social, com.nombre_comunidad) as nombre_solicitante,
+                        COALESCE(e.nombre_empleado, 'Sin asignar') as nombre_proyectista
                      FROM proyecto p
                      LEFT JOIN proyecto_has_solicitudes phs ON p.codigo_proyecto = phs.proyecto_codigo_proyecto
                      LEFT JOIN solicitudes s ON phs.solicitudes_id_solicitudes = s.id_solicitudes
@@ -121,6 +126,7 @@ class ProyectoModel:
                      LEFT JOIN comunidad com ON pers.id_persona = com.persona_id_persona
                      LEFT JOIN proyecto_has_maquinaria phm ON p.codigo_proyecto = phm.proyecto_codigo_proyecto
                      LEFT JOIN maquinaria m ON phm.maquinaria_id_maquinaria = m.id_maquinaria 
+                     LEFT JOIN empleados e ON p.proyecto_has_empleado = e.id_empleados
                      WHERE p.estado = 1
                      ORDER BY p.codigo_proyecto DESC"""
             cursor.execute(sql)
@@ -139,10 +145,11 @@ class ProyectoModel:
             
             sql = """SELECT 
                         p.codigo_proyecto, p.fecha_planificacion, p.descripcion_tecnica, 
-                        p.computos_metricos, p.estimacion_costo, 
+                        p.computos_metricos, p.estimacion_costo, p.proyecto_has_empleado,
                         m.nombre_maquinaria, m.id_maquinaria,
                         s.id_solicitudes, s.tipo_solicitud, s.problematica,
-                        COALESCE(CONCAT(part.nombre, ' ', part.apellido), inst.razon_social, com.nombre_comunidad) as nombre_solicitante
+                        COALESCE(CONCAT(part.nombre, ' ', part.apellido), inst.razon_social, com.nombre_comunidad) as nombre_solicitante,
+                        COALESCE(e.nombre_empleado, 'Sin asignar') as nombre_proyectista
                      FROM proyecto p
                      LEFT JOIN proyecto_has_solicitudes phs ON p.codigo_proyecto = phs.proyecto_codigo_proyecto
                      LEFT JOIN solicitudes s ON phs.solicitudes_id_solicitudes = s.id_solicitudes
@@ -152,6 +159,7 @@ class ProyectoModel:
                      LEFT JOIN comunidad com ON pers.id_persona = com.persona_id_persona
                      LEFT JOIN proyecto_has_maquinaria phm ON p.codigo_proyecto = phm.proyecto_codigo_proyecto
                      LEFT JOIN maquinaria m ON phm.maquinaria_id_maquinaria = m.id_maquinaria 
+                     LEFT JOIN empleados e ON p.proyecto_has_empleado = e.id_empleados
                      WHERE p.codigo_proyecto = %s"""
             cursor.execute(sql, (codigo_proyecto,))
             return cursor.fetchone()
@@ -173,7 +181,7 @@ class ProyectoModel:
             
             sql = """UPDATE proyecto SET 
                 codigo_proyecto=%s, fecha_planificacion=%s, descripcion_tecnica=%s,
-                computos_metricos=%s, estimacion_costo=%s
+                computos_metricos=%s, estimacion_costo=%s, proyecto_has_empleado=%s
                 WHERE codigo_proyecto=%s"""
             
             codigo_nuevo = datos.get('Codigo_p', '')[:15]
@@ -183,8 +191,11 @@ class ProyectoModel:
             elif len(fecha_plan) == 10:
                 ahora = datetime.datetime.now()
                 fecha_plan = f"{fecha_plan} {ahora.strftime('%H:%M:%S')}"
-          
+           
             descripcion = datos.get('observaciones_p') or datos.get('observaciones') or ''
+
+            id_proyectista = datos.get('proyectista_p')
+            id_proyectista = int(id_proyectista) if id_proyectista and str(id_proyectista).isdigit() else None
 
             valores = (
                 codigo_nuevo,
@@ -192,6 +203,7 @@ class ProyectoModel:
                 descripcion[:200],
                 datos.get('computos_p', '')[:255],
                 datos.get('estimacion_p', '')[:45],
+                id_proyectista,
                 codigo_proyecto_actual
             )
             cursor.execute(sql, valores)
