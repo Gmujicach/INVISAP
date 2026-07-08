@@ -12,9 +12,9 @@
   <div class="gravedad-header">
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
       <div>
-        <h3 class="fw-bold mb-1 text-primary">
-          <i class="bi bi-exclamation-triangle-fill me-2"></i>Gestión de Gravedad de Obra
-        </h3>
+          <h3 class="fw-bold mb-1 text-primary">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>Gestión de Gravedad de la Obra
+          </h3>
         <p class="mb-0 text-muted" style="font-size:0.9rem;">
           Catálogo de niveles de gravedad para clasificar la criticidad de los proyectos
         </p>
@@ -94,11 +94,14 @@
           </div>
 
           <div class="mb-3">
-            <label for="criticidad" class="form-label fw-semibold">Criticidad</label>
-            <input type="text" class="form-control" id="criticidad"
-                   placeholder="👉 Ej: Crítico, Alto, Medio, Bajo"
-                   maxlength="10" required>
-            <div class="invalid-feedback">Ingrese un valor de criticidad válido (máx. 10 caracteres).</div>
+            <label for="criticidad" class="form-label fw-semibold">Criticidad (porcentaje)</label>
+            <input type="number" class="form-control" id="criticidad"
+                    placeholder="👉 Valor de 0.00 a 1.00 (ej: 0.80 = 80% crítico)"
+                    min="0" max="1" step="0.01" required>
+            <div class="invalid-feedback">Ingrese un número entre 0.00 y 1.00 (porcentaje de criticidad).</div>
+            <div id="criticidadFeedback" class="form-text text-muted" style="font-size:0.8rem;">
+              <i class="bi bi-info-circle"></i> 1.00 = máxima criticidad, 0.00 = mínima.
+            </div>
           </div>
 
           <div class="mb-3 form-check">
@@ -115,7 +118,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary" id="btnGuardarGravedad">
-          <i class="bi bi-check2-circle me-1"></i> Guardar
+          <i class="bi bi-check2-circle me-1"></i> Registrar
         </button>
       </div>
     </div>
@@ -124,7 +127,6 @@
 {% endblock %}
 
 {% block customJS %}
-<script src="{{ url_for('static', filename='assets/js/gravedad.js') }}"></script>
 <script>
   // Inicialización al cargar la página
   document.addEventListener('DOMContentLoaded', function() {

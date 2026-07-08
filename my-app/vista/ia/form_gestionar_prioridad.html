@@ -1,8 +1,15 @@
 {% extends 'base_cpanel.html' %}
-{% block title %}INVISAP | Gestión de Prioridades{% endblock %}
+{% block title %}INVISAP | Gestión de Prioridades (IA){% endblock %}
 
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/prioridad.css') }}">
+<style>
+  .prioridad-card { transition: transform .15s ease, box-shadow .15s ease; }
+  .prioridad-card:hover { transform: translateY(-2px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.12); }
+  .rango-pill { font-weight: 700; font-size: .85rem; }
+  .semaforo-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+  .pagination .page-link { cursor: pointer; }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -13,58 +20,46 @@
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
       <div>
         <h3 class="fw-bold mb-1 text-primary">
-          <i class="bi bi-list-check me-2"></i>Gestión de Prioridades
+          <i class="bi bi-cpu me-2"></i>Gestión de Prioridades con IA
         </h3>
         <p class="mb-0 text-muted" style="font-size:0.9rem;">
-          Historial de prioridades asignadas a las solicitudes (activas e inactivas).
+          La IA (<code>llama3.2:1b</code>, 100% local) clasifica las solicitudes.
+          Ordenadas de mayor a menor prioridad: <strong>0 = crítica</strong> · <strong>1 = baja</strong>.
         </p>
       </div>
-      <button class="btn btn-primary" onclick="recargarTabla()">
-        <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
-      </button>
+      <div class="d-flex gap-2">
+        <button class="btn btn-warning" onclick="clasificarTodo()">
+          <i class="bi bi-stars me-1"></i> Clasificar todo con IA
+        </button>
+        <button class="btn btn-primary" onclick="cargarPrioridades()">
+          <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- Filtro rápido -->
   <div class="prioridad-filter-card">
     <div class="row g-3 align-items-center">
-      <div class="col-md-4">
+      <div class="col-md-6">
         <input type="text" id="buscarPrioridad" class="form-control form-control-sm"
                placeholder="🔍 Buscar por solicitud o justificación..." />
       </div>
-      <div class="col-md-8 text-end">
+      <div class="col-md-6 text-end">
         <span class="badge bg-secondary me-2" id="contadorRegistros">0 registros</span>
       </div>
     </div>
   </div>
 
-  <!-- Tabla -->
-  <div class="card border-0 shadow-sm prioridad-table-card">
-    <div class="card-header d-flex align-items-center justify-content-between py-3">
-      <span class="fw-semibold text-dark">
-        <i class="bi bi-table me-2 text-primary"></i> Prioridades Asignadas
-      </span>
-    </div>
-    <div class="table-responsive">
-      <table id="tablaPrioridad" class="table table-hover mb-0">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Solicitud</th>
-            <th>Prioridad</th>
-            <th>Justificación</th>
-            <th>Fecha</th>
-            <th>Responsable</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="cuerpoTabla">
-          <!-- Renderizado dinámico -->
-        </tbody>
-      </table>
-    </div>
+  <!-- Tarjetas de prioridades -->
+  <div class="row g-3" id="contenedorTarjetas">
+    <!-- Renderizado dinámico -->
   </div>
+
+  <!-- Paginación -->
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center" id="paginacion"></ul>
+  </nav>
 </div>
 
 <!-- Modal para editar prioridad -->
@@ -73,7 +68,7 @@
     <div class="modal-content">
       <div class="modal-header" style="border-bottom: 2px solid #f1c40f;">
         <h5 class="modal-title fw-bold">
-          <i class="bi bi-pencil-square me-2"></i> Editar Prioridad
+          <i class="bi bi-sliders me-2"></i> Ajustar Prioridad
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
@@ -81,8 +76,9 @@
         <form id="formEditarPrioridad">
           <input type="hidden" id="edit_id_prioridad">
           <div class="mb-3">
-            <label class="form-label fw-semibold">Prioridad (1-5)</label>
-            <input type="number" class="form-control" id="edit_prioridad" min="1" max="5" step="0.1" required>
+            <label class="form-label fw-semibold">Prioridad (0 = crítica, 1 = baja)</label>
+            <input type="number" class="form-control" id="edit_prioridad" min="0" max="1" step="0.001" required>
+            <div class="form-text">0.000 = máxima prioridad · 1.000 = mínima prioridad.</div>
           </div>
           <div class="mb-3">
             <label class="form-label fw-semibold">Justificación</label>
@@ -108,63 +104,123 @@
 
 {% block customJS %}
 <script>
-  document.addEventListener('DOMContentLoaded', cargarPrioridades);
+  const PER_PAGE = 6;
+  let paginaActual = 1;
 
-  function cargarPrioridades() {
-    fetch('/api/prioridad/listar')
+  document.addEventListener('DOMContentLoaded', () => cargarPrioridades());
+
+  function cargarPrioridades(pagina = 1) {
+    paginaActual = pagina;
+    fetch(`/api/prioridad/listar?page=${pagina}&per_page=${PER_PAGE}`)
       .then(res => res.json())
-      .then(data => {
-        renderizarTabla(data);
-        document.getElementById('contadorRegistros').textContent = data.length + ' registros';
+      .then(resp => {
+        const registros = resp.data || [];
+        renderizarTarjetas(registros);
+        document.getElementById('contadorRegistros').textContent =
+          `${resp.total} registro(s)`;
+        renderizarPaginacion(resp.total, resp.page, resp.per_page);
       })
       .catch(console.error);
   }
 
-  function renderizarTabla(registros) {
-    const tbody = document.getElementById('cuerpoTabla');
-    tbody.innerHTML = '';
+  function colorPorRango(rango) {
+    // 0 = rojo (crítico), 0.5 = amarillo, 1 = verde (baja prioridad)
+    if (rango <= 0.34) return 'danger';
+    if (rango <= 0.67) return 'warning';
+    return 'success';
+  }
+
+  function semaforoColorHex(color) {
+    if (color === 'ROJO') return '#e74c3c';
+    if (color === 'AMARILLO') return '#f1c40f';
+    if (color === 'VERDE') return '#2ecc71';
+    return '#95a5a6';
+  }
+
+  function renderizarTarjetas(registros) {
+    const cont = document.getElementById('contenedorTarjetas');
+    cont.innerHTML = '';
     if (registros.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="8" class="text-center py-4 text-muted">
-            <i class="bi bi-inbox" style="font-size:2rem; display:block; margin-bottom:0.5rem;"></i>
-            No hay prioridades registradas.
-          </td>
-        </tr>
-      `;
+      cont.innerHTML = `
+        <div class="col-12 text-center py-5 text-muted">
+          <i class="bi bi-inbox" style="font-size:2.5rem; display:block; margin-bottom:.5rem;"></i>
+          No hay prioridades registradas.
+        </div>`;
       return;
     }
-    registros.forEach((r, idx) => {
-      const estadoBadge = r.estado == 1 ? '<span class="badge bg-success">Activo</span>' : '<span class="badge bg-secondary">Inactivo</span>';
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${r.id_gestion_prioridad}</td>
-        <td>#${r.solicitud_id || '—'}</td>
-        <td><strong>${r.rango_prioridad}</strong></td>
-        <td>${r.justificacion_cambio || ''}</td>
-        <td>${new Date(r.fecha_asignacion).toLocaleString()}</td>
-        <td>${r.responsable_ajuste || 'Sistema'}</td>
-        <td>${estadoBadge}</td>
-        <td>
-          <button class="btn btn-sm btn-outline-primary me-1" onclick="editarPrioridad(${r.id_gestion_prioridad})">
-            <i class="bi bi-pencil"></i>
-          </button>
-          <button class="btn btn-sm btn-outline-danger" onclick="eliminarPrioridad(${r.id_gestion_prioridad})">
-            <i class="bi bi-trash"></i>
-          </button>
-        </td>
-      `;
-      tbody.appendChild(tr);
+    registros.forEach((r) => {
+      const tono = colorPorRango(parseFloat(r.rango_prioridad));
+      const desc = (r.solicitud_descripcion || 'Sin solicitud vinculada');
+      const colorSem = r.color_semaforo ? semaforoColorHex(r.color_semaforo) : null;
+      const semaforo = colorSem
+        ? `<span class="semaforo-dot" style="background:${colorSem}" title="${r.estatus_semaforo || ''}"></span>`
+        : '';
+      const gravedad = r.nivel_gravedad
+        ? `<span class="badge bg-dark me-1">${r.nivel_gravedad}</span>` : '';
+      const estadoBadge = r.estado == 1
+        ? '<span class="badge bg-success">Activo</span>'
+        : '<span class="badge bg-secondary">Inactivo</span>';
+
+      const col = document.createElement('div');
+      col.className = 'col-md-6 col-lg-4';
+      col.innerHTML = `
+        <div class="card border-0 shadow-sm prioridad-card h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <span class="badge bg-light text-dark">#${r.solicitud_id || r.id_gestion_prioridad}</span>
+              <span class="badge bg-${tono} rango-pill">${parseFloat(r.rango_prioridad).toFixed(3)}</span>
+            </div>
+            <p class="mb-2 small text-truncate" title="${desc.replace(/"/g,'')}">${semaforo}${desc}</p>
+            <div class="mb-2">${gravedad}${estadoBadge}</div>
+            <p class="text-muted small mb-3 fst-italic">"${r.justificacion_cambio || ''}"</p>
+            <div class="d-flex gap-2">
+              <button class="btn btn-sm btn-outline-primary" onclick="editarPrioridad(${r.id_gestion_prioridad})">
+                <i class="bi bi-pencil"></i> Ajustar
+              </button>
+              <button class="btn btn-sm btn-outline-info" onclick="clasificarIA(${r.solicitud_id})" ${r.solicitud_id ? '' : 'disabled'}>
+                <i class="bi bi-cpu"></i> IA
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="eliminarPrioridad(${r.id_gestion_prioridad})">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>`;
+      cont.appendChild(col);
     });
   }
 
-  // Búsqueda rápida
+  function renderizarPaginacion(total, pagina, perPage) {
+    const totalPag = Math.max(1, Math.ceil(total / perPage));
+    const ul = document.getElementById('paginacion');
+    ul.innerHTML = '';
+    const prev = document.createElement('li');
+    prev.className = 'page-item' + (pagina <= 1 ? ' disabled' : '');
+    prev.innerHTML = `<a class="page-link">Anterior</a>`;
+    prev.onclick = () => { if (pagina > 1) cargarPrioridades(pagina - 1); };
+    ul.appendChild(prev);
+
+    for (let i = 1; i <= totalPag; i++) {
+      const li = document.createElement('li');
+      li.className = 'page-item' + (i === pagina ? ' active' : '');
+      li.innerHTML = `<a class="page-link">${i}</a>`;
+      li.onclick = () => cargarPrioridades(i);
+      ul.appendChild(li);
+    }
+
+    const next = document.createElement('li');
+    next.className = 'page-item' + (pagina >= totalPag ? ' disabled' : '');
+    next.innerHTML = `<a class="page-link">Siguiente</a>`;
+    next.onclick = () => { if (pagina < totalPag) cargarPrioridades(pagina + 1); };
+    ul.appendChild(next);
+  }
+
+  // Búsqueda rápida (filtra en el cliente sobre la página actual)
   document.getElementById('buscarPrioridad').addEventListener('keyup', function() {
     const filtro = this.value.toLowerCase();
-    const filas = document.querySelectorAll('#cuerpoTabla tr');
-    filas.forEach(fila => {
-      const texto = fila.textContent.toLowerCase();
-      fila.style.display = texto.includes(filtro) ? '' : 'none';
+    document.querySelectorAll('#contenedorTarjetas .card').forEach(card => {
+      const texto = card.textContent.toLowerCase();
+      card.closest('.col-md-6').style.display = texto.includes(filtro) ? '' : 'none';
     });
   });
 
@@ -177,8 +233,7 @@
           document.getElementById('edit_prioridad').value = data.rango_prioridad;
           document.getElementById('edit_justificacion').value = data.justificacion_cambio || '';
           document.getElementById('edit_estado').checked = data.estado == 1;
-          const modal = new bootstrap.Modal(document.getElementById('modalEditarPrioridad'));
-          modal.show();
+          new bootstrap.Modal(document.getElementById('modalEditarPrioridad')).show();
         }
       })
       .catch(console.error);
@@ -190,11 +245,10 @@
     const justificacion = document.getElementById('edit_justificacion').value;
     const estado = document.getElementById('edit_estado').checked ? 1 : 0;
 
-    if (!prioridad || prioridad < 1 || prioridad > 5) {
-      mostrarFeedbackEdicion('La prioridad debe ser entre 1 y 5.', 'warning');
+    if (prioridad === '' || prioridad < 0 || prioridad > 1) {
+      mostrarFeedbackEdicion('La prioridad debe estar entre 0 y 1.', 'warning');
       return;
     }
-
     fetch(`/api/prioridad/actualizar/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -206,8 +260,8 @@
         mostrarFeedbackEdicion('Prioridad actualizada.', 'success');
         setTimeout(() => {
           bootstrap.Modal.getInstance(document.getElementById('modalEditarPrioridad')).hide();
-          cargarPrioridades();
-        }, 1000);
+          cargarPrioridades(paginaActual);
+        }, 900);
       } else {
         mostrarFeedbackEdicion(data.message || 'Error al actualizar.', 'danger');
       }
@@ -221,14 +275,14 @@
     alertDiv.textContent = mensaje;
   }
 
-  function eliminarPrioridad(id) {
-    if (!confirm('¿Desactivar esta prioridad? (borrado lógico)')) return;
-    fetch(`/api/prioridad/eliminar/${id}`, { method: 'DELETE' })
+  function clasificarIA(idSolicitud) {
+    if (!idSolicitud) return;
+    fetch(`/api/prioridad/clasificar-ia/${idSolicitud}`, { method: 'POST' })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert('Prioridad desactivada.');
-          cargarPrioridades();
+          alert(`IA: prioridad ${parseFloat(data.data.rango).toFixed(3)} — ${data.data.justificacion}`);
+          cargarPrioridades(paginaActual);
         } else {
           alert(data.message || 'Error.');
         }
@@ -236,8 +290,38 @@
       .catch(console.error);
   }
 
-  function recargarTabla() {
-    cargarPrioridades();
+  function clasificarTodo() {
+    if (!confirm('¿Clasificar TODAS las solicitudes con la IA? Puede tardar unos momentos.')) return;
+    fetch('/api/prioridad/solicitudes-ids')
+      .then(res => res.json())
+      .then(ids => {
+        const lista = ids || [];
+        let i = 0;
+        const siguiente = () => {
+          if (i >= lista.length) { cargarPrioridades(paginaActual); return; }
+          const id = lista[i++];
+          fetch(`/api/prioridad/clasificar-ia/${id}`, { method: 'POST' })
+            .then(() => siguiente())
+            .catch(() => siguiente());
+        };
+        siguiente();
+      })
+      .catch(() => alert('No se pudo obtener la lista de solicitudes.'));
+  }
+
+  function eliminarPrioridad(id) {
+    if (!confirm('¿Desactivar esta prioridad? (borrado lógico)')) return;
+    fetch(`/api/prioridad/eliminar/${id}`, { method: 'DELETE' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('Prioridad desactivada.');
+          cargarPrioridades(paginaActual);
+        } else {
+          alert(data.message || 'Error.');
+        }
+      })
+      .catch(console.error);
   }
 </script>
 {% endblock %}
