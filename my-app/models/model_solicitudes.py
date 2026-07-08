@@ -246,18 +246,22 @@ class SolicitudModel:
             if not persona_id: return False
 
             prioridad_id = self._sql_asegurar_prioridad(cursor)
+
+            cursor.execute("SELECT COALESCE(MAX(id_solicitudes), 0) + 1 AS siguiente_id FROM solicitudes")
+            fila_id = cursor.fetchone()
+            siguiente_id = fila_id['siguiente_id'] if isinstance(fila_id, dict) else (fila_id[0] if fila_id else 1)
             
             sql_solicitud = """
-                INSERT INTO solicitudes (fecha, tipo_solicitud, estatus_solicitud, problematica, 
+                INSERT INTO solicitudes (id_solicitudes, fecha, tipo_solicitud, estatus_solicitud, problematica, 
                                          persona_id_persona, prioridad_id_gestion_prioridad)
-                VALUES (%s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
             cursor.execute(sql_solicitud, (
-                self._fecha, self._tipo_solicitud, self._estatus_solicitud, 
+                siguiente_id, self._fecha, self._tipo_solicitud, self._estatus_solicitud, 
                 self._problematica, persona_id, prioridad_id
             ))
             
-            self._id_solicitudes = cursor.lastrowid
+            self._id_solicitudes = siguiente_id
             conn.commit()
             return self._id_solicitudes
         except Exception as e:

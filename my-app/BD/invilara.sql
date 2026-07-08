@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.3
+-- version 5.2.2deb1+deb13u1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 07-07-2026 a las 15:56:27
--- Versión del servidor: 9.4.0
--- Versión de PHP: 8.3.30
+-- Tiempo de generación: 08-07-2026 a las 07:44:11
+-- Versión del servidor: 11.8.6-MariaDB-0+deb13u1 from Debian
+-- Versión de PHP: 8.4.21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `invilara`
 --
-CREATE DATABASE IF NOT EXISTS `invilara` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-USE `invilara`;
 
 -- --------------------------------------------------------
 
@@ -31,72 +29,23 @@ USE `invilara`;
 
 CREATE TABLE `avance` (
   `id_avance` varchar(45) NOT NULL,
-  `porcentaje_avance` int NOT NULL,
+  `porcentaje_avance` int(11) NOT NULL,
   `descripcion` varchar(45) NOT NULL,
   `gerente` varchar(45) NOT NULL,
   `fecha_avance` date NOT NULL,
-  `obra_id_obra` int NOT NULL,
-  `obra_semaforo_id_semaforo` int NOT NULL,
-  `obra_contratacion_id_contratacion` int NOT NULL,
-  `obra_gestionar_proyectos_codigo_proyecto` varchar(15) NOT NULL
+  `obra_id_obra` int(11) NOT NULL,
+  `obra_semaforo_id_semaforo` int(11) NOT NULL,
+  `obra_contratacion_id_contratacion` int(11) NOT NULL,
+  `obra_gestionar_proyectos_codigo_proyecto` varchar(15) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `avance`
 --
 
-INSERT INTO `avance` (`id_avance`, `porcentaje_avance`, `descripcion`, `gerente`, `fecha_avance`, `obra_id_obra`, `obra_semaforo_id_semaforo`, `obra_contratacion_id_contratacion`, `obra_gestionar_proyectos_codigo_proyecto`) VALUES
-('0780c1c2a553', 67, 'Carretera Nacional hay que reparar', '6', '2026-07-04', 24, 24, 1, 'FRE-001'),
-('098264b7eef9', 50, 'Test obs', '1', '2026-07-05', 24, 24, 1, 'FRE-001'),
-('0a9a55ead39b', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 4, 4, 1, 'FRE-001'),
-('0c8eb3a83706', 28, 'hay que asfaltar equisde', '1', '2026-07-05', 24, 24, 1, 'FRE-001'),
-('113a14ea70b7', 50, 'reparar la Comunidad', '6', '2026-07-05', 24, 24, 1, 'FRE-001'),
-('15e07374f523', 64, 'En la comunidad Nuevo horizonte', '6', '2026-07-02', 24, 24, 1, 'FRE-001'),
-('1c039681733a', 90, 'Updated', '1', '2026-07-05', 24, 24, 1, 'FRE-001'),
-('1df486355cd0', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 8, 8, 1, 'FRE-001'),
-('1df6b8f707d0', 25, 'Prueba', '1', '2026-07-01', 19, 19, 1, 'FRE-001'),
-('22a8d98cd659', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 18, 18, 1, 'FRE-001'),
-('2eb5dc872fcf', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 11, 11, 1, 'FRE-001'),
-('3d03370f9b8b', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 13, 13, 1, 'FRE-001'),
-('4881290ca4c3', 7, 'hay que reparar en Av. Intercomunal', '6', '2026-07-04', 24, 24, 1, 'FRE-001'),
-('49143e692fde', 7, 'hay que reparar en Av. Intercomunal', '6', '2026-07-04', 24, 24, 1, 'FRE-001'),
-('5e48bd43ec2b', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 17, 17, 1, 'FRE-001'),
-('6d2ff375fef8', 30, 'Test', '1', '2026-07-05', 24, 24, 1, 'FRE-001'),
-('7317ea5dba7d', 44, 'Sector La Aguada se necesita asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001'),
-('752f90f2b837', 100, 'en la urbanizacion hay que asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001'),
-('7a4e67e5c2ce', 40, 'Siguiendo Las Instrucciones del gobernador Cm', '1', '2026-07-06', 24, 24, 1, 'FRE-001'),
-('7abe4665215b', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 16, 16, 1, 'FRE-001'),
-('80e3115d8f95', 44, 'Sector La Aguada se necesita asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001'),
-('83bc77674b51', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 15, 15, 1, 'FRE-001'),
-('8e85d8b4f2a0', 25, 'Test', '1', '2026-07-05', 24, 24, 1, 'FRE-001'),
-('9214ff06713f', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 7, 7, 1, 'FRE-001'),
-('942e517e2048', 38, 'En Tamaca hay que asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001'),
-('a09e4dfbbe8c', 64, 'En la comunidad Nuevo horizonte', '6', '2026-07-02', 23, 23, 1, 'FRE-001'),
-('a12e302ae883', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 14, 14, 1, 'FRE-001'),
-('ad20d3759114', 13, 'En Av. Intercomunal se hizo un asfaltado y em', '5', '2026-07-03', 24, 24, 1, 'FRE-001'),
-('ae8c50e964e9', 50, 'reparar la Comunidad', '6', '2026-07-05', 24, 24, 1, 'FRE-001'),
-('b07c92e0e7ff', 13, 'En Av. Intercomunal se hizo un asfaltado y em', '5', '2026-07-03', 24, 24, 1, 'FRE-001'),
-('b0d8247b2d01', 100, 'en Morán hay que reparar', '1', '2026-07-06', 24, 24, 1, 'FRE-001'),
-('b25c0cb85384', 16, 'En san francisco se hizo un bache', '6', '2026-07-01', 21, 21, 1, 'FRE-001'),
-('b70e531c3f5f', 30, 'En Cabudares nos informaron de que no cargan ', '5', '2026-06-30', 2, 2, 1, 'FRE-001'),
-('b7b4eb5ecb30', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 3, 3, 1, 'FRE-001'),
-('b7c87235e5e2', 16, 'En san francisco se hizo un bache', '6', '2026-07-01', 20, 20, 1, 'FRE-001'),
-('b7ed15f05b88', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 9, 9, 1, 'FRE-001'),
-('beda52ea9bd1', 50, 'Test obs', '1', '2026-07-05', 24, 24, 1, 'FRE-001'),
-('bf0e7abdad06', 93, 'En el Cují, en la Calle 3 se realizara un asf', '5', '2026-07-04', 24, 24, 1, 'FRE-001'),
-('c0ecec782081', 38, 'reparaciones en Cabudares', '1', '2026-07-03', 24, 24, 1, 'FRE-001'),
-('c46ec2a9eb43', 39, 'En el Sector La Aguada se realizaran reparaci', '10', '2026-07-07', 24, 24, 1, 'FRE-001'),
-('d159b72e9c16', 28, 'En la Salle se comenzo a hacer una obra', '1', '2026-07-04', 24, 24, 1, 'FRE-001'),
-('d169eb15ef98', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 12, 12, 1, 'FRE-001'),
-('d3c620ff34ad', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 5, 5, 1, 'FRE-001'),
-('d9b6d8dfb228', 38, 'reparaciones en Iribarren Av. Venezuela', '1', '2026-07-03', 24, 24, 1, 'FRE-001'),
-('dd708c7466cf', 93, 'En el Cují, en la Calle 3 se realizara un asf', '5', '2026-07-04', 24, 24, 1, 'FRE-001'),
-('e316f1191384', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 6, 6, 1, 'FRE-001'),
-('e862a33d0c7c', 100, 'en la urbanizacion hay que asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001'),
-('f220e9404f00', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 10, 10, 1, 'FRE-001'),
-('fa7f402d9b98', 13, 'En Av. Intercomunal se hizo un asfaltado y em', '5', '2026-07-03', 24, 24, 1, 'FRE-001'),
-('fb5af05a3a48', 25, 'Prueba', '1', '2026-07-01', 22, 22, 1, 'FRE-001'),
-('fef7ab9d0883', 69, 'Se esta restaurando la via de Pueblo Nuevo', '6', '2026-06-30', 1, 1, 1, 'FRE-001');
+INSERT INTO `avance` (`id_avance`, `porcentaje_avance`, `descripcion`, `gerente`, `fecha_avance`, `obra_id_obra`, `obra_semaforo_id_semaforo`, `obra_contratacion_id_contratacion`, `obra_gestionar_proyectos_codigo_proyecto`, `estado`) VALUES
+('3d65f647b8e9', 7, 'nuncasd sdsds', '5', '2026-07-07', 1, 1, 1, 'FRE-001', 1);
 
 -- --------------------------------------------------------
 
@@ -105,10 +54,10 @@ INSERT INTO `avance` (`id_avance`, `porcentaje_avance`, `descripcion`, `gerente`
 --
 
 CREATE TABLE `catalogo_cargos` (
-  `id_cargo` int NOT NULL,
+  `id_cargo` int(11) NOT NULL,
   `nombre_cargo` varchar(45) NOT NULL,
   `descripcion` varchar(100) DEFAULT NULL,
-  `estado` tinyint NOT NULL DEFAULT '1'
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Catálogo de cargos institucionales';
 
 --
@@ -130,22 +79,23 @@ INSERT INTO `catalogo_cargos` (`id_cargo`, `nombre_cargo`, `descripcion`, `estad
 --
 
 CREATE TABLE `comunidad` (
-  `id_comunidad` int NOT NULL,
+  `id_comunidad` int(11) NOT NULL,
   `nombre_comunidad` varchar(100) NOT NULL,
   `ambito` varchar(45) NOT NULL,
   `sector` varchar(45) NOT NULL,
-  `persona_id_persona` int NOT NULL
+  `persona_id_persona` int(11) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `comunidad`
 --
 
-INSERT INTO `comunidad` (`id_comunidad`, `nombre_comunidad`, `ambito`, `sector`, `persona_id_persona`) VALUES
-(1, 'prueba02', 'prueba', 'pruuuu', 2),
-(2, 'carorita', 'cuji', 'la playa', 4),
-(3, 'hskHJS', 'ihjdsk', 'hjajda', 5),
-(4, 'Nuevo Horizonte', 'San Francisco', 'Oeste', 6);
+INSERT INTO `comunidad` (`id_comunidad`, `nombre_comunidad`, `ambito`, `sector`, `persona_id_persona`, `estado`) VALUES
+(1, 'prueba02', 'prueba', 'pruuuu', 2, 1),
+(2, 'carorita', 'cuji', 'la playa', 4, 1),
+(3, 'hskHJS', 'ihjdsk', 'hjajda', 5, 1),
+(4, 'Nuevo Horizonte', 'San Francisco', 'Oeste', 6, 1);
 
 -- --------------------------------------------------------
 
@@ -154,7 +104,7 @@ INSERT INTO `comunidad` (`id_comunidad`, `nombre_comunidad`, `ambito`, `sector`,
 --
 
 CREATE TABLE `contratacion` (
-  `id_contratacion` int NOT NULL,
+  `id_contratacion` int(11) NOT NULL,
   `descripcion` varchar(255) NOT NULL,
   `empresa_ganadora` varchar(30) NOT NULL,
   `numero_contrato` varchar(12) NOT NULL,
@@ -167,7 +117,7 @@ CREATE TABLE `contratacion` (
   `observacion` varchar(100) NOT NULL,
   `fecha_registro` datetime NOT NULL,
   `empresa_rif` varchar(12) NOT NULL,
-  `estado` tinyint(1) NOT NULL
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de contrataciones';
 
 --
@@ -175,8 +125,7 @@ CREATE TABLE `contratacion` (
 --
 
 INSERT INTO `contratacion` (`id_contratacion`, `descripcion`, `empresa_ganadora`, `numero_contrato`, `monto`, `fecha_inicio_procedimiento`, `fecha_adjudicacion`, `tipo_contrato`, `modalidad`, `objeto`, `observacion`, `fecha_registro`, `empresa_rif`, `estado`) VALUES
-(1, 'Hola', 'Polar', '12', '12 Dolares', '2026-06-17 00:00:00', '2026-06-24 00:00:00', 'Anual', 'Fisica', 'Afaltado', 'Calles irregulares', '2026-06-17 00:00:00', '12', 0),
-(2, 'En la Empresa del señor Pereira se ha solicitado una restauracion en frente de su negocio', 'Empresa Pereira', 'FLR-23580', 'BS 31.745.715,41', '2026-06-24 00:00:00', '2026-08-12 00:00:00', 'Contrato de Obra', 'Concurso Abierto', 'Ejecución de Obras', 'Acondicionamiento', '2026-06-24 00:00:00', 'J-714712571', 0);
+(1, 'Hola', 'Polar', '12', '12 Dolares', '2026-06-17 00:00:00', '2026-06-24 00:00:00', 'Anual', 'Fisica', 'Afaltado', 'Calles irregulares', '2026-06-17 00:00:00', '12', 1);
 
 -- --------------------------------------------------------
 
@@ -185,13 +134,13 @@ INSERT INTO `contratacion` (`id_contratacion`, `descripcion`, `empresa_ganadora`
 --
 
 CREATE TABLE `empleados` (
-  `id_empleados` int NOT NULL,
+  `id_empleados` int(11) NOT NULL,
   `nombre_empleado` varchar(45) NOT NULL,
   `cargo` varchar(45) NOT NULL,
   `fecha_ingreso` date NOT NULL,
   `gerencia_asignada` varchar(45) NOT NULL,
-  `persona_id_persona` int NOT NULL,
-  `estado` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
+  `persona_id_persona` int(11) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -203,11 +152,8 @@ INSERT INTO `empleados` (`id_empleados`, `nombre_empleado`, `cargo`, `fecha_ingr
 (2, 'Cesilia  del Carmen Suarez', 'Recepcionista', '2026-06-20', 'Atención al Ciudadano', 9, 1),
 (3, 'Maria del Carmen Suarez', 'Asistente', '2026-06-20', 'Comunicaciones', 9, 1),
 (5, 'Carlos Ramírez Inspector', 'Inspector', '2026-06-22', 'Obras Públicas', 1, 1),
-(6, 'Alejandro Mejia Bautista', 'Inspector', '2026-06-08', 'Gerencia de Obras', 12, 1),
-(7, 'Elena María Riera', 'Proyectista', '2017-02-13', 'Gerencia de Proyectos', 13, 1),
-(8, 'Javier Eduardo Páez', 'Proyectista', '2021-11-14', 'Gerencia de Proyectos', 14, 1),
-(9, 'Sofía Alexandra Guedez', 'Asistente', '2023-08-17', 'Atencion al Ciudadano', 15, 1),
-(10, 'José Gregorio Montes', 'Inspector', '2026-07-01', 'Gerencias de Obras', 12, 1);
+(6, 'Freider Guedez', 'Proyectista', '2026-07-01', 'MARUSLANE', 12, 1),
+(7, 'juan cfddd', 'Proyectista', '2026-07-07', 'mmmbbbhjhg', 12, 0);
 
 -- --------------------------------------------------------
 
@@ -220,7 +166,7 @@ CREATE TABLE `empresa` (
   `nombre_empresa` varchar(80) NOT NULL,
   `telefono` varchar(12) NOT NULL COMMENT 'Tabla de empresas.',
   `domicilio_fiscal` varchar(100) NOT NULL,
-  `estado` tinyint(1) NOT NULL
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -228,8 +174,9 @@ CREATE TABLE `empresa` (
 --
 
 INSERT INTO `empresa` (`rif`, `nombre_empresa`, `telefono`, `domicilio_fiscal`, `estado`) VALUES
-('12', 'Polar', '04122212121', 'Calle 13c', 0),
-('J-714712571', 'Empresa Pereira', '0414-5125412', 'Calle 14, Sector Centro', 1);
+('12', 'Polar', '04122212121', 'Calle 13c', 1),
+('J-377323626', 'Shampooos', '0414-7854411', 'mxvshidfhheuifpotgkpkwqkd,mcxmf', 0),
+('J-412357777', 'GOKU SJJ 2', '0414-1345655', 'AVJEEDWEWD', 1);
 
 -- --------------------------------------------------------
 
@@ -238,11 +185,11 @@ INSERT INTO `empresa` (`rif`, `nombre_empresa`, `telefono`, `domicilio_fiscal`, 
 --
 
 CREATE TABLE `evidencia` (
-  `id_evidencia` int NOT NULL,
-  `fotos` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `url_archivos` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `id_evidencia` int(11) NOT NULL,
+  `fotos` varchar(45) NOT NULL,
+  `url_archivos` varchar(90) NOT NULL,
   `fecha_registro` datetime NOT NULL,
-  `estado` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)',
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)',
   `etapa` enum('antes','durante','despues') NOT NULL DEFAULT 'antes' COMMENT 'Etapa de la evidencia fotográfica'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -251,21 +198,9 @@ CREATE TABLE `evidencia` (
 --
 
 INSERT INTO `evidencia` (`id_evidencia`, `fotos`, `url_archivos`, `fecha_registro`, `estado`, `etapa`) VALUES
-(12, 'WhatsApp Image 2026-06-23 at 11.53.09 AM (2).', 'uploads/evidencias/596546b1d461_WhatsApp_Image_2026-06-23_at_11_53_09_AM_2.jpg', '2026-06-30 18:19:23', 1, 'antes'),
-(13, 'WhatsApp Image 2026-06-23 at 11.53.08 AM (2).', 'uploads/evidencias/1f659ea9faeb_WhatsApp_Image_2026-06-23_at_11_53_08_AM_2.jpg', '2026-06-30 18:19:23', 1, 'durante'),
-(14, 'WhatsApp Image 2026-06-23 at 11.53.18 AM (1).', 'uploads/evidencias/58a2b979b634_WhatsApp_Image_2026-06-23_at_11_53_18_AM_1.jpg', '2026-06-30 18:19:23', 1, 'despues'),
-(15, 'WhatsApp Image 2026-06-18 at 2.44.38 PM (4).j', 'uploads/evidencias/5e75f66e31dd_WhatsApp_Image_2026-06-18_at_2_44_38_PM_4.jpg', '2026-06-30 19:34:59', 1, 'durante'),
-(16, 'WhatsApp Image 2026-06-18 at 2.44.38 PM.jpeg', 'uploads/evidencias/5aff3e056a00_WhatsApp_Image_2026-06-18_at_2_44_38_PM.jpg', '2026-06-30 19:34:59', 1, 'durante'),
-(17, 'WhatsApp Image 2026-06-23 at 11.53.16 AM (2).', 'uploads/evidencias/3ca6bdacc414_WhatsApp_Image_2026-06-23_at_11_53_16_AM_2.jpg', '2026-06-30 19:34:59', 1, 'durante'),
-(18, 'WhatsApp Image 2026-06-23 at 11.53.16 AM (3).', 'uploads/evidencias/60474e154639_WhatsApp_Image_2026-06-23_at_11_53_16_AM_3.jpg', '2026-06-30 19:34:59', 1, 'durante'),
-(19, 'WhatsApp Image 2026-06-23 at 11.53.09 AM (1).', 'uploads/evidencias/6d82d404846d_WhatsApp_Image_2026-06-23_at_11_53_09_AM_1.jpg', '2026-07-02 12:39:56', 1, 'antes'),
-(20, 'WhatsApp Image 2026-06-23 at 11.53.09 AM (3).', 'uploads/evidencias/58992d937a7b_WhatsApp_Image_2026-06-23_at_11_53_09_AM_3.jpg', '2026-07-02 12:39:56', 1, 'antes'),
-(21, 'WhatsApp Image 2026-06-23 at 11.53.09 AM.jpeg', 'uploads/evidencias/30890868dd1a_WhatsApp_Image_2026-06-23_at_11_53_09_AM.jpg', '2026-07-02 12:39:56', 1, 'antes'),
-(22, 'WhatsApp Image 2026-06-23 at 11.53.10 AM.jpeg', 'uploads/evidencias/6c30a9cf957a_WhatsApp_Image_2026-06-23_at_11_53_10_AM.jpg', '2026-07-02 12:39:56', 1, 'antes'),
-(23, 'WhatsApp Image 2026-06-23 at 11.53.10 AM (2).', 'uploads/evidencias/cdcc3fdbc656_WhatsApp_Image_2026-06-23_at_11_53_10_AM_2.jpg', '2026-07-02 12:41:58', 1, 'despues'),
-(24, 'WhatsApp Image 2026-06-23 at 11.53.12 AM.jpeg', 'uploads/evidencias/813a552771db_WhatsApp_Image_2026-06-23_at_11_53_12_AM.jpg', '2026-07-02 12:41:58', 1, 'despues'),
-(25, 'WhatsApp Image 2026-06-23 at 11.53.16 AM.jpeg', 'uploads/evidencias/e7ff13fd5448_WhatsApp_Image_2026-06-23_at_11_53_16_AM.jpg', '2026-07-02 12:41:58', 1, 'despues'),
-(26, 'WhatsApp Image 2026-06-23 at 11.53.18 AM.jpeg', 'uploads/evidencias/4f11bdb292bc_WhatsApp_Image_2026-06-23_at_11_53_18_AM.jpg', '2026-07-02 12:41:58', 1, 'despues');
+(6, 'Captura de pantalla 2026-06-05 212200.png', 'uploads/evidencias/7751abc82705_Captura_de_pantalla_2026-06-05_212200.jpg', '2026-07-07 19:59:15', 1, 'antes'),
+(7, 'Captura de pantalla 2026-06-08 231740.png', 'uploads/evidencias/ecf241f4b015_Captura_de_pantalla_2026-06-08_231740.jpg', '2026-07-07 19:59:15', 1, 'durante'),
+(8, 'Captura de pantalla 2026-06-08 235811.png', 'uploads/evidencias/85d2f8120533_Captura_de_pantalla_2026-06-08_235811.jpg', '2026-07-07 19:59:15', 1, 'despues');
 
 -- --------------------------------------------------------
 
@@ -274,20 +209,11 @@ INSERT INTO `evidencia` (`id_evidencia`, `fotos`, `url_archivos`, `fecha_registr
 --
 
 CREATE TABLE `gravedad_obra` (
-  `id_gravedad` int NOT NULL,
+  `id_gravedad` int(11) NOT NULL,
   `nivel_gravedad` varchar(20) NOT NULL,
   `criticidad` varchar(10) NOT NULL,
-  `estado` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `gravedad_obra`
---
-
-INSERT INTO `gravedad_obra` (`id_gravedad`, `nivel_gravedad`, `criticidad`, `estado`) VALUES
-(1, 'Alta', 'Crítica', 1),
-(2, 'Media', 'Moderada', 1),
-(3, 'Baja', 'Leve', 1);
 
 -- --------------------------------------------------------
 
@@ -296,8 +222,9 @@ INSERT INTO `gravedad_obra` (`id_gravedad`, `nivel_gravedad`, `criticidad`, `est
 --
 
 CREATE TABLE `gravedad_obra_has_prioridad` (
-  `gravedad_obra_id_gravedad` int NOT NULL,
-  `prioridad_id_gestion_prioridad` int NOT NULL
+  `gravedad_obra_id_gravedad` int(11) NOT NULL,
+  `prioridad_id_gestion_prioridad` int(11) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -307,45 +234,24 @@ CREATE TABLE `gravedad_obra_has_prioridad` (
 --
 
 CREATE TABLE `informe_avance_obra` (
-  `id_informe` int NOT NULL,
+  `id_informe` int(11) NOT NULL,
   `fecha` datetime NOT NULL,
-  `estado` varchar(25) NOT NULL,
+  `estatus_informe` varchar(25) NOT NULL,
   `poblacion_beneficiada` varchar(45) NOT NULL DEFAULT 'No especificado',
   `tipo_informe` varchar(30) NOT NULL,
   `evidencia_antes` varchar(50) NOT NULL,
   `evidencia_durante` varchar(50) NOT NULL,
   `evidencia_despues` varchar(50) NOT NULL,
   `avance_id_avance` varchar(45) NOT NULL,
-  `estado_registro` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (borrado lógico)'
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de informes de avances de obras';
 
 --
 -- Volcado de datos para la tabla `informe_avance_obra`
 --
 
-INSERT INTO `informe_avance_obra` (`id_informe`, `fecha`, `estado`, `poblacion_beneficiada`, `tipo_informe`, `evidencia_antes`, `evidencia_durante`, `evidencia_despues`, `avance_id_avance`, `estado_registro`) VALUES
-(1, '2026-06-30 21:13:31', 'Aprobado', 'Pueblo Nuevo Avenida 4 con Calle 5', 'Menor', '12', '15', '', 'fef7ab9d0883', 1),
-(2, '2026-06-30 22:12:15', 'En Ejecucion', 'Cabudares', 'Mayor', '12', '16', '', 'b70e531c3f5f', 1),
-(18, '2026-07-01 22:31:07', 'Culminado', 'Luis Hurtado', 'Ficha Inspeccion Tecnica', '12', '17', '14', '22a8d98cd659', 1),
-(23, '2026-07-02 20:28:32', 'En Ejecucion', 'Comunidad Nuevo Horizonte en Iribarren', 'Avance Mensual', '21', '18', '24', 'a09e4dfbbe8c', 1),
-(25, '2026-07-03 00:12:09', 'En Ejecucion', 'Palavecino Av. Intercomunal, Conjunto Res', 'Menor', '19', '16', '', 'ad20d3759114', 1),
-(26, '2026-07-03 00:12:14', 'En Ejecucion', 'Palavecino Av. Intercomunal, Conjunto Res', 'Menor', '19', '16', '', 'b07c92e0e7ff', 1),
-(28, '2026-07-03 02:17:51', 'En Ejecucion', 'Iribarren Av. Venezuela, Urb. Fundalara', 'Mayor', '', '', '', 'd9b6d8dfb228', 1),
-(29, '2026-07-03 02:18:12', 'En Ejecucion', 'Cabudare Urb. La Rosaleda Calle 5 Casa 12', 'Menor', '', '', '', 'c0ecec782081', 1),
-(30, '2026-07-04 17:34:27', 'Aprobado', 'La Salle Avenida 4 con Calle 3', 'Mayor', '19,20', '17', '', 'd159b72e9c16', 1),
-(33, '2026-07-04 20:14:59', 'En Ejecucion', 'Urb. El Cují, Calle 3, Lote 14', 'Avance Mensual', '21', '18', '', 'bf0e7abdad06', 1),
-(34, '2026-07-04 21:13:37', 'En Ejecucion', 'Tamaca Urb. El Recreo, Calle Principal, Casa', 'Avance Mensual', '19', '16,17', '', '942e517e2048', 1),
-(35, '2026-07-04 21:17:41', 'Aprobado', 'José Gregorio Bastidas Av. Intercomunal', 'Ficha Inspeccion Tecnica', '19,21,22', '15,16', '', '49143e692fde', 1),
-(37, '2026-07-04 22:00:18', 'Aprobado', 'Juares Sector La Aguada, Calle Principal', 'Menor', '19,20,21,22', '15,17,16,18', '', '7317ea5dba7d', 1),
-(38, '2026-07-04 22:00:40', 'Aprobado', 'Juares Sector La Aguada, Calle Principal', 'Menor', '19,20,21,22', '15,17,16,18', '', '80e3115d8f95', 1),
-(39, '2026-07-04 23:02:06', 'Culminado', 'Urb. La Piedad, Manzana C, Casa 15', 'Ficha Inspeccion Tecnica', '19,20,21,22,12', '15,16,17,18,13', '23,24,25,26,14', 'e862a33d0c7c', 1),
-(40, '2026-07-04 23:07:05', 'Culminado', 'Urb. La Piedad, Manzana C, Casa 15', 'Ficha Inspeccion Tecnica', '19,20,21,22,12', '15,16,17,18,13', '23,24,25,26,14', '752f90f2b837', 1),
-(41, '2026-07-04 23:36:56', 'En Ejecucion', 'Carretera Nacional, Caserío El Copey', 'Avance Mensual', '', '', '', '0780c1c2a553', 1),
-(42, '2026-07-05 00:28:47', 'En Ejecucion', 'El Tocuyo Av. Rotaria, Sector La Montañita', 'Avance Mensual', '20,21', '16,15', '', '0c8eb3a83706', 1),
-(43, '2026-07-05 01:00:13', 'Aprobado', 'para la Comunidad santa la Osa', 'Menor', '20,21', '18,13', '23', 'ae8c50e964e9', 1),
-(50, '2026-07-06 04:24:19', 'En Ejecucion', 'Urb. La Piedad, Manzana C, Casa 15', 'Ficha Inspeccion Tecnica', '20', '18,17', '', '7a4e67e5c2ce', 1),
-(51, '2026-07-06 19:53:13', 'Culminado', 'Av. Rotaria, Sector La Montañita en Morán', 'Mayor', '19,21,20', '15,16,17', '', 'b0d8247b2d01', 1),
-(52, '2026-07-07 00:44:24', 'En Ejecucion', 'Sector La Aguada, Calle Principal 20 personas', 'Menor', '19,12,22', '', '', 'c46ec2a9eb43', 1);
+INSERT INTO `informe_avance_obra` (`id_informe`, `fecha`, `estatus_informe`, `poblacion_beneficiada`, `tipo_informe`, `evidencia_antes`, `evidencia_durante`, `evidencia_despues`, `avance_id_avance`, `estado`) VALUES
+(1, '2026-07-07 20:25:00', 'Paralizado', 'cuujios', 'Ficha Inspeccion Tecnica', '6', '7', '8', '3d65f647b8e9', 1);
 
 -- --------------------------------------------------------
 
@@ -353,31 +259,22 @@ INSERT INTO `informe_avance_obra` (`id_informe`, `fecha`, `estado`, `poblacion_b
 -- Estructura de tabla para la tabla `inspeccion`
 --
 
-CREATE TABLE `respaldo_bd` (
-  `id_respaldo` int NOT NULL AUTO_INCREMENT,
-  `nombre_archivo` varchar(255) NOT NULL,
-  `tamano` bigint NOT NULL DEFAULT '0',
-  `descripcion` varchar(255) DEFAULT '',
-  `fecha_respaldo` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `estado` tinyint NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id_respaldo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-  `id_inspeccion` int NOT NULL AUTO_INCREMENT,
-  `inspector` int NOT NULL,
+CREATE TABLE `inspeccion` (
+  `id_inspeccion` int(11) NOT NULL,
+  `inspector` varchar(45) NOT NULL,
   `fecha_inspeccion` date NOT NULL,
   `tipo_inspeccion` varchar(45) NOT NULL,
   `observaciones` varchar(255) NOT NULL,
-  `obra_id_obra` int NOT NULL,
-  `obra_semaforo_id_semaforo` int NOT NULL,
-  `obra_contratacion_id_contratacion` int NOT NULL,
+  `obra_id_obra` int(11) NOT NULL,
+  `obra_semaforo_id_semaforo` int(11) NOT NULL,
+  `obra_contratacion_id_contratacion` int(11) NOT NULL,
   `obra_gestionar_proyectos_codigo_proyecto` varchar(15) NOT NULL,
-  `obra_id_obra1` int NOT NULL,
-  `obra_semaforo_id_semaforo1` int NOT NULL,
-  `obra_contratacion_id_contratacion1` int NOT NULL,
+  `obra_id_obra1` int(11) NOT NULL,
+  `obra_semaforo_id_semaforo1` int(11) NOT NULL,
+  `obra_contratacion_id_contratacion1` int(11) NOT NULL,
   `obra_gestionar_proyectos_codigo_proyecto1` varchar(15) NOT NULL,
-  `evidencia_id_evidencia` int NOT NULL,
-  PRIMARY KEY (`id_inspeccion`)
+  `evidencia_id_evidencia` int(11) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -387,18 +284,20 @@ CREATE TABLE `respaldo_bd` (
 --
 
 CREATE TABLE `institucion` (
-  `id_institucion` int NOT NULL,
+  `id_institucion` int(11) NOT NULL,
   `nombre_representante` varchar(45) NOT NULL,
   `razon_social` varchar(120) NOT NULL,
-  `persona_id_persona` int NOT NULL
+  `persona_id_persona` int(11) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `institucion`
 --
 
-INSERT INTO `institucion` (`id_institucion`, `nombre_representante`, `razon_social`, `persona_id_persona`) VALUES
-(2, 'María Rodríguez', 'U.E.N. Lisandro Alvarado', 16);
+INSERT INTO `institucion` (`id_institucion`, `nombre_representante`, `razon_social`, `persona_id_persona`, `estado`) VALUES
+(1, 'gabriel', 'youtube', 3, 1),
+(2, 'IRIS GONZALES', 'MORROCOY', 11, 1);
 
 -- --------------------------------------------------------
 
@@ -407,10 +306,10 @@ INSERT INTO `institucion` (`id_institucion`, `nombre_representante`, `razon_soci
 --
 
 CREATE TABLE `maquinaria` (
-  `id_maquinaria` int NOT NULL,
+  `id_maquinaria` int(11) NOT NULL,
   `nombre_maquinaria` varchar(50) NOT NULL COMMENT 'Tabla de nombres de maquinarias',
   `tipo_maquinaria` varchar(45) NOT NULL,
-  `estado` tinyint(1) NOT NULL
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
@@ -418,32 +317,19 @@ CREATE TABLE `maquinaria` (
 --
 
 INSERT INTO `maquinaria` (`id_maquinaria`, `nombre_maquinaria`, `tipo_maquinaria`, `estado`) VALUES
-(1, 'Excavadora CAT 320', 'Pesada', 1),
-(2, 'Retroexcavadora', 'Pesada', 1),
-(3, 'Motoniveladora', 'Pesada', 1),
-(4, 'Bulldozer (Topadora)', 'Pesada', 1),
-(5, 'Compactador Rodillo liso', 'Pesada', 1),
-(6, 'Pavimentadora (Terminadora de asfalto)', 'Pesada', 1),
-(7, 'Fresadora de pavimento', 'Pesada', 1),
-(8, 'Mototraílla (Scraper)', 'Pesada', 1),
-(9, 'Mini cargadora (tipo Bobcat)', 'Liviana', 1),
-(10, 'Placa vibratoria Wacker Neuson', 'Liviana', 1),
-(11, 'Pisón vibratorio (Canguro)', 'Liviana', 1),
-(12, 'Cortadora de pavimento (Suelo/Asfalto)', 'Liviana', 1),
-(13, 'Generador eléctrico', 'Liviana', 1),
-(14, 'Barredora mecánica', 'Liviana', 1),
-(15, 'Motosierra', 'Herramienta', 1),
-(16, 'Taladro percutor / Rotomartillo', 'Herramienta', 1),
-(17, 'Esmeriladora', 'Herramienta', 1),
-(18, 'Estación total Leica TS06', 'Herramienta', 1),
-(19, 'Palas', 'Herramienta', 1),
-(20, 'Picos', 'Herramienta', 1),
-(21, 'rastrillos', 'Herramienta', 1),
-(22, 'macetas', 'Herramienta', 1),
-(23, 'Camión volquete (Dúmper) Mack Granite', 'Vehículo', 1),
-(24, 'Camión cisterna', 'Vehículo', 1),
-(25, 'Camión hormigonera (Mixer)', 'Vehículo', 1),
-(26, 'Camión plataforma', 'Vehículo', 0);
+(1, 'Carro 4000', 'Pesada', 1),
+(2, 'BICICLETAA', 'Pesada', 1),
+(11, 'EXCABADORA 20000', 'Liviana', 0),
+(12, 'ESCABADORA 20000', 'Liviana', 1),
+(13, 'croooo 82882', 'Pesada', 1),
+(14, 'cumbia 9000212', 'Pesada', 1),
+(15, 'mantequilla 90222', 'Liviana', 1),
+(16, 'jamon 2000', 'Herramienta', 1),
+(17, 'ratata 7222', 'Herramienta', 1),
+(18, 'caoroass21', 'Herramienta', 1),
+(19, 'jamon 2000221', 'Herramienta', 1),
+(20, 'corte 32331', 'Vehículo', 1),
+(21, 'ratas', 'Liviana', 1);
 
 -- --------------------------------------------------------
 
@@ -452,52 +338,30 @@ INSERT INTO `maquinaria` (`id_maquinaria`, `nombre_maquinaria`, `tipo_maquinaria
 --
 
 CREATE TABLE `obra` (
-  `id_obra` int NOT NULL,
+  `id_obra` int(11) NOT NULL,
   `titulo_obra` varchar(45) NOT NULL,
   `ubicacion_obra` varchar(80) NOT NULL,
-  `periodo_ejecucion` int NOT NULL,
+  `periodo_ejecucion` int(11) NOT NULL,
   `fecha_inicio` date NOT NULL,
   `fecha_fin` date NOT NULL,
   `mediciones_obra` varchar(45) NOT NULL,
   `valuaciones` varchar(100) NOT NULL,
   `modificaciones_contrato` varchar(100) NOT NULL,
-  `certificaciones_obras_ejecutadas` int NOT NULL,
+  `certificaciones_obras_ejecutadas` int(11) NOT NULL,
   `numero_contrato` varchar(20) NOT NULL,
-  `porcentaje_avance_obra` int NOT NULL,
-  `semaforo_id_semaforo` int NOT NULL,
-  `contratacion_id_contratacion` int NOT NULL,
-  `gestionar_proyectos_codigo_proyecto` varchar(15) NOT NULL
+  `porcentaje_avance_obra` int(11) NOT NULL,
+  `semaforo_id_semaforo` int(11) NOT NULL,
+  `contratacion_id_contratacion` int(11) NOT NULL,
+  `gestionar_proyectos_codigo_proyecto` varchar(15) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de las inspecciones';
 
 --
 -- Volcado de datos para la tabla `obra`
 --
 
-INSERT INTO `obra` (`id_obra`, `titulo_obra`, `ubicacion_obra`, `periodo_ejecucion`, `fecha_inicio`, `fecha_fin`, `mediciones_obra`, `valuaciones`, `modificaciones_contrato`, `certificaciones_obras_ejecutadas`, `numero_contrato`, `porcentaje_avance_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`) VALUES
-(1, 'Obra Generada', 'Sin ubicacion', 1, '2026-06-30', '2026-06-30', 'N/A', 'N/A', 'N/A', 0, 'N/A', 69, 1, 1, 'FRE-001'),
-(2, 'Obra Generada', 'Sin ubicacion', 1, '2026-06-30', '2026-06-30', 'N/A', 'N/A', 'N/A', 0, 'N/A', 30, 2, 1, 'FRE-001'),
-(3, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 3, 1, 'FRE-001'),
-(4, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 4, 1, 'FRE-001'),
-(5, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 5, 1, 'FRE-001'),
-(6, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 6, 1, 'FRE-001'),
-(7, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 7, 1, 'FRE-001'),
-(8, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 8, 1, 'FRE-001'),
-(9, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 9, 1, 'FRE-001'),
-(10, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 10, 1, 'FRE-001'),
-(11, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 11, 1, 'FRE-001'),
-(12, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 12, 1, 'FRE-001'),
-(13, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 13, 1, 'FRE-001'),
-(14, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 14, 1, 'FRE-001'),
-(15, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 15, 1, 'FRE-001'),
-(16, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 16, 1, 'FRE-001'),
-(17, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 17, 1, 'FRE-001'),
-(18, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 18, 1, 'FRE-001'),
-(19, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 25, 19, 1, 'FRE-001'),
-(20, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 16, 20, 1, 'FRE-001'),
-(21, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 16, 21, 1, 'FRE-001'),
-(22, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 25, 22, 1, 'FRE-001'),
-(23, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-02', '2026-07-02', 'N/A', 'N/A', 'N/A', 0, 'N/A', 64, 23, 1, 'FRE-001'),
-(24, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-02', '2026-07-02', 'N/A', 'N/A', 'N/A', 0, 'N/A', 64, 24, 1, 'FRE-001');
+INSERT INTO `obra` (`id_obra`, `titulo_obra`, `ubicacion_obra`, `periodo_ejecucion`, `fecha_inicio`, `fecha_fin`, `mediciones_obra`, `valuaciones`, `modificaciones_contrato`, `certificaciones_obras_ejecutadas`, `numero_contrato`, `porcentaje_avance_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`, `estado`) VALUES
+(1, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-07', '2026-07-07', 'N/A', 'N/A', 'N/A', 0, 'N/A', 0, 1, 1, 'FRE-001', 1);
 
 -- --------------------------------------------------------
 
@@ -506,19 +370,19 @@ INSERT INTO `obra` (`id_obra`, `titulo_obra`, `ubicacion_obra`, `periodo_ejecuci
 --
 
 CREATE TABLE `particular` (
-  `id_particular` int NOT NULL,
+  `id_particular` int(11) NOT NULL,
   `nombre` varchar(45) NOT NULL,
   `apellido` varchar(45) NOT NULL,
-  `persona_id_persona` int NOT NULL
+  `persona_id_persona` int(11) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `particular`
 --
 
-INSERT INTO `particular` (`id_particular`, `nombre`, `apellido`, `persona_id_persona`) VALUES
-(1, 'Gabriel', 'Mujica', 1),
-(2, 'Mariangel', 'Bokor', 11);
+INSERT INTO `particular` (`id_particular`, `nombre`, `apellido`, `persona_id_persona`, `estado`) VALUES
+(1, 'Gabriel', 'Mujica', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -527,35 +391,31 @@ INSERT INTO `particular` (`id_particular`, `nombre`, `apellido`, `persona_id_per
 --
 
 CREATE TABLE `persona` (
-  `id_persona` int NOT NULL,
-  `cedula_persona` int NOT NULL,
+  `id_persona` int(11) NOT NULL,
+  `cedula_persona` int(11) NOT NULL,
   `direccion` varchar(200) NOT NULL,
   `parroquia` varchar(45) NOT NULL,
   `municipio` varchar(45) NOT NULL,
   `telefono` tinytext NOT NULL,
-  `correo` varchar(45) NOT NULL
+  `correo` varchar(45) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `persona`
 --
 
-INSERT INTO `persona` (`id_persona`, `cedula_persona`, `direccion`, `parroquia`, `municipio`, `telefono`, `correo`) VALUES
-(1, 29957469, 'CAlle 24 entre 32 y 33', 'Catedral', 'Iribarren', '04128280586', 'gabrielenriquemch@gmail.com'),
-(2, 34567896, 'prueba', 'Agua Viva', 'Palavecino', '04245678568', 'fedegtq2@gmail.com'),
-(3, 56785729, 'calle miami', 'Hilario Luna y Luna', 'Morán', '04245678934', 'youtube@gmail.coom'),
-(4, 31258936, 'cuji', 'Freitez', 'Crespo', '04245087200', 'redfiury21@gmail.com'),
-(5, 30088284, 'ihjdsk', 'Cabudare', 'Palavecino', '04120587814', 'jose@gmail.com'),
-(6, 28433546, 'San Francisco', 'Guerrera Ana Soto (Juan de Villegas)', 'Iribarren', '04123582233', 'mafer25@gmail.com'),
-(7, 29345267, 'Calle 52 con Carrera 24 y 25 ', 'Iribarren', 'Guerrera Ana Soto', '04123456420', 'Juan45p@gmail.com'),
-(9, 7833562, 'Carrera 24 entre Calles 36 y 37', 'Iribarren', 'Juan de Villegas', '04248379835', 'Cesif67@gmail.com'),
-(11, 30587785, 'Carrera 4 con Calle 5', 'Cabudare', 'Palavecino', '04245319088', 'bokorMBmariposa@gmail.com'),
-(12, 8977634, 'Av. Los Horcones con Av. La Salle.', 'Catedral', 'Iribarren', '04125677474', 'MejiAlejandro443@gmail.com'),
-(13, 28542148, 'Calle 9 entre Cra. 20 y 21, Casa N° 20-15', 'Concepción', 'Iribarren', '04163347465', 'Elenaita22Ri@gmail.com'),
-(14, 29723582, 'Urb. La Rosaleda, Calle 5, Casa 12', 'Cabudare', 'Palavecino', '04125543568', 'ElJavivi@gmail.com'),
-(15, 29545867, 'Av. Los Abogados, Res. El Parque, Torre A', 'Santa Rosa', 'Iribarren', '04146564722', 'LaSofi23@gmail.com'),
-(16, 12345678, 'Av. Principal, Sector Centro', 'Catedral', 'Iribarren', '0251-2319786', 'contacto@l-alvarado.edu.ve'),
-(17, 25289197, 'Calle Carabobo, Casa N° 34', 'Anzoátegui', 'Morán', '04120896778', 'FranVier@gmail.com');
+INSERT INTO `persona` (`id_persona`, `cedula_persona`, `direccion`, `parroquia`, `municipio`, `telefono`, `correo`, `estado`) VALUES
+(1, 29957469, 'CAlle 24 entre 32 y 33', 'Catedral', 'Iribarren', '04128280586', 'gabrielenriquemch@gmail.com', 1),
+(2, 34567896, 'prueba', 'Agua Viva', 'Palavecino', '04245678568', 'fedegtq2@gmail.com', 1),
+(3, 56785729, 'calle miami', 'Hilario Luna y Luna', 'Morán', '04245678934', 'youtube@gmail.coom', 1),
+(4, 31258936, 'cuji', 'Freitez', 'Crespo', '04245087200', 'redfiury21@gmail.com', 1),
+(5, 30088284, 'ihjdsk', 'Cabudare', 'Palavecino', '04120587814', 'jose@gmail.com', 1),
+(6, 28433546, 'San Francisco', 'Guerrera Ana Soto (Juan de Villegas)', 'Iribarren', '04123582233', 'mafer25@gmail.com', 1),
+(7, 29345267, 'Calle 52 con Carrera 24 y 25 ', 'Iribarren', 'Guerrera Ana Soto', '04123456420', 'Juan45p@gmail.com', 1),
+(9, 7833562, 'Carrera 24 entre Calles 36 y 37', 'Iribarren', 'Juan de Villegas', '04248379835', 'Cesif67@gmail.com', 1),
+(11, 1455575885, 'AV PRINCIPAL EL TOSTAO', 'Guerrera Ana Soto (Juan de Villegas)', 'Iribarren', '04267441144', 'JOSEGUILLERMO@GMAIL.COM', 1),
+(12, 30528058, 'Avenida principal el tostao sector morrocoy', 'juan de villegas', 'Iribarren', '04267955615', 'guedezfreider3@gmail.com', 1);
 
 -- --------------------------------------------------------
 
@@ -564,19 +424,20 @@ INSERT INTO `persona` (`id_persona`, `cedula_persona`, `direccion`, `parroquia`,
 --
 
 CREATE TABLE `prioridad` (
-  `id_gestion_prioridad` int NOT NULL,
+  `id_gestion_prioridad` int(11) NOT NULL,
   `rango_prioridad` float NOT NULL,
   `fecha_asignacion` datetime NOT NULL,
   `responsable_ajuste` varchar(30) NOT NULL,
-  `justificacion_cambio` varchar(150) NOT NULL
+  `justificacion_cambio` varchar(150) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `prioridad`
 --
 
-INSERT INTO `prioridad` (`id_gestion_prioridad`, `rango_prioridad`, `fecha_asignacion`, `responsable_ajuste`, `justificacion_cambio`) VALUES
-(1, 1, '2026-06-15 16:38:02', 'Sistema', 'Default');
+INSERT INTO `prioridad` (`id_gestion_prioridad`, `rango_prioridad`, `fecha_asignacion`, `responsable_ajuste`, `justificacion_cambio`, `estado`) VALUES
+(1, 1, '2026-06-15 16:38:02', 'Sistema', 'Default', 1);
 
 -- --------------------------------------------------------
 
@@ -590,16 +451,75 @@ CREATE TABLE `proyecto` (
   `descripcion_tecnica` varchar(200) NOT NULL,
   `computos_metricos` varchar(255) NOT NULL,
   `estimacion_costo` varchar(45) NOT NULL,
-  `estado` tinyint(1) NOT NULL
+  `proyecto_has_empleado` varchar(85) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de gestion de proyectos';
 
 --
 -- Volcado de datos para la tabla `proyecto`
 --
 
-INSERT INTO `proyecto` (`codigo_proyecto`, `fecha_planificacion`, `descripcion_tecnica`, `computos_metricos`, `estimacion_costo`, `estado`) VALUES
-('FRE-001', '2026-06-24 00:00:00', 'Restauración Vial', '230 m2', '200000 dolares', 0),
-('WEY-001', '2026-07-01 00:00:00', 'Servicio Basico ', '11513424m2', '237523', 1);
+INSERT INTO `proyecto` (`codigo_proyecto`, `fecha_planificacion`, `descripcion_tecnica`, `computos_metricos`, `estimacion_costo`, `proyecto_has_empleado`, `estado`) VALUES
+('112-222', '2026-07-11 00:00:00', 'SSSSSSSSSSS', '', '', '', 0),
+('454-555', '2026-07-17 00:00:00', 'amencdddssa', '150m2222', '50.222,44', '', 0),
+('65H-HHH', '2026-07-16 00:00:00', 'jjjjhgtytr', '', '', '', 0),
+('666-666', '2026-07-05 03:23:09', 'hahydrere', '4343m2ss', '88.888,88', '', 0),
+('BNF-001', '2026-07-02 00:00:00', 'motivaciones', '1353mdsmdaaasd', '47510.00', '', 0),
+('BNF-0013', '2026-07-24 00:00:00', 'UUUUUUUUUUU', '777jujjRE', '77.777,77', '', 0),
+('BNN-122', '2026-07-02 00:00:00', 'motivaciones', '1203fmsww', '54.100,00', '', 0),
+('EEE-EEE', '2026-07-10 00:00:00', '', '', '', '', 0),
+('ETF-0012', '2026-07-25 00:00:00', 'aver qlq aa', 'ajajsjjasasd', '80.000,00', '', 0),
+('FGT-867', '2026-07-08 23:28:33', 'jjghfffccccf', '888mmgfgvvfgfff', '78885555', '6', 1),
+('FRE-001', '2026-07-07 20:19:35', 'Restauracion Vial', '0 m2', '0', 'Sin asignar', 1),
+('FTT-RYT', '2026-07-10 00:00:00', 'jghgtht', '', '', '', 0),
+('GHH-666', '2026-07-24 00:00:00', 'HHHGTRYRYTR', '', '', '', 0),
+('GHT-787', '2026-07-23 00:00:00', 'motivosjodios', '150mw2ww', '858.888,88', '', 0),
+('HHH-45445', '2026-07-30 00:00:00', 'motivacionesss', '150m2hsdd', '85.577,74', '', 0),
+('HTY-455', '2026-07-03 00:00:00', 'amdhgtterew', 'wq12323', '58.444,44', '', 0),
+('IUT-744', '2026-07-04 00:00:00', 'ratatatata', '1203243wds', '74.555,55', '', 0),
+('IUY-777', '2026-07-25 00:00:00', 'uytyytttee', '19383m,ww', '78.444,44', '', 0),
+('JUH-001', '2026-07-23 03:37:40', 'motivaciones', '150m2wsa', '524444.44', '', 0),
+('JUJ-UJJ', '2026-07-17 00:00:00', 'wggtgtewee', '234rfrfer', '58.000,00', '', 0),
+('JUU-744', '2026-07-10 00:00:00', 'probando vainas', '123m2221', '50.000,00', '', 0),
+('JUY-999', '2026-07-24 00:00:00', 'ooooooiuhujhn', '4554mmh', '87.774,44', '', 0),
+('KOU-144', '2026-07-03 00:00:00', 'motivosdwsd', '1402wmww', '50.000,00', '', 0),
+('LLL-989', '2026-07-25 00:00:00', 'yyeteeeeqw', '129922ddxd', '84.444,44', '', 0),
+('MCO-001', '2026-07-29 14:32:13', 'ARREGLAR VIALIDAD', '105MW CUBICOS', '58222214.44', '', 0),
+('MMN-454', '2026-07-24 00:00:00', 'kkkiuhgboo', '88kjin8', '785.555,55', '', 0),
+('NGN-101', '2026-07-25 00:00:00', 'amencholes', '188mww22', '777.888,88', '', 0),
+('NNT-100', '2026-07-04 00:00:00', 'estabamos trabajamdo', '73492212m2 ff', '47100000', '', 0),
+('OOO-L87', '2026-07-18 00:00:00', 'motivcnasw', '192mw22', '78.877,77', '', 0),
+('OOO-L879', '2026-07-18 04:14:43', 'motivacionesss', '150mw22w', '787888.89', '', 0),
+('OPP-PPE', '2026-07-31 00:00:00', 'motvacionss', '1022mwws', '87.444,44', '', 0),
+('OUO-444', '2026-07-10 00:00:00', 'ÑÑJNNJHGHV', '999MJFG', '50000.00', '', 0),
+('PPO-777', '2026-07-25 00:00:00', 'jjghbbbbbcvff', '888mhgbgb', '85.554,41', '', 0),
+('PPP-502', '2026-07-03 00:00:00', 'motivaciomes', '12wswerdddf3', '50.444,44', '', 0),
+('PPP-734', '2026-07-18 00:00:00', 'jajjajahshss', '1222mmsws', '78.888,85', '', 0),
+('PPP-788', '2026-07-25 00:00:00', 'motivaciones', '122mwqaw12', '77.716,23', '', 0),
+('PYU-777', '2026-07-31 03:22:15', 'noce qie paso', '150m2whdd', '502.544,44', '', 0),
+('RGT-022', '2026-07-10 00:00:00', 'AHAHAHHADDD', '12303MWW', '77.777,77', '', 0),
+('SBR-4000', '2026-07-01 00:00:00', 'motivos jajaa', '1203mwdd', '80.000,00', '', 0),
+('SBR-992', '2026-07-25 00:00:00', 'tecnicas de estt', '1230432ddd', '78.777,77', '', 0),
+('TRG-400', '2026-07-03 00:00:00', 'noce que esta pasando aca', '150mw22', '85.777,44', '', 0),
+('TRT-999', '2026-07-11 00:00:00', '', '150mwww2', '78.888,88', '', 0),
+('TTT-432', '2026-07-17 00:00:00', 'amenchcdddddddd', '122nn dsa', '8.777,77', '', 0),
+('UHY-002', '2026-07-04 00:00:00', 'motvcacionesssa', '1204mwmw', '70.558,44', '', 0),
+('UJT-666', '2026-07-25 03:42:50', 'camibassss', '1233404mww', '777777.77', '', 0),
+('UJU-999', '2026-07-17 00:00:00', 'jjdjdjdd323', '10292mww', '85.555,55', '', 0),
+('UUU-454', '2026-07-02 00:00:00', '', '102yee21', '85.222,00', '', 0),
+('UUU-888', '2026-07-18 00:00:00', '', '', '', '', 0),
+('UYR-599', '2026-07-31 14:25:58', 'tecniocas mejoradas', '150m2sjssw', '854441.14', '', 0),
+('UYU-74', '2026-07-02 00:00:00', 'nativo papa', '12023mw cuadrs', '78.555,55', '', 0),
+('WWW-WWW', '2026-07-18 00:00:00', 'aaaasqwqw2', '', '', '', 0),
+('YHT-222', '2026-07-02 00:00:00', 'motivaciones', '12302mwq', '85.777,77', '', 0),
+('YHU-454', '2026-07-25 03:45:45', 'jamon con queso', 'jajsjjs3833', '78777.77', '', 0),
+('YTY-122', '2026-07-25 00:00:00', 'cshamoppoo', '174mw2ss', '75.444,44', '', 0),
+('YUY-U77', '2026-07-30 00:00:00', 'dtehe22ddcx', '120wsmsw', '87.777,77', '', 0),
+('YYU-9838', '2026-07-22 16:49:15', 'mtoyvacioness ', '1230emwq  ', '78444.44', '', 0),
+('YYY-78', '2026-07-03 00:00:00', 'motivos de casos', '123554ggg', '78.744,11', '', 0),
+('YYY-888', '2026-07-16 00:00:00', 'UGHGHGHGFHF', '', '0.00', '', 0),
+('YYY-YYI', '2026-07-05 03:28:52', 'motivosssss', '', '', '', 0),
+('YYY-YYY', '2026-07-05 01:51:05', 'segrtghnbyttt', '', '', '', 0);
 
 -- --------------------------------------------------------
 
@@ -609,16 +529,74 @@ INSERT INTO `proyecto` (`codigo_proyecto`, `fecha_planificacion`, `descripcion_t
 
 CREATE TABLE `proyecto_has_maquinaria` (
   `proyecto_codigo_proyecto` varchar(15) NOT NULL,
-  `maquinaria_id_maquinaria` int NOT NULL
+  `maquinaria_id_maquinaria` int(11) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `proyecto_has_maquinaria`
 --
 
-INSERT INTO `proyecto_has_maquinaria` (`proyecto_codigo_proyecto`, `maquinaria_id_maquinaria`) VALUES
-('FRE-001', 7),
-('WEY-001', 16);
+INSERT INTO `proyecto_has_maquinaria` (`proyecto_codigo_proyecto`, `maquinaria_id_maquinaria`, `estado`) VALUES
+('112-222', 1, 1),
+('454-555', 1, 1),
+('65H-HHH', 2, 1),
+('666-666', 1, 1),
+('BNF-001', 1, 1),
+('BNF-0013', 2, 1),
+('BNN-122', 2, 1),
+('EEE-EEE', 2, 1),
+('ETF-0012', 2, 1),
+('FGT-867', 14, 1),
+('FTT-RYT', 2, 1),
+('GHH-666', 2, 1),
+('GHT-787', 1, 1),
+('HHH-45445', 1, 1),
+('HTY-455', 2, 1),
+('IUT-744', 1, 1),
+('IUY-777', 2, 1),
+('JUH-001', 2, 1),
+('JUJ-UJJ', 1, 1),
+('JUU-744', 1, 1),
+('JUY-999', 2, 1),
+('KOU-144', 2, 1),
+('LLL-989', 1, 1),
+('MCO-001', 2, 1),
+('MMN-454', 1, 1),
+('NGN-101', 2, 1),
+('NNT-100', 2, 1),
+('OOO-L87', 1, 1),
+('OOO-L879', 1, 1),
+('OPP-PPE', 2, 1),
+('OUO-444', 2, 1),
+('PPO-777', 2, 1),
+('PPP-502', 2, 1),
+('PPP-734', 2, 1),
+('PPP-788', 2, 1),
+('PYU-777', 1, 1),
+('RGT-022', 2, 1),
+('SBR-4000', 1, 1),
+('SBR-992', 2, 1),
+('TRG-400', 1, 1),
+('TRT-999', 2, 1),
+('TTT-432', 2, 1),
+('UHY-002', 1, 1),
+('UJT-666', 2, 1),
+('UJU-999', 1, 1),
+('UUU-454', 1, 1),
+('UUU-888', 2, 1),
+('UYR-599', 1, 1),
+('UYU-74', 1, 1),
+('WWW-WWW', 2, 1),
+('YHT-222', 2, 1),
+('YHU-454', 1, 1),
+('YTY-122', 2, 1),
+('YUY-U77', 2, 1),
+('YYU-9838', 21, 1),
+('YYY-78', 1, 1),
+('YYY-888', 2, 1),
+('YYY-YYI', 2, 1),
+('YYY-YYY', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -628,18 +606,70 @@ INSERT INTO `proyecto_has_maquinaria` (`proyecto_codigo_proyecto`, `maquinaria_i
 
 CREATE TABLE `proyecto_has_solicitudes` (
   `proyecto_codigo_proyecto` varchar(15) NOT NULL,
-  `solicitudes_id_solicitudes` int NOT NULL,
-  `solicitudes_persona_id_persona` int NOT NULL,
-  `solicitudes_prioridad_id_gestion_prioridad` int NOT NULL
+  `solicitudes_id_solicitudes` int(11) NOT NULL,
+  `solicitudes_persona_id_persona` int(11) NOT NULL,
+  `solicitudes_prioridad_id_gestion_prioridad` int(11) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `proyecto_has_solicitudes`
 --
 
-INSERT INTO `proyecto_has_solicitudes` (`proyecto_codigo_proyecto`, `solicitudes_id_solicitudes`, `solicitudes_persona_id_persona`, `solicitudes_prioridad_id_gestion_prioridad`) VALUES
-('FRE-001', 7, 6, 1),
-('WEY-001', 8, 11, 1);
+INSERT INTO `proyecto_has_solicitudes` (`proyecto_codigo_proyecto`, `solicitudes_id_solicitudes`, `solicitudes_persona_id_persona`, `solicitudes_prioridad_id_gestion_prioridad`, `estado`) VALUES
+('112-222', 5, 4, 1, 1),
+('454-555', 5, 4, 1, 1),
+('BNF-001', 1, 1, 1, 1),
+('BNF-0013', 2, 2, 1, 1),
+('BNN-122', 1, 1, 1, 1),
+('EEE-EEE', 5, 4, 1, 1),
+('ETF-0012', 6, 5, 1, 1),
+('FGT-867', 1, 1, 1, 1),
+('GHH-666', 3, 3, 1, 1),
+('GHT-787', 5, 4, 1, 1),
+('HHH-45445', 1, 1, 1, 1),
+('HTY-455', 1, 1, 1, 1),
+('IUT-744', 3, 3, 1, 1),
+('IUY-777', 5, 4, 1, 1),
+('JUH-001', 5, 4, 1, 1),
+('JUJ-UJJ', 1, 1, 1, 1),
+('JUU-744', 3, 3, 1, 1),
+('JUY-999', 7, 6, 1, 1),
+('KOU-144', 5, 4, 1, 1),
+('LLL-989', 5, 4, 1, 1),
+('MCO-001', 8, 11, 1, 1),
+('MMN-454', 3, 3, 1, 1),
+('NGN-101', 1, 1, 1, 1),
+('NNT-100', 1, 1, 1, 1),
+('OOO-L87', 2, 2, 1, 1),
+('OOO-L879', 3, 3, 1, 1),
+('OPP-PPE', 5, 4, 1, 1),
+('OUO-444', 1, 1, 1, 1),
+('PPO-777', 1, 1, 1, 1),
+('PPP-502', 7, 6, 1, 1),
+('PPP-734', 3, 3, 1, 1),
+('PPP-788', 7, 6, 1, 1),
+('PYU-777', 3, 3, 1, 1),
+('RGT-022', 3, 3, 1, 1),
+('SBR-4000', 3, 3, 1, 1),
+('SBR-992', 5, 4, 1, 1),
+('TRG-400', 7, 6, 1, 1),
+('TRT-999', 5, 4, 1, 1),
+('TTT-432', 3, 3, 1, 1),
+('UHY-002', 1, 1, 1, 1),
+('UJT-666', 1, 1, 1, 1),
+('UJU-999', 7, 6, 1, 1),
+('UUU-454', 7, 6, 1, 1),
+('UUU-888', 5, 4, 1, 1),
+('UYR-599', 1, 1, 1, 1),
+('UYU-74', 3, 3, 1, 1),
+('YHT-222', 5, 4, 1, 1),
+('YHU-454', 7, 6, 1, 1),
+('YTY-122', 7, 6, 1, 1),
+('YUY-U77', 6, 5, 1, 1),
+('YYU-9838', 5, 4, 1, 1),
+('YYY-78', 1, 1, 1, 1),
+('YYY-888', 5, 4, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -648,22 +678,15 @@ INSERT INTO `proyecto_has_solicitudes` (`proyecto_codigo_proyecto`, `solicitudes
 --
 
 CREATE TABLE `publicacion` (
-  `id_publicacion` int NOT NULL,
+  `id_publicacion` int(11) NOT NULL,
   `titulo_publicacion` varchar(150) NOT NULL,
   `nombre_responsable` varchar(45) NOT NULL,
   `tipo_publicacion` varchar(15) NOT NULL,
   `fecha_publicacion` datetime NOT NULL COMMENT 'Tabla de gestion de publicaciones',
-  `informe_avance_obra_id_informe` int NOT NULL,
-  `cuerpo_publicacion` text,
-  `estado` tinyint(1) NOT NULL
+  `informe_avance_obra_id_informe` int(11) NOT NULL,
+  `cuerpo_publicacion` text DEFAULT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `publicacion`
---
-
-INSERT INTO `publicacion` (`id_publicacion`, `titulo_publicacion`, `nombre_responsable`, `tipo_publicacion`, `fecha_publicacion`, `informe_avance_obra_id_informe`, `cuerpo_publicacion`, `estado`) VALUES
-(1, 'Cabudares esta en escaces de agua por varias semanas', 'Administrador', 'General', '2026-07-07 00:55:59', 2, 'Gracias a las orientaciones del gobernador Cmdte. Luis Reyes Reyes, seguimos activos y avanzando con el despliegue estrategico para la reconstrucción y sustitución de las estructuras de alcantarillas en diferentes sectores de la parroquia Cabudare del municipio Palavecino, Estado Lara.', 1);
 
 -- --------------------------------------------------------
 
@@ -672,11 +695,12 @@ INSERT INTO `publicacion` (`id_publicacion`, `titulo_publicacion`, `nombre_respo
 --
 
 CREATE TABLE `recurso_obra` (
-  `id_recurso` int NOT NULL,
+  `id_recurso` int(11) NOT NULL,
   `descripcion_material` varchar(45) NOT NULL,
   `cantidad_material` decimal(5,2) NOT NULL,
   `unidad_material` varchar(20) NOT NULL,
-  `informe_avance_obra_id_informe` int NOT NULL
+  `informe_avance_obra_id_informe` int(11) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
@@ -686,15 +710,38 @@ CREATE TABLE `recurso_obra` (
 --
 
 CREATE TABLE `reporte` (
-  `id_reporte` int NOT NULL,
+  `id_reporte` int(11) NOT NULL,
   `fecha` datetime NOT NULL,
   `ubicacion` varchar(255) NOT NULL,
-  `solicitudes_pendientes` int NOT NULL,
-  `solicitudes_procesadas` int NOT NULL,
-  `cantidad_total_solicitudes` int NOT NULL,
-  `cantidad_comunidades_atendidas` int NOT NULL,
-  `informe_avance_obra_id_informe` int NOT NULL
+  `solicitudes_pendientes` int(11) NOT NULL,
+  `solicitudes_procesadas` int(11) NOT NULL,
+  `cantidad_total_solicitudes` int(11) NOT NULL,
+  `cantidad_comunidades_atendidas` int(11) NOT NULL,
+  `informe_avance_obra_id_informe` int(11) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `respaldo_bd`
+--
+
+CREATE TABLE `respaldo_bd` (
+  `id_respaldo` int(11) NOT NULL,
+  `nombre_archivo` varchar(255) NOT NULL,
+  `tamano` bigint(20) NOT NULL DEFAULT 0,
+  `descripcion` varchar(255) DEFAULT '',
+  `fecha_respaldo` timestamp NOT NULL DEFAULT current_timestamp(),
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Volcado de datos para la tabla `respaldo_bd`
+--
+
+INSERT INTO `respaldo_bd` (`id_respaldo`, `nombre_archivo`, `tamano`, `descripcion`, `fecha_respaldo`, `estado`) VALUES
+(1, 'respaldo_20260707_212053.sql', 45223, 'alavaresssss', '2026-07-08 05:20:54', 1);
 
 -- --------------------------------------------------------
 
@@ -703,41 +750,19 @@ CREATE TABLE `reporte` (
 --
 
 CREATE TABLE `semaforo` (
-  `id_semaforo` int NOT NULL,
-  `estado` varchar(20) NOT NULL,
+  `id_semaforo` int(11) NOT NULL,
+  `estatus_semaforo` varchar(20) NOT NULL,
   `color` enum('VERDE','AMARILLO','ROJO') NOT NULL,
-  `descripcion` varchar(50) NOT NULL
+  `descripcion` varchar(50) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Volcado de datos para la tabla `semaforo`
 --
 
-INSERT INTO `semaforo` (`id_semaforo`, `estado`, `color`, `descripcion`) VALUES
-(1, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(2, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(3, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(4, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(5, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(6, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(7, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(8, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(9, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(10, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(11, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(12, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(13, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(14, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(15, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(16, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(17, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(18, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(19, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(20, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(21, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(22, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(23, 'Activo', 'VERDE', 'Semáforo generado automáticamente'),
-(24, 'Activo', 'VERDE', 'Semáforo generado automáticamente');
+INSERT INTO `semaforo` (`id_semaforo`, `estatus_semaforo`, `color`, `descripcion`, `estado`) VALUES
+(1, 'Activo', 'VERDE', 'Semaforo generado automaticamente', 1);
 
 -- --------------------------------------------------------
 
@@ -746,26 +771,28 @@ INSERT INTO `semaforo` (`id_semaforo`, `estado`, `color`, `descripcion`) VALUES
 --
 
 CREATE TABLE `solicitudes` (
-  `id_solicitudes` int NOT NULL,
+  `id_solicitudes` int(11) NOT NULL,
   `fecha` datetime NOT NULL,
   `tipo_solicitud` varchar(45) NOT NULL,
   `estatus_solicitud` varchar(15) NOT NULL,
   `problematica` varchar(255) NOT NULL,
-  `persona_id_persona` int NOT NULL,
-  `prioridad_id_gestion_prioridad` int NOT NULL
+  `persona_id_persona` int(11) NOT NULL,
+  `prioridad_id_gestion_prioridad` int(11) NOT NULL,
+  `estado` tinyint(4) NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (Borrado Lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla general de las solicitudes';
 
 --
 -- Volcado de datos para la tabla `solicitudes`
 --
 
-INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus_solicitud`, `problematica`, `persona_id_persona`, `prioridad_id_gestion_prioridad`) VALUES
-(1, '2026-06-15 16:38:02', 'Particular', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] no hay gaz de prueba mortadela', 1, 1),
-(2, '2026-06-15 16:40:32', 'Comunidad', 'Completada', '[Salud y Asistencia Médica] En la comunidad necesitamos una jornada de vacunación', 2, 1),
-(3, '2026-06-15 16:46:00', 'Comunidad', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] hueco en la avenida donde salen aguas negras', 4, 1),
-(7, '2026-06-16 17:58:23', 'Comunidad', 'En Proceso', '[Infraestructura y Vialidad] Acondicionamiento vial', 6, 1),
-(8, '2026-06-24 16:04:42', 'Particular', 'En Proceso', '[Servicios Básicos (Agua, Luz, Gas)] No hay agua y todos nos estamos derritiendo, porfis traigan aguita aaaaaaaaa', 11, 1),
-(9, '2026-07-05 22:32:39', 'Institucion', 'En Proceso', '[Infraestructura y Vialidad] Reparación de bacheo profundo en el acceso principal de la institución por filtraciones.', 16, 1);
+INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus_solicitud`, `problematica`, `persona_id_persona`, `prioridad_id_gestion_prioridad`, `estado`) VALUES
+(1, '2026-06-15 16:38:02', 'Particular', 'En Proceso', '[Servicios Básicos (Agua, Luz, Gas)] Haciendo rgistro de prueba mortadela', 1, 1, 1),
+(2, '2026-06-15 16:40:32', 'Comunidad', 'Completada', '[Salud y Asistencia Médica] hhhhhhhhhuuuuuuuuuuuuuuuuu  mantequilla', 2, 1, 1),
+(3, '2026-06-15 16:42:00', 'Institucion', 'En Proceso', '[Servicios Básicos (Agua, Luz, Gas)] gggggggggggggggggggggggggggggggggggggg jamon', 3, 1, 1),
+(5, '2026-06-15 16:46:00', 'Comunidad', 'En Proceso', '[Servicios Básicos (Agua, Luz, Gas)] hueco en la avenida donde salen aguas negras', 4, 1, 1),
+(6, '2026-06-15 19:07:05', 'Comunidad', 'Completada', '[Infraestructura y Vialidad] aaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 5, 1, 1),
+(7, '2026-06-16 17:58:23', 'Comunidad', 'En Proceso', '[Infraestructura y Vialidad] Acondicionamiento vial', 6, 1, 1),
+(8, '2026-07-05 14:31:15', 'Institucion', 'En Proceso', '[Infraestructura y Vialidad] LA ESCUELA NECESITA MEJORAS', 11, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -774,16 +801,16 @@ INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_evidencia_informe` (
-`estado` tinyint
-,`estado_informe` varchar(25)
-,`etapa` enum('antes','durante','despues')
-,`fecha_informe` datetime
+`id_evidencia` int(11)
+,`fotos` varchar(45)
+,`url_archivos` varchar(90)
 ,`fecha_registro` datetime
-,`fotos` varchar(255)
-,`id_evidencia` int
-,`id_informe` int
+,`etapa` enum('antes','durante','despues')
+,`estado` tinyint(4)
+,`id_informe` int(11)
+,`fecha_informe` datetime
 ,`tipo_informe` varchar(30)
-,`url_archivos` varchar(255)
+,`estado_informe` tinyint(4)
 );
 
 --
@@ -860,19 +887,16 @@ ALTER TABLE `gravedad_obra_has_prioridad`
 --
 ALTER TABLE `informe_avance_obra`
   ADD PRIMARY KEY (`id_informe`),
-  ADD KEY `fk_informe_avance_obra_avance1_idx` (`avance_id_avance`),
-  ADD KEY `idx_informe_estado_registro` (`estado_registro`);
+  ADD KEY `fk_informe_avance_obra_avance1_idx` (`avance_id_avance`);
 
 --
 -- Indices de la tabla `inspeccion`
 --
 ALTER TABLE `inspeccion`
   ADD PRIMARY KEY (`id_inspeccion`,`evidencia_id_evidencia`),
-  ADD UNIQUE KEY `inspector_fecha_UNIQUE` (`inspector`,`fecha_inspeccion`),
+  ADD UNIQUE KEY `cedula_UNIQUE` (`fecha_inspeccion`),
   ADD KEY `fk_inspeccion_obra1_idx` (`obra_id_obra1`,`obra_semaforo_id_semaforo1`,`obra_contratacion_id_contratacion1`,`obra_gestionar_proyectos_codigo_proyecto1`),
-  ADD KEY `fk_inspeccion_evidencia1_idx` (`evidencia_id_evidencia`),
-  ADD KEY `fk_inspeccion_empleados_idx` (`inspector`),
-  ADD CONSTRAINT `fk_inspeccion_empleados` FOREIGN KEY (`inspector`) REFERENCES `empleados` (`id_empleados`);
+  ADD KEY `fk_inspeccion_evidencia1_idx` (`evidencia_id_evidencia`);
 
 --
 -- Indices de la tabla `institucion`
@@ -962,6 +986,12 @@ ALTER TABLE `reporte`
   ADD KEY `fk_reporte_informe_avance_obra1_idx` (`informe_avance_obra_id_informe`);
 
 --
+-- Indices de la tabla `respaldo_bd`
+--
+ALTER TABLE `respaldo_bd`
+  ADD PRIMARY KEY (`id_respaldo`);
+
+--
 -- Indices de la tabla `semaforo`
 --
 ALTER TABLE `semaforo`
@@ -983,109 +1013,115 @@ ALTER TABLE `solicitudes`
 -- AUTO_INCREMENT de la tabla `catalogo_cargos`
 --
 ALTER TABLE `catalogo_cargos`
-  MODIFY `id_cargo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_cargo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `comunidad`
 --
 ALTER TABLE `comunidad`
-  MODIFY `id_comunidad` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_comunidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `contratacion`
 --
 ALTER TABLE `contratacion`
-  MODIFY `id_contratacion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_contratacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `empleados`
 --
 ALTER TABLE `empleados`
-  MODIFY `id_empleados` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_empleados` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `evidencia`
 --
 ALTER TABLE `evidencia`
-  MODIFY `id_evidencia` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id_evidencia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `gravedad_obra`
 --
 ALTER TABLE `gravedad_obra`
-  MODIFY `id_gravedad` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_gravedad` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `informe_avance_obra`
 --
 ALTER TABLE `informe_avance_obra`
-  MODIFY `id_informe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id_informe` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `inspeccion`
 --
 ALTER TABLE `inspeccion`
-  MODIFY `id_inspeccion` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_inspeccion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `institucion`
 --
 ALTER TABLE `institucion`
-  MODIFY `id_institucion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_institucion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `maquinaria`
 --
 ALTER TABLE `maquinaria`
-  MODIFY `id_maquinaria` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id_maquinaria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `obra`
 --
 ALTER TABLE `obra`
-  MODIFY `id_obra` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_obra` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `particular`
 --
 ALTER TABLE `particular`
-  MODIFY `id_particular` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_particular` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `id_persona` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id_persona` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `prioridad`
 --
 ALTER TABLE `prioridad`
-  MODIFY `id_gestion_prioridad` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_gestion_prioridad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `publicacion`
 --
 ALTER TABLE `publicacion`
-  MODIFY `id_publicacion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_publicacion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `reporte`
 --
 ALTER TABLE `reporte`
-  MODIFY `id_reporte` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id_reporte` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `respaldo_bd`
+--
+ALTER TABLE `respaldo_bd`
+  MODIFY `id_respaldo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `semaforo`
 --
 ALTER TABLE `semaforo`
-  MODIFY `id_semaforo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_semaforo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitudes`
 --
 ALTER TABLE `solicitudes`
-  MODIFY `id_solicitudes` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_solicitudes` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 -- --------------------------------------------------------
 
@@ -1094,7 +1130,7 @@ ALTER TABLE `solicitudes`
 --
 DROP TABLE IF EXISTS `vista_evidencia_informe`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_evidencia_informe`  AS SELECT `e`.`id_evidencia` AS `id_evidencia`, `e`.`fotos` AS `fotos`, `e`.`url_archivos` AS `url_archivos`, `e`.`fecha_registro` AS `fecha_registro`, `e`.`etapa` AS `etapa`, `e`.`estado` AS `estado`, `i`.`id_informe` AS `id_informe`, `i`.`fecha` AS `fecha_informe`, `i`.`tipo_informe` AS `tipo_informe`, `i`.`estado` AS `estado_informe` FROM (`evidencia` `e` left join `informe_avance_obra` `i` on((((`e`.`etapa` = 'antes') and (`i`.`evidencia_antes` like concat('%',`e`.`id_evidencia`,'%'))) or ((`e`.`etapa` = 'durante') and (`i`.`evidencia_durante` like concat('%',`e`.`id_evidencia`,'%'))) or ((`e`.`etapa` = 'despues') and (`i`.`evidencia_despues` like concat('%',`e`.`id_evidencia`,'%')))))) WHERE (`e`.`estado` = 1) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_evidencia_informe`  AS SELECT `e`.`id_evidencia` AS `id_evidencia`, `e`.`fotos` AS `fotos`, `e`.`url_archivos` AS `url_archivos`, `e`.`fecha_registro` AS `fecha_registro`, `e`.`etapa` AS `etapa`, `e`.`estado` AS `estado`, `i`.`id_informe` AS `id_informe`, `i`.`fecha` AS `fecha_informe`, `i`.`tipo_informe` AS `tipo_informe`, `i`.`estado` AS `estado_informe` FROM (`evidencia` `e` left join `informe_avance_obra` `i` on(`e`.`etapa` = 'antes' and `i`.`evidencia_antes` like concat('%',`e`.`id_evidencia`,'%') or `e`.`etapa` = 'durante' and `i`.`evidencia_durante` like concat('%',`e`.`id_evidencia`,'%') or `e`.`etapa` = 'despues' and `i`.`evidencia_despues` like concat('%',`e`.`id_evidencia`,'%'))) WHERE `e`.`estado` = 1 ;
 
 --
 -- Restricciones para tablas volcadas
