@@ -66,7 +66,7 @@
     <li class="menu-item {% if request.path == '/gestionar-gravedad' %} active {% endif %}">
       <a href="{{ url_for('home_bp.viewFormGravedad') }}" class="menu-link">
         <i class="menu-icon bi bi-exclamation-triangle"></i>
-        <div data-i18n="Gravity">Gravedad Obra</div>
+        <div data-i18n="Gravity">Gravedad de la Obra</div>
       </a>
     </li>
     <li class="menu-item {% if request.path == '/gestionar-prioridad' %} active {% endif %}">
@@ -235,6 +235,13 @@
           </a>
         </li>
       </ul>
+    </li>
+
+    <li class="menu-item">
+      <a href="{{ url_for('manual_sistema') }}" class="menu-link" target="_blank" rel="noopener noreferrer">
+        <i class="menu-icon bi bi-journal-bookmark-fill"></i>
+        <div data-i18n="System Manual">Manual del Sistema</div>
+      </a>
     </li>
   </ul>
 </aside>

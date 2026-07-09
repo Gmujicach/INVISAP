@@ -25,7 +25,11 @@ def connectionBD():
     db_config = {
         'host': _get_env('DB_HOST', 'localhost'),
         'user': _get_env('DB_USER', 'root'),
+<<<<<<< HEAD
         'password': _get_env('DB_PASSWORD', '1234'),
+=======
+        'password': _get_env('DB_PASSWORD', ''),
+>>>>>>> c11df16f677fedba8c60f35a7281f0549dc834b6
         'database': _get_env('DB_NAME', 'invilara'),
         'charset': 'utf8mb4',
         'use_unicode': True,
@@ -57,7 +61,11 @@ def connectionBD_seguridad():
     db_config = {
         'host': os.getenv('DB_HOST', 'localhost'),
         'user': os.getenv('DB_USER', 'root'),
+<<<<<<< HEAD
         'password': os.getenv('DB_PASSWORD', '1234'),
+=======
+        'password': os.getenv('DB_PASSWORD', ''),
+>>>>>>> c11df16f677fedba8c60f35a7281f0549dc834b6
         'database': os.getenv('DB_NAME_SEGURIDAD', 'invilara_seguridad'),
         'charset': 'utf8mb4',
         'use_unicode': True,

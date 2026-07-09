@@ -25,6 +25,7 @@ from controllers.funciones_bitacora import filtrar_bitacora, obtener_estadistica
 from models.model_publicacion import PublicacionModel
 from models.model_informe_avance import InformeAvanceModel
 from models.model_solicitudes import SolicitudModel
+from models.model_prioridad import PrioridadModel
 from services.bitacora_service import BitacoraService
 from controllers.controller_empleado import empleado_bp
 from controllers.controller_evidencia import evidencia_bp
@@ -33,6 +34,7 @@ from controllers.controller_reportesPDF import reporte_pdf_bp
 from controllers.controller_reportesEstadistico import reporte_estadistico_bp
 from controllers.funciones_proyecto import *
 from controllers.funciones_maquinaria import *
+from controllers.controller_obra import obra_bp
 from models.model_empresas import EmpresaModel
 
 ## Informe de Avance de Obra
@@ -41,6 +43,11 @@ from controllers.controller_informe_avance import informe_avance_bp
 ## Empresas
 from controllers.controller_empresa import empresa_bp
 from controllers.controller_inspeccion import inspeccion_bp
+from controllers.controller_gravedad import (
+    registrar_gravedad_controller, listar_gravedades_controller,
+    obtener_gravedad_controller, actualizar_gravedad_controller,
+    eliminar_gravedad_controller
+)
 app.register_blueprint(empresa_bp)
 app.register_blueprint(inspeccion_bp)
 empresa_bp = Blueprint('empresa_bp', __name__)
@@ -74,6 +81,7 @@ app.register_blueprint(reporte_pdf_bp)
 app.register_blueprint(reporte_estadistico_bp)
 app.register_blueprint(evidencia_bp)
 app.register_blueprint(informe_avance_bp)
+app.register_blueprint(obra_bp)
 
 @home_bp.route('/registrar-solicitud', methods=['GET'])
 def viewFormSolicitud():
@@ -444,12 +452,57 @@ def viewFormGestionarObras():
 
 @home_bp.route('/gestionar-gravedad', methods=['GET'])
 def viewFormGravedad():
-    if 'conectado' in session:
         return render_template(f'{PATH_URL_IA}/form_gestionar_gravedad.html')
-    else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-    
+
+
+# ===================== API MÓDULO GRAVEDAD (Catálogo) =====================
+@home_bp.route('/api/gravedad/registrar', methods=['POST'])
+def api_registrar_gravedad():
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    data = request.get_json(silent=True) or request.form.to_dict()
+    return jsonify(registrar_gravedad_controller(data)), 200
+
+
+@home_bp.route('/api/gravedad/listar', methods=['GET'])
+def api_listar_gravedades():
+    if 'conectado' not in session:
+        return jsonify([]), 401
+    return jsonify(listar_gravedades_controller())
+
+
+@home_bp.route('/api/gravedad/obtener/<int:id_gravedad>', methods=['GET'])
+def api_obtener_gravedad(id_gravedad):
+    if 'conectado' not in session:
+        return jsonify(None), 401
+    return jsonify(obtener_gravedad_controller(id_gravedad) or None)
+
+
+@home_bp.route('/api/gravedad/actualizar/<int:id_gravedad>', methods=['PUT', 'POST'])
+def api_actualizar_gravedad(id_gravedad):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    data = request.get_json(silent=True) or request.form.to_dict()
+    return jsonify(actualizar_gravedad_controller(id_gravedad, data)), 200
+
+
+@home_bp.route('/api/gravedad/eliminar/<int:id_gravedad>', methods=['DELETE', 'POST'])
+def api_eliminar_gravedad(id_gravedad):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    return jsonify(eliminar_gravedad_controller(id_gravedad)), 200
+
+
+@home_bp.route('/api/gravedad/validar-nivel', methods=['GET'])
+def api_validar_nivel_gravedad():
+    if 'conectado' not in session:
+        return jsonify({'existe': False, 'error': 'Sesión no válida'}), 401
+    nivel = request.args.get('nivel', '').strip()
+    excluir = request.args.get('excluir', '').strip()
+    from models.model_gravedad import GravedadObraModel
+    existe = GravedadObraModel(nivel_gravedad=nivel).validar_nivel_existente(excluir)
+    return jsonify({'existe': bool(existe)})
+
 @home_bp.route('/gestionar-prioridad', methods=['GET'])
 def viewFormPrioridad():
     if 'conectado' in session:
@@ -457,6 +510,102 @@ def viewFormPrioridad():
     else:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
+
+
+# ===================== API MÓDULO PRIORIDAD (IA + Paginación) =====================
+@home_bp.route('/api/prioridad/listar', methods=['GET'])
+def api_listar_prioridad():
+    if 'conectado' not in session:
+        return jsonify({'data': [], 'total': 0, 'page': 1, 'per_page': 10}), 401
+    try:
+        page = int(request.args.get('page', 1))
+        per_page = int(request.args.get('per_page', 10))
+    except ValueError:
+        page, per_page = 1, 10
+    filas, total = PrioridadModel.listar_priorizadas(page=page, per_page=per_page)
+    return jsonify({'data': filas, 'total': total, 'page': page, 'per_page': per_page})
+
+
+@home_bp.route('/api/prioridad/obtener/<int:id_prioridad>', methods=['GET'])
+def api_obtener_prioridad(id_prioridad):
+    if 'conectado' not in session:
+        return jsonify(None), 401
+    return jsonify(PrioridadModel.obtener_por_id(id_prioridad) or None)
+
+
+@home_bp.route('/api/prioridad/actualizar/<int:id_prioridad>', methods=['PUT', 'POST'])
+def api_actualizar_prioridad(id_prioridad):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    data = request.get_json(silent=True) or request.form.to_dict()
+    try:
+        modelo = PrioridadModel(
+            id_prioridad=id_prioridad,
+            rango_prioridad=data.get('rango_prioridad'),
+            justificacion=data.get('justificacion'),
+            estado=int(data.get('estado', 1))
+        )
+        if modelo.actualizar():
+            BitacoraService.registrar_accion(
+                session, 'Prioridad', 'EDITAR',
+                f'Ajustó prioridad ID: {id_prioridad} a {modelo.get_rango()}'
+            )
+            return jsonify({'success': True, 'message': 'Prioridad actualizada.'})
+        return jsonify({'success': False, 'message': 'No se realizaron cambios.'})
+    except ValueError as ve:
+        return jsonify({'success': False, 'message': str(ve)})
+
+
+@home_bp.route('/api/prioridad/eliminar/<int:id_prioridad>', methods=['DELETE', 'POST'])
+def api_eliminar_prioridad(id_prioridad):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    modelo = PrioridadModel(id_prioridad=id_prioridad)
+    if modelo.eliminar_logico():
+        BitacoraService.registrar_accion(
+            session, 'Prioridad', 'ELIMINAR',
+            f'Desactivó prioridad ID: {id_prioridad}'
+        )
+        return jsonify({'success': True, 'message': 'Prioridad desactivada.'})
+    return jsonify({'success': False, 'message': 'Error al desactivar.'})
+
+
+@home_bp.route('/api/prioridad/clasificar-ia/<int:id_solicitud>', methods=['POST'])
+def api_clasificar_ia(id_solicitud):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    datos = PrioridadModel.obtener_datos_solicitud(id_solicitud)
+    if not datos:
+        return jsonify({'success': False, 'message': 'Solicitud no encontrada.'})
+    responsable = session.get('name_surname', 'IA')
+    resultado = PrioridadModel.clasificar_solicitud_con_ia(
+        id_solicitud,
+        datos.get('descripcion') or '',
+        datos.get('nivel_gravedad'),
+        datos.get('color_semaforo'),
+        responsable
+    )
+    BitacoraService.registrar_accion(
+        session, 'Prioridad', 'EDITAR',
+        f'IA clasificó la solicitud ID {id_solicitud} con prioridad {resultado.get("rango")}'
+    )
+    return jsonify({'success': True, 'message': 'Solicitud clasificada por la IA.', 'data': resultado})
+
+
+@home_bp.route('/api/prioridad/solicitudes-ids', methods=['GET'])
+def api_solicitudes_ids():
+    if 'conectado' not in session:
+        return jsonify([]), 401
+    conexion = connectionBD()
+    try:
+        cursor = conexion.cursor()
+        cursor.execute("SELECT id_solicitudes FROM solicitudes WHERE estado = 1")
+        ids = [f[0] for f in cursor.fetchall()]
+        return jsonify(ids)
+    finally:
+        cursor.close()
+        conexion.close()
+
 
 @home_bp.route('/gestionar-proyectos', methods=['GET'])
 def viewFormProyectos():
@@ -1178,3 +1327,26 @@ def api_dashboard_grafico_parroquias():
 # Registrar el blueprint en la aplicación
 app.register_blueprint(home_bp)
 app.register_blueprint(contrataciones_bp)
+
+
+# ============================================================
+# MÓDULO: Manual del Sistema
+# Abre el manual (PDF) en una ventana independiente, permitiendo
+# consultarlo por completo sin salir del sistema.
+# ============================================================
+MANUAL_PDF = 'manuals/Manual_del_Sistema_INVILARA.pdf'
+
+@app.route('/manual-sistema', methods=['GET'])
+def manual_sistema():
+    """Muestra el Manual del Sistema en un visor a pantalla completa."""
+    pdf_url = url_for('static', filename=MANUAL_PDF)
+    return render_template('manual/manual_sistema.html', pdf_url=pdf_url)
+
+@app.route('/api/manual-sistema/pdf', methods=['GET'])
+def manual_sistema_pdf():
+    """Sirve el archivo PDF del manual directamente (descarga/visualización)."""
+    import os
+    from flask import send_from_directory
+    directorio = os.path.join(app.root_path, 'static', 'manuals')
+    return send_from_directory(directorio, 'Manual_del_Sistema_INVILARA.pdf',
+                               mimetype='application/pdf')
