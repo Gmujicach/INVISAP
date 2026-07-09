@@ -1,15 +1,44 @@
 {% extends 'base_cpanel.html' %} 
 {% block title %}INVISAP | lista empresas{% endblock %} 
-{% block body %}
 
-<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
-  <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
-    <h5 class="mb-0 text-primary fw-bold">EMPRESAS REGISTRADAS</h5>
+{% block customCSS %}
+<style>
+  .search-modern { min-width: 250px; }
+  .search-modern .input-group-text { background-color: transparent; border-right: none; }
+  .search-modern .form-control { border-left: none; }
+  .search-modern .form-control:focus { box-shadow: none; border-color: #dee2e6; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="card mb-4 shadow-sm" style="border-radius: 0px !important; border: none;">
+  <div class="card-header bg-white border-bottom py-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <div class="text-start">
+            <h5 class="mb-0 text-primary fw-bold">EMPRESAS REGISTRADAS</h5>
+        </div>
+        
+        <div class="d-flex align-items-center gap-2">
+            <div class="input-group shadow-sm search-modern" style="max-width: 450px;">
+                <select class="form-select border-secondary" id="columnaBusqueda" style="max-width: 140px;">
+                    <option value="all">Todo</option>
+                    <option value="0">RIF</option>
+                    <option value="1">Empresa</option>
+                    <option value="2">Teléfono</option>
+                    <option value="3">D Fiscal</option>
+                </select>
+                <input type="text" id="customBuscador" class="form-control border-secondary border-end-0" placeholder="Buscar...">
+                <span class="input-group-text bg-white border-secondary border-start-0 text-muted">
+                    <i class="bi bi-search"></i>
+                </span>
+            </div>
+        </div>
+    </div>
   </div>
   
-  <div class="card-body">
-    <div class="table-responsive">
-      <table class="table table-bordered table-striped table-hover align-middle">
+  <div class="card-body p-0">
+    <div class="table-responsive mt-3">
+      <table id="tablaEmpresas" class="table table-bordered table-striped table-hover align-middle mb-0">
         <thead class="table-light">
           <tr>
             <th>RIF Empresa</th>
@@ -41,12 +70,19 @@
             </td>
           </tr>
           {% else %}
-          <tr>
+          <tr id="filaVacia">
             <td colspan="5" class="text-center text-muted py-4">No hay Empresas registradas en el sistema.</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mt-3 mb-3 px-4" id="paginacionContenedor">
+        <span id="infoPaginacion" class="text-muted mb-2 mb-md-0" style="font-size: 0.85rem;"></span>
+        <nav>
+            <ul class="pagination pagination-sm mb-0" id="listaPaginacion"></ul>
+        </nav>
     </div>
   </div>
 </div>

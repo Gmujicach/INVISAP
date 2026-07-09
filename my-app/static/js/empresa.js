@@ -1,14 +1,129 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log("Sistema de Empresas cargado.");
 
-    // ELIMINACIÓN
+    // ==========================================
+    // MÓDULO DE PAGINACIÓN Y BÚSQUEDA
+    // ==========================================
+    const tabla = document.getElementById('tablaEmpresas');
+    const tbody = tabla ? tabla.querySelector('tbody') : null;
+    let filas = tbody ? Array.from(tbody.querySelectorAll('tr')).filter(tr => tr.id !== 'filaVacia') : [];
+    
+    const filasPorPagina = 8;
+    let paginaActual = 1;
+    let filasFiltradas = [...filas];
+
+    const buscador = document.getElementById('customBuscador');
+    const selectorColumna = document.getElementById('columnaBusqueda');
+    const listaPaginacion = document.getElementById('listaPaginacion');
+    const infoPaginacion = document.getElementById('infoPaginacion');
+
+    function actualizarTabla() {
+        if (!tbody || filas.length === 0) return;
+
+        const textoBusqueda = buscador.value.toLowerCase().trim();
+        const columna = selectorColumna.value;
+
+        // 1. Filtrar filas
+        filasFiltradas = filas.filter(fila => {
+            if (textoBusqueda === '') return true;
+            
+            if (columna === 'all') {
+                return fila.innerText.toLowerCase().includes(textoBusqueda);
+            } else {
+                const celda = fila.cells[parseInt(columna)];
+                return celda && celda.innerText.toLowerCase().includes(textoBusqueda);
+            }
+        });
+
+        // 2. Calcular paginación
+        const totalPaginas = Math.ceil(filasFiltradas.length / filasPorPagina) || 1;
+        if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+        const inicio = (paginaActual - 1) * filasPorPagina;
+        const fin = inicio + filasPorPagina;
+
+        // 3. Aplicar visibilidad
+        filas.forEach(fila => fila.style.display = 'none'); // Ocultar todas primero
+        filasFiltradas.slice(inicio, fin).forEach(fila => fila.style.display = ''); // Mostrar las de la página
+
+        // 4. Actualizar UI
+        renderizarPaginacion(totalPaginas);
+        if (infoPaginacion) {
+            const total = filasFiltradas.length;
+            const mostrandoInicio = total === 0 ? 0 : inicio + 1;
+            const mostrandoFin = Math.min(fin, total);
+            infoPaginacion.innerHTML = `Mostrando <strong>${mostrandoInicio} a ${mostrandoFin}</strong> de ${total} registros`;
+        }
+    }
+
+    function renderizarPaginacion(totalPaginas) {
+        if (!listaPaginacion) return;
+        listaPaginacion.innerHTML = '';
+
+        if (totalPaginas <= 1) return; // No mostrar paginación si hay 1 sola página
+
+        // Botón Anterior
+        const liAnt = document.createElement('li');
+        liAnt.className = `page-item ${paginaActual === 1 ? 'disabled' : ''}`;
+        liAnt.innerHTML = `<a class="page-link" href="#" data-page="${paginaActual - 1}"><i class="bi bi-chevron-left"></i></a>`;
+        listaPaginacion.appendChild(liAnt);
+
+        // Números de página
+        for (let i = 1; i <= totalPaginas; i++) {
+            const li = document.createElement('li');
+            li.className = `page-item ${paginaActual === i ? 'active' : ''}`;
+            li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+            listaPaginacion.appendChild(li);
+        }
+
+        // Botón Siguiente
+        const liSig = document.createElement('li');
+        liSig.className = `page-item ${paginaActual === totalPaginas ? 'disabled' : ''}`;
+        liSig.innerHTML = `<a class="page-link" href="#" data-page="${paginaActual + 1}"><i class="bi bi-chevron-right"></i></a>`;
+        listaPaginacion.appendChild(liSig);
+
+        // Eventos de click en paginación
+        listaPaginacion.querySelectorAll('.page-link').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const nuevaPagina = parseInt(this.getAttribute('data-page'));
+                if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas) {
+                    paginaActual = nuevaPagina;
+                    actualizarTabla();
+                }
+            });
+        });
+    }
+
+    // Escuchadores del buscador
+    if (buscador && selectorColumna) {
+        buscador.addEventListener('input', () => {
+            paginaActual = 1;
+            actualizarTabla();
+        });
+        selectorColumna.addEventListener('change', () => {
+            paginaActual = 1;
+            buscador.value = ''; // Limpiar búsqueda al cambiar filtro
+            actualizarTabla();
+        });
+    }
+
+    // Inicializar tabla si hay datos
+    if (filas.length > 0) {
+        actualizarTabla();
+    }
+
+
+    // ==========================================
+    // LÓGICA EXISTENTE: ELIMINACIÓN
+    // ==========================================
     const botonesEliminar = document.querySelectorAll('.btn-eliminar');
     
     botonesEliminar.forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
             const urlEliminar = this.getAttribute('data-url');
-            const filaTabla = this.closest('tr'); // Detectamos la fila <tr>
+            const filaTabla = this.closest('tr'); 
             
             Swal.fire({
                 title: '¿Estás seguro?',
@@ -21,12 +136,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }).then((result) => {
                 if (result.isConfirmed) {
                     
-                    // Petición AJAX para eliminar
                     fetch(urlEliminar)
                     .then(response => response.json())
                     .then(data => {
                         if(data.exito) {
                             filaTabla.remove(); 
+                            
+                            // NUEVO: Actualizar arreglo de filas y repaginar tras eliminar
+                            filas = filas.filter(f => f !== filaTabla);
+                            actualizarTabla();
                             
                             Swal.fire({
                                 icon: 'success',
@@ -48,7 +166,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // LÓGICA DE FORMULARIO
+    // ==========================================
+    // LÓGICA EXISTENTE: FORMULARIO
+    // ==========================================
     const formulario = document.getElementById('form_registro_empresa');
     if (formulario) {
         
@@ -107,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json()) //JSON del Router
+            .then(response => response.json()) 
             .then(data => {
                 if (data.exito) {
                     Swal.fire({
