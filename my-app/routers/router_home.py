@@ -34,6 +34,7 @@ from controllers.controller_reportesPDF import reporte_pdf_bp
 from controllers.controller_reportesEstadistico import reporte_estadistico_bp
 from controllers.funciones_proyecto import *
 from controllers.funciones_maquinaria import *
+from controllers.controller_obra import obra_bp
 from models.model_empresas import EmpresaModel
 
 ## Informe de Avance de Obra
@@ -80,6 +81,7 @@ app.register_blueprint(reporte_pdf_bp)
 app.register_blueprint(reporte_estadistico_bp)
 app.register_blueprint(evidencia_bp)
 app.register_blueprint(informe_avance_bp)
+app.register_blueprint(obra_bp)
 
 @home_bp.route('/registrar-solicitud', methods=['GET'])
 def viewFormSolicitud():
