@@ -773,20 +773,16 @@ def api_eliminar_solicitud(id_solicitud):
     if 'conectado' not in session:
         return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
 
-    resultado = eliminar_solicitud(id_solicitud)
+    resultado = eliminar_solicitud(id_solicitud, session)
     if isinstance(resultado, dict):
         success = resultado.get('success')
     else:
         success = bool(resultado)
 
     if success:
-        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
-        BitacoraService.registrar_accion(
-            session, 'Solicitudes', 'ELIMINAR',
-            f'Solicitud #{id_solicitud} eliminada por {nombre_usr}'
-        )
         return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud eliminada')}), 200
     return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo eliminar la solicitud')}), 400
+
 
 
 ### Contratacion
