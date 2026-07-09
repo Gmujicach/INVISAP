@@ -19,14 +19,15 @@
     <div class="table-responsive">       
       <table class="table table-bordered table-striped table-hover align-middle">         
         <thead class="table-light">           
-          <tr>             
+            <tr>             
             <th>ID</th>             
             <th>Título</th>             
             <th>Ubicación</th>             
             <th>Inicio</th>             
-            <th>Avance (%)</th>             
+            <th>Avance (%)</th>         
+            <th>Semáforo</th>
             <th class="text-center">Acciones</th>           
-          </tr>         
+          </tr>   
         </thead>         
         <tbody>           
           {% for obra in obras %}           
@@ -36,15 +37,26 @@
             <td>{{ obra.ubicacion_obra }}</td>             
             <td>{{ obra.fecha_inicio }}</td>             
             <td>{{ obra.porcentaje_avance_obra }}%</td>             
-            <td class="text-center">               
-              <a href="#" class="btn btn-outline-info btn-sm" title="Ver detalle"><i class="bx bx-show"></i></a>               
-              <a href="#" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>               
-              <a href="#" class="btn btn-outline-danger btn-sm" title="Eliminar"><i class="bx bx-trash"></i></a>             
+            <td>
+              {% if obra.color == 'VERDE' %}
+                <span class="badge bg-success">Verde</span>
+              {% elif obra.color == 'AMARILLO' %}
+                <span class="badge bg-warning text-dark">Amarillo</span>
+              {% elif obra.color == 'ROJO' %}
+                <span class="badge bg-danger">Rojo</span>
+              {% else %}
+                <span class="badge bg-secondary">-</span>
+              {% endif %}
+            </td>
+            <td class="text-center">
+              <button class="btn btn-outline-info btn-sm" title="Ver detalle" onclick="verObra({{ obra.id_obra }})"><i class="bx bx-show"></i></button>
+              <a href="{{ url_for('obra_bp.vista_editar_obra', id_obra=obra.id_obra) }}" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
+              <button class="btn btn-outline-danger btn-sm btn-eliminar-obra" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminarObra" data-id="{{ obra.id_obra }}" data-nombre="{{ obra.titulo_obra }}"><i class="bx bx-trash"></i></button>
             </td>           
           </tr>           
           {% else %}           
           <tr>             
-            <td colspan="6" class="text-center text-muted py-4">No hay obras registradas en el sistema.</td>           
+            <td colspan="7" class="text-center text-muted py-4">No hay obras registradas en el sistema.</td>           
           </tr>           
           {% endfor %}         
         </tbody>       
@@ -75,7 +87,7 @@
 
             <div class="col-md-4">
               <label class="form-label">Período Ejecución (Días/Meses)</label>
-              <input type="text" name="periodo_ejecucion" class="form-control" required>
+              <input type="number" name="periodo_ejecucion" class="form-control" required>
             </div>
             <div class="col-md-4">
               <label class="form-label">Fecha de Inicio</label>
@@ -113,16 +125,22 @@
             </div>
 
             <div class="col-md-4">
-              <label class="form-label">ID Semáforo</label>
-              <input type="number" name="semaforo_id_semaforo" class="form-control" required>
+              <label class="form-label">Semáforo</label>
+              <select name="semaforo_id_semaforo" id="semaforo_id_semaforo" class="form-select" required>
+                <option value="">Seleccione un semáforo</option>
+              </select>
             </div>
             <div class="col-md-4">
-              <label class="form-label">ID Contratación</label>
-              <input type="number" name="contratacion_id_contratacion" class="form-control" required>
+              <label class="form-label">Contratación</label>
+              <select name="contratacion_id_contratacion" id="contratacion_id_contratacion" class="form-select" required>
+                <option value="">Seleccione una contratación</option>
+              </select>
             </div>
             <div class="col-md-4">
               <label class="form-label">Código de Proyecto</label>
-              <input type="text" name="gestionar_proyectos_codigo_proyecto" class="form-control" maxlength="15" required>
+              <select name="gestionar_proyectos_codigo_proyecto" id="gestionar_proyectos_codigo_proyecto" class="form-select" required>
+                <option value="">Seleccione un proyecto</option>
+              </select>
             </div>
 
           </div>
@@ -136,6 +154,112 @@
       
     </div>
   </div>
+</div>
+
+<div class="modal fade" id="modalVerObra" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-primary fw-bold">Detalle de Obra</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">ID Obra</label>
+              <input type="text" id="ver_id_obra" class="form-control" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Título</label>
+              <input type="text" id="ver_titulo_obra" class="form-control" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Ubicación</label>
+              <input type="text" id="ver_ubicacion_obra" class="form-control" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Semáforo</label>
+              <input type="text" id="ver_semaforo" class="form-control" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Contratación</label>
+              <input type="text" id="ver_contratacion" class="form-control" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Código de Proyecto</label>
+              <input type="text" id="ver_proyecto" class="form-control" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Período Ejecución</label>
+              <input type="text" id="ver_periodo_ejecucion" class="form-control" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Fecha Inicio</label>
+              <input type="text" id="ver_fecha_inicio" class="form-control" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Fecha Fin</label>
+              <input type="text" id="ver_fecha_fin" class="form-control" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Mediciones</label>
+              <input type="text" id="ver_mediciones_obra" class="form-control" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Valuaciones</label>
+              <input type="text" id="ver_valuaciones" class="form-control" readonly>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Avance (%)</label>
+              <input type="text" id="ver_porcentaje_avance_obra" class="form-control" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Número Contrato</label>
+              <input type="text" id="ver_numero_contrato" class="form-control" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Modificaciones Contrato</label>
+              <input type="text" id="ver_modificaciones_contrato" class="form-control" readonly>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label">Certificaciones Ejecutadas</label>
+              <input type="text" id="ver_certificaciones_obras_ejecutadas" class="form-control" readonly>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="btnEditarDesdeDetalle">Editar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEliminarObra" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger fw-bold">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Está seguro de que desea desactivar la obra <strong id="nombre_obra_eliminar"></strong>?</p>
+        <p class="text-muted mb-0">Esta acción se puede revertir cambiando el estado en la base de datos.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="btnConfirmarEliminar">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 {% endblock %}
 

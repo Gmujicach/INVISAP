@@ -147,8 +147,8 @@
       </a>
     </li>
     
-    <li class="menu-item {% if request.path == '/registrar-obras' %} active {% endif %}">
-      <a href="{{ url_for('home_bp.viewFormGestionarObras') }}" class="menu-link">
+    <li class="menu-item {% if request.path == '/gestionar-obras' %} active {% endif %}">
+      <a href="{{ url_for('obra_bp.vista_gestionar_obras') }}" class="menu-link">
         <i class="menu-icon bi bi-house-gear"></i>
         <div data-i18n="Basic">Obras</div>
       </a>
