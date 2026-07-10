@@ -108,6 +108,15 @@
     </li>
     {% endif %}
 
+    {% if tiene_permiso('roles_permisos') %}
+    <li class="menu-item {% if request.path == '/gestionar-permisos' %} active {% endif %}">
+      <a href="{{ url_for('home_bp.viewFormPermisos') }}" class="menu-link">
+        <i class="menu-icon bi bi-shield-lock"></i>
+        <div data-i18n="Role Permissions">Permisos por Rol</div>
+      </a>
+    </li>
+    {% endif %}
+
     {% if tiene_permiso('bitacora') %}
     <li class="menu-item {% if request.path == '/bitacora' %} active {% endif %}">
       <a href="{{ url_for('home_bp.viewBitacora') }}" class="menu-link">

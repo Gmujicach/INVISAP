@@ -1,0 +1,241 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | Permisos por Rol{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/seguridad.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="seguridad-container">
+
+  <!-- Encabezado -->
+  <div class="seguridad-header">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div>
+        <h3 class="fw-bold mb-1 text-primary">
+          <i class="bi bi-shield-lock-fill me-2"></i>Permisos por Rol
+        </h3>
+        <p class="mb-0 text-muted" style="font-size:0.9rem;">
+          Gestión dinámica de roles, módulos y los permisos (Ver / Crear / Editar / Eliminar) de cada cargo.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pestañas -->
+  <ul class="nav nav-tabs seguridad-tabs mb-3" id="seguridadTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="tab-roles" data-bs-toggle="tab" data-bs-target="#pane-roles" type="button" role="tab">
+        <i class="bi bi-people-fill me-1"></i> Roles
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="tab-modulos" data-bs-toggle="tab" data-bs-target="#pane-modulos" type="button" role="tab">
+        <i class="bi bi-grid-1x2-fill me-1"></i> Módulos
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="tab-permisos" data-bs-toggle="tab" data-bs-target="#pane-permisos" type="button" role="tab">
+        <i class="bi bi-shield-check me-1"></i> Asignar Permisos
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+
+    <!-- ============ TAB ROLES ============ -->
+    <div class="tab-pane fade show active" id="pane-roles" role="tabpanel">
+      <div class="seguridad-filter-card">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-6">
+            <input type="text" id="buscarRol" class="form-control form-control-sm" placeholder="🔍 Buscar rol..." />
+          </div>
+          <div class="col-md-6 text-end">
+            <span class="badge bg-secondary me-2" id="contadorRoles">0 roles</span>
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalRol" onclick="resetFormRol()">
+              <i class="bi bi-plus-circle me-1"></i> Nuevo Rol
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card border-0 shadow-sm seguridad-table-card">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0" id="tablaRoles">
+            <thead>
+              <tr>
+                <th>ID</th><th>Rol</th><th>Descripción</th><th>Estado</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpoRoles"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB MÓDULOS ============ -->
+    <div class="tab-pane fade" id="pane-modulos" role="tabpanel">
+      <div class="seguridad-filter-card">
+        <div class="row g-3 align-items-center">
+          <div class="col-md-6">
+            <input type="text" id="buscarModulo" class="form-control form-control-sm" placeholder="🔍 Buscar módulo..." />
+          </div>
+          <div class="col-md-6 text-end">
+            <span class="badge bg-secondary me-2" id="contadorModulos">0 módulos</span>
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalModulo" onclick="resetFormModulo()">
+              <i class="bi bi-plus-circle me-1"></i> Nuevo Módulo
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card border-0 shadow-sm seguridad-table-card">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0" id="tablaModulos">
+            <thead>
+              <tr>
+                <th>ID</th><th>Clave</th><th>URL</th><th>Tipo</th><th>Estado</th><th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpoModulos"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ TAB PERMISOS ============ -->
+    <div class="tab-pane fade" id="pane-permisos" role="tabpanel">
+      <div class="seguridad-filter-card">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase;">
+              <i class="bi bi-people-fill me-1"></i> Rol
+            </label>
+            <select id="selectRol" class="form-select form-select-sm"></select>
+          </div>
+          <div class="col-md-6 text-end">
+            <button class="btn btn-outline-secondary btn-sm" onclick="cargarPermisos()">
+              <i class="bi bi-arrow-clockwise me-1"></i> Recargar
+            </button>
+            <button class="btn btn-primary btn-sm" id="btnGuardarPermisos">
+              <i class="bi bi-check2-circle me-1"></i> Guardar Permisos
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="card border-0 shadow-sm seguridad-table-card">
+        <div class="table-responsive">
+          <table class="table table-hover mb-0" id="tablaPermisos">
+            <thead>
+              <tr>
+                <th>Módulo</th><th class="text-center">Ver</th>
+                <th class="text-center">Crear</th><th class="text-center">Editar</th>
+                <th class="text-center">Eliminar</th>
+              </tr>
+            </thead>
+            <tbody id="cuerpoPermisos"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ MODAL ROL ============ -->
+<div class="modal fade" id="modalRol" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold"><i class="bi bi-person-badge me-2"></i><span id="modalRolTitle">Nuevo Rol</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formRol" novalidate>
+          <input type="hidden" id="id_rol" value="">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre del Rol</label>
+            <input type="text" class="form-control" id="nombre_rol" maxlength="20" placeholder="Ej: Supervisor" required>
+            <div class="invalid-feedback">Solo letras y espacios (3-20 caracteres).</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Descripción</label>
+            <input type="text" class="form-control" id="descripcion_rol" maxlength="255" placeholder="Ej: Supervisión de campo">
+          </div>
+          <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="estado_rol" checked>
+            <label class="form-check-label" for="estado_rol">Activo</label>
+          </div>
+          <div id="mensajeRol" class="alert d-none" role="alert"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnGuardarRol">Registrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MODAL MÓDULO ============ -->
+<div class="modal fade" id="modalModulo" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold"><i class="bi bi-grid-1x2 me-2"></i><span id="modalModuloTitle">Nuevo Módulo</span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formModulo" novalidate>
+          <input type="hidden" id="id_modulo" value="">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Clave (nombre)</label>
+              <input type="text" class="form-control" id="nombre_modulo" maxlength="40"
+                     placeholder="Ej: solicitudes" required>
+              <div class="form-text text-muted" style="font-size:0.78rem;">Minúsculas, números y guion bajo. Debe coincidir con <code>tiene_permiso('clave')</code>.</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">URL del menú</label>
+              <input type="text" class="form-control" id="url_modulo" maxlength="120"
+                     placeholder="/gestionar-..." required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Tipo</label>
+              <select class="form-select" id="tipo_modulo">
+                <option value="CRUD">CRUD</option>
+                <option value="Transaccional">Transaccional</option>
+                <option value="Enlace">Enlace</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Ícono (clase)</label>
+              <input type="text" class="form-control" id="icono_modulo" maxlength="60" placeholder="bi-folder">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Orden</label>
+              <input type="number" class="form-control" id="orden_modulo" value="0" min="0">
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold">Descripción</label>
+              <textarea class="form-control" id="descripcion_modulo" rows="2" maxlength="255"
+                        placeholder="Qué hace el módulo..."></textarea>
+            </div>
+            <div class="col-12 form-check">
+              <input type="checkbox" class="form-check-input" id="estado_modulo" checked>
+              <label class="form-check-label" for="estado_modulo">Activo</label>
+            </div>
+          </div>
+          <div id="mensajeModulo" class="alert d-none mt-3" role="alert"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnGuardarModulo">Registrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='assets/js/seguridad.js') }}"></script>
+{% endblock %}
