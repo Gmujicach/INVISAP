@@ -50,94 +50,112 @@
 
 <div class="card border-0 shadow-sm" style="border-radius: 12px !important">
 
-    <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
-      <h6 class="mb-0 fw-bold text-secondary">Registro Completo</h6>
-      <div style="width: 300px;">
-        <input
-          type="search"
-          id="search"
-          class="form-control form-control-sm bg-light border-0"
-          placeholder="Buscar solicitud..."
-          onkeyup="buscadorTable('tbl_solicitudes')" />
+      <div class="card-header bg-white border-bottom py-3 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+        <h6 class="mb-0 fw-bold text-secondary">Registro Completo</h6>
+        <div class="w-100 w-md-auto" style="max-width: 300px;">
+          <input
+            type="search"
+            id="search"
+            class="form-control form-control-sm bg-light border-0"
+            placeholder="Buscar solicitud..."
+            oninput="buscarSolicitudes(this.value)" />
+        </div>
       </div>
-    </div>
 
-    <div class="row justify-content-center mb-4 mt-2">
-      <div class="table-responsive text-nowrap table-hover">
-        <table
-          id="tbl_solicitudes"
-          class="table table-striped table-bordered"
-          cellspacing="0"
-          width="100%">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Solicitante</th>
-              <th>Tipo Solicitud</th>
-              <th>Estatus</th>
-              <th>Problemática</th>
-              <th>Fecha</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% if solicitudes %}
-              {% for s in solicitudes %}
-              <tr id="solicitud_{{ s.id_solicitud }}">
-                <td class="text-muted fw-semibold">#{{ s.id_solicitud }}</td>
-                <td>
-                  <div class="d-flex flex-column">
-                    <span class="fw-bold">{{ s.nombre_solicitante or '—' }}</span>
-                    <small class="text-muted">C.I: {{ s.cedula_persona or '—' }}</small>
-                  </div>
-                </td>
-                <td>
-                  <span class="badge bg-light text-dark border"><i class="bi bi-tag me-1"></i>{{ s.tipo_solicitud }}</span>
-                </td>
-                <td>
-                  {% if s.estatus_solicitud == 'Pendiente' %}
-                    <span class="badge rounded-pill bg-warning text-dark"><i class="bi bi-clock-history me-1"></i>Pendiente</span>
-                  {% elif s.estatus_solicitud == 'En Proceso' %}
-                    <span class="badge rounded-pill bg-primary"><i class="bi bi-arrow-repeat me-1"></i>En Proceso</span>
-                  {% elif s.estatus_solicitud in ['Completada', 'Procesada'] %}
-                    <span class="badge rounded-pill bg-success"><i class="bi bi-check-circle me-1"></i>Completada</span>
-                  {% else %}
-                    <span class="badge rounded-pill bg-secondary">{{ s.estatus_solicitud }}</span>
-                  {% endif %}
-                </td>
-                <td style="max-width:200px; white-space:normal;">{{ s.problematica }}</td>
-                <td>{{ s.fecha_formateada or s.fecha }}</td>
-                <td width="10px" class="text-nowrap">
-                  <div class="d-flex gap-1">
-                    <a
-                      href="/detalles-solicitud/{{ s.id_solicitud }}"
-                      class="btn btn-info btn-sm"
-                      title="Ver detalles">
-                      <i class="bi bi-eye"></i>
-                    </a>
-                    <button type="button" class="btn btn-warning btn-sm" title="Editar solicitud" onclick="abrirModalEditar({{ s.id_solicitud }});">
-                      <i class="bi bi-pencil-square"></i>
-                    </button>
-                    <a
-                      href="javascript:void(0);"
-                      class="btn btn-danger btn-sm"
-                      title="Eliminar solicitud"
-                      onclick="eliminarSolicitudAjax({{ s.id_solicitud }});">
-                      <i class="bi bi-trash"></i>
-                    </a>
-                  </div>
-                </td>
-              </tr>
-              {% endfor %}
-            {% else %}
+      <div class="row justify-content-center mb-4 mt-2">
+        <div class="table-responsive text-nowrap table-hover">
+          <table
+            id="tbl_solicitudes"
+            class="table table-striped table-bordered"
+            cellspacing="0"
+            width="100%">
+            <thead>
               <tr>
-                <td colspan="7" class="text-center text-muted py-4">No hay solicitudes registradas.</td>
+                <th>#</th>
+                <th>Solicitante</th>
+                <th>Tipo Solicitud</th>
+                <th>Estatus</th>
+                <th>Problemática</th>
+                <th>Fecha</th>
+                <th>Acción</th>
               </tr>
-            {% endif %}
-          </tbody>
-        </table>
+            </thead>
+            <tbody id="tbody_solicitudes">
+              {% if solicitudes %}
+                {% for s in solicitudes %}
+                <tr id="solicitud_{{ s.id_solicitud }}">
+                  <td class="text-muted fw-semibold">#{{ s.id_solicitud }}</td>
+                  <td>
+                    <div class="d-flex flex-column">
+                      <span class="fw-bold">{{ s.nombre_solicitante or '—' }}</span>
+                      <small class="text-muted">C.I: {{ s.cedula_persona or '—' }}</small>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge bg-light text-dark border"><i class="bi bi-tag me-1"></i>{{ s.tipo_solicitud }}</span>
+                  </td>
+                  <td>
+                    {% if s.estatus_solicitud == 'Pendiente' %}
+                      <span class="badge rounded-pill bg-warning text-dark"><i class="bi bi-clock-history me-1"></i>Pendiente</span>
+                    {% elif s.estatus_solicitud == 'En Proceso' %}
+                      <span class="badge rounded-pill bg-primary"><i class="bi bi-arrow-repeat me-1"></i>En Proceso</span>
+                    {% elif s.estatus_solicitud in ['Completada', 'Procesada'] %}
+                      <span class="badge rounded-pill bg-success"><i class="bi bi-check-circle me-1"></i>Completada</span>
+                    {% else %}
+                      <span class="badge rounded-pill bg-secondary">{{ s.estatus_solicitud }}</span>
+                    {% endif %}
+                  </td>
+                  <td style="max-width:200px; white-space:normal;">{{ s.problematica }}</td>
+                  <td>{{ s.fecha_formateada or s.fecha }}</td>
+                  <td width="10px" class="text-nowrap">
+                    <div class="d-flex gap-1">
+                      <a
+                        href="/detalles-solicitud/{{ s.id_solicitud }}"
+                        class="btn btn-info btn-sm"
+                        title="Ver detalles">
+                        <i class="bi bi-eye"></i>
+                      </a>
+                      <button type="button" class="btn btn-warning btn-sm" title="Editar solicitud" onclick="abrirModalEditar({{ s.id_solicitud }});">
+                        <i class="bi bi-pencil-square"></i>
+                      </button>
+                      <a
+                        href="javascript:void(0);"
+                        class="btn btn-danger btn-sm"
+                        title="Eliminar solicitud"
+                        onclick="eliminarSolicitudAjax({{ s.id_solicitud }});">
+                        <i class="bi bi-trash"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="7" class="text-center text-muted py-4">No hay solicitudes registradas.</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center px-3 pb-3 gap-2" id="pagination_container" style="display:none;">
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+          <label for="registros_por_pagina" class="mb-0 text-muted small">Mostrar</label>
+          <select id="registros_por_pagina" class="form-select form-select-sm w-auto">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+          <span class="text-muted small" id="info_registros"></span>
+        </div>
+        <nav>
+          <ul class="pagination pagination-sm mb-0 flex-wrap" id="pagination_controls">
+          </ul>
+        </nav>
+      </div>
 
   </div>
 
@@ -473,6 +491,11 @@
 </script>
 
 <script src="{{ url_for('static', filename='js/solicitud_ajax.js') }}"></script>
+<script>
+  if (window.__SOLICITUDES_INICIALES__ === undefined) {
+    window.__SOLICITUDES_INICIALES__ = {{ solicitudes | tojson | safe }};
+  }
+</script>
 <script>
   function formatPhone(input) {
     let val = input.value.replace(/\D/g, ''); // Remover todo lo que no sea número

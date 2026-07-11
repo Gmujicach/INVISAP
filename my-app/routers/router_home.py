@@ -833,6 +833,18 @@ def api_obtener_solicitudes_pendientes_json():
     else:
         return jsonify([]), 401
 
+@home_bp.route('/api/obtener-bitacora-json', methods=['GET'])
+def api_obtener_bitacora_json():
+    if 'conectado' in session:
+        from controllers.funciones_bitacora import filtrar_bitacora
+        from flask import request
+        usuario = request.args.get('usuario', '').strip() or None
+        modulo = request.args.get('modulo', '').strip() or None
+        accion = request.args.get('accion', '').strip() or None
+        return jsonify(filtrar_bitacora(usuario=usuario, modulo=modulo, accion=accion))
+    else:
+        return jsonify([]), 401
+
 
 
 ### Solicitudes

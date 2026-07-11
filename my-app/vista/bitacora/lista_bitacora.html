@@ -113,20 +113,7 @@
       </span>
     </div>
     <div class="d-flex align-items-center gap-2 flex-wrap">
-      <input type="search" id="buscarBitacora" class="form-control form-control-sm w-auto" placeholder="Búsqueda rápida..." style="min-width:200px;" />
-      <form method="GET" action="{{ url_for('home_bp.viewBitacora') }}" class="d-flex align-items-center gap-2">
-        <input type="hidden" name="usuario" value="{{ filtro_usuario }}" />
-        <input type="hidden" name="modulo" value="{{ filtro_modulo }}" />
-        <input type="hidden" name="accion" value="{{ filtro_accion }}" />
-        <input type="hidden" name="page" value="1" />
-        <label class="form-label mb-0 text-muted small">Mostrar</label>
-        <select name="per_page" class="form-select form-select-sm" style="min-width:90px;">
-          {% for option in [5, 10, 20, 50, 100] %}
-            <option value="{{ option }}" {% if per_page == option %}selected{% endif %}>{{ option }}</option>
-          {% endfor %}
-        </select>
-        <span class="text-muted small">por pág.</span>
-      </form>
+      <input type="search" id="buscarBitacora" class="form-control form-control-sm w-auto" placeholder="Búsqueda rápida..." style="min-width:200px;" oninput="buscarBitacora(this.value)" />
     </div>
   </div>
 
@@ -142,11 +129,10 @@
           <th style="padding: 1rem 1.2rem;">Inicio Sesión</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="tbody_bitacora">
         {% if registros %}
           {% for r in registros %}
-          <!-- La clase "fila-registro" es fundamental para que JS identifique qué ocultar/mostrar -->
-          <tr class="fila-registro">
+          <tr class="fila-registro" data-index="{{ loop.index }}">
             <td class="text-muted" style="padding: 0.85rem 1.2rem; font-size:0.8rem;">{{ loop.index }}</td>
             <td style="padding: 0.85rem 1.2rem;">
               <span class="usuario-chip">{{ r.usuario or ' ' }}</span>
@@ -194,37 +180,23 @@
       </tbody>
     </table>
   </div>
-  
-  <div class="card-footer bg-white border-0 py-3 d-flex justify-content-between align-items-center flex-wrap gap-3">
-    <div class="text-muted small">
-      {% if total_registros %}
-        Mostrando {{ primera_fila }}-{{ ultima_fila }} de {{ total_registros }} registros
-      {% else %}
-        No hay registros para mostrar
-      {% endif %}
+   
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-center px-3 pb-3 gap-2" id="pagination_container" style="display:none;">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <label for="registros_por_pagina_bitacora" class="mb-0 text-muted small">Mostrar</label>
+      <select id="registros_por_pagina_bitacora" class="form-select form-select-sm w-auto">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+      <span class="text-muted small" id="info_registros_bitacora"></span>
     </div>
-    {% if total_pages > 1 %}
-      {% macro bitacora_page_url(page_num) -%}
-        {{ url_for('home_bp.viewBitacora', usuario=filtro_usuario, modulo=filtro_modulo, accion=filtro_accion, per_page=per_page, page=page_num) }}
-      {%- endmacro %}
-      <nav aria-label="Paginación de la bitácora">
-        <ul class="pagination pagination-sm mb-0">
-          <li class="page-item {% if page <= 1 %}disabled{% endif %}">
-            <a class="page-link shadow-none" href="{{ bitacora_page_url(page - 1 if page > 1 else 1) }}">Anterior</a>
-          </li>
-          {% set start_page = [1, page - 2] | max %}
-          {% set end_page = [total_pages, page + 2] | min %}
-          {% for p in range(start_page, end_page + 1) %}
-            <li class="page-item {% if p == page %}active{% endif %}">
-              <a class="page-link shadow-none" href="{{ bitacora_page_url(p) }}">{{ p }}</a>
-            </li>
-          {% endfor %}
-          <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
-            <a class="page-link shadow-none" href="{{ bitacora_page_url(page + 1 if page < total_pages else total_pages) }}">Siguiente</a>
-          </li>
-        </ul>
-      </nav>
-    {% endif %}
+    <nav>
+      <ul class="pagination pagination-sm mb-0 flex-wrap" id="pagination_controls_bitacora">
+      </ul>
+    </nav>
   </div>
 </div>
 {% endblock %} 
