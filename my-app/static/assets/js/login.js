@@ -119,10 +119,22 @@ document.addEventListener('DOMContentLoaded', function () {
     const darkModeSwitch = document.getElementById('dark-mode-switch');
     const themeIcon = document.getElementById('theme-icon');
 
+    // Unifica los dos mecanismos de modo oscuro usados en el sistema:
+    //   • body.dark-mode        (toggle del navbar)
+    //   • [data-bs-theme]      (módulos inspección / evidencia)
+    const applyTheme = (isDark) => {
+        document.body.classList.toggle('dark-mode', isDark);
+        if (isDark) {
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+        } else {
+            document.documentElement.removeAttribute('data-bs-theme');
+        }
+    };
+
     if (darkModeSwitch) {
         const loadTheme = () => {
             if (localStorage.getItem('theme') === 'dark') {
-                document.body.classList.add('dark-mode');
+                applyTheme(true);
                 darkModeSwitch.checked = true;
                 if (themeIcon) themeIcon.className = 'bi bi-moon-stars-fill me-2 fs-5 text-info';
             }
@@ -130,8 +142,8 @@ document.addEventListener('DOMContentLoaded', function () {
         loadTheme();
 
         darkModeSwitch.addEventListener('change', () => {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
+            const isDark = darkModeSwitch.checked;
+            applyTheme(isDark);
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             if (themeIcon) themeIcon.className = isDark ? 'bi bi-moon-stars-fill me-2 fs-5 text-info' : 'bi bi-sun-fill me-2 fs-5 text-warning';
         });
