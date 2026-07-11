@@ -4,6 +4,7 @@ from models.model_bitacora import BitacoraModel
 
 obra_bp = Blueprint('obra_bp', __name__)
 
+
 def _convertir_campos_numericos_obra(datos):
     try:
         datos['periodo_ejecucion'] = int(datos.get('periodo_ejecucion') or 0)
@@ -17,56 +18,57 @@ def _convertir_campos_numericos_obra(datos):
         datos['porcentaje_avance_obra'] = int(datos.get('porcentaje_avance_obra') or 0)
     except (TypeError, ValueError):
         return False, "Porcentaje de avance debe ser un número entero."
+    try:
+        datos['semaforo_id_semaforo'] = int(datos.get('semaforo_id_semaforo') or 0)
+    except (TypeError, ValueError):
+        return False, "Semáforo inválido."
+    try:
+        datos['contratacion_id_contratacion'] = int(datos.get('contratacion_id_contratacion') or 0)
+    except (TypeError, ValueError):
+        return False, "Contratación inválida."
     return True, "OK"
+
 
 @obra_bp.route('/gestionar-obras', methods=['GET'])
 def vista_gestionar_obras():
     if 'conectado' not in session:
         return redirect(url_for('login_bp.inicio'))
-        
+
     modelo = ObraModel()
     obras = modelo.obtener_todas()
-    
+
     return render_template('obras/form_gestionar_obras.html', obras=obras)
+
 
 @obra_bp.route('/editar-obra/<int:id_obra>', methods=['GET'])
 def vista_editar_obra(id_obra):
     if 'conectado' not in session:
         return redirect(url_for('login_bp.inicio'))
-        
+
     modelo = ObraModel()
     obra = modelo.obtener_obra_por_id(id_obra)
     if not obra:
         return redirect(url_for('obra_bp.vista_gestionar_obras'))
-    
+
     return render_template('obras/form_obra_update.html', obra=obra)
+
 
 @obra_bp.route('/form-registrar-obra', methods=['POST'])
 def registrar_obra():
     if 'conectado' not in session:
         return jsonify({'status': 'error', 'message': 'Sesión caducada.'}), 401
-    
+
     try:
         data = request.form
         modelo = ObraModel()
-        
+
         id_semaforo = data.get('semaforo_id_semaforo')
         id_contratacion = data.get('contratacion_id_contratacion')
         codigo_proyecto = data.get('gestionar_proyectos_codigo_proyecto')
-        
+
         if not id_semaforo or not id_contratacion or not codigo_proyecto:
             return jsonify({'status': 'error', 'message': 'Debe seleccionar semáforo, contratación y proyecto.'}), 400
-        
-        semaforo_ok = modelo.validar_semaforo(id_semaforo)
-        if not semaforo_ok:
-            return jsonify({'status': 'error', 'message': 'El semáforo seleccionado no existe.'}), 400
-        contratacion_ok = modelo.validar_contratacion(id_contratacion)
-        if not contratacion_ok:
-            return jsonify({'status': 'error', 'message': 'La contratación seleccionada no existe.'}), 400
-        proyecto_ok = modelo.validar_proyecto(codigo_proyecto)
-        if not proyecto_ok:
-            return jsonify({'status': 'error', 'message': 'El proyecto seleccionado no existe o está inactivo.'}), 400
-        
+
         datos_insertar = {
             'titulo_obra': data.get('titulo_obra'),
             'ubicacion_obra': data.get('ubicacion_obra'),
@@ -83,25 +85,27 @@ def registrar_obra():
             'contratacion_id_contratacion': id_contratacion,
             'gestionar_proyectos_codigo_proyecto': codigo_proyecto
         }
-        
+
         ok, msg = _convertir_campos_numericos_obra(datos_insertar)
         if not ok:
             return jsonify({'status': 'error', 'message': msg}), 400
-        
-        if modelo.registrar_obra(datos_insertar):
+
+        resultado, extra = modelo.registrar_obra(datos_insertar)
+        if resultado:
+            id_obra = extra
             BitacoraModel().registrar(
                 usuario=session.get('usuario', 'Sistema'),
                 id_usuario=session.get('id_usuario', 1),
                 modulo='Obras',
                 accion='CREAR',
-                descripcion=f"Registró la obra: {datos_insertar['titulo_obra']}"
+                descripcion=f"Registró la obra: {datos_insertar['titulo_obra']} (ID: {id_obra})"
             )
-            return jsonify({'status': 'success', 'message': 'Obra registrada exitosamente.'}), 200
+            return jsonify({'status': 'success', 'message': 'Obra registrada exitosamente.', 'id_obra': id_obra}), 200
         else:
-            return jsonify({'status': 'error', 'message': 'Rechazado por Base de Datos. Revisa referencias.'}), 400
-            
+            return jsonify({'status': 'error', 'message': extra}), 400
+
     except Exception as e:
-        print(f"Error en controlador: {e}")
+        print(f"Error en controlador registrar_obra: {e}")
         return jsonify({'status': 'error', 'message': 'Excepción interna.'}), 500
 
 
@@ -109,7 +113,7 @@ def registrar_obra():
 def api_obtener_obra(id_obra):
     if 'conectado' not in session:
         return jsonify({'status': 'error', 'message': 'Sesión no válida o expirada.'}), 401
-    
+
     try:
         modelo = ObraModel()
         obra = modelo.obtener_obra_por_id(id_obra)
@@ -161,30 +165,23 @@ def api_listar_proyectos():
 def actualizar_obra():
     if 'conectado' not in session:
         return jsonify({'status': 'error', 'message': 'Sesión caducada.'}), 401
-    
+
     try:
         data = request.form
         id_obra = data.get('id_obra')
-        
+
         if not id_obra:
             return jsonify({'status': 'error', 'message': 'ID de obra no proporcionado.'}), 400
-        
+
         modelo = ObraModel()
-        
+
         id_semaforo = data.get('semaforo_id_semaforo')
         id_contratacion = data.get('contratacion_id_contratacion')
         codigo_proyecto = data.get('gestionar_proyectos_codigo_proyecto')
-        
+
         if not id_semaforo or not id_contratacion or not codigo_proyecto:
             return jsonify({'status': 'error', 'message': 'Debe seleccionar semáforo, contratación y proyecto.'}), 400
-        
-        if not modelo.validar_semaforo(id_semaforo):
-            return jsonify({'status': 'error', 'message': 'El semáforo seleccionado no existe.'}), 400
-        if not modelo.validar_contratacion(id_contratacion):
-            return jsonify({'status': 'error', 'message': 'La contratación seleccionada no existe.'}), 400
-        if not modelo.validar_proyecto(codigo_proyecto):
-            return jsonify({'status': 'error', 'message': 'El proyecto seleccionado no existe.'}), 400
-        
+
         datos_actualizar = {
             'titulo_obra': data.get('titulo_obra'),
             'ubicacion_obra': data.get('ubicacion_obra'),
@@ -201,12 +198,13 @@ def actualizar_obra():
             'contratacion_id_contratacion': id_contratacion,
             'gestionar_proyectos_codigo_proyecto': codigo_proyecto
         }
-        
+
         ok, msg = _convertir_campos_numericos_obra(datos_actualizar)
         if not ok:
             return jsonify({'status': 'error', 'message': msg}), 400
-        
-        if modelo.actualizar_obra(id_obra, datos_actualizar):
+
+        resultado, extra = modelo.actualizar_obra(id_obra, datos_actualizar)
+        if resultado:
             BitacoraModel().registrar(
                 usuario=session.get('usuario', 'Sistema'),
                 id_usuario=session.get('id_usuario', 1),
@@ -216,10 +214,10 @@ def actualizar_obra():
             )
             return jsonify({'status': 'success', 'message': 'Obra actualizada exitosamente.'}), 200
         else:
-            return jsonify({'status': 'error', 'message': 'No se realizaron cambios o la obra no existe.'}), 400
-            
+            return jsonify({'status': 'error', 'message': extra}), 400
+
     except Exception as e:
-        print(f"Error en controlador actualizar: {e}")
+        print(f"Error en controlador actualizar_obra: {e}")
         return jsonify({'status': 'error', 'message': 'Excepción interna.'}), 500
 
 
@@ -227,17 +225,18 @@ def actualizar_obra():
 def eliminar_obra(id_obra):
     if 'conectado' not in session:
         return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
-    
+
     try:
         modelo = ObraModel()
         obra = modelo.obtener_obra_por_id(id_obra)
-        
+
         if not obra:
             return jsonify({'status': 'error', 'message': 'Obra no encontrada.'}), 404
-        
+
         titulo = obra.get('titulo_obra', 'Desconocida')
-        
-        if modelo.eliminar_obra(id_obra):
+
+        resultado, msg = modelo.eliminar_obra(id_obra)
+        if resultado:
             BitacoraModel().registrar(
                 usuario=session.get('usuario', 'Sistema'),
                 id_usuario=session.get('id_usuario', 1),
@@ -247,8 +246,8 @@ def eliminar_obra(id_obra):
             )
             return jsonify({'status': 'success', 'message': f'Obra "{titulo}" eliminada exitosamente.'}), 200
         else:
-            return jsonify({'status': 'error', 'message': 'No se pudo eliminar la obra.'}), 400
-            
+            return jsonify({'status': 'error', 'message': msg}), 400
+
     except Exception as e:
-        print(f"Error en controlador eliminar: {e}")
+        print(f"Error en controlador eliminar_obra: {e}")
         return jsonify({'status': 'error', 'message': 'Excepción interna.'}), 500
