@@ -894,30 +894,47 @@ html {
     color: inherit;
 }
 
-/* Modo oscuro - tabla */
-body.dark-mode .table-informe-avance.table-striped tbody tr {
-    color: #cfcde9 !important;
-}
-body.dark-mode .table-informe-avance.table-striped tbody tr:nth-of-type(odd) {
+/* Modo oscuro - tabla (filas UNIFORMES + texto BLANCO legible) */
+body.dark-mode .table-informe-avance,
+body.dark-mode .table-informe-avance.table-striped {
     background-color: #2b2c40 !important;
+    color: #ffffff !important;
 }
+body.dark-mode .table-informe-avance thead,
+body.dark-mode .table-informe-avance thead th {
+    background-color: #1b4332 !important;
+    color: #ffffff !important;
+    border-color: #444564 !important;
+}
+/* Todas las filas del mismo color en modo oscuro (sin bandas impares/pares) */
+body.dark-mode .table-informe-avance tbody tr,
+body.dark-mode .table-informe-avance.table-striped tbody tr,
+body.dark-mode .table-informe-avance.table-striped tbody tr:nth-of-type(odd),
 body.dark-mode .table-informe-avance.table-striped tbody tr:nth-of-type(even) {
-    background-color: #323248 !important;
+    background-color: #2b2c40 !important;
+    color: #ffffff !important;
 }
-body.dark-mode .table-informe-avance.table-striped tbody tr:hover {
-    background-color: rgba(82, 183, 136, 0.15) !important;
-    color: #cfcde9 !important;
-}
-body.dark-mode .table-informe-avance tbody td {
-    background-color: transparent !important;
-    color: #cfcde9 !important;
+body.dark-mode .table-informe-avance tbody td,
+body.dark-mode .table-informe-avance tbody th,
+body.dark-mode .table-informe-avance.table-striped tbody tr:nth-of-type(odd) > *,
+body.dark-mode .table-informe-avance.table-striped tbody tr:nth-of-type(even) > * {
+    background-color: #2b2c40 !important;
+    color: #ffffff !important;
+    border-color: #444564 !important;
 }
 body.dark-mode .table-informe-avance tbody td .text-muted,
 body.dark-mode .table-informe-avance tbody td .text-secondary {
-    color: #8c8ea3 !important;
+    color: #cfcde9 !important;
+}
+body.dark-mode .table-informe-avance tbody tr:hover,
+body.dark-mode .table-informe-avance tbody tr:hover td,
+body.dark-mode .table-informe-avance.table-striped tbody tr:hover > * {
+    background-color: #34354f !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 body.dark-mode .table-informe-avance .btn {
-    color: #cfcde9 !important;
+    color: #ffffff !important;
 }
 
 /* ========== INTEGRACIÓN DEL MODO OSCURO (INVISAP) ========== */
@@ -939,7 +956,7 @@ body.dark-mode .card-header {
 }
 
 body.dark-mode .table-informe-avance {
-    color: #cfcde9 !important;
+    color: #ffffff !important;
     background-color: #2b2c40 !important;
 }
 
@@ -948,20 +965,28 @@ body.dark-mode .table-informe-avance thead {
     color: #ffffff !important;
 }
 
-body.dark-mode .table-informe-avance tbody tr {
+/* Filas uniformes (mismo color) en modo oscuro */
+body.dark-mode .table-informe-avance tbody tr,
+body.dark-mode .table-informe-avance.table-striped tbody tr,
+body.dark-mode .table-informe-avance.table-striped tbody tr:nth-of-type(odd),
+body.dark-mode .table-informe-avance.table-striped tbody tr:nth-of-type(even) {
     background-color: #2b2c40 !important;
-    color: #cfcde9 !important;
+    color: #ffffff !important;
 }
 
-body.dark-mode .table-informe-avance tbody tr:hover {
-    background-color: rgba(82, 183, 136, 0.12) !important;
+body.dark-mode .table-informe-avance tbody tr:hover,
+body.dark-mode .table-informe-avance tbody tr:hover td,
+body.dark-mode .table-informe-avance.table-striped tbody tr:hover > * {
+    background-color: #34354f !important;
+    color: #ffffff !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 
 body.dark-mode .table-informe-avance td, 
 body.dark-mode .table-informe-avance th {
     border-color: #444564 !important;
-    color: #cfcde9 !important;
+    background-color: #2b2c40 !important;
+    color: #ffffff !important;
 }
 
 body.dark-mode .table-informe-avance td .bx {
