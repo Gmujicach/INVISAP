@@ -13,8 +13,8 @@ user_model = UsuarioModel()
 # Sistema de Roles y Permisos
 # ============================================
 PERMISOS = {
-    'Super Usuario': ['usuarios', 'solicitudes', 'empleados', 'empresas', 'maquinaria', 'obras', 'proyectos', 'evidencias', 'publicaciones', 'reportes', 'bitacora', 'contrataciones', 'inspecciones', 'respaldos', 'gravedad', 'prioridad', 'informes', 'manual'],
-    'Administrador': ['usuarios', 'solicitudes', 'empleados', 'obras', 'proyectos', 'evidencias', 'publicaciones', 'reportes', 'bitacora', 'gravedad', 'prioridad', 'informes', 'manual'],
+    'Super Usuario': ['usuarios', 'solicitudes', 'empleados', 'empresas', 'maquinaria', 'obras', 'proyectos', 'evidencias', 'publicaciones', 'reportes', 'bitacora', 'contrataciones', 'inspecciones', 'respaldos', 'gravedad', 'prioridad', 'informes', 'manual', 'roles_permisos'],
+    'Administrador': ['usuarios', 'solicitudes', 'empleados', 'obras', 'proyectos', 'evidencias', 'publicaciones', 'reportes', 'bitacora', 'gravedad', 'prioridad', 'informes', 'manual', 'roles_permisos'],
     'Gerente': ['solicitudes', 'obras', 'empleados', 'reportes', 'informes', 'gravedad', 'prioridad'],
     'Inspector': ['solicitudes', 'obras', 'inspecciones', 'evidencias', 'informes'],
     'Recepcionista': ['solicitudes', 'reportes', 'informes'],
