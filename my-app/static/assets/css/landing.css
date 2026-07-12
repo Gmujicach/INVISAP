@@ -238,10 +238,7 @@ a, button {
 
 @media (max-width: 767px) {
   .navbar-invilara .navbar-collapse {
-    background-color: var(--invilara-green-dark);
-    border-radius: 10px;
-    margin-top: 8px;
-    padding: 8px;
+    display: none !important;
   }
 
   .navbar-invilara .nav > li > a {
@@ -781,5 +778,119 @@ main, header, section, footer {
 
   .hero-video {
     max-height: 240px;
+  }
+}
+
+/* ============================================
+   MOBILE DRAWER / SIDEBAR
+   ============================================ */
+.navbar-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1030;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.navbar-drawer-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.navbar-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  max-width: 85vw;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--invilara-green-dark);
+  z-index: 1040;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.25);
+}
+
+.navbar-drawer.is-open {
+  transform: translateX(0);
+}
+
+.navbar-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.navbar-drawer-close {
+  background: transparent;
+  border: none;
+  color: var(--invilara-white);
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-drawer-close:hover,
+.navbar-drawer-close:focus {
+  background: rgba(255,255,255,0.1);
+  outline: none;
+}
+
+.drawer-nav {
+  list-style: none;
+  padding: 16px 0;
+  margin: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+.drawer-nav li a {
+  display: block;
+  padding: 14px 20px;
+  color: rgba(255,255,255,0.92);
+  font-weight: 500;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.drawer-nav li a:hover,
+.drawer-nav li a:focus {
+  background: rgba(255,255,255,0.08);
+  color: var(--invilara-gold);
+}
+
+.drawer-nav .btn {
+  margin: 8px 20px 16px;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .navbar-invilara .navbar-collapse {
+    display: block !important;
+  }
+
+  .navbar-invilara .navbar-toggle {
+    display: none !important;
+  }
+
+  .navbar-drawer-backdrop {
+    display: none;
+  }
+
+  .navbar-drawer {
+    display: none;
   }
 }
