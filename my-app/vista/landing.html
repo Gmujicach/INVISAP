@@ -43,11 +43,11 @@
       </div>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#inicio">Inicio</a></li>
-          <li><a href="#acerca">Acerca de</a></li>
-          <li><a href="#servicios">Servicios</a></li>
-          <li><a href="#contacto">Contacto</a></li>
-          <li class="nav-login"><a href="{{ url_for('login_bp.loginCliente') }}" class="btn btn-invilara-gold">Iniciar Sesión</a></li>
+          <li><a href="#inicio" class="nav-link-custom">Inicio</a></li>
+          <li><a href="#acerca" class="nav-link-custom">Acerca de</a></li>
+          <li><a href="#servicios" class="nav-link-custom">Servicios</a></li>
+          <li><a href="#contacto" class="nav-link-custom">Contacto</a></li>
+          <li class="nav-login"><a href="{{ url_for('login_bp.loginCliente') }}" class="btn btn-invilara-gold btn-lg">Iniciar Sesión</a></li>
         </ul>
       </div>
     </div>
@@ -59,8 +59,8 @@
   <header class="hero-section" id="inicio" aria-labelledby="hero-title">
     <div class="hero-overlay" aria-hidden="true"></div>
     <div class="container text-white position-relative">
-      <div class="row hero-content">
-        <div class="col-md-10 col-sm-12 hero-col">
+      <div class="row hero-content align-items-center">
+        <div class="col-md-6">
           <h1 class="hero-title" id="hero-title">
             Bienvenido al Sistema <span class="text-gold">Invilara</span>
           </h1>
@@ -74,6 +74,11 @@
             <a href="#acerca" class="btn btn-outline-light btn-hero">
               <i class="bx bx-info-circle btn-icon" aria-hidden="true"></i>Conocer más
             </a>
+          </div>
+        </div>
+        <div class="col-md-6 mt-4 mt-md-0">
+          <div class="hero-image-wrapper" aria-hidden="true">
+            <img src="{{ url_for('static', filename='img/invilara_entrada.jpeg') }}" alt="Invilara entrada" class="hero-image">
           </div>
         </div>
       </div>
@@ -92,34 +97,80 @@
           Entidad encargada de planificar, construir y conservar la infraestructura vial del Estado Lara.
         </p>
       </div>
+
+      <!-- Video institucional tipo GIF animado -->
+      <div class="text-center mb-5">
+        <div class="hero-video-wrapper d-inline-block rounded-4 overflow-hidden shadow-lg border border-white border-opacity-10">
+          <video class="hero-video" autoplay loop muted playsinline aria-hidden="true">
+            <source src="{{ url_for('static', filename='video/invilara.mp4') }}" type="video/mp4">
+          </video>
+        </div>
+      </div>
+
       <div class="row g-cards">
-        <div class="col-md-6">
-          <div class="card feature-card h-100">
-            <div class="card-body">
-              <div class="feature-icon bg-green text-white rounded-circle d-flex align-items-center justify-content-center mb-3" aria-hidden="true">
-                <i class="bx bx-building-house"></i>
+        <div class="col-md-4 col-sm-6">
+          <div class="card feature-card h-100 border-0 shadow-sm">
+            <div class="card-body p-0">
+              <img src="{{ url_for('static', filename='img/1.jpeg') }}" alt="Obras viales" class="card-img-top feature-img">
+              <div class="p-card">
+                <h3 class="h5 text-green mb-2">Obras Viales</h3>
+                <p class="text-muted small mb-0">Ejecutamos proyectos de construcción, rehabilitación y mantenimiento de carreteras y autopistas en todo el estado Lara.</p>
               </div>
-              <h3 class="h4 text-green mb-3">Misión</h3>
-              <p class="text-muted mb-0">
-                Planificar, construir, conservar y administrar la red vial del Estado Lara,
-                garantizando vías seguras y eficientes que impulsen el desarrollo económico
-                y social de nuestra comunidad, bajo principios de transparencia y calidad.
-              </p>
             </div>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="card feature-card h-100">
-            <div class="card-body">
-              <div class="feature-icon bg-gold text-dark rounded-circle d-flex align-items-center justify-content-center mb-3" aria-hidden="true">
-                <i class="bx bx-award"></i>
+        <div class="col-md-4 col-sm-6">
+          <div class="card feature-card h-100 border-0 shadow-sm">
+            <div class="card-body p-0">
+              <img src="{{ url_for('static', filename='img/2.jpeg') }}" alt="Inspecciones" class="card-img-top feature-img">
+              <div class="p-card">
+                <h3 class="h5 text-green mb-2">Inspecciones</h3>
+                <p class="text-muted small mb-0">Supervisamos el estado de la vialidad mediante inspecciones técnicas que garantizan seguridad y cumplimiento normativo.</p>
               </div>
-              <h3 class="h4 text-gold mb-3">Visión</h3>
-              <p class="text-muted mb-0">
-                Ser el referente nacional en gestión vial regional, reconocidos por la innovación,
-                calidad y sostenibilidad en la administración de infraestructuras carreteras,
-                al servicio del pueblo larense.
-              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="card feature-card h-100 border-0 shadow-sm">
+            <div class="card-body p-0">
+              <img src="{{ url_for('static', filename='img/3.jpeg') }}" alt="Proyectos" class="card-img-top feature-img">
+              <div class="p-card">
+                <h3 class="h5 text-green mb-2">Proyectos</h3>
+                <p class="text-muted small mb-0">Planificamos y ejecutamos proyectos estratégicos para ampliar y optimizar la red vial regional con criterios de sostenibilidad.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="card feature-card h-100 border-0 shadow-sm">
+            <div class="card-body p-0">
+              <img src="{{ url_for('static', filename='img/4.jpeg') }}" alt="Empleados" class="card-img-top feature-img">
+              <div class="p-card">
+                <h3 class="h5 text-green mb-2">Empleados</h3>
+                <p class="text-muted small mb-0">Contamos con un equipo multidisciplinario de ingenieros, técnicos y supervisores comprometidos con la gestión vial.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="card feature-card h-100 border-0 shadow-sm">
+            <div class="card-body p-0">
+              <img src="{{ url_for('static', filename='img/5.jpeg') }}" alt="Contrataciones" class="card-img-top feature-img">
+              <div class="p-card">
+                <h3 class="h5 text-green mb-2">Contrataciones</h3>
+                <p class="text-muted small mb-0">Gestionamos procesos de contratación transparentes para ejecutar obras y servicios con aliados estratégicos calificados.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 col-sm-6">
+          <div class="card feature-card h-100 border-0 shadow-sm">
+            <div class="card-body p-0">
+              <img src="{{ url_for('static', filename='img/6.jpeg') }}" alt="Solicitudes" class="card-img-top feature-img">
+              <div class="p-card">
+                <h3 class="h5 text-green mb-2">Solicitudes</h3>
+                <p class="text-muted small mb-0">Las solicitudes son el origen de los proyectos: canalizamos requerimientos ciudadanos para priorizar intervenciones viales.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -140,8 +191,8 @@
         </p>
       </div>
       <div class="row g-cards">
-        <div class="col-md-4">
-          <div class="card service-card h-100 text-center p-card">
+        <div class="col-md-4 col-sm-6">
+          <div class="card service-card h-100 text-center">
             <div class="card-body">
               <div class="service-icon mb-3" aria-hidden="true">
                 <i class="bx bx-road"></i>
@@ -154,8 +205,8 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card service-card h-100 text-center p-card">
+        <div class="col-md-4 col-sm-6">
+          <div class="card service-card h-100 text-center">
             <div class="card-body">
               <div class="service-icon mb-3" aria-hidden="true">
                 <i class="bx bx-wrench"></i>
@@ -168,8 +219,8 @@
             </div>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card service-card h-100 text-center p-card">
+        <div class="col-md-4 col-sm-6">
+          <div class="card service-card h-100 text-center">
             <div class="card-body">
               <div class="service-icon mb-3" aria-hidden="true">
                 <i class="bx bx-clipboard"></i>

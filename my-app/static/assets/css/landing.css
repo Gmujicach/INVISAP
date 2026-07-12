@@ -189,7 +189,7 @@ a, button {
 
 .navbar-invilara .navbar-brand img {
   display: inline-block;
-  max-height: 36px;
+  max-height: 50px;
 }
 
 .navbar-invilara .navbar-toggle {
@@ -212,6 +212,20 @@ a, button {
 
 .navbar-invilara .nav > li > a:hover,
 .navbar-invilara .nav > li > a:focus {
+  color: var(--invilara-gold);
+  background: transparent;
+}
+
+.nav-link-custom {
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  transition: color 0.2s ease;
+}
+
+.nav-link-custom:hover,
+.nav-link-custom:focus {
   color: var(--invilara-gold);
   background: transparent;
 }
@@ -363,6 +377,70 @@ a, button {
   line-height: 1;
 }
 
+/* Imagen hero - diseño moderno */
+.hero-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.hero-image {
+  max-width: 100%;
+  height: auto;
+  max-height: 420px;
+  border-radius: 28px;
+  border: 4px solid rgba(255, 255, 255, 0.15);
+  box-shadow:
+    0 24px 56px rgba(0, 0, 0, 0.45),
+    0 0 0 10px rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(2px);
+  transform: rotate(-2deg);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.hero-image:hover {
+  transform: rotate(0deg) translateY(-4px);
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.5),
+    0 0 0 14px rgba(255, 255, 255, 0.06);
+}
+
+/* Video institucional tipo GIF animado */
+.hero-video-wrapper {
+  max-width: 820px;
+  width: 100%;
+}
+
+.hero-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: cover;
+  border-radius: 28px;
+  box-shadow:
+    0 24px 56px rgba(0, 0, 0, 0.45),
+    0 0 0 10px rgba(255, 255, 255, 0.04);
+}
+
+/* Cards de Acerca de con imagen */
+.feature-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  display: block;
+  border-radius: 14px 14px 0 0;
+}
+
+.feature-card .card-body.p-0 {
+  padding: 0;
+}
+
+.feature-card .p-card {
+  padding: 20px;
+}
+
 /* ============================================
    TÍTULOS Y DIVISORES
    ============================================ */
@@ -453,6 +531,10 @@ a, button {
   box-shadow: var(--shadow-card);
   border: 1px solid rgba(0,0,0,0.06);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .service-card:hover {
@@ -460,27 +542,46 @@ a, button {
   box-shadow: var(--shadow-hover);
 }
 
-.p-card {
-  padding: 24px;
+.service-card .card-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 28px 24px 24px;
 }
 
-.service-icon {
-  width: 64px;
-  height: 64px;
+.service-card .service-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
   background-color: var(--invilara-green-50);
   color: var(--invilara-green);
-  border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
+  font-size: 2.2rem;
+  margin-bottom: 18px;
   transition: all 0.25s ease;
+  box-shadow: 0 8px 20px rgba(20, 83, 45, 0.12);
 }
 
 .service-card:hover .service-icon {
   background-color: var(--invilara-green);
   color: var(--invilara-white);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(20, 83, 45, 0.35);
+}
+
+.service-card h4 {
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.service-card p {
+  color: var(--text-secondary);
+  margin-bottom: 0;
+  line-height: 1.6;
 }
 
 /* ============================================
@@ -555,6 +656,11 @@ main, header, section, footer {
     padding-bottom: 48px;
   }
 
+  .hero-image {
+    max-height: 360px;
+    transform: rotate(-1deg);
+  }
+
   .feature-card, .service-card {
     margin-bottom: 4px;
   }
@@ -574,6 +680,13 @@ main, header, section, footer {
 
   .hero-btns {
     justify-content: center;
+  }
+
+  .hero-image {
+    max-height: 300px;
+    max-width: 95%;
+    transform: rotate(0deg);
+    margin-top: 22px;
   }
 }
 
