@@ -1,5 +1,43 @@
 /* INVISAP - Login Styles (Atomic UI) */
 
+/* Botón regreso a Landing Page - Iconográfico */
+.btn-back-landing {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  background-color: #15803d;
+  color: #ffffff;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  line-height: 1;
+  box-shadow: 0 4px 12px rgba(20, 83, 45, 0.25);
+  text-decoration: none;
+  transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-back-landing:hover,
+.btn-back-landing:focus {
+  background-color: #14532d;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(20, 83, 45, 0.35);
+}
+
+.btn-back-landing:active {
+  transform: translateY(0);
+}
+
+.authentication-inner {
+  position: relative;
+}
+
 .transition-all {
   transition: all 0.3s ease-in-out !important;
 }

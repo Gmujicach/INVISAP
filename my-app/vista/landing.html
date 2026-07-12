@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Instituto de Vialidad del Estado Lara - Portal institucional de gestión vial.">
+  <meta name="theme-color" content="#14532d">
+
+  <title>Invilara - Inicio</title>
+
+  <!-- Favicon institucional -->
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/INVILARA-LOGO-OFICIAL-HORIZONTAL.ico') }}">
+
+  <!-- Bootstrap 3 local (sin CDN) -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}">
+
+  <!-- Iconos Boxicons locales (sin CDN) -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/boxicons.css') }}">
+
+  <!-- CSS propio de la Landing Page -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/landing.css') }}">
+</head>
+<body>
+
+  <!-- Skip Link para accesibilidad WCAG (navegación por teclado) -->
+  <a href="#inicio" class="skip-link">Saltar al contenido principal</a>
+
+  <!-- ============================================
+       NAVBAR
+       ============================================ -->
+  <nav class="navbar navbar-invilara navbar-fixed-top" id="mainNav" role="navigation" aria-label="Navegación principal">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbarNav" aria-expanded="false" aria-controls="navbarNav" aria-label="Alternar navegación">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="{{ url_for('login_bp.inicio') }}" aria-label="Invilara - Página de inicio">
+          <img src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}" alt="Logo Invilara" class="img-responsive navbar-logo" aria-hidden="true">
+          <span class="navbar-brand-text">Invilara</span>
+        </a>
+      </div>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#acerca">Acerca de</a></li>
+          <li><a href="#servicios">Servicios</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+          <li class="nav-login"><a href="{{ url_for('login_bp.loginCliente') }}" class="btn btn-invilara-gold">Iniciar Sesión</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       HERO SECTION (BIENVENIDA)
+       ============================================ -->
+  <header class="hero-section" id="inicio" aria-labelledby="hero-title">
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="container text-white position-relative">
+      <div class="row hero-content">
+        <div class="col-md-10 col-sm-12 hero-col">
+          <h1 class="hero-title" id="hero-title">
+            Bienvenido al Sistema <span class="text-gold">Invilara</span>
+          </h1>
+          <p class="lead hero-lead">
+            Instituto de Vialidad del Estado Lara — Gestionamos el desarrollo vial de nuestro estado con excelencia, transparencia y compromiso institucional.
+          </p>
+          <div class="hero-btns">
+            <a href="{{ url_for('login_bp.loginCliente') }}" class="btn btn-invilara-gold btn-hero">
+              <i class="bx bx-log-in btn-icon" aria-hidden="true"></i>Acceder al Sistema
+            </a>
+            <a href="#acerca" class="btn btn-outline-light btn-hero">
+              <i class="bx bx-info-circle btn-icon" aria-hidden="true"></i>Conocer más
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================
+       ACERCA DE INVILARA
+       ============================================ -->
+  <section class="py-section" id="acerca" aria-labelledby="acerca-title">
+    <div class="container py-section">
+      <div class="section-header text-center mb-5">
+        <h2 class="section-title" id="acerca-title">Acerca de <span class="text-green">Invilara</span></h2>
+        <div class="divider-custom mx-auto" aria-hidden="true"></div>
+        <p class="text-muted mx-auto section-intro">
+          Entidad encargada de planificar, construir y conservar la infraestructura vial del Estado Lara.
+        </p>
+      </div>
+      <div class="row g-cards">
+        <div class="col-md-6">
+          <div class="card feature-card h-100">
+            <div class="card-body">
+              <div class="feature-icon bg-green text-white rounded-circle d-flex align-items-center justify-content-center mb-3" aria-hidden="true">
+                <i class="bx bx-building-house"></i>
+              </div>
+              <h3 class="h4 text-green mb-3">Misión</h3>
+              <p class="text-muted mb-0">
+                Planificar, construir, conservar y administrar la red vial del Estado Lara,
+                garantizando vías seguras y eficientes que impulsen el desarrollo económico
+                y social de nuestra comunidad, bajo principios de transparencia y calidad.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card feature-card h-100">
+            <div class="card-body">
+              <div class="feature-icon bg-gold text-dark rounded-circle d-flex align-items-center justify-content-center mb-3" aria-hidden="true">
+                <i class="bx bx-award"></i>
+              </div>
+              <h3 class="h4 text-gold mb-3">Visión</h3>
+              <p class="text-muted mb-0">
+                Ser el referente nacional en gestión vial regional, reconocidos por la innovación,
+                calidad y sostenibilidad en la administración de infraestructuras carreteras,
+                al servicio del pueblo larense.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SERVICIOS
+       ============================================ -->
+  <section class="py-section bg-light" id="servicios" aria-labelledby="servicios-title">
+    <div class="container py-section">
+      <div class="section-header text-center mb-5">
+        <h2 class="section-title" id="servicios-title">Nuestros <span class="text-green">Servicios</span></h2>
+        <div class="divider-custom mx-auto" aria-hidden="true"></div>
+        <p class="text-muted mx-auto section-intro">
+          Brindamos soluciones integrales para la gestión vial del Estado Lara.
+        </p>
+      </div>
+      <div class="row g-cards">
+        <div class="col-md-4">
+          <div class="card service-card h-100 text-center p-card">
+            <div class="card-body">
+              <div class="service-icon mb-3" aria-hidden="true">
+                <i class="bx bx-road"></i>
+              </div>
+              <h4 class="h5 text-green mb-3">Construcción de Vías</h4>
+              <p class="text-muted small mb-0">
+                Diseño y construcción de carreteras, autopistas y vías urbanas con
+                estándares de ingeniería de clase mundial.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card service-card h-100 text-center p-card">
+            <div class="card-body">
+              <div class="service-icon mb-3" aria-hidden="true">
+                <i class="bx bx-wrench"></i>
+              </div>
+              <h4 class="h5 text-green mb-3">Mantenimiento Vial</h4>
+              <p class="text-muted small mb-0">
+                Conservación periódica y correctiva de la infraestructura vial existente
+                para garantizar su durabilidad y la seguridad de los usuarios.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card service-card h-100 text-center p-card">
+            <div class="card-body">
+              <div class="service-icon mb-3" aria-hidden="true">
+                <i class="bx bx-clipboard"></i>
+              </div>
+              <h4 class="h5 text-green mb-3">Fiscalización y Control</h4>
+              <p class="text-muted small mb-0">
+                Supervisión técnica y administrativa de proyectos viales para asegurar
+                el cumplimiento de normativas y plazos establecidos.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CONTACTO
+       ============================================ -->
+  <section class="py-section" id="contacto" aria-labelledby="contacto-title">
+    <div class="container py-section">
+      <div class="section-header text-center mb-5">
+        <h2 class="section-title" id="contacto-title">Contacto</h2>
+        <div class="divider-custom mx-auto" aria-hidden="true"></div>
+      </div>
+      <div class="row g-cards justify-content-center">
+        <div class="col-md-5">
+          <div class="card h-100">
+            <div class="card-body p-card">
+              <h3 class="h5 text-green mb-3">Información de Contacto</h3>
+              <ul class="list-contact">
+                <li>
+                  <i class="bx bx-map contact-icon" aria-hidden="true"></i>
+                  <span>Calle 10 entre Carreras 18 y 19, Barquisimeto, Estado Lara, Venezuela.</span>
+                </li>
+                <li>
+                  <i class="bx bx-phone contact-icon" aria-hidden="true"></i>
+                  <span>(0251) 252.34.56 / (0251) 252.78.90</span>
+                </li>
+                <li>
+                  <i class="bx bx-envelope contact-icon" aria-hidden="true"></i>
+                  <span>info@invilara.gob.ve</span>
+                </li>
+                <li>
+                  <i class="bx bx-time contact-icon" aria-hidden="true"></i>
+                  <span>Lunes a Viernes — 8:00 AM a 4:00 PM</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="card h-100 bg-invilara-gold-light">
+            <div class="card-body p-card">
+              <h3 class="h5 text-green mb-3">Acceso a Funcionarios</h3>
+              <p class="text-muted small mb-3">
+                Si eres funcionario de Invilara, ingresa al sistema para gestionar solicitudes, proyectos, inspecciones y más.
+              </p>
+              <a href="{{ url_for('login_bp.loginCliente') }}" class="btn btn-invilara-gold fw-bold px-4 py-2">
+                Iniciar Sesión
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer class="bg-green text-white py-4" role="contentinfo">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+          <p class="mb-0 small">
+            &copy; 2025 Instituto de Vialidad del Estado Lara (Invilara). Todos los derechos reservados.
+          </p>
+        </div>
+        <div class="col-md-6 text-center text-md-end">
+          <a href="{{ url_for('login_bp.loginCliente') }}" class="btn btn-outline-light btn-sm">Iniciar Sesión</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

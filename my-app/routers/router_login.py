@@ -32,7 +32,7 @@ def inicio():
                                stats=stats,
                                solicitudes_priorizadas=stats.get('pendientes_priorizadas', []))
     else:
-        return render_template(f'{PATH_URL_LOGIN}/base_login.html')
+        return render_template('landing.html')
 
 
 @login_bp.route('/mi-perfil', methods=['GET'])
