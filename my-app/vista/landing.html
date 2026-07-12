@@ -100,7 +100,7 @@
 
       <!-- Video institucional tipo GIF animado -->
       <div class="text-center mb-5">
-        <div class="hero-video-wrapper d-inline-block rounded-4 overflow-hidden shadow-lg border border-white border-opacity-10">
+        <div class="hero-video-wrapper d-inline-block">
           <video class="hero-video" autoplay loop muted playsinline aria-hidden="true">
             <source src="{{ url_for('static', filename='video/invilara.mp4') }}" type="video/mp4">
           </video>
@@ -274,7 +274,7 @@
         </div>
         <div class="col-md-5">
           <div class="card h-100 bg-invilara-gold-light">
-            <div class="card-body p-card">
+            <div class="card-body p-card text-center">
               <h3 class="h5 text-green mb-3">Acceso a Funcionarios</h3>
               <p class="text-muted small mb-3">
                 Si eres funcionario de Invilara, ingresa al sistema para gestionar solicitudes, proyectos, inspecciones y más.
@@ -292,16 +292,36 @@
   <!-- ============================================
        FOOTER
        ============================================ -->
-  <footer class="bg-green text-white py-4" role="contentinfo">
-    <div class="container">
-      <div class="row align-items-center">
-        <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
-          <p class="mb-0 small">
-            &copy; 2025 Instituto de Vialidad del Estado Lara (Invilara). Todos los derechos reservados.
-          </p>
+  <footer class="bg-green text-white" role="contentinfo">
+    <div class="container py-5">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="footer-brand">
+            <img src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}" alt="Invilara" class="footer-logo mb-3">
+            <p class="small mb-0 opacity-75">
+              Instituto de Vialidad del Estado Lara. Gestionando el desarrollo vial con excelencia, transparencia y compromiso institucional.
+            </p>
+          </div>
         </div>
-        <div class="col-md-6 text-center text-md-end">
-          <a href="{{ url_for('login_bp.loginCliente') }}" class="btn btn-outline-light btn-sm">Iniciar Sesión</a>
+        <div class="col-md-4">
+          <h4 class="h6 text-uppercase text-white mb-3">Contacto</h4>
+          <ul class="list-unstyled small mb-0">
+            <li class="mb-2"><i class="bx bx-map me-2" aria-hidden="true"></i> Calle 10 entre Carreras 18 y 19, Barquisimeto, Estado Lara, Venezuela.</li>
+            <li class="mb-2"><i class="bx bx-phone me-2" aria-hidden="true"></i> (0251) 252.34.56 / (0251) 252.78.90</li>
+            <li class="mb-2"><i class="bx bx-envelope me-2" aria-hidden="true"></i> info@invilara.gob.ve</li>
+            <li><i class="bx bx-time me-2" aria-hidden="true"></i> Lunes a Viernes - 8:00 AM a 4:00 PM</li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h4 class="h6 text-uppercase text-white mb-3">Redes Sociales</h4>
+          <a href="https://www.instagram.com/invilaraoficial?igsh=Z3J5b2ptMnJwY2Zq" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram Invilara">
+            <i class="bx bxl-instagram"></i>
+            <span class="small">@invilaraoficial</span>
+          </a>
+          <hr class="border-white border-opacity-10 my-3">
+          <p class="small mb-0 opacity-75">
+            © 2025 Instituto de Vialidad del Estado Lara (Invilara). Todos los derechos reservados.
+          </p>
         </div>
       </div>
     </div>
