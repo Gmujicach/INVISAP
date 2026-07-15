@@ -40,6 +40,19 @@ def show_modificar_evidencia(id_evidencia):
         return redirect(url_for('evidencia_bp.show_listar_evidencias'))
     return render_template('evidencia/evidencia_modificar.html', evidencia=evidencia)
 
+@evidencia_bp.route('/evidencias/detalle/<int:id_evidencia>', methods=['GET'])
+def show_detalle_evidencia(id_evidencia):
+    """Muestra el detalle de una evidencia."""
+    if 'conectado' not in session:
+        flash('Primero debes iniciar sesion', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    modelo = EvidenciaModel()
+    evidencia = modelo.obtener_evidencia_por_id(id_evidencia)
+    if not evidencia:
+        flash('La evidencia no existe', 'error')
+        return redirect(url_for('evidencia_bp.show_listar_evidencias'))
+    return render_template('evidencia/detalle_evidencia.html', evidencia=evidencia)
+
 @evidencia_bp.route('/api/evidencias/subir', methods=['POST'])
 def api_subir_evidencias():
     """

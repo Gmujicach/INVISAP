@@ -74,6 +74,24 @@ def view_editar_inspeccion(id_inspeccion):
                            tipos_inspeccion=tipos_inspeccion)
 
 
+@inspeccion_bp.route('/detalle/<int:id_inspeccion>', methods=['GET'])
+def view_detalle_inspeccion(id_inspeccion):
+    """Muestra el detalle de una inspeccion."""
+    if 'conectado' not in session:
+        flash('Primero debes iniciar sesion.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+
+    modelo = InspeccionModel()
+    inspeccion = modelo.obtener_inspeccion_por_id(id_inspeccion)
+
+    if not inspeccion:
+        flash('La inspeccion no existe o fue eliminada.', 'error')
+        return redirect(url_for('inspeccion_bp.list_inspecciones'))
+
+    return render_template(f'{PATH_URL_INSPECCION}/detalle_inspeccion.html',
+                           inspeccion=inspeccion)
+
+
 # ========== RUTAS API (POST/DELETE/GET) - Comunicacion Asincrona ==========
 
 @inspeccion_bp.route('/api/crear', methods=['POST'])

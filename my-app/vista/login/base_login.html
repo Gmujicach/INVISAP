@@ -78,5 +78,10 @@
     <!-- Scripts al final del body para mejor rendimiento -->
     <script src="{{ url_for('static', filename='assets/customJS/home.js') }}"></script>
     <script src="{{ url_for('static', filename='assets/js/notifications.js') }}"></script>
+    <script>
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+      }
+    </script>
   </body>
 </html>

@@ -153,7 +153,7 @@
       const desc = (r.solicitud_descripcion || 'Sin solicitud vinculada');
       const colorSem = r.color_semaforo ? semaforoColorHex(r.color_semaforo) : null;
       const semaforo = colorSem
-        ? `<span class="semaforo-dot" style="background:${colorSem}" title="${r.estatus_semaforo || ''}"></span>`
+        ? `<span class="semaforo-dot" style="background:${colorSem}" title="${r.descripcion_semaforo || r.color_semaforo || ''}"></span>`
         : '';
       const gravedad = r.nivel_gravedad
         ? `<span class="badge bg-dark me-1">${r.nivel_gravedad}</span>` : '';

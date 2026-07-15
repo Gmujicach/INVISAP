@@ -57,14 +57,18 @@ class ContratacionModel:
             
         try:
             cursor = conexion.cursor()
+            cursor.execute("SELECT COALESCE(MAX(id_contratacion), 0) + 1 AS siguiente_id FROM contratacion")
+            fila = cursor.fetchone()
+            siguiente_id = fila[0] if fila else 1
+
             sql = """INSERT INTO contratacion (
-                descripcion, empresa_ganadora, numero_contrato, monto, 
+                id_contratacion, descripcion, empresa_ganadora, numero_contrato, monto, 
                 fecha_inicio_procedimiento, fecha_adjudicacion, tipo_contrato, 
                 modalidad, objeto, observacion, fecha_registro, empresa_rif, estado
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 1)"""
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 1)"""
             
             valores = (
-                datos.get('descripcion'), datos.get('empresa_ganadora'), 
+                siguiente_id, datos.get('descripcion'), datos.get('empresa_ganadora'), 
                 datos.get('numero_contrato'), datos.get('monto'), 
                 datos.get('fecha_inicio_procedimiento'), datos.get('fecha_adjudicacion'), 
                 datos.get('tipo_contrato'), datos.get('modalidad'), 

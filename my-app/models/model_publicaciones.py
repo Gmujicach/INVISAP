@@ -19,16 +19,22 @@ class PublicacionModel:
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
-            # Ajustado a las columnas EXACTAS de invilara.sql
+            
+            cursor.execute("SELECT COALESCE(MAX(id_publicacion), 0) + 1 AS siguiente_id FROM publicacion")
+            fila = cursor.fetchone()
+            siguiente_id = fila[0] if fila else 1
+            
             sql = """INSERT INTO publicacion 
-                     (titulo_publicacion, nombre_responsable, tipo_publicacion, fecha_publicacion, informe_avance_obra_id_informe, cuerpo_publicacion)
-                     VALUES (%s, %s, %s, %s, %s, %s)"""
+                     (id_publicacion, titulo_publicacion, nombre_responsable, tipo_publicacion, fecha_publicacion, informe_avance_obra_id_informe, estado, cuerpo_publicacion)
+                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
             valores = (
+                siguiente_id,
                 data['titulo_publicacion'], 
                 data['nombre_responsable'], 
                 data['tipo_publicacion'], 
                 data['fecha_publicacion'],
                 data['informe_avance_obra_id_informe'],
+                1,
                 data.get('cuerpo_publicacion', 'Contenido pendiente')
             )
             cursor.execute(sql, valores)

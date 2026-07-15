@@ -37,10 +37,14 @@ class PrioridadModel:
         conexion = connectionBD()
         try:
             cursor = conexion.cursor()
-            sql = """INSERT INTO prioridad (rango_prioridad, fecha_asignacion,
+            cursor.execute("SELECT COALESCE(MAX(id_gestion_prioridad), 0) + 1 AS siguiente_id FROM prioridad")
+            fila = cursor.fetchone()
+            siguiente_id = fila[0] if fila else 1
+
+            sql = """INSERT INTO prioridad (id_gestion_prioridad, rango_prioridad, fecha_asignacion,
                     responsable_ajuste, justificacion_cambio, estado)
-                    VALUES (%s, %s, %s, %s, %s)"""
-            cursor.execute(sql, (self.__rango, self.__fecha,
+                    VALUES (%s, %s, %s, %s, %s, %s)"""
+            cursor.execute(sql, (siguiente_id, self.__rango, self.__fecha,
                                  self.__responsable, self.__justificacion, self.__estado))
             conexion.commit()
             return cursor.lastrowid
@@ -99,7 +103,7 @@ class PrioridadModel:
         """
         conexion = connectionBD()
         try:
-            cursor = conexion.cursor(dictionary=True)
+            cursor = conexion.cursor(dictionary=True, buffered=True)
             cursor.execute("SELECT COUNT(*) AS total FROM prioridad WHERE estado=1")
             total = cursor.fetchone()['total']
 
@@ -115,9 +119,9 @@ class PrioridadModel:
                        MAX(s.problematica)           AS solicitud_descripcion,
                        MAX(s.tipo_solicitud)         AS tipo_solicitud,
                        MAX(g.nivel_gravedad)         AS nivel_gravedad,
-                       MAX(sm.color)                 AS color_semaforo,
-                       MAX(sm.estatus_semaforo)      AS estatus_semaforo
-                FROM prioridad p
+                        MAX(sm.color)                 AS color_semaforo,
+                        MAX(sm.descripcion)           AS descripcion_semaforo
+                 FROM prioridad p
                 LEFT JOIN solicitudes s
                        ON s.prioridad_id_gestion_prioridad = p.id_gestion_prioridad
                       AND s.estado = 1
@@ -161,7 +165,7 @@ class PrioridadModel:
 
         conexion = connectionBD()
         try:
-            cursor = conexion.cursor(dictionary=True)
+            cursor = conexion.cursor(dictionary=True, buffered=True)
             # ¿La solicitud ya tiene una prioridad propia?
             cursor.execute(
                 "SELECT prioridad_id_gestion_prioridad AS pid FROM solicitudes WHERE id_solicitudes=%s",
@@ -178,11 +182,15 @@ class PrioridadModel:
                     (rango, justificacion, responsable, pid))
                 id_prioridad = pid
             else:
+                cursor.execute("SELECT COALESCE(MAX(id_gestion_prioridad), 0) + 1 AS siguiente_id FROM prioridad")
+                fila = cursor.fetchone()
+                siguiente_id = fila[0] if fila else 1
+
                 cursor.execute(
-                    """INSERT INTO prioridad (rango_prioridad, fecha_asignacion,
+                    """INSERT INTO prioridad (id_gestion_prioridad, rango_prioridad, fecha_asignacion,
                        responsable_ajuste, justificacion_cambio, estado)
-                       VALUES (%s, %s, %s, %s, 1)""",
-                    (rango, datetime.now(), responsable, justificacion))
+                       VALUES (%s, %s, %s, %s, %s, %s)""",
+                    (siguiente_id, rango, datetime.now(), responsable, justificacion, 1))
                 id_prioridad = cursor.lastrowid
                 cursor.execute(
                     "UPDATE solicitudes SET prioridad_id_gestion_prioridad=%s WHERE id_solicitudes=%s",
@@ -198,7 +206,7 @@ class PrioridadModel:
         """Devuelve descripción, gravedad y color de semáforo de una solicitud."""
         conexion = connectionBD()
         try:
-            cursor = conexion.cursor(dictionary=True)
+            cursor = conexion.cursor(dictionary=True, buffered=True)
             cursor.execute(
                 """SELECT s.problematica AS descripcion,
                           g.nivel_gravedad,

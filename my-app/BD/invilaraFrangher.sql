@@ -392,7 +392,7 @@ INSERT INTO `particular` (`id_particular`, `nombre`, `apellido`, `persona_id_per
 
 CREATE TABLE `persona` (
   `id_persona` int(11) NOT NULL,
-  `cedula_persona` int(11) NOT NULL,
+  `cedula_persona` bigint(20) NOT NULL,
   `direccion` varchar(200) NOT NULL,
   `parroquia` varchar(45) NOT NULL,
   `municipio` varchar(45) NOT NULL,

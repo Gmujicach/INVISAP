@@ -1,0 +1,291 @@
+{% extends 'base_cpanel.html' %}
+
+{% block title %}Detalle de Obra{% endblock %}
+
+{% block body %}
+<div class="evidencia-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">
+            <span class="text-muted fw-light">Gestion /</span>
+            <span class="text-gradient">Obras</span>
+        </h4>
+        <a href="{{ url_for('obra_bp.vista_gestionar_obras') }}" class="btn btn-outline-secondary btn-custom-cta">
+            <i class="bi bi-arrow-left me-2"></i>Volver al listado
+        </a>
+    </div>
+
+    <div class="card-modern">
+        <div class="card-header-custom d-flex align-items-center">
+            <div class="header-icon-shield">
+                <i class="bi bi-building"></i>
+            </div>
+            <h5 class="mb-0">Detalle de Obra #{{ obra.id_obra }}</h5>
+            {% if obra.estado == 1 %}
+            <span class="badge-count ms-auto">Activo</span>
+            {% else %}
+            <span class="badge-count ms-auto" style="background-color: #6c757d;">Inactivo</span>
+            {% endif %}
+        </div>
+        <div class="card-body-custom">
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <div class="detail-info-card">
+                        <div class="info-item">
+                            <span class="info-label">ID Registro</span>
+                            <span class="info-value">{{ obra.id_obra }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Titulo</span>
+                            <span class="info-value">{{ obra.titulo_obra }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Ubicacion</span>
+                            <span class="info-value">{{ obra.ubicacion_obra }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Periodo Ejecucion</span>
+                            <span class="info-value">{{ obra.periodo_ejecucion }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fecha Inicio</span>
+                            <span class="info-value">{{ obra.fecha_inicio }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fecha Fin</span>
+                            <span class="info-value">{{ obra.fecha_fin }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Mediciones</span>
+                            <span class="info-value">{{ obra.mediciones_obra }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Valuaciones</span>
+                            <span class="info-value">{{ obra.valuaciones }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Avance (%)</span>
+                            <span class="info-value">{{ obra.porcentaje_avance_obra }}%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="detail-info-card">
+                        <div class="info-item">
+                            <span class="info-label">Numero Contrato</span>
+                            <span class="info-value">{{ obra.numero_contrato }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Modificaciones Contrato</span>
+                            <span class="info-value">{{ obra.modificaciones_contrato }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Certificaciones Ejecutadas</span>
+                            <span class="info-value">{{ obra.certificaciones_obras_ejecutadas }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">ID Semaforo</span>
+                            <span class="info-value">{{ obra.semaforo_id_semaforo }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">ID Contratacion</span>
+                            <span class="info-value">{{ obra.contratacion_id_contratacion }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Codigo Proyecto</span>
+                            <span class="info-value">{{ obra.gestionar_proyectos_codigo_proyecto }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Estado</span>
+                            <span class="info-value">
+                                {% if obra.estado == 1 %}
+                                    <span class="badge bg-success">Activo</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactivo</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if avances %}
+            <div class="row g-4 mt-1">
+                <div class="col-12">
+                    <div class="card-modern">
+                        <div class="card-header-custom d-flex align-items-center">
+                            <div class="header-icon-shield">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+                            <h5 class="mb-0">Avances registrados</h5>
+                        </div>
+                        <div class="card-body-custom">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID Avance</th>
+                                            <th>Fecha</th>
+                                            <th>Porcentaje</th>
+                                            <th>Gerente</th>
+                                            <th>Descripcion</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for avance in avances %}
+                                        <tr>
+                                            <td>{{ avance.id_avance }}</td>
+                                            <td>{{ avance.fecha_avance }}</td>
+                                            <td>{{ avance.porcentaje_avance }}%</td>
+                                            <td>{{ avance.gerente }}</td>
+                                            <td>{{ avance.descripcion }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="detail-actions mt-4">
+                <a href="{{ url_for('obra_bp.editar_obra', id_obra=obra.id_obra) }}"
+                   class="btn btn-primary btn-custom-cta me-2">
+                    <i class="bi bi-pencil-square me-2"></i>Modificar
+                </a>
+                <button onclick="eliminarObraJS({{ obra.id_obra }})"
+                        class="btn btn-outline-danger">
+                    <i class="bi bi-trash3 me-2"></i>Desactivar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/evidencia.css') }}">
+<style>
+    .detail-image-wrapper {
+        background-color: rgba(0,0,0,0.03);
+        border-radius: 16px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 260px;
+    }
+
+    .detail-info-card {
+        background-color: rgba(0,0,0,0.02);
+        border-radius: 16px;
+        padding: 1.5rem;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 0.85rem 0;
+        border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .info-item:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #6c757d;
+        font-weight: 700;
+    }
+
+    .info-value {
+        font-weight: 500;
+        text-align: right;
+        max-width: 60%;
+        word-break: break-word;
+    }
+
+    .detail-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    body.dark-mode .detail-image-wrapper {
+        background-color: rgba(255, 255, 255, 0.03);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-mode .detail-info-card {
+        background-color: #2b2c40;
+    }
+
+    body.dark-mode .info-item {
+        border-bottom-color: #444564;
+    }
+
+    body.dark-mode .info-label {
+        color: #a2a3b7;
+    }
+
+    body.dark-mode .info-value {
+        color: #cfcde9;
+    }
+</style>
+{% endblock %}
+
+{% block customJS %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ url_for('static', filename='js/obra_ajax.js') }}"></script>
+<script>
+    function eliminarObraJS(idObra) {
+        Swal.fire({
+            title: '¿Eliminar obra?',
+            text: 'Se aplicará borrado lógico',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/obra/eliminar/${idObra}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Eliminado',
+                                text: data.message,
+                                confirmButtonText: 'Entendido'
+                            }).then(() => {
+                                window.location.href = "{{ url_for('obra_bp.vista_gestionar_obras') }}";
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: data.message,
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error de red',
+                            text: 'No se pudo comunicar con el servidor.',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    });
+            }
+        });
+    }
+</script>
+{% endblock %}

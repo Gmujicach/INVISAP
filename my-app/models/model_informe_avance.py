@@ -264,15 +264,20 @@ class InformeAvanceModel:
             except Exception as e:
                 print(f"[DB] Error al asegurar columna poblacion_beneficiada: {e}")
 
-            sql = """INSERT INTO informe_avance_obra (fecha, estado, poblacion_beneficiada, tipo_informe, evidencia_antes, evidencia_durante, evidencia_despues, avance_id_avance) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+            sql = """INSERT INTO informe_avance_obra (id_informe, fecha, estado, poblacion_beneficiada, tipo_informe, evidencia_antes, evidencia_durante, evidencia_despues, avance_id_avance) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
             
             ev_antes = ','.join(map(str, self.__evidencias_antes)) if self.__evidencias_antes else ''
             ev_durante = ','.join(map(str, self.__evidencias_durante)) if self.__evidencias_durante else ''
             ev_despues = ','.join(map(str, self.__evidencias_despues)) if self.__evidencias_despues else ''
 
             poblacion = self.__poblacion_beneficiada or 'No especificado'
-            cur.execute(sql, (self.__fecha or datetime.now(), self.__estado, poblacion, self.__tipo_informe, ev_antes, ev_durante, ev_despues, self.__avance_id))
-            nuevo_id = cur.lastrowid
+            
+            cur.execute("SELECT COALESCE(MAX(id_informe), 0) + 1 AS siguiente_id FROM informe_avance_obra")
+            fila = cur.fetchone()
+            siguiente_id = fila[0] if fila else 1
+            
+            cur.execute(sql, (siguiente_id, self.__fecha or datetime.now(), self.__estado, poblacion, self.__tipo_informe, ev_antes, ev_durante, ev_despues, self.__avance_id))
+            nuevo_id = siguiente_id
 
             if self.__avance_id:
                 gerente_a_usar = self.__gerente or '1'

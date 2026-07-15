@@ -40,11 +40,15 @@ class GravedadObraModel:
         conexion = connectionBD()
         try:
             cursor = conexion.cursor()
-            sql = """INSERT INTO gravedad_obra (nivel_gravedad, criticidad, estado)
-                     VALUES (%s, %s, %s)"""
-            cursor.execute(sql, (self.__nivel_gravedad, self.__criticidad, self.__estado))
+            cursor.execute("SELECT COALESCE(MAX(id_gravedad), 0) + 1 AS siguiente_id FROM gravedad_obra")
+            fila = cursor.fetchone()
+            siguiente_id = fila[0] if fila else 1
+
+            sql = """INSERT INTO gravedad_obra (id_gravedad, nivel_gravedad, criticidad, estado)
+                     VALUES (%s, %s, %s, %s)"""
+            cursor.execute(sql, (siguiente_id, self.__nivel_gravedad, self.__criticidad, self.__estado))
             conexion.commit()
-            return cursor.lastrowid
+            return siguiente_id
         finally:
             cursor.close()
             conexion.close()

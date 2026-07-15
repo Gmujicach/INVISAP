@@ -36,7 +36,7 @@
                             <th>Descripcion</th>
                             <th style="width: 120px;">Etapa</th>
                             <th style="width: 160px;">Fecha Registro</th>
-                            <th class="text-center" style="width: 140px;">Acciones</th>
+                                <th class="text-center" style="width: 160px;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,17 +71,22 @@
                                     <small class="text-muted-soft">{{ evidencia.fecha_registro.strftime('%H:%M') }}</small>
                                 </div>
                             </td>
-                            <td>
-                                <div class="action-group-modern">
-                                    <a href="{{ url_for('evidencia_bp.show_modificar_evidencia', id_evidencia=evidencia.id_evidencia) }}" 
-                                       class="btn-icon-modern btn-edit-modern"
-                                       title="Modificar evidencia">
-                                        <i class="bi bi-pencil-square"></i>
+                            <td class="text-center">
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a href="{{ url_for('evidencia_bp.show_detalle_evidencia', id_evidencia=evidencia.id_evidencia) }}" 
+                                       class="btn btn-outline-info btn-sm"
+                                       title="Ver detalle">
+                                        <i class="bx bx-show"></i>
                                     </a>
-                                    <button onclick="eliminarEvidenciaJS({{ evidencia.id_evidencia }})" 
-                                            class="btn-icon-modern btn-delete-modern"
-                                            title="Desactivar evidencia">
-                                        <i class="bi bi-trash3"></i>
+                                    <a href="{{ url_for('evidencia_bp.show_modificar_evidencia', id_evidencia=evidencia.id_evidencia) }}"
+                                       class="btn btn-outline-warning btn-sm"
+                                       title="Editar">
+                                        <i class="bx bx-edit"></i>
+                                    </a>
+                                    <button onclick="eliminarEvidenciaJS({{ evidencia.id_evidencia }})"
+                                            class="btn btn-outline-danger btn-sm"
+                                            title="Eliminar">
+                                        <i class="bx bx-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -109,5 +114,5 @@
 
 {% block customJS %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{ url_for('static', filename='assets/js/evidencia.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/js/evidencias.js') }}"></script>
 {% endblock %}

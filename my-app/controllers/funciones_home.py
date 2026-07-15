@@ -19,7 +19,37 @@ import openpyxl  # Para generar el excel
 from flask import send_file
 
 
+def _asegurar_tabla_tbl_empleados():
+    try:
+        conexion_MySQLdb = connectionBD()
+        if conexion_MySQLdb:
+            cursor = conexion_MySQLdb.cursor()
+            try:
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS `tbl_empleados` (
+                        `id_empleado` int NOT NULL AUTO_INCREMENT,
+                        `nombre_empleado` varchar(50) NOT NULL,
+                        `apellido_empleado` varchar(50) NOT NULL,
+                        `sexo_empleado` tinyint(1) NOT NULL,
+                        `telefono_empleado` varchar(15) NOT NULL,
+                        `email_empleado` varchar(50) NOT NULL,
+                        `profesion_empleado` varchar(50) NOT NULL,
+                        `foto_empleado` varchar(255) DEFAULT NULL,
+                        `salario_empleado` int NOT NULL,
+                        `fecha_registro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                        PRIMARY KEY (`id_empleado`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+                """)
+                conexion_MySQLdb.commit()
+            finally:
+                cursor.close()
+                conexion_MySQLdb.close()
+    except Exception as e:
+        print(f"[DB] No se pudo asegurar tabla tbl_empleados: {e}")
+
+
 def procesar_form_empleado(dataForm, foto_perfil):
+    _asegurar_tabla_tbl_empleados()
     # Formateando Salario
     salario_sin_puntos = re.sub('[^0-9]+', '', dataForm['salario_empleado'])
     # convertir salario a INT
@@ -78,6 +108,7 @@ def procesar_imagen_perfil(foto):
 
 # Lista de Empleados
 def sql_lista_empleadosBD():
+    _asegurar_tabla_tbl_empleados()
     try:
         conexion_MySQLdb = connectionBD()
         cursor = conexion_MySQLdb.cursor(dictionary=True)
@@ -110,6 +141,7 @@ def sql_lista_empleadosBD():
 
 # Detalles del Empleado
 def sql_detalles_empleadosBD(idEmpleado):
+    _asegurar_tabla_tbl_empleados()
     try:
         conexion_MySQLdb = connectionBD()
         cursor = conexion_MySQLdb.cursor(dictionary=True)
@@ -147,6 +179,7 @@ def sql_detalles_empleadosBD(idEmpleado):
 
 # Funcion Empleados Informe (Reporte)
 def empleadosReporte():
+    _asegurar_tabla_tbl_empleados()
     try:
         conexion_MySQLdb = connectionBD()
         cursor = conexion_MySQLdb.cursor(dictionary=True)
@@ -182,6 +215,7 @@ def empleadosReporte():
 
 
 def buscarEmpleadoBD(search):
+    _asegurar_tabla_tbl_empleados()
     try:
         conexion_MySQLdb = connectionBD()
         mycursor = conexion_MySQLdb.cursor(dictionary=True)
@@ -213,6 +247,7 @@ def buscarEmpleadoBD(search):
 
 
 def buscarEmpleadoUnico(id):
+    _asegurar_tabla_tbl_empleados()
     try:
         conexion_MySQLdb = connectionBD()
         mycursor = conexion_MySQLdb.cursor(dictionary=True)
@@ -243,6 +278,7 @@ def buscarEmpleadoUnico(id):
 
 
 def procesar_actualizacion_form(data):
+    _asegurar_tabla_tbl_empleados()
     try:
         conexion_MySQLdb = connectionBD()
         cursor = conexion_MySQLdb.cursor()
@@ -320,6 +356,7 @@ def lista_usuariosBD():
 
 # Eliminar uEmpleado
 def eliminarEmpleado(id_empleado, foto_empleado):
+    _asegurar_tabla_tbl_empleados()
     try:
         conexion_MySQLdb = connectionBD()
         cursor = conexion_MySQLdb.cursor()

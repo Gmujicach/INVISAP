@@ -195,10 +195,13 @@ class InspeccionModel:
 
     @staticmethod
     def __obtener_siguiente_id_inspeccion(conn):
-        with conn.cursor(dictionary=True) as cur_id:
+        cur_id = conn.cursor(dictionary=True)
+        try:
             cur_id.execute("SELECT COALESCE(MAX(id_inspeccion), 0) + 1 AS siguiente FROM inspeccion")
             fila = cur_id.fetchone()
-        return int(fila['siguiente']) if fila else 1
+            return int(fila['siguiente']) if fila else 1
+        finally:
+            cur_id.close()
 
     def __guardar_inspeccion_db(self):
         conn = None
@@ -236,19 +239,19 @@ class InspeccionModel:
 
             tiene_estado = self.__columna_existe('inspeccion', 'estado')
             if tiene_estado:
-                columnas = "(inspector, fecha_inspeccion, tipo_inspeccion, observaciones, obra_id_obra, obra_semaforo_id_semaforo, obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto, obra_id_obra1, obra_semaforo_id_semaforo1, obra_contratacion_id_contratacion1, obra_gestionar_proyectos_codigo_proyecto1, evidencia_id_evidencia, estado)"
-                valores = "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
+                columnas = "(id_inspeccion, inspector, fecha_inspeccion, tipo_inspeccion, observaciones, obra_id_obra, obra_semaforo_id_semaforo, obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto, obra_id_obra1, obra_semaforo_id_semaforo1, obra_contratacion_id_contratacion1, obra_gestionar_proyectos_codigo_proyecto1, evidencia_id_evidencia, estado)"
+                valores = "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
                 params = (
-                    self.__inspector, self.__fecha_inspeccion, self.__tipo_inspeccion, self.__observaciones,
+                    self.__obtener_siguiente_id_inspeccion(conn), self.__inspector, self.__fecha_inspeccion, self.__tipo_inspeccion, self.__observaciones,
                     self.__obra_id_obra, semaforo_id, contratacion_id, codigo_proyecto,
                     self.__obra_id_obra, semaforo_id, contratacion_id, codigo_proyecto,
                     self.__evidencia_id_evidencia, 1
                 )
             else:
-                columnas = "(inspector, fecha_inspeccion, tipo_inspeccion, observaciones, obra_id_obra, obra_semaforo_id_semaforo, obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto, obra_id_obra1, obra_semaforo_id_semaforo1, obra_contratacion_id_contratacion1, obra_gestionar_proyectos_codigo_proyecto1, evidencia_id_evidencia)"
-                valores = "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
+                columnas = "(id_inspeccion, inspector, fecha_inspeccion, tipo_inspeccion, observaciones, obra_id_obra, obra_semaforo_id_semaforo, obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto, obra_id_obra1, obra_semaforo_id_semaforo1, obra_contratacion_id_contratacion1, obra_gestionar_proyectos_codigo_proyecto1, evidencia_id_evidencia)"
+                valores = "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
                 params = (
-                    self.__inspector, self.__fecha_inspeccion, self.__tipo_inspeccion, self.__observaciones,
+                    self.__obtener_siguiente_id_inspeccion(conn), self.__inspector, self.__fecha_inspeccion, self.__tipo_inspeccion, self.__observaciones,
                     self.__obra_id_obra, semaforo_id, contratacion_id, codigo_proyecto,
                     self.__obra_id_obra, semaforo_id, contratacion_id, codigo_proyecto,
                     self.__evidencia_id_evidencia
@@ -413,9 +416,12 @@ class InspeccionModel:
             tiene_estado = self.__columna_existe('inspeccion', 'estado')
             where = "AND i.estado = 1" if tiene_estado else ""
             cur.execute(f"""
-                SELECT i.*, e.nombre_empleado AS inspector_nombre
+                SELECT i.*, e.nombre_empleado AS inspector_nombre,
+                       ev.id_evidencia, ev.fotos AS evidencia_fotos,
+                       ev.url_archivos AS evidencia_url, ev.etapa AS evidencia_etapa
                 FROM inspeccion i
                 LEFT JOIN empleados e ON e.id_empleados = i.inspector
+                LEFT JOIN evidencia ev ON ev.id_evidencia = i.evidencia_id_evidencia AND ev.estado = 1
                 WHERE i.id_inspeccion = %s {where}
             """, (self.__id_inspeccion,))
             return cur.fetchone()

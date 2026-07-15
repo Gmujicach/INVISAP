@@ -71,3 +71,51 @@ canvas {
         max-height: 280px;
     }
 }
+
+/* ============================================
+   Modo oscuro - Reportes Estadísticos
+   ============================================ */
+body.dark-mode {
+  color: #cfcde9;
+}
+body.dark-mode .card {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+body.dark-mode .card-header {
+  background-color: #2b2c40 !important;
+  border-bottom-color: #444564 !important;
+}
+body.dark-mode .chart-type-select {
+  background-color: #232333;
+  border-color: #444564;
+  color: #cfcde9;
+}
+body.dark-mode .chart-type-select:hover,
+body.dark-mode .chart-type-select:focus {
+  background-color: #2b2c40;
+  border-color: #08b324;
+}
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: #232333;
+  border-color: #444564;
+  color: #cfcde9;
+}
+body.dark-mode .input-group-text {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9;
+}
+body.dark-mode .btn-light {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .text-dark {
+  color: #cfcde9 !important;
+}
+body.dark-mode .text-muted {
+  color: #a2a3b7 !important;
+}

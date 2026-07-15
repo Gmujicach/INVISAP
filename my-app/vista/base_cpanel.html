@@ -232,30 +232,25 @@
       }
     </style>
   </head>
-  <body class="transition-all">
+    <body class="transition-all">
     <script>
-      (function() {
-        var logo = document.querySelector('.app-brand-logo img');
-        var darkSwitch = document.getElementById('dark-mode-switch');
-
-        function updateLogo() {
-          if (document.body.classList.contains('dark-mode') && logo && logo.dataset.darkSrc) {
-            logo.src = logo.dataset.darkSrc;
-          } else if (logo && logo.dataset.lightSrc) {
-            logo.src = logo.dataset.lightSrc;
+      /* Aplica el tema guardado antes de pintar para evitar parpadeo (FOUC) */
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          var dark = t === 'dark';
+          var d = document.documentElement;
+          if (dark) {
+            document.body.classList.add('dark-mode');
+            d.classList.add('dark-mode');
+            d.classList.remove('light-style');
+            d.classList.add('dark-style');
+            d.setAttribute('data-theme', 'theme-dark');
+          } else {
+            d.classList.add('light-style');
+            d.setAttribute('data-theme', 'theme-default');
           }
-        }
-
-        if (localStorage.getItem('theme') === 'dark') {
-          document.body.classList.add('dark-mode');
-        }
-        updateLogo();
-
-        if (darkSwitch) {
-          darkSwitch.addEventListener('change', function() {
-            setTimeout(updateLogo, 50);
-          });
-        }
+        } catch (e) {}
       })();
     </script>
     {% include 'home/pre_loader.html' %}
@@ -275,7 +270,7 @@
         <!-- Acceso persistente a Mi Perfil -->
         <div class="corner-profile-container">
           <div class="btn-group">
-            <button type="button" class="profile-link-fixed dropdown-toggle border-0 shadow-sm" data-bs-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="profile-link-fixed dropdown-toggle border-0 shadow-sm" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
               <img id="corner-profile-img"
                    src="{{ url_for('static', filename=perfil.perfil_avatar if perfil.perfil_avatar else 'assets/img/avatars/1.png') }}"
                    class="corner-profile-avatar"
@@ -296,8 +291,8 @@
               <li>
                 <div class="dropdown-item rounded d-flex align-items-center justify-content-between py-2">
                   <div class="d-flex align-items-center">
-                    <i id="theme-icon" class="bi bi-sun-fill me-2 fs-5 text-warning"></i>
-                    <span>Modo Oscuro</span>
+                     <i id="theme-icon" class="bi bi-sun-fill me-2 fs-5 text-warning"></i>
+                     <span id="theme-label">Modo Claro</span>
                   </div>
                   <div class="form-check form-switch mb-0">
                     <input class="form-check-input cursor-pointer" type="checkbox" id="dark-mode-switch" role="switch" aria-label="Activar modo oscuro">
@@ -403,6 +398,319 @@
     <script src="{{ url_for('static', filename='assets/js/login.js') }}"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var logo = document.querySelector('.app-brand-logo img');
+        var darkSwitch = document.getElementById('dark-mode-switch');
+        var themeIcon = document.getElementById('theme-icon');
+        var themeLabel = document.getElementById('theme-label');
+
+        function updateLogo() {
+          if (!logo) return;
+          if (document.body.classList.contains('dark-mode') && logo.dataset.darkSrc) {
+            logo.src = logo.dataset.darkSrc;
+          } else if (logo.dataset.lightSrc) {
+            logo.src = logo.dataset.lightSrc;
+          }
+        }
+
+        function applyTheme(isDark) {
+          document.body.classList.toggle('dark-mode', isDark);
+          document.documentElement.classList.toggle('dark-mode', isDark);
+          document.documentElement.classList.toggle('light-style', !isDark);
+          document.documentElement.classList.toggle('dark-style', isDark);
+          document.documentElement.setAttribute('data-theme', isDark ? 'theme-dark' : 'theme-default');
+          if (darkSwitch) darkSwitch.checked = isDark;
+          if (themeIcon) themeIcon.className = isDark ? 'bi bi-moon-stars-fill me-2 fs-5 text-info' : 'bi bi-sun-fill me-2 fs-5 text-warning';
+          if (themeLabel) themeLabel.textContent = isDark ? 'Modo Oscuro' : 'Modo Claro';
+          updateLogo();
+        }
+
+        var isDark = document.body.classList.contains('dark-mode');
+        if (darkSwitch) darkSwitch.checked = isDark;
+        if (themeIcon) themeIcon.className = isDark ? 'bi bi-moon-stars-fill me-2 fs-5 text-info' : 'bi bi-sun-fill me-2 fs-5 text-warning';
+        if (themeLabel) themeLabel.textContent = isDark ? 'Modo Oscuro' : 'Modo Claro';
+        updateLogo();
+
+        if (darkSwitch) {
+          darkSwitch.addEventListener('change', function() {
+            var dark = darkSwitch.checked;
+            localStorage.setItem('theme', dark ? 'dark' : 'light');
+            applyTheme(dark);
+          });
+          var themeItem = darkSwitch.closest('.dropdown-item');
+          if (themeItem) {
+            themeItem.addEventListener('click', function(e) {
+              e.stopPropagation();
+            });
+          }
+        }
+      });
+    </script>
+    <style>
+      body.dark-mode .card[style*="background-color: #00b33c"],
+      body.dark-mode .card[style*="background-color: rgb(0, 179, 60)"],
+      body.dark-mode .card.bg-primary,
+      body.dark-mode .card.bg-white,
+      body.dark-mode .card.bg-light {
+        background-color: #2b2c40 !important;
+        border-color: #444564 !important;
+      }
+      body.dark-mode .card[style*="background-color: #00b33c"] h6,
+      body.dark-mode .card[style*="background-color: rgb(0, 179, 60)"] h6,
+      body.dark-mode .card.bg-primary h6,
+      body.dark-mode .card.bg-white h6,
+      body.dark-mode .card.bg-light h6 {
+        color: #a2a3b7 !important;
+      }
+      body.dark-mode .card[style*="background-color: #00b33c"] h2,
+      body.dark-mode .card[style*="background-color: rgb(0, 179, 60)"] h2,
+      body.dark-mode .card.bg-primary h2,
+      body.dark-mode .card.bg-white h2,
+      body.dark-mode .card.bg-light h2 {
+        color: #fff !important;
+      }
+      body.dark-mode .card[style*="background-color: #00b33c"] .text-white-50,
+      body.dark-mode .card[style*="background-color: rgb(0, 179, 60)"] .text-white-50 {
+        color: #a2a3b7 !important;
+      }
+      body.dark-mode .card-header.bg-white,
+      body.dark-mode .card-header[style*="background-color: #fff"],
+      body.dark-mode .card-header[style*="background-color: rgb(255, 255, 255)"] {
+        background-color: #2b2c40 !important;
+        border-bottom-color: #444564 !important;
+      }
+      body.dark-mode .table-light,
+      body.dark-mode .table-light tbody,
+      body.dark-mode .table-light thead th,
+      body.dark-mode thead.table-light th {
+        background-color: #2b2c40 !important;
+        color: #cfcde9 !important;
+        border-bottom-color: #444564 !important;
+      }
+      body.dark-mode .input-group-text.bg-white,
+      body.dark-mode .input-group-text[style*="background-color: #fff"],
+      body.dark-mode .input-group-text[style*="background-color: rgb(255, 255, 255)"] {
+        background-color: #2b2c40 !important;
+        border-color: #444564 !important;
+        color: #cfcde9 !important;
+      }
+      body.dark-mode .badge.bg-light,
+      body.dark-mode .badge.bg-info,
+      body.dark-mode .badge.bg-dark {
+        background-color: #2b2c40 !important;
+        color: #cfcde9 !important;
+        border-color: #444564 !important;
+      }
+      body.dark-mode .badge.bg-success {
+        background-color: #153725 !important;
+        color: #75b798 !important;
+      }
+      body.dark-mode .badge.bg-warning {
+        background-color: #3d320e !important;
+        color: #ffda6a !important;
+      }
+      body.dark-mode .badge.bg-danger {
+        background-color: #3d1f21 !important;
+        color: #f87171 !important;
+      }
+      body.dark-mode .badge.bg-secondary {
+        background-color: #3d3d3d !important;
+        color: #cfcde9 !important;
+      }
+      body.dark-mode .badge-count[style*="background-color: #6c757d"],
+      body.dark-mode .badge-count[style*="background-color: rgb(108, 117, 125)"] {
+        background-color: #3d3d3d !important;
+        color: #cfcde9 !important;
+      }
+      body.dark-mode div[style*="background-color: #f8f9fa"],
+      body.dark-mode div[style*="background-color: rgb(248, 249, 250)"],
+      body.dark-mode div[style*="background-color: #ddd"],
+      body.dark-mode div[style*="background-color: rgb(221, 221, 221)"] {
+        background-color: #2b2c40 !important;
+        border-color: #444564 !important;
+        color: #cfcde9 !important;
+      }
+      body.dark-mode div[style*="border-left: 4px solid"],
+      body.dark-mode div[style*="border-left:4px solid"] {
+        background-color: #2b2c40 !important;
+      }
+      body.dark-mode div[style*="background-color: #F9A800"],
+      body.dark-mode div[style*="background-color: rgb(249, 168, 0)"],
+      body.dark-mode .card[style*="background-color: #F9A800"],
+      body.dark-mode .card[style*="background-color: rgb(249, 168, 0)"] {
+        background-color: #3d320e !important;
+        color: #ffda6a !important;
+      }
+      body.dark-mode .btn[style*="background-color: #08b324"],
+      body.dark-mode .btn[style*="background-color: rgb(8, 179, 36)"] {
+        background-color: #08b324 !important;
+        border-color: #08b324 !important;
+        color: #fff !important;
+      }
+      body.dark-mode .text-secondary,
+      body.dark-mode .text-muted,
+      body.dark-mode .form-label,
+      body.dark-mode .text-dark,
+      body.dark-mode .text-body,
+      body.dark-mode .text-heading {
+        color: #a2a3b7 !important;
+      }
+      body.dark-mode .table thead th,
+      body.dark-mode .table-informe-avance thead th,
+      body.dark-mode .table-inspecciones-modern thead th,
+      body.dark-mode .table-evidencias-modern thead th,
+      body.dark-mode .table-bitacora th,
+      body.dark-mode .table-respaldo thead th {
+        background-color: #2b2c40 !important;
+        color: #cfcde9 !important;
+        border-bottom-color: #444564 !important;
+      }
+      body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(255, 255, 255, 0.02) !important;
+      }
+      body.dark-mode .table-striped tbody tr:nth-of-type(even) {
+        background-color: #323248 !important;
+      }
+      body.dark-mode .table-hover tbody tr:hover {
+        background-color: #323248 !important;
+      }
+      body.dark-mode .modal-content {
+        background-color: #2b2c40 !important;
+        border-color: #444564 !important;
+      }
+      body.dark-mode .modal-header,
+      body.dark-mode .modal-footer {
+        background-color: #232333 !important;
+        border-color: #444564 !important;
+      }
+      body.dark-mode .modal-title {
+        color: #cfcde9 !important;
+      }
+      body.dark-mode .form-control,
+      body.dark-mode .form-select {
+        background-color: #232333 !important;
+        border-color: #444564 !important;
+        color: #cfcde9 !important;
+      }
+      body.dark-mode .form-control::placeholder,
+      body.dark-mode .form-select::placeholder {
+        color: #8a8b9e !important;
+      }
+      body.dark-mode input:disabled,
+      body.dark-mode textarea:disabled,
+      body.dark-mode select:disabled {
+        background-color: #1e1e2d !important;
+        border-color: #444564 !important;
+        color: #a2a3b7 !important;
+        opacity: 1 !important;
+      }
+      body.dark-mode .card-estadistica {
+        background-color: #2b2c40 !important;
+        border-radius: 15px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
+      }
+      body.dark-mode .card-estadistica.card-aprobados {
+        background: #153725 !important;
+        color: #75b798 !important;
+      }
+      body.dark-mode .card-estadistica.card-culminados {
+        background: #0d1b3e !important;
+        color: #90b8e8 !important;
+      }
+      body.dark-mode .card-estadistica.bg-warning {
+        background: #3d320e !important;
+        color: #ffda6a !important;
+      }
+      body.dark-mode .card-estadistica.bg-info {
+        background: #0d1b3e !important;
+        color: #90b8e8 !important;
+      }
+      body.dark-mode .header-green {
+        background: linear-gradient(45deg, #08b324, #0bc92a) !important;
+        color: white !important;
+      }
+      body.dark-mode .header-green h4,
+      body.dark-mode .header-green h5,
+      body.dark-mode .header-green span {
+        color: white !important;
+      }
+      body.dark-mode .password-toggle-btn,
+      body.dark-mode .input-group-text[style*="background-color: #fff"],
+      body.dark-mode .input-group-text[style*="background-color: rgb(255, 255, 255)"] {
+        background-color: #2b2c40 !important;
+        border-color: #444564 !important;
+        color: #cfcde9 !important;
+      }
+      body.dark-mode .card-modern,
+      body.dark-mode .card-modern .card-header-custom {
+        background-color: #2b2c40 !important;
+        border-color: #444564 !important;
+      }
+      body.dark-mode .bg-menu-theme {
+        background-color: #2b2c40 !important;
+        color: #cfcde9 !important;
+      }
+      body.dark-mode .bg-navbar-theme {
+        background-color: #2b2c40 !important;
+        color: #cfcde9 !important;
+      }
+      body.dark-mode .bg-footer-theme {
+        background-color: #2b2c40 !important;
+        color: #cfcde9 !important;
+      }
+      body.dark-mode .menu-item.active >.menu-link {
+        color: #179742 !important;
+        background-color: #232333 !important;
+      }
+      body.dark-mode .menu-item.active:not(.open) >.menu-link .menu-icon {
+        color: #179742 !important;
+      }
+      body.dark-mode .menu-item .menu-sub .menu-item.active .menu-icon {
+        color: #179742 !important;
+      }
+      body.dark-mode .menu-sub >.menu-item >.menu-link:before {
+        background-color: #444564 !important;
+      }
+      body.dark-mode .menu-sub >.menu-item.active>.menu-link.menu-toggle:before {
+        background-color: #179742 !important;
+        border: 3px solid #2b2c40 !important;
+      }
+      body.dark-mode .app-brand .layout-menu-toggle {
+        background-color: #179742 !important;
+      }
+      body.dark-mode .app-brand .layout-menu-toggle i {
+        color: #fff !important;
+      }
+      body.dark-mode .menu-vertical .app-brand {
+        border-color: #08b324 !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.4) !important;
+      }
+      body.dark-mode .layout-navbar {
+        background-color: #2b2c40 !important;
+        color: #cfcde9 !important;
+      }
+      body.dark-mode .layout-navbar .navbar-nav >.nav-link {
+        color: #a2a3b7 !important;
+      }
+      body.dark-mode .layout-navbar .navbar-nav >.nav-link:hover {
+        color: #fff !important;
+      }
+      body.dark-mode .layout-navbar .navbar-brand,
+      body.dark-mode .layout-navbar .navbar-brand a {
+        color: #cfcde9 !important;
+      }
+      body.dark-mode .layout-navbar .navbar-search-wrapper .navbar-search-icon,
+      body.dark-mode .layout-navbar .navbar-search-wrapper .search-input {
+        color: #cfcde9 !important;
+      }
+      body.dark-mode .layout-navbar .navbar-toggler {
+        border-color: #444564 !important;
+      }
+      body.dark-mode .layout-navbar .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23cfcde9'/%3e%3c/svg%3e") !important;
+      }
+    </style>
     <script>
       // --- Senior Logic: Auto-dismiss Notifications ---
       document.addEventListener('DOMContentLoaded', function() {

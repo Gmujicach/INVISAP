@@ -1,6 +1,31 @@
 from conexion.conexionBD import connectionBD_invilara
 
 class GerenciaModel:
+    def __init__(self):
+        self._asegurar_tabla_gerencias()
+
+    def _asegurar_tabla_gerencias(self):
+        try:
+            conn = connectionBD_invilara()
+            if conn:
+                cur = conn.cursor()
+                try:
+                    cur.execute("""
+                        CREATE TABLE IF NOT EXISTS `gerencias` (
+                            `id_gerencias` int NOT NULL AUTO_INCREMENT,
+                            `nombre_gerencia` varchar(100) NOT NULL,
+                            `direccion_gerencia` varchar(100) NOT NULL,
+                            `informe_avance_obra_id_informe` int NOT NULL,
+                            PRIMARY KEY (`id_gerencias`)
+                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+                    """)
+                    conn.commit()
+                finally:
+                    cur.close()
+                    conn.close()
+        except Exception as e:
+            print(f"[DB] No se pudo asegurar tabla gerencias: {e}")
+
     def obtener_todas_las_gerencias(self):
         conexion = None
         try:
@@ -45,7 +70,7 @@ class GerenciaModel:
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor(dictionary=True)
-            cursor.execute("SELECT id_informe, tipo_obras FROM informe_avance_obra")
+            cursor.execute("SELECT id_informe, tipo_informe FROM informe_avance_obra")
             return cursor.fetchall()
         except Exception as e:
             print(f"Error al obtener informes: {e}")

@@ -257,3 +257,871 @@ body.dark-mode .menu-item:hover > .menu-link i {
 .menu-item:hover > .menu-link i {
   color: #fff !important;
 }
+
+/* ============================================
+   Global Dark Mode Overrides (Bootstrap utilities)
+   ============================================ */
+body.dark-mode {
+  color: #cfcde9;
+}
+body.dark-mode .bg-white,
+body.dark-mode .bg-light {
+  background-color: #2b2c40 !important;
+}
+body.dark-mode .text-dark,
+body.dark-mode .text-body,
+body.dark-mode .text-heading,
+body.dark-mode .form-label {
+  color: #cfcde9 !important;
+}
+body.dark-mode .text-muted {
+  color: #a2a3b7 !important;
+}
+body.dark-mode .border-bottom {
+  border-bottom-color: #444564 !important;
+}
+body.dark-mode .card {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .card-header,
+body.dark-mode .card-footer {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .dropdown-menu {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .dropdown-item {
+  color: #cfcde9 !important;
+}
+body.dark-mode .dropdown-item:hover,
+body.dark-mode .dropdown-item:focus {
+  background-color: #323248 !important;
+  color: #fff !important;
+}
+body.dark-mode .modal-content {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .modal-header,
+body.dark-mode .modal-footer {
+  background-color: #232333 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .modal-title {
+  color: #cfcde9 !important;
+}
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: #232333;
+  border-color: #444564;
+  color: #cfcde9;
+}
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+  background-color: #232333;
+  border-color: #08b324;
+  color: #cfcde9;
+}
+body.dark-mode .form-control::placeholder,
+body.dark-mode .form-select::placeholder {
+  color: #8a8b9e;
+}
+body.dark-mode input:disabled,
+body.dark-mode input[readonly],
+body.dark-mode textarea:disabled,
+body.dark-mode select:disabled {
+  background-color: #1e1e2d !important;
+  border-color: #444564 !important;
+  color: #a2a3b7 !important;
+  opacity: 1 !important;
+}
+body.dark-mode .input-group-text {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .table {
+  color: #cfcde9;
+}
+body.dark-mode .table :is(td, th) {
+  border-color: #444564 !important;
+}
+body.dark-mode .table thead th {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+  border-bottom-color: #444564 !important;
+}
+body.dark-mode .table tbody tr:hover {
+  background-color: #323248 !important;
+}
+body.dark-mode .badge.bg-light {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .badge.bg-dark {
+  background-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .alert {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .alert-success {
+  background-color: #153725 !important;
+  border-color: #1e4d2b !important;
+  color: #75b798 !important;
+}
+body.dark-mode .alert-danger {
+  background-color: #3d1f21 !important;
+  border-color: #5c2a2e !important;
+  color: #f87171 !important;
+}
+body.dark-mode .alert-warning {
+  background-color: #3d320e !important;
+  border-color: #5c4a1a !important;
+  color: #ffda6a !important;
+}
+body.dark-mode .alert-info {
+  background-color: #0d1b3e !important;
+  border-color: #152a5c !important;
+  color: #90b8e8 !important;
+}
+body.dark-mode .list-group-item {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .nav-tabs {
+  border-bottom-color: #444564 !important;
+}
+body.dark-mode .nav-tabs .nav-link {
+  color: #a2a3b7 !important;
+  background-color: transparent !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .nav-tabs .nav-link.active {
+  background-color: #2b2c40 !important;
+  border-color: #444564 #444564 #2b2c40 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .pagination .page-link {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .pagination .page-item.active .page-link {
+  background-color: #08b324 !important;
+  border-color: #08b324 !important;
+  color: #fff !important;
+}
+body.dark-mode .pagination .page-item.disabled .page-link {
+  color: #6c757d !important;
+  background-color: #232333 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .pagination .page-link:hover {
+  background-color: #323248 !important;
+  color: #4ade80 !important;
+}
+body.dark-mode .shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+}
+body.dark-mode .shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3) !important;
+}
+body.dark-mode .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3) !important;
+}
+body.dark-mode .toast {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .toast-header {
+  background-color: #232333 !important;
+  color: #cfcde9 !important;
+  border-bottom-color: #444564 !important;
+}
+
+/* ============================================
+   Global Dark Mode Overrides - Bootstrap Components
+   ============================================ */
+body.dark-mode .btn {
+  border-color: #444564;
+}
+body.dark-mode .btn-primary {
+  background-color: #08b324 !important;
+  border-color: #08b324 !important;
+  color: #fff !important;
+}
+body.dark-mode .btn-primary:hover,
+body.dark-mode .btn-primary:focus {
+  background-color: #06a020 !important;
+  border-color: #06a020 !important;
+  color: #fff !important;
+}
+body.dark-mode .btn-outline-primary {
+  color: #4ade80 !important;
+  border-color: #4ade80 !important;
+}
+body.dark-mode .btn-outline-primary:hover,
+body.dark-mode .btn-outline-primary:focus {
+  background-color: #4ade80 !important;
+  border-color: #4ade80 !important;
+  color: #000 !important;
+}
+body.dark-mode .btn-secondary {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: #fff !important;
+}
+body.dark-mode .btn-outline-secondary {
+  color: #cfcde9 !important;
+  border-color: #6c757d !important;
+}
+body.dark-mode .btn-outline-secondary:hover {
+  background-color: #6c757d !important;
+  color: #fff !important;
+}
+body.dark-mode .btn-success {
+  background-color: #08b324 !important;
+  border-color: #08b324 !important;
+  color: #fff !important;
+}
+body.dark-mode .btn-outline-success {
+  color: #4ade80 !important;
+  border-color: #4ade80 !important;
+}
+body.dark-mode .btn-outline-success:hover {
+  background-color: #4ade80 !important;
+  border-color: #4ade80 !important;
+  color: #000 !important;
+}
+body.dark-mode .btn-danger {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: #fff !important;
+}
+body.dark-mode .btn-outline-danger {
+  color: #f87171 !important;
+  border-color: #f87171 !important;
+}
+body.dark-mode .btn-outline-danger:hover {
+  background-color: #f87171 !important;
+  border-color: #f87171 !important;
+  color: #000 !important;
+}
+body.dark-mode .btn-warning {
+  background-color: #f1c40f !important;
+  border-color: #f1c40f !important;
+  color: #000 !important;
+}
+body.dark-mode .btn-outline-warning {
+  color: #ffda6a !important;
+  border-color: #f1c40f !important;
+}
+body.dark-mode .btn-outline-warning:hover {
+  background-color: #f1c40f !important;
+  border-color: #f1c40f !important;
+  color: #000 !important;
+}
+body.dark-mode .btn-info {
+  background-color: #0dcaf0 !important;
+  border-color: #0dcaf0 !important;
+  color: #000 !important;
+}
+body.dark-mode .btn-outline-info {
+  color: #67c4d6 !important;
+  border-color: #0dcaf0 !important;
+}
+body.dark-mode .btn-outline-info:hover {
+  background-color: #0dcaf0 !important;
+  border-color: #0dcaf0 !important;
+  color: #000 !important;
+}
+body.dark-mode .btn-light {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .btn-outline-light {
+  color: #cfcde9 !important;
+  border-color: #6c757d !important;
+}
+body.dark-mode .btn-outline-light:hover {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .btn-dark {
+  background-color: #444564 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .btn-outline-dark {
+  color: #8a8b9e !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .btn-outline-dark:hover {
+  background-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .btn-link {
+  color: #4ade80 !important;
+}
+body.dark-mode .btn-link:hover {
+  color: #08b324 !important;
+}
+body.dark-mode .table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+body.dark-mode .table-striped tbody tr:nth-of-type(even) {
+  background-color: #323248 !important;
+}
+body.dark-mode .table-hover tbody tr:hover {
+  background-color: #323248 !important;
+}
+body.dark-mode .table-bordered :is(td, th) {
+  border-color: #444564 !important;
+}
+body.dark-mode .thead-light th {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .thead-dark th {
+  background-color: #1e1e2d !important;
+  color: #cfcde9 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .badge.bg-primary {
+  background-color: #08b324 !important;
+}
+body.dark-mode .badge.bg-success {
+  background-color: #153725 !important;
+  color: #75b798 !important;
+}
+body.dark-mode .badge.bg-danger {
+  background-color: #3d1f21 !important;
+  color: #f87171 !important;
+}
+body.dark-mode .badge.bg-warning {
+  background-color: #3d320e !important;
+  color: #ffda6a !important;
+}
+body.dark-mode .badge.bg-info {
+  background-color: #0d1b3e !important;
+  color: #90b8e8 !important;
+}
+body.dark-mode .badge.bg-secondary {
+  background-color: #3d3d3d !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .badge.bg-dark {
+  background-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .text-primary {
+  color: #4ade80 !important;
+}
+body.dark-mode .text-success {
+  color: #4ade80 !important;
+}
+body.dark-mode .text-danger {
+  color: #f87171 !important;
+}
+body.dark-mode .text-warning {
+  color: #ffda6a !important;
+}
+body.dark-mode .text-info {
+  color: #67c4d6 !important;
+}
+body.dark-mode .text-white {
+  color: #fff !important;
+}
+body.dark-mode .text-white-50 {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+body.dark-mode .bg-primary {
+  background-color: #08b324 !important;
+}
+body.dark-mode .bg-success {
+  background-color: #153725 !important;
+}
+body.dark-mode .bg-danger {
+  background-color: #3d1f21 !important;
+}
+body.dark-mode .bg-warning {
+  background-color: #3d320e !important;
+}
+body.dark-mode .bg-info {
+  background-color: #0d1b3e !important;
+}
+body.dark-mode .bg-secondary {
+  background-color: #3d3d3d !important;
+}
+body.dark-mode .border {
+  border-color: #444564 !important;
+}
+body.dark-mode .border-top {
+  border-top-color: #444564 !important;
+}
+body.dark-mode .border-bottom {
+  border-bottom-color: #444564 !important;
+}
+body.dark-mode .border-start {
+  border-left-color: #444564 !important;
+}
+body.dark-mode .border-end {
+  border-right-color: #444564 !important;
+}
+body.dark-mode .form-check-input {
+  background-color: #232333 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .form-check-input:checked {
+  background-color: #08b324 !important;
+  border-color: #08b324 !important;
+}
+body.dark-mode .form-check-input:focus {
+  border-color: #4ade80 !important;
+  box-shadow: 0 0 0 0.2rem rgba(74, 222, 128, 0.25) !important;
+}
+body.dark-mode .dropdown-divider {
+  border-top-color: #444564 !important;
+}
+body.dark-mode .breadcrumb {
+  background-color: #2b2c40 !important;
+}
+body.dark-mode .breadcrumb-item a {
+  color: #4ade80 !important;
+}
+body.dark-mode .breadcrumb-item.active {
+  color: #a2a3b7 !important;
+}
+body.dark-mode .breadcrumb-item + .breadcrumb-item::before {
+  color: #6c757d !important;
+}
+body.dark-mode .progress {
+  background-color: #232333 !important;
+}
+body.dark-mode .progress-bar {
+  background-color: #08b324 !important;
+}
+body.dark-mode .list-group-item {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .list-group-item-action:hover,
+body.dark-mode .list-group-item-action:focus {
+  background-color: #323248 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .list-group-item.active {
+  background-color: #08b324 !important;
+  border-color: #08b324 !important;
+  color: #fff !important;
+}
+body.dark-mode .accordion-item {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .accordion-button {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+  box-shadow: inset 0 -1px 0 #444564 !important;
+}
+body.dark-mode .accordion-button:not(.collapsed) {
+  background-color: #323248 !important;
+  color: #4ade80 !important;
+}
+body.dark-mode .accordion-button::after {
+  filter: invert(1) !important;
+}
+body.dark-mode .accordion-body {
+  background-color: #232333 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .tooltip .tooltip-inner {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+  border: 1px solid #444564 !important;
+}
+body.dark-mode .tooltip .tooltip-arrow::before {
+  border-top-color: #2b2c40 !important;
+}
+body.dark-mode .popover {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .popover-header {
+  background-color: #232333 !important;
+  border-bottom-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .popover-body {
+  color: #cfcde9 !important;
+}
+body.dark-mode .popover-arrow::after {
+  border-top-color: #2b2c40 !important;
+}
+body.dark-mode .navbar {
+  background-color: #2b2c40 !important;
+}
+body.dark-mode .navbar-light .navbar-nav .nav-link {
+  color: #cfcde9 !important;
+}
+body.dark-mode .navbar-light .navbar-nav .nav-link:hover,
+body.dark-mode .navbar-light .navbar-nav .nav-link:focus {
+  color: #4ade80 !important;
+}
+body.dark-mode .navbar-light .navbar-brand {
+  color: #cfcde9 !important;
+}
+body.dark-mode .navbar-light .navbar-toggler {
+  border-color: #444564 !important;
+}
+body.dark-mode .navbar-light .navbar-toggler-icon {
+  filter: invert(1) !important;
+}
+body.dark-mode .carousel-caption {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+body.dark-mode .close {
+  color: #cfcde9 !important;
+  text-shadow: none !important;
+}
+body.dark-mode .close:hover {
+  color: #fff !important;
+}
+
+/* ============================================
+   Brand Element Preservations in Dark Mode
+   ============================================ */
+body.dark-mode .header-green {
+  background: linear-gradient(45deg, #08b324, #0bc92a) !important;
+  color: white !important;
+}
+
+/* ============================================
+   Module-Specific Dark Mode Fixes
+   ============================================ */
+
+/* --- Obras / Informes / Publicaciones / Respaldos --- */
+body.dark-mode .card-respaldo .card-header.bg-white {
+  background-color: #2b2c40 !important;
+  border-bottom-color: #444564 !important;
+}
+body.dark-mode .table-informe-avance thead th {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+  border-bottom-color: #444564 !important;
+}
+body.dark-mode .card-estadistica.card-aprobados {
+  background-color: #153725 !important;
+}
+body.dark-mode .card-estadistica.card-culminados {
+  background-color: #0d1b3e !important;
+}
+body.dark-mode .text-invilara-verde {
+  color: #4ade80 !important;
+}
+body.dark-mode .btn-invilara-primary {
+  background-color: #08b324 !important;
+  border-color: #08b324 !important;
+  color: #fff !important;
+}
+body.dark-mode .btn-invilara-primary:hover {
+  background-color: #06a020 !important;
+  border-color: #06a020 !important;
+  color: #fff !important;
+}
+body.dark-mode .text-respaldo-verde {
+  color: #4ade80 !important;
+}
+
+/* ============================================
+   Inline Style Overrides - Modules Fixes
+   ============================================ */
+
+/* Proyectos: tarjeta estadistica verde */
+body.dark-mode .card[style*="background-color: #00b33c"] {
+  background-color: #153725 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .card[style*="background-color: #00b33c"] h6 {
+  color: #a2a3b7 !important;
+}
+body.dark-mode .card[style*="background-color: #00b33c"] h2 {
+  color: #ffffff !important;
+}
+
+/* Proyectos: card-header bg-white inline */
+body.dark-mode .card-header[style*="background-color: rgb(255, 255, 255)"],
+body.dark-mode .card-header[style*="background-color: #fff"],
+body.dark-mode .card-header.bg-white {
+  background-color: #2b2c40 !important;
+  border-bottom-color: #444564 !important;
+}
+
+/* Detalle obra: badge-count inactivo inline */
+body.dark-mode .badge-count[style*="background-color: #6c757d"] {
+  background-color: #3d3d3d !important;
+  color: #cfcde9 !important;
+}
+
+/* Inf avance obras: card-estadistica solid colors */
+body.dark-mode .card-estadistica.card-aprobados {
+  background: #153725 !important;
+  color: #75b798 !important;
+}
+body.dark-mode .card-estadistica.card-culminados {
+  background: #0d1b3e !important;
+  color: #90b8e8 !important;
+}
+
+body.dark-mode div[style*="background-color: #f8f9fa"][style*="border-left"] {
+  background-color: #2b2c40 !important;
+  border-left-color: #4ade80 !important;
+}
+body.dark-mode div[style*="background-color: #F9A800"] {
+  background-color: #3d320e !important;
+  color: #ffda6a !important;
+}
+
+body.dark-mode .card[style*="background-color: #F9A800"] {
+  background-color: #3d320e !important;
+  color: #ffda6a !important;
+}
+
+/* --- Cards estadisticas en Solicitudes/Proyectos --- */
+body.dark-mode .row.g-3.mb-4 .card {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .row.g-3.mb-4 .card h6 {
+  color: #a2a3b7 !important;
+}
+body.dark-mode .row.g-3.mb-4 .card h3 {
+  color: #cfcde9 !important;
+}
+body.dark-mode .row.g-3.mb-4 .card.bg-primary {
+  background-color: #153725 !important;
+}
+body.dark-mode .row.g-3.mb-4 .card.text-white h6,
+body.dark-mode .row.g-3.mb-4 .card.text-white h3 {
+  color: #fff !important;
+}
+
+/* --- Tarjetas informativas en Obras/Proyectos/Contrataciones --- */
+body.dark-mode div[style*="border-left: 4px solid"] {
+  background-color: #2b2c40 !important;
+}
+body.dark-mode div[style*="background-color: #f8f9fa"] {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+
+/* --- Tablas en modo oscuro --- */
+body.dark-mode .table thead th {
+  border-bottom-color: #444564 !important;
+}
+body.dark-mode .card-header.bg-white {
+  background-color: #2b2c40 !important;
+  border-bottom-color: #444564 !important;
+}
+body.dark-mode .input-group-text.bg-white {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .badge.bg-light {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .search-modern .form-control:focus {
+  border-color: #444564 !important;
+}
+
+/* --- Empresas --- */
+body.dark-mode .table-light {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+}
+
+/* --- Obras / Informes / Publicaciones / Respaldos --- */
+body.dark-mode .card-respaldo .card-header.bg-white {
+  background-color: #2b2c40 !important;
+  border-bottom-color: #444564 !important;
+}
+body.dark-mode .table-informe-avance thead th {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+  border-bottom-color: #444564 !important;
+}
+body.dark-mode .card-estadistica.card-aprobados {
+  background-color: #153725 !important;
+}
+body.dark-mode .card-estadistica.card-culminados {
+  background-color: #0d1b3e !important;
+}
+body.dark-mode .text-invilara-verde {
+  color: #4ade80 !important;
+}
+body.dark-mode .btn-invilara-primary {
+  background-color: #08b324 !important;
+  border-color: #08b324 !important;
+  color: #fff !important;
+}
+body.dark-mode .btn-invilara-primary:hover {
+  background-color: #06a020 !important;
+  border-color: #06a020 !important;
+  color: #fff !important;
+}
+body.dark-mode .text-respaldo-verde {
+  color: #4ade80 !important;
+}
+
+/* ============================================
+   Inline Style Overrides - Modules Fixes
+   ============================================ */
+
+/* Proyectos: tarjeta estadistica verde */
+body.dark-mode .card[style*="background-color: #00b33c"] {
+  background-color: #153725 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .card[style*="background-color: #00b33c"] h6 {
+  color: #a2a3b7 !important;
+}
+body.dark-mode .card[style*="background-color: #00b33c"] h2 {
+  color: #ffffff !important;
+}
+
+/* Proyectos: card-header bg-white */
+body.dark-mode .card-header[style*="background-color: rgb(255, 255, 255)"],
+body.dark-mode .card-header[style*="background-color: #fff"],
+body.dark-mode .card-header.bg-white {
+  background-color: #2b2c40 !important;
+  border-bottom-color: #444564 !important;
+}
+
+/* Detalle obra: badge-count inactivo inline */
+body.dark-mode .badge-count[style*="background-color: #6c757d"] {
+  background-color: #3d3d3d !important;
+  color: #cfcde9 !important;
+}
+
+/* Inf avance obras: card-estadistica solid colors */
+body.dark-mode .card-estadistica.card-aprobados {
+  background: #153725 !important;
+  color: #75b798 !important;
+}
+body.dark-mode .card-estadistica.card-culminados {
+  background: #0d1b3e !important;
+  color: #90b8e8 !important;
+}
+
+/* Tablas: table-light en modo oscuro */
+body.dark-mode .table-light {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+  border-color: #444564 !important;
+}
+
+/* Cards con bg-white inline */
+body.dark-mode .card[style*="background-color: #fff"],
+body.dark-mode .card[style*="background-color: rgb(255, 255, 255)"],
+body.dark-mode .card.bg-white {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+
+/* Input-group con bg-white inline */
+body.dark-mode .input-group-text[style*="background-color: #fff"],
+body.dark-mode .input-group-text[style*="background-color: rgb(255, 255, 255)"],
+body.dark-mode .input-group-text.bg-white {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+
+/* Badges claros en modo oscuro */
+body.dark-mode .badge.bg-light {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .badge.bg-dark {
+  background-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .badge.bg-info {
+  background-color: #0d1b3e !important;
+  color: #90b8e8 !important;
+}
+
+/* Textos utiles */
+body.dark-mode .text-secondary {
+  color: #a2a3b7 !important;
+}
+body.dark-mode .form-label {
+  color: #cfcde9 !important;
+}
+
+/* Search modern en empresas/solicitudes */
+body.dark-mode .search-modern .form-control {
+  background-color: #232333 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .search-modern .form-control:focus {
+  border-color: #08b324 !important;
+}
+body.dark-mode .search-modern .input-group-text {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+
+/* Tabla usuarios: fila gris clara inline */
+body.dark-mode tr[style*="background-color: #ddd"] {
+  background-color: #2b2c40 !important;
+}
+
+/* Detalles seccion en solicitudes */
+body.dark-mode #seccion_detalles[style*="background-color: #f8f9fa"] {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+
+/* Proyectos y contrataciones: paneles informativos */
+body.dark-mode div[style*="background-color: #f8f9fa"][style*="border-left"] {
+  background-color: #2b2c40 !important;
+  border-left-color: #4ade80 !important;
+}
+body.dark-mode div[style*="background-color: #F9A800"] {
+  background-color: #3d320e !important;
+}
+
+/* Boton accent verde en publicaciones */
+body.dark-mode .btn[style*="background-color: #08b324"] {
+  background-color: #08b324 !important;
+  border-color: #08b324 !important;
+  color: #fff !important;
+}
+
+/* Login toggle buttons */
+body.dark-mode .password-toggle-btn[style*="background-color: #fff"],
+body.dark-mode .input-group-text[style*="background-color: #fff"] {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}

@@ -9,7 +9,7 @@ import logging
 import traceback
 from datetime import datetime
 from decimal import Decimal
-from conexion.conexionBD import connectionBD_invilara, connectionBD_invilara_seguridad
+from conexion.conexionBD import connectionBD_invilara, connectionBD_invilara_seguridad, _get_env
 
 logger = logging.getLogger(__name__)
 
@@ -132,7 +132,7 @@ class RespaldoModel:
     def _obtener_config_bd():
         host = os.getenv('DB_HOST', 'localhost')
         user = os.getenv('DB_USER', 'root')
-        password = os.getenv('DB_PASSWORD', '1234')
+        password = _get_env('DB_PASSWORD', '1234')
         database = os.getenv('DB_NAME', 'invilara')
         charset = 'utf8mb4'
 
@@ -239,12 +239,16 @@ class RespaldoModel:
             raise RuntimeError('No se pudo conectar a la base de datos para registrar el respaldo.')
         cur = conn.cursor()
         try:
+            cur.execute("SELECT COALESCE(MAX(id_respaldo), 0) + 1 AS siguiente_id FROM respaldo_bd")
+            fila = cur.fetchone()
+            siguiente_id = fila[0] if fila else 1
+
             cur.execute(
-                "INSERT INTO respaldo_bd (nombre_archivo, tamano, descripcion) VALUES (%s, %s, %s)",
-                (nombre_archivo, tamano, descripcion)
+                "INSERT INTO respaldo_bd (id_respaldo, nombre_archivo, tamano, descripcion) VALUES (%s, %s, %s, %s)",
+                (siguiente_id, nombre_archivo, tamano, descripcion)
             )
             conn.commit()
-            id_respaldo = cur.lastrowid
+            id_respaldo = siguiente_id
         except Exception as e:
             conn.rollback()
             raise RuntimeError(f"Error al registrar respaldo: {e}")
@@ -366,12 +370,16 @@ class RespaldoModel:
             raise RuntimeError('No se pudo conectar a la base de datos para registrar la importación.')
         cur = conn.cursor()
         try:
+            cur.execute("SELECT COALESCE(MAX(id_respaldo), 0) + 1 AS siguiente_id FROM respaldo_bd")
+            fila = cur.fetchone()
+            siguiente_id = fila[0] if fila else 1
+
             cur.execute(
-                "INSERT INTO respaldo_bd (nombre_archivo, tamano, descripcion) VALUES (%s, %s, %s)",
-                (nombre_archivo, tamano, descripcion)
+                "INSERT INTO respaldo_bd (id_respaldo, nombre_archivo, tamano, descripcion) VALUES (%s, %s, %s, %s)",
+                (siguiente_id, nombre_archivo, tamano, descripcion)
             )
             conn.commit()
-            id_respaldo = cur.lastrowid
+            id_respaldo = siguiente_id
         except Exception as e:
             conn.rollback()
             raise RuntimeError(f"Error al registrar importación: {e}")

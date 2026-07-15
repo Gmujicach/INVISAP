@@ -20,7 +20,7 @@ class EvidenciaModel:
     _ETAPAS_VALIDAS = {'antes', 'durante', 'despues'}
     _RE_ETAPA = re.compile(r'^(antes|durante|despues)$')
     
-    MAX_IMAGENES = 5
+    MAX_IMAGENES = 50
     MIN_IMAGENES = 3
     CALIDAD_COMPRESION = 80
     MAX_DIMENSION = 1920
@@ -180,7 +180,7 @@ class EvidenciaModel:
                 raise Exception("Error de conexión a la base de datos. Verifique que MySQL esté activo y la base 'invilara' exista.")
             cur = conn.cursor()
 
-            sql = "INSERT INTO evidencia (fotos, url_archivos, fecha_registro, estado, etapa) VALUES (%s, %s, %s, %s, %s)"
+            sql = "INSERT INTO evidencia (id_evidencia, fotos, url_archivos, fecha_registro, estado, etapa) VALUES (%s, %s, %s, %s, %s, %s)"
             
             for i, file in enumerate(self.__archivos):
                 url = self.__comprimir_y_guardar_imagen(file)
@@ -190,7 +190,11 @@ class EvidenciaModel:
                 etapa = self.__etapas[i]
                 nombre_referencia = self._limpiar_texto(file.filename, 45)
                 
-                params = (nombre_referencia, url, datetime.now(), 1, etapa)
+                cur.execute("SELECT COALESCE(MAX(id_evidencia), 0) + 1 AS siguiente_id FROM evidencia")
+                fila = cur.fetchone()
+                siguiente_id = fila[0] if fila else 1
+                
+                params = (siguiente_id, nombre_referencia, url, datetime.now(), 1, etapa)
                 cur.execute(sql, params)
                 ids_insertados.append(cur.lastrowid)
             conn.commit()

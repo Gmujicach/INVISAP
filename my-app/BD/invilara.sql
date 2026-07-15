@@ -48,7 +48,7 @@ CREATE TABLE `avance` (
   `id_avance` varchar(45) NOT NULL,
   `porcentaje_avance` int NOT NULL,
   `descripcion` varchar(45) NOT NULL,
-  `gerente` varchar(45) NOT NULL,
+  `gerente` int NOT NULL,
   `fecha_avance` date NOT NULL,
   `obra_id_obra` int NOT NULL,
   `obra_semaforo_id_semaforo` int NOT NULL,
@@ -307,9 +307,9 @@ DELIMITER $$
 CREATE TRIGGER `trg_limite_evidencias` BEFORE INSERT ON `evidencia` FOR EACH ROW BEGIN
     DECLARE total INT;
     SELECT COUNT(*) INTO total FROM evidencia WHERE estado = 1;
-    IF total >= 5 THEN
+    IF total >= 50 THEN
         SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Límite de evidencias alcanzado (máximo 5).';
+        SET MESSAGE_TEXT = 'Límite de evidencias alcanzado (máximo 50).';
     END IF;
 END
 $$
@@ -404,7 +404,7 @@ INSERT INTO `informe_avance_obra` (`id_informe`, `fecha`, `estado`, `poblacion_b
 
 CREATE TABLE `inspeccion` (
   `id_inspeccion` int NOT NULL,
-  `inspector` varchar(45) NOT NULL,
+  `inspector` int NOT NULL,
   `fecha_inspeccion` date NOT NULL,
   `tipo_inspeccion` varchar(45) NOT NULL,
   `observaciones` varchar(255) NOT NULL,
@@ -419,18 +419,6 @@ CREATE TABLE `inspeccion` (
   `evidencia_id_evidencia` int NOT NULL,
   `estado` tinyint NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Disparadores `inspeccion`
---
-DELIMITER $$
-CREATE TRIGGER `trg_cambiar_estatus_solicitud` AFTER INSERT ON `inspeccion` FOR EACH ROW BEGIN
-    UPDATE solicitudes 
-    SET estatus_solicitud = 'En Proceso'
-    WHERE id_solicitudes = NEW.obra_contratacion_id_contratacion;
-END
-$$
-DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -558,13 +546,8 @@ INSERT INTO `obra` (`id_obra`, `titulo_obra`, `ubicacion_obra`, `periodo_ejecuci
 --
 DELIMITER $$
 CREATE TRIGGER `actualizar_semaforo_obra` BEFORE UPDATE ON `obra` FOR EACH ROW BEGIN
-    -- Semáforo: 1=Verde (0-10%), 2=Amarillo (11-89%), 3=Rojo (90-100%)
-    IF NEW.porcentaje_avance_obra >= 90 THEN
-        SET NEW.semaforo_id_semaforo = 3; -- Rojo (Más crítico)
-    ELSEIF NEW.porcentaje_avance_obra >= 11 THEN
-        SET NEW.semaforo_id_semaforo = 2; -- Amarillo
-    ELSE
-        SET NEW.semaforo_id_semaforo = 1; -- Verde
+    IF NEW.estado <> OLD.estado THEN
+        BEGIN END;
     END IF;
 END
 $$
@@ -601,7 +584,7 @@ INSERT INTO `particular` (`id_particular`, `nombre`, `apellido`, `persona_id_per
 
 CREATE TABLE `persona` (
   `id_persona` int NOT NULL,
-  `cedula_persona` int NOT NULL,
+  `cedula_persona` bigint NOT NULL,
   `direccion` varchar(200) NOT NULL,
   `parroquia` varchar(45) NOT NULL,
   `municipio` varchar(45) NOT NULL,
@@ -666,6 +649,7 @@ CREATE TABLE `proyecto` (
   `descripcion_tecnica` varchar(200) NOT NULL,
   `computos_metricos` varchar(255) NOT NULL,
   `estimacion_costo` varchar(45) NOT NULL,
+  `proyecto_has_empleado` int DEFAULT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de gestion de proyectos';
 
@@ -906,7 +890,8 @@ ALTER TABLE `administracion_respaldos`
 --
 ALTER TABLE `avance`
   ADD PRIMARY KEY (`id_avance`),
-  ADD KEY `fk_avance_obra1_idx` (`obra_id_obra`,`obra_semaforo_id_semaforo`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`);
+  ADD KEY `fk_avance_obra1_idx` (`obra_id_obra`,`obra_semaforo_id_semaforo`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`),
+  ADD KEY `fk_avance_empleado1_idx` (`gerente`);
 
 --
 -- Indices de la tabla `catalogo_cargos`
@@ -979,9 +964,9 @@ ALTER TABLE `informe_avance_obra`
 --
 ALTER TABLE `inspeccion`
   ADD PRIMARY KEY (`id_inspeccion`,`evidencia_id_evidencia`),
-  ADD UNIQUE KEY `cedula_UNIQUE` (`fecha_inspeccion`),
   ADD KEY `fk_inspeccion_obra1_idx` (`obra_id_obra1`,`obra_semaforo_id_semaforo1`,`obra_contratacion_id_contratacion1`,`obra_gestionar_proyectos_codigo_proyecto1`),
-  ADD KEY `fk_inspeccion_evidencia1_idx` (`evidencia_id_evidencia`);
+  ADD KEY `fk_inspeccion_evidencia1_idx` (`evidencia_id_evidencia`),
+  ADD KEY `fk_inspeccion_empleado1_idx` (`inspector`);
 
 --
 -- Indices de la tabla `institucion`
@@ -1031,7 +1016,8 @@ ALTER TABLE `prioridad`
 --
 ALTER TABLE `proyecto`
   ADD PRIMARY KEY (`codigo_proyecto`),
-  ADD UNIQUE KEY `codigo_proyecto_UNIQUE` (`codigo_proyecto`);
+  ADD UNIQUE KEY `codigo_proyecto_UNIQUE` (`codigo_proyecto`),
+  ADD KEY `fk_proyecto_empleado1_idx` (`proyecto_has_empleado`);
 
 --
 -- Indices de la tabla `proyecto_has_maquinaria`
@@ -1231,7 +1217,8 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- Filtros para la tabla `avance`
 --
 ALTER TABLE `avance`
-  ADD CONSTRAINT `fk_avance_obra1` FOREIGN KEY (`obra_id_obra`,`obra_semaforo_id_semaforo`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`) REFERENCES `obra` (`id_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`);
+  ADD CONSTRAINT `fk_avance_obra1` FOREIGN KEY (`obra_id_obra`,`obra_semaforo_id_semaforo`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`) REFERENCES `obra` (`id_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`),
+  ADD CONSTRAINT `fk_avance_empleado1` FOREIGN KEY (`gerente`) REFERENCES `empleados` (`id_empleados`);
 
 --
 -- Filtros para la tabla `comunidad`
@@ -1269,7 +1256,8 @@ ALTER TABLE `informe_avance_obra`
 --
 ALTER TABLE `inspeccion`
   ADD CONSTRAINT `fk_inspeccion_evidencia1` FOREIGN KEY (`evidencia_id_evidencia`) REFERENCES `evidencia` (`id_evidencia`),
-  ADD CONSTRAINT `fk_inspeccion_obra1` FOREIGN KEY (`obra_id_obra1`,`obra_semaforo_id_semaforo1`,`obra_contratacion_id_contratacion1`,`obra_gestionar_proyectos_codigo_proyecto1`) REFERENCES `obra` (`id_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`);
+  ADD CONSTRAINT `fk_inspeccion_obra1` FOREIGN KEY (`obra_id_obra1`,`obra_semaforo_id_semaforo1`,`obra_contratacion_id_contratacion1`,`obra_gestionar_proyectos_codigo_proyecto1`) REFERENCES `obra` (`id_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`),
+  ADD CONSTRAINT `fk_inspeccion_empleado1` FOREIGN KEY (`inspector`) REFERENCES `empleados` (`id_empleados`);
 
 --
 -- Filtros para la tabla `institucion`
@@ -1290,6 +1278,12 @@ ALTER TABLE `obra`
 --
 ALTER TABLE `particular`
   ADD CONSTRAINT `fk_particular_persona1` FOREIGN KEY (`persona_id_persona`) REFERENCES `persona` (`id_persona`);
+
+--
+-- Filtros para la tabla `proyecto`
+--
+ALTER TABLE `proyecto`
+  ADD CONSTRAINT `fk_proyecto_empleado1` FOREIGN KEY (`proyecto_has_empleado`) REFERENCES `empleados` (`id_empleados`);
 
 --
 -- Filtros para la tabla `proyecto_has_maquinaria`

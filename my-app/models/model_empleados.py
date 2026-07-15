@@ -162,11 +162,16 @@ class EmpleadoModel:
             return row['id_persona'] if isinstance(row, dict) else row[0]
         
         # Si no existe, crear nuevo registro en persona
+        cursor.execute("SELECT COALESCE(MAX(id_persona), 0) + 1 AS siguiente_id FROM persona")
+        fila = cursor.fetchone()
+        siguiente_id = fila['siguiente_id'] if isinstance(fila, dict) else (fila[0] if fila else 1)
+
         sql_insertar = """
-            INSERT INTO persona (cedula_persona, direccion, parroquia, municipio, telefono, correo)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO persona (id_persona, cedula_persona, direccion, parroquia, municipio, telefono, correo)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
         cursor.execute(sql_insertar, (
+            siguiente_id,
             self.__cedula_persona,
             self.__direccion or 'No especificado',
             self.__parroquia or 'No especificado',
@@ -199,18 +204,23 @@ class EmpleadoModel:
                 return None
             
             # Paso 2: Insertar empleado con FK a persona
+            cursor.execute("SELECT COALESCE(MAX(id_empleados), 0) + 1 AS siguiente_id FROM empleados")
+            fila = cursor.fetchone()
+            siguiente_id = fila['siguiente_id'] if isinstance(fila, dict) else (fila[0] if fila else 1)
+
             sql = """
                 INSERT INTO empleados 
-                (nombre_empleado, cargo, fecha_ingreso, gerencia_asignada, persona_id_persona, estado) 
-                VALUES (%s, %s, %s, %s, %s, %s)
+                (id_empleados, nombre_empleado, cargo, fecha_ingreso, gerencia_asignada, persona_id_persona, estado) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
             cur.execute(sql, (
+                siguiente_id,
                 self.__nombre_empleado,
                 self.__cargo,
                 self.__fecha_ingreso,
                 self.__gerencia_asignada,
                 persona_id,
-                1  # Estado activo
+                1
             ))
             
             conn.commit()

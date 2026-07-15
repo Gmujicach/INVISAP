@@ -200,11 +200,16 @@ class PublicacionModel:
             id_inf_val = int(self.__id_informe) if self.__id_informe and str(self.__id_informe).isdigit() else None
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
+            
+            cursor.execute("SELECT COALESCE(MAX(id_publicacion), 0) + 1 AS siguiente_id FROM publicacion")
+            fila = cursor.fetchone()
+            siguiente_id = fila[0] if fila else 1
+            
             sql = """INSERT INTO publicacion 
-                     (titulo_publicacion, nombre_responsable, tipo_publicacion, 
+                     (id_publicacion, titulo_publicacion, nombre_responsable, tipo_publicacion, 
                       fecha_publicacion, informe_avance_obra_id_informe, estado, cuerpo_publicacion) 
-                     VALUES (%s, %s, %s, %s, %s, %s, %s)"""
-            valores = (self.__titulo, self.__responsable, self.__tipo, 
+                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+            valores = (siguiente_id, self.__titulo, self.__responsable, self.__tipo, 
                        datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 
                        id_inf_val, 1, self.__cuerpo)
             cursor.execute(sql, valores)

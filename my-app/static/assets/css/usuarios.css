@@ -81,3 +81,50 @@
 .was-validated .form-select.is-valid:focus {
   box-shadow: 0 0 0 0.2rem rgba(113, 221, 55, 0.25);
 }
+
+/* ============================================
+   Modo oscuro - Usuarios
+   ============================================ */
+body.dark-mode .btn-password-toggle {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .btn-password-toggle:hover {
+  background-color: #323248 !important;
+  border-color: #08b324 !important;
+}
+body.dark-mode .modal-content {
+  background-color: #2b2c40;
+  border: 1px solid #444564;
+}
+body.dark-mode .modal-header {
+  background: #232333;
+  border-bottom-color: #444564;
+}
+body.dark-mode .modal-body .form-control,
+body.dark-mode .modal-body .form-select {
+  background-color: #232333;
+  border-color: #444564;
+  color: #cfcde9;
+}
+body.dark-mode .modal-footer {
+  background: #232333;
+  border-top-color: #444564;
+}
+body.dark-mode .card {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: #232333;
+  border-color: #444564;
+  color: #cfcde9;
+}
+body.dark-mode .text-dark {
+  color: #cfcde9 !important;
+}
+body.dark-mode .text-muted {
+  color: #a2a3b7 !important;
+}

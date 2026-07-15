@@ -67,17 +67,22 @@
                             <td>
                                 <span class="text-truncate-3">{{ inspeccion.observaciones }}</span>
                             </td>
-                            <td>
-                                <div class="action-group-modern">
+                            <td class="text-center">
+                                <div class="d-flex gap-1 justify-content-center">
+                                    <a href="{{ url_for('inspeccion_bp.view_detalle_inspeccion', id_inspeccion=inspeccion.id_inspeccion) }}"
+                                       class="btn btn-outline-info btn-sm"
+                                       title="Ver detalle">
+                                        <i class="bx bx-show"></i>
+                                    </a>
                                     <a href="{{ url_for('inspeccion_bp.view_editar_inspeccion', id_inspeccion=inspeccion.id_inspeccion) }}"
-                                       class="btn-icon-modern btn-edit-modern"
-                                       title="Editar inspeccion">
-                                        <i class="bi bi-pencil-square"></i>
+                                       class="btn btn-outline-warning btn-sm"
+                                       title="Editar">
+                                        <i class="bx bx-edit"></i>
                                     </a>
                                     <button onclick="eliminarInspeccionJS({{ inspeccion.id_inspeccion }})"
-                                            class="btn-icon-modern btn-delete-modern"
-                                            title="Desactivar inspeccion">
-                                        <i class="bi bi-trash3"></i>
+                                            class="btn btn-outline-danger btn-sm"
+                                            title="Eliminar">
+                                        <i class="bx bx-trash"></i>
                                     </button>
                                 </div>
                             </td>

@@ -8,10 +8,14 @@ def crear_solicitante(datos):
         if not conexion: return 0
         cursor = conexion.cursor()
         try:
-            sql = """INSERT INTO persona (cedula_persona, direccion, parroquia, municipio, telefono, correo) 
-                     VALUES (%s, %s, %s, %s, %s, %s)"""
+            sql = """INSERT INTO persona (id_persona, cedula_persona, direccion, parroquia, municipio, telefono, correo) 
+                     VALUES (%s, %s, %s, %s, %s, %s, %s)"""
 
-            valores = (datos.get('cedula_persona'), datos.get('direccion'), datos.get('parroquia'), 
+            cursor.execute("SELECT COALESCE(MAX(id_persona), 0) + 1 AS siguiente_id FROM persona")
+            fila = cursor.fetchone()
+            siguiente_id = fila[0] if fila else 1
+
+            valores = (siguiente_id, datos.get('cedula_persona'), datos.get('direccion'), datos.get('parroquia'), 
                        datos.get('municipio'), datos.get('telefono'), datos.get('correo'))
 
             cursor.execute(sql, valores)

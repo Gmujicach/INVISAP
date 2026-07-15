@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let selectedFiles = []; // Aquí acumularemos las imágenes
     let isEditMode = formEvidencias && formEvidencias.id === 'formEvidenciasUpdate';
     const MIN_IMAGENES = 3;
-    const MAX_IMAGENES = 5;
+    const MAX_IMAGENES = 50;
 
     // Validación inicial para modo edición
     if (isEditMode && window.evidenciaData) {

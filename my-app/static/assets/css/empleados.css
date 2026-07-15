@@ -1,3 +1,35 @@
 /* Estilos mínimos para el módulo de Empleados */
 .card img{ max-height:60px; }
 .table td, .table th{ vertical-align:middle }
+
+/* ============================================
+   Modo oscuro - Empleados
+   ============================================ */
+body.dark-mode .card {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+body.dark-mode .card-header {
+  background-color: #2b2c40 !important;
+  border-bottom-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .table {
+  color: #cfcde9;
+}
+body.dark-mode .table :is(td, th) {
+  border-color: #444564 !important;
+}
+body.dark-mode .table thead th {
+  background: #2b2c40 !important;
+  color: #cfcde9 !important;
+}
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+  background-color: #232333;
+  border-color: #444564;
+  color: #cfcde9;
+}
+body.dark-mode .text-dark {
+  color: #cfcde9 !important;
+}

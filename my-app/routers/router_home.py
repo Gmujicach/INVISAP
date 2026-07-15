@@ -442,14 +442,6 @@ def api_restaurar_maquinaria(id_maquinaria):
         return jsonify({'success': True, 'message': resultado.get('message')}), 200
     return jsonify({'success': False, 'message': resultado.get('message', 'Error al restaurar')}), 400
 
-@home_bp.route('/gestionar-obras', methods=['GET'])
-def viewFormGestionarObras():
-    if 'conectado' in session:
-        return render_template(f'{PATH_URL_GEST_OBR}/form_gestionar_obras.html')
-    else:
-        flash('Primero debes iniciar sesión.', 'error')
-        return redirect(url_for('login_bp.inicio'))
-
 @home_bp.route('/gestionar-gravedad', methods=['GET'])
 def viewFormGravedad():
         return render_template(f'{PATH_URL_IA}/form_gestionar_gravedad.html')

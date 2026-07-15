@@ -1007,6 +1007,7 @@ body.dark-mode .progress {
 body.dark-mode .card-estadistica.bg-light {
     background: #2b2c40 !important;
     color: #cfcde9 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
 }
 
 body.dark-mode .card-estadistica.bg-light .text-muted {
@@ -1015,6 +1016,36 @@ body.dark-mode .card-estadistica.bg-light .text-muted {
 
 body.dark-mode .card-estadistica.bg-light h3 {
     color: #ffffff !important;
+}
+
+body.dark-mode .card-estadistica.card-aprobados {
+    background: #153725 !important;
+    color: #75b798 !important;
+}
+
+body.dark-mode .card-estadistica.card-culminados {
+    background: #0d1b3e !important;
+    color: #90b8e8 !important;
+}
+
+body.dark-mode .card-estadistica.bg-warning {
+    background: #3d320e !important;
+    color: #ffda6a !important;
+}
+
+body.dark-mode .card-estadistica.bg-warning h6,
+body.dark-mode .card-estadistica.bg-warning h3 {
+    color: #ffda6a !important;
+}
+
+body.dark-mode .card-estadistica.bg-info {
+    background: #0d1b3e !important;
+    color: #90b8e8 !important;
+}
+
+body.dark-mode .card-estadistica.bg-info h6,
+body.dark-mode .card-estadistica.bg-info h3 {
+    color: #90b8e8 !important;
 }
 
 body.dark-mode textarea.form-control::placeholder {

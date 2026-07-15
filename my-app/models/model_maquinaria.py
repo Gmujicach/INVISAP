@@ -104,8 +104,12 @@ class MaquinariaModel:
                     conexion.commit()
                     return {'success': True, 'id': existe['id_maquinaria'], 'restaurada': True, 'message': 'Maquinaria restaurada correctamente'}
             
-            sql = "INSERT INTO maquinaria (nombre_maquinaria, tipo_maquinaria, estado) VALUES (%s, %s, 1)"
-            cursor.execute(sql, (nombre.strip(), tipo))
+            cursor.execute("SELECT COALESCE(MAX(id_maquinaria), 0) + 1 AS siguiente_id FROM maquinaria")
+            fila = cursor.fetchone()
+            siguiente_id = fila['siguiente_id'] if isinstance(fila, dict) else (fila[0] if fila else 1)
+
+            sql = "INSERT INTO maquinaria (id_maquinaria, nombre_maquinaria, tipo_maquinaria, estado) VALUES (%s, %s, %s, 1)"
+            cursor.execute(sql, (siguiente_id, nombre.strip(), tipo))
             conexion.commit()
             return {'success': True, 'id': cursor.lastrowid, 'message': 'Maquinaria registrada correctamente'}
         except Exception as e:

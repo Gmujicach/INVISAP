@@ -115,28 +115,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // --- Organismo Adicional: Modo Oscuro LocalStorage ---
-    const darkModeSwitch = document.getElementById('dark-mode-switch');
-    const themeIcon = document.getElementById('theme-icon');
-
-    if (darkModeSwitch) {
-        const loadTheme = () => {
-            if (localStorage.getItem('theme') === 'dark') {
-                document.body.classList.add('dark-mode');
-                darkModeSwitch.checked = true;
-                if (themeIcon) themeIcon.className = 'bi bi-moon-stars-fill me-2 fs-5 text-info';
-            }
-        };
-        loadTheme();
-
-        darkModeSwitch.addEventListener('change', () => {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            if (themeIcon) themeIcon.className = isDark ? 'bi bi-moon-stars-fill me-2 fs-5 text-info' : 'bi bi-sun-fill me-2 fs-5 text-warning';
-        });
-    }
-
     // --- Organismo Adicional: Vista previa de Avatar ---
     const avatarInput = document.getElementById('profile_img');
     const avatarPreview = document.getElementById('avatar-preview');
