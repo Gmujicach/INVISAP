@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 09-07-2026 a las 04:03:36
+-- Tiempo de generación: 10-07-2026 a las 21:02:09
 -- Versión del servidor: 9.4.0
 -- Versión de PHP: 8.3.30
 
@@ -42,7 +42,8 @@ CREATE TABLE `administracion_respaldos` (
 --
 
 INSERT INTO `administracion_respaldos` (`id_respaldo`, `fecha_respaldo`, `tamaño_respaldo`, `usuarios_id_usuarios`, `estado`) VALUES
-(2, '2026-07-08 22:58:12', 0.06, 1, 1);
+(2, '2026-07-09 09:49:58', 0.06, 1, 1),
+(3, '2026-07-09 09:49:26', 0.06, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -313,7 +314,247 @@ INSERT INTO `bitacora` (`id_bitacora`, `usuario`, `id_modulo`, `modulo`, `accion
 (244, 'admin', 0, 'Inspecciones', 'VER', '2026-07-08 21:57:56', '2026-07-08 21:57:56', '2026-07-08 21:57:56', 1),
 (245, 'admin', 0, 'Inspecciones', 'VER', '2026-07-08 21:59:52', '2026-07-08 21:59:52', '2026-07-08 21:59:52', 1),
 (246, 'admin', 0, 'Respaldos', 'CREAR', '2026-07-08 22:58:13', '2026-07-08 22:58:13', '2026-07-08 22:58:13', 1),
-(247, 'admin', 0, 'Informes de Avance', 'VER', '2026-07-08 23:15:17', '2026-07-08 23:15:17', '2026-07-08 23:15:17', 1);
+(247, 'admin', 0, 'Informes de Avance', 'VER', '2026-07-08 23:15:17', '2026-07-08 23:15:17', '2026-07-08 23:15:17', 1),
+(248, 'admin', 0, 'Informes de Avance', 'VER', '2026-07-09 03:38:54', '2026-07-09 03:38:54', '2026-07-09 03:38:54', 1),
+(249, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 03:39:46', '2026-07-09 03:39:46', '2026-07-09 03:39:46', 1),
+(250, 'Sistema', 0, 'Login', 'LOGOUT', '2026-07-09 06:54:55', '2026-07-09 06:54:55', '2026-07-09 06:54:55', 1),
+(251, 'admin', 0, 'Login', 'LOGIN', '2026-07-09 07:13:16', '2026-07-09 07:13:16', '2026-07-09 07:13:16', 1),
+(252, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 07:41:24', '2026-07-09 07:41:24', '2026-07-09 07:41:24', 1),
+(253, 'admin', 0, 'Informes de Avance', 'VER', '2026-07-09 07:43:52', '2026-07-09 07:43:52', '2026-07-09 07:43:52', 1),
+(254, 'admin', 0, 'Informes de Avance', 'VER', '2026-07-09 07:44:17', '2026-07-09 07:44:17', '2026-07-09 07:44:17', 1),
+(255, 't', 0, 'Informes de Avance', 'EDITAR', '2026-07-09 07:54:35', '2026-07-09 07:54:35', '2026-07-09 07:54:35', 1),
+(256, 't', 0, 'Informes de Avance', 'EDITAR', '2026-07-09 07:54:35', '2026-07-09 07:54:35', '2026-07-09 07:54:35', 1),
+(257, 'admin', 0, 'Informes de Avance', 'VER', '2026-07-09 07:57:53', '2026-07-09 07:57:53', '2026-07-09 07:57:53', 1),
+(258, 'admin', 0, 'Informes de Avance', 'VER', '2026-07-09 07:58:00', '2026-07-09 07:58:00', '2026-07-09 07:58:00', 1),
+(259, 'admin', 0, 'Informes de Avance', 'VER', '2026-07-09 07:58:10', '2026-07-09 07:58:10', '2026-07-09 07:58:10', 1),
+(260, 'admin', 0, 'Informes de Avance', 'EDITAR', '2026-07-09 07:58:41', '2026-07-09 07:58:41', '2026-07-09 07:58:41', 1),
+(261, 'admin', 0, 'Informes de Avance', 'VER', '2026-07-09 07:58:42', '2026-07-09 07:58:42', '2026-07-09 07:58:42', 1),
+(262, 'admin', 0, 'Login', 'LOGIN', '2026-07-09 09:28:24', '2026-07-09 09:28:24', '2026-07-09 09:28:24', 1),
+(263, 'admin', 0, 'Publicaciones', 'VER', '2026-07-09 09:31:07', '2026-07-09 09:31:07', '2026-07-09 09:31:07', 1),
+(264, 'admin', 0, 'Solicitudes', 'CREAR', '2026-07-09 09:36:03', '2026-07-09 09:36:03', '2026-07-09 09:36:03', 1),
+(265, 'admin', 0, 'Solicitudes', 'CREAR', '2026-07-09 09:36:03', '2026-07-09 09:36:03', '2026-07-09 09:36:03', 1),
+(266, 'admin', 0, 'Solicitudes', 'EDITAR', '2026-07-09 09:36:32', '2026-07-09 09:36:32', '2026-07-09 09:36:32', 1),
+(267, 'admin', 0, 'Solicitudes', 'EDITAR', '2026-07-09 09:36:32', '2026-07-09 09:36:32', '2026-07-09 09:36:32', 1),
+(268, 'admin', 0, 'Solicitudes', 'EDITAR', '2026-07-09 09:36:54', '2026-07-09 09:36:54', '2026-07-09 09:36:54', 1),
+(269, 'admin', 0, 'Solicitudes', 'EDITAR', '2026-07-09 09:36:54', '2026-07-09 09:36:54', '2026-07-09 09:36:54', 1),
+(270, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 09:36:58', '2026-07-09 09:36:58', '2026-07-09 09:36:58', 1),
+(271, 'admin', 0, 'Publicaciones', 'VER', '2026-07-09 09:41:56', '2026-07-09 09:41:56', '2026-07-09 09:41:56', 1),
+(272, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 09:46:14', '2026-07-09 09:46:14', '2026-07-09 09:46:14', 1),
+(273, 'admin', 0, 'Proyectos', 'CREAR', '2026-07-09 09:47:14', '2026-07-09 09:47:14', '2026-07-09 09:47:14', 1),
+(274, 'admin', 0, 'Proyectos', 'EDITAR', '2026-07-09 09:47:33', '2026-07-09 09:47:33', '2026-07-09 09:47:33', 1),
+(275, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 09:47:34', '2026-07-09 09:47:34', '2026-07-09 09:47:34', 1),
+(276, 'admin', 0, 'Proyectos', 'ELIMINAR', '2026-07-09 09:47:44', '2026-07-09 09:47:44', '2026-07-09 09:47:44', 1),
+(277, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 09:47:44', '2026-07-09 09:47:44', '2026-07-09 09:47:44', 1),
+(278, 'admin', 0, 'Respaldos', 'CREAR', '2026-07-09 09:49:26', '2026-07-09 09:49:26', '2026-07-09 09:49:26', 1),
+(279, 'admin', 0, 'Respaldos', 'ELIMINAR', '2026-07-09 09:49:44', '2026-07-09 09:49:44', '2026-07-09 09:49:44', 1),
+(280, 'admin', 0, 'Respaldos', 'EDITAR', '2026-07-09 09:49:58', '2026-07-09 09:49:58', '2026-07-09 09:49:58', 1),
+(281, 'admin', 0, 'Reportes', 'VER', '2026-07-09 09:50:42', '2026-07-09 09:50:42', '2026-07-09 09:50:42', 1),
+(282, 'admin', 0, 'Reportes', 'VER', '2026-07-09 09:51:22', '2026-07-09 09:51:22', '2026-07-09 09:51:22', 1),
+(283, 'Sistema', 0, 'Obras', 'ELIMINAR', '2026-07-09 09:57:18', '2026-07-09 09:57:18', '2026-07-09 09:57:18', 1),
+(284, 'Sistema', 0, 'Obras', 'CREAR', '2026-07-09 10:02:59', '2026-07-09 10:02:59', '2026-07-09 10:02:59', 1),
+(285, 'Sistema', 0, 'Obras', 'EDITAR', '2026-07-09 10:03:39', '2026-07-09 10:03:39', '2026-07-09 10:03:39', 1),
+(286, 'Sistema', 0, 'Obras', 'EDITAR', '2026-07-09 10:04:44', '2026-07-09 10:04:44', '2026-07-09 10:04:44', 1),
+(287, 'admin', 0, 'Inspecciones', 'VER', '2026-07-09 10:40:41', '2026-07-09 10:40:41', '2026-07-09 10:40:41', 1),
+(288, 'admin', 0, 'Inspecciones', 'CREAR', '2026-07-09 10:41:18', '2026-07-09 10:41:18', '2026-07-09 10:41:18', 1),
+(289, 'admin', 0, 'Inspecciones', 'VER', '2026-07-09 10:41:20', '2026-07-09 10:41:20', '2026-07-09 10:41:20', 1),
+(290, 'admin', 0, 'Inspecciones', 'EDITAR', '2026-07-09 10:42:16', '2026-07-09 10:42:16', '2026-07-09 10:42:16', 1),
+(291, 'admin', 0, 'Inspecciones', 'EDITAR', '2026-07-09 10:42:16', '2026-07-09 10:42:16', '2026-07-09 10:42:16', 1),
+(292, 'admin', 0, 'Inspecciones', 'VER', '2026-07-09 10:42:18', '2026-07-09 10:42:18', '2026-07-09 10:42:18', 1),
+(293, 'admin', 0, 'Inspecciones', 'VER', '2026-07-09 10:42:18', '2026-07-09 10:42:18', '2026-07-09 10:42:18', 1),
+(294, 'admin', 0, 'Publicaciones', 'VER', '2026-07-09 10:42:58', '2026-07-09 10:42:58', '2026-07-09 10:42:58', 1),
+(295, 'admin', 0, 'Publicaciones', 'VER', '2026-07-09 10:46:50', '2026-07-09 10:46:50', '2026-07-09 10:46:50', 1),
+(296, 'admin', 0, 'Inspecciones', 'VER', '2026-07-09 10:50:02', '2026-07-09 10:50:02', '2026-07-09 10:50:02', 1),
+(297, 'admin', 0, 'Inspecciones', 'VER', '2026-07-09 10:50:30', '2026-07-09 10:50:30', '2026-07-09 10:50:30', 1),
+(298, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 11:35:52', '2026-07-09 11:35:52', '2026-07-09 11:35:52', 1),
+(299, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 11:37:18', '2026-07-09 11:37:18', '2026-07-09 11:37:18', 1),
+(300, 'Sistema', 0, 'Obras', 'ELIMINAR', '2026-07-09 11:38:00', '2026-07-09 11:38:00', '2026-07-09 11:38:00', 1),
+(301, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 11:38:38', '2026-07-09 11:38:38', '2026-07-09 11:38:38', 1),
+(302, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 11:38:42', '2026-07-09 11:38:42', '2026-07-09 11:38:42', 1),
+(303, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 11:39:39', '2026-07-09 11:39:39', '2026-07-09 11:39:39', 1),
+(304, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 11:40:30', '2026-07-09 11:40:30', '2026-07-09 11:40:30', 1),
+(305, 'admin', 0, 'Solicitudes', 'EDITAR', '2026-07-09 11:41:26', '2026-07-09 11:41:26', '2026-07-09 11:41:26', 1),
+(306, 'admin', 0, 'Solicitudes', 'EDITAR', '2026-07-09 11:41:26', '2026-07-09 11:41:26', '2026-07-09 11:41:26', 1),
+(307, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 11:41:30', '2026-07-09 11:41:30', '2026-07-09 11:41:30', 1),
+(308, 'admin', 0, 'Proyectos', 'CREAR', '2026-07-09 11:42:29', '2026-07-09 11:42:29', '2026-07-09 11:42:29', 1),
+(309, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 11:42:38', '2026-07-09 11:42:38', '2026-07-09 11:42:38', 1),
+(310, 'Sistema', 0, 'Obras', 'CREAR', '2026-07-09 11:44:49', '2026-07-09 11:44:49', '2026-07-09 11:44:49', 1),
+(311, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 11:45:00', '2026-07-09 11:45:00', '2026-07-09 11:45:00', 1),
+(312, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 11:45:03', '2026-07-09 11:45:03', '2026-07-09 11:45:03', 1),
+(313, 'admin', 0, 'Proyectos', 'VER', '2026-07-09 11:45:30', '2026-07-09 11:45:30', '2026-07-09 11:45:30', 1),
+(314, 'admin', 0, 'Solicitudes', 'ELIMINAR', '2026-07-09 11:46:12', '2026-07-09 11:46:12', '2026-07-09 11:46:12', 1),
+(315, 'admin', 0, 'Solicitudes', 'EDITAR', '2026-07-09 11:46:29', '2026-07-09 11:46:29', '2026-07-09 11:46:29', 1),
+(316, 'admin', 0, 'Solicitudes', 'EDITAR', '2026-07-09 11:46:29', '2026-07-09 11:46:29', '2026-07-09 11:46:29', 1),
+(317, 'admin', 0, 'Empleados', 'CREAR', '2026-07-09 12:05:04', '2026-07-09 12:05:04', '2026-07-09 12:05:04', 1),
+(318, 'admin', 0, 'Empleados', 'EDITAR', '2026-07-09 12:05:24', '2026-07-09 12:05:24', '2026-07-09 12:05:24', 1),
+(319, 'admin', 0, 'Reportes', 'VER', '2026-07-09 12:06:25', '2026-07-09 12:06:25', '2026-07-09 12:06:25', 1),
+(320, 'admin', 0, 'Reportes', 'VER', '2026-07-09 12:06:57', '2026-07-09 12:06:57', '2026-07-09 12:06:57', 1),
+(321, 'admin', 0, 'Maquinaria', 'CREAR', '2026-07-09 12:09:23', '2026-07-09 12:09:23', '2026-07-09 12:09:23', 1),
+(322, 'Sistema', 0, 'Login', 'LOGOUT', '2026-07-09 12:21:48', '2026-07-09 12:21:48', '2026-07-09 12:21:48', 1),
+(323, 'admin', 0, 'Login', 'LOGIN', '2026-07-09 13:22:05', '2026-07-09 13:22:05', '2026-07-09 13:22:05', 1),
+(324, 'prueba3', 0, 'Login', 'LOGIN', '2026-07-10 16:06:58', '2026-07-10 16:06:58', '2026-07-10 16:06:58', 7),
+(325, 'prueba3', 0, 'Informes de Avance', 'VER', '2026-07-10 16:07:10', '2026-07-10 16:07:10', '2026-07-10 16:07:10', 7),
+(326, 'Sistema', 0, 'Login', 'LOGOUT', '2026-07-10 16:07:32', '2026-07-10 16:07:32', '2026-07-10 16:07:32', 1),
+(327, 'admin', 0, 'Login', 'LOGIN', '2026-07-10 16:07:51', '2026-07-10 16:07:51', '2026-07-10 16:07:51', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `modulos`
+--
+
+CREATE TABLE `modulos` (
+  `id_modulo` int NOT NULL,
+  `nombre` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Clave corta del módulo (debe coincidir con tiene_permiso(''clave''))',
+  `descripcion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Descripción de lo que hace el módulo',
+  `url` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'URL principal del módulo en el sidebar',
+  `tipo` enum('CRUD','Transaccional','Enlace') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'CRUD' COMMENT 'CRUD o Transaccional (Enlace = manual/documentación)',
+  `icono` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Clase del ícono del sidebar',
+  `orden` int NOT NULL DEFAULT '0' COMMENT 'Orden de aparición en el menú',
+  `estado` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 activo, 0 inactivo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Catálogo de módulos del sistema (sidebar)';
+
+--
+-- Volcado de datos para la tabla `modulos`
+--
+
+INSERT INTO `modulos` (`id_modulo`, `nombre`, `descripcion`, `url`, `tipo`, `icono`, `orden`, `estado`) VALUES
+(1, 'solicitudes', 'Registro y gestión de solicitudes ciudadanas.', '/lista-de-solicitudes', 'CRUD', 'bi-card-text', 1, 1),
+(2, 'proyectos', 'Asignación de proyectos a partir de solicitudes aprobadas.', '/gestionar-proyectos', 'Transaccional', 'bi-folder', 2, 1),
+(3, 'obras', 'Gestión de obras vinculadas a proyectos y contrataciones.', '/gestionar-obras', 'Transaccional', 'bi-house-gear', 3, 1),
+(4, 'publicaciones', 'Publicación de avances e información de obras.', '/lista-publicaciones', 'Transaccional', 'bi-newspaper', 4, 1),
+(5, 'contrataciones', 'Registro de contrataciones asociadas a obras.', '/contratacion', 'Transaccional', 'bi-briefcase', 5, 1),
+(6, 'usuarios', 'Registro, edición y eliminación de usuarios del sistema.', '/users', 'CRUD', 'bi-people-fill', 6, 1),
+(7, 'bitacora', 'Registro de auditoría de acciones de los usuarios.', '/bitacora', 'CRUD', 'bi-clock-history', 7, 1),
+(8, 'evidencias', 'Registro y listado de evidencias fotográficas de obras.', '/evidencias/listar', 'CRUD', 'bi-images', 8, 1),
+(9, 'informes', 'Informe de avance de obra (depende de obras y evidencias).', '/inf_avance_obra', 'Transaccional', 'bi-graph-up', 9, 1),
+(10, 'reportes', 'Generación de reportes en Excel, PDF y estadísticos.', '/reportes', 'CRUD', 'bi-bar-chart-line-fill', 10, 1),
+(11, 'gravedad', 'Catálogo de niveles de gravedad de las obras.', '/gestionar-gravedad', 'CRUD', 'bi-exclamation-triangle', 11, 1),
+(12, 'prioridad', 'Catálogo de niveles de prioridad de las solicitudes.', '/gestionar-prioridad', 'CRUD', 'bi-arrow-up', 12, 1),
+(13, 'empleados', 'Registro y listado de empleados de la institución.', '/empleados', 'CRUD', 'bi-person-badge-fill', 13, 1),
+(14, 'empresas', 'Registro y listado de empresas contratistas.', '/lista-empresas', 'CRUD', 'bi-building', 14, 1),
+(15, 'inspecciones', 'Registro y listado de inspecciones de obras.', '/inspecciones', 'CRUD', 'bi-clipboard-check', 15, 1),
+(16, 'maquinaria', 'Registro y listado de maquinaria pesada.', '/maquinaria', 'CRUD', 'bi-truck', 16, 1),
+(17, 'respaldos', 'Administración de respaldos de la base de datos.', '/administrar-respaldos', 'CRUD', 'bi-download', 17, 1),
+(18, 'manual', 'Manual del sistema (documentación de usuario).', '/manual', 'Enlace', 'bi-journal-bookmark-fill', 18, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `roles`
+--
+
+CREATE TABLE `roles` (
+  `id_rol` int NOT NULL,
+  `nombre` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Nombre del rol (coincide con usuarios.rol)',
+  `descripcion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `estado` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 activo, 0 inactivo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Catálogo de roles/cargos';
+
+--
+-- Volcado de datos para la tabla `roles`
+--
+
+INSERT INTO `roles` (`id_rol`, `nombre`, `descripcion`, `estado`) VALUES
+(1, 'Super Usuario', 'Control total del sistema.', 1),
+(2, 'Administrador', 'Gestión operativa y de usuarios.', 1),
+(3, 'Gerente', 'Supervisión de obras, informes y prioridades.', 1),
+(4, 'Inspector', 'Inspección de obras y registro de evidencias.', 1),
+(5, 'Recepcionista', 'Recepción de solicitudes y consulta de reportes.', 1),
+(6, 'Asistente', 'Apoyo en el registro de solicitudes.', 1),
+(7, 'Proyectista', 'Diseño y seguimiento de proyectos y obras.', 1),
+(8, 'Usuario', 'Acceso básico de consulta.', 1),
+(9, 'Presidente', 'Visualización institucional de módulos clave.', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `roles_permisos`
+--
+
+CREATE TABLE `roles_permisos` (
+  `id_rol_permiso` int NOT NULL,
+  `id_rol` int NOT NULL,
+  `id_modulo` int NOT NULL,
+  `puede_ver` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Puede visualizar/abrir el módulo',
+  `puede_crear` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Puede registrar (CREAR)',
+  `puede_editar` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Puede modificar (EDITAR)',
+  `puede_eliminar` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Puede borrar (ELIMINAR)',
+  `estado` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 activo, 0 inactivo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Permisos específicos por rol y módulo';
+
+--
+-- Volcado de datos para la tabla `roles_permisos`
+--
+
+INSERT INTO `roles_permisos` (`id_rol_permiso`, `id_rol`, `id_modulo`, `puede_ver`, `puede_crear`, `puede_editar`, `puede_eliminar`, `estado`) VALUES
+(1, 1, 1, 1, 1, 1, 1, 1),
+(2, 1, 2, 1, 1, 1, 1, 1),
+(3, 1, 3, 1, 1, 1, 1, 1),
+(4, 1, 4, 1, 1, 1, 1, 1),
+(5, 1, 5, 1, 1, 1, 1, 1),
+(6, 1, 6, 1, 1, 1, 1, 1),
+(7, 1, 7, 1, 0, 0, 0, 1),
+(8, 1, 8, 1, 1, 1, 1, 1),
+(9, 1, 9, 1, 1, 1, 1, 1),
+(10, 1, 10, 1, 1, 1, 1, 1),
+(11, 1, 11, 1, 1, 1, 1, 1),
+(12, 1, 12, 1, 1, 1, 1, 1),
+(13, 1, 13, 1, 1, 1, 1, 1),
+(14, 1, 14, 1, 1, 1, 1, 1),
+(15, 1, 15, 1, 1, 1, 1, 1),
+(16, 1, 16, 1, 1, 1, 1, 1),
+(17, 1, 17, 1, 1, 1, 1, 1),
+(18, 1, 18, 1, 0, 0, 0, 1),
+(19, 2, 6, 1, 1, 1, 1, 1),
+(20, 2, 1, 1, 1, 1, 1, 1),
+(21, 2, 13, 1, 1, 1, 1, 1),
+(22, 2, 3, 1, 1, 1, 1, 1),
+(23, 2, 2, 1, 1, 1, 1, 1),
+(24, 2, 8, 1, 1, 1, 1, 1),
+(25, 2, 4, 1, 1, 1, 1, 1),
+(26, 2, 10, 1, 1, 1, 1, 1),
+(27, 2, 7, 1, 0, 0, 0, 1),
+(28, 2, 11, 1, 1, 1, 1, 1),
+(29, 2, 12, 1, 1, 1, 1, 1),
+(30, 2, 9, 1, 1, 1, 1, 1),
+(31, 2, 18, 1, 0, 0, 0, 1),
+(32, 3, 1, 1, 1, 1, 1, 1),
+(33, 3, 3, 1, 1, 1, 1, 1),
+(34, 3, 13, 1, 1, 1, 1, 1),
+(35, 3, 10, 1, 1, 1, 1, 1),
+(36, 3, 9, 1, 1, 1, 1, 1),
+(37, 3, 11, 1, 1, 1, 1, 1),
+(38, 3, 12, 1, 1, 1, 1, 1),
+(39, 4, 1, 1, 1, 1, 1, 1),
+(40, 4, 3, 1, 1, 1, 1, 1),
+(41, 4, 15, 1, 1, 1, 1, 1),
+(42, 4, 8, 1, 1, 1, 1, 1),
+(43, 4, 9, 1, 1, 1, 1, 1),
+(44, 5, 1, 1, 1, 1, 1, 1),
+(45, 5, 10, 1, 1, 1, 1, 1),
+(46, 5, 9, 1, 1, 1, 1, 1),
+(47, 6, 1, 1, 1, 1, 1, 1),
+(48, 7, 2, 1, 1, 1, 1, 1),
+(49, 7, 3, 1, 1, 1, 1, 1),
+(50, 7, 9, 1, 1, 1, 1, 1),
+(51, 8, 1, 1, 1, 1, 1, 1),
+(52, 8, 9, 1, 1, 1, 1, 1),
+(53, 9, 1, 1, 1, 1, 1, 1),
+(54, 9, 2, 1, 1, 1, 1, 1),
+(55, 9, 3, 1, 1, 1, 1, 1),
+(56, 9, 4, 1, 1, 1, 1, 1),
+(57, 9, 5, 1, 1, 1, 1, 1),
+(58, 9, 14, 1, 1, 1, 1, 1),
+(59, 9, 13, 1, 1, 1, 1, 1),
+(60, 9, 16, 1, 1, 1, 1, 1),
+(61, 9, 8, 1, 1, 1, 1, 1),
+(62, 9, 15, 1, 1, 1, 1, 1),
+(63, 9, 10, 1, 1, 1, 1, 1),
+(64, 9, 7, 1, 0, 0, 0, 1),
+(65, 9, 11, 1, 1, 1, 1, 1),
+(66, 9, 12, 1, 1, 1, 1, 1),
+(67, 9, 9, 1, 1, 1, 1, 1),
+(68, 9, 18, 1, 0, 0, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -348,6 +589,27 @@ INSERT INTO `usuarios` (`id_usuarios`, `nombre`, `cedula_usuario`, `contrasena`,
 (6, 'prueba2', '3054125315', 'pbkdf2:sha256:600000$2giL7omaooLb7h6s$a24344c192f7dbce7b8fcdd1e938fefd141b7e59590c8520602b7d37491ab693', 'prueba2@gmail.com', 'Presidente', NULL, NULL, 0, 1, 'assets/img/avatars/1.png'),
 (7, 'prueba3', '29464612', 'pbkdf2:sha256:600000$LjGwccCDdlkoWjgT$49f6ce4de45eb3e39b5f88bce4f720fa7108bd1e0b72149f421f07d733a5966d', 'prueba3@gmail.com', 'Usuario', NULL, NULL, 0, 1, 'assets/img/avatars/f0003ef9eff64e349ec9a8e67a2c640b.jpg');
 
+-- --------------------------------------------------------
+
+--
+-- Estructura Stand-in para la vista `v_permisos_rol`
+-- (Véase abajo para la vista actual)
+--
+CREATE TABLE `v_permisos_rol` (
+`id_rol` int
+,`rol` varchar(20)
+,`id_modulo` int
+,`modulo` varchar(40)
+,`url` varchar(120)
+,`tipo` enum('CRUD','Transaccional','Enlace')
+,`icono` varchar(60)
+,`orden` int
+,`puede_ver` tinyint(1)
+,`puede_crear` tinyint(1)
+,`puede_editar` tinyint(1)
+,`puede_eliminar` tinyint(1)
+);
+
 --
 -- Índices para tablas volcadas
 --
@@ -367,6 +629,28 @@ ALTER TABLE `bitacora`
   ADD KEY `fk_bitacora_usuarios1_idx` (`usuarios_id_usuarios`);
 
 --
+-- Indices de la tabla `modulos`
+--
+ALTER TABLE `modulos`
+  ADD PRIMARY KEY (`id_modulo`),
+  ADD UNIQUE KEY `uk_modulos_nombre` (`nombre`);
+
+--
+-- Indices de la tabla `roles`
+--
+ALTER TABLE `roles`
+  ADD PRIMARY KEY (`id_rol`),
+  ADD UNIQUE KEY `uk_roles_nombre` (`nombre`);
+
+--
+-- Indices de la tabla `roles_permisos`
+--
+ALTER TABLE `roles_permisos`
+  ADD PRIMARY KEY (`id_rol_permiso`),
+  ADD UNIQUE KEY `uk_rol_modulo` (`id_rol`,`id_modulo`),
+  ADD KEY `fk_roles_permisos_modulos_idx` (`id_modulo`);
+
+--
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
@@ -377,10 +661,48 @@ ALTER TABLE `usuarios`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `modulos`
+--
+ALTER TABLE `modulos`
+  MODIFY `id_modulo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT de la tabla `roles`
+--
+ALTER TABLE `roles`
+  MODIFY `id_rol` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT de la tabla `roles_permisos`
+--
+ALTER TABLE `roles_permisos`
+  MODIFY `id_rol_permiso` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+
+--
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
   MODIFY `id_usuarios` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura para la vista `v_permisos_rol`
+--
+DROP TABLE IF EXISTS `v_permisos_rol`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v_permisos_rol`  AS SELECT `r`.`id_rol` AS `id_rol`, `r`.`nombre` AS `rol`, `m`.`id_modulo` AS `id_modulo`, `m`.`nombre` AS `modulo`, `m`.`url` AS `url`, `m`.`tipo` AS `tipo`, `m`.`icono` AS `icono`, `m`.`orden` AS `orden`, `rp`.`puede_ver` AS `puede_ver`, `rp`.`puede_crear` AS `puede_crear`, `rp`.`puede_editar` AS `puede_editar`, `rp`.`puede_eliminar` AS `puede_eliminar` FROM ((`roles` `r` join `roles_permisos` `rp` on((`rp`.`id_rol` = `r`.`id_rol`))) join `modulos` `m` on((`m`.`id_modulo` = `rp`.`id_modulo`))) WHERE ((`r`.`estado` = 1) AND (`rp`.`estado` = 1) AND (`m`.`estado` = 1)) ;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `roles_permisos`
+--
+ALTER TABLE `roles_permisos`
+  ADD CONSTRAINT `fk_roles_permisos_modulos` FOREIGN KEY (`id_modulo`) REFERENCES `modulos` (`id_modulo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_roles_permisos_roles` FOREIGN KEY (`id_rol`) REFERENCES `roles` (`id_rol`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

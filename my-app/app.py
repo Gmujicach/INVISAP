@@ -62,3 +62,19 @@ def inject_perfil_usuario():
     except Exception:
         pass
     return dict(perfil=datos)
+
+
+# ============================================
+# Permisos por rol del usuario
+# Inyecta en TODAS las plantillas la función tiene_permiso(modulo)
+# y el rol/permisos del usuario autenticado (para filtrar el menú lateral)
+# ============================================
+@app.context_processor
+def inject_permisos_usuario():
+    from controllers.UserController import verificar_permiso, PERMISOS
+    rol = session.get('rol', 'Usuario')
+    return {
+        'tiene_permiso': verificar_permiso,
+        'rol_usuario': rol,
+        'permisos_usuario': PERMISOS.get(rol, [])
+    }

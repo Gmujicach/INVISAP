@@ -1,0 +1,219 @@
+/* ============================================================
+   INVILARA - MODO OSCURO UNIFICADO (Global)
+   Se activa con:
+     • body.dark-mode          -> toggle del sistema (navbar)
+     • [data-bs-theme="dark"] -> módulos inspección/evidencia
+   Objetivo:
+     • Todas las letras en BLANCO y legibles.
+     • Superficies oscuras coherentes en todos los módulos.
+     • Eliminar la estela / brillo blanco al hacer scroll en el sidebar.
+     • Interfaces responsivas en cualquier pantalla.
+   Se carga al FINAL para prevalecer sobre los CSS de módulo.
+   ============================================================ */
+
+:root {
+  --inv-dark-bg: #232333;
+  --inv-dark-surface: #2b2c40;
+  --inv-dark-surface-2: #1f2033;
+  --inv-dark-border: #3a3b53;
+  --inv-dark-text: #ffffff;
+  --inv-dark-muted: rgba(255, 255, 255, 0.78);
+}
+
+/* ---------- Fondo y texto base del body ---------- */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) {
+  background-color: var(--inv-dark-bg) !important;
+  color: var(--inv-dark-text) !important;
+}
+
+/* ---------- Fuerza TEXTO BLANCO en todo el contenido ---------- */
+:is(body.dark-mode, html[data-bs-theme="dark"] body)
+  :where(h1, h2, h3, h4, h5, h6, p, span, label, li, a, small,
+         strong, b, em, i, td, th, dt, dd, figcaption, blockquote, cite,
+         div, section, article, ul, ol, nav, header, footer, main, aside,
+         form, fieldset, legend, .form-label, .form-text, .text-muted,
+         .text-primary, .text-secondary, .text-dark, .text-body, .card-title,
+         .card-subtitle, .card-text, .list-group-item, .dropdown-item,
+         .nav-link, .page-link, .breadcrumb-item, .accordion-button,
+         .modal-title, .modal-body, .toast-message, .table, .form-check-label)
+  :not(.btn):not(.badge):not(.alert):not(svg):not(path):not(.bx):not(.bi):not(.menu-icon) {
+  color: var(--inv-dark-text) !important;
+}
+
+/* ---------- Superficies oscuras (tarjetas, modales, menús, etc.) ---------- */
+:is(body.dark-mode, html[data-bs-theme="dark"] body)
+  :where(.card, .card-header, .card-footer, .card-body, .modal-content,
+         .modal-header, .modal-body, .modal-footer, .dropdown-menu,
+         .list-group, .list-group-item, .accordion-item, .accordion-button,
+         .accordion-body, .offcanvas, .offcanvas-body, .toast, .popover,
+         .breadcrumb, .input-group-text, .form-control, .form-select,
+         .page-link, .nav-tabs, .nav-pills, .layout-navbar, .navbar,
+         .alert-light, .alert-secondary, .bg-label-primary) {
+  background-color: var(--inv-dark-surface) !important;
+  color: var(--inv-dark-text) !important;
+  border-color: var(--inv-dark-border) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body)
+  :where(.form-control, .form-select, .input-group-text) {
+  background-color: var(--inv-dark-surface-2) !important;
+  color: var(--inv-dark-text) !important;
+  border-color: var(--inv-dark-border) !important;
+}
+
+/* ---------- Tablas ---------- */
+:is(body.dark-mode, html[data-bs-theme="dark"] body)
+  :where(.table, .table td, .table th, .table thead th, .table tbody td) {
+  background-color: var(--inv-dark-surface) !important;
+  color: var(--inv-dark-text) !important;
+  border-color: var(--inv-dark-border) !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body)
+  .table-striped > tbody > tr:nth-of-type(odd) > * {
+  background-color: var(--inv-dark-surface-2) !important;
+  color: var(--inv-dark-text) !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body)
+  .table-hover > tbody > tr:hover > * {
+  background-color: #34354f !important;
+  color: var(--inv-dark-text) !important;
+}
+
+/* ---------- Placeholders ---------- */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) ::placeholder {
+  color: #b9b9d6 !important;
+  opacity: 1 !important;
+}
+
+/* ---------- Botón cerrar (la "x" de modales/alertas) ---------- */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .btn-close {
+  filter: invert(1) grayscale(100%);
+}
+
+/* ---------- Paginación ---------- */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .pagination .page-link {
+  background-color: var(--inv-dark-surface) !important;
+  color: var(--inv-dark-text) !important;
+  border-color: var(--inv-dark-border) !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body)
+  .pagination .page-item.disabled .page-link {
+  background-color: var(--inv-dark-surface-2) !important;
+  color: #9a9ab5 !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body)
+  .pagination .page-item.active .page-link {
+  background-color: #08b324 !important;
+  border-color: #08b324 !important;
+  color: #ffffff !important;
+}
+
+/* ---------- Clases bespoke de módulos sin regla propia de dark ---------- */
+:is(body.dark-mode, html[data-bs-theme="dark"] body)
+  :where(.bitacora-header, .stat-card, .filter-card, .usuario-chip, .modulo-chip,
+         .seguridad-header, .seguridad-filter-card, .seguridad-table-card .card,
+         .gravedad-header, .gravedad-filter-card, .prioridad-header,
+         .prioridad-filter-card, .prioridad-card, #resultadoIA,
+         .card-modern, .card-header-custom, .preview-card, .empty-state-modern,
+         .perfil-card, .perfil-header, .perfil-input, .perfil-footer,
+         .perfil-btn-outline, .toast-custom, .file-drop-zone, .drop-zone,
+         .card-respaldo, .dashboard-card, .action-card, .dashboard-wrapper) {
+  background-color: var(--inv-dark-surface) !important;
+  color: var(--inv-dark-text) !important;
+  border-color: var(--inv-dark-border) !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .perfil-input,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .preview-card-container select,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .seguridad-filter-card input,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .seguridad-filter-card select,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .gravedad-filter-card input,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .prioridad-filter-card input,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .prioridad-card .form-control,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .prioridad-card .form-select {
+  background-color: var(--inv-dark-surface-2) !important;
+  color: var(--inv-dark-text) !important;
+  border-color: var(--inv-dark-border) !important;
+}
+
+/* ============================================================
+   ELIMINAR EL BRILLO / ESTELA BLANCA AL HACER SCROLL
+   EN EL SIDEBAR LATERAL
+   ============================================================ */
+.menu-inner-shadow {
+  display: none !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .layout-menu,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .menu-inner,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .menu {
+  background-color: #1e1e2d !important;
+  box-shadow: none !important;
+}
+
+/* Oculta la barra de scroll (perfect-scrollbar) para que no deje rastro blanco */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .ps__rail-y,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .ps__rail-x,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .ps__rail-y:hover,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .ps__rail-x:hover,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .ps__rail-y:focus,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .ps__rail-x:focus,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .ps--scrolling-y > .ps__rail-y,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .ps--scrolling-x > .ps__rail-x {
+  background-color: transparent !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .ps__thumb-y,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .ps__thumb-x {
+  background-color: #4a4b66 !important;
+}
+
+/* Scrollbar nativo del menú en modo oscuro (evita el "brillo" blanco) */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .layout-menu::-webkit-scrollbar,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .menu-inner::-webkit-scrollbar {
+  width: 6px;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .layout-menu::-webkit-scrollbar-thumb,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .menu-inner::-webkit-scrollbar-thumb {
+  background-color: #4a4b66;
+  border-radius: 10px;
+}
+
+/* ============================================================
+   RESPONSIVE GLOBAL (legible y navegable en cualquier pantalla)
+   ============================================================ */
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .container-xxl,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .container-p-y {
+  width: 100%;
+  max-width: 100%;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 575.98px) {
+  #search {
+    min-width: 100% !important;
+    width: 100% !important;
+  }
+  .corner-profile-name,
+  .corner-profile-sub {
+    display: none;
+  }
+  .corner-profile-container {
+    right: 12px;
+    top: 8px;
+  }
+  .content-wrapper {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+}

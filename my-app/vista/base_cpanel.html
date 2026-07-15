@@ -13,8 +13,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/reportesEstadisticos.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/usuarios.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/login.css') }}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
-    {% block customCSS %} {% endblock %}
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+      {% block customCSS %} {% endblock %}
+      <!-- Estilos globales de Modo Oscuro (debe cargarse al final para prevalecer) -->
+      <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dark-mode.css') }}">
     <style>
       /* Estilos para el acceso rápido a Mi Perfil */
       .corner-profile-container {
@@ -73,11 +75,7 @@
       .dropdown-toggle::after {
         display: none;
       }
-      /* Ajustes para el Modal de Desarrolladores */
-      #modalDevelopers .modal-content {
-        border-radius: 15px;
-      }
-      
+
       /* --- Atomic Design: Notification Molecule --- */
       .toast-container-custom {
         position: fixed;
@@ -114,6 +112,171 @@
         padding-top: 0.75rem;
         border-top: 1px solid rgba(0,0,0,0.06);
       }
+
+      /* --- Pantalla de Configuración (Hub) --- */
+      #modalConfig .modal-content { border-radius: 20px; }
+      .config-hero {
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+      }
+      #modalAccesibilidad .modal-header {
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+      }
+      #modalAbout .modal-content > .position-relative {
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+      }
+      #modalConfig .modal-dialog,
+      #modalAccesibilidad .modal-dialog,
+      #modalAbout .modal-dialog { position: relative; }
+      /* Botón de cerrar flotante (fuera de la tarjeta) */
+      .modal-close-float {
+        position: absolute;
+        top: -18px;
+        right: 14px;
+        z-index: 10;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: #fff;
+        color: #696cff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+      }
+      .modal-close-float:hover {
+        transform: scale(1.08);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.28);
+      }
+      .modal-close-float i { font-size: 1.35rem; line-height: 1; }
+      body.dark-mode .modal-close-float {
+        background: #2b2c40;
+        color: #cfcde9;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.45);
+      }
+      .config-hero {
+        background: linear-gradient(135deg, #08b324 0%, #059b1f 100%);
+        color: #fff;
+      }
+      .config-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 20px;
+        border-radius: 16px;
+        border: 1px solid rgba(0,0,0,0.06);
+        background: #f6f7fb;
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        cursor: pointer;
+      }
+      .config-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(105,108,255,0.18);
+        border-color: transparent;
+        color: inherit;
+      }
+      .config-card-icon {
+        width: 56px; height: 56px;
+        border-radius: 16px;
+        display: inline-flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 1.6rem;
+        flex-shrink: 0;
+      }
+      .config-card-title { font-weight: 700; font-size: 1.02rem; line-height: 1.15; }
+      .config-card-desc { font-size: 0.8rem; color: #8a8fa3; margin: 0; }
+      body.dark-mode .config-card { background: #2b2c40; border-color: #3a3b54; }
+      body.dark-mode .config-card-desc { color: #a2a3b7; }
+
+      /* --- Modo Alto Contraste (Accesibilidad) --- */
+      body.high-contrast .app-shell {
+        filter: contrast(1.4);
+      }
+      body.high-contrast .layout-menu,
+      body.high-contrast .card,
+      body.high-contrast .modal-content,
+      body.high-contrast .profile-link-fixed {
+        border: 2px solid #000 !important;
+      }
+      body.high-contrast .menu-link,
+      body.high-contrast .text-muted,
+      body.high-contrast .text-secondary {
+        color: #000 !important;
+      }
+      body.high-contrast .btn-primary,
+      body.high-contrast .bg-label-primary {
+        color: #fff !important;
+        background-color: #000 !important;
+      }
+      body.dark-mode.high-contrast .app-shell {
+        filter: contrast(1.5) brightness(1.1);
+      }
+
+      /* --- Modal Accesibilidad --- */
+      #modalAccesibilidad .modal-content { border-radius: 16px; }
+      #modalAccesibilidad code {
+        background: #f1f1f7;
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 0.8em;
+      }
+      .accessibility-icon-badge {
+        width: 40px; height: 40px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 12px; background: rgba(255,255,255,0.2);
+      }
+
+      /* --- Modal Acerca de --- */
+      #modalAbout .modal-content { border-radius: 20px; }
+      .about-logo {
+        width: 84px; height: 84px;
+        border-radius: 24px;
+        display: inline-flex; align-items: center; justify-content: center;
+        background: rgba(255,255,255,0.18);
+        backdrop-filter: blur(4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      }
+      .developers-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .developer-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: #f6f7fb;
+        border: 1px solid rgba(0,0,0,0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .developer-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 18px rgba(105,108,255,0.18);
+      }
+      .developer-avatar {
+        width: 42px; height: 42px;
+        border-radius: 50%;
+        display: inline-flex; align-items: center; justify-content: center;
+        color: #fff; font-weight: 700; font-size: 1rem;
+        flex-shrink: 0;
+      }
+      .developer-name { font-weight: 600; font-size: 0.92rem; line-height: 1.1; }
+      .developer-role { font-size: 0.72rem; color: #8a8fa3; }
+      @media (max-width: 420px) {
+        .developers-grid { grid-template-columns: 1fr; }
+      }
+      /* Dark mode para las tarjetas del Acerca de */
+      body.dark-mode .developer-card { background: #2b2c40; border-color: #3a3b54; }
+      body.dark-mode .developer-role { color: #a2a3b7; }
+      body.dark-mode .developers-version { color: #a2a3b7; border-top-color: rgba(255,255,255,0.08); }
 
 /* Ajustes de Modo Oscuro en Plantilla Base */
       .dark-mode .profile-link-fixed {
@@ -250,9 +413,32 @@
             d.classList.add('light-style');
             d.setAttribute('data-theme', 'theme-default');
           }
-        } catch (e) {}
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+          document.body.classList.add('dark-mode');
+          document.documentElement.setAttribute('data-bs-theme', 'dark');
+        }
+
+        // Restaurar preferencias de accesibilidad
+        var savedFont = parseInt(localStorage.getItem('a11y-font-size'), 10);
+        if (savedFont) {
+          document.documentElement.style.fontSize = (savedFont / 100 * 16) + 'px';
+        }
+        if (localStorage.getItem('a11y-contrast') === 'on') {
+          document.body.classList.add('high-contrast');
+        }
+        updateLogo();
+
+        if (darkSwitch) {
+          darkSwitch.addEventListener('change', function() {
+            setTimeout(updateLogo, 50);
+          });
+        }
+        try { } catch (e) {}
       })();
     </script>
+    <div class="app-shell">
     {% include 'home/pre_loader.html' %}
     <!---->
     {% include 'home/navbar.html' %}
@@ -300,7 +486,7 @@
                 </div>
               </li>
               <li>
-                <a class="dropdown-item rounded d-flex align-items-center py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalDevelopers">
+                <a class="dropdown-item rounded d-flex align-items-center py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalConfig">
                   <i class="bi bi-gear-wide-connected me-2 fs-5 text-info"></i>
                   <span>Configuración</span>
                 </a>
@@ -353,42 +539,171 @@
       <div class="layout-overlay layout-menu-toggle"></div>
     </div>
 
-    <!-- Modal: Créditos / Configuración -->
-    <div class="modal fade" id="modalDevelopers" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-sm">
+    </div>
+    <!-- Fin .app-shell -->
+
+    <!-- Modal: Configuración (Hub) -->
+    <div class="modal fade" id="modalConfig" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content border-0 shadow-lg">
-          <div class="modal-header border-0 pb-0">
-            <h5 class="modal-title fw-bold"><i class="bi bi-info-circle-fill me-2 text-primary"></i>Acerca de</h5>
-            
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <div class="config-hero position-relative p-4">
+            <div class="d-flex align-items-center gap-3">
+              <span class="accessibility-icon-badge" style="width:46px;height:46px;font-size:1.3rem;">
+                <i class="bi bi-sliders"></i>
+              </span>
+              <div>
+                <h5 class="modal-title fw-bold mb-0">Configuración</h5>
+                <p class="mb-0 small opacity-75 mt-1">Administra tu experiencia en el sistema</p>
+              </div>
+            </div>
           </div>
-          <div class="modal-body py-4">
+          <div class="modal-body p-4">
+            <div class="d-flex flex-column gap-3">
+              <a class="config-card" href="#" data-config-target="#modalAccesibilidad">
+                <span class="config-card-icon" style="background: linear-gradient(135deg,#08b324,#059b1f);">
+                  <i class="bi bi-universal-access-circle"></i>
+                </span>
+                <div class="flex-grow-1">
+                  <div class="config-card-title">Accesibilidad</div>
+                  <p class="config-card-desc">Tamaño de fuente y contraste visual (WCAG).</p>
+                </div>
+                <i class="bi bi-chevron-right opacity-50"></i>
+              </a>
+              <a class="config-card" href="#" data-config-target="#modalAbout">
+                <span class="config-card-icon" style="background: linear-gradient(135deg,#696cff,#5a5ce0);">
+                  <i class="bi bi-info-circle"></i>
+                </span>
+                <div class="flex-grow-1">
+                  <div class="config-card-title">Acerca de</div>
+                  <p class="config-card-desc">Desarrolladores y versión del sistema.</p>
+                </div>
+                <i class="bi bi-chevron-right opacity-50"></i>
+              </a>
+            </div>
+          </div>
+          <button type="button" class="modal-close-float" data-bs-dismiss="modal" aria-label="Close">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Accesibilidad y Personalización Visual -->
+    <div class="modal fade" id="modalAccesibilidad" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content border-0 shadow-lg">
+          <div class="modal-header border-0 text-white" style="background: linear-gradient(135deg, #08b324 0%, #059b1f 100%);">
+            <div class="d-flex align-items-center gap-3">
+              <span class="accessibility-icon-badge">
+                <i class="bi bi-universal-access-circle fs-4"></i>
+              </span>
+              <div>
+                <h5 class="modal-title fw-bold mb-0">Accesibilidad</h5>
+                <p class="mb-0 small opacity-75 mt-1">Personalización visual de la interfaz</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-body p-4">
+            <p class="text-muted small mb-4">
+              Permite ajustar la fuente del sistema
+              <span class="badge bg-label-primary">WCAG</span>, ajusta tu experiencia visual.
+            </p>
+
+            <!-- Tamaño de la Fuente -->
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <label class="fw-semibold mb-0"><i class="bi bi-type me-2 text-primary"></i>Tamaño de la Fuente</label>
+                <span class="badge bg-light text-dark border" id="fontSizeLabel">100%</span>
+              </div>
+              <p class="text-muted small mb-2">Permite ajustar dinámicamente los <code>rem</code>/<code>em</code> con JavaScript para usuarios con dificultades visuales.</p>
+              <div class="d-flex align-items-center gap-3">
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" id="fontDecrease" style="width:40px;height:40px;" aria-label="Reducir tamaño de fuente">A-</button>
+                <input type="range" class="form-range flex-grow-1" id="fontSizeRange" min="80" max="160" step="5" value="100" aria-label="Control de tamaño de fuente">
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" id="fontIncrease" style="width:40px;height:40px;" aria-label="Aumentar tamaño de fuente">A+</button>
+              </div>
+            </div>
+
+            <hr class="my-3">
+
+            <!-- Aumentar el Contraste -->
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="pe-3">
+                <label class="fw-semibold mb-0"><i class="bi bi-brightness-high me-2 text-warning"></i>Aumentar el Contraste</label>
+                <p class="text-muted small mb-0">Esto solo aumentará el contraste en el sistema.</p>
+              </div>
+              <div class="form-check form-switch mb-0">
+                <input class="form-check-input cursor-pointer" type="checkbox" id="contrast-switch" role="switch" aria-label="Aumentar el contraste del color">
+              </div>
+            </div>
+          </div>
+          <button type="button" class="modal-close-float" data-bs-dismiss="modal" aria-label="Close">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Acerca de -->
+    <div class="modal fade" id="modalAbout" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-md">
+        <div class="modal-content border-0 shadow-lg">
+          <div class="position-relative text-center text-white p-4" style="background: linear-gradient(135deg, #08b324 0%, #059b1f 100%);">
+            <span class="about-logo mb-3">
+              <i class="bi bi-box-seam-fill fs-1"></i>
+            </span>
+            <h4 class="fw-bold mb-1">INVISAP</h4>
+            <p class="mb-0 small opacity-75">Sistema de Gestión de Inventario</p>
+          </div>
+          <div class="modal-body p-4">
             <p class="text-muted small mb-3 text-uppercase fw-bold ls-1 text-center">Desarrolladores</p>
-            <div class="list-group list-group-flush border-top border-bottom">
-              <div class="list-group-item d-flex align-items-center py-2 px-1 bg-transparent">
-                <i class="bi bi-person-check me-2 text-secondary"></i> David Peña
+            <div class="developers-grid">
+              <div class="developer-card">
+                <span class="developer-avatar" style="background: linear-gradient(135deg,#696cff,#5a5ce0);">DP</span>
+                <div>
+                  <div class="developer-name">David Peña</div>
+                  <div class="developer-role">Desarrollador</div>
+                </div>
               </div>
-              <div class="list-group-item d-flex align-items-center py-2 px-1 bg-transparent">
-                <i class="bi bi-person-check me-2 text-secondary"></i> Gabriel Mujica
+              <div class="developer-card">
+                <span class="developer-avatar" style="background: linear-gradient(135deg,#08b324,#059b1f);">GM</span>
+                <div>
+                  <div class="developer-name">Gabriel Mujica</div>
+                  <div class="developer-role">Desarrollador</div>
+                </div>
               </div>
-              <div class="list-group-item d-flex align-items-center py-2 px-1 bg-transparent">
-                <i class="bi bi-person-check me-2 text-secondary"></i> Eliot Puerta
+              <div class="developer-card">
+                <span class="developer-avatar" style="background: linear-gradient(135deg,#ff3e1d,#e63416);">EP</span>
+                <div>
+                  <div class="developer-name">Eliot Puerta</div>
+                  <div class="developer-role">Desarrollador</div>
+                </div>
               </div>
-              <div class="list-group-item d-flex align-items-center py-2 px-1 bg-transparent">
-                <i class="bi bi-person-check me-2 text-secondary"></i> Frangher Pereira
+              <div class="developer-card">
+                <span class="developer-avatar" style="background: linear-gradient(135deg,#fd7e14,#e76b06);">FP</span>
+                <div>
+                  <div class="developer-name">Frangher Pereira</div>
+                  <div class="developer-role">Desarrollador</div>
+                </div>
               </div>
-              <div class="list-group-item d-flex align-items-center py-2 px-1 bg-transparent">
-                <i class="bi bi-person-check me-2 text-secondary"></i> Freider Guedez
+              <div class="developer-card">
+                <span class="developer-avatar" style="background: linear-gradient(135deg,#17a2b8,#138496);">FG</span>
+                <div>
+                  <div class="developer-name">Freider Guedez</div>
+                  <div class="developer-role">Desarrollador</div>
+                </div>
               </div>
             </div>
 
             <!-- Versión del sistema -->
             <div class="developers-version">
-              Versión del sistema: 0.23.5<span id="system-version">{{ system_version|default('') }}</span>
+              Versión del sistema: <strong>0.23.5</strong><span id="system-version">{{ system_version|default('') }}</span>
             </div>
-            
-            <!-- NOTA: La versión del sistema se muestra al final del modal de Desarrolladores -->
+
+            <!-- NOTA: La versión del sistema se muestra al final del modal de Acerca de -->
           </div>
+          <button type="button" class="modal-close-float" data-bs-dismiss="modal" aria-label="Close">
+            <i class="bi bi-x-lg"></i>
+          </button>
         </div>
       </div>
     </div>
@@ -721,6 +1036,69 @@
             bsAlert.close();
           }, 5000); // 5 Segundos
         });
+      });
+
+      // --- Navegación desde el Hub de Configuración ---
+      document.querySelectorAll('[data-config-target]').forEach(function(el) {
+        el.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = el.getAttribute('data-config-target');
+          const configModal = bootstrap.Modal.getInstance(document.getElementById('modalConfig'));
+          if (configModal) configModal.hide();
+          setTimeout(function() {
+            bootstrap.Modal.getOrCreateInstance(document.querySelector(target)).show();
+          }, 200);
+        });
+      });
+      document.addEventListener('DOMContentLoaded', function() {
+        const range = document.getElementById('fontSizeRange');
+        const label = document.getElementById('fontSizeLabel');
+        const decrease = document.getElementById('fontDecrease');
+        const increase = document.getElementById('fontIncrease');
+        const contrastSwitch = document.getElementById('contrast-switch');
+
+        const baseSize = 16;
+        function applyFontSize(pct) {
+          document.documentElement.style.fontSize = (pct / 100 * baseSize) + 'px';
+          if (label) label.textContent = pct + '%';
+          if (range) range.value = pct;
+          localStorage.setItem('a11y-font-size', pct);
+        }
+
+        let current = parseInt(localStorage.getItem('a11y-font-size'), 10) || 100;
+        applyFontSize(current);
+
+        if (range) {
+          range.addEventListener('input', function() {
+            applyFontSize(parseInt(range.value, 10));
+          });
+        }
+        if (decrease) {
+          decrease.addEventListener('click', function() {
+            current = Math.max(80, current - 5);
+            applyFontSize(current);
+          });
+        }
+        if (increase) {
+          increase.addEventListener('click', function() {
+            current = Math.min(160, current + 5);
+            applyFontSize(current);
+          });
+        }
+
+        const savedContrast = localStorage.getItem('a11y-contrast') === 'on';
+        if (contrastSwitch) {
+          contrastSwitch.checked = savedContrast;
+          contrastSwitch.addEventListener('change', function() {
+            if (contrastSwitch.checked) {
+              document.body.classList.add('high-contrast');
+              localStorage.setItem('a11y-contrast', 'on');
+            } else {
+              document.body.classList.remove('high-contrast');
+              localStorage.setItem('a11y-contrast', 'off');
+            }
+          });
+        }
       });
     </script>
     <!--Custom JS-->

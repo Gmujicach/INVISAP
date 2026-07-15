@@ -48,6 +48,15 @@ from controllers.controller_gravedad import (
     obtener_gravedad_controller, actualizar_gravedad_controller,
     eliminar_gravedad_controller
 )
+## Seguridad: Roles y Permisos (módulos, roles, roles_permisos)
+from controllers.controller_seguridad import (
+    registrar_modulo_controller, listar_modulos_controller, obtener_modulo_controller,
+    actualizar_modulo_controller, eliminar_modulo_controller,
+    registrar_rol_controller, listar_roles_controller, obtener_rol_controller,
+    actualizar_rol_controller, eliminar_rol_controller,
+    obtener_permisos_rol_controller, guardar_permisos_controller
+)
+from controllers.UserController import verificar_permiso
 app.register_blueprint(empresa_bp)
 app.register_blueprint(inspeccion_bp)
 empresa_bp = Blueprint('empresa_bp', __name__)
@@ -67,6 +76,7 @@ PATH_URL_PROY = "proyectos"
 PATH_URL_GEST_OBR = "obras"
 PATH_URL_PUB = "publicaciones"
 PATH_URL_IA = "ia"
+PATH_URL_SEG = "seguridad"
 PATH_URL_REG_EMPLEADOS = "empleados"
 PATH_URL_LIST_EMPLEADOS = "empleados"
 PATH_URL_REPORTE_EXCEL = "reportes"
@@ -495,6 +505,119 @@ def api_validar_nivel_gravedad():
     existe = GravedadObraModel(nivel_gravedad=nivel).validar_nivel_existente(excluir)
     return jsonify({'existe': bool(existe)})
 
+# ===================== MÓDULO PERMISOS POR ROL (Seguridad) =====================
+@home_bp.route('/gestionar-permisos', methods=['GET'])
+def viewFormPermisos():
+    if 'conectado' not in session:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    if not verificar_permiso('roles_permisos'):
+        flash('No tienes permiso para gestionar roles y permisos.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    return render_template(f'{PATH_URL_SEG}/form_gestionar_permisos.html')
+
+
+# ---- API Módulos ----
+@home_bp.route('/api/seguridad/modulos/listar', methods=['GET'])
+def api_listar_modulos():
+    if 'conectado' not in session:
+        return jsonify([]), 401
+    return jsonify(listar_modulos_controller())
+
+
+@home_bp.route('/api/seguridad/modulos/registrar', methods=['POST'])
+def api_registrar_modulo():
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    data = request.get_json(silent=True) or request.form.to_dict()
+    return jsonify(registrar_modulo_controller(data)), 200
+
+
+@home_bp.route('/api/seguridad/modulos/obtener/<int:id_modulo>', methods=['GET'])
+def api_obtener_modulo(id_modulo):
+    if 'conectado' not in session:
+        return jsonify(None), 401
+    return jsonify(obtener_modulo_controller(id_modulo) or None)
+
+
+@home_bp.route('/api/seguridad/modulos/actualizar/<int:id_modulo>', methods=['PUT', 'POST'])
+def api_actualizar_modulo(id_modulo):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    data = request.get_json(silent=True) or request.form.to_dict()
+    return jsonify(actualizar_modulo_controller(id_modulo, data)), 200
+
+
+@home_bp.route('/api/seguridad/modulos/eliminar/<int:id_modulo>', methods=['DELETE', 'POST'])
+def api_eliminar_modulo(id_modulo):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    return jsonify(eliminar_modulo_controller(id_modulo)), 200
+
+
+# ---- API Roles ----
+@home_bp.route('/api/seguridad/roles/listar', methods=['GET'])
+def api_listar_roles():
+    if 'conectado' not in session:
+        return jsonify([]), 401
+    return jsonify(listar_roles_controller())
+
+
+@home_bp.route('/api/seguridad/roles/registrar', methods=['POST'])
+def api_registrar_rol():
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    data = request.get_json(silent=True) or request.form.to_dict()
+    return jsonify(registrar_rol_controller(data)), 200
+
+
+@home_bp.route('/api/seguridad/roles/obtener/<int:id_rol>', methods=['GET'])
+def api_obtener_rol(id_rol):
+    if 'conectado' not in session:
+        return jsonify(None), 401
+    return jsonify(obtener_rol_controller(id_rol) or None)
+
+
+@home_bp.route('/api/seguridad/roles/actualizar/<int:id_rol>', methods=['PUT', 'POST'])
+def api_actualizar_rol(id_rol):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    data = request.get_json(silent=True) or request.form.to_dict()
+    return jsonify(actualizar_rol_controller(id_rol, data)), 200
+
+
+@home_bp.route('/api/seguridad/roles/eliminar/<int:id_rol>', methods=['DELETE', 'POST'])
+def api_eliminar_rol(id_rol):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    return jsonify(eliminar_rol_controller(id_rol)), 200
+
+
+# ---- API Permisos por Rol ----
+@home_bp.route('/api/seguridad/permisos/obtener/<int:id_rol>', methods=['GET'])
+def api_obtener_permisos_rol(id_rol):
+    if 'conectado' not in session:
+        return jsonify([]), 401
+    return jsonify(obtener_permisos_rol_controller(id_rol))
+
+
+@home_bp.route('/api/seguridad/permisos/guardar', methods=['POST'])
+def api_guardar_permisos_rol():
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    data = request.get_json(silent=True) or request.form.to_dict()
+    id_rol = data.get('id_rol')
+    permisos = data.get('permisos') or []
+    # Si llega como form o JSON anidado, normalizar
+    if isinstance(permisos, str):
+        import json as _json
+        try:
+            permisos = _json.loads(permisos)
+        except Exception:
+            permisos = []
+    return jsonify(guardar_permisos_controller(id_rol, permisos)), 200
+
+
 @home_bp.route('/gestionar-prioridad', methods=['GET'])
 def viewFormPrioridad():
     if 'conectado' in session:
@@ -708,6 +831,18 @@ def api_obtener_solicitudes_pendientes_json():
     else:
         return jsonify([]), 401
 
+@home_bp.route('/api/obtener-bitacora-json', methods=['GET'])
+def api_obtener_bitacora_json():
+    if 'conectado' in session:
+        from controllers.funciones_bitacora import filtrar_bitacora
+        from flask import request
+        usuario = request.args.get('usuario', '').strip() or None
+        modulo = request.args.get('modulo', '').strip() or None
+        accion = request.args.get('accion', '').strip() or None
+        return jsonify(filtrar_bitacora(usuario=usuario, modulo=modulo, accion=accion))
+    else:
+        return jsonify([]), 401
+
 
 
 ### Solicitudes
@@ -771,20 +906,16 @@ def api_eliminar_solicitud(id_solicitud):
     if 'conectado' not in session:
         return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
 
-    resultado = eliminar_solicitud(id_solicitud)
+    resultado = eliminar_solicitud(id_solicitud, session)
     if isinstance(resultado, dict):
         success = resultado.get('success')
     else:
         success = bool(resultado)
 
     if success:
-        nombre_usr = session.get('name_surname') or session.get('nombre') or session.get('email_user') or ''
-        BitacoraService.registrar_accion(
-            session, 'Solicitudes', 'ELIMINAR',
-            f'Solicitud #{id_solicitud} eliminada por {nombre_usr}'
-        )
         return jsonify({'status': 'success', 'message': resultado.get('message', 'Solicitud eliminada')}), 200
     return jsonify({'status': 'error', 'message': resultado.get('message', 'No se pudo eliminar la solicitud')}), 400
+
 
 
 ### Contratacion

@@ -17,7 +17,7 @@ class InformeAvanceModel:
     # Expresiones regulares para validación
     _RE_PORCENTAJE = re.compile(r'^([0-9]|[1-9][0-9]|100)$')
     _RE_TEXTO_CORTO = re.compile(r'^[\w\s\.,\-áéíóúÁÉÍÓÚñÑ]{3,100}$', re.UNICODE)
-    _RE_OBSERVACIONES = re.compile(r'^[\w\s\.,\!\?\-áéíóúÁÉÍÓÚñÑ]{0,500}$', re.UNICODE)
+    _RE_OBSERVACIONES = re.compile(r'^[\w\s\.,\!\?\-\(\)\/:;áéíóúÁÉÍÓÚñÑ]{0,500}$', re.UNICODE)
     _RE_POBLACION = re.compile(r'^[\w\s\.,\-\(\)/áéíóúÁÉÍÓÚñÑ]{3,200}$', re.UNICODE)
 
     # Catálogos válidos (acepta con y sin acentos)
@@ -105,16 +105,25 @@ class InformeAvanceModel:
     def set_evidencias_antes(self, lista_ids):
         if len(lista_ids) > self.MAX_IMAGENES_POR_ETAPA:
             raise ValueError(f"Máximo {self.MAX_IMAGENES_POR_ETAPA} imágenes permitidas en 'antes'")
+        texto = ','.join(map(str, lista_ids))
+        if len(texto) > 255:
+            raise ValueError("La selección de evidencias 'antes' excede el tamaño permitido.")
         self.__evidencias_antes = lista_ids
     
     def set_evidencias_durante(self, lista_ids):
         if len(lista_ids) > self.MAX_IMAGENES_POR_ETAPA:
             raise ValueError(f"Máximo {self.MAX_IMAGENES_POR_ETAPA} imágenes permitidas en 'durante'")
+        texto = ','.join(map(str, lista_ids))
+        if len(texto) > 255:
+            raise ValueError("La selección de evidencias 'durante' excede el tamaño permitido.")
         self.__evidencias_durante = lista_ids
     
     def set_evidencias_despues(self, lista_ids):
         if len(lista_ids) > self.MAX_IMAGENES_POR_ETAPA:
             raise ValueError(f"Máximo {self.MAX_IMAGENES_POR_ETAPA} imágenes permitidas en 'después'")
+        texto = ','.join(map(str, lista_ids))
+        if len(texto) > 255:
+            raise ValueError("La selección de evidencias 'después' excede el tamaño permitido.")
         self.__evidencias_despues = lista_ids
     
     def set_avance_id(self, valor):
@@ -185,6 +194,9 @@ class InformeAvanceModel:
                         cur.execute("ALTER TABLE informe_avance_obra ADD COLUMN estado_registro TINYINT NOT NULL DEFAULT 1 COMMENT '1=Activo, 0=Inactivo (borrado logico)'")
                         conn.commit()
                         print("[DB] Columna 'estado_registro' agregada a tabla informe_avance_obra")
+
+                    self.__asegurar_columnas_evidencia(cur)
+                    conn.commit()
                 except Exception as e:
                     print(f"[DB] Error al verificar columnas informe_avance_obra: {e}")
                 finally:
@@ -192,6 +204,19 @@ class InformeAvanceModel:
                     conn.close()
         except Exception as e:
             print(f"[DB] No se pudo asegurar tabla informe_avance_obra: {e}")
+
+    def __asegurar_columnas_evidencia(self, cur):
+        """Asegura que las columnas de evidencias tengan ancho suficiente (VARCHAR 255)
+        para almacenar hasta 5 IDs separados por comas sin desbordar (DataError)."""
+        for col in ('evidencia_antes', 'evidencia_durante', 'evidencia_despues'):
+            try:
+                cur.execute(f"SHOW COLUMNS FROM informe_avance_obra LIKE '{col}'")
+                row = cur.fetchone()
+                if row and 'varchar(255)' not in str(row[1]).lower():
+                    cur.execute(f"ALTER TABLE informe_avance_obra MODIFY COLUMN {col} VARCHAR(255) NOT NULL DEFAULT ''")
+                    print(f"[DB] Columna '{col}' ampliada a VARCHAR(255)")
+            except Exception as e:
+                print(f"[DB] Error al asegurar columna {col}: {e}")
 
     # ========== MÉTODOS PRIVADOS DE BASE DE DATOS ==========
     

@@ -115,6 +115,39 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // --- Organismo Adicional: Modo Oscuro LocalStorage ---
+    const darkModeSwitch = document.getElementById('dark-mode-switch');
+    const themeIcon = document.getElementById('theme-icon');
+
+    // Unifica los dos mecanismos de modo oscuro usados en el sistema:
+    //   • body.dark-mode        (toggle del navbar)
+    //   • [data-bs-theme]      (módulos inspección / evidencia)
+    const applyTheme = (isDark) => {
+        document.body.classList.toggle('dark-mode', isDark);
+        if (isDark) {
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+        } else {
+            document.documentElement.removeAttribute('data-bs-theme');
+        }
+    };
+
+    if (darkModeSwitch) {
+        const loadTheme = () => {
+            if (localStorage.getItem('theme') === 'dark') {
+                applyTheme(true);
+                darkModeSwitch.checked = true;
+                if (themeIcon) themeIcon.className = 'bi bi-moon-stars-fill me-2 fs-5 text-info';
+            }
+        };
+        loadTheme();
+
+        darkModeSwitch.addEventListener('change', () => {
+            const isDark = darkModeSwitch.checked;
+            applyTheme(isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            if (themeIcon) themeIcon.className = isDark ? 'bi bi-moon-stars-fill me-2 fs-5 text-info' : 'bi bi-sun-fill me-2 fs-5 text-warning';
+        });
+    }
     // --- Organismo Adicional: Vista previa de Avatar ---
     const avatarInput = document.getElementById('profile_img');
     const avatarPreview = document.getElementById('avatar-preview');

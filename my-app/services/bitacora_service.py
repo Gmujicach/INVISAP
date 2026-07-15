@@ -25,7 +25,7 @@ class BitacoraService:
         'Contrataciones', 'Empresas', 'Obras', 'Publicaciones', 'Maquinaria',
         'Inspecciones', 'Gerencias', 'Respaldos', 'Bitacora', 'Login',
         'Reportes', 'Gravedad', 'Prioridad', 'Evidencias', 'Solicitantes',
-        'Informes de Avance'
+        'Informes de Avance', 'Roles y Permisos'
     }
 
     @staticmethod

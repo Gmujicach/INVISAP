@@ -11,12 +11,14 @@ def _registrar_bitacora(session_data: dict, accion: str, id_solicitud: int | Non
     """Registra una acción de solicitudes en la bitácora si el usuario tiene sesión activa."""
     if not session_data:
         return
-    BitacoraService.registrar_accion(
+    resultado = BitacoraService.registrar_accion(
         session=session_data,
         modulo='Solicitudes',
         accion=accion,
         descripcion=f'{descripcion} (Solicitud #{id_solicitud})' if id_solicitud else descripcion,
     )
+    if not resultado:
+        print(f"[Router] Bitacora NO registrada para solicitud #{id_solicitud} accion={accion}")
 
 def obtener_solicitudes() -> list:
     """Retorna todas las solicitudes registradas."""
@@ -42,18 +44,12 @@ def crear_solicitud(datos_formulario: dict, session: dict | None = None) -> dict
         
         nuevo_id = modelo.guardar()
         if nuevo_id:
-            BitacoraService.registrar_accion(
-                session, 'Solicitudes', 'CREAR',
-                f'Registró una nueva solicitud con ID: {nuevo_id}'
+            _registrar_bitacora(
+                session,
+                'CREAR',
+                nuevo_id,
+                'Solicitud creada desde el sistema'
             )
-
-            if session:
-                _registrar_bitacora(
-                    session,
-                    'CREAR',
-                    nuevo_id,
-                    'Solicitud creada desde el sistema'
-                )
             return {'success': True, 'id': nuevo_id, 'message': 'Solicitud registrada correctamente.'}
         return {'success': False, 'message': 'Error en la base de datos al guardar.'}
     except ValueError as e:
@@ -77,18 +73,12 @@ def actualizar_solicitud(id_solicitud, datos_formulario: dict, session: dict | N
         
         exito = modelo.actualizar()
         if exito:
-            BitacoraService.registrar_accion(
-                session, 'Solicitudes', 'EDITAR',
-                f'Modificó la solicitud con ID: {id_solicitud}'
+            _registrar_bitacora(
+                session,
+                'EDITAR',
+                id_solicitud,
+                'Solicitud actualizada'
             )
-
-            if session:
-                _registrar_bitacora(
-                    session,
-                    'EDITAR',
-                    id_solicitud,
-                    'Solicitud actualizada'
-                )
             return {'success': True, 'message': 'Solicitud actualizada correctamente.'}
         return {'success': False, 'message': 'No se pudo actualizar la solicitud (posible ID no encontrado).'}
     except ValueError as e:
@@ -99,18 +89,12 @@ def eliminar_solicitud(id_solicitud, session: dict | None = None) -> dict:
     modelo = SolicitudModel(id_solicitudes=id_solicitud)
     exito = modelo.eliminar()
     if exito:
-        BitacoraService.registrar_accion(
-            session, 'Solicitudes', 'ELIMINAR',
-            f'Eliminó la solicitud con ID: {id_solicitud}'
+        _registrar_bitacora(
+            session,
+            'ELIMINAR',
+            id_solicitud,
+            'Solicitud eliminada'
         )
-
-        if session:
-            _registrar_bitacora(
-                session,
-                'ELIMINAR',
-                id_solicitud,
-                'Solicitud eliminada'
-            )
         return {'success': True, 'message': 'Solicitud eliminada correctamente.'}
     return {'success': False, 'message': 'No se pudo eliminar la solicitud.'}
 

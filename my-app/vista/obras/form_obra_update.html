@@ -1,0 +1,182 @@
+{% extends 'base_cpanel.html' %}
+
+{% block title %}Sistema Invilara | Editar Obra{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
+{% endblock %}
+
+{% block body %}
+<div class="card mb-4 shadow-sm" style="border-radius: 0px !important">
+  <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">
+    <h5 class="mb-0 text-primary fw-bold">EDITAR OBRA</h5>
+    <a href="{{ url_for('obra_bp.vista_gestionar_obras') }}" class="btn btn-outline-secondary btn-sm">
+      <i class="bx bx-arrow-back"></i> Volver
+    </a>
+  </div>
+
+  <div class="card-body">
+    <form id="formEditarObra" action="{{ url_for('obra_bp.actualizar_obra') }}" method="POST">
+      <input type="hidden" name="id_obra" value="{{ obra.id_obra }}">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Título de la Obra</label>
+          <input type="text" name="titulo_obra" value="{{ obra.titulo_obra }}" class="form-control" maxlength="45" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Ubicación de la Obra</label>
+          <input type="text" name="ubicacion_obra" value="{{ obra.ubicacion_obra }}" class="form-control" maxlength="80" required>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Período Ejecución (Días/Meses)</label>
+          <input type="number" name="periodo_ejecucion" value="{{ obra.periodo_ejecucion }}" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Fecha de Inicio</label>
+          <input type="date" name="fecha_inicio" value="{{ obra.fecha_inicio }}" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Fecha de Fin</label>
+          <input type="date" name="fecha_fin" value="{{ obra.fecha_fin }}" class="form-control" required>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Mediciones Obra</label>
+          <input type="text" name="mediciones_obra" value="{{ obra.mediciones_obra }}" class="form-control" maxlength="45" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Valuaciones</label>
+          <input type="text" name="valuaciones" value="{{ obra.valuaciones }}" class="form-control" maxlength="100" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Avance Obra (%)</label>
+          <input type="number" name="porcentaje_avance_obra" value="{{ obra.porcentaje_avance_obra }}" class="form-control" min="0" max="100" required>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Número Contrato</label>
+          <input type="text" name="numero_contrato" value="{{ obra.numero_contrato }}" class="form-control" maxlength="20" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Modificaciones Contrato</label>
+          <input type="text" name="modificaciones_contrato" value="{{ obra.modificaciones_contrato }}" class="form-control" maxlength="100" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Certificaciones Ejecutadas</label>
+          <input type="number" name="certificaciones_obras_ejecutadas" value="{{ obra.certificaciones_obras_ejecutadas }}" class="form-control" required>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Semáforo</label>
+          <select name="semaforo_id_semaforo" id="edit_semaforo_id_semaforo" class="form-select" required>
+            <option value="">Seleccione un semáforo</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Contratación</label>
+          <select name="contratacion_id_contratacion" id="edit_contratacion_id_contratacion" class="form-select" required>
+            <option value="">Seleccione una contratación</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Código de Proyecto</label>
+          <select name="gestionar_proyectos_codigo_proyecto" id="edit_gestionar_proyectos_codigo_proyecto" class="form-select" required>
+            <option value="">Seleccione un proyecto</option>
+          </select>
+        </div>
+
+        <div class="col-12 mt-3">
+          <button type="submit" class="btn btn-primary">Actualizar Obra</button>
+          <a href="{{ url_for('obra_bp.vista_gestionar_obras') }}" class="btn btn-outline-secondary ms-2">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='assets/js/sweetalert2.all.min.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formEditarObra');
+    if (!form) return;
+
+    const selects = [
+        { url: '/api/obra/semaforos', selectId: 'edit_semaforo_id_semaforo', valueKey: 'id_semaforo', textKey: 'nombre', selectedValue: '{{ obra.semaforo_id_semaforo }}' },
+        { url: '/api/obra/contrataciones', selectId: 'edit_contratacion_id_contratacion', valueKey: 'id_contratacion', textKey: 'numero_contrato', selectedValue: '{{ obra.contratacion_id_contratacion }}' },
+        { url: '/api/obra/proyectos', selectId: 'edit_gestionar_proyectos_codigo_proyecto', valueKey: 'codigo_proyecto', textKey: 'codigo_proyecto', selectedValue: '{{ obra.gestionar_proyectos_codigo_proyecto }}' }
+    ];
+
+    selects.forEach(item => {
+        fetch(item.url)
+            .then(r => r.json())
+            .then(data => {
+                const select = document.getElementById(item.selectId);
+                if (!select || !Array.isArray(data)) return;
+                const placeholder = select.options[0] ? select.options[0] : null;
+                select.innerHTML = '';
+                if (placeholder) select.appendChild(placeholder);
+                data.forEach(op => {
+                    const option = document.createElement('option');
+                    option.value = op[item.valueKey];
+                    option.textContent = op[item.textKey];
+                    if (String(option.value) === String(item.selectedValue)) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+            })
+            .catch(err => console.error('Error cargando select', item.selectId, err));
+    });
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = form.querySelector('button[type="submit"]');
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Actualizando...';
+        btn.disabled = true;
+
+        const formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success') {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Excelente!',
+                    text: data.message,
+                    confirmButtonText: 'Entendido'
+                }).then(() => {
+                    window.location.href = "{{ url_for('obra_bp.vista_gestionar_obras') }}";
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error en la operación',
+                    text: data.message,
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de red',
+                text: 'No se pudo comunicar con el servidor.',
+                confirmButtonText: 'Aceptar'
+            });
+        })
+        .finally(() => {
+            btn.innerHTML = textoOriginal;
+            btn.disabled = false;
+        });
+    });
+});
+</script>
+{% endblock %}
