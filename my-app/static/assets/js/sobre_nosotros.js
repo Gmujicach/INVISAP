@@ -19,10 +19,8 @@
   }
 
   function createSkeletonCard(index) {
-    const height = randomInt(MIN_SK_HEIGHT, MAX_SK_HEIGHT);
     const div = document.createElement('div');
     div.className = 'masonry-item skeleton';
-    div.style.height = height + 'px';
     div.setAttribute('data-index', index);
     div.setAttribute('aria-hidden', 'true');
     return div;
