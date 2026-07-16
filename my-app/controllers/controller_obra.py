@@ -265,11 +265,6 @@ def actualizar_obra(id_obra):
                 id_usuario=session.get('id_usuario', 1),
                 modulo='Obras',
                 accion='EDITAR',
-                BitacoraModel().registrar(
-                usuario=session.get('usuario', 'Sistema'),
-                id_usuario=session.get('id_usuario', 1),
-                modulo='Obras',
-                accion='EDITAR',
                 descripcion=f"Actualizó la obra: {datos_actualizar['titulo_obra']} (ID: {id_obra})"
             )
             return jsonify({'status': 'success', 'message': 'Obra actualizada exitosamente.'}), 200

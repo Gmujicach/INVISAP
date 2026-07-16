@@ -254,7 +254,6 @@ class ObraModel:
                 id_contratacion,
                 str(datos.get('gestionar_proyectos_codigo_proyecto')).strip()[:15]
             )
-            )
 
             cursor.execute(sql, valores)
             id_obra = cursor.lastrowid

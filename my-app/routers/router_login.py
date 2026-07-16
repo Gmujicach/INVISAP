@@ -23,6 +23,11 @@ email_service = EmailService(mail)
 # Regex para validación de contraseña (Prof. Escalona)
 PASSWORD_REGEX = r'^(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}$'
 
+@login_bp.route('/sobre-nosotros', methods=['GET'])
+def sobre_nosotros():
+    return render_template('sobre_nosotros.html')
+
+
 @login_bp.route('/', methods=['GET'])
 def inicio():
     if 'conectado' in session:

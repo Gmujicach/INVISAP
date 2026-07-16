@@ -1,0 +1,199 @@
+/* ============================================
+   SOBRE NOSOTROS - INVILARA
+   ============================================ */
+
+/* ============================================
+   HERO SOBRE NOSOTROS
+   ============================================ */
+.sobre-hero {
+  min-height: 50vh;
+  background: radial-gradient(circle at 20% 20%, #14532d 0%, #1a6b35 55%, #15803d 100%);
+}
+
+.sobre-hero .hero-content {
+  padding: 60px 0 48px;
+}
+
+/* ============================================
+   INFO CARDS (Misión / Visión / Historia)
+   ============================================ */
+.info-card {
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(0,0,0,0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+.info-card .card-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.info-card .info-icon {
+  width: 120px;
+  height: 120px;
+  border-radius: 28px;
+  background-color: var(--invilara-green-50);
+  color: var(--invilara-green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.8rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 20px rgba(20, 83, 45, 0.12);
+  line-height: 1;
+}
+
+.info-card:hover .info-icon {
+  background-color: var(--invilara-green);
+  color: var(--invilara-white);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(20, 83, 45, 0.35);
+}
+
+/* ============================================
+   SERVICE CARDS EN SOBRE NOSOTROS (iconos grandes)
+   ============================================ */
+.sobre-nosotros .service-card .service-icon {
+  width: 120px;
+  height: 120px;
+  border-radius: 28px;
+  background-color: var(--invilara-green-50);
+  color: var(--invilara-green);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.8rem;
+  margin-bottom: 18px;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 20px rgba(20, 83, 45, 0.12);
+  line-height: 1;
+}
+
+.sobre-nosotros .service-card:hover .service-icon {
+  background-color: var(--invilara-green);
+  color: var(--invilara-white);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(20, 83, 45, 0.35);
+}
+
+/* ============================================
+   MASONRY GRID - GALERÍA
+   ============================================ */
+.masonry-grid {
+  column-count: 4;
+  column-gap: 16px;
+}
+
+.masonry-item {
+  break-inside: avoid;
+  margin-bottom: 16px;
+  position: relative;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: #e5e7eb;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: inline-block;
+  width: 100%;
+}
+
+.masonry-item.skeleton {
+  background: #d1d5db;
+  border: 1px solid #cbd5e1;
+}
+
+.masonry-item:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+.masonry-item img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-card);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.masonry-item img.loaded {
+  opacity: 1;
+}
+
+/* ============================================
+   SKELETON LOADING
+   ============================================ */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #e5e7eb;
+  border-radius: var(--radius-card);
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-100%);
+  animation: skeleton-shimmer 1.8s infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ============================================
+   RESPONSIVE MASONRY
+   ============================================ */
+@media (max-width: 1199px) {
+  .masonry-grid {
+    column-count: 3;
+  }
+}
+
+@media (max-width: 991px) {
+  .masonry-grid {
+    column-count: 2;
+  }
+
+  .info-card .info-icon,
+  .sobre-nosotros .service-card .service-icon {
+    width: 100px;
+    height: 100px;
+    font-size: 3rem;
+    border-radius: 24px;
+  }
+}
+
+@media (max-width: 575px) {
+  .masonry-grid {
+    column-count: 1;
+  }
+
+  .info-card .info-icon,
+  .sobre-nosotros .service-card .service-icon {
+    width: 88px;
+    height: 88px;
+    font-size: 2.8rem;
+    border-radius: 22px;
+  }
+}

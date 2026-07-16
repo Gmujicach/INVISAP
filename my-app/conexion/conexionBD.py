@@ -25,9 +25,7 @@ def connectionBD():
     db_config = {
         'host': _get_env('DB_HOST', 'localhost'),
         'user': _get_env('DB_USER', 'root'),
-
-        'password': _get_env('DB_PASSWORD', '1234'),
-
+        'password': _get_env('DB_PASSWORD', ''),
         'database': _get_env('DB_NAME', 'invilara'),
         'charset': 'utf8mb4',
         'use_unicode': True,
@@ -53,13 +51,19 @@ def connectionBD_invilara():
     except Exception as e:
         print(f"Error en la conexión a la base de datos: {e}")
         return None
+        connection = connectionBD()
+        if connection.is_connected():
+            return connection
+    except Exception as e:
+        print(f"Error en la conexión a la base de datos: {e}")
+        return None
     
 def connectionBD_seguridad():
     """Return a new MySQL connection. Reads configuration from env vars with sane defaults."""
     db_config = {
         'host': _get_env('DB_HOST', 'localhost'),
         'user': _get_env('DB_USER', 'root'),
-        'password': _get_env('DB_PASSWORD', '1234'),
+        'password': _get_env('DB_PASSWORD', ''),
         'database': _get_env('DB_NAME_SEGURIDAD', 'invilara_seguridad'),
         'charset': 'utf8mb4',
         'use_unicode': True,
