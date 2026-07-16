@@ -2,8 +2,8 @@ from conexion.conexionBD import connectionBD
 import re
 
 class ObraModel:
-    _RE_NUMERO_CONTRATO = re.compile(r'^[A-Za-z0-9\-]{1,20}$')
-    _RE_TEXTO = re.compile(r'^[\w\s\.\,\-\#áéíóúÁÉÍÓÚñÑ]{1,100}$')
+    _RE_NUMERO_CONTRATO = re.compile(r'^[A-Za-z0-9\-\/\.\#\s]{1,20}$')
+    _RE_TEXTO = re.compile(r'^[\w\s\.\,\-\#\/\(\)\:°º²ºáéíóúÁÉÍÓÚñÑ]{1,200}$')
 
     @staticmethod
     def _con():
@@ -21,6 +21,34 @@ class ObraModel:
         if not numero or not str(numero).strip():
             return False
         return bool(ObraModel._RE_NUMERO_CONTRATO.match(str(numero).strip()))
+
+    @staticmethod
+    def _validar_fechas(fecha_inicio, fecha_fin):
+        """Valida que la fecha de fin no sea anterior a la de inicio.
+
+        Retorna True cuando las fechas son válidas o cuando alguna no puede
+        interpretarse (la validación estricta de formato la realiza MySQL).
+        """
+        from datetime import datetime
+
+        def _parse(valor):
+            if valor is None:
+                return None
+            if hasattr(valor, 'year'):
+                return valor
+            texto = str(valor).strip()[:10]
+            if not texto:
+                return None
+            try:
+                return datetime.strptime(texto, '%Y-%m-%d')
+            except ValueError:
+                return None
+
+        inicio = _parse(fecha_inicio)
+        fin = _parse(fecha_fin)
+        if inicio is None or fin is None:
+            return True
+        return fin >= inicio
 
     @staticmethod
     def _eliminar_trigger_semaforo():
@@ -140,7 +168,13 @@ class ObraModel:
             if conn:
                 conn.close()
 
+    # Valores genéricos que no deben tratarse como número de contrato único
+    _NUMEROS_CONTRATO_PLACEHOLDER = {'N/A', 'NA', 'S/N', 'SN', '-', '0'}
+
     def _sql_validar_numero_contrato_duplicado(self, numero_contrato: str, excluir_id_obra: int = None) -> bool:
+        # Los valores placeholder (N/A, S/N, etc.) pueden repetirse sin ser duplicados reales.
+        if str(numero_contrato).strip().upper() in self._NUMEROS_CONTRATO_PLACEHOLDER:
+            return False
         conn = cursor = None
         try:
             conn = self._con()
@@ -170,13 +204,6 @@ class ObraModel:
     def _sql_insertar(self, datos: dict) -> tuple:
         conn = cursor = None
         try:
-            conn = self._con()
-            if not conn:
-                return False, "Error de conexión a la base de datos."
-
-            conn.start_transaction()
-            cursor = conn.cursor()
-
             campos_requeridos = [
                 'titulo_obra', 'ubicacion_obra', 'periodo_ejecucion',
                 'fecha_inicio', 'fecha_fin', 'mediciones_obra',
@@ -202,22 +229,24 @@ class ObraModel:
                 return False, "Valuaciones inválidas."
             if not self._es_texto_valido(datos.get('modificaciones_contrato'), 100):
                 return False, "Modificaciones de contrato inválidas."
+            if not self._es_texto_valido(datos.get('periodo_ejecucion'), 10):
+                return False, "Período de ejecución inválido (máximo 10 caracteres, ej. '2 meses')."
 
             try:
-                periodo = int(datos.get('periodo_ejecucion') or 0)
                 certificaciones = int(datos.get('certificaciones_obras_ejecutadas') or 0)
                 porcentaje = int(datos.get('porcentaje_avance_obra') or 0)
                 id_semaforo = int(datos.get('semaforo_id_semaforo'))
                 id_contratacion = int(datos.get('contratacion_id_contratacion'))
             except (TypeError, ValueError):
-                return False, "Campos numéricos inválidos. Verifique período, certificaciones, avance, semáforo y contratación."
+                return False, "Campos numéricos inválidos. Verifique certificaciones, avance, semáforo y contratación."
 
-            if periodo < 0:
-                return False, "Período de ejecución debe ser mayor o igual a 0."
             if porcentaje < 0 or porcentaje > 100:
                 return False, "Porcentaje de avance debe estar entre 0 y 100."
             if certificaciones < 0:
                 return False, "Certificaciones ejecutadas debe ser mayor o igual a 0."
+
+            if not self._validar_fechas(datos.get('fecha_inicio'), datos.get('fecha_fin')):
+                return False, "La fecha de fin no puede ser anterior a la fecha de inicio."
 
             if self._sql_validar_numero_contrato_duplicado(datos.get('numero_contrato')):
                 return False, "El número de contrato ya está registrado en otra obra."
@@ -229,19 +258,26 @@ class ObraModel:
             if not self._sql_validar_proyecto(datos.get('gestionar_proyectos_codigo_proyecto')):
                 return False, "El proyecto seleccionado no existe o está inactivo."
 
+            conn = self._con()
+            if not conn:
+                return False, "Error de conexión a la base de datos."
+
+            conn.start_transaction()
+            cursor = conn.cursor()
+
             sql = """
                 INSERT INTO obra (
-                    id_obra, titulo_obra, ubicacion_obra, periodo_ejecucion, fecha_inicio, 
-                    fecha_fin, mediciones_obra, valuaciones, modificaciones_contrato, 
-                    certificaciones_obras_ejecutadas, numero_contrato, porcentaje_avance_obra, 
-                    semaforo_id_semaforo, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto, 
+                    titulo_obra, ubicacion_obra, periodo_ejecucion, fecha_inicio,
+                    fecha_fin, mediciones_obra, valuaciones, modificaciones_contrato,
+                    certificaciones_obras_ejecutadas, numero_contrato, porcentaje_avance_obra,
+                    semaforo_id_semaforo, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto,
                     estado
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 1)
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 1)
             """
             valores = (
                 str(datos.get('titulo_obra')).strip()[:45],
                 str(datos.get('ubicacion_obra')).strip()[:80],
-                periodo,
+                str(datos.get('periodo_ejecucion')).strip()[:10],
                 datos.get('fecha_inicio'),
                 datos.get('fecha_fin'),
                 str(datos.get('mediciones_obra')).strip()[:45],
@@ -276,33 +312,40 @@ class ObraModel:
     def _sql_actualizar(self, id_obra: int, datos: dict) -> tuple:
         conn = cursor = None
         try:
-            self._eliminar_trigger_semaforo()
-            conn = self._con()
-            if not conn:
-                return False, "Error de conexión a la base de datos."
-
-            conn.start_transaction()
-            cursor = conn.cursor()
-
             obra_existente = self._sql_obtener_por_id(id_obra)
             if not obra_existente:
                 return False, "La obra no existe o fue eliminada."
 
+            if not self._es_texto_valido(datos.get('titulo_obra'), 45):
+                return False, "Título de obra inválido."
+            if not self._es_texto_valido(datos.get('ubicacion_obra'), 80):
+                return False, "Ubicación de obra inválida."
+            if not self._es_numero_contrato_valido(datos.get('numero_contrato')):
+                return False, "Número de contrato inválido."
+            if not self._es_texto_valido(datos.get('mediciones_obra'), 45):
+                return False, "Mediciones de obra inválidas."
+            if not self._es_texto_valido(datos.get('valuaciones'), 100):
+                return False, "Valuaciones inválidas."
+            if not self._es_texto_valido(datos.get('modificaciones_contrato'), 100):
+                return False, "Modificaciones de contrato inválidas."
+            if not self._es_texto_valido(datos.get('periodo_ejecucion'), 10):
+                return False, "Período de ejecución inválido (máximo 10 caracteres, ej. '2 meses')."
+
             try:
-                periodo = int(datos.get('periodo_ejecucion') or 0)
                 certificaciones = int(datos.get('certificaciones_obras_ejecutadas') or 0)
                 porcentaje = int(datos.get('porcentaje_avance_obra') or 0)
                 id_semaforo = int(datos.get('semaforo_id_semaforo'))
                 id_contratacion = int(datos.get('contratacion_id_contratacion'))
             except (TypeError, ValueError):
-                return False, "Campos numéricos inválidos. Verifique período, certificaciones, avance, semáforo y contratación."
+                return False, "Campos numéricos inválidos. Verifique certificaciones, avance, semáforo y contratación."
 
-            if periodo < 0:
-                return False, "Período de ejecución debe ser mayor o igual a 0."
             if porcentaje < 0 or porcentaje > 100:
                 return False, "Porcentaje de avance debe estar entre 0 y 100."
             if certificaciones < 0:
                 return False, "Certificaciones ejecutadas debe ser mayor o igual a 0."
+
+            if not self._validar_fechas(datos.get('fecha_inicio'), datos.get('fecha_fin')):
+                return False, "La fecha de fin no puede ser anterior a la fecha de inicio."
 
             numero_contrato = str(datos.get('numero_contrato')).strip()[:20]
             if self._sql_validar_numero_contrato_duplicado(numero_contrato, excluir_id_obra=id_obra):
@@ -314,6 +357,14 @@ class ObraModel:
                 return False, "La contratación seleccionada no existe."
             if not self._sql_validar_proyecto(datos.get('gestionar_proyectos_codigo_proyecto')):
                 return False, "El proyecto seleccionado no existe o está inactivo."
+
+            self._eliminar_trigger_semaforo()
+            conn = self._con()
+            if not conn:
+                return False, "Error de conexión a la base de datos."
+
+            conn.start_transaction()
+            cursor = conn.cursor()
 
             sql = """
                 UPDATE obra SET
@@ -328,7 +379,7 @@ class ObraModel:
             valores = (
                 str(datos.get('titulo_obra')).strip()[:45],
                 str(datos.get('ubicacion_obra')).strip()[:80],
-                periodo,
+                str(datos.get('periodo_ejecucion')).strip()[:10],
                 datos.get('fecha_inicio'),
                 datos.get('fecha_fin'),
                 str(datos.get('mediciones_obra')).strip()[:45],
@@ -363,6 +414,9 @@ class ObraModel:
     def _sql_eliminar(self, id_obra: int) -> tuple:
         conn = cursor = None
         try:
+            # El borrado lógico es un UPDATE de estado; eliminamos el trigger
+            # BEFORE UPDATE de semáforo para evitar interferencias, igual que en actualizar.
+            self._eliminar_trigger_semaforo()
             conn = self._con()
             if not conn:
                 return False, "Error de conexión a la base de datos."
@@ -374,7 +428,7 @@ class ObraModel:
             if not cursor.fetchone():
                 return False, "La obra no existe o ya fue eliminada."
 
-            cursor.execute("UPDATE obra SET estado = 0 WHERE id_obra = %s", (id_obra,))
+            cursor.execute("UPDATE obra SET estado = 0 WHERE id_obra = %s AND estado = 1", (id_obra,))
             conn.commit()
             return True, cursor.rowcount
         except Exception as e:

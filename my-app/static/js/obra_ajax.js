@@ -22,8 +22,8 @@ function validarFormularioObra(form) {
         Swal.fire({ icon: 'error', title: 'Validación', text: 'La ubicación debe tener al menos 3 caracteres.', confirmButtonText: 'Aceptar' });
         return false;
     }
-    if (periodo === '' || isNaN(periodo) || parseInt(periodo) < 0) {
-        Swal.fire({ icon: 'error', title: 'Validación', text: 'Período de ejecución debe ser un número mayor o igual a 0.', confirmButtonText: 'Aceptar' });
+    if (periodo === '' || periodo.length > 10) {
+        Swal.fire({ icon: 'error', title: 'Validación', text: 'Período de ejecución es obligatorio (máximo 10 caracteres, ej. "2 meses").', confirmButtonText: 'Aceptar' });
         return false;
     }
     if (!fechaInicio) {
@@ -324,12 +324,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    document.querySelectorAll('.btn-eliminar-obra').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            idObraEliminar = this.getAttribute('data-id');
-            const nombreObra = this.getAttribute('data-nombre');
-            document.getElementById('nombre_obra_eliminar').textContent = nombreObra;
-        });
+    // Delegación de eventos: robusto ante recreación del DOM (DataTables, paginación, etc.)
+    document.addEventListener('click', function(evento) {
+        const btn = evento.target.closest('.btn-eliminar-obra');
+        if (!btn) return;
+        idObraEliminar = btn.getAttribute('data-id');
+        const nombreObra = btn.getAttribute('data-nombre') || '';
+        const spanNombre = document.getElementById('nombre_obra_eliminar');
+        if (spanNombre) spanNombre.textContent = nombreObra;
     });
 });
 

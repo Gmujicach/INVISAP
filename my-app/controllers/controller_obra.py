@@ -6,10 +6,7 @@ obra_bp = Blueprint('obra_bp', __name__)
 
 
 def _convertir_campos_numericos_obra(datos):
-    try:
-        datos['periodo_ejecucion'] = int(datos.get('periodo_ejecucion') or 0)
-    except (TypeError, ValueError):
-        return False, "Período de ejecución debe ser un número entero."
+    # periodo_ejecucion es texto libre (ej. "2 meses"), no se convierte a entero.
     try:
         datos['certificaciones_obras_ejecutadas'] = int(datos.get('certificaciones_obras_ejecutadas') or 0)
     except (TypeError, ValueError):
@@ -240,7 +237,7 @@ def actualizar_obra(id_obra):
         datos_actualizar = {
             'titulo_obra': data.get('titulo_obra'),
             'ubicacion_obra': data.get('ubicacion_obra'),
-            'periodo_ejecucion': to_int(data.get('periodo_ejecucion'), 0),
+            'periodo_ejecucion': data.get('periodo_ejecucion'),
             'fecha_inicio': data.get('fecha_inicio'),
             'fecha_fin': data.get('fecha_fin'),
             'mediciones_obra': data.get('mediciones_obra'),

@@ -16,7 +16,7 @@
   </div>
 
   <div class="card-body">
-    <form id="formEditarObra" action="{{ url_for('obra_bp.actualizar_obra') }}" method="POST">
+    <form id="formEditarObra" action="{{ url_for('obra_bp.actualizar_obra_form') }}" method="POST">
       <input type="hidden" name="id_obra" value="{{ obra.id_obra }}">
       <div class="row g-3">
         <div class="col-md-6">
@@ -30,7 +30,7 @@
 
         <div class="col-md-4">
           <label class="form-label">Período Ejecución (Días/Meses)</label>
-          <input type="number" name="periodo_ejecucion" value="{{ obra.periodo_ejecucion }}" class="form-control" required>
+          <input type="text" name="periodo_ejecucion" value="{{ obra.periodo_ejecucion }}" class="form-control" maxlength="10" placeholder="Ej. 2 meses" required>
         </div>
         <div class="col-md-4">
           <label class="form-label">Fecha de Inicio</label>

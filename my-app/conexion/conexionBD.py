@@ -25,7 +25,7 @@ def connectionBD():
     db_config = {
         'host': _get_env('DB_HOST', 'localhost'),
         'user': _get_env('DB_USER', 'root'),
-        'password': _get_env('DB_PASSWORD', ''),
+        'password': _get_env('DB_PASSWORD', 'balto04*'),
         'database': _get_env('DB_NAME', 'invilara'),
         'charset': 'utf8mb4',
         'use_unicode': True,
@@ -63,7 +63,7 @@ def connectionBD_seguridad():
     db_config = {
         'host': _get_env('DB_HOST', 'localhost'),
         'user': _get_env('DB_USER', 'root'),
-        'password': _get_env('DB_PASSWORD', ''),
+        'password': _get_env('DB_PASSWORD', 'balto04*'),
         'database': _get_env('DB_NAME_SEGURIDAD', 'invilara_seguridad'),
         'charset': 'utf8mb4',
         'use_unicode': True,
