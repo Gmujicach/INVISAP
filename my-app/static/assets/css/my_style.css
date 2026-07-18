@@ -869,6 +869,154 @@ body.dark-mode .card-header.bg-white {
   border-bottom-color: #444564 !important;
 }
 
+/* ============================================
+   CPANEL FOOTER
+   ============================================ */
+.cpanel-footer {
+  background-color: #14532d;
+  color: #fff;
+  padding: 2.5rem 0 1.5rem;
+  margin-top: auto;
+}
+
+.cpanel-footer h4 {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+}
+
+.cpanel-footer .footer-brand {
+  max-width: 280px;
+}
+
+.cpanel-footer .footer-logo {
+  max-height: 50px;
+  filter: brightness(0) invert(1);
+  margin-bottom: 0.75rem;
+}
+
+.cpanel-footer .footer-links li {
+  margin-bottom: 0.5rem;
+  opacity: 0.92;
+}
+
+.cpanel-footer .footer-link {
+  color: rgba(255,255,255,0.92);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: opacity 0.2s ease;
+}
+
+.cpanel-footer .footer-link:hover {
+  color: #fff;
+  opacity: 1;
+}
+
+.cpanel-footer .footer-contact li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.92;
+}
+
+.cpanel-footer .footer-contact i {
+  color: #fef3c7;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.cpanel-footer .social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.cpanel-footer .social-link:hover {
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+}
+
+.cpanel-footer .footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  text-align: center;
+}
+
+.cpanel-footer .footer-bottom p {
+  opacity: 0.75;
+  margin-bottom: 0;
+}
+
+@media (max-width: 767.98px) {
+  .cpanel-footer {
+    text-align: center;
+    padding: 2rem 0 1.25rem;
+  }
+  .cpanel-footer .footer-brand {
+    max-width: 100%;
+    margin-bottom: 1rem;
+  }
+  .cpanel-footer .footer-contact li {
+    justify-content: center;
+  }
+  .cpanel-footer .row.g-3 > [class*="col-"] {
+    margin-bottom: 1.5rem;
+  }
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer {
+  background-color: #1e1e2d !important;
+  color: #cfcde9 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer h4 {
+  color: #fff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-link {
+  color: rgba(207, 205, 233, 0.9) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-link:hover {
+  color: #fff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-contact i {
+  color: #4ade80 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .social-link {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #cfcde9 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .social-link:hover {
+  background: rgba(255,255,255,0.12) !important;
+  color: #fff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-bottom {
+  border-top-color: rgba(255,255,255,0.08) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-bottom p {
+  color: #a2a3b7 !important;
+}
+
 /* Detalle obra: badge-count inactivo inline */
 body.dark-mode .badge-count[style*="background-color: #6c757d"] {
   background-color: #3d3d3d !important;

@@ -1,0 +1,72 @@
+<footer class="cpanel-footer" role="contentinfo">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="footer-brand">
+          <img src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}" alt="Invilara" class="footer-logo">
+          <p class="small mb-0" style="opacity: 0.85; line-height: 1.5;">
+            Instituto de Vialidad del Estado Lara. Gestionando el desarrollo vial con excelencia, transparencia y compromiso institucional.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <h4>Navegación</h4>
+        <div class="row">
+          <div class="col-6">
+            <ul class="list-unstyled mb-0 footer-links">
+              <li><a href="{{ url_for('home_bp.viewFormSolicitud') }}" class="footer-link"><i class="bx bx-card" aria-hidden="true"></i> Solicitudes</a></li>
+              <li><a href="{{ url_for('home_bp.viewFormProyectos') }}" class="footer-link"><i class="bx bx-folder" aria-hidden="true"></i> Proyectos</a></li>
+              <li><a href="{{ url_for('obra_bp.vista_gestionar_obras') }}" class="footer-link"><i class="bx bx-house-gear" aria-hidden="true"></i> Obras</a></li>
+              <li><a href="{{ url_for('home_bp.viewFormPublicaciones') }}" class="footer-link"><i class="bx bx-newspaper" aria-hidden="true"></i> Publicaciones</a></li>
+            </ul>
+          </div>
+          <div class="col-6">
+            <ul class="list-unstyled mb-0 footer-links">
+              <li><a href="{{ url_for('contrataciones_bp.gestionar_contrataciones') }}" class="footer-link"><i class="bx bx-briefcase" aria-hidden="true"></i> Contratación</a></li>
+              <li><a href="{{ url_for('user_bp.show_register_form') }}" class="footer-link"><i class="bx bx-user" aria-hidden="true"></i> Usuarios</a></li>
+              <li><a href="{{ url_for('home_bp.viewBitacora') }}" class="footer-link"><i class="bx bx-clock" aria-hidden="true"></i> Bitácora</a></li>
+              <li><a href="{{ url_for('evidencia_bp.show_registrar_evidencia') }}" class="footer-link"><i class="bx bx-images" aria-hidden="true"></i> Evidencias</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-6">
+            <ul class="list-unstyled mb-0 footer-links">
+              <li><a href="{{ url_for('home_bp.viewFormInforme_avan_obras') }}" class="footer-link"><i class="bx bx-graph-up" aria-hidden="true"></i> Informes</a></li>
+              <li><a href="{{ url_for('home_bp.viewFormReportesExcel') }}" class="footer-link"><i class="bx bx-bar-chart" aria-hidden="true"></i> Reportes</a></li>
+              <li><a href="{{ url_for('home_bp.viewFormMaquinaria') }}" class="footer-link"><i class="bx bx-truck" aria-hidden="true"></i> Maquinaria</a></li>
+              <li><a href="{{ url_for('viewFormRegistrarEmpleados') }}" class="footer-link"><i class="bx bx-person-badge" aria-hidden="true"></i> Empleados</a></li>
+            </ul>
+          </div>
+          <div class="col-6">
+            <ul class="list-unstyled mb-0 footer-links">
+              <li><a href="{{ url_for('inspeccion_bp.view_form_inspeccion') }}" class="footer-link"><i class="bx bx-clipboard-check" aria-hidden="true"></i> Inspecciones</a></li>
+              <li><a href="{{ url_for('home_bp.viewFormEmpresa') }}" class="footer-link"><i class="bx bx-building" aria-hidden="true"></i> Empresas</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <h4>Contacto</h4>
+        <ul class="list-unstyled mb-2 footer-contact">
+          <li><i class="bx bx-map" aria-hidden="true"></i> Av. Fuerzas Armadas, Esquina con Calle 57, Barquisimeto, Estado Lara, Venezuela.</li>
+          <li><i class="bx bx-phone" aria-hidden="true"></i> +58 251-4424548</li>
+          <li><i class="bx bx-envelope" aria-hidden="true"></i> info@invilara.gob.ve</li>
+          <li><i class="bx bx-time" aria-hidden="true"></i> Lunes a Viernes - 8:00 AM a 4:00 PM</li>
+        </ul>
+
+        <h4>Redes Sociales</h4>
+        <a href="https://www.instagram.com/invilaraoficial?igsh=Z3J5b2ptMnJwY2Zq" target="_blank" rel="noopener noreferrer" class="social-link">
+          <i class="bx bxl-instagram"></i>
+          <span>@invilaraoficial</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p class="small mb-0">&copy; 2025 Instituto de Vialidad del Estado Lara (Invilara). Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>
