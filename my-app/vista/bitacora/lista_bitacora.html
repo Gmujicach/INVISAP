@@ -201,7 +201,8 @@
 </div>
 {% endblock %} 
 
-{% block customJS %} 
+{% block customJS %}
+<script src="{{ url_for('static', filename='js/tour/bitacora/tour.js') }}"></script> 
 <!-- Importación del script JS externo -->
-<script src="{{ url_for('static', filename='assets/js/bitacora.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bitacora/bitacora.js') }}"></script>
 {% endblock %}

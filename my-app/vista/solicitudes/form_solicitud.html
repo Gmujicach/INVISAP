@@ -263,8 +263,9 @@
 {% endblock %} 
 
 {% block customJS %}
-<script src="{{ url_for('static', filename='js/solicitud_ajax.js') }}"></script>
-<script src="{{ url_for('static', filename='js/solicitud.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tour/solicitudes/tour.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/solicitudes/solicitud_ajax.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/solicitudes/solicitud.js') }}"></script>
 <script>
   const laraData = {
     "Iribarren": ["Aguedo Felipe Alvarado", "Buena Vista", "Catedral", "Concepción", "El Cují", "Juares", "Guerrera Ana Soto (Juan de Villegas)", "Santa Rosa", "Tamaca", "Unión"],

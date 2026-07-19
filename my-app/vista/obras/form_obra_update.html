@@ -97,7 +97,8 @@
 {% endblock %}
 
 {% block customJS %}
-<script src="{{ url_for('static', filename='assets/js/sweetalert2.all.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tour/obras/tour.js') }}"></script>
+<script src="{{ url_for('static', filename='js/libs/sweetalert2.all.min.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formEditarObra');

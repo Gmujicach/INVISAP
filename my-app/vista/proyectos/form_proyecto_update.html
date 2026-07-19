@@ -111,8 +111,9 @@
 {% endblock %}
 
 {% block customJS %}
-<script src="{{ url_for('static', filename='js/proyecto.js') }}"></script>
-<script src="{{ url_for('static', filename='assets/js/empleados.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tour/proyectos/tour.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/proyectos/proyecto.js') }}"></script>
+<script src="{{ url_for('static', filename='js/empleados/empleados.js') }}"></script>
 <script>
   // Cargar proyectistas y preseleccionar el asignado al proyecto
   const proyectistaActual = "{{ proyecto.proyecto_has_empleado if proyecto.proyecto_has_empleado is not none else '' }}";

@@ -60,7 +60,7 @@
       href="{{ url_for('static', filename='assets/css/dark-mode.css') }}" />
 
     <script src="{{ url_for('static', filename='assets/vendor/js/helpers.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/config.js') }}"></script>
   </head>
 
   <body>
@@ -80,8 +80,10 @@
     {% endblock %}
 
     <!-- Scripts al final del body para mejor rendimiento -->
-    <script src="{{ url_for('static', filename='assets/customJS/home.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/notifications.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/home/home.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/driver/driver.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tour/tour-manager.js') }}"></script>
     <script>
       if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');

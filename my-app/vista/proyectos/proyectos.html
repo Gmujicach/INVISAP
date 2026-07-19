@@ -322,10 +322,11 @@
 {% endblock %} 
 
 {% block customJS %}
-<script src="{{ url_for('static', filename='js/proyectoregister.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{ url_for('static', filename='js/proyectoregister_ajax.js') }}"></script>
-<script src="{{ url_for('static', filename='assets/js/empleados.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tour/proyectos/tour.js') }}"></script>
+<script src="{{ url_for('static', filename='js/proyectos/proyectoregister.js') }}"></script>
+<script src="{{ url_for('static', filename='js/libs/sweetalert2.all.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/proyectos/proyectoregister_ajax.js') }}"></script>
+<script src="{{ url_for('static', filename='js/empleados/empleados.js') }}"></script>
 
 <script>
 // 2. Control de la carga de Solicitudes Activas vía AJAX (Fetch)

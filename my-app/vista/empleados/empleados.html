@@ -77,6 +77,7 @@
 {% endblock %}
 
 {% block customJS %}
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{ url_for('static', filename='assets/js/empleados.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tour/empleados/tour.js') }}"></script>
+<script src="{{ url_for('static', filename='js/libs/sweetalert2.all.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/empleados/empleados.js') }}"></script>
 {% endblock %}

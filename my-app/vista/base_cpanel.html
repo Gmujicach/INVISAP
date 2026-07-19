@@ -17,6 +17,7 @@
       {% block customCSS %} {% endblock %}
       <!-- Estilos globales de Modo Oscuro (debe cargarse al final para prevalecer) -->
       <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dark-mode.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='js/driver/driver.css') }}">
     <style>
       /* Estilos para el acceso rápido a Mi Perfil */
       .corner-profile-container {
@@ -393,8 +394,51 @@
           margin-top: 15px !important;
           padding-right: 15px !important;
       }
-    </style>
-  </head>
+
+        /* --- Botón Flotante de Tour Interactivo --- */
+        .tour-fab {
+          position: fixed;
+          bottom: 24px;
+          right: 24px;
+          z-index: 9999;
+          width: 56px;
+          height: 56px;
+          border-radius: 50%;
+          border: none;
+          background: linear-gradient(135deg, #08b324 0%, #059b1f 100%);
+          color: #fff;
+          font-size: 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 6px 20px rgba(8, 179, 36, 0.45);
+          cursor: pointer;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+       .tour-fab:hover {
+         transform: scale(1.08);
+         box-shadow: 0 8px 24px rgba(8, 179, 36, 0.55);
+       }
+        .tour-fab:active {
+          transform: scale(0.96);
+        }
+        body.dark-mode .tour-fab {
+         background: linear-gradient(135deg, #059b1f 0%, #047a18 100%);
+         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+       }
+       .tour-fab.tour-active {
+         background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+         box-shadow: 0 6px 20px rgba(220, 53, 69, 0.45);
+       }
+       .tour-fab.tour-active:hover {
+         box-shadow: 0 8px 24px rgba(220, 53, 69, 0.55);
+       }
+        body.dark-mode .tour-fab.tour-active {
+          background: linear-gradient(135deg, #c82333 0%, #a71d2a 100%);
+          box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        }
+      </style>
+    </head>
     <body class="transition-all">
     <script>
       /* Aplica el tema guardado antes de pintar para evitar parpadeo (FOUC) */
@@ -543,6 +587,11 @@
 
     </div>
     <!-- Fin .app-shell -->
+
+    <!-- Botón Flotante para Tour Interactivo -->
+    <button type="button" class="tour-fab" id="btnTourInvilara" title="Iniciar recorrido guiado" aria-label="Iniciar tour del sistema">
+      <i class="bi bi-question-lg"></i>
+    </button>
 
     <!-- Modal: Configuración (Hub) -->
     <div class="modal fade" id="modalConfig" tabindex="-1" aria-hidden="true">
@@ -711,8 +760,8 @@
     </div>
 
     {% include 'home/js.html' %}
-    <script src="{{ url_for('static', filename='assets/js/usuarios.js') }}"></script>
-    <script src="{{ url_for('static', filename='assets/js/login.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/usuarios/usuarios.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/login/login.js') }}"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script>
@@ -1103,8 +1152,18 @@
         }
       });
     </script>
-    <!--Custom JS-->
-    {% block customJS %} {% endblock %}
-  </body>
+     <!--Custom JS-->
+     <script src="{{ url_for('static', filename='js/driver/driver.js') }}"></script>
+     <script src="{{ url_for('static', filename='js/tour/tour-manager.js') }}"></script>
+     {% block customJS %} {% endblock %}
+     <script>
+       console.log('[Tour] driver.js cargado:', typeof window.driver !== 'undefined');
+       console.log('[Tour] window.driver.js:', typeof window.driver !== 'undefined' && typeof window.driver.js);
+       console.log('[Tour] driver.factory:', typeof window.driver !== 'undefined' && typeof window.driver.js.driver);
+     </script>
+     <button type="button" class="tour-fab" id="btnTourInvilara" title="Guía del Sistema" aria-label="Iniciar tour del sistema">
+       <i class="bi bi-question-lg"></i>
+     </button>
+   </body>
 </html>
 

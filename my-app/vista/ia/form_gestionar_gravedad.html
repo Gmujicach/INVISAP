@@ -127,6 +127,7 @@
 {% endblock %}
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/tour/ia/tour.js') }}"></script>
 <script>
   // Inicialización al cargar la página
   document.addEventListener('DOMContentLoaded', function() {
