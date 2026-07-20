@@ -589,7 +589,7 @@
     <!-- Fin .app-shell -->
 
     <!-- Botón Flotante para Tour Interactivo -->
-    <button type="button" class="tour-fab" id="btnTourInvilara" title="Iniciar recorrido guiado" aria-label="Iniciar tour del sistema">
+    <button type="button" class="tour-fab" id="btnTourInvilara" title="Guía del Sistema" aria-label="Iniciar tour del sistema">
       <i class="bi bi-question-lg"></i>
     </button>
 
@@ -1155,15 +1155,10 @@
      <!--Custom JS-->
      <script src="{{ url_for('static', filename='js/driver/driver.js') }}"></script>
      <script src="{{ url_for('static', filename='js/tour/tour-manager.js') }}"></script>
+     <!-- Tours base: 'home' para el dashboard y 'default' como respaldo universal -->
+     <script src="{{ url_for('static', filename='js/tour/home/tour.js') }}"></script>
+     <script src="{{ url_for('static', filename='js/tour/default/tour.js') }}"></script>
      {% block customJS %} {% endblock %}
-     <script>
-       console.log('[Tour] driver.js cargado:', typeof window.driver !== 'undefined');
-       console.log('[Tour] window.driver.js:', typeof window.driver !== 'undefined' && typeof window.driver.js);
-       console.log('[Tour] driver.factory:', typeof window.driver !== 'undefined' && typeof window.driver.js.driver);
-     </script>
-     <button type="button" class="tour-fab" id="btnTourInvilara" title="Guía del Sistema" aria-label="Iniciar tour del sistema">
-       <i class="bi bi-question-lg"></i>
-     </button>
    </body>
 </html>
 

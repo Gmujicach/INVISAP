@@ -2,7 +2,7 @@
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['obras'] = function() {
-    return window.driver.js({
+    return window.driver.js.driver({
       showProgress: true,
       steps: [
         {
