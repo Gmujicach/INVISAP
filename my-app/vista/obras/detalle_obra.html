@@ -108,6 +108,115 @@
                 </div>
             </div>
 
+            {% if proyecto %}
+            <div class="row g-4 mt-1">
+                <div class="col-12">
+                    <div class="card-modern">
+                        <div class="card-header-custom d-flex align-items-center">
+                            <div class="header-icon-shield">
+                                <i class="bi bi-folder2-open"></i>
+                            </div>
+                            <h5 class="mb-0">Proyecto relacionado</h5>
+                        </div>
+                        <div class="card-body-custom">
+                            <div class="row g-4">
+                                <div class="col-lg-5">
+                                    <div class="detail-info-card">
+                                        <div class="info-item">
+                                            <span class="info-label">Codigo</span>
+                                            <span class="info-value">{{ proyecto.proyecto.codigo_proyecto }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Planificacion</span>
+                                            <span class="info-value">{{ proyecto.proyecto.fecha_planificacion }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Estimacion costo</span>
+                                            <span class="info-value">{{ proyecto.proyecto.estimacion_costo }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Proyectista</span>
+                                            <span class="info-value">{{ proyecto.proyecto.nombre_proyectista }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-7">
+                                    <div class="detail-info-card">
+                                        <div class="info-item">
+                                            <span class="info-label">Descripcion tecnica</span>
+                                            <span class="info-value">{{ proyecto.proyecto.descripcion_tecnica }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Computos metricos</span>
+                                            <span class="info-value">{{ proyecto.proyecto.computos_metricos }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% if proyecto.solicitudes %}
+                            <div class="row g-4 mt-1">
+                                <div class="col-12">
+                                    <h6 class="fw-semibold mb-2">Solicitudes relacionadas</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Tipo</th>
+                                                    <th>Estatus</th>
+                                                    <th>Solicitante</th>
+                                                    <th>Problematica</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for sol in proyecto.solicitudes %}
+                                                <tr>
+                                                    <td>{{ sol.id_solicitudes }}</td>
+                                                    <td>{{ sol.tipo_solicitud }}</td>
+                                                    <td>{{ sol.estatus_solicitud }}</td>
+                                                    <td>{{ sol.nombre_solicitante }}</td>
+                                                    <td>{{ sol.problematica }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if proyecto.maquinaria %}
+                            <div class="row g-4 mt-1">
+                                <div class="col-12">
+                                    <h6 class="fw-semibold mb-2">Maquinaria asignada</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-striped align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Nombre maquinaria</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for maq in proyecto.maquinaria %}
+                                                <tr>
+                                                    <td>{{ maq.id_maquinaria }}</td>
+                                                    <td>{{ maq.nombre_maquinaria }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
             {% if avances %}
             <div class="row g-4 mt-1">
                 <div class="col-12">

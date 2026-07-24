@@ -5,6 +5,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from models.model_informe_avance import InformeAvanceModel
 from models.model_empleados import EmpleadoModel
 from services.bitacora_service import BitacoraService
+from models.model_notificacion import notificar_a_roles
 from werkzeug.utils import secure_filename
 import os
 
@@ -273,7 +274,20 @@ def api_crear_informe():
                 session, 'Informes de Avance', 'CREAR',
                 f'Informe #{nuevo_id} creado por {session.get("nombre", "")}'
             )
-            
+
+            # Notificar a los roles responsables de informes de avance
+            try:
+                notificar_a_roles(
+                    ['Gerente'],
+                    'Informes de Avance',
+                    'Nuevo informe de avance',
+                    f'Se registró el informe de avance #{nuevo_id}',
+                    enlace='/inf_avance_obra',
+                    creado_por=session.get('name_surname') or session.get('nombre') or ''
+                )
+            except Exception as e:
+                print(f"[api_crear_informe] Error al notificar: {e}")
+
             return jsonify({
                 'status': 'success', 
                 'message': 'Informe registrado correctamente',

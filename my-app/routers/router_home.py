@@ -43,6 +43,7 @@ from controllers.controller_informe_avance import informe_avance_bp
 ## Empresas
 from controllers.controller_empresa import empresa_bp
 from controllers.controller_inspeccion import inspeccion_bp
+from controllers.controller_notificacion import notificacion_bp
 from controllers.controller_gravedad import (
     registrar_gravedad_controller, listar_gravedades_controller,
     obtener_gravedad_controller, actualizar_gravedad_controller,
@@ -59,6 +60,7 @@ from controllers.controller_seguridad import (
 from controllers.UserController import verificar_permiso
 app.register_blueprint(empresa_bp)
 app.register_blueprint(inspeccion_bp)
+app.register_blueprint(notificacion_bp)
 empresa_bp = Blueprint('empresa_bp', __name__)
 
 # Contrataciones
@@ -771,6 +773,26 @@ def api_validar_codigo_proyecto(codigo):
     modelo = ProyectoModel()
     resultado = modelo.validar_codigo_proyecto(codigo)
     return jsonify(resultado)
+
+
+@home_bp.route('/api/proyecto/detalle/<string:codigo>', methods=['GET'])
+def api_detalle_proyecto(codigo):
+    if 'conectado' not in session:
+        return jsonify({'error': 'No autorizado'}), 401
+
+    modelo = ProyectoModel()
+    detalle = modelo.obtener_detalle_proyecto_por_codigo(codigo)
+    if not detalle:
+        return jsonify({'error': 'Proyecto no encontrado'}), 404
+
+    return jsonify({
+        'status': 'success',
+        'data': {
+            'proyecto': detalle['proyecto'],
+            'solicitudes': detalle['solicitudes'],
+            'maquinaria': detalle['maquinaria']
+        }
+    })
 
 @home_bp.route('/editar-proyecto/<string:codigo_proyecto>', methods=['GET'])
 def viewEditarProyecto(codigo_proyecto):

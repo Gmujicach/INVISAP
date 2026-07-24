@@ -19,12 +19,24 @@
       <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dark-mode.css') }}">
       <link rel="stylesheet" href="{{ url_for('static', filename='js/driver/driver.css') }}">
     <style>
-      /* Estilos para el acceso rápido a Mi Perfil */
-      .corner-profile-container {
+      /* Contenedor fijo superior derecho: notificaciones + perfil */
+      .corner-topbar {
         position: fixed;
         top: 5px;
-        right: 85px;
-        z-index: 1100; /* Asegura que esté por encima del sidebar */
+        right: 20px;
+        z-index: 1100;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      /* Estilos para el acceso rápido a Mi Perfil */
+      .corner-profile-container {
+        position: static;
+        z-index: 1100;
+      }
+      .corner-notifications {
+        display: flex;
+        align-items: center;
       }
       .profile-link-fixed {
         display: flex;
@@ -437,9 +449,24 @@
           background: linear-gradient(135deg, #c82333 0%, #a71d2a 100%);
           box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
         }
-      </style>
-    </head>
-    <body class="transition-all">
+      /* Estilos para la paginación de DataTables */
+       .dataTables_paginate {
+           margin-top: 15px !important;
+           padding-right: 15px !important;
+       }
+       /* Notificaciones: item no leído */
+       #notif-lista .notif-no-leida {
+           background-color: rgba(105, 108, 255, 0.08);
+       }
+       #notif-lista .list-group-item-action:hover {
+           background-color: rgba(0, 0, 0, 0.04);
+       }
+       body.dark-mode #notif-lista .list-group-item-action:hover {
+           background-color: rgba(255, 255, 255, 0.06);
+         }
+       </style>
+     </head>
+     <body class="transition-all">
     <script>
       /* Aplica el tema guardado antes de pintar para evitar parpadeo (FOUC) */
       (function () {
@@ -498,6 +525,37 @@
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
         <!-- Acceso persistente a Mi Perfil -->
+        <div class="corner-topbar">
+        <!-- Notificaciones: campanita -->
+        <div class="corner-notifications">
+          <div class="btn-group">
+            <button type="button" class="btn btn-icon rounded-pill btn-text-secondary position-relative border-0 shadow-sm"
+                    id="btn-notificaciones" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
+                    aria-label="Notificaciones">
+              <i class="bi bi-bell fs-4"></i>
+              <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle {% if notificaciones_no_leidas == 0 %}d-none{% endif %}"
+                    id="notif-badge">{{ notificaciones_no_leidas }}</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-0" style="border-radius:12px; min-width:340px; max-width:360px;">
+              <li class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
+                <span class="fw-semibold">Notificaciones <span class="badge bg-label-primary" id="notif-count-label">{{ notificaciones_no_leidas }}</span></span>
+                <div class="d-flex gap-2">
+                  <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none text-primary" id="notif-eliminar-todas">Borrar todas</button>
+                  <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none" id="notif-marcar-todas">Marcar leídas</button>
+                </div>
+              </li>
+              <li>
+                <ul class="list-group list-group-flush" id="notif-lista" style="max-height:380px; overflow-y:auto;">
+                  <li class="list-group-item text-center text-muted small py-4">Cargando...</li>
+                </ul>
+              </li>
+              <li class="text-center border-top py-2">
+                <span class="small text-muted" id="notif-ver-todas">No hay más notificaciones</span>
+              </li>
+            </ul>
+            </div>
+        </div>
+
         <div class="corner-profile-container">
           <div class="btn-group">
             <button type="button" class="profile-link-fixed dropdown-toggle border-0 shadow-sm" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
@@ -545,6 +603,7 @@
             </ul>
           </div>
         </div>
+        </div><!-- /corner-topbar -->
 
         {% include 'home/menu_sidebar.html' %}
         <div class="layout-page">
@@ -1152,13 +1211,177 @@
         }
       });
     </script>
-     <!--Custom JS-->
-     <script src="{{ url_for('static', filename='js/driver/driver.js') }}"></script>
-     <script src="{{ url_for('static', filename='js/tour/tour-manager.js') }}"></script>
-     <!-- Tours base: 'home' para el dashboard y 'default' como respaldo universal -->
-     <script src="{{ url_for('static', filename='js/tour/home/tour.js') }}"></script>
-     <script src="{{ url_for('static', filename='js/tour/default/tour.js') }}"></script>
-     {% block customJS %} {% endblock %}
-   </body>
+      <!--Custom JS-->
+      <script src="{{ url_for('static', filename='js/driver/driver.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/tour/tour-manager.js') }}"></script>
+      <!-- Tours base: 'home' para el dashboard y 'default' como respaldo universal -->
+      <script src="{{ url_for('static', filename='js/tour/home/tour.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/tour/default/tour.js') }}"></script>
+      {% block customJS %} {% endblock %}
+      <!-- Notificaciones: carga, render y acciones -->
+      <script>
+      (function () {
+        const badge = document.getElementById('notif-badge');
+        const countLabel = document.getElementById('notif-count-label');
+        const lista = document.getElementById('notif-lista');
+        const btnMarcarTodas = document.getElementById('notif-marcar-todas');
+        const btnEliminarTodas = document.getElementById('notif-eliminar-todas');
+
+        if (!lista) return;
+
+        function escapar(texto) {
+          const d = document.createElement('div');
+          d.textContent = texto == null ? '' : String(texto);
+          return d.innerHTML;
+        }
+
+        function tiempoRelativo(fechaStr) {
+          if (!fechaStr) return '';
+          const f = new Date(fechaStr.replace(' ', 'T'));
+          if (isNaN(f)) return fechaStr;
+          const diff = (Date.now() - f.getTime()) / 1000;
+          if (diff < 60) return 'hace un momento';
+          if (diff < 3600) return 'hace ' + Math.floor(diff / 60) + ' min';
+          if (diff < 86400) return 'hace ' + Math.floor(diff / 3600) + ' h';
+          return 'hace ' + Math.floor(diff / 86400) + ' d';
+        }
+
+        function actualizarBadge(n) {
+          if (badge) {
+            badge.textContent = n;
+            badge.classList.toggle('d-none', n === 0);
+          }
+          if (countLabel) countLabel.textContent = n;
+        }
+
+        function renderNotificaciones(notificaciones) {
+          if (!notificaciones.length) {
+            lista.innerHTML = '<li class="list-group-item text-center text-muted small py-4">Sin notificaciones</li>';
+            return;
+          }
+          lista.innerHTML = '';
+          notificaciones.forEach(function (n) {
+            const li = document.createElement('li');
+            li.className = 'list-group-item list-group-item-action py-2 px-3' + (n.leida ? '' : ' notif-no-leida');
+            li.style.cursor = 'pointer';
+            li.dataset.id = n.id_notificacion;
+            li.innerHTML =
+              '<div class="d-flex align-items-start gap-2">' +
+                '<i class="bi bi-' + iconoModulo(n.modulo) + ' fs-5 ' + (n.leida ? 'text-muted' : 'text-primary') + ' mt-1"></i>' +
+                '<div class="flex-grow-1">' +
+                  '<div class="small fw-semibold">' + escapar(n.titulo) + '</div>' +
+                  '<div class="small text-muted">' + escapar(n.mensaje) + '</div>' +
+                  '<div class="small text-muted mt-1">' + escapar(tiempoRelativo(n.fecha)) + '</div>' +
+                '</div>' +
+                (n.leida ? '' : '<span class="badge bg-primary rounded-pill ms-1 mt-1">&nbsp;</span>') +
+                '<button type="button" class="btn btn-sm btn-link p-0 ms-1 text-danger notif-eliminar" data-id="' + n.id_notificacion + '" aria-label="Eliminar notificación">' +
+                  '<i class="bi bi-x-lg"></i>' +
+                '</button>' +
+              '</div>';
+
+            const btnEliminar = li.querySelector('.notif-eliminar');
+            btnEliminar.addEventListener('click', function (e) {
+              e.stopPropagation();
+              eliminar(n.id_notificacion, li);
+            });
+
+            li.addEventListener('click', function () {
+              marcarLeida(n.id_notificacion, li);
+              if (n.enlace) window.location.href = n.enlace;
+            });
+            lista.appendChild(li);
+          });
+        }
+
+        function iconoModulo(modulo) {
+          const mapa = {
+            'Inspecciones': 'clipboard-check',
+            'Evidencias': 'images',
+            'Obras': 'house-gear',
+            'Usuarios': 'people-fill',
+            'Publicaciones': 'newspaper',
+            'Solicitudes': 'card-text',
+            'Contrataciones': 'briefcase',
+            'Informes': 'graph-up',
+            'Empleados': 'person-badge-fill',
+            'Empresas': 'building',
+            'Maquinaria': 'truck',
+            'Respaldos': 'download'
+          };
+          return mapa[modulo] || 'bell';
+        }
+
+        function marcarLeida(id, li) {
+          fetch('/notificaciones/marcar-leida/' + id, { method: 'POST' })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (d.status === 'success') {
+                actualizarBadge(d.no_leidas || 0);
+                if (li) {
+                  li.classList.remove('notif-no-leida');
+                  const punto = li.querySelector('.badge.bg-primary');
+                  if (punto) punto.remove();
+                }
+              }
+            })
+            .catch(function () {});
+        }
+
+        function eliminar(id, li) {
+          fetch('/notificaciones/eliminar/' + id, { method: 'POST' })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (d.status === 'success') {
+                actualizarBadge(d.no_leidas || 0);
+                if (li) li.remove();
+              }
+            })
+            .catch(function () {});
+        }
+
+        function cargarNotificaciones() {
+          fetch('/notificaciones/lista')
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (d.status === 'success') {
+                actualizarBadge(d.no_leidas || 0);
+                renderNotificaciones(d.notificaciones || []);
+              }
+            })
+            .catch(function () {});
+        }
+
+        if (btnMarcarTodas) {
+          btnMarcarTodas.addEventListener('click', function (e) {
+            e.stopPropagation();
+            fetch('/notificaciones/marcar-todas', { method: 'POST' })
+              .then(function (r) { return r.json(); })
+              .then(function () {
+                actualizarBadge(0);
+                cargarNotificaciones();
+              })
+              .catch(function () {});
+          });
+        }
+
+        if (btnEliminarTodas) {
+          btnEliminarTodas.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (!confirm('¿Eliminar todas las notificaciones?')) return;
+            fetch('/notificaciones/eliminar-todas', { method: 'POST' })
+              .then(function (r) { return r.json(); })
+              .then(function () {
+                actualizarBadge(0);
+                cargarNotificaciones();
+              })
+              .catch(function () {});
+          });
+        }
+
+        cargarNotificaciones();
+        setInterval(cargarNotificaciones, 30000);
+      })();
+    </script>
+    </body>
 </html>
 

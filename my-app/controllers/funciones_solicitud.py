@@ -4,6 +4,7 @@ Coordina entre router y modelo, manejando los ValueErrors.
 """
 from models.model_solicitudes import SolicitudModel
 from services.bitacora_service import BitacoraService
+from models.model_notificacion import notificar_a_roles
 from flask import session
 
 
@@ -79,6 +80,28 @@ def actualizar_solicitud(id_solicitud, datos_formulario: dict, session: dict | N
                 id_solicitud,
                 'Solicitud actualizada'
             )
+            estatus = datos_formulario.get('estatus') or datos_formulario.get('estatus_solicitud') or 'Actualizada'
+            try:
+                notificar_a_roles(
+                    ['Gerente'],
+                    'Solicitudes',
+                    'Cambio de estado de solicitud',
+                    f'La solicitud #{id_solicitud} cambió a estado: {estatus}',
+                    enlace='/lista-de-solicitudes',
+                    creado_por=session.get('name_surname') or session.get('nombre') or ''
+                )
+                # Culminación de la solicitud: al llegar a un estatus final
+                if str(estatus).strip().lower() in ('completada', 'procesada'):
+                    notificar_a_roles(
+                        ['Super Usuario', 'Administrador', 'Gerente'],
+                        'Solicitudes',
+                        'Solicitud culminada',
+                        f'La solicitud #{id_solicitud} fue culminada (estado: {estatus}).',
+                        enlace='/lista-de-solicitudes',
+                        creado_por=session.get('name_surname') or session.get('nombre') or ''
+                    )
+            except Exception as e:
+                print(f"[actualizar_solicitud] Error al notificar: {e}")
             return {'success': True, 'message': 'Solicitud actualizada correctamente.'}
         return {'success': False, 'message': 'No se pudo actualizar la solicitud (posible ID no encontrado).'}
     except ValueError as e:
