@@ -22,6 +22,7 @@ border = Border(
 header_alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 cell_alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
 
+
 def construir_modulos_config_excel():
     return [
         {
@@ -74,6 +75,7 @@ def construir_modulos_config_excel():
         }
     ]
 
+
 def obtener_modulos_excel_por_filtro(filtro):
     modulos_config = construir_modulos_config_excel()
     if not filtro:
@@ -84,6 +86,84 @@ def obtener_modulos_excel_por_filtro(filtro):
             return [mod]
     return []
 
+
+def _colectar_filtros_form(modulo='general'):
+    campos_por_modulo = {
+        'solicitudes': [
+            'tipo_solicitud', 'estatus_solicitud', 'problematica', 'cedula', 'nombre_solicitante',
+            'fecha_desde', 'fecha_hasta', 'municipio', 'parroquia', 'direccion', 'telefono', 'correo',
+            'sector', 'ambito',
+        ],
+        'empleados': [
+            'nombre_empleado', 'cargo', 'fecha_ingreso_desde', 'fecha_ingreso_hasta', 'estado_empleado',
+            'cedula_persona', 'telefono', 'correo', 'direccion', 'parroquia', 'municipio', 'gerencia_asignada',
+        ],
+        'usuarios': [
+            'nombre', 'cedula_usuario', 'correo', 'rol', 'estado',
+        ],
+        'contrataciones': [
+            'empresa_ganadora', 'tipo_contrato', 'modalidad', 'objeto',
+            'fecha_registro_desde', 'fecha_registro_hasta', 'fecha_inicio_procedimiento_desde',
+            'fecha_inicio_procedimiento_hasta', 'fecha_adjudicacion_desde', 'fecha_adjudicacion_hasta',
+            'numero_contrato',
+        ],
+        'obras': [
+            'titulo_obra', 'ubicacion_obra', 'fecha_inicio_desde', 'fecha_inicio_hasta',
+            'fecha_fin_desde', 'fecha_fin_hasta', 'semaforo_estado', 'contratista',
+        ],
+        'publicaciones': [
+            'titulo_publicacion', 'nombre_responsable', 'tipo_publicacion',
+            'fecha_publicacion_desde', 'fecha_publicacion_hasta',
+        ],
+        'solicitantes': [
+            'nombre', 'apellido', 'cedula',
+        ],
+        'general': [
+            'nombre_solicitante', 'cedula', 'telefono', 'correo',
+            'fecha_desde', 'fecha_hasta', 'municipio', 'direccion',
+        ],
+    }
+    campos = campos_por_modulo.get(modulo, campos_por_modulo['general'])
+    filtros = {}
+    for campo in campos:
+        val = request.form.get(campo, '').strip()
+        if val:
+            filtros[campo] = val
+    return filtros
+
+
+def _limpiar_filtros_por_modulo(filtros, modulo_id):
+    campos_validos = {
+        'solicitudes': {
+            'tipo_solicitud', 'estatus_solicitud', 'problematica', 'cedula', 'nombre_solicitante',
+            'fecha_desde', 'fecha_hasta', 'municipio', 'parroquia', 'direccion', 'telefono', 'correo',
+            'sector', 'ambito',
+        },
+        'empleados': {
+            'nombre_empleado', 'cargo', 'fecha_ingreso_desde', 'fecha_ingreso_hasta', 'estado_empleado',
+            'cedula_persona', 'telefono', 'correo', 'direccion', 'parroquia', 'municipio', 'gerencia_asignada',
+        },
+        'usuarios': {'nombre', 'cedula_usuario', 'correo', 'rol', 'estado'},
+        'contrataciones': {
+            'empresa_ganadora', 'tipo_contrato', 'modalidad', 'objeto',
+            'fecha_registro_desde', 'fecha_registro_hasta', 'fecha_inicio_procedimiento_desde',
+            'fecha_inicio_procedimiento_hasta', 'fecha_adjudicacion_desde', 'fecha_adjudicacion_hasta',
+            'numero_contrato',
+        },
+        'obras': {
+            'titulo_obra', 'ubicacion_obra', 'fecha_inicio_desde', 'fecha_inicio_hasta',
+            'fecha_fin_desde', 'fecha_fin_hasta', 'semaforo_estado', 'contratista',
+        },
+        'publicaciones': {
+            'titulo_publicacion', 'nombre_responsable', 'tipo_publicacion',
+            'fecha_publicacion_desde', 'fecha_publicacion_hasta',
+        },
+        'solicitantes': {'nombre', 'apellido', 'cedula'},
+    }
+    validos = campos_validos.get(modulo_id, set())
+    return {k: v for k, v in filtros.items() if k in validos}
+
+
 @reporte_excel_bp.route('/reporte-excel', methods=['GET', 'POST'])
 def generarReporteExcel():
     if 'conectado' not in session:
@@ -91,8 +171,14 @@ def generarReporteExcel():
         return redirect(url_for('login_bp.inicio'))
 
     if request.method == 'POST':
-        filtro = request.form.get('filtro_busqueda', '').strip().lower()
-        modulos_a_procesar = obtener_modulos_excel_por_filtro(filtro)
+        modulo = request.form.get('modulo', '').strip().lower()
+        filtros = _colectar_filtros_form(modulo)
+
+        modulos_config = construir_modulos_config_excel()
+        if modulo and modulo != 'general':
+            modulos_a_procesar = [m for m in modulos_config if m['id'] == modulo]
+        else:
+            modulos_a_procesar = modulos_config
 
         if not modulos_a_procesar:
             flash('No se encontró ningún módulo relacionado con el criterio ingresado.', 'info')
@@ -102,7 +188,8 @@ def generarReporteExcel():
         wb.remove(wb.active)
 
         for mod in modulos_a_procesar:
-            data = mod['fetch']()
+            mod_filtros = _limpiar_filtros_por_modulo(filtros, mod['id'])
+            data = mod['fetch'](mod_filtros if mod_filtros else None)
             if not data:
                 continue
 

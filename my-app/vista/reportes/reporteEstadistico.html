@@ -1,8 +1,6 @@
 {% extends 'base_cpanel.html' %}
 {% block title %}Reportes Estadísticos | INVILARA{% endblock %}
 
-{% block customCSS %}{% endblock %}
-
 {% block body %}
 <div class="row justify-content-center">
   <div class="col-md-12">
@@ -14,25 +12,325 @@
           </h4>
           <p class="text-white-50 small mb-0 mt-1">Generador de reportes estadísticos para apoyo a la toma de decisiones</p>
         </div>
-        <a href="{{ url_for('reporte_estadistico_bp.generarReporteEstadistico') }}" class="btn btn-light text-primary fw-bold shadow-sm">
+        <button type="button" id="btnDescargarPDF" class="btn btn-light text-primary fw-bold shadow-sm">
           <i class="bi bi-file-earmark-pdf me-1"></i> Descargar PDF
-        </a>
+        </button>
       </div>
       <div class="card-body mt-4 p-5">
-        <div class="row g-3 align-items-end">
-          <div class="col-md-8">
-            <label class="form-label fw-bold text-dark fs-6 mb-2">
-              <i class="bi bi-funnel me-1 text-primary"></i> Filtro de Datos
-            </label>
-            <div class="input-group input-group-lg shadow-sm">
-              <span class="input-group-text bg-light border-end-0 text-primary"><i class="bi bi-search"></i></span>
-              <input type="text" id="filtroBusqueda" class="form-control border-start-0" placeholder="Módulo a analizar (ej: solicitudes). Vacío para análisis global.">
+        <form id="formEstadisticos" method="POST" action="{{ url_for('reporte_estadistico_bp.generarReporteEstadistico') }}" style="display:none;">
+          <div id="estadisticoHiddenInputs"></div>
+        </form>
+
+         <div class="row g-3 mb-4">
+           <div class="col-md-4">
+             <label class="form-label fw-bold text-dark">Tipo de Reporte Estadístico</label>
+             <select name="tipo_reporte" id="tipoReporteEst" class="form-select form-select-lg shadow-sm" required>
+               <option value="solicitudes">Solicitudes</option>
+               <option value="obras">Obras</option>
+               <option value="empleados">Personal / Empleados</option>
+               <option value="contrataciones">Contrataciones</option>
+               <option value="publicaciones">Publicaciones</option>
+             </select>
+           </div>
+           <div class="col-md-3">
+             <label class="form-label fw-bold text-dark">Agrupación Temporal</label>
+             <select name="agrupacion" id="agrupacionEst" class="form-select form-select-lg shadow-sm">
+               <option value="dia">Por Día</option>
+               <option value="semana">Por Semana</option>
+               <option value="mes">Por Mes</option>
+             </select>
+           </div>
+           <div class="col-md-5 d-flex align-items-end">
+             <div class="input-group input-group-lg shadow-sm w-100">
+               <span class="input-group-text bg-light border-end-0 text-primary"><i class="bi bi-search"></i></span>
+               <input type="text" id="filtroBusqueda" class="form-control border-start-0" placeholder="Buscar por palabra clave...">
+               <button id="btnAplicarFiltro" type="button" class="btn btn-primary">
+                 <i class="bi bi-search me-1"></i> Aplicar
+               </button>
+             </div>
+           </div>
+         </div>
+
+        <hr class="my-4">
+
+         <div id="filtrosSolicitudes" class="filtro-section">
+          <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Solicitudes</h6>
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Nombre / Razón Social / Responsable</label>
+              <input type="text" name="nombre_solicitante" class="form-control form-control-sm filtro-estad" placeholder="Buscar por nombre...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Cédula</label>
+              <input type="text" name="cedula" class="form-control form-control-sm filtro-estad" placeholder="Cédula...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Teléfono</label>
+              <input type="text" name="telefono" class="form-control form-control-sm filtro-estad" placeholder="Teléfono...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Correo</label>
+              <input type="text" name="correo" class="form-control form-control-sm filtro-estad" placeholder="Correo...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Tipo de Solicitud</label>
+              <select name="tipo_solicitud" class="form-select form-select-sm filtro-estad">
+                <option value="">-- Todos --</option>
+                <option value="Comunidad">Comunidad</option>
+                <option value="Institucion">Institución</option>
+                <option value="Particular">Particular</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Estatus</label>
+              <select name="estatus_solicitud" class="form-select form-select-sm filtro-estad">
+                <option value="">-- Todos --</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="En Proceso">En Proceso</option>
+                <option value="Completada">Completada</option>
+                <option value="Procesada">Procesada</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Municipio</label>
+              <input type="text" name="municipio" class="form-control form-control-sm filtro-estad" placeholder="Ej: Iribarren">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Parroquia</label>
+              <input type="text" name="parroquia" class="form-control form-control-sm filtro-estad" placeholder="Parroquia...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Sector</label>
+              <input type="text" name="sector" class="form-control form-control-sm filtro-estad" placeholder="Sector...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Ámbito</label>
+              <input type="text" name="ambito" class="form-control form-control-sm filtro-estad" placeholder="Ámbito...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Dirección</label>
+              <input type="text" name="direccion" class="form-control form-control-sm filtro-estad" placeholder="Dirección...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Desde</label>
+              <input type="date" name="fecha_desde" class="form-control form-control-sm filtro-estad">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Hasta</label>
+              <input type="date" name="fecha_hasta" class="form-control form-control-sm filtro-estad">
             </div>
           </div>
-          <div class="col-md-4 text-md-end">
-            <button id="btnAplicarFiltro" class="btn btn-primary btn-lg px-4 shadow-sm fw-bold w-100 w-md-auto">
-              <i class="bi bi-search me-1"></i> Aplicar Filtro
-            </button>
+        </div>
+
+         <div id="filtrosObras" class="filtro-section" style="display:none;">
+          <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Obras</h6>
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Nombre de Obra</label>
+              <input type="text" name="titulo_obra" class="form-control form-control-sm filtro-estad" placeholder="Buscar nombre...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Ubicación</label>
+              <input type="text" name="ubicacion_obra" class="form-control form-control-sm filtro-estad" placeholder="Buscar ubicación...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Contratista</label>
+              <input type="text" name="contratista" class="form-control form-control-sm filtro-estad" placeholder="Buscar contratista...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Semáforo Estado</label>
+              <input type="text" name="semaforo_estado" class="form-control form-control-sm filtro-estad" placeholder="Ej: Verde">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Inicio Desde</label>
+              <input type="date" name="fecha_inicio_desde" class="form-control form-control-sm filtro-estad">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Inicio Hasta</label>
+              <input type="date" name="fecha_inicio_hasta" class="form-control form-control-sm filtro-estad">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Fin Desde</label>
+              <input type="date" name="fecha_fin_desde" class="form-control form-control-sm filtro-estad">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Fin Hasta</label>
+              <input type="date" name="fecha_fin_hasta" class="form-control form-control-sm filtro-estad">
+            </div>
+          </div>
+        </div>
+
+         <div id="filtrosEmpleados" class="filtro-section" style="display:none;">
+          <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Personal / Empleados</h6>
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Nombre Empleado</label>
+              <input type="text" name="nombre_empleado" class="form-control form-control-sm filtro-estad" placeholder="Buscar nombre...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Cargo</label>
+              <select name="cargo" class="form-select form-select-sm filtro-estad">
+                <option value="">-- Todos --</option>
+                <option value="Gerente">Gerente</option>
+                <option value="Inspector">Inspector</option>
+                <option value="Asistente">Asistente</option>
+                <option value="Proyectista">Proyectista</option>
+                <option value="Recepcionista">Recepcionista</option>
+                <option value="Ingeniero">Ingeniero</option>
+                <option value="Coordinador">Coordinador</option>
+                <option value="Operador">Operador</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Gerencia</label>
+              <input type="text" name="gerencia_asignada" class="form-control form-control-sm filtro-estad" placeholder="Buscar gerencia...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Cédula Persona</label>
+              <input type="text" name="cedula_persona" class="form-control form-control-sm filtro-estad" placeholder="Cédula...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Teléfono</label>
+              <input type="text" name="telefono" class="form-control form-control-sm filtro-estad" placeholder="Teléfono...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Correo</label>
+              <input type="text" name="correo" class="form-control form-control-sm filtro-estad" placeholder="Correo...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Dirección</label>
+              <input type="text" name="direccion" class="form-control form-control-sm filtro-estad" placeholder="Dirección...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Parroquia</label>
+              <input type="text" name="parroquia" class="form-control form-control-sm filtro-estad" placeholder="Parroquia...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Municipio</label>
+              <input type="text" name="municipio" class="form-control form-control-sm filtro-estad" placeholder="Municipio...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Estado</label>
+              <select name="estado_empleado" class="form-select form-select-sm filtro-estad">
+                <option value="">-- Todos --</option>
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Ingreso Desde</label>
+              <input type="date" name="fecha_ingreso_desde" class="form-control form-control-sm filtro-estad">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Ingreso Hasta</label>
+              <input type="date" name="fecha_ingreso_hasta" class="form-control form-control-sm filtro-estad">
+            </div>
+          </div>
+        </div>
+
+         <div id="filtrosContrataciones" class="filtro-section" style="display:none;">
+          <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Contrataciones</h6>
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Empresa Ganadora</label>
+              <input type="text" name="empresa_ganadora" class="form-control form-control-sm filtro-estad" placeholder="Buscar empresa...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Número de Contrato</label>
+              <input type="text" name="numero_contrato" class="form-control form-control-sm filtro-estad" placeholder="N° contrato...">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Tipo de Contrato</label>
+              <select name="tipo_contrato" class="form-select form-select-sm filtro-estad">
+                <option value="">-- Todos --</option>
+                <option value="Contrato de Obra">Contrato de Obra</option>
+                <option value="Contrato de Servicio">Contrato de Servicio</option>
+                <option value="Contrato de Bienes">Contrato de Bienes</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Modalidad</label>
+              <select name="modalidad" class="form-select form-select-sm filtro-estad">
+                <option value="">-- Todos --</option>
+                <option value="Concurso Abierto">Concurso Abierto</option>
+                <option value="Concurso Cerrado">Concurso Cerrado</option>
+                <option value="Consulta de Precios">Consulta de Precios</option>
+                <option value="Contratación Directa">Contratación Directa</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Objeto</label>
+              <select name="objeto" class="form-select form-select-sm filtro-estad">
+                <option value="">-- Todos --</option>
+                <option value="Ejecución de Obras">Ejecución de Obras</option>
+                <option value="Prestación de Servicios">Prestación de Servicios</option>
+                <option value="Suministro de Bienes">Suministro de Bienes</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Estado</label>
+              <select name="estado" class="form-select form-select-sm filtro-estad">
+                <option value="">-- Todos --</option>
+                <option value="1">Activo</option>
+                <option value="0">Inactivo</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Registro Desde</label>
+              <input type="date" name="fecha_registro_desde" class="form-control form-control-sm filtro-estad">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Registro Hasta</label>
+              <input type="date" name="fecha_registro_hasta" class="form-control form-control-sm filtro-estad">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Inicio Procedimiento Desde</label>
+              <input type="date" name="fecha_inicio_procedimiento_desde" class="form-control form-control-sm filtro-estad">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Inicio Procedimiento Hasta</label>
+              <input type="date" name="fecha_inicio_procedimiento_hasta" class="form-control form-control-sm filtro-estad">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Adjudicación Desde</label>
+              <input type="date" name="fecha_adjudicacion_desde" class="form-control form-control-sm filtro-estad">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small">Fecha Adjudicación Hasta</label>
+              <input type="date" name="fecha_adjudicacion_hasta" class="form-control form-control-sm filtro-estad">
+            </div>
+          </div>
+        </div>
+
+        <div id="filtrosPublicaciones" class="filtro-section" style="display:none;">
+          <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Publicaciones</h6>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small">Título</label>
+              <input type="text" name="titulo_publicacion" class="form-control form-control-sm filtro-estad" placeholder="Buscar título...">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small">Autor / Responsable</label>
+              <input type="text" name="nombre_responsable" class="form-control form-control-sm filtro-estad" placeholder="Buscar autor...">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small">Tipo de Publicación</label>
+              <select name="tipo_publicacion" class="form-select form-select-sm filtro-estad">
+                <option value="">-- Todos --</option>
+                <option value="General">General</option>
+                <option value="Noticia">Noticia</option>
+                <option value="Aviso">Aviso</option>
+                <option value="Comunicado">Comunicado</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small">Fecha Publicación Desde</label>
+              <input type="date" name="fecha_publicacion_desde" class="form-control form-control-sm filtro-estad">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small">Fecha Publicación Hasta</label>
+              <input type="date" name="fecha_publicacion_hasta" class="form-control form-control-sm filtro-estad">
+            </div>
           </div>
         </div>
 
@@ -40,8 +338,8 @@
           <div class="col-md-12 col-lg-6">
             <div class="card shadow border-0 h-100">
               <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0 text-primary"><i class="bi bi-bar-chart-fill me-2"></i>Tipo de Solicitud</h6>
-                <select class="form-select form-select-sm chart-type-select" data-target="tipoChart" style="width: auto;">
+                <h6 class="fw-bold mb-0 text-primary" id="chart1Title"><i class="bi bi-bar-chart-fill me-2"></i>Tipo de Solicitud</h6>
+                <select class="form-select form-select-sm chart-type-select" data-target="chart1" style="width: auto;">
                   <option value="bar">Barra</option>
                   <option value="line">Línea</option>
                   <option value="pie">Circular</option>
@@ -51,15 +349,15 @@
                 </select>
               </div>
               <div class="card-body">
-                <canvas id="tipoChart"></canvas>
+                <canvas id="chart1"></canvas>
               </div>
             </div>
           </div>
           <div class="col-md-12 col-lg-6">
             <div class="card shadow border-0 h-100">
               <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0 text-success"><i class="bi bi-check-circle-fill me-2"></i>Estatus de Solicitud</h6>
-                <select class="form-select form-select-sm chart-type-select" data-target="estatusChart" style="width: auto;">
+                <h6 class="fw-bold mb-0 text-success" id="chart2Title"><i class="bi bi-check-circle-fill me-2"></i>Estatus de Solicitud</h6>
+                <select class="form-select form-select-sm chart-type-select" data-target="chart2" style="width: auto;">
                   <option value="bar">Barra</option>
                   <option value="line">Línea</option>
                   <option value="pie">Circular</option>
@@ -69,15 +367,15 @@
                 </select>
               </div>
               <div class="card-body">
-                <canvas id="estatusChart"></canvas>
+                <canvas id="chart2"></canvas>
               </div>
             </div>
           </div>
           <div class="col-md-12">
             <div class="card shadow border-0">
               <div class="card-header bg-white py-3 px-4 d-flex justify-content-between align-items-center">
-                <h6 class="fw-bold mb-0 text-danger"><i class="bi bi-calendar-check me-2"></i>Tendencia por Fecha</h6>
-                <select class="form-select form-select-sm chart-type-select" data-target="fechaChart" style="width: auto;">
+                <h6 class="fw-bold mb-0 text-danger" id="chart3Title"><i class="bi bi-calendar-check me-2"></i>Tendencia por Fecha</h6>
+                <select class="form-select form-select-sm chart-type-select" data-target="chart3" style="width: auto;">
                   <option value="line">Línea</option>
                   <option value="bar">Barra</option>
                   <option value="pie">Circular</option>
@@ -87,7 +385,7 @@
                 </select>
               </div>
               <div class="card-body">
-                <canvas id="fechaChart"></canvas>
+                <canvas id="chart3"></canvas>
               </div>
             </div>
           </div>
@@ -110,31 +408,73 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script>
 (function() {
-  var tipoChartInstance = null;
-  var estatusChartInstance = null;
-  var fechaChartInstance = null;
+  var chartInstances = {};
 
+  var tipoReporte = document.getElementById('tipoReporteEst');
   var filtroInput = document.getElementById('filtroBusqueda');
   var btnAplicar = document.getElementById('btnAplicarFiltro');
+  var btnPDF = document.getElementById('btnDescargarPDF');
+  var hiddenForm = document.getElementById('estadisticoHiddenInputs');
 
-  function obtenerFiltro() {
-    return filtroInput ? filtroInput.value.trim() : '';
+  var CHART_TITLES = {
+    'solicitudes': {
+      chart1: { texto: '<i class="bi bi-bar-chart-fill me-2"></i>Tipo de Solicitud', color: 'text-primary' },
+      chart2: { texto: '<i class="bi bi-check-circle-fill me-2"></i>Estatus de Solicitud', color: 'text-success' },
+      chart3: { texto: '<i class="bi bi-calendar-check me-2"></i>Tendencia por Fecha', color: 'text-danger' }
+    },
+    'obras': {
+      chart1: { texto: '<i class="bi bi-bar-chart-fill me-2"></i>Estado de Obras', color: 'text-primary' },
+      chart2: { texto: '<i class="bi bi-check-circle-fill me-2"></i>Contratistas', color: 'text-success' },
+      chart3: { texto: '<i class="bi bi-calendar-check me-2"></i>Ubicación de Obras', color: 'text-danger' }
+    },
+    'empleados': {
+      chart1: { texto: '<i class="bi bi-bar-chart-fill me-2"></i>Distribución por Cargo', color: 'text-primary' },
+      chart2: { texto: '<i class="bi bi-check-circle-fill me-2"></i>Distribución por Gerencia', color: 'text-success' },
+      chart3: { texto: '<i class="bi bi-calendar-check me-2"></i>Fecha de Ingreso', color: 'text-danger' }
+    },
+    'contrataciones': {
+      chart1: { texto: '<i class="bi bi-bar-chart-fill me-2"></i>Tipo de Contrato', color: 'text-primary' },
+      chart2: { texto: '<i class="bi bi-check-circle-fill me-2"></i>Modalidad', color: 'text-success' },
+      chart3: { texto: '<i class="bi bi-calendar-check me-2"></i>Empresas', color: 'text-danger' }
+    },
+    'publicaciones': {
+      chart1: { texto: '<i class="bi bi-bar-chart-fill me-2"></i>Tipo de Publicación', color: 'text-primary' },
+      chart2: { texto: '<i class="bi bi-check-circle-fill me-2"></i>Autores', color: 'text-success' },
+      chart3: { texto: '<i class="bi bi-calendar-check me-2"></i>Publicaciones por Fecha', color: 'text-danger' }
+    }
+  };
+
+  function obtenerTipoReporte() {
+    return tipoReporte ? tipoReporte.value : 'solicitudes';
   }
 
-  function cargarDatos(filtro) {
-    var params = new URLSearchParams();
-    if (filtro) params.append('filtro_busqueda', filtro);
+  function obtenerAgrupacion() {
+    var sel = document.getElementById('agrupacionEst');
+    return sel ? sel.value : 'dia';
+  }
 
-    fetch('{{ url_for("reporte_estadistico_bp.datosEstadisticos") }}?' + params.toString())
-      .then(function(response) { return response.json(); })
-      .then(function(data) {
-        actualizarGrafico('tipoChart', data.por_tipo || [], 'Tipo', '#0d6efd');
-        actualizarGrafico('estatusChart', data.por_estatus || [], 'Estatus', '#198754');
-        actualizarGrafico('fechaChart', data.por_fecha || [], 'Fecha', '#dc3545');
-      })
-      .catch(function() {
-        mostrarNotificacion('Error al cargar datos estadísticos', 'danger');
-      });
+  function colectarFiltros() {
+    var filtros = { tipo_reporte: obtenerTipoReporte(), agrupacion: obtenerAgrupacion() };
+    var inputs = document.querySelectorAll('.filtro-estad');
+    inputs.forEach(function(input) {
+      var val = input.value.trim();
+      if (val) {
+        filtros[input.name] = val;
+      }
+    });
+    var busqueda = filtroInput ? filtroInput.value.trim() : '';
+    if (busqueda) {
+      filtros.busqueda = busqueda;
+    }
+    return filtros;
+  }
+
+  function construirParams(filtros) {
+    var params = new URLSearchParams();
+    Object.keys(filtros).forEach(function(k) {
+      if (filtros[k]) params.append(k, filtros[k]);
+    });
+    return params;
   }
 
   function mostrarNotificacion(mensaje, tipo) {
@@ -148,6 +488,15 @@
     setTimeout(function() { if (window.bootstrap) new bootstrap.Alert(div).close(); }, 4000);
   }
 
+  function destruirTodosLosGraficos() {
+    ['chart1', 'chart2', 'chart3'].forEach(function(id) {
+      if (chartInstances[id]) {
+        chartInstances[id].destroy();
+        chartInstances[id] = null;
+      }
+    });
+  }
+
   function actualizarGrafico(canvasId, items, nombreDefault, colorHex) {
     var canvas = document.getElementById(canvasId);
     if (!canvas) return;
@@ -156,24 +505,12 @@
     var valores = items.map(function(item) { return item.valor; });
 
     var ctx = canvas.getContext('2d');
-    var targetId = canvasId;
     var chartType = 'bar';
-    var select = document.querySelector('.chart-type-select[data-target="' + targetId + '"]');
+    var select = document.querySelector('.chart-type-select[data-target="' + canvasId + '"]');
     if (select) chartType = select.value;
 
-    var colorBase = colorHex;
-
-    if (tipoChartInstance && tipoChartInstance.canvas && tipoChartInstance.canvas.id === canvasId) {
-      tipoChartInstance.destroy();
-      tipoChartInstance = null;
-    }
-    if (estatusChartInstance && estatusChartInstance.canvas && estatusChartInstance.canvas.id === canvasId) {
-      estatusChartInstance.destroy();
-      estatusChartInstance = null;
-    }
-    if (fechaChartInstance && fechaChartInstance.canvas && fechaChartInstance.canvas.id === canvasId) {
-      fechaChartInstance.destroy();
-      fechaChartInstance = null;
+    if (chartInstances[canvasId]) {
+      chartInstances[canvasId].destroy();
     }
 
     var config = {
@@ -183,8 +520,8 @@
         datasets: [{
           label: nombreDefault,
           data: valores,
-          backgroundColor: generarColores(labels.length, colorBase),
-          borderColor: colorBase,
+          backgroundColor: generarColores(labels.length, colorHex),
+          borderColor: colorHex,
           borderWidth: 1
         }]
       },
@@ -205,9 +542,7 @@
     };
 
     var chart = new Chart(ctx, config);
-    if (canvasId === 'tipoChart') tipoChartInstance = chart;
-    if (canvasId === 'estatusChart') estatusChartInstance = chart;
-    if (canvasId === 'fechaChart') fechaChartInstance = chart;
+    chartInstances[canvasId] = chart;
   }
 
   function generarColores(count, baseColor) {
@@ -225,21 +560,118 @@
     return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
   }
 
+  function actualizarTitulos(tipo, agrupacion) {
+    var datos = CHART_TITLES[tipo] || CHART_TITLES['solicitudes'];
+    var keys = ['chart1', 'chart2', 'chart3'];
+    var agrupacionTexto = agrupacion === 'semana' ? 'por Semana' : agrupacion === 'mes' ? 'por Mes' : 'por Fecha';
+    keys.forEach(function(k, idx) {
+      var el = document.getElementById(k + 'Title');
+      if (el) {
+        var texto = datos[k].texto;
+        if (k === 'chart3') {
+          texto = '<i class="bi bi-calendar-check me-2"></i>Tendencia ' + agrupacionTexto;
+        }
+        el.innerHTML = texto;
+      }
+      var card = document.querySelector('.chart-type-select[data-target=\"' + k + '\"]').closest('.card');
+      if (card) {
+        card.querySelectorAll('.text-primary, .text-success, .text-danger').forEach(function(span) {
+          span.classList.remove('text-primary', 'text-success', 'text-danger');
+          span.classList.add(datos[keys[idx]].color);
+        });
+      }
+    });
+  }
+
+  function cargarDatos(filtros) {
+    destruirTodosLosGraficos();
+    var params = construirParams(filtros);
+
+    fetch('{{ url_for("reporte_estadistico_bp.datosEstadisticos") }}?' + params.toString())
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        actualizarTitulos(obtenerTipoReporte(), obtenerAgrupacion());
+
+        var chart1Title = document.getElementById('chart1Title').innerHTML.replace(/<[^>]*>/g, '').trim();
+        var chart2Title = document.getElementById('chart2Title').innerHTML.replace(/<[^>]*>/g, '').trim();
+        var chart3Title = document.getElementById('chart3Title').innerHTML.replace(/<[^>]*>/g, '').trim();
+
+        var map = {};
+        Object.keys(data).forEach(function(k) { map[k] = data[k]; });
+
+        var chart1Key = Object.keys(map)[0];
+        var chart2Key = Object.keys(map)[1];
+        var chart3Key = Object.keys(map)[2];
+
+        if (chart1Key) {
+          actualizarGrafico('chart1', map[chart1Key], chart1Title, '#0d6efd');
+        }
+        if (chart2Key) {
+          actualizarGrafico('chart2', map[chart2Key], chart2Title, '#198754');
+        }
+        if (chart3Key) {
+          actualizarGrafico('chart3', map[chart3Key], chart3Title, '#dc3545');
+        }
+      })
+      .catch(function() {
+        mostrarNotificacion('Error al cargar datos estadísticos', 'danger');
+      });
+  }
+
+  function toggleFiltros() {
+    var tipo = obtenerTipoReporte();
+    document.querySelectorAll('.filtro-section').forEach(function(sec) {
+      sec.style.display = 'none';
+    });
+    var section = document.getElementById('filtros' + tipo.charAt(0).toUpperCase() + tipo.slice(1));
+    if (section) {
+      section.style.display = 'block';
+    }
+  }
+
   if (btnAplicar) {
     btnAplicar.addEventListener('click', function() {
-      cargarDatos(obtenerFiltro());
+      var filtros = colectarFiltros();
+      cargarDatos(filtros);
     });
+  }
+
+  if (btnPDF) {
+    btnPDF.addEventListener('click', function() {
+      var filtros = colectarFiltros();
+      hiddenForm.innerHTML = '';
+      Object.keys(filtros).forEach(function(k) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = k;
+        input.value = filtros[k];
+        hiddenForm.appendChild(input);
+      });
+      document.getElementById('formEstadisticos').submit();
+    });
+  }
+
+  var agrupacionSelect = document.getElementById('agrupacionEst');
+  if (agrupacionSelect) {
+    agrupacionSelect.addEventListener('change', function() {
+      var filtros = colectarFiltros();
+      cargarDatos(filtros);
+    });
+  }
+
+  if (tipoReporte) {
+    tipoReporte.addEventListener('change', toggleFiltros);
   }
 
   document.querySelectorAll('.chart-type-select').forEach(function(select) {
     select.addEventListener('change', function() {
-      var target = this.getAttribute('data-target');
-      var filtro = obtenerFiltro();
-      cargarDatos(filtro);
+      var filtros = colectarFiltros();
+      cargarDatos(filtros);
     });
   });
 
-  cargarDatos('');
+  toggleFiltros();
+  cargarDatos(colectarFiltros());
 })();
 </script>
 {% endblock %}
