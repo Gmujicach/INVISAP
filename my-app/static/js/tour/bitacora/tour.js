@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['bitacora'] = function() {
@@ -9,7 +9,7 @@
           element: '.stat-card',
           popover: {
             title: 'Resumen de Actividad',
-            description: 'Tarjetas estadísticas con totales de creaciones, ediciones, eliminaciones y movimientos registrados en la bitácora.'
+            description: 'Tarjetas estadisticas con totales de creaciones, ediciones, eliminaciones y movimientos registrados en la bitacora.'
           },
           side: 'bottom'
         },
@@ -24,8 +24,8 @@
         {
           element: '#formFiltrosBitacora, .bitacora-filter-card, .card-body',
           popover: {
-            title: 'Filtros de Auditoría',
-            description: 'Filtre por usuario específico, módulo consultado y tipo de acción (crear, editar, eliminar, ver).'
+            title: 'Filtros de Auditoria',
+            description: 'Filtre por usuario especifico, modulo consultado y tipo de accion (crear, editar, eliminar, ver).'
           },
           side: 'bottom'
         },
@@ -33,15 +33,15 @@
           element: '#formFiltrosBitacora button[type="submit"], .btn-primary',
           popover: {
             title: 'Aplicar Filtro',
-            description: 'Ejecute la búsqueda con los criterios seleccionados para refrescar la tabla de registros.'
+            description: 'Ejecute la busqueda con los criterios seleccionados para refrescar la tabla de registros.'
           },
           side: 'left'
         },
         {
           element: '#buscarBitacora, .form-control[type="search"], input[type="search"]',
           popover: {
-            title: 'Búsqueda Rápida en la Tabla',
-            description: 'Filtre los registros visibles sin necesidad de recargar la página, escribiendo usuario, módulo o acción.'
+            title: 'Busqueda Rapida en la Tabla',
+            description: 'Filtre los registros visibles sin necesidad de recargar la pagina, escribiendo usuario, modulo o accion.'
           },
           side: 'bottom'
         },
@@ -49,7 +49,7 @@
           element: '#tabla-bitacora, table.table',
           popover: {
             title: 'Registro de Acciones del Sistema',
-            description: 'Tabla detallada con cada operación: usuario responsable, módulo afectado, tipo de acción, fecha y hora exacta.'
+            description: 'Tabla detallada con cada operacion: usuario responsable, modulo afectado, tipo de accion, fecha y hora exacta.'
           },
           side: 'top'
         }

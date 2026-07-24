@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['seguridad'] = function() {
@@ -8,16 +8,16 @@
         {
           element: '.seguridad-header, h1, h2',
           popover: {
-            title: 'Gestión de Roles y Permisos',
-            description: 'Módulo de seguridad para administrar roles, permisos de acceso y configurar qué puede hacer cada usuario en el sistema.'
+            title: 'Gestion de Roles y Permisos',
+            description: 'Modulo de seguridad para administrar roles, permisos de acceso y configurar que puede hacer cada usuario en el sistema.'
           },
           side: 'bottom'
         },
         {
           element: '.seguridad-filter-card, #formFiltrosSeguridad, .card-body',
           popover: {
-            title: 'Filtros de Búsqueda',
-            description: 'Filtre roles o permisos por nombre, descripción o estado para encontrar rápidamente lo que necesita.'
+            title: 'Filtros de Busqueda',
+            description: 'Filtre roles o permisos por nombre, descripcion o estado para encontrar rapidamente lo que necesita.'
           },
           side: 'top'
         },
@@ -33,7 +33,7 @@
           element: '#tablaRoles, table.table, .seguridad-table-card table',
           popover: {
             title: 'Directorio de Roles',
-            description: 'Tabla con todos los roles configurados: nombre, descripción, cantidad de usuarios asignados y estado.'
+            description: 'Tabla con todos los roles configurados: nombre, descripcion, cantidad de usuarios asignados y estado.'
           },
           side: 'top'
         },
@@ -49,7 +49,7 @@
           element: '.btn-danger, .btn-eliminar',
           popover: {
             title: 'Eliminar Rol',
-            description: 'Elimina el rol del sistema. Se solicita confirmación antes de proceder.'
+            description: 'Elimina el rol del sistema. Se solicita confirmacion antes de proceder.'
           },
           side: 'left'
         }

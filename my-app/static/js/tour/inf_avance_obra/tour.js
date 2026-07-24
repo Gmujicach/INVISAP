@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['inf_avance_obra'] = function() {
@@ -9,7 +9,7 @@
           element: '.card-header-custom, h1, h2',
           popover: {
             title: 'Contexto: Informes de Avance de Obra',
-            description: 'Registre informes mensuales o periódicos del avance físico de cada obra, con observaciones y soportes.'
+            description: 'Registre informes mensuales o periodicos del avance fisico de cada obra, con observaciones y soportes.'
           },
           side: 'bottom'
         },
@@ -33,7 +33,7 @@
           element: '.btn-info, .btn-ver',
           popover: {
             title: 'Ver Informe',
-            description: 'Consulte el detalle completo del informe: avance, fotografías, observaciones y firmas registradas.'
+            description: 'Consulte el detalle completo del informe: avance, fotografias, observaciones y firmas registradas.'
           },
           side: 'left'
         },
@@ -41,7 +41,7 @@
           element: '.btn-warning, .btn-editar',
           popover: {
             title: 'Editar Informe',
-            description: 'Corrija datos del informe: avance porcentual, observaciones o fotografías si es necesario.'
+            description: 'Corrija datos del informe: avance porcentual, observaciones o fotografias si es necesario.'
           },
           side: 'left'
         }

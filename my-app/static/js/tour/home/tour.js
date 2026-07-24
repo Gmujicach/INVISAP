@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['home'] = function() {
@@ -22,34 +22,34 @@
           side: 'bottom'
         },
         {
-          element: 'img[alt="Gráfico Tipos de Solicitud"]',
+          element: 'img[alt="Grafico Tipos de Solicitud"]',
           popover: {
-            title: 'Gráfico por Tipo de Solicitud',
-            description: 'Distribución visual de solicitudes según su tipo: Comunidad, Particular, Institución, entre otros.'
+            title: 'Grafico por Tipo de Solicitud',
+            description: 'Distribucion visual de solicitudes segun su tipo: Comunidad, Particular, Institucion, entre otros.'
           },
           side: 'bottom'
         },
         {
-          element: 'img[alt="Gráfico Estatus de Solicitud"]',
+          element: 'img[alt="Grafico Estatus de Solicitud"]',
           popover: {
-            title: 'Gráfico por Estatus',
+            title: 'Grafico por Estatus',
             description: 'Porcentaje de solicitudes en cada estatus: pendiente, en proceso o completada.'
           },
           side: 'bottom'
         },
         {
-          element: 'img[alt="Gráfico por Parroquia"]',
+          element: 'img[alt="Grafico por Parroquia"]',
           popover: {
-            title: 'Mapa Geográfico por Parroquia',
-            description: 'Visualice en qué parroquias del estado Lara se concentran las solicitudes para apoyar la toma de decisiones.'
+            title: 'Mapa Geografico por Parroquia',
+            description: 'Visualice en que parroquias del estado Lara se concentran las solicitudes para apoyar la toma de decisiones.'
           },
           side: 'bottom'
         },
         {
           element: 'table.table-hover.mb-0',
           popover: {
-            title: 'Módulo de Priorización Inteligente',
-            description: 'Solicitudes priorizadas automáticamente por IA, ordenadas de mayor a menor prioridad para una gestión eficiente.'
+            title: 'Modulo de Priorizacion Inteligente',
+            description: 'Solicitudes priorizadas automaticamente por IA, ordenadas de mayor a menor prioridad para una gestion eficiente.'
           },
           side: 'bottom'
         },
@@ -57,7 +57,7 @@
           element: 'table.table-hover.mb-0 tbody tr:first-child',
           popover: {
             title: 'Fila de Solicitud Priorizada',
-            description: 'se puede observar la solicitud priorizada junto con su información detallada.'
+            description: 'se puede observar la solicitud priorizada junto con su informacion detallada.'
           },
           side: 'right'
         }

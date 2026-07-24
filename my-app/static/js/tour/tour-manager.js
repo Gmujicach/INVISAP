@@ -48,11 +48,6 @@
     if (manager.isActive()) manager.stopTour();
     const module = moduleName || manager.getCurrentModule();
     
-    if (!manager.validateHash(module)) {
-      console.warn('[Tour] Acceso denegado por hash inválido.');
-      return null;
-    }
-    
     const registry = window.INVISAP_TOURS || {};
     const factory = registry[module] || registry['default'];
     if (typeof factory !== 'function') {
@@ -132,33 +127,9 @@
 
   manager.TOUR_STORAGE_KEY = 'invisap_tour_visto';
   manager.TOUR_RESET_KEY = 'invisap_tour_reset';
-  manager.TOUR_HASH_KEY = 'invisap_tour_hash';
 
   manager.validateHash = function(moduleName) {
-    try {
-      const expectedHash = '#' + moduleName;
-      const currentHash = window.location.hash;
-      
-      if (currentHash && currentHash !== expectedHash) {
-        const allowed = ['home', 'dashboard'];
-        if (!allowed.includes(moduleName)) {
-          console.warn('[Tour] Hash inválido para módulo:', moduleName, 'Hash actual:', currentHash);
-          return false;
-        }
-      }
-      
-      if (!currentHash && moduleName !== 'home' && moduleName !== 'default') {
-        const validWithoutHash = ['login', 'manual'];
-        if (!validWithoutHash.includes(moduleName)) {
-          console.warn('[Tour] Módulo requiere hash:', moduleName);
-          return false;
-        }
-      }
-      
-      return true;
-    } catch (e) {
-      return true;
-    }
+    return true;
   };
 
   manager.hasSeenTour = function() {
