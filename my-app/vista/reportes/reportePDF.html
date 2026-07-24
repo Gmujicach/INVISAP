@@ -12,29 +12,378 @@
         <p class="text-white-50 small mb-0 mt-1">Exporta información institucional consolidada por módulo o general para análisis gerencial.</p>
       </div>
       <div class="card-body mt-4 p-5">
-        <form action="{{ url_for('reporte_pdf_bp.generarReportePDF') }}" method="POST">
-          <div class="row justify-content-center">
-            <div class="col-md-12 text-center mb-4">
-              <button type="submit" class="btn btn-danger btn-lg px-5 shadow-sm fw-bold">
-                <i class="bi bi-file-pdf me-2"></i> GENERAR REPORTE
-              </button>
-            </div>
-
-            <div class="col-md-8 mb-3">
-              <label class="form-label fw-bold text-dark fs-5">Módulo del Reporte</label>
-              <select name="filtro_busqueda" class="form-select form-select-lg shadow-sm">
-                <option value="">-- Reporte general de todos los módulos --</option>
+        <form action="{{ url_for('reporte_pdf_bp.generarReportePDF') }}" method="POST" id="formReportePDF">
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-dark">Tipo de Reporte / Módulo</label>
+              <select name="modulo" id="moduloPDF" class="form-select form-select-lg shadow-sm" required>
+                <option value="general">-- Reporte general de todos los módulos --</option>
                 <option value="solicitudes">Solicitudes</option>
+                <option value="solicitantes">Solicitantes</option>
                 <option value="empleados">Personal / Empleados</option>
                 <option value="usuarios">Usuarios del Sistema</option>
                 <option value="contrataciones">Contrataciones</option>
                 <option value="obras">Obras</option>
                 <option value="publicaciones">Publicaciones</option>
               </select>
-              <div class="form-text text-muted mt-2">Seleccione el módulo para generar un reporte específico. Si selecciona la opción general se generará un consolidado del sistema.</div>
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+              <button type="submit" class="btn btn-danger btn-lg px-5 shadow-sm fw-bold w-100">
+                <i class="bi bi-file-pdf me-2"></i> GENERAR REPORTE
+              </button>
             </div>
           </div>
-          
+
+          <hr class="my-4">
+
+          <div id="filtrosComunes" class="filtro-section">
+            <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros Comunes</h6>
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Nombre / Razón Social / Responsable</label>
+                <input type="text" name="nombre_solicitante" class="form-control form-control-sm" placeholder="Buscar por nombre...">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Cédula</label>
+                <input type="text" name="cedula" class="form-control form-control-sm" placeholder="Ej: 12345678">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Teléfono</label>
+                <input type="text" name="telefono" class="form-control form-control-sm" placeholder="Ej: 0412-1234567">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Correo</label>
+                <input type="text" name="correo" class="form-control form-control-sm" placeholder="correo@dominio.com">
+              </div>
+            </div>
+            <div class="row g-3 mt-1">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Desde</label>
+                <input type="date" name="fecha_desde" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Hasta</label>
+                <input type="date" name="fecha_hasta" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Municipio</label>
+                <input type="text" name="municipio" class="form-control form-control-sm" placeholder="Ej: Iribarren">
+              </div>
+            </div>
+          </div>
+
+          <div id="filtrosSolicitudes" class="filtro-section" style="display:none;">
+            <hr class="my-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Solicitudes</h6>
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Nombre / Razón Social / Responsable</label>
+                <input type="text" name="nombre_solicitante" class="form-control form-control-sm" placeholder="Buscar por nombre...">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Cédula</label>
+                <input type="text" name="cedula" class="form-control form-control-sm" placeholder="Ej: 12345678">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Teléfono</label>
+                <input type="text" name="telefono" class="form-control form-control-sm" placeholder="Teléfono...">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Correo</label>
+                <input type="text" name="correo" class="form-control form-control-sm" placeholder="correo@dominio.com">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Tipo de Solicitud</label>
+                <select name="tipo_solicitud" class="form-select form-select-sm">
+                  <option value="">-- Todos --</option>
+                  <option value="Comunidad">Comunidad</option>
+                  <option value="Institucion">Institución</option>
+                  <option value="Particular">Particular</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Estatus</label>
+                <select name="estatus_solicitud" class="form-select form-select-sm">
+                  <option value="">-- Todos --</option>
+                  <option value="Pendiente">Pendiente</option>
+                  <option value="En Proceso">En Proceso</option>
+                  <option value="Completada">Completada</option>
+                  <option value="Procesada">Procesada</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Municipio</label>
+                <input type="text" name="municipio" class="form-control form-control-sm" placeholder="Ej: Iribarren">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Parroquia</label>
+                <input type="text" name="parroquia" class="form-control form-control-sm" placeholder="Parroquia...">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Sector</label>
+                <input type="text" name="sector" class="form-control form-control-sm" placeholder="Sector...">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Ámbito</label>
+                <input type="text" name="ambito" class="form-control form-control-sm" placeholder="Ámbito...">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Dirección</label>
+                <input type="text" name="direccion" class="form-control form-control-sm" placeholder="Dirección...">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Problemática</label>
+                <input type="text" name="problematica" class="form-control form-control-sm" placeholder="Problemática...">
+              </div>
+            </div>
+          </div>
+
+          <div id="filtrosSolicitantes" class="filtro-section" style="display:none;">
+            <hr class="my-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Solicitantes</h6>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Nombre</label>
+                <input type="text" name="nombre" class="form-control form-control-sm" placeholder="Buscar por nombre...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Apellido</label>
+                <input type="text" name="apellido" class="form-control form-control-sm" placeholder="Buscar por apellido...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Cédula</label>
+                <input type="text" name="cedula" class="form-control form-control-sm" placeholder="Cédula...">
+              </div>
+            </div>
+          </div>
+
+          <div id="filtrosEmpleados" class="filtro-section" style="display:none;">
+            <hr class="my-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Personal / Empleados</h6>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Nombre Empleado</label>
+                <input type="text" name="nombre_empleado" class="form-control form-control-sm" placeholder="Buscar por nombre...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Cargo</label>
+                <select name="cargo" class="form-select form-select-sm">
+                  <option value="">-- Todos --</option>
+                  <option value="Gerente">Gerente</option>
+                  <option value="Inspector">Inspector</option>
+                  <option value="Asistente">Asistente</option>
+                  <option value="Proyectista">Proyectista</option>
+                  <option value="Recepcionista">Recepcionista</option>
+                  <option value="Ingeniero">Ingeniero</option>
+                  <option value="Coordinador">Coordinador</option>
+                  <option value="Operador">Operador</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Gerencia Asignada</label>
+                <input type="text" name="gerencia_asignada" class="form-control form-control-sm" placeholder="Buscar gerencia...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Ingreso Desde</label>
+                <input type="date" name="fecha_ingreso_desde" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Ingreso Hasta</label>
+                <input type="date" name="fecha_ingreso_hasta" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Estado</label>
+                <select name="estado_empleado" class="form-select form-select-sm">
+                  <option value="">-- Todos --</option>
+                  <option value="1">Activo</option>
+                  <option value="0">Inactivo</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Cédula Persona</label>
+                <input type="text" name="cedula_persona" class="form-control form-control-sm" placeholder="Cédula...">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Dirección</label>
+                <input type="text" name="direccion" class="form-control form-control-sm" placeholder="Dirección...">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Parroquia</label>
+                <input type="text" name="parroquia" class="form-control form-control-sm" placeholder="Parroquia...">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold small">Municipio</label>
+                <input type="text" name="municipio" class="form-control form-control-sm" placeholder="Municipio...">
+              </div>
+            </div>
+          </div>
+
+          <div id="filtrosUsuarios" class="filtro-section" style="display:none;">
+            <hr class="my-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Usuarios del Sistema</h6>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Nombre</label>
+                <input type="text" name="nombre" class="form-control form-control-sm" placeholder="Buscar por nombre...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Cédula</label>
+                <input type="text" name="cedula_usuario" class="form-control form-control-sm" placeholder="Cédula usuario...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Rol</label>
+                <input type="text" name="rol" class="form-control form-control-sm" placeholder="Ej: Admin, Usuario">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Estado</label>
+                <select name="estado" class="form-select form-select-sm">
+                  <option value="">-- Todos --</option>
+                  <option value="1">Activo</option>
+                  <option value="0">Inactivo</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div id="filtrosContrataciones" class="filtro-section" style="display:none;">
+            <hr class="my-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Contrataciones</h6>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Empresa Ganadora</label>
+                <input type="text" name="empresa_ganadora" class="form-control form-control-sm" placeholder="Buscar empresa...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Número de Contrato</label>
+                <input type="text" name="numero_contrato" class="form-control form-control-sm" placeholder="N° contrato...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Tipo de Contrato</label>
+                <select name="tipo_contrato" class="form-select form-select-sm">
+                  <option value="">-- Todos --</option>
+                  <option value="Contrato de Obra">Contrato de Obra</option>
+                  <option value="Contrato de Servicio">Contrato de Servicio</option>
+                  <option value="Contrato de Bienes">Contrato de Bienes</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Modalidad</label>
+                <select name="modalidad" class="form-select form-select-sm">
+                  <option value="">-- Todos --</option>
+                  <option value="Concurso Abierto">Concurso Abierto</option>
+                  <option value="Concurso Cerrado">Concurso Cerrado</option>
+                  <option value="Consulta de Precios">Consulta de Precios</option>
+                  <option value="Contratación Directa">Contratación Directa</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Objeto</label>
+                <select name="objeto" class="form-select form-select-sm">
+                  <option value="">-- Todos --</option>
+                  <option value="Ejecución de Obras">Ejecución de Obras</option>
+                  <option value="Prestación de Servicios">Prestación de Servicios</option>
+                  <option value="Suministro de Bienes">Suministro de Bienes</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Registro Desde</label>
+                <input type="date" name="fecha_registro_desde" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Registro Hasta</label>
+                <input type="date" name="fecha_registro_hasta" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Inicio Procedimiento Desde</label>
+                <input type="date" name="fecha_inicio_procedimiento_desde" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Inicio Procedimiento Hasta</label>
+                <input type="date" name="fecha_inicio_procedimiento_hasta" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Adjudicación Desde</label>
+                <input type="date" name="fecha_adjudicacion_desde" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Adjudicación Hasta</label>
+                <input type="date" name="fecha_adjudicacion_hasta" class="form-control form-control-sm">
+              </div>
+            </div>
+          </div>
+
+          <div id="filtrosObras" class="filtro-section" style="display:none;">
+            <hr class="my-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Obras</h6>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Nombre de Obra</label>
+                <input type="text" name="titulo_obra" class="form-control form-control-sm" placeholder="Buscar por nombre...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Ubicación</label>
+                <input type="text" name="ubicacion_obra" class="form-control form-control-sm" placeholder="Buscar ubicación...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Contratista</label>
+                <input type="text" name="contratista" class="form-control form-control-sm" placeholder="Buscar contratista...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Inicio Desde</label>
+                <input type="date" name="fecha_inicio_desde" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Inicio Hasta</label>
+                <input type="date" name="fecha_inicio_hasta" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Fin Desde</label>
+                <input type="date" name="fecha_fin_desde" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Fin Hasta</label>
+                <input type="date" name="fecha_fin_hasta" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Semáforo Estado</label>
+                <input type="text" name="semaforo_estado" class="form-control form-control-sm" placeholder="Ej: Verde, Amarillo, Rojo">
+              </div>
+            </div>
+          </div>
+
+          <div id="filtrosPublicaciones" class="filtro-section" style="display:none;">
+            <hr class="my-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Publicaciones</h6>
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Título</label>
+                <input type="text" name="titulo_publicacion" class="form-control form-control-sm" placeholder="Buscar por título...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Autor / Responsable</label>
+                <input type="text" name="nombre_responsable" class="form-control form-control-sm" placeholder="Buscar por autor...">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Tipo de Publicación</label>
+                <select name="tipo_publicacion" class="form-select form-select-sm">
+                  <option value="">-- Todos --</option>
+                  <option value="General">General</option>
+                  <option value="Noticia">Noticia</option>
+                  <option value="Aviso">Aviso</option>
+                  <option value="Comunicado">Comunicado</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Publicación Desde</label>
+                <input type="date" name="fecha_publicacion_desde" class="form-control form-control-sm">
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-semibold small">Fecha Publicación Hasta</label>
+                <input type="date" name="fecha_publicacion_hasta" class="form-control form-control-sm">
+              </div>
+            </div>
+          </div>
+
           <div class="text-center mt-4">
             <hr class="w-75 mx-auto mb-4">
             <a href="{{ url_for('login_bp.inicio') }}" class="btn btn-secondary px-5">
@@ -70,8 +419,32 @@
           </table>
         </div>
       </div>
-      {% endif %}
     </div>
   </div>
 </div>
+{% endif %}
+{% endblock %}
+
+{% block customJS %}
+<script>
+(function() {
+  var moduloSelect = document.getElementById('moduloPDF');
+  if (moduloSelect) {
+    moduloSelect.addEventListener('change', function() {
+      var modulo = this.value;
+      document.querySelectorAll('.filtro-section').forEach(function(sec) {
+        sec.style.display = 'none';
+      });
+      document.getElementById('filtrosComunes').style.display = 'block';
+      if (modulo && modulo !== 'general') {
+        var section = document.getElementById('filtros' + modulo.charAt(0).toUpperCase() + modulo.slice(1));
+        if (section) section.style.display = 'block';
+      } else {
+        document.getElementById('filtrosComunes').style.display = 'block';
+      }
+    });
+    moduloSelect.dispatchEvent(new Event('change'));
+  }
+})();
+</script>
 {% endblock %}

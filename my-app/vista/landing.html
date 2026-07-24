@@ -17,10 +17,21 @@
   <!-- Iconos Boxicons locales (sin CDN) -->
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/boxicons.css') }}">
 
-  <!-- CSS propio de la Landing Page -->
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/landing.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dark-mode.css') }}">
 </head>
 <body>
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'dark') {
+          document.body.classList.add('dark-mode');
+          document.documentElement.setAttribute('data-bs-theme', 'dark');
+        }
+      } catch(e) {}
+    })();
+  </script>
 
   <!-- Skip Link para accesibilidad WCAG (navegación por teclado) -->
   <a href="#inicio" class="skip-link">Saltar al contenido principal</a>
@@ -48,6 +59,11 @@
           <li><a href="#servicios">Servicios</a></li>
           <li><a href="#contacto">Contacto</a></li>
           <li class="nav-login"><a href="{{ url_for('login_bp.loginCliente') }}">Iniciar Sesión</a></li>
+          <li>
+            <button type="button" id="landing-dark-toggle" class="btn btn-outline-light" style="border-radius: 50%; width: 38px; height: 38px; padding: 0; display: inline-flex; align-items: center; justify-content: center; margin-left: 8px;" aria-label="Cambiar modo oscuro" title="Modo Oscuro">
+              <i class="bx bx-moon" id="landing-theme-icon"></i>
+            </button>
+          </li>
         </ul>
       </div>
     </div>
@@ -356,47 +372,64 @@
   <script src="{{ url_for('static', filename='libs/jquery/jquery.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/js/bootstrap.js') }}"></script>
 
-  <script>
-    (function() {
-      var openBtn = document.getElementById('navbarDrawerOpen');
-      var closeBtn = document.getElementById('navbarDrawerClose');
-      var drawer = document.getElementById('navbarDrawer');
-      var backdrop = document.getElementById('navbarDrawerBackdrop');
-      var drawerLinks = document.querySelectorAll('.drawer-link');
+   <script>
+     (function() {
+       var openBtn = document.getElementById('navbarDrawerOpen');
+       var closeBtn = document.getElementById('navbarDrawerClose');
+       var drawer = document.getElementById('navbarDrawer');
+       var backdrop = document.getElementById('navbarDrawerBackdrop');
+       var drawerLinks = document.querySelectorAll('.drawer-link');
 
-      function openDrawer() {
-        drawer.classList.add('is-open');
-        backdrop.classList.add('is-open');
-        drawer.setAttribute('aria-hidden', 'false');
-        backdrop.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-        closeBtn.focus();
-      }
+       function openDrawer() {
+         drawer.classList.add('is-open');
+         backdrop.classList.add('is-open');
+         drawer.setAttribute('aria-hidden', 'false');
+         backdrop.setAttribute('aria-hidden', 'false');
+         document.body.style.overflow = 'hidden';
+         closeBtn.focus();
+       }
 
-      function closeDrawer() {
-        drawer.classList.remove('is-open');
-        backdrop.classList.remove('is-open');
-        drawer.setAttribute('aria-hidden', 'true');
-        backdrop.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-        openBtn.focus();
-      }
+       function closeDrawer() {
+         drawer.classList.remove('is-open');
+         backdrop.classList.remove('is-open');
+         drawer.setAttribute('aria-hidden', 'true');
+         backdrop.setAttribute('aria-hidden', 'true');
+         document.body.style.overflow = '';
+         openBtn.focus();
+       }
 
-      openBtn.addEventListener('click', openDrawer);
-      closeBtn.addEventListener('click', closeDrawer);
-      backdrop.addEventListener('click', closeDrawer);
+       openBtn.addEventListener('click', openDrawer);
+       closeBtn.addEventListener('click', closeDrawer);
+       backdrop.addEventListener('click', closeDrawer);
 
-      drawerLinks.forEach(function(link) {
-        link.addEventListener('click', closeDrawer);
-      });
+       drawerLinks.forEach(function(link) {
+         link.addEventListener('click', closeDrawer);
+       });
 
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
-          closeDrawer();
-        }
-      });
-    })();
-   </script>
+       document.addEventListener('keydown', function(e) {
+         if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+           closeDrawer();
+         }
+       });
+     })();
+
+     var landingToggle = document.getElementById('landing-dark-toggle');
+     var landingIcon = document.getElementById('landing-theme-icon');
+     if (landingToggle) {
+       var initDark = document.body.classList.contains('dark-mode');
+       if (landingIcon) {
+         landingIcon.className = initDark ? 'bx bx-sun' : 'bx bx-moon';
+       }
+       landingToggle.addEventListener('click', function() {
+         var isDark = document.body.classList.toggle('dark-mode');
+         document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+         localStorage.setItem('theme', isDark ? 'dark' : 'light');
+         if (landingIcon) {
+           landingIcon.className = isDark ? 'bx bx-sun' : 'bx bx-moon';
+         }
+       });
+     }
+    </script>
 
    <script src="{{ url_for('static', filename='js/driver/driver.js') }}"></script>
    <script src="{{ url_for('static', filename='js/tour/tour-manager.js') }}"></script>

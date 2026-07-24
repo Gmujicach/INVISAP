@@ -6,6 +6,23 @@
   manager.getCurrentModule = function() {
     const body = document.body;
     if (body && body.dataset.module) return body.dataset.module;
+    
+    const hash = window.location.hash.replace('#', '');
+    if (hash) {
+      const hashMap = {
+        'proyectos': 'proyectos', 'solicitudes': 'solicitudes', 'empleados': 'empleados',
+        'empresas': 'empresas', 'obras': 'obras', 'bitacora': 'bitacora',
+        'contratacion': 'contratacion', 'contrataciones': 'contratacion',
+        'evidencia': 'evidencia', 'evidencias': 'evidencia',
+        'inspeccion': 'inspeccion', 'inspecciones': 'inspeccion',
+        'inf_avance_obra': 'inf_avance_obra', 'publicaciones': 'publicaciones',
+        'perfil': 'perfil', 'reportes': 'reportes', 'respaldo': 'respaldo',
+        'seguridad': 'seguridad', 'usuarios': 'usuarios', 'ia': 'ia',
+        'login': 'login', 'manual': 'manual', 'home': 'home', 'dashboard': 'home'
+      };
+      if (hashMap[hash]) return hashMap[hash];
+    }
+    
     const path = window.location.pathname.replace(/\/+$/, '');
     if (!path || path === '') return 'home';
     const segment = path.split('/').pop();
@@ -28,8 +45,9 @@
   };
 
   manager.startTour = function(moduleName) {
-    manager.stopTour();
+    if (manager.isActive()) manager.stopTour();
     const module = moduleName || manager.getCurrentModule();
+    
     const registry = window.INVISAP_TOURS || {};
     const factory = registry[module] || registry['default'];
     if (typeof factory !== 'function') {
@@ -38,27 +56,45 @@
     }
     try {
       if (typeof window.driver === 'undefined' || typeof window.driver.js === 'undefined' || typeof window.driver.js.driver !== 'function') {
-        console.error('[Tour] Driver.js no se ha cargado correctamente de forma local.');
+        console.error('[Tour] Driver.js no se ha cargado correctamente.');
         return null;
       }
       const driverInstance = factory();
       if (!driverInstance || typeof driverInstance.drive !== 'function') {
-        console.error('[Tour] La factory no devolvió una instancia válida de Driver.js.');
+        console.error('[Tour] La factory no devolvió una instancia válida.');
         return null;
       }
-      driverInstance.drive();
       manager.activeInstance = driverInstance;
       manager.setActive(true);
+      
+      const validModules = ['proyectos', 'solicitudes', 'empleados', 'empresas', 'obras', 'bitacora',
+        'contratacion', 'evidencia', 'inspeccion', 'inf_avance_obra', 'publicaciones',
+        'perfil', 'reportes', 'respaldo', 'seguridad', 'usuarios', 'ia', 'login', 'manual'];
+      if (validModules.includes(module)) {
+        try {
+          if (!window.location.hash || window.location.hash !== '#' + module) {
+            window.location.hash = '#' + module;
+          }
+        } catch (e) {}
+      }
+      
+      driverInstance.drive();
       return driverInstance;
     } catch (error) {
       console.error('[Tour] Error al iniciar:', error);
+      manager.activeInstance = null;
+      manager.setActive(false);
       return null;
     }
   };
 
   manager.stopTour = function(markSeen) {
     if (manager.activeInstance && typeof manager.activeInstance.destroy === 'function') {
-      manager.activeInstance.destroy();
+      try {
+        manager.activeInstance.destroy();
+      } catch (e) {
+        // destroy can throw if already destroyed
+      }
     }
     manager.activeInstance = null;
     manager.setActive(false);
@@ -90,6 +126,11 @@
   };
 
   manager.TOUR_STORAGE_KEY = 'invisap_tour_visto';
+  manager.TOUR_RESET_KEY = 'invisap_tour_reset';
+
+  manager.validateHash = function(moduleName) {
+    return true;
+  };
 
   manager.hasSeenTour = function() {
     try { return localStorage.getItem(manager.TOUR_STORAGE_KEY) === 'true'; }
@@ -108,13 +149,47 @@
     if (manager.hasSeenTour()) return;
     const factory = (window.INVISAP_TOURS || {})[manager.getCurrentModule()] || (window.INVISAP_TOURS || {})['default'];
     if (typeof factory !== 'function') return;
-    setTimeout(function() { manager.startTour(); }, 600);
+    setTimeout(function() { manager.startTour(); }, 700);
+  };
+
+  manager.DRIVER_DEFAULTS = {
+    showProgress: true,
+    nextBtnText: 'Siguiente',
+    prevBtnText: 'Anterior',
+    doneBtnText: 'Terminar',
+    overlayColor: '#000000',
+    overlayOpacity: 0.65,
+    smoothScroll: true,
+    stagePadding: 16,
+    stageRadius: 10,
+    popoverOffset: 24,
+    disableActiveInteraction: false,
+    allowClose: true,
+    animate: true
+  };
+
+  manager.applyDriverDefaults = function() {
+    if (!window.driver || !window.driver.js || typeof window.driver.js.driver !== 'function') return;
+    const original = window.driver.js.driver;
+    window.driver.js.driver = function(opts) {
+      const merged = Object.assign({}, manager.DRIVER_DEFAULTS, opts || {});
+      if (opts && opts.popover) {
+        merged.popover = Object.assign({}, manager.DRIVER_DEFAULTS.popover, opts.popover);
+      }
+      return original(merged);
+    };
+  };
+
+  manager.isDarkMode = function() {
+    return document.body.classList.contains('dark-mode') ||
+           document.documentElement.getAttribute('data-theme') === 'theme-dark';
   };
 
   manager.init = function() {
     if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
+    manager.applyDriverDefaults();
     window.startModuleTour = function() { manager.startTour(); };
-    window.stopModuleTour = function() { manager.stopTour(); };
+    window.stopModuleTour = function() { manager.stopTour(true); };
     window.toggleModuleTour = function() { manager.toggleTour(); };
 
     document.body.addEventListener('click', function(event) {

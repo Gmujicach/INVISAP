@@ -894,3 +894,190 @@ main, header, section, footer {
     display: none;
   }
 }
+
+/* ============================================
+   MODO OSCURO - LANDING PAGE
+   ============================================ */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) {
+  background-color: #232333 !important;
+  color: #cfcde9 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .hero-section {
+  background: radial-gradient(circle at 20% 20%, #0f3d1e 0%, #0a2e18 55%, #14532d 100%);
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .hero-lead {
+  color: rgba(255,255,255,0.88) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .section-title,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) h1,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) h2,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) h3,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) h4,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) h5,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) h6 {
+  color: #ffffff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .text-muted {
+  color: #a2a3b7 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .card {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .card .card-body {
+  color: #cfcde9 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .feature-card,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .service-card {
+  background: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .feature-card .p-card,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .service-card .card-body {
+  color: #cfcde9 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .feature-card .h5,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .service-card h4 {
+  color: #ffffff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .py-section.bg-light {
+  background-color: #1e1e2d !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .bg-invilara-gold-light {
+  background-color: #3d320e !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .bg-invilara-gold-light .h5,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .bg-invilara-gold-light h3 {
+  color: #ffda6a !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .bg-invilara-gold-light .text-muted {
+  color: #a2a3b7 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) footer.bg-green {
+  background-color: #0a2e18 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .social-link {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  color: #cfcde9 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .social-link:hover {
+  background: rgba(255,255,255,0.12) !important;
+  color: #fff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .social-link i {
+  color: #ffda6a !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .list-contact li {
+  color: #cfcde9 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .contact-icon {
+  color: #4ade80 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .navbar-drawer {
+  background: #0a2e18 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .drawer-nav li a {
+  color: rgba(255,255,255,0.88) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .drawer-nav li a:hover {
+  color: #ffda6a !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .skip-link {
+  background: #ffc300 !important;
+  color: #000 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .text-green {
+  color: #4ade80 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .text-gold {
+  color: #ffda6a !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .hero-image {
+  border-color: rgba(255,255,255,0.1) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .hero-video-wrapper {
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03)) !important;
+  box-shadow: 0 24px 56px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .divider-custom {
+  background: linear-gradient(90deg, #4ade80, #ffda6a) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .section-intro {
+  color: #cfcde9 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .btn-invilara-gold {
+  background-color: #ffc300 !important;
+  border-color: #ffc300 !important;
+  color: #000 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .btn-invilara-gold:hover {
+  background-color: #e6b200 !important;
+  border-color: #e6b200 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .masonry-item {
+  background: #2b2c40 !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .masonry-item.skeleton {
+  background: #1e1e2d !important;
+  border-color: #3a3b53 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .skeleton::after {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .info-card {
+  background: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .info-card .card-footer {
+  border-top-color: #444564 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) footer .list-unstyled li i {
+  color: #ffda6a !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) footer h4 {
+  color: #ffffff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) footer .opacity-75 {
+  color: #a2a3b7 !important;
+}

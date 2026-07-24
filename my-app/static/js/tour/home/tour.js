@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['home'] = function() {
@@ -8,8 +8,8 @@
         {
           element: '.dashboard-card',
           popover: {
-            title: 'Tarjetas de Resumen',
-            description: 'Estas tarjetas muestran indicadores clave: total de solicitudes, pendientes, en proceso y completadas del sistema.'
+            title: 'Panel de Control (Dashboard)',
+            description: 'Vista general del sistema con indicadores clave: total de solicitudes, pendientes, en proceso y completadas.'
           },
           side: 'bottom'
         },
@@ -17,41 +17,49 @@
           element: '.col-md-3:last-child .dashboard-card',
           popover: {
             title: 'Solicitudes Completadas',
-            description: 'Aquí se visualiza la cantidad de solicitudes procesadas o completadas exitosamente.'
+            description: 'Indicador que muestra la cantidad de solicitudes procesadas exitosamente.'
           },
           side: 'bottom'
         },
         {
-          element: 'img[alt="Gráfico Tipos de Solicitud"]',
+          element: 'img[alt="Grafico Tipos de Solicitud"]',
           popover: {
-            title: 'Análisis por Tipo',
-            description: 'Gráfico que distribuye las solicitudes según su tipo (Comunidad, Particular, Institución, etc.).'
+            title: 'Grafico por Tipo de Solicitud',
+            description: 'Distribucion visual de solicitudes segun su tipo: Comunidad, Particular, Institucion, entre otros.'
           },
-          side: 'top'
+          side: 'bottom'
         },
         {
-          element: 'img[alt="Gráfico Estatus de Solicitud"]',
+          element: 'img[alt="Grafico Estatus de Solicitud"]',
           popover: {
-            title: 'Distribución por Estatus',
-            description: 'Visualice el porcentaje de solicitudes en cada estatus: pendiente, en proceso o completada.'
+            title: 'Grafico por Estatus',
+            description: 'Porcentaje de solicitudes en cada estatus: pendiente, en proceso o completada.'
           },
-          side: 'top'
+          side: 'bottom'
         },
         {
-          element: 'img[alt="Gráfico por Parroquia"]',
+          element: 'img[alt="Grafico por Parroquia"]',
           popover: {
-            title: 'Análisis por Parroquia',
-            description: 'Mapa de calor que agrupa las solicitudes por parroquia de Lara para apoyar la toma de decisiones.'
+            title: 'Mapa Geografico por Parroquia',
+            description: 'Visualice en que parroquias del estado Lara se concentran las solicitudes para apoyar la toma de decisiones.'
           },
-          side: 'top'
+          side: 'bottom'
         },
         {
-          element: 'table.table',
+          element: 'table.table-hover.mb-0',
           popover: {
-            title: 'Módulo de Priorización',
-            description: 'Tabla con las solicitudes priorizadas por la inteligencia artificial, ordenadas de mayor a menor prioridad.'
+            title: 'Modulo de Priorizacion Inteligente',
+            description: 'Solicitudes priorizadas automaticamente por IA, ordenadas de mayor a menor prioridad para una gestion eficiente.'
           },
-          side: 'top'
+          side: 'bottom'
+        },
+        {
+          element: 'table.table-hover.mb-0 tbody tr:first-child',
+          popover: {
+            title: 'Fila de Solicitud Priorizada',
+            description: 'se puede observar la solicitud priorizada junto con su informacion detallada.'
+          },
+          side: 'right'
         }
       ]
     });

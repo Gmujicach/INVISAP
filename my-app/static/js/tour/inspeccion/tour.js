@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['inspeccion'] = function() {
@@ -6,50 +6,50 @@
       showProgress: true,
       steps: [
         {
-          element: 'a.btn.btn-primary',
+          element: 'a.btn.btn-primary, .btn-registrar',
           popover: {
-            title: 'Nueva Inspección',
-            description: 'Desde el listado, acceda al formulario para registrar una inspección de obra.'
+            title: 'Contexto: Modulo de Inspecciones',
+            description: 'Registre inspecciones de obra en diferentes etapas: inicial, intermedia y final, con observaciones y evidencias.'
           },
           side: 'left'
         },
         {
-          element: '#tablaInspecciones',
+          element: '#tablaInspecciones, table.table',
           popover: {
             title: 'Registro de Inspecciones',
-            description: 'Tabla con las inspecciones: inspector, fecha, tipo, observaciones y acciones.'
+            description: 'Listado completo con inspector responsable, fecha de inspeccion, tipo, observaciones y acciones.'
           },
           side: 'top'
         },
         {
-          element: '#tablaInspecciones tbody tr:first-child .btn-outline-info',
+          element: '#tablaInspecciones tbody tr:first-child .btn-outline-info, .btn-info, .btn-ver',
           popover: {
-            title: 'Ver Detalle',
-            description: 'Consulte la información completa de la inspección.'
+            title: 'Ver Detalle de la Inspeccion',
+            description: 'Consulte la informacion completa de la inspeccion: tipo, observaciones del inspector y fecha programada.'
           },
           side: 'left'
         },
         {
-          element: '#tablaInspecciones tbody tr:first-child .btn-outline-warning',
+          element: '#tablaInspecciones tbody tr:first-child .btn-outline-warning, .btn-warning, .btn-editar',
           popover: {
-            title: 'Editar Inspección',
-            description: 'Modifique los datos de la inspección seleccionada.'
+            title: 'Editar Inspeccion',
+            description: 'Modifique la fecha, tipo de inspeccion u observaciones. Asegurese de guardar los cambios.'
           },
           side: 'left'
         },
         {
-          element: '#tablaInspecciones tbody tr:first-child .btn-outline-danger',
+          element: '#tablaInspecciones tbody tr:first-child .btn-outline-danger, .btn-danger, .btn-eliminar',
           popover: {
-            title: 'Eliminar Inspección',
-            description: 'Elimina la inspección tras confirmar la acción.'
+            title: 'Eliminar Inspeccion',
+            description: 'Elimina la inspeccion tras confirmar la accion. Ideal para corregir registros duplicados o erroneos.'
           },
           side: 'left'
         },
         {
-          element: '.badge-etapa-modern',
+          element: '.badge-etapa-modern, .badge',
           popover: {
-            title: 'Tipo de Inspección',
-            description: 'Inspección Inicial (antes), Intermedia (durante) o Final (después) según el avance de la obra.'
+            title: 'Tipos de Inspeccion',
+            description: 'Inspeccion Inicial (antes de la obra), Intermedia (durante el avance) o Final (al culminar la obra).'
           },
           side: 'left'
         }

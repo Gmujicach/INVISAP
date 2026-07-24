@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['bitacora'] = function() {
@@ -8,50 +8,50 @@
         {
           element: '.stat-card',
           popover: {
-            title: 'Tarjetas Estadísticas',
-            description: 'Resumen de creaciones, ediciones, eliminaciones y total de registros en la bitácora.'
+            title: 'Resumen de Actividad',
+            description: 'Tarjetas estadisticas con totales de creaciones, ediciones, eliminaciones y movimientos registrados en la bitacora.'
           },
           side: 'bottom'
         },
         {
-          element: '#total-registros',
+          element: '#total-registros, .badge, .counter',
           popover: {
-            title: 'Total Filtrado',
-            description: 'Cantidad de registros que coinciden con los filtros aplicados.'
+            title: 'Total de Registros Filtrados',
+            description: 'Cantidad de registros que coinciden con los criterios de filtro aplicados actualmente.'
           },
           side: 'bottom'
         },
         {
-          element: '#formFiltrosBitacora',
+          element: '#formFiltrosBitacora, .bitacora-filter-card, .card-body',
           popover: {
-            title: 'Filtros de Bitácora',
-            description: 'Filtre por usuario, módulo y acción para auditar las operaciones del sistema.'
+            title: 'Filtros de Auditoria',
+            description: 'Filtre por usuario especifico, modulo consultado y tipo de accion (crear, editar, eliminar, ver).'
           },
           side: 'bottom'
         },
         {
-          element: '#formFiltrosBitacora button[type="submit"]',
+          element: '#formFiltrosBitacora button[type="submit"], .btn-primary',
           popover: {
             title: 'Aplicar Filtro',
-            description: 'Ejecute la búsqueda con los criterios seleccionados.'
+            description: 'Ejecute la busqueda con los criterios seleccionados para refrescar la tabla de registros.'
           },
           side: 'left'
         },
         {
-          element: '#tabla-bitacora',
+          element: '#buscarBitacora, .form-control[type="search"], input[type="search"]',
           popover: {
-            title: 'Registro de Acciones',
-            description: 'Tabla con cada acción realizada: usuario, módulo, tipo de acción, fecha y hora de inicio de sesión.'
-          },
-          side: 'top'
-        },
-        {
-          element: '#buscarBitacora',
-          popover: {
-            title: 'Búsqueda Rápida',
-            description: 'Filtre los registros visibles escribiendo en este campo de búsqueda.'
+            title: 'Busqueda Rapida en la Tabla',
+            description: 'Filtre los registros visibles sin necesidad de recargar la pagina, escribiendo usuario, modulo o accion.'
           },
           side: 'bottom'
+        },
+        {
+          element: '#tabla-bitacora, table.table',
+          popover: {
+            title: 'Registro de Acciones del Sistema',
+            description: 'Tabla detallada con cada operacion: usuario responsable, modulo afectado, tipo de accion, fecha y hora exacta.'
+          },
+          side: 'top'
         }
       ]
     });

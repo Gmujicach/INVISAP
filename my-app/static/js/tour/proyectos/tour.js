@@ -6,50 +6,50 @@
       showProgress: true,
       steps: [
         {
-          element: '#contador-total',
+          element: '#contador-total, .badge, .counter',
           popover: {
-            title: 'Registros Totales',
-            description: 'Muestra la cantidad total de proyectos gestionados en el sistema.'
+            title: 'Contexto: Módulo de Proyectos',
+            description: 'Aquí gestiona todos los proyectos derivados de las solicitudes aprobadas del sistema.'
           },
           side: 'bottom'
         },
         {
-          element: 'button[data-bs-target="#modalRegistrarProyecto"]',
+          element: 'button[data-bs-target="#modalRegistrarProyecto"], .btn-primary, .btn-registrar',
           popover: {
-            title: 'Registrar Proyecto',
-            description: 'Abra el formulario para crear un nuevo proyecto, asociándolo a una solicitud pendiente si lo desea.'
+            title: 'Registrar Nuevo Proyecto',
+            description: 'Abra el formulario para crear un proyecto. Seleccione la solicitud aprobada, asigne proyectista, fechas y presupuesto estimado.'
           },
           side: 'left'
+        },
+        {
+          element: '#search, .form-control[type="search"], input[type="search"]',
+          popover: {
+            title: 'Búsqueda Rápida',
+            description: 'Filtre proyectos por código, solicitante, descripción o estatus en tiempo real.'
+          },
+          side: 'bottom'
         },
         {
           element: 'table.table',
           popover: {
-            title: 'Tabla de Proyectos',
-            description: 'Listado general de proyectos con su código, solicitante, descripción técnica, maquinaria y estatus de costo.'
+            title: 'Listado de Proyectos',
+            description: 'Tabla completa con código, solicitante, descripción técnica, maquinaria asignada, estatus de costo, fechas y acciones.'
           },
           side: 'top'
         },
         {
-          element: 'table.table thead th:nth-child(11)',
+          element: 'table.table thead th:nth-child(1), table.table thead th:first-child',
           popover: {
-            title: 'Acciones por Proyecto',
-            description: 'Desde aquí puede ver el detalle, editar o eliminar cada proyecto registrado.'
+            title: 'Código / Identificador',
+            description: 'Código único del proyecto para identificarlo rápidamente en todo el sistema.'
           },
-          side: 'left'
+          side: 'bottom'
         },
         {
-          element: 'table.table tbody tr:first-child .btn-outline-info',
+          element: 'table.table tbody tr:first-child .btn-outline-info, .btn-info, .btn-ver',
           popover: {
-            title: 'Ver Detalle',
-            description: 'Muestra el resumen completo del proyecto: fechas, maquinaria, proyectista y observaciones.'
-          },
-          side: 'left'
-        },
-        {
-          element: 'table.table tbody tr:first-child .btn-outline-danger',
-          popover: {
-            title: 'Eliminar Proyecto',
-            description: 'Elimina el proyecto previa confirmación. Use con precaución.'
+            title: 'Ver Detalle del Proyecto',
+            description: 'Consulte el resumen completo: fechas de inicio y fin, maquinaria asignada, proyectista responsable y observaciones.'
           },
           side: 'left'
         }

@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['inf_avance_obra'] = function() {
@@ -6,58 +6,42 @@
       showProgress: true,
       steps: [
         {
-          element: 'button[data-bs-target="#modalRegistrarInforme"]',
+          element: '.card-header-custom, h1, h2',
           popover: {
-            title: 'Registrar Informe',
-            description: 'Abra el formulario para crear un nuevo informe de avance de obra.'
+            title: 'Contexto: Informes de Avance de Obra',
+            description: 'Registre informes mensuales o periodicos del avance fisico de cada obra, con observaciones y soportes.'
+          },
+          side: 'bottom'
+        },
+        {
+          element: 'a[href*="registrar"], button[data-bs-target*="modal"], .btn-primary, .btn-registrar',
+          popover: {
+            title: 'Registrar Nuevo Informe',
+            description: 'Abra el formulario para crear un informe de avance: seleccione la obra, ingrese porcentaje de avance y agregue observaciones.'
           },
           side: 'left'
         },
         {
-          element: '.card-estadistica.bg-light',
+          element: '#tablaInformes, table.table',
           popover: {
-            title: 'Total de Informes',
-            description: 'Indicador con la cantidad total de informes registrados en el sistema.'
-          },
-          side: 'bottom'
-        },
-        {
-          element: '.card-estadistica.card-aprobados',
-          popover: {
-            title: 'Aprobados',
-            description: 'Cantidad de informes con estado Aprobado.'
-          },
-          side: 'bottom'
-        },
-        {
-          element: '.card-estadistica.bg-warning',
-          popover: {
-            title: 'En Ejecución',
-            description: 'Informes correspondientes a obras actualmente en ejecución.'
-          },
-          side: 'bottom'
-        },
-        {
-          element: '#tablaInformes',
-          popover: {
-            title: 'Tabla de Informes',
-            description: 'Listado con tipo, estado, población beneficiada, porcentaje de avance y responsable.'
+            title: 'Registro de Informes',
+            description: 'Listado de informes registrados: obra, fecha, porcentaje de avance, inspector y observaciones.'
           },
           side: 'top'
         },
         {
-          element: '#tablaInformes tbody tr:first-child .btn-ver-informe',
+          element: '.btn-info, .btn-ver',
           popover: {
-            title: 'Ver Detalle',
-            description: 'Abre el resumen completo del informe, incluyendo evidencias por etapa.'
+            title: 'Ver Informe',
+            description: 'Consulte el detalle completo del informe: avance, fotografias, observaciones y firmas registradas.'
           },
           side: 'left'
         },
         {
-          element: '#tablaInformes tbody tr:first-child .btn-eliminar-informe',
+          element: '.btn-warning, .btn-editar',
           popover: {
-            title: 'Eliminar Informe',
-            description: 'Borrado lógico del informe tras confirmación.'
+            title: 'Editar Informe',
+            description: 'Corrija datos del informe: avance porcentual, observaciones o fotografias si es necesario.'
           },
           side: 'left'
         }

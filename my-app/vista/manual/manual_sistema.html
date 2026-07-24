@@ -69,6 +69,31 @@
       padding: 30px;
     }
     .manual-fallback a { color: #087A24; font-weight: 700; }
+
+    /* Dark mode para Manual */
+    body.dark-mode {
+      background: #232333 !important;
+    }
+    body.dark-mode .manual-toolbar {
+      background: #0a2e18 !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,.45) !important;
+    }
+    body.dark-mode .manual-frame {
+      background: #1e1e2d !important;
+    }
+    body.dark-mode .manual-actions a,
+    body.dark-mode .manual-actions button {
+      background: #3d320e !important;
+      color: #ffda6a !important;
+    }
+    body.dark-mode .manual-actions a.secondary,
+    body.dark-mode .manual-actions button.secondary {
+      background: #2b2c40 !important;
+      color: #4ade80 !important;
+    }
+    body.dark-mode .manual-fallback a {
+      color: #4ade80 !important;
+    }
   </style>
 </head>
 <body>
@@ -102,6 +127,28 @@
          <a href="{{ pdf_url }}" target="_blank">Abre el Manual del Sistema en PDF</a>.</p>
     </div>
   </noscript>
-<script src="{{ url_for('static', filename='js/tour/manual/tour.js') }}"></script>
+  <script>
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+  </script>
+  <button type="button" id="manual-dark-toggle" style="position: fixed; top: 10px; right: 10px; z-index: 1050; border-radius: 50%; width: 36px; height: 36px; padding: 0; display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; cursor: pointer;" aria-label="Cambiar modo oscuro" title="Modo Oscuro">
+    <i class="bi bi-moon" id="manual-theme-icon"></i>
+  </button>
+  <script>
+    var manualToggle = document.getElementById('manual-dark-toggle');
+    var manualIcon = document.getElementById('manual-theme-icon');
+    if (manualToggle) {
+      var initDark = document.body.classList.contains('dark-mode');
+      if (manualIcon) manualIcon.className = initDark ? 'bi bi-sun' : 'bi bi-moon';
+      manualToggle.addEventListener('click', function() {
+        var isDark = document.body.classList.toggle('dark-mode');
+        document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        if (manualIcon) manualIcon.className = isDark ? 'bi bi-sun' : 'bi bi-moon';
+      });
+    }
+  </script>
+  <script src="{{ url_for('static', filename='js/tour/manual/tour.js') }}"></script>
 </body>
 </html>

@@ -1092,3 +1092,27 @@ body.dark-mode .alert-info {
     filter: invert(1) grayscale(100%) brightness(200%) drop-shadow(0 0 3px rgba(255,255,255,0.6));
     opacity: 1;
 }
+
+/* ========== ELEMENTOS FALTANTES EN MODO OSCURO ========== */
+body.dark-mode .evidencia-preview-item {
+    background: #2b2c40 !important;
+    border-color: #444564 !important;
+}
+
+body.dark-mode .evidencia-preview-item .remove-btn {
+    border-color: #2b2c40 !important;
+}
+
+body.dark-mode .modal-evidencia-item img {
+    background-color: #2b2c40 !important;
+}
+
+body.dark-mode .inspector-card:hover {
+    background-color: #2b2c40 !important;
+    border-color: #444564 !important;
+}
+
+body.dark-mode .inspector-card.selected {
+    background-color: #1a3a2a !important;
+    border-color: #4ade80 !important;
+}

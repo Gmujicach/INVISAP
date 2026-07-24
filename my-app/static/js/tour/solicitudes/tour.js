@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['solicitudes'] = function() {
@@ -6,58 +6,50 @@
       showProgress: true,
       steps: [
         {
-          element: 'button[data-bs-target="#modalCrearSolicitud"]',
+          element: 'button[data-bs-target="#modalCrearSolicitud"], .btn-primary, .btn-registrar',
           popover: {
-            title: 'Nueva Solicitud',
-            description: 'Abra el formulario para registrar una nueva solicitud (Comunidad, Institución o Particular).'
+            title: 'Contexto y Nueva Solicitud',
+            description: 'Las solicitudes son el punto de entrada del sistema. Registre aqui nuevas peticiones: Comunidad, Institucion o Particular.'
           },
           side: 'left'
         },
         {
-          element: '#widget-pendientes',
+          element: '#widget-pendientes, .stat-card, .counter',
           popover: {
             title: 'Solicitudes Pendientes',
-            description: 'Indicador con la cantidad de solicitudes que aún no han sido atendidas.'
+            description: 'Indicador en tiempo real de las solicitudes que aun no han sido atendidas por el equipo.'
           },
           side: 'bottom'
         },
         {
-          element: '#widget-en-proceso',
+          element: '#widget-en-proceso, .stat-card, .counter',
           popover: {
-            title: 'En Proceso',
-            description: 'Muestra las solicitudes que ya fueron asociadas a un proyecto y se encuentran en ejecución.'
+            title: 'Solicitudes en Proceso',
+            description: 'Muestra las solicitudes que ya fueron asociadas a un proyecto y se encuentran en ejecucion.'
           },
           side: 'bottom'
         },
         {
-          element: '#search',
+          element: '#search, .form-control[type="search"], input[type="search"]',
           popover: {
-            title: 'Búsqueda Rápida',
-            description: 'Filtre el registro completo de solicitudes escribiendo solicitante, tipo o problemática.'
+            title: 'Busqueda Rapida',
+            description: 'Filtre por solicitante, tipo de solicitud, problematica o estatus para localizar registros rapidamente.'
           },
           side: 'bottom'
         },
         {
-          element: '#tbl_solicitudes',
+          element: '#tbl_solicitudes, table.table',
           popover: {
-            title: 'Registro Completo',
-            description: 'Tabla con todas las solicitudes, su estatus y las acciones disponibles para cada una.'
+            title: 'Registro Completo de Solicitudes',
+            description: 'Listado general con tipo, solicitante, parroquia, problematica, estatus y acciones disponibles.'
           },
           side: 'top'
         },
         {
-          element: '#tbl_solicitudes tbody tr:first-child .btn-info',
+          element: '#tbl_solicitudes tbody tr:first-child .btn-info, .btn-info, .btn-ver',
           popover: {
-            title: 'Ver Detalles',
-            description: 'Consulte la información completa de la solicitud seleccionada.'
-          },
-          side: 'left'
-        },
-        {
-          element: '#tbl_solicitudes tbody tr:first-child .btn-warning',
-          popover: {
-            title: 'Editar Solicitud',
-            description: 'Modifique el estatus u observaciones de la solicitud de forma rápida.'
+            title: 'Ver Detalle de la Solicitud',
+            description: 'Consulte toda la informacion: datos del solicitante, descripcion del problema y seguimiento.'
           },
           side: 'left'
         }

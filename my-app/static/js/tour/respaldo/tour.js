@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['respaldo'] = function() {
@@ -6,52 +6,28 @@
       showProgress: true,
       steps: [
         {
-          element: 'button[data-bs-target="#modalExportarRespaldo"]',
+          element: 'h1, h2, .card-header-custom',
           popover: {
-            title: 'Generar Respaldo',
-            description: 'Cree un archivo .sql completo de la base de datos con una descripción opcional.'
+            title: 'Administracion de Respaldos',
+            description: 'Gestione copias de seguridad de la base de datos y descargue archivos SQL para respaldo externo.'
           },
-          side: 'left'
+          side: 'bottom'
         },
         {
-          element: 'button[data-bs-target="#modalImportarRespaldo"]',
+          element: '.card-respaldo, .card-body',
           popover: {
-            title: 'Restaurar Respaldo',
-            description: 'Importe un archivo .sql válido para restaurar la base de datos. ¡Cuidado, sobrescribe los datos!'
-          },
-          side: 'left'
-        },
-        {
-          element: '#tablaRespaldos',
-          popover: {
-            title: 'Respaldos Registrados',
-            description: 'Tabla con los archivos de respaldo: nombre, fecha, tamaño y descripción.'
+            title: 'Respaldos Disponibles',
+            description: 'Listado de respaldos generados con fecha, tamano y opciones de descarga.'
           },
           side: 'top'
         },
         {
-          element: '#tablaRespaldos tbody tr:first-child .btn-outline-success',
+          element: 'a[href*="download"], .btn-download, .btn-descargar',
           popover: {
             title: 'Descargar Respaldo',
-            description: 'Descargue el archivo .sql del respaldo seleccionado.'
+            description: 'Descargue el archivo .sql de respaldo a su equipo local para almacenamiento seguro.'
           },
           side: 'left'
-        },
-        {
-          element: '#tablaRespaldos tbody tr:first-child .btn-eliminar-respaldo',
-          popover: {
-            title: 'Eliminar Respaldo',
-            description: 'Elimina el respaldo y su archivo físico previa confirmación.'
-          },
-          side: 'left'
-        },
-        {
-          element: '#contadorRespaldos',
-          popover: {
-            title: 'Total de Respaldos',
-            description: 'Cantidad total de respaldos disponibles en el sistema.'
-          },
-          side: 'bottom'
         }
       ]
     });

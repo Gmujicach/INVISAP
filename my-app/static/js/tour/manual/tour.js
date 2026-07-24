@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['manual'] = function() {
@@ -6,44 +6,28 @@
       showProgress: true,
       steps: [
         {
-          element: '.manual-toolbar .brand',
+          element: '.card-header-custom, h1, h2',
           popover: {
-            title: 'Manual del Sistema',
-            description: 'Barra superior con el título del manual interactivo de INVILARA.'
+            title: 'Manual del Sistema INVILARA',
+            description: 'Documentacion oficial con guias visuales paso a paso para dominar cada modulo del sistema.'
           },
           side: 'bottom'
         },
         {
-          element: '.manual-actions a[download]',
+          element: '.card-body, .manual-container, #manual-container',
           popover: {
-            title: 'Descargar',
-            description: 'Descargue el manual completo en formato PDF a su equipo.'
-          },
-          side: 'bottom'
-        },
-        {
-          element: '.manual-actions button[onclick*="print"]',
-          popover: {
-            title: 'Imprimir',
-            description: 'Envíe el manual a impresión desde el navegador.'
-          },
-          side: 'bottom'
-        },
-        {
-          element: '.manual-actions button[onclick*="close"]',
-          popover: {
-            title: 'Cerrar',
-            description: 'Cierre la ventana del manual cuando termine de consultarlo.'
-          },
-          side: 'bottom'
-        },
-        {
-          element: '.manual-frame',
-          popover: {
-            title: 'Visor del Manual',
-            description: 'Aquí se muestra el documento PDF embebido para su lectura.'
+            title: 'Contenido del Manual',
+            description: 'Explore las secciones organizadas por modulo. Cada guia incluye capturas de pantalla y procedimientos detallados.'
           },
           side: 'top'
+        },
+        {
+          element: 'a[href*="pdf"], .btn-pdf, .btn-download',
+          popover: {
+            title: 'Descargar Manual en PDF',
+            description: 'Descargue el manual completo en formato PDF para consultas offline o compartir con su equipo.'
+          },
+          side: 'left'
         }
       ]
     });

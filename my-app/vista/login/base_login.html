@@ -63,14 +63,26 @@
     <script src="{{ url_for('static', filename='js/config.js') }}"></script>
   </head>
 
-  <body>
+   <body class="dark-mode-available">
     <div id="loader-out">
       <div id="loader-container">
         <p id="loading-text">Cargando</p>
       </div>
     </div>
 
+    <script>
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+      }
+    </script>
+
     {% include 'includes/messages.html' %}
+    
+    <!-- Theme Toggle -->
+    <button type="button" id="login-dark-toggle" class="btn btn-outline-secondary" style="position: fixed; top: 14px; right: 14px; z-index: 1050; border-radius: 50%; width: 40px; height: 40px; padding: 0; display: inline-flex; align-items: center; justify-content: center;" aria-label="Cambiar modo oscuro" title="Modo Oscuro">
+      <i class="bx bx-moon" id="login-theme-icon"></i>
+    </button>
     
     <!--cuerpo-->
     {% block body %}

@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
   if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
 
   window.INVISAP_TOURS['seguridad'] = function() {
@@ -6,58 +6,50 @@
       showProgress: true,
       steps: [
         {
-          element: '#seguridadTabs #tab-roles',
+          element: '.seguridad-header, h1, h2',
           popover: {
-            title: 'Pestaña Roles',
-            description: 'Gestione los roles del sistema y su información asociada.'
+            title: 'Gestion de Roles y Permisos',
+            description: 'Modulo de seguridad para administrar roles, permisos de acceso y configurar que puede hacer cada usuario en el sistema.'
           },
           side: 'bottom'
         },
         {
-          element: '#seguridadTabs #tab-modulos',
+          element: '.seguridad-filter-card, #formFiltrosSeguridad, .card-body',
           popover: {
-            title: 'Pestaña Módulos',
-            description: 'Administre los módulos disponibles y su configuración de menú.'
-          },
-          side: 'bottom'
-        },
-        {
-          element: '#seguridadTabs #tab-permisos',
-          popover: {
-            title: 'Asignar Permisos',
-            description: 'Configure los permisos (Ver, Crear, Editar, Eliminar) por rol y módulo.'
-          },
-          side: 'bottom'
-        },
-        {
-          element: '#tablaRoles',
-          popover: {
-            title: 'Tabla de Roles',
-            description: 'Listado de roles con su ID, nombre, descripción y estado.'
+            title: 'Filtros de Busqueda',
+            description: 'Filtre roles o permisos por nombre, descripcion o estado para encontrar rapidamente lo que necesita.'
           },
           side: 'top'
         },
         {
-          element: '#selectRol',
+          element: 'button[data-bs-target*="modal"], .btn-primary, .btn-registrar',
           popover: {
-            title: 'Selector de Rol',
-            description: 'Elija un rol para visualizar y editar sus permisos en la tabla.'
+            title: 'Registrar Nuevo Rol',
+            description: 'Abra el formulario para crear un nuevo rol de usuario dentro del sistema.'
           },
-          side: 'bottom'
+          side: 'left'
         },
         {
-          element: '#tablaPermisos',
+          element: '#tablaRoles, table.table, .seguridad-table-card table',
           popover: {
-            title: 'Matriz de Permisos',
-            description: 'Marque o desmarque las casillas para definir el acceso de cada módulo por rol.'
+            title: 'Directorio de Roles',
+            description: 'Tabla con todos los roles configurados: nombre, descripcion, cantidad de usuarios asignados y estado.'
           },
           side: 'top'
         },
         {
-          element: '#btnGuardarPermisos',
+          element: '.btn-warning, .btn-editar',
           popover: {
-            title: 'Guardar Permisos',
-            description: 'Persiste los cambios de permisos realizados para el rol seleccionado.'
+            title: 'Editar Rol',
+            description: 'Modifique los permisos asociados a un rol. Los cambios se aplican inmediatamente a todos los usuarios con ese rol.'
+          },
+          side: 'left'
+        },
+        {
+          element: '.btn-danger, .btn-eliminar',
+          popover: {
+            title: 'Eliminar Rol',
+            description: 'Elimina el rol del sistema. Se solicita confirmacion antes de proceder.'
           },
           side: 'left'
         }

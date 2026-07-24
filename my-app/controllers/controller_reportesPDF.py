@@ -26,6 +26,7 @@ estilo_celda = ParagraphStyle(
     wordWrap='CJK'
 )
 
+
 def header_footer(canvas, doc):
     canvas.saveState()
     canvas.setFont('Helvetica-Bold', 16)
@@ -37,6 +38,7 @@ def header_footer(canvas, doc):
     canvas.setFont('Helvetica-Oblique', 8)
     canvas.drawCentredString(doc.pagesize[0] / 2, doc.bottomMargin - 20, f'Página {canvas.getPageNumber()}')
     canvas.restoreState()
+
 
 def construir_modulos_config():
     return [
@@ -92,11 +94,12 @@ def construir_modulos_config():
             'id': 'publicaciones',
             'label': 'PUBLICACIONES',
             'keywords': ['publicaciones', 'publicacion', 'noticias', 'avisos'],
-            'fetch': lambda: modelo_reporte.obtener_publicaciones_reporte(),
+            'fetch': lambda filt=None: modelo_reporte.obtener_publicaciones_reporte(filt),
             'headers': ['Título', 'Autor', 'Fecha', 'Tipo'],
             'fields': ['titulo_publicacion', 'autor_publicacion', 'fecha_formateada', 'tipo_publicacion']
         }
     ]
+
 
 def obtener_modulos_por_filtro(filtro):
     modulos_config = construir_modulos_config()
@@ -108,17 +111,101 @@ def obtener_modulos_por_filtro(filtro):
             return [mod]
     return []
 
+
+def _colectar_filtros_form(modulo='general'):
+    campos_por_modulo = {
+        'solicitudes': [
+            'tipo_solicitud', 'estatus_solicitud', 'problematica', 'cedula', 'nombre_solicitante',
+            'fecha_desde', 'fecha_hasta', 'municipio', 'parroquia', 'direccion', 'telefono', 'correo',
+            'sector', 'ambito',
+        ],
+        'empleados': [
+            'nombre_empleado', 'cargo', 'fecha_ingreso_desde', 'fecha_ingreso_hasta', 'estado_empleado',
+            'cedula_persona', 'telefono', 'correo', 'direccion', 'parroquia', 'municipio', 'gerencia_asignada',
+        ],
+        'usuarios': [
+            'nombre', 'cedula_usuario', 'correo', 'rol', 'estado',
+        ],
+        'contrataciones': [
+            'empresa_ganadora', 'tipo_contrato', 'modalidad', 'objeto',
+            'fecha_registro_desde', 'fecha_registro_hasta', 'fecha_inicio_procedimiento_desde',
+            'fecha_inicio_procedimiento_hasta', 'fecha_adjudicacion_desde', 'fecha_adjudicacion_hasta',
+            'numero_contrato',
+        ],
+        'obras': [
+            'titulo_obra', 'ubicacion_obra', 'fecha_inicio_desde', 'fecha_inicio_hasta',
+            'fecha_fin_desde', 'fecha_fin_hasta', 'semaforo_estado', 'contratista',
+        ],
+        'publicaciones': [
+            'titulo_publicacion', 'nombre_responsable', 'tipo_publicacion',
+            'fecha_publicacion_desde', 'fecha_publicacion_hasta',
+        ],
+        'solicitantes': [
+            'nombre', 'apellido', 'cedula',
+        ],
+        'general': [
+            'nombre_solicitante', 'cedula', 'telefono', 'correo',
+            'fecha_desde', 'fecha_hasta', 'municipio', 'direccion',
+        ],
+    }
+    campos = campos_por_modulo.get(modulo, campos_por_modulo['general'])
+    filtros = {}
+    for campo in campos:
+        val = request.form.get(campo, '').strip()
+        if val:
+            filtros[campo] = val
+    return filtros
+
+
+def _limpiar_filtros_por_modulo(filtros, modulo_id):
+    campos_validos = {
+        'solicitudes': {
+            'tipo_solicitud', 'estatus_solicitud', 'problematica', 'cedula', 'nombre_solicitante',
+            'fecha_desde', 'fecha_hasta', 'municipio', 'parroquia', 'direccion', 'telefono', 'correo',
+            'sector', 'ambito',
+        },
+        'empleados': {
+            'nombre_empleado', 'cargo', 'fecha_ingreso_desde', 'fecha_ingreso_hasta', 'estado_empleado',
+            'cedula_persona', 'telefono', 'correo', 'direccion', 'parroquia', 'municipio', 'gerencia_asignada',
+        },
+        'usuarios': {'nombre', 'cedula_usuario', 'correo', 'rol', 'estado'},
+        'contrataciones': {
+            'empresa_ganadora', 'tipo_contrato', 'modalidad', 'objeto',
+            'fecha_registro_desde', 'fecha_registro_hasta', 'fecha_inicio_procedimiento_desde',
+            'fecha_inicio_procedimiento_hasta', 'fecha_adjudicacion_desde', 'fecha_adjudicacion_hasta',
+            'numero_contrato',
+        },
+        'obras': {
+            'titulo_obra', 'ubicacion_obra', 'fecha_inicio_desde', 'fecha_inicio_hasta',
+            'fecha_fin_desde', 'fecha_fin_hasta', 'semaforo_estado', 'contratista',
+        },
+        'publicaciones': {
+            'titulo_publicacion', 'nombre_responsable', 'tipo_publicacion',
+            'fecha_publicacion_desde', 'fecha_publicacion_hasta',
+        },
+        'solicitantes': {'nombre', 'apellido', 'cedula'},
+    }
+    validos = campos_validos.get(modulo_id, set())
+    return {k: v for k, v in filtros.items() if k in validos}
+
+
 @reporte_pdf_bp.route('/reporte-pdf', methods=['GET', 'POST'])
 def generarReportePDF():
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
 
-    filtro = None
+    modulo = None
+    filtros = None
     if request.method == 'POST':
-        filtro = request.form.get('filtro_busqueda', '').strip().lower()
+        modulo = request.form.get('modulo', '').strip().lower()
+        filtros = _colectar_filtros_form(modulo)
 
-    modulos_a_procesar = obtener_modulos_por_filtro(filtro if filtro else '')
+    modulos_config = construir_modulos_config()
+    if modulo and modulo != 'general':
+        modulos_a_procesar = [m for m in modulos_config if m['id'] == modulo]
+    else:
+        modulos_a_procesar = modulos_config
 
     if not modulos_a_procesar:
         flash('No se encontró ningún módulo relacionado con el criterio ingresado.', 'info')
@@ -130,7 +217,12 @@ def generarReportePDF():
     tamanio_pagina = landscape(letter) if es_contrataciones else letter
 
     for mod in modulos_a_procesar:
-        data = mod.get('data_override') or mod['fetch']()
+        mod_filtros = _limpiar_filtros_por_modulo(filtros, mod['id'])
+        fetch_fn = mod['fetch']
+        if 'publicaciones' in str(fetch_fn):
+            data = fetch_fn(mod_filtros if mod_filtros else None)
+        else:
+            data = fetch_fn(mod_filtros if mod_filtros else None)
         if not data:
             continue
         elements.append(Paragraph(f'<b>SECCIÓN: {mod["label"]}</b>', styles['Heading2']))

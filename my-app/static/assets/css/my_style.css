@@ -236,6 +236,12 @@ tbody tr:hover {
   background-color: #f3efef !important;
 }
 
+body.dark-mode #search {
+  background-color: #232333 !important;
+  color: #cfcde9 !important;
+  border-color: #444564 !important;
+}
+
 /* Sidebar Dark Mode Hover */
 body.dark-mode .menu-item > .menu-link:hover,
 body.dark-mode .menu-item:hover > .menu-link {
@@ -1272,5 +1278,39 @@ body.dark-mode .password-toggle-btn[style*="background-color: #fff"],
 body.dark-mode .input-group-text[style*="background-color: #fff"] {
   background-color: #2b2c40 !important;
   border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+
+/* Legacy classes dark mode */
+body.dark-mode .bi-arrow-left-circle:hover {
+  color: #4ade80 !important;
+}
+
+body.dark-mode .btnMovil {
+  background-color: #2b2c40 !important;
+  color: #cfcde9 !important;
+}
+
+body.dark-mode .bx-menu {
+  color: #fff !important;
+}
+
+body.dark-mode tbody tr {
+  border-bottom-color: #444564 !important;
+}
+
+body.dark-mode .colorTheadTrTh {
+  color: #cfcde9 !important;
+}
+
+body.dark-mode .bi-x {
+  color: #cfcde9 !important;
+}
+
+body.dark-mode .difference {
+  color: #cfcde9 !important;
+}
+
+body.dark-mode .noLeido {
   color: #cfcde9 !important;
 }
