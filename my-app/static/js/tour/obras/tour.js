@@ -6,10 +6,10 @@
       showProgress: true,
       steps: [
         {
-          element: 'button[data-bs-target="#modalNuevaObra"]',
+          element: 'button[data-bs-target="#modalNuevaObra"], .btn-primary, .btn-registrar',
           popover: {
-            title: 'Registrar Obra',
-            description: 'Abra el formulario para crear una nueva obra asociada a un proyecto, contratación y semáforo.'
+            title: 'Contexto: Módulo de Obras',
+            description: 'Registre y gestione las obras físicas derivadas de proyectos aprobados, con control de avance y estatus.'
           },
           side: 'left'
         },
@@ -17,7 +17,7 @@
           element: 'table.table',
           popover: {
             title: 'Gestión de Obras',
-            description: 'Listado de obras con su título, ubicación, fechas, porcentaje de avance y semáforo de estatus.'
+            description: 'Listado de obras con título, ubicación, fechas de inicio y fin, porcentaje de avance y semáforo de estatus.'
           },
           side: 'top'
         },
@@ -25,39 +25,31 @@
           element: 'table.table thead th:nth-child(5)',
           popover: {
             title: 'Avance (%)',
-            description: 'Porcentaje de ejecución física de cada obra registrada.'
+            description: 'Porcentaje de ejecución física registrado para cada obra. Permite monitorear el cumplimiento de metas.'
           },
           side: 'bottom'
         },
         {
           element: 'table.table thead th:nth-child(6)',
           popover: {
-            title: 'Semáforo',
-            description: 'Indicador de color (Verde, Amarillo o Rojo) que refleja la criticidad de la obra.'
+            title: 'Semáforo de Estatus',
+            description: 'Indicador visual: Verde (avance normal), Amarillo (atención) o Rojo (crítico/atrasado).'
           },
           side: 'bottom'
         },
         {
-          element: 'table.table tbody tr:first-child .btn-outline-info',
+          element: 'table.table tbody tr:first-child .btn-outline-info, .btn-info, .btn-ver',
           popover: {
-            title: 'Ver Detalle',
-            description: 'Consulte toda la información de la obra: contratación, fechas y certificaciones.'
+            title: 'Ver Detalle de la Obra',
+            description: 'Consulte información completa: contratación asociada, fechas, certificaciones y observaciones del supervisor.'
           },
           side: 'left'
         },
         {
-          element: 'table.table tbody tr:first-child .btn-outline-warning',
+          element: 'table.table tbody tr:first-child .btn-outline-warning, .btn-warning, .btn-editar',
           popover: {
             title: 'Editar Obra',
-            description: 'Modifique los datos de la obra seleccionada.'
-          },
-          side: 'left'
-        },
-        {
-          element: 'table.table tbody tr:first-child .btn-outline-danger',
-          popover: {
-            title: 'Eliminar Obra',
-            description: 'Inhabilita la obra tras confirmar la acción.'
+            description: 'Modifique datos de la obra: avance, fechas, estatus o contratación. Los cambios se guardan automáticamente.'
           },
           side: 'left'
         }

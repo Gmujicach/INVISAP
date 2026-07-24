@@ -6,58 +6,58 @@
       showProgress: true,
       steps: [
         {
-          element: 'button[onclick="clasificarTodo()"]',
+          element: '.card-header-custom, h1, h2, h3',
           popover: {
-            title: 'Clasificar con IA',
-            description: 'Ejecuta la inteligencia artificial sobre todas las solicitudes para asignar prioridad automática.'
+            title: 'Contexto: Módulo de Inteligencia Artificial',
+            description: 'Utilice la IA para clasificar automáticamente las solicitudes por nivel de prioridad (Alta, Media, Baja) basándose en factores de gravedad.'
           },
           side: 'bottom'
         },
         {
-          element: 'button[onclick="cargarPrioridades()"]',
+          element: 'button[onclick="clasificarTodo()"], .btn-primary, .btn-ia',
           popover: {
-            title: 'Actualizar',
-            description: 'Recarga las tarjetas de prioridad desde el servidor.'
+            title: 'Clasificar Todo con IA',
+            description: 'Ejecuta el motor de inteligencia artificial sobre todas las solicitudes pendientes para asignar su prioridad automáticamente.'
           },
           side: 'bottom'
         },
         {
-          element: '#buscarPrioridad',
+          element: 'button[onclick="cargarPrioridades()"], .btn-outline-secondary, .btn-actualizar',
+          popover: {
+            title: 'Actualizar Prioridades',
+            description: 'Recarga las tarjetas de prioridad desde el servidor para ver los resultados más recientes de la clasificación.'
+          },
+          side: 'bottom'
+        },
+        {
+          element: '#buscarPrioridad, .form-control[type="search"], input[type="search"]',
           popover: {
             title: 'Búsqueda Rápida',
-            description: 'Filtre las prioridades por solicitud o justificación en la página actual.'
+            description: 'Filtre las tarjetas de prioridad por número de solicitud, solicitante o justificación.'
           },
           side: 'bottom'
         },
         {
-          element: '#contenedorTarjetas',
+          element: '#contenedorTarjetas, .prioridad-card, .card',
           popover: {
             title: 'Tarjetas de Prioridad',
-            description: 'Cada tarjeta muestra el rango, semáforo, nivel de gravedad y estado de la solicitud.'
+            description: 'Cada tarjeta representa una solicitud con su rango numérico, semáforo de prioridad, nivel de gravedad y justificación de la IA.'
           },
           side: 'top'
         },
         {
-          element: '#contadorRegistros',
+          element: '#contadorRegistros, .badge, .counter',
           popover: {
             title: 'Total de Registros',
-            description: 'Cantidad de prioridades gestionadas por el módulo de IA.'
+            description: 'Cantidad de prioridades gestionadas actualmente por el módulo de inteligencia artificial.'
           },
           side: 'bottom'
         },
         {
-          element: '#contenedorTarjetas .card:first-child .btn-outline-primary',
+          element: '#contenedorTarjetas .card:first-child .btn-outline-primary, .btn-editar',
           popover: {
-            title: 'Ajustar Prioridad',
-            description: 'Edite manualmente el rango y la justificación de la prioridad.'
-          },
-          side: 'left'
-        },
-        {
-          element: '#contenedorTarjetas .card:first-child .btn-outline-info',
-          popover: {
-            title: 'Clasificar con IA',
-            description: 'Solicita a la IA que reevalúe la prioridad de esta solicitud específica.'
+            title: 'Ajustar Prioridad Manualmente',
+            description: 'Edite manualmente el rango y la justificación de la prioridad si considera que la clasificación de la IA debe ajustarse.'
           },
           side: 'left'
         }

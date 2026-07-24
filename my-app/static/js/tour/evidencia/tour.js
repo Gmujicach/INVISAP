@@ -6,42 +6,50 @@
       showProgress: true,
       steps: [
         {
-          element: '#dropZone',
+          element: 'h1, h2, .card-header-custom',
           popover: {
-            title: 'Zona de Carga',
-            description: 'Arrastre imágenes aquí o haga clic para seleccionarlas. Mínimo 3 y máximo 5 imágenes por registro.'
+            title: 'Contexto: Módulo de Evidencias',
+            description: 'Suba y gestione evidencias fotográficas por obra. Cada imagen se asigna a una etapa: Antes, Durante o Después.'
+          },
+          side: 'bottom'
+        },
+        {
+          element: '#dropZone, .drop-zone, .file-drop-zone',
+          popover: {
+            title: 'Zona de Carga de Imágenes',
+            description: 'Arrastre las imágenes fotográficas aquí o haga clic para seleccionarlas desde su equipo. Mínimo 3 y máximo 5 imágenes por registro.'
           },
           side: 'top'
         },
         {
-          element: '#fileInput',
+          element: '#fileInput, input[type="file"]',
           popover: {
             title: 'Seleccionar Imágenes',
-            description: 'Campo oculto que se activa al hacer clic en la zona de carga para elegir las fotos.'
+            description: 'Campo de selección de archivos. Se activa al hacer clic en la zona de carga para elegir las fotos de la obra.'
           },
           side: 'right'
         },
         {
-          element: '#imagePreview',
+          element: '#imagePreview, .preview-card',
           popover: {
-            title: 'Vista Previa',
-            description: 'Aquí aparecen las imágenes seleccionadas antes de asignarles una etapa.'
+            title: 'Vista Previa de Imágenes',
+            description: 'Aquí puede previsualizar las imágenes seleccionadas antes de registrar las evidencias.'
           },
           side: 'top'
         },
         {
-          element: '#helpEtapa',
+          element: '#helpEtapa, .form-label, label',
           popover: {
-            title: 'Asignar Etapas',
-            description: 'Recuerde asignar una etapa (Antes, Durante o Después) a cada imagen antes de guardar.'
+            title: 'Asignar Etapa a Cada Imagen',
+            description: 'Recuerde asignar una etapa a cada imagen: Antes (previa a la obra), Durante (en ejecución) o Después (obra culminada).'
           },
           side: 'top'
         },
         {
-          element: '#btnSubir',
+          element: '#btnSubir, .btn-primary, button[type="submit"]',
           popover: {
             title: 'Registrar Evidencias',
-            description: 'Guarda las evidencias fotográficas. Se habilita al cumplir los requisitos mínimos.'
+            description: 'Guarde las evidencias fotográficas en el sistema. El botón se habilita al cumplir los requisitos mínimos de carga.'
           },
           side: 'top'
         }

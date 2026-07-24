@@ -197,3 +197,41 @@ body.dark-mode .timer-text,
 body.dark-mode .timer-countdown {
   color: #cfcde9;
 }
+
+body.dark-mode .otp-input {
+  background: #232333;
+  border-color: #444564;
+  color: #cfcde9;
+}
+
+body.dark-mode .otp-input:focus {
+  border-color: #818cf8;
+  background: #2b2c40;
+  box-shadow: 0 0 0 4px rgba(129, 140, 248, 0.15);
+}
+
+body.dark-mode .otp-input.filled {
+  border-color: #4ade80;
+  background: #1a3a2a;
+}
+
+body.dark-mode .otp-input:disabled {
+  background-color: #1e1e2d !important;
+  color: #6c757d !important;
+  opacity: 0.7 !important;
+}
+
+body.dark-mode .otp-input.error {
+  border-color: #f87171;
+  background: #3d1f21;
+}
+
+body.dark-mode .verification-success {
+  background: #153725 !important;
+  border-color: #1e4d2b !important;
+  color: #75b798 !important;
+}
+
+body.dark-mode .verification-success i {
+  color: #4ade80 !important;
+}

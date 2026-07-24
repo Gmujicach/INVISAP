@@ -269,3 +269,75 @@
     padding-right: 14px;
   }
 }
+
+/* ============================================
+   MODO OSCURO - SOBRE NOSOTROS
+   ============================================ */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) {
+  background-color: #232333 !important;
+  color: #cfcde9 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sobre-hero {
+  background: radial-gradient(circle at 20% 20%, #0a2e18 0%, #072416 55%, #14532d 100%);
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .section-title {
+  color: #ffffff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .section-intro {
+  color: #a2a3b7 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .info-card {
+  background: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .info-card .card-footer {
+  border-top-color: #444564 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .info-card .card-body {
+  color: #cfcde9 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .info-card h3 {
+  color: #ffffff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sobre-nosotros .service-card {
+  background: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sobre-nosotros .service-card .card-body {
+  color: #cfcde9 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sobre-nosotros .service-card h4 {
+  color: #ffffff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .masonry-item {
+  background: #2b2c40 !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .masonry-item.skeleton {
+  background: #1e1e2d !important;
+  border-color: #3a3b53 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .skeleton::after {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 100%) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .text-green {
+  color: #4ade80 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .divider-custom {
+  background: linear-gradient(90deg, #4ade80, #ffda6a) !important;
+}

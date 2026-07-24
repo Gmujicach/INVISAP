@@ -217,3 +217,77 @@ svg {
     padding-right: 0.5rem !important;
   }
 }
+
+/* ---------- Inline Styles Overrides - Templates ---------- */
+body.dark-mode .card-header[style*="background:#fff"],
+body.dark-mode .card-header[style*="background: #fff"],
+body.dark-mode div[style*="background-color: #f8f9fa"],
+body.dark-mode div[style*="background-color: #F9A800"],
+body.dark-mode button[style*="background-color: #F9A800"],
+body.dark-mode .badge-count[style*="background-color: #6c757d"],
+body.dark-mode .card[style*="background-color: #00b33c"],
+body.dark-mode .card[style*="background-color: #F9A800"],
+body.dark-mode .btn[style*="background-color: #08b324"],
+body.dark-mode .password-toggle-btn[style*="background-color: #fff"],
+body.dark-mode .input-group-text[style*="background-color: #fff"],
+body.dark-mode tr[style*="background-color: #ddd"],
+body.dark-mode #seccion_detalles[style*="background-color: #f8f9fa"] {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+  color: #cfcde9 !important;
+}
+
+body.dark-mode .badge-count[style*="background-color: #6c757d"] {
+  background-color: #3d3d3d !important;
+  color: #cfcde9 !important;
+}
+
+body.dark-mode div[style*="background-color: #F9A800"],
+body.dark-mode button[style*="background-color: #F9A800"] {
+  background-color: #3d320e !important;
+  color: #ffda6a !important;
+}
+
+body.dark-mode .card[style*="background-color: #00b33c"] h6,
+body.dark-mode .card[style*="background-color: #00b33c"] h2,
+body.dark-mode .card[style*="background-color: #00b33c"] .text-white-50 {
+  color: #a2a3b7 !important;
+}
+
+body.dark-mode .card[style*="background-color: #00b33c"] h2 {
+  color: #ffffff !important;
+}
+
+body.dark-mode div[style*="border-left: 4px solid"],
+body.dark-mode div[style*="border-left:4px solid"] {
+  background-color: #2b2c40 !important;
+  border-left-color: #4ade80 !important;
+}
+
+/* ---------- Login / Auth Pages ---------- */
+body.dark-mode #loader-out {
+  background-color: #1e1e2d !important;
+}
+
+body.dark-mode #loader-container {
+  border: 5px solid #3a3b53 !important;
+}
+
+body.dark-mode #loading-text {
+  color: #cfcde9 !important;
+}
+
+body.dark-mode .authentication-card {
+  background: #2b2c40 !important;
+  border-color: #444564 !important;
+}
+
+/* ---------- Landing Page ---------- */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .landing-toggle {
+  border-color: rgba(255,255,255,0.4) !important;
+  color: #fff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .landing-toggle:hover {
+  background: rgba(255,255,255,0.1) !important;
+}

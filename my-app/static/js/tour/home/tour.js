@@ -8,8 +8,8 @@
         {
           element: '.dashboard-card',
           popover: {
-            title: 'Tarjetas de Resumen',
-            description: 'Estas tarjetas muestran indicadores clave: total de solicitudes, pendientes, en proceso y completadas del sistema.'
+            title: 'Panel de Control (Dashboard)',
+            description: 'Vista general del sistema con indicadores clave: total de solicitudes, pendientes, en proceso y completadas.'
           },
           side: 'bottom'
         },
@@ -17,41 +17,49 @@
           element: '.col-md-3:last-child .dashboard-card',
           popover: {
             title: 'Solicitudes Completadas',
-            description: 'Aquí se visualiza la cantidad de solicitudes procesadas o completadas exitosamente.'
+            description: 'Indicador que muestra la cantidad de solicitudes procesadas exitosamente.'
           },
           side: 'bottom'
         },
         {
           element: 'img[alt="Gráfico Tipos de Solicitud"]',
           popover: {
-            title: 'Análisis por Tipo',
-            description: 'Gráfico que distribuye las solicitudes según su tipo (Comunidad, Particular, Institución, etc.).'
+            title: 'Gráfico por Tipo de Solicitud',
+            description: 'Distribución visual de solicitudes según su tipo: Comunidad, Particular, Institución, entre otros.'
           },
-          side: 'top'
+          side: 'bottom'
         },
         {
           element: 'img[alt="Gráfico Estatus de Solicitud"]',
           popover: {
-            title: 'Distribución por Estatus',
-            description: 'Visualice el porcentaje de solicitudes en cada estatus: pendiente, en proceso o completada.'
+            title: 'Gráfico por Estatus',
+            description: 'Porcentaje de solicitudes en cada estatus: pendiente, en proceso o completada.'
           },
-          side: 'top'
+          side: 'bottom'
         },
         {
           element: 'img[alt="Gráfico por Parroquia"]',
           popover: {
-            title: 'Análisis por Parroquia',
-            description: 'Mapa de calor que agrupa las solicitudes por parroquia de Lara para apoyar la toma de decisiones.'
+            title: 'Mapa Geográfico por Parroquia',
+            description: 'Visualice en qué parroquias del estado Lara se concentran las solicitudes para apoyar la toma de decisiones.'
           },
-          side: 'top'
+          side: 'bottom'
         },
         {
-          element: 'table.table',
+          element: 'table.table-hover.mb-0',
           popover: {
-            title: 'Módulo de Priorización',
-            description: 'Tabla con las solicitudes priorizadas por la inteligencia artificial, ordenadas de mayor a menor prioridad.'
+            title: 'Módulo de Priorización Inteligente',
+            description: 'Solicitudes priorizadas automáticamente por IA, ordenadas de mayor a menor prioridad para una gestión eficiente.'
           },
-          side: 'top'
+          side: 'bottom'
+        },
+        {
+          element: 'table.table-hover.mb-0 tbody tr:first-child',
+          popover: {
+            title: 'Fila de Solicitud Priorizada',
+            description: 'se puede observar la solicitud priorizada junto con su información detallada.'
+          },
+          side: 'right'
         }
       ]
     });

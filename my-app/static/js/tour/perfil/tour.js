@@ -6,60 +6,44 @@
       showProgress: true,
       steps: [
         {
-          element: '#avatar-preview',
+          element: '.perfil-header, .card-header-custom, h1, h2',
           popover: {
-            title: 'Foto de Perfil',
-            description: 'Imagen actual de su perfil. Puede cambiarla con el icono de cámara.'
+            title: 'Mi Perfil',
+            description: 'Aquí puede ver y administrar toda su información personal registrada en el sistema.'
           },
-          side: 'right'
+          side: 'bottom'
         },
         {
-          element: '#btn-change-avatar',
+          element: '.perfil-card, .card-body',
           popover: {
-            title: 'Cambiar Foto',
-            description: 'Seleccione una nueva imagen (PNG, JPG, GIF o WEBP, máx. 5 MB).'
+            title: 'Información Personal',
+            description: 'Datos básicos: nombre completo, cédula de identidad, correo, teléfono y rol asignado.'
           },
           side: 'top'
         },
         {
-          element: '#name_surname',
+          element: '.perfil-input, input[name="nombre"], input[name="email"]',
           popover: {
-            title: 'Nombre de Usuario',
-            description: 'Edite su nombre de usuario. Mínimo 3 caracteres.'
+            title: 'Campos Editables',
+            description: 'Modifique sus datos personales. Recuerde guardar los cambios al finalizar.'
           },
-          side: 'right'
+          side: 'left'
         },
         {
-          element: '#email_user',
-          popover: {
-            title: 'Correo Electrónico',
-            description: 'Actualice su correo electrónico asociado a la cuenta.'
-          },
-          side: 'right'
-        },
-        {
-          element: '#new_pass_user',
-          popover: {
-            title: 'Cambiar Contraseña',
-            description: 'Opcional: ingrese una nueva contraseña (mín. 8 caracteres con un símbolo).'
-          },
-          side: 'right'
-        },
-        {
-          element: '#repetir_pass_user',
-          popover: {
-            title: 'Repetir Contraseña',
-            description: 'Confirme la nueva contraseña ingresada anteriormente.'
-          },
-          side: 'right'
-        },
-        {
-          element: '#btn-guardar',
+          element: '.perfil-footer, .btn-guardar-perfil, button[type="submit"]',
           popover: {
             title: 'Guardar Cambios',
-            description: 'Confirme y guarde la información de su perfil.'
+            description: 'Haga clic aquí para actualizar su información en la base de datos del sistema.'
           },
           side: 'top'
+        },
+        {
+          element: '.corner-profile-container .dropdown-menu, .dropdown-menu',
+          popover: {
+            title: 'Cerrar Sesión',
+            description: 'Desde el menú de usuario superior derecho puede cerrar sesión de forma segura cuando termine de usar el sistema.'
+          },
+          side: 'left'
         }
       ]
     });

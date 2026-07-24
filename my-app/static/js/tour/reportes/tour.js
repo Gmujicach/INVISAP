@@ -6,52 +6,36 @@
       showProgress: true,
       steps: [
         {
-          element: '#filtroBusqueda',
+          element: '.card-header-custom, h1, h2',
           popover: {
-            title: 'Filtro de Datos',
-            description: 'Escriba un módulo a analizar (ej: solicitudes). Déjelo vacío para un análisis global del sistema.'
+            title: 'Centro de Reportes',
+            description: 'Generación de informes en Excel, PDF y estadísticas para analizar la información del sistema.'
           },
           side: 'bottom'
         },
         {
-          element: '#btnAplicarFiltro',
+          element: 'a[href*="excel"], .btn-excel, .card-reporte:first-child',
           popover: {
-            title: 'Aplicar Filtro',
-            description: 'Actualiza los gráficos estadísticos según el módulo indicado.'
-          },
-          side: 'bottom'
-        },
-        {
-          element: '#tipoChart',
-          popover: {
-            title: 'Tipo de Solicitud',
-            description: 'Gráfico que distribuye las solicitudes por su tipo. Use el selector para cambiar el tipo de visualización.'
+            title: 'Reporte Excel',
+            description: 'Descargue reportes detallados en formato Excel con filtros por fechas y módulos.'
           },
           side: 'top'
         },
         {
-          element: '#estatusChart',
+          element: 'a[href*="pdf"], .btn-pdf, .card-reporte:nth-child(2)',
           popover: {
-            title: 'Estatus de Solicitud',
-            description: 'Gráfico del estado de las solicitudes (pendiente, en proceso, completada).'
+            title: 'Reporte PDF',
+            description: 'Genere informes ejecutivos en formato PDF listos para presentar o imprimir.'
           },
           side: 'top'
         },
         {
-          element: '#fechaChart',
+          element: 'a[href*="estadistico"], .btn-estadistico, .card-reporte:nth-child(3)',
           popover: {
-            title: 'Tendencia por Fecha',
-            description: 'Evolución temporal de las solicitudes registradas.'
+            title: 'Reporte Estadístico',
+            description: 'Visualice gráficos y métricas clave del sistema para toma de decisiones institucional.'
           },
           side: 'top'
-        },
-        {
-          element: 'a[href*="generarReporteEstadistico"]',
-          popover: {
-            title: 'Descargar PDF',
-            description: 'Exporte el análisis estadístico completo en formato PDF.'
-          },
-          side: 'left'
         }
       ]
     });

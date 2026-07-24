@@ -6,50 +6,50 @@
       showProgress: true,
       steps: [
         {
-          element: 'a.btn.btn-primary',
+          element: 'a.btn.btn-primary, .btn-registrar',
           popover: {
-            title: 'Registrar Nuevo Empleado',
-            description: 'Haga clic aquí para abrir el formulario de registro de un nuevo empleado en el sistema.'
+            title: 'Contexto: Módulo de Empleados',
+            description: 'Gestione el personal de la organización: registro, actualización y control de estado (activo/inactivo).'
           },
-          side: 'bottom'
+          side: 'left'
         },
         {
-          element: '#tablaEmpleados',
+          element: '#tablaEmpleados, table.table',
           popover: {
             title: 'Listado de Empleados',
-            description: 'Tabla principal con todo el personal registrado: nombre, cargo, gerencia, ingreso y estado.'
+            description: 'Directorio completo con nombre, cargo, gerencia, fecha de ingreso y estado de cada empleado.'
           },
           side: 'top'
         },
         {
           element: '#tablaEmpleados thead th:nth-child(3)',
           popover: {
-            title: 'Cargo',
-            description: 'Columna que indica el cargo desempeñado por cada empleado dentro de la organización.'
+            title: 'Columna Cargo',
+            description: 'Indica el puesto o cargo desempeñado por cada empleado dentro de la estructura organizacional.'
           },
           side: 'bottom'
         },
         {
           element: '#tablaEmpleados thead th:nth-child(6)',
           popover: {
-            title: 'Estado',
-            description: 'Muestra si el empleado está Activo o Inactivo en el sistema.'
+            title: 'Columna Estado',
+            description: 'Muestra si el empleado está Activo o Inactivo en el sistema. Solo los empleados activos pueden ser asignados a proyectos.'
           },
           side: 'bottom'
         },
         {
-          element: '#tablaEmpleados tbody tr:first-child .btn-warning',
+          element: '#tablaEmpleados tbody tr:first-child .btn-warning, .btn-warning, .btn-editar',
           popover: {
             title: 'Editar Empleado',
-            description: 'Use este botón para modificar los datos de un empleado existente.'
+            description: 'Modifique datos del empleado: cargo, gerencia, teléfono o estado. Los cambios se reflejan inmediatamente.'
           },
           side: 'left'
         },
         {
-          element: '#tablaEmpleados tbody tr:first-child .btn-danger',
+          element: '#tablaEmpleados tbody tr:first-child .btn-danger, .btn-danger, .btn-eliminar',
           popover: {
-            title: 'Eliminar Empleado',
-            description: 'Realiza un borrado lógico del empleado. El registro queda inactivo pero se conserva en la base de datos.'
+            title: 'Eliminar Empleado (Borrado Lógico)',
+            description: 'Inhabilita el empleado sin borrarlo permanentemente. El registro queda inactivo para auditoría pero no aparece en listados activos.'
           },
           side: 'left'
         }

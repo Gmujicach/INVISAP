@@ -6,50 +6,42 @@
       showProgress: true,
       steps: [
         {
-          element: 'button[data-bs-target="#contenedorFormulario"]',
+          element: '.card-header-custom, h1, h2',
           popover: {
-            title: 'Nueva Publicación',
-            description: 'Despliega el formulario colapsable para registrar una publicación.'
+            title: 'Contexto: Módulo de Publicaciones',
+            description: 'Gestione publicaciones institucionales, noticias y comunicados dirigidos a usuarios y comunidades del sistema.'
+          },
+          side: 'bottom'
+        },
+        {
+          element: 'a[href*="registrar"], button[data-bs-target*="modal"], .btn-primary, .btn-registrar',
+          popover: {
+            title: 'Registrar Nueva Publicación',
+            description: 'Abra el formulario para crear una nueva publicación: título, contenido, imagen y estatus de visibilidad.'
           },
           side: 'left'
         },
         {
-          element: 'table.table',
+          element: '#lista-publicaciones, #tablaPublicaciones, table.table',
           popover: {
-            title: 'Gestión de Publicaciones',
-            description: 'Tabla con todas las publicaciones: título, responsable, tipo, fecha y acciones.'
+            title: 'Listado de Publicaciones',
+            description: 'Lista completa con título, autor, fecha de publicación, estatus y acciones disponibles.'
           },
           side: 'top'
         },
         {
-          element: '#contenedorFormulario #titulo_publicacion',
+          element: '.btn-warning, .btn-editar',
           popover: {
-            title: 'Título de la Publicación',
-            description: 'Campo obligatorio para nombrar la publicación que se registrará.'
+            title: 'Editar Publicación',
+            description: 'Modifique el contenido, imagen o estatus de la publicación. Los cambios se reflejan inmediatamente en el sitio.'
           },
-          side: 'top'
+          side: 'left'
         },
         {
-          element: '#contenedorFormulario #tipo_publicacion',
-          popover: {
-            title: 'Tipo de Publicación',
-            description: 'Seleccione la categoría: Noticia, Informe, Evento u Otro.'
-          },
-          side: 'top'
-        },
-        {
-          element: '#contenedorFormulario button[type="submit"]',
-          popover: {
-            title: 'Guardar Publicación',
-            description: 'Registra la publicación con los datos ingresados.'
-          },
-          side: 'top'
-        },
-        {
-          element: 'table.table tbody tr:first-child .btn-outline-danger',
+          element: '.btn-danger, .btn-eliminar',
           popover: {
             title: 'Eliminar Publicación',
-            description: 'Elimina la publicación seleccionada previa confirmación.'
+            description: 'Elimina la publicación previa confirmación. Use con precaución.'
           },
           side: 'left'
         }

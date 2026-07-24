@@ -113,6 +113,16 @@ body.dark-mode .preview-card-container select {
     border-color: #555;
 }
 
+body.dark-mode .evidencia-preview-item {
+    background: #2b2c40 !important;
+    border-color: #444564 !important;
+}
+
+body.dark-mode .evidencia-preview-item .remove-btn {
+    border-color: #2b2c40 !important;
+    background: #dc3545 !important;
+}
+
 /* Placeholder amarillo visible */
 input::placeholder,
 select::placeholder,

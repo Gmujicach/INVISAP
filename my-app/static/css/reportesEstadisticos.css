@@ -119,3 +119,12 @@ body.dark-mode .text-dark {
 body.dark-mode .text-muted {
   color: #a2a3b7 !important;
 }
+
+body.dark-mode canvas {
+  filter: brightness(0.9);
+}
+
+body.dark-mode #dashboardGraficos .card {
+  background-color: #2b2c40 !important;
+  border-color: #444564 !important;
+}

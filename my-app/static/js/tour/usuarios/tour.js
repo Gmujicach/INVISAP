@@ -6,10 +6,10 @@
       showProgress: true,
       steps: [
         {
-          element: '#respuestaFiltroMes h2',
+          element: '#respuestaFiltroMes h2, .card-header-custom, h1, h2',
           popover: {
-            title: 'Lista de Usuarios',
-            description: 'Panel con todos los usuarios creados en el sistema.'
+            title: 'Contexto: Módulo de Usuarios',
+            description: 'Administre las cuentas de acceso al sistema: cree nuevos usuarios, asigne roles, edite información y controle el estado.'
           },
           side: 'bottom'
         },
@@ -17,31 +17,31 @@
           element: 'table.table',
           popover: {
             title: 'Directorio de Usuarios',
-            description: 'Tabla con avatar, nombre, cédula, correo, rol y acciones de cada usuario.'
+            description: 'Lista completa con avatar, nombre completo, cédula de identidad, correo electrónico, rol y acciones disponibles.'
           },
           side: 'top'
         },
         {
           element: 'table.table thead th:nth-child(5)',
           popover: {
-            title: 'Rol',
-            description: 'Nivel de acceso asignado a cada usuario dentro del sistema.'
+            title: 'Columna Rol',
+            description: 'Muestra el nivel de acceso asignado (Super Usuario, Administrador, Gerente, Inspector, Recepcionista, Asistente, Proyectista, Usuario).'
           },
           side: 'bottom'
         },
         {
-          element: 'table.table tbody tr:first-child .btn-warning',
+          element: 'table.table tbody tr:first-child .btn-warning, .btn-editar',
           popover: {
             title: 'Editar Usuario',
-            description: 'Modifique los datos del usuario. Los Super Usuario están protegidos.'
+            description: 'Modifique datos del usuario: nombre, correo, rol o estado. Los Super Usuarios están protegidos contra eliminación.'
           },
           side: 'left'
         },
         {
-          element: 'table.table tbody tr:first-child .btn-danger',
+          element: 'table.table tbody tr:first-child .btn-danger, .btn-eliminar',
           popover: {
             title: 'Eliminar Usuario',
-            description: 'Elimina el usuario permanentemente tras confirmación.'
+            description: 'Elimina el usuario permanentemente tras confirmación. Asegúrese de no eliminar cuentas activas sin autorización.'
           },
           side: 'left'
         }

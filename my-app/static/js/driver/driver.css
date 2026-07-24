@@ -1,1 +1,532 @@
-.driver-active .driver-overlay,.driver-active *{pointer-events:none}.driver-active .driver-active-element,.driver-active .driver-active-element *,.driver-popover,.driver-popover *{pointer-events:auto}@keyframes animate-fade-in{0%{opacity:0}to{opacity:1}}.driver-fade .driver-overlay{animation:animate-fade-in .2s ease-in-out}.driver-fade .driver-popover{animation:animate-fade-in .2s}.driver-popover{all:unset;box-sizing:border-box;color:#2d2d2d;margin:0;padding:15px;border-radius:5px;min-width:250px;max-width:300px;box-shadow:0 1px 10px #0006;z-index:1000000000;position:fixed;top:0;right:0;background-color:#fff}.driver-popover *{font-family:Helvetica Neue,Inter,ui-sans-serif,"Apple Color Emoji",Helvetica,Arial,sans-serif}.driver-popover-title{font:19px/normal sans-serif;font-weight:700;display:block;position:relative;line-height:1.5;zoom:1;margin:0}.driver-popover-close-btn{all:unset;position:absolute;top:0;right:0;width:32px;height:28px;cursor:pointer;font-size:18px;font-weight:500;color:#d2d2d2;z-index:1;text-align:center;transition:color;transition-duration:.2s}.driver-popover-close-btn:hover,.driver-popover-close-btn:focus{color:#2d2d2d}.driver-popover-title[style*=block]+.driver-popover-description{margin-top:5px}.driver-popover-description{margin-bottom:0;font:14px/normal sans-serif;line-height:1.5;font-weight:400;zoom:1}.driver-popover-footer{margin-top:15px;text-align:right;zoom:1;display:flex;align-items:center;justify-content:space-between}.driver-popover-progress-text{font-size:13px;font-weight:400;color:#727272;zoom:1}.driver-popover-footer button{all:unset;display:inline-block;box-sizing:border-box;padding:3px 7px;text-decoration:none;text-shadow:1px 1px 0 #fff;background-color:#fff;color:#2d2d2d;font:12px/normal sans-serif;cursor:pointer;outline:0;zoom:1;line-height:1.3;border:1px solid #ccc;border-radius:3px}.driver-popover-footer .driver-popover-btn-disabled{opacity:.5;pointer-events:none}:not(body):has(>.driver-active-element){overflow:hidden!important}.driver-no-interaction,.driver-no-interaction *{pointer-events:none!important}.driver-popover-footer button:hover,.driver-popover-footer button:focus{background-color:#f7f7f7}.driver-popover-navigation-btns{display:flex;flex-grow:1;justify-content:flex-end}.driver-popover-navigation-btns button+button{margin-left:4px}.driver-popover-arrow{content:"";position:absolute;border:5px solid #fff}.driver-popover-arrow-side-over{display:none}.driver-popover-arrow-side-left{left:100%;border-right-color:transparent;border-bottom-color:transparent;border-top-color:transparent}.driver-popover-arrow-side-right{right:100%;border-left-color:transparent;border-bottom-color:transparent;border-top-color:transparent}.driver-popover-arrow-side-top{top:100%;border-right-color:transparent;border-bottom-color:transparent;border-left-color:transparent}.driver-popover-arrow-side-bottom{bottom:100%;border-left-color:transparent;border-top-color:transparent;border-right-color:transparent}.driver-popover-arrow-side-center{display:none}.driver-popover-arrow-side-left.driver-popover-arrow-align-start,.driver-popover-arrow-side-right.driver-popover-arrow-align-start{top:15px}.driver-popover-arrow-side-top.driver-popover-arrow-align-start,.driver-popover-arrow-side-bottom.driver-popover-arrow-align-start{left:15px}.driver-popover-arrow-align-end.driver-popover-arrow-side-left,.driver-popover-arrow-align-end.driver-popover-arrow-side-right{bottom:15px}.driver-popover-arrow-side-top.driver-popover-arrow-align-end,.driver-popover-arrow-side-bottom.driver-popover-arrow-align-end{right:15px}.driver-popover-arrow-side-left.driver-popover-arrow-align-center,.driver-popover-arrow-side-right.driver-popover-arrow-align-center{top:50%;margin-top:-5px}.driver-popover-arrow-side-top.driver-popover-arrow-align-center,.driver-popover-arrow-side-bottom.driver-popover-arrow-align-center{left:50%;margin-left:-5px}.driver-popover-arrow-none{display:none}
+/* ============================================================
+   INVILARA - DRIVER.JS TOUR STYLES (Modern + Dark Mode)
+   ============================================================ */
+
+/* ---------- Reset & Base ---------- */
+.driver-active .driver-overlay,
+.driver-active * {
+  pointer-events: none;
+}
+
+.driver-active .driver-active-element,
+.driver-active .driver-active-element *,
+.driver-popover,
+.driver-popover * {
+  pointer-events: auto;
+}
+
+.driver-popover {
+  all: unset;
+  box-sizing: border-box;
+  color: #2d2d2d;
+  margin: 0;
+  padding: 0;
+  border-radius: 12px;
+  min-width: 280px;
+  max-width: 340px;
+  width: fit-content;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15), 0 2px 10px rgba(0, 0, 0, 0.08);
+  z-index: 1000000000;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #ffffff;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ---------- Typography ---------- */
+.driver-popover * {
+  font-family: inherit;
+}
+
+.driver-popover-title {
+  font-size: 18px;
+  font-weight: 700;
+  display: block;
+  position: relative;
+  line-height: 1.4;
+  margin: 0;
+  padding: 16px 20px 4px;
+  color: #1a1a2e;
+}
+
+.driver-popover-description {
+  display: block;
+  margin: 0;
+  padding: 4px 20px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+  color: #4a4a5a;
+}
+
+/* ---------- Close Button ---------- */
+.driver-popover-close-btn {
+  all: unset;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 600;
+  color: #b0b0c0;
+  z-index: 2;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.driver-popover-close-btn:hover,
+.driver-popover-close-btn:focus {
+  color: #1a1a2e;
+  background-color: rgba(0, 0, 0, 0.05);
+  outline: none;
+}
+
+/* ---------- Footer / Progress ---------- */
+.driver-popover-footer {
+  margin: 0;
+  padding: 12px 20px;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #e8e8f0;
+  background-color: #fafafe;
+}
+
+.driver-popover-progress-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #8888a0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.driver-popover-footer button {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  text-decoration: none;
+  background-color: #ffffff;
+  color: #2d2d3f;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  outline: 0;
+  line-height: 1.4;
+  border: 1.5px solid #d0d0e0;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+}
+
+.driver-popover-footer button:hover {
+  background-color: #f0f0fa;
+  border-color: #b0b0d0;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.driver-popover-footer .driver-popover-btn-primary,
+.driver-popover-footer button:last-child:not(.driver-popover-btn-disabled) {
+  background-color: #4f46e5;
+  color: #ffffff;
+  border-color: #4f46e5;
+  font-weight: 600;
+}
+
+.driver-popover-footer .driver-popover-btn-primary:hover,
+.driver-popover-footer button:last-child:not(.driver-popover-btn-disabled):hover {
+  background-color: #4338ca;
+  border-color: #4338ca;
+}
+
+.driver-popover-footer .driver-popover-btn-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* ---------- Animations ---------- */
+@keyframes driver-scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes driver-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.driver-fade .driver-overlay {
+  animation: driver-fade-in 0.25s ease-out;
+}
+
+.driver-fade .driver-popover {
+  animation: driver-scale-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ---------- Overlay ---------- */
+.driver-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999999999;
+  pointer-events: none;
+  transition: background-color 0.3s ease;
+}
+
+/* ---------- Active Element ---------- */
+.driver-active-element {
+  position: relative;
+  z-index: 1000000001 !important;
+}
+
+.driver-no-interaction {
+  pointer-events: none !important;
+}
+
+/* ---------- ARIA helpers ---------- */
+.driver-popover[role="alertdialog"] {
+  outline: none;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 576px) {
+  .driver-popover {
+    min-width: 260px;
+    max-width: calc(100vw - 32px);
+    left: 16px !important;
+    right: 16px !important;
+    top: auto !important;
+    bottom: 16px !important;
+    border-radius: 16px 16px 12px 12px;
+  }
+
+  .driver-popover-title {
+    font-size: 16px;
+    padding: 14px 16px 2px;
+  }
+
+  .driver-popover-description {
+    font-size: 13px;
+    padding: 2px 16px 14px;
+  }
+
+  .driver-popover-footer {
+    padding: 10px 16px;
+  }
+}
+
+/* ============================================================
+   DARK MODE - Modern Dark Tour Popover
+   ============================================================ */
+body.dark-mode .driver-popover,
+.driver-active body.dark-mode .driver-popover,
+html[data-bs-theme="dark"] body .driver-popover {
+  background: linear-gradient(180deg, #2b2c40 0%, #1f2033 100%) !important;
+  color: #e8e8f0 !important;
+  border: 1px solid #3a3b55 !important;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 0 8px rgba(74, 222, 128, 0.12) !important;
+}
+
+body.dark-mode .driver-popover-title,
+html[data-bs-theme="dark"] body .driver-popover-title {
+  color: #f0f0fa !important;
+}
+
+body.dark-mode .driver-popover-description,
+html[data-bs-theme="dark"] body .driver-popover-description {
+  color: #c8c8d8 !important;
+}
+
+body.dark-mode .driver-popover-close-btn,
+html[data-bs-theme="dark"] body .driver-popover-close-btn {
+  color: #8888a0 !important;
+}
+
+body.dark-mode .driver-popover-close-btn:hover,
+body.dark-mode .driver-popover-close-btn:focus,
+html[data-bs-theme="dark"] body .driver-popover-close-btn:hover,
+html[data-bs-theme="dark"] body .driver-popover-close-btn:focus {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+body.dark-mode .driver-popover-footer,
+html[data-bs-theme="dark"] body .driver-popover-footer {
+  background: linear-gradient(180deg, #1f2033 0%, #2b2c40 100%) !important;
+  border-top: 1px solid #3a3b55 !important;
+}
+
+body.dark-mode .driver-popover-progress-text,
+html[data-bs-theme="dark"] body .driver-popover-progress-text {
+  color: #4ade80 !important;
+}
+
+body.dark-mode .driver-popover-footer button,
+html[data-bs-theme="dark"] body .driver-popover-footer button {
+  background-color: #2b2c40 !important;
+  color: #d0d0e8 !important;
+  border-color: #3f4058 !important;
+}
+
+body.dark-mode .driver-popover-footer button:hover,
+body.dark-mode .driver-popover-footer button:focus,
+html[data-bs-theme="dark"] body .driver-popover-footer button:hover,
+html[data-bs-theme="dark"] body .driver-popover-footer button:focus {
+  background-color: #35364a !important;
+  border-color: #5a5b78 !important;
+  color: #f0f0fa !important;
+}
+
+body.dark-mode .driver-popover-footer .driver-popover-btn-primary,
+html[data-bs-theme="dark"] body .driver-popover-footer .driver-popover-btn-primary,
+body.dark-mode .driver-popover-footer button:last-child:not(.driver-popover-btn-disabled),
+html[data-bs-theme="dark"] body .driver-popover-footer button:last-child:not(.driver-popover-btn-disabled) {
+  background: linear-gradient(135deg, #08b324 0%, #06a020 100%) !important;
+  border-color: #08b324 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(8, 179, 36, 0.3) !important;
+}
+
+body.dark-mode .driver-popover-footer .driver-popover-btn-primary:hover,
+body.dark-mode .driver-popover-footer button:last-child:not(.driver-popover-btn-disabled):hover,
+html[data-bs-theme="dark"] body .driver-popover-footer .driver-popover-btn-primary:hover,
+html[data-bs-theme="dark"] body .driver-popover-footer button:last-child:not(.driver-popover-btn-disabled):hover {
+  background: linear-gradient(135deg, #06a020 0%, #058a1a 100%) !important;
+  border-color: #06a020 !important;
+  box-shadow: 0 6px 20px rgba(8, 179, 36, 0.4) !important;
+}
+
+body.dark-mode .driver-popover-footer .driver-popover-btn-disabled,
+html[data-bs-theme="dark"] body .driver-popover-footer .driver-popover-btn-disabled {
+  opacity: 0.35 !important;
+}
+
+body.dark-mode .driver-overlay,
+html[data-bs-theme="dark"] body .driver-overlay {
+  fill: #000000 !important;
+  background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+body.dark-mode .driver-popover-arrow-inner,
+html[data-bs-theme="dark"] body .driver-popover-arrow-inner {
+  border-top-color: #2b2c40 !important;
+  border-bottom-color: #2b2c40 !important;
+  border-left-color: #2b2c40 !important;
+  border-right-color: #2b2c40 !important;
+}
+
+/* ---------- Popover Arrow (modern pointer) ---------- */
+.driver-popover-arrow {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.driver-popover-arrow-inner {
+  width: 0;
+  height: 0;
+  border: 8px solid transparent;
+}
+
+.driver-popover[data-side="top"] .driver-popover-arrow {
+  bottom: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.driver-popover[data-side="top"] .driver-popover-arrow-inner {
+  border-top-color: #ffffff;
+  border-bottom: none;
+}
+
+.driver-popover[data-side="bottom"] .driver-popover-arrow {
+  top: -16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.driver-popover[data-side="bottom"] .driver-popover-arrow-inner {
+  border-bottom-color: #ffffff;
+  border-top: none;
+}
+
+.driver-popover[data-side="left"] .driver-popover-arrow {
+  right: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.driver-popover[data-side="left"] .driver-popover-arrow-inner {
+  border-left-color: #ffffff;
+  border-right: none;
+}
+
+.driver-popover[data-side="right"] .driver-popover-arrow {
+  left: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.driver-popover[data-side="right"] .driver-popover-arrow-inner {
+  border-right-color: #ffffff;
+  border-left: none;
+}
+
+/* ---------- Modern Popover UI ---------- */
+.driver-popover {
+  background: linear-gradient(180deg, #ffffff 0%, #f8f9fb 100%) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 0 0 8px rgba(8, 179, 36, 0.08) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.driver-popover-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a2e;
+  padding: 18px 20px 6px;
+  letter-spacing: -0.01em;
+}
+
+.driver-popover-description {
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: #4a4a5a;
+  padding: 4px 20px 16px;
+}
+
+.driver-popover-footer {
+  padding: 14px 20px;
+  background: linear-gradient(180deg, #f8f9fb 0%, #ffffff 100%);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.driver-popover-footer button {
+  padding: 9px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1.5px solid #d0d0e0;
+  background: #ffffff;
+  color: #2d2d3f;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.driver-popover-footer button:hover {
+  background: #f0f0fa;
+  border-color: #b0b0d0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.driver-popover-footer .driver-popover-btn-primary,
+.driver-popover-footer button:last-child:not(.driver-popover-btn-disabled) {
+  background: linear-gradient(135deg, #08b324 0%, #06a020 100%) !important;
+  border-color: #08b324 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 14px rgba(8, 179, 36, 0.3) !important;
+}
+
+.driver-popover-footer .driver-popover-btn-primary:hover,
+.driver-popover-footer button:last-child:not(.driver-popover-btn-disabled):hover {
+  background: linear-gradient(135deg, #06a020 0%, #058a1a 100%) !important;
+  border-color: #06a020 !important;
+  box-shadow: 0 6px 20px rgba(8, 179, 36, 0.4) !important;
+  transform: translateY(-2px);
+}
+
+.driver-popover-progress-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: #08b324 !important;
+  letter-spacing: 0.5px;
+}
+
+.driver-popover-close-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.04);
+  color: #8888a0;
+  transition: all 0.2s ease;
+}
+
+.driver-popover-close-btn:hover {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+  transform: rotate(90deg);
+}
+
+/* Asegurar visibilidad del highlight en dark mode */
+body.dark-mode .driver-active-element,
+html[data-bs-theme="dark"] body .driver-active-element {
+  z-index: 1000000001 !important;
+}
+
+/* Prevenir parpadeo del elemento activo durante el tour */
+.driver-active-element {
+  position: relative !important;
+  z-index: 1000000001 !important;
+}
+
+body.dark-mode .driver-active-element {
+  z-index: 1000000001 !important;
+}
+
+/* Estabilizar tablas durante el tour para evitar parpadeo */
+.driver-active .table-responsive {
+  overflow-x: visible !important;
+}
+
+.driver-active .table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+/* Asegurar espacio suficiente alrededor del elemento activo */
+.driver-active-element {
+  scroll-margin-top: 80px !important;
+  scroll-margin-bottom: 80px !important;
+  scroll-margin-left: 40px !important;
+  scroll-margin-right: 40px !important;
+}
+
+/* Evitar que el popover se superponga al elemento */
+.driver-active .driver-popover {
+  z-index: 1000000002 !important;
+}

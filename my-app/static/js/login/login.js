@@ -118,10 +118,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- Organismo Adicional: Modo Oscuro LocalStorage ---
     const darkModeSwitch = document.getElementById('dark-mode-switch');
     const themeIcon = document.getElementById('theme-icon');
+    const loginToggle = document.getElementById('login-dark-toggle');
+    const loginIcon = document.getElementById('login-theme-icon');
 
-    // Unifica los dos mecanismos de modo oscuro usados en el sistema:
-    //   • body.dark-mode        (toggle del navbar)
-    //   • [data-bs-theme]      (módulos inspección / evidencia)
     const applyTheme = (isDark) => {
         document.body.classList.toggle('dark-mode', isDark);
         if (isDark) {
@@ -130,6 +129,26 @@ document.addEventListener('DOMContentLoaded', function () {
             document.documentElement.removeAttribute('data-bs-theme');
         }
     };
+
+    if (loginToggle) {
+        const initLoginTheme = () => {
+            const isDark = localStorage.getItem('theme') === 'dark';
+            applyTheme(isDark);
+            if (loginIcon) {
+                loginIcon.className = isDark ? 'bx bx-sun' : 'bx bx-moon';
+            }
+        };
+        initLoginTheme();
+
+        loginToggle.addEventListener('click', () => {
+            const isDark = !document.body.classList.contains('dark-mode');
+            applyTheme(isDark);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            if (loginIcon) {
+                loginIcon.className = isDark ? 'bx bx-sun' : 'bx bx-moon';
+            }
+        });
+    }
 
     if (darkModeSwitch) {
         const loadTheme = () => {
@@ -146,6 +165,9 @@ document.addEventListener('DOMContentLoaded', function () {
             applyTheme(isDark);
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             if (themeIcon) themeIcon.className = isDark ? 'bi bi-moon-stars-fill me-2 fs-5 text-info' : 'bi bi-sun-fill me-2 fs-5 text-warning';
+            if (loginIcon) {
+                loginIcon.className = isDark ? 'bx bx-sun' : 'bx bx-moon';
+            }
         });
     }
     // --- Organismo Adicional: Vista previa de Avatar ---
