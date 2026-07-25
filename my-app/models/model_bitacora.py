@@ -196,6 +196,58 @@ class BitacoraModel:
                 except Exception:
                     pass
 
+    def _sql_filtrar_por_criterios(self, usuario: str = None,
+                                   modulo: str = None,
+                                   accion: str = None,
+                                   limit: int = 500,
+                                   offset: int = 0) -> list:
+        conn = cursor = None
+        try:
+            conn = self._con()
+            if conn is None:
+                return []
+            cursor = conn.cursor(dictionary=True)
+
+            condiciones = []
+            params = []
+
+            if usuario:
+                condiciones.append("usuario LIKE %s")
+                params.append(f"%{usuario}%")
+            if modulo:
+                condiciones.append("modulo = %s")
+                params.append(modulo)
+            if accion:
+                condiciones.append("accion = %s")
+                params.append(accion)
+
+            if not condiciones:
+                return self._sql_obtener_todos(limit=limit)
+
+            params.extend([limit, offset])
+            sql = f"""
+                SELECT id_bitacora, usuario, modulo, accion,
+                       fecha, hora_inicio_sesion, hora_cierre_sesion,
+                       usuarios_id_usuarios
+                FROM bitacora
+                WHERE {' AND '.join(condiciones)}
+                ORDER BY fecha DESC
+                LIMIT %s OFFSET %s
+            """
+            cursor.execute(sql, tuple(params))
+            return cursor.fetchall()
+        except Exception as e:
+            print(f"[BitacoraModel._sql_filtrar_por_criterios] Error: {e}")
+            return []
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                try:
+                    conn.close()
+                except Exception:
+                    pass
+
     def _sql_contar_por_accion(self) -> dict:
         conn = cursor = None
         try:
@@ -210,6 +262,50 @@ class BitacoraModel:
         except Exception as e:
             print(f"[BitacoraModel._sql_contar_por_accion] Error: {e}")
             return {}
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                try:
+                    conn.close()
+                except Exception:
+                    pass
+
+    def _sql_contar_filtrados(self, usuario: str = None,
+                              modulo: str = None,
+                              accion: str = None) -> int:
+        conn = cursor = None
+        try:
+            conn = self._con()
+            if conn is None:
+                return 0
+            cursor = conn.cursor()
+
+            condiciones = []
+            params = []
+
+            if usuario:
+                condiciones.append("usuario LIKE %s")
+                params.append(f"%{usuario}%")
+            if modulo:
+                condiciones.append("modulo = %s")
+                params.append(modulo)
+            if accion:
+                condiciones.append("accion = %s")
+                params.append(accion)
+
+            if not condiciones:
+                sql = "SELECT COUNT(*) FROM bitacora"
+                cursor.execute(sql)
+            else:
+                sql = f"SELECT COUNT(*) FROM bitacora WHERE {' AND '.join(condiciones)}"
+                cursor.execute(sql, tuple(params))
+
+            row = cursor.fetchone()
+            return row[0] if row else 0
+        except Exception as e:
+            print(f"[BitacoraModel._sql_contar_filtrados] Error: {e}")
+            return 0
         finally:
             if cursor:
                 cursor.close()
@@ -258,6 +354,64 @@ class BitacoraModel:
             return []
         return self._sql_filtrar_por_accion(accion)
 
+    def filtrar_por_criterios(self, usuario: str = None,
+                               modulo: str = None,
+                               accion: str = None,
+                               page: int = 1,
+                               per_page: int = 10) -> list:
+        """Filtra por uno o más criterios combinados con AND."""
+        usuario_limpio = None
+        modulo_limpio = None
+        accion_limpia = None
+
+        if usuario and len(usuario.strip()) >= 2:
+            usuario_limpio = re.sub(r'[<>\'";\\]', '', usuario)[:15]
+        if modulo:
+            modulo_limpio = re.sub(r'[<>\'";\\]', '', modulo)[:20]
+        if accion:
+            acciones_validas = {'CREAR', 'EDITAR', 'ELIMINAR', 'VER',
+                                'LOGIN', 'LOGOUT'}
+            accion_upper = accion.upper().strip()
+            if accion_upper in acciones_validas:
+                accion_limpia = accion_upper
+
+        if not usuario_limpio and not modulo_limpio and not accion_limpia:
+            return self.obtener_todos()
+
+        offset = (page - 1) * per_page
+        return self._sql_filtrar_por_criterios(
+            usuario=usuario_limpio,
+            modulo=modulo_limpio,
+            accion=accion_limpia,
+            limit=per_page,
+            offset=offset
+        )
+
     def estadisticas_por_accion(self) -> dict:
         """Retorna conteo de registros agrupados por acción."""
         return self._sql_contar_por_accion()
+
+    def contar_filtrados(self, usuario: str = None,
+                              modulo: str = None,
+                              accion: str = None) -> int:
+        """Retorna el total de registros que coinciden con los filtros."""
+        usuario_limpio = None
+        modulo_limpio = None
+        accion_limpia = None
+
+        if usuario and len(usuario.strip()) >= 2:
+            usuario_limpio = re.sub(r'[<>\'";\\]', '', usuario)[:15]
+        if modulo:
+            modulo_limpio = re.sub(r'[<>\'";\\]', '', modulo)[:20]
+        if accion:
+            acciones_validas = {'CREAR', 'EDITAR', 'ELIMINAR', 'VER',
+                                'LOGIN', 'LOGOUT'}
+            accion_upper = accion.upper().strip()
+            if accion_upper in acciones_validas:
+                accion_limpia = accion_upper
+
+        return self._sql_contar_filtrados(
+            usuario=usuario_limpio,
+            modulo=modulo_limpio,
+            accion=accion_limpia
+        )

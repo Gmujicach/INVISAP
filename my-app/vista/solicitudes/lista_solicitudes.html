@@ -48,7 +48,7 @@
     </div>
   </div>
 
-<div class="card border-0 shadow-sm" style="border-radius: 12px !important">
+<div class="card border-0 shadow-sm mx-2 mx-md-4 mb-4" style="border-radius: 12px !important">
 
       <div class="card-header bg-white border-bottom py-3 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
         <h6 class="mb-0 fw-bold text-secondary">Registro Completo</h6>
@@ -62,13 +62,12 @@
         </div>
       </div>
 
-      <div class="row justify-content-center mb-4 mt-2">
-        <div class="table-responsive text-nowrap table-hover">
+      <div class="card-body p-0">
+        <div class="table-responsive table-hover">
           <table
             id="tbl_solicitudes"
             class="table table-striped table-bordered"
-            cellspacing="0"
-            width="100%">
+            cellspacing="0">
             <thead>
               <tr>
                 <th>#</th>
@@ -165,7 +164,7 @@
     <div class="modal-content">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title"><i class="bi bi-file-earmark-plus"></i> Registrar Nueva Solicitud</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
       </div>
       <div class="modal-body">
         <form class="form-horizontal mx-auto" method="POST" action="/api/solicitudes/crear" id="formCrearSolicitud" autocomplete="off">
@@ -421,7 +420,7 @@
     <div class="modal-content">
       <div class="modal-header bg-warning text-dark">
         <h5 class="modal-title"><i class="bi bi-pencil-square"></i> Editar Solicitud <span id="edit_solicitud_id_title"></span></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+         <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg"></i></button>
       </div>
       <div class="modal-body">
         <form method="POST" action="/api/solicitudes/actualizar" id="formEditarSolicitud">

@@ -212,6 +212,42 @@ tbody tr:hover {
   color: #222 !important;
 }
 
+.btn-close-custom {
+  background: none !important;
+  border: none !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  padding: 0.5rem;
+  transition: all 0.2s ease;
+}
+.btn-close-custom i {
+  color: #fff !important;
+  font-size: 1.2rem;
+}
+.btn-close-custom:hover {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  opacity: 1 !important;
+}
+.btn-close-custom:hover i {
+  color: #fff !important;
+}
+
+@media (max-width: 768px) {
+  .table thead th {
+    font-size: 0.78rem;
+    padding: 0.5rem;
+  }
+  .table tbody td {
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+  .btn-sm {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75rem;
+  }
+}
+
 .form-check-input {
   width: 1.8em !important;
   height: 1.9em !important;

@@ -790,6 +790,9 @@
           if (themeIcon) themeIcon.className = isDark ? 'bi bi-moon-stars-fill me-2 fs-5 text-info' : 'bi bi-sun-fill me-2 fs-5 text-warning';
           if (themeLabel) themeLabel.textContent = isDark ? 'Modo Oscuro' : 'Modo Claro';
           updateLogo();
+          if (typeof Swal !== 'undefined') {
+            Swal.setDefaults({ theme: isDark ? 'dark' : 'light' });
+          }
         }
 
         var isDark = document.body.classList.contains('dark-mode');

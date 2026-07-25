@@ -117,6 +117,15 @@ function aplicarBusquedaBitacoraYRenderizar() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Leer page y per_page desde la URL si existen
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('page')) {
+        paginaActualBitacora = parseInt(urlParams.get('page')) || 1;
+    }
+    if (urlParams.has('per_page')) {
+        registrosPorPaginaBitacora = parseInt(urlParams.get('per_page')) || 10;
+    }
+
     const selectRegistros = document.getElementById('registros_por_pagina_bitacora');
     if (selectRegistros) {
         selectRegistros.value = registrosPorPaginaBitacora;
@@ -134,17 +143,22 @@ function cargarBitacora() {
     const usuario = new URLSearchParams(window.location.search).get('usuario') || '';
     const modulo = new URLSearchParams(window.location.search).get('modulo') || '';
     const accion = new URLSearchParams(window.location.search).get('accion') || '';
+    const page = new URLSearchParams(window.location.search).get('page') || '1';
+    const per_page = new URLSearchParams(window.location.search).get('per_page') || '10';
 
     const params = new URLSearchParams();
     if (usuario) params.set('usuario', usuario);
     if (modulo) params.set('modulo', modulo);
     if (accion) params.set('accion', accion);
+    params.set('page', page);
+    params.set('per_page', per_page);
 
     fetch(`/api/obtener-bitacora-json?${params.toString()}`)
         .then(res => res.json())
         .then(data => {
             todasLasBitacoras = Array.isArray(data) ? data : [];
-            paginaActualBitacora = 1;
+            paginaActualBitacora = parseInt(page) || 1;
+            registrosPorPaginaBitacora = parseInt(per_page) || 10;
             busquedaActualBitacora = '';
             const input = document.getElementById('buscarBitacora');
             if (input) input.value = '';

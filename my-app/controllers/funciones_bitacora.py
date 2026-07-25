@@ -17,16 +17,21 @@ def obtener_bitacora() -> list:
     return _get_modelo().obtener_todos()
 
 
-def filtrar_bitacora(usuario: str = None, modulo: str = None, accion: str = None) -> list:
-    """Filtra la bitácora por criterio. Prioridad: usuario > módulo > acción."""
+def filtrar_bitacora(usuario: str = None, modulo: str = None, accion: str = None, page: int = 1, per_page: int = 10) -> list:
+    """Filtra la bitácora combinando todos los criterios activos con AND."""
     modelo = _get_modelo()
-    if usuario:
-        return modelo.filtrar_por_usuario(usuario)
-    if modulo:
-        return modelo.filtrar_por_modulo(modulo)
-    if accion:
-        return modelo.filtrar_por_accion(accion)
-    return modelo.obtener_todos()
+    return modelo.filtrar_por_criterios(
+        usuario=usuario, modulo=modulo, accion=accion,
+        page=page, per_page=per_page
+    )
+
+
+def contar_bitacora_filtrada(usuario: str = None, modulo: str = None, accion: str = None) -> int:
+    """Cuenta el total de registros filtrados sin paginar."""
+    modelo = _get_modelo()
+    return modelo.contar_filtrados(
+        usuario=usuario, modulo=modulo, accion=accion
+    )
 
 
 def obtener_estadisticas_bitacora() -> dict:

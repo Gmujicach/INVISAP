@@ -21,7 +21,7 @@ from controllers.funciones_maquinaria import (
     restaurar_maquinaria_controller, actualizar_maquinaria_controller,
     eliminar_maquinaria_controller, contar_maquinarias_controller
 )
-from controllers.funciones_bitacora import filtrar_bitacora, obtener_estadisticas_bitacora
+from controllers.funciones_bitacora import filtrar_bitacora, obtener_estadisticas_bitacora, contar_bitacora_filtrada
 from models.model_publicacion import PublicacionModel
 from models.model_informe_avance import InformeAvanceModel
 from models.model_solicitudes import SolicitudModel
@@ -839,7 +839,9 @@ def api_obtener_bitacora_json():
         usuario = request.args.get('usuario', '').strip() or None
         modulo = request.args.get('modulo', '').strip() or None
         accion = request.args.get('accion', '').strip() or None
-        return jsonify(filtrar_bitacora(usuario=usuario, modulo=modulo, accion=accion))
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 10, type=int)
+        return jsonify(filtrar_bitacora(usuario=usuario, modulo=modulo, accion=accion, page=page, per_page=per_page))
     else:
         return jsonify([]), 401
 
@@ -1104,34 +1106,35 @@ def viewBitacora():
     if per_page not in allowed_per_page:
         per_page = 10
 
-    # Traer todos los registros filtrados
+    # Traer los registros paginados desde el modelo
     registros = filtrar_bitacora(
+        usuario=filtro_usuario or None,
+        modulo=filtro_modulo or None,
+        accion=filtro_accion or None,
+        page=page,
+        per_page=per_page
+    )
+
+    total_registros = contar_bitacora_filtrada(
         usuario=filtro_usuario or None,
         modulo=filtro_modulo or None,
         accion=filtro_accion or None
     )
-
-    # 2. Calcular el total de páginas
-    total_registros = len(registros)
     total_pages = max(1, (total_registros + per_page - 1) // per_page)
 
-    # Validar que la página solicitada esté en un rango válido
     if page < 1:
         page = 1
     elif page > total_pages and total_pages > 0:
         page = total_pages
 
-    # 3. Extraer solo los registros correspondientes a la página actual
     inicio = (page - 1) * per_page
     fin = inicio + per_page
-    registros_paginados = registros[inicio:fin]
     
     estadisticas = obtener_estadisticas_bitacora()
     
-    # 4. Enviar las variables de paginación a la vista
     return render_template(
         'bitacora/lista_bitacora.html',
-        registros=registros_paginados,
+        registros=registros,
         estadisticas=estadisticas,
         filtro_usuario=filtro_usuario,
         filtro_modulo=filtro_modulo,
@@ -1154,22 +1157,32 @@ def bitacora_ajax():
     filtro_modulo = request.args.get('modulo', '').strip()
     filtro_accion = request.args.get('accion', '').strip()
     page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
 
     registros = filtrar_bitacora(
+        usuario=filtro_usuario or None,
+        modulo=filtro_modulo or None,
+        accion=filtro_accion or None,
+        page=page,
+        per_page=per_page
+    )
+
+    total_registros = contar_bitacora_filtrada(
         usuario=filtro_usuario or None,
         modulo=filtro_modulo or None,
         accion=filtro_accion or None
     )
 
-    estadisticas = obtener_estadisticas_bitacora()
-
     html = render_template(
         'bitacora/_tabla_bitacora.html',
         registros=registros,
-        estadisticas=estadisticas,
+        estadisticas=obtener_estadisticas_bitacora(),
         filtro_usuario=filtro_usuario,
         filtro_modulo=filtro_modulo,
-        filtro_accion=filtro_accion
+        filtro_accion=filtro_accion,
+        page=page,
+        per_page=per_page,
+        total_registros=total_registros
     )
 
     return jsonify({'html': html})

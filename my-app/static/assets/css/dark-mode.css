@@ -54,6 +54,45 @@
   border-color: var(--inv-dark-border) !important;
 }
 
+/* Permite que las tarjetas con clases de fondo de Bootstrap mantengan su color en modo oscuro */
+:is(body.dark-mode, html[data-bs-theme="dark"] body)
+  :where(.card.bg-primary, .card.bg-success, .card.bg-warning,
+         .card.bg-danger, .card.bg-info, .card.bg-light,
+         .card.bg-dark, .card.bg-secondary) {
+  background-color: inherit !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body)
+  :where(.card.bg-primary, .card.bg-success, .card.bg-warning,
+         .card.bg-danger, .card.bg-info, .card.bg-light,
+         .card.bg-dark, .card.bg-secondary) > .card-body {
+  background-color: transparent !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .card.bg-primary {
+  background-color: #0d6efd !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .card.bg-success {
+  background-color: #198754 !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .card.bg-warning {
+  background-color: #ffc107 !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .card.bg-danger {
+  background-color: #dc3545 !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .card.bg-info {
+  background-color: #0dcaf0 !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .card.bg-light {
+  background-color: #f8f9fa !important;
+  color: #000 !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .card.bg-dark {
+  background-color: #212529 !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .card.bg-secondary {
+  background-color: #6c757d !important;
+}
+
 :is(body.dark-mode, html[data-bs-theme="dark"] body)
   :where(.form-control, .form-select, .input-group-text) {
   background-color: var(--inv-dark-surface-2) !important;
@@ -67,16 +106,52 @@
   background-color: var(--inv-dark-surface) !important;
   color: var(--inv-dark-text) !important;
   border-color: var(--inv-dark-border) !important;
+  --bs-table-accent-bg: transparent !important;
+  box-shadow: none !important;
 }
 :is(body.dark-mode, html[data-bs-theme="dark"] body)
   .table-striped > tbody > tr:nth-of-type(odd) > * {
+  --bs-table-accent-bg: var(--inv-dark-surface-2) !important;
   background-color: var(--inv-dark-surface-2) !important;
   color: var(--inv-dark-text) !important;
+  box-shadow: none !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body)
+  .table-striped > tbody > tr:nth-of-type(odd) {
+  --bs-table-accent-bg: var(--inv-dark-surface-2) !important;
+  background-color: var(--inv-dark-surface-2) !important;
 }
 :is(body.dark-mode, html[data-bs-theme="dark"] body)
   .table-hover > tbody > tr:hover > * {
+  --bs-table-accent-bg: #34354f !important;
   background-color: #34354f !important;
   color: var(--inv-dark-text) !important;
+  box-shadow: none !important;
+}
+
+/* ---------- Badges en tablas (modo oscuro) ---------- */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .table .badge {
+  border: 1px solid var(--inv-dark-border) !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .table .bg-light {
+  background-color: var(--inv-dark-surface-2) !important;
+  color: var(--inv-dark-text) !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .table .bg-warning {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .table .bg-primary {
+  background-color: #0d6efd !important;
+  color: #fff !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .table .bg-success {
+  background-color: #198754 !important;
+  color: #fff !important;
+}
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .table .bg-secondary {
+  background-color: #6c757d !important;
+  color: #fff !important;
 }
 
 /* ---------- Placeholders ---------- */
@@ -290,4 +365,15 @@ body.dark-mode .authentication-card {
 
 :is(body.dark-mode, html[data-bs-theme="dark"] body) .landing-toggle:hover {
   background: rgba(255,255,255,0.1) !important;
+}
+
+/* ---------- SweetAlert2 en modo oscuro ---------- */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) {
+  --swal2-background: #2b2c40;
+  --swal2-color: #ffffff;
+  --swal2-close-button-color: #aaa;
+  --swal2-input-border: #3a3b53;
+  --swal2-validation-message-background: #1f2033;
+  --swal2-validation-message-color: #ffffff;
+  --swal2-footer-border-color: #3a3b53;
 }
