@@ -169,6 +169,52 @@ class ProyectoModel:
         finally:
             if conexion: conexion.close()
 
+    def obtener_detalle_proyecto_por_codigo(self, codigo_proyecto):
+        conexion = None
+        try:
+            conexion = connectionBD()
+            cursor = conexion.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT p.codigo_proyecto, p.fecha_planificacion, p.descripcion_tecnica,
+                       p.computos_metricos, p.estimacion_costo, p.proyecto_has_empleado,
+                       COALESCE(e.nombre_empleado, 'Sin asignar') as nombre_proyectista
+                FROM proyecto p
+                LEFT JOIN empleados e ON p.proyecto_has_empleado = e.id_empleados
+                WHERE p.codigo_proyecto = %s
+            """, (codigo_proyecto,))
+            proyecto = cursor.fetchone()
+            if not proyecto:
+                return None
+            cursor.execute("""
+                SELECT s.id_solicitudes, s.tipo_solicitud, s.estatus_solicitud, s.problematica,
+                       COALESCE(CONCAT(part.nombre, ' ', part.apellido), inst.razon_social, com.nombre_comunidad) as nombre_solicitante
+                FROM proyecto_has_solicitudes phs
+                JOIN solicitudes s ON phs.solicitudes_id_solicitudes = s.id_solicitudes
+                LEFT JOIN persona pers ON phs.solicitudes_persona_id_persona = pers.id_persona
+                LEFT JOIN particular part ON pers.id_persona = part.persona_id_persona
+                LEFT JOIN institucion inst ON pers.id_persona = inst.persona_id_persona
+                LEFT JOIN comunidad com ON pers.id_persona = com.persona_id_persona
+                WHERE phs.proyecto_codigo_proyecto = %s
+            """, (codigo_proyecto,))
+            solicitudes = cursor.fetchall()
+            cursor.execute("""
+                SELECT m.id_maquinaria, m.nombre_maquinaria
+                FROM proyecto_has_maquinaria phm
+                JOIN maquinaria m ON phm.maquinaria_id_maquinaria = m.id_maquinaria
+                WHERE phm.proyecto_codigo_proyecto = %s
+            """, (codigo_proyecto,))
+            maquinaria = cursor.fetchall()
+            return {
+                'proyecto': proyecto,
+                'solicitudes': solicitudes,
+                'maquinaria': maquinaria
+            }
+        except Exception as e:
+            print(f"Error en ProyectoModel.obtener_detalle_proyecto_por_codigo: {e}")
+            return None
+        finally:
+            if conexion: conexion.close()
+
     def actualizar_proyecto(self, codigo_proyecto_actual, datos):
         conexion = None
         try:

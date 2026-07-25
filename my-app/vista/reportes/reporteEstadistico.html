@@ -54,111 +54,123 @@
         <hr class="my-4">
 
          <div id="filtrosSolicitudes" class="filtro-section">
-          <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Solicitudes</h6>
-          <div class="row g-3">
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Nombre / Razón Social / Responsable</label>
-              <input type="text" name="nombre_solicitante" class="form-control form-control-sm filtro-estad" placeholder="Buscar por nombre...">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Cédula</label>
-              <input type="text" name="cedula" class="form-control form-control-sm filtro-estad" placeholder="Cédula...">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Teléfono</label>
-              <input type="text" name="telefono" class="form-control form-control-sm filtro-estad" placeholder="Teléfono...">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Correo</label>
-              <input type="text" name="correo" class="form-control form-control-sm filtro-estad" placeholder="Correo...">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Tipo de Solicitud</label>
-              <select name="tipo_solicitud" class="form-select form-select-sm filtro-estad">
-                <option value="">-- Todos --</option>
-                <option value="Comunidad">Comunidad</option>
-                <option value="Institucion">Institución</option>
-                <option value="Particular">Particular</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Estatus</label>
-              <select name="estatus_solicitud" class="form-select form-select-sm filtro-estad">
-                <option value="">-- Todos --</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="En Proceso">En Proceso</option>
-                <option value="Completada">Completada</option>
-                <option value="Procesada">Procesada</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Municipio</label>
-              <input type="text" name="municipio" class="form-control form-control-sm filtro-estad" placeholder="Ej: Iribarren">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Parroquia</label>
-              <input type="text" name="parroquia" class="form-control form-control-sm filtro-estad" placeholder="Parroquia...">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Sector</label>
-              <input type="text" name="sector" class="form-control form-control-sm filtro-estad" placeholder="Sector...">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Ámbito</label>
-              <input type="text" name="ambito" class="form-control form-control-sm filtro-estad" placeholder="Ámbito...">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Dirección</label>
-              <input type="text" name="direccion" class="form-control form-control-sm filtro-estad" placeholder="Dirección...">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Fecha Desde</label>
-              <input type="date" name="fecha_desde" class="form-control form-control-sm filtro-estad">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Fecha Hasta</label>
-              <input type="date" name="fecha_hasta" class="form-control form-control-sm filtro-estad">
-            </div>
-          </div>
-        </div>
+           <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Solicitudes</h6>
+           <div class="row g-3">
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Nombre / Razón Social / Responsable</label>
+               <input type="text" name="nombre_solicitante" class="form-control form-control-sm filtro-estad" placeholder="Buscar por nombre...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Cédula</label>
+               <input type="text" name="cedula" class="form-control form-control-sm filtro-estad" placeholder="Cédula...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Correo</label>
+               <input type="text" name="correo" class="form-control form-control-sm filtro-estad" placeholder="Correo...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Dominio Correo (Gmail)</label>
+               <input type="text" name="correo_dominio" class="form-control form-control-sm filtro-estad" placeholder="gmail.com">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Teléfono</label>
+               <input type="text" name="telefono" class="form-control form-control-sm filtro-estad" placeholder="Teléfono...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Tipo de Solicitud</label>
+               <select name="tipo_solicitud" class="form-select form-select-sm filtro-estad">
+                 <option value="">-- Todos --</option>
+                 <option value="Comunidad">Comunidad</option>
+                 <option value="Institucion">Institución</option>
+                 <option value="Particular">Particular</option>
+               </select>
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Estatus</label>
+               <select name="estatus_solicitud" class="form-select form-select-sm filtro-estad">
+                 <option value="">-- Todos --</option>
+                 <option value="Pendiente">Pendiente</option>
+                 <option value="En Proceso">En Proceso</option>
+                 <option value="Completada">Completada</option>
+                 <option value="Procesada">Procesada</option>
+               </select>
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Municipio</label>
+               <input type="text" name="municipio" class="form-control form-control-sm filtro-estad" placeholder="Ej: Iribarren">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Parroquia</label>
+               <input type="text" name="parroquia" class="form-control form-control-sm filtro-estad" placeholder="Parroquia...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Sector</label>
+               <input type="text" name="sector" class="form-control form-control-sm filtro-estad" placeholder="Sector...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Ámbito</label>
+               <input type="text" name="ambito" class="form-control form-control-sm filtro-estad" placeholder="Ámbito...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Dirección</label>
+               <input type="text" name="direccion" class="form-control form-control-sm filtro-estad" placeholder="Dirección...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Fecha Desde</label>
+               <input type="date" name="fecha_desde" class="form-control form-control-sm filtro-estad">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Fecha Hasta</label>
+               <input type="date" name="fecha_hasta" class="form-control form-control-sm filtro-estad">
+             </div>
+           </div>
+         </div>
 
          <div id="filtrosObras" class="filtro-section" style="display:none;">
-          <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Obras</h6>
-          <div class="row g-3">
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Nombre de Obra</label>
-              <input type="text" name="titulo_obra" class="form-control form-control-sm filtro-estad" placeholder="Buscar nombre...">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Ubicación</label>
-              <input type="text" name="ubicacion_obra" class="form-control form-control-sm filtro-estad" placeholder="Buscar ubicación...">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Contratista</label>
-              <input type="text" name="contratista" class="form-control form-control-sm filtro-estad" placeholder="Buscar contratista...">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Semáforo Estado</label>
-              <input type="text" name="semaforo_estado" class="form-control form-control-sm filtro-estad" placeholder="Ej: Verde">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Fecha Inicio Desde</label>
-              <input type="date" name="fecha_inicio_desde" class="form-control form-control-sm filtro-estad">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Fecha Inicio Hasta</label>
-              <input type="date" name="fecha_inicio_hasta" class="form-control form-control-sm filtro-estad">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Fecha Fin Desde</label>
-              <input type="date" name="fecha_fin_desde" class="form-control form-control-sm filtro-estad">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label fw-semibold small">Fecha Fin Hasta</label>
-              <input type="date" name="fecha_fin_hasta" class="form-control form-control-sm filtro-estad">
-            </div>
-          </div>
-        </div>
+           <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Obras</h6>
+           <div class="row g-3">
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Nombre de Obra</label>
+               <input type="text" name="titulo_obra" class="form-control form-control-sm filtro-estad" placeholder="Buscar nombre...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Ubicación</label>
+               <input type="text" name="ubicacion_obra" class="form-control form-control-sm filtro-estad" placeholder="Buscar ubicación...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Contratista</label>
+               <input type="text" name="contratista" class="form-control form-control-sm filtro-estad" placeholder="Buscar contratista...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Nivel de Criticidad</label>
+               <input type="text" name="criticidad" class="form-control form-control-sm filtro-estad" placeholder="Criticidad...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Semáforo Estado</label>
+               <input type="text" name="semaforo_estado" class="form-control form-control-sm filtro-estad" placeholder="Ej: Verde">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Gerencia Responsable</label>
+               <input type="text" name="gerente" class="form-control form-control-sm filtro-estad" placeholder="Gerencia...">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Fecha Inicio Desde</label>
+               <input type="date" name="fecha_inicio_desde" class="form-control form-control-sm filtro-estad">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Fecha Inicio Hasta</label>
+               <input type="date" name="fecha_inicio_hasta" class="form-control form-control-sm filtro-estad">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Fecha Fin Desde</label>
+               <input type="date" name="fecha_fin_desde" class="form-control form-control-sm filtro-estad">
+             </div>
+             <div class="col-md-3">
+               <label class="form-label fw-semibold small">Fecha Fin Hasta</label>
+               <input type="date" name="fecha_fin_hasta" class="form-control form-control-sm filtro-estad">
+             </div>
+           </div>
+         </div>
 
          <div id="filtrosEmpleados" class="filtro-section" style="display:none;">
           <h6 class="fw-bold mb-3"><i class="bi bi-funnel me-1 text-primary"></i> Filtros - Personal / Empleados</h6>
@@ -560,28 +572,63 @@
     return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
   }
 
-  function actualizarTitulos(tipo, agrupacion) {
+  function actualizarTitulos(tipo, agrupacion, dataKeys) {
     var datos = CHART_TITLES[tipo] || CHART_TITLES['solicitudes'];
-    var keys = ['chart1', 'chart2', 'chart3'];
-    var agrupacionTexto = agrupacion === 'semana' ? 'por Semana' : agrupacion === 'mes' ? 'por Mes' : 'por Fecha';
-    keys.forEach(function(k, idx) {
-      var el = document.getElementById(k + 'Title');
+    var agrupacionTexto = agrupacion === 'semana' ? 'por Semana' : agrupacion === 'mes' ? 'por Mes' : 'por Día';
+    var temporalKey = null;
+    var otrasKeys = [];
+    dataKeys.forEach(function(k) {
+      if (k === 'por_fecha' || k === 'por_fecha_ingreso' || k === 'por_mes' || k === 'por_semana') {
+        temporalKey = k;
+      } else {
+        otrasKeys.push(k);
+      }
+    });
+
+    var asignaciones = [];
+    if (otrasKeys.length > 0) asignaciones.push({ key: otrasKeys[0], chart: 'chart1' });
+    if (otrasKeys.length > 1) asignaciones.push({ key: otrasKeys[1], chart: 'chart2' });
+    if (temporalKey) asignaciones.push({ key: temporalKey, chart: 'chart3' });
+
+    asignaciones.forEach(function(item, idx) {
+      var el = document.getElementById(item.chart + 'Title');
       if (el) {
-        var texto = datos[k].texto;
-        if (k === 'chart3') {
-          texto = '<i class="bi bi-calendar-check me-2"></i>Tendencia ' + agrupacionTexto;
+        var texto = datos[item.chart] ? datos[item.chart].texto : STAT_TITLES_FALLBACK[item.key] || item.key.replace('_', ' ').title();
+        if (item.key === 'por_fecha' || item.key === 'por_fecha_ingreso' || item.key === 'por_mes' || item.key === 'por_semana') {
+          texto = '<i class=\"bi bi-calendar-check me-2\"></i>Tendencia ' + agrupacionTexto;
         }
         el.innerHTML = texto;
       }
-      var card = document.querySelector('.chart-type-select[data-target=\"' + k + '\"]').closest('.card');
-      if (card) {
+      var card = document.querySelector('.chart-type-select[data-target=\"' + item.chart + '\"]').closest('.card');
+      if (card && datos[item.chart]) {
         card.querySelectorAll('.text-primary, .text-success, .text-danger').forEach(function(span) {
           span.classList.remove('text-primary', 'text-success', 'text-danger');
-          span.classList.add(datos[keys[idx]].color);
+          span.classList.add(datos[item.chart].color);
         });
       }
     });
   }
+
+  var STAT_TITLES_FALLBACK = {
+    'por_fecha': 'Tendencia por Fecha',
+    'por_fecha_ingreso': 'Tendencia por Fecha de Ingreso',
+    'por_tipo': 'Distribución por Tipo',
+    'por_estatus': 'Distribución por Estatus',
+    'por_municipio': 'Distribución por Municipio',
+    'por_parroquia': 'Distribución por Parroquia',
+    'por_estado': 'Distribución por Estado',
+    'por_contratista': 'Distribución por Contratista',
+    'por_ubicacion': 'Distribución por Ubicación',
+    'por_semaforo_color': 'Distribución por Color de Semáforo',
+    'por_avance': 'Distribución por Porcentaje de Avance',
+    'por_cargo': 'Distribución por Cargo',
+    'por_gerencia': 'Distribución por Gerencia',
+    'por_modalidad': 'Distribución por Modalidad',
+    'por_objeto': 'Distribución por Objeto',
+    'por_empresa': 'Distribución por Empresa',
+    'por_autor': 'Distribución por Autor',
+    'por_tipo_pub': 'Distribución por Tipo de Publicación',
+  };
 
   function cargarDatos(filtros) {
     destruirTodosLosGraficos();
@@ -590,18 +637,22 @@
     fetch('{{ url_for("reporte_estadistico_bp.datosEstadisticos") }}?' + params.toString())
       .then(function(response) { return response.json(); })
       .then(function(data) {
-        actualizarTitulos(obtenerTipoReporte(), obtenerAgrupacion());
+        if (data && data.error) {
+          mostrarNotificacion('Error: ' + data.error, 'danger');
+          return;
+        }
+        var map = {};
+        Object.keys(data).forEach(function(k) { map[k] = data[k]; });
+
+        actualizarTitulos(obtenerTipoReporte(), obtenerAgrupacion(), Object.keys(map));
 
         var chart1Title = document.getElementById('chart1Title').innerHTML.replace(/<[^>]*>/g, '').trim();
         var chart2Title = document.getElementById('chart2Title').innerHTML.replace(/<[^>]*>/g, '').trim();
         var chart3Title = document.getElementById('chart3Title').innerHTML.replace(/<[^>]*>/g, '').trim();
 
-        var map = {};
-        Object.keys(data).forEach(function(k) { map[k] = data[k]; });
-
-        var chart1Key = Object.keys(map)[0];
-        var chart2Key = Object.keys(map)[1];
-        var chart3Key = Object.keys(map)[2];
+        var chart1Key = Object.keys(map)[0] || null;
+        var chart2Key = Object.keys(map)[1] || null;
+        var chart3Key = Object.keys(map)[2] || null;
 
         if (chart1Key) {
           actualizarGrafico('chart1', map[chart1Key], chart1Title, '#0d6efd');
@@ -613,8 +664,8 @@
           actualizarGrafico('chart3', map[chart3Key], chart3Title, '#dc3545');
         }
       })
-      .catch(function() {
-        mostrarNotificacion('Error al cargar datos estadísticos', 'danger');
+      .catch(function(err) {
+        mostrarNotificacion('Error al cargar datos estadísticos: ' + (err && err.message ? err.message : 'desconocido'), 'danger');
       });
   }
 

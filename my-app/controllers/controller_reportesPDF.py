@@ -101,6 +101,38 @@ def construir_modulos_config():
     ]
 
 
+def _detectar_tipo_filtro(filtros, modulo_id):
+    if not filtros:
+        return None
+    if modulo_id == 'solicitudes' and any(k in filtros for k in ('cedula', 'correo', 'correo_dominio')):
+        return 'solicitante'
+    if modulo_id == 'obras' and any(k in filtros for k in ('ubicacion_obra', 'semaforo_estado', 'contratista', 'criticidad', 'nivel_gravedad', 'gerente')):
+        return 'obra'
+    return None
+
+
+def _get_modulo_reconfigurado(mod_config, tipo_filtro):
+    if tipo_filtro == 'solicitante' and mod_config['id'] == 'solicitudes':
+        return {
+            'id': mod_config['id'],
+            'label': mod_config['label'],
+            'keywords': mod_config['keywords'],
+            'fetch': mod_config['fetch'],
+            'headers': ['Cédula', 'Nombre del Solicitante', 'Correo', 'Teléfono', 'Descripción de la Solicitud', 'Fecha', 'Estatus', 'Municipio/Parroquia'],
+            'fields': ['cedula', 'nombre_solicitante', 'correo', 'telefono', 'problematica', 'fecha', 'estatus_solicitud', 'municipio_parroquia']
+        }
+    if tipo_filtro == 'obra' and mod_config['id'] == 'obras':
+        return {
+            'id': mod_config['id'],
+            'label': mod_config['label'],
+            'keywords': mod_config['keywords'],
+            'fetch': mod_config['fetch'],
+            'headers': ['ID Obra', 'Nivel de Criticidad', 'Gerencia Responsable', 'Estatus', 'Avance (%)', 'Fecha de Registro'],
+            'fields': ['id_obra', 'nivel_gravedad', 'gerente', 'semaforo', 'porcentaje_avance_obra', 'fecha_inicio']
+        }
+    return mod_config
+
+
 def obtener_modulos_por_filtro(filtro):
     modulos_config = construir_modulos_config()
     if not filtro:
@@ -117,7 +149,7 @@ def _colectar_filtros_form(modulo='general'):
         'solicitudes': [
             'tipo_solicitud', 'estatus_solicitud', 'problematica', 'cedula', 'nombre_solicitante',
             'fecha_desde', 'fecha_hasta', 'municipio', 'parroquia', 'direccion', 'telefono', 'correo',
-            'sector', 'ambito',
+            'correo_dominio', 'sector', 'ambito',
         ],
         'empleados': [
             'nombre_empleado', 'cargo', 'fecha_ingreso_desde', 'fecha_ingreso_hasta', 'estado_empleado',
@@ -135,16 +167,17 @@ def _colectar_filtros_form(modulo='general'):
         'obras': [
             'titulo_obra', 'ubicacion_obra', 'fecha_inicio_desde', 'fecha_inicio_hasta',
             'fecha_fin_desde', 'fecha_fin_hasta', 'semaforo_estado', 'contratista',
+            'criticidad', 'nivel_gravedad', 'gerente',
         ],
         'publicaciones': [
             'titulo_publicacion', 'nombre_responsable', 'tipo_publicacion',
             'fecha_publicacion_desde', 'fecha_publicacion_hasta',
         ],
         'solicitantes': [
-            'nombre', 'apellido', 'cedula',
+            'nombre', 'apellido', 'cedula', 'correo', 'correo_dominio',
         ],
         'general': [
-            'nombre_solicitante', 'cedula', 'telefono', 'correo',
+            'nombre_solicitante', 'cedula', 'telefono', 'correo', 'correo_dominio',
             'fecha_desde', 'fecha_hasta', 'municipio', 'direccion',
         ],
     }
@@ -162,7 +195,7 @@ def _limpiar_filtros_por_modulo(filtros, modulo_id):
         'solicitudes': {
             'tipo_solicitud', 'estatus_solicitud', 'problematica', 'cedula', 'nombre_solicitante',
             'fecha_desde', 'fecha_hasta', 'municipio', 'parroquia', 'direccion', 'telefono', 'correo',
-            'sector', 'ambito',
+            'correo_dominio', 'sector', 'ambito',
         },
         'empleados': {
             'nombre_empleado', 'cargo', 'fecha_ingreso_desde', 'fecha_ingreso_hasta', 'estado_empleado',
@@ -178,12 +211,13 @@ def _limpiar_filtros_por_modulo(filtros, modulo_id):
         'obras': {
             'titulo_obra', 'ubicacion_obra', 'fecha_inicio_desde', 'fecha_inicio_hasta',
             'fecha_fin_desde', 'fecha_fin_hasta', 'semaforo_estado', 'contratista',
+            'criticidad', 'nivel_gravedad', 'gerente',
         },
         'publicaciones': {
             'titulo_publicacion', 'nombre_responsable', 'tipo_publicacion',
             'fecha_publicacion_desde', 'fecha_publicacion_hasta',
         },
-        'solicitantes': {'nombre', 'apellido', 'cedula'},
+        'solicitantes': {'nombre', 'apellido', 'cedula', 'correo', 'correo_dominio'},
     }
     validos = campos_validos.get(modulo_id, set())
     return {k: v for k, v in filtros.items() if k in validos}
@@ -218,29 +252,28 @@ def generarReportePDF():
 
     for mod in modulos_a_procesar:
         mod_filtros = _limpiar_filtros_por_modulo(filtros, mod['id'])
-        fetch_fn = mod['fetch']
-        if 'publicaciones' in str(fetch_fn):
-            data = fetch_fn(mod_filtros if mod_filtros else None)
-        else:
-            data = fetch_fn(mod_filtros if mod_filtros else None)
+        tipo_filtro = _detectar_tipo_filtro(mod_filtros, mod['id'])
+        mod_config = _get_modulo_reconfigurado(mod, tipo_filtro)
+        fetch_fn = mod_config['fetch']
+        data = fetch_fn(mod_filtros if mod_filtros else None)
         if not data:
             continue
-        elements.append(Paragraph(f'<b>SECCIÓN: {mod["label"]}</b>', styles['Heading2']))
+        elements.append(Paragraph(f'<b>SECCIÓN: {mod_config["label"]}</b>', styles['Heading2']))
         elements.append(Spacer(1, 6))
 
-        encabezados = [Paragraph(str(h), estilo_celda) for h in mod['headers']]
+        encabezados = [Paragraph(str(h), estilo_celda) for h in mod_config['headers']]
         filas = [encabezados]
         for row in data:
             valores = []
-            for field in mod['fields']:
+            for field in mod_config['fields']:
                 val = str(row.get(field, ''))
                 if len(val) > 120:
                     val = val[:120] + '...'
                 valores.append(Paragraph(val, estilo_celda))
             filas.append(valores)
 
-        col_w = (tamanio_pagina[0] - 144) / len(mod['headers'])
-        tabla = Table(filas, colWidths=[col_w] * len(mod['headers']), repeatRows=1)
+        col_w = (tamanio_pagina[0] - 144) / len(mod_config['headers'])
+        tabla = Table(filas, colWidths=[col_w] * len(mod_config['headers']), repeatRows=1)
         tabla.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#DC3545')),
             ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),

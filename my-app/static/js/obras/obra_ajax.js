@@ -435,7 +435,65 @@ function verObra(id_obra) {
         document.getElementById('ver_certificaciones_obras_ejecutadas').value = obra.certificaciones_obras_ejecutadas || '';
         document.getElementById('ver_semaforo').value = obra.color || '';
         document.getElementById('ver_contratacion').value = obra.contratacion_id_contratacion || '';
-        document.getElementById('ver_proyecto').value = obra.gestionar_proyectos_codigo_proyecto || '';
+        document.getElementById('ver_proyecto').value =obra.gestionar_proyectos_codigo_proyecto || '';
+
+        const seccionProyecto = document.getElementById('seccionProyectoRelacionado');
+        const codigoProyecto = obra.gestionar_proyectos_codigo_proyecto;
+        if (seccionProyecto && codigoProyecto) {
+          fetch(`/api/proyecto/detalle/${encodeURIComponent(codigoProyecto)}`)
+            .then(r => r.json())
+            .then(resp => {
+              if (resp.status === 'success' && resp.data) {
+                const p = resp.data.proyecto || {};
+                document.getElementById('ver_proy_codigo').textContent = p.codigo_proyecto || '-';
+                document.getElementById('ver_proy_fecha').textContent = p.fecha_planificacion || '-';
+                document.getElementById('ver_proy_costo').textContent = p.estimacion_costo || '-';
+                document.getElementById('ver_proy_proyectista').textContent = p.nombre_proyectista || '-';
+                const desc = p.descripcion_tecnica || '-';
+                document.getElementById('ver_proy_descripcion').textContent = desc;
+                document.getElementById('ver_proy_descripcion').title = desc;
+                document.getElementById('ver_proy_computos').textContent = p.computos_metricos || '-';
+                document.getElementById('ver_proy_computos').title = p.computos_metricos || '';
+
+                const solicitudes = resp.data.solicitudes || [];
+                const maquinaria = resp.data.maquinaria || [];
+                const tbodyS = document.getElementById('proyectoSolicitudesBody');
+                const tbodyM = document.getElementById('proyectoMaquinariaBody');
+                const contS = document.getElementById('proyectoSolicitudesContainer');
+                const contM = document.getElementById('proyectoMaquinariaContainer');
+
+                if (solicitudes.length) {
+                  tbodyS.innerHTML = solicitudes.map(s => '<tr>' +
+                    '<td>' + s.id_solicitudes + '</td>' +
+                    '<td>' + (s.tipo_solicitud || '-') + '</td>' +
+                    '<td>' + (s.estatus_solicitud || '-') + '</td>' +
+                    '<td>' + (s.nombre_solicitante || '-') + '</td>' +
+                  '</tr>').join('');
+                  contS.style.display = '';
+                } else {
+                  contS.style.display = 'none';
+                }
+
+                if (maquinaria.length) {
+                  tbodyM.innerHTML = maquinaria.map(m => '<tr>' +
+                    '<td>' + m.id_maquinaria + '</td>' +
+                    '<td>' + (m.nombre_maquinaria || '-') + '</td>' +
+                  '</tr>').join('');
+                  contM.style.display = '';
+                } else {
+                  contM.style.display = 'none';
+                }
+
+                seccionProyecto.style.display = '';
+              } else {
+                seccionProyecto.style.display = 'none';
+              }
+            })
+            .catch(() => { seccionProyecto.style.display = 'none'; });
+        } else if (seccionProyecto) {
+          seccionProyecto.style.display = 'none';
+        }
+
         const modal = new bootstrap.Modal(document.getElementById('modalVerObra'));
         modal.show();
     })

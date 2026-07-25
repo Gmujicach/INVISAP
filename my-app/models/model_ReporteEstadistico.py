@@ -25,7 +25,10 @@ class ReporteEstadisticoModel:
             if key in ('tipo_reporte', 'agrupacion'):
                 continue
             columna = mapeo.get(key, key)
-            if key.startswith('fecha_') and key.endswith('_desde'):
+            if key == 'correo_dominio':
+                where_clauses.append(f"{columna} LIKE %s")
+                params.append(f"%{val}%")
+            elif key.startswith('fecha_') and key.endswith('_desde'):
                 where_clauses.append(f"DATE({columna}) >= %s")
                 params.append(val)
             elif key.startswith('fecha_') and key.endswith('_hasta'):
@@ -72,6 +75,7 @@ class ReporteEstadisticoModel:
             'direccion': 'p.direccion',
             'telefono': 'p.telefono',
             'correo': 'p.correo',
+            'correo_dominio': 'p.correo',
             'sector': 'com.sector',
             'ambito': 'com.ambito',
         }
@@ -83,26 +87,26 @@ class ReporteEstadisticoModel:
 
             if agrupacion == 'mes':
                 cursor.execute(f"""
-                    SELECT CONCAT(YEAR(s.fecha), '-', LPAD(MONTH(s.fecha),2,'0')) as label, COUNT(*) as valor 
+                    SELECT DATE_FORMAT(s.fecha, '%Y-%m') as label, COUNT(*) as valor 
                     FROM solicitudes s
                     JOIN persona p ON s.persona_id_persona = p.id_persona
                     LEFT JOIN particular part ON p.id_persona = part.persona_id_persona
                     LEFT JOIN institucion inst ON p.id_persona = inst.persona_id_persona
                     LEFT JOIN comunidad com ON p.id_persona = com.persona_id_persona
                     {where_sql}
-                    GROUP BY YEAR(s.fecha), MONTH(s.fecha) ORDER BY label ASC
+                    GROUP BY DATE_FORMAT(s.fecha, '%Y-%m') ORDER BY label ASC
                 """, params)
                 stats['por_mes'] = cursor.fetchall()
             elif agrupacion == 'semana':
                 cursor.execute(f"""
-                    SELECT CONCAT(YEAR(s.fecha), '-W', LPAD(WEEK(s.fecha, 3),2,'0')) as label, COUNT(*) as valor 
+                    SELECT DATE_FORMAT(s.fecha, '%x-W%v') as label, COUNT(*) as valor 
                     FROM solicitudes s
                     JOIN persona p ON s.persona_id_persona = p.id_persona
                     LEFT JOIN particular part ON p.id_persona = part.persona_id_persona
                     LEFT JOIN institucion inst ON p.id_persona = inst.persona_id_persona
                     LEFT JOIN comunidad com ON p.id_persona = com.persona_id_persona
                     {where_sql}
-                    GROUP BY YEAR(s.fecha), WEEK(s.fecha, 3) ORDER BY label ASC
+                    GROUP BY DATE_FORMAT(s.fecha, '%x-W%v') ORDER BY label ASC
                 """, params)
                 stats['por_semana'] = cursor.fetchall()
             else:
@@ -198,6 +202,9 @@ class ReporteEstadisticoModel:
             'fecha_fin_hasta': 'o.fecha_fin',
             'semaforo_estado': 's.estado',
             'contratista': 'c.empresa_ganadora',
+            'criticidad': 'g.criticidad',
+            'nivel_gravedad': 'g.nivel_gravedad',
+            'gerente': 'e.nombre_empleado',
         }
         self._aplicar_filtros(where, params, filtros, mapeo)
         where_sql = "WHERE " + " AND ".join(where)
@@ -205,10 +212,53 @@ class ReporteEstadisticoModel:
         try:
             stats = {}
 
+            if agrupacion == 'mes':
+                cursor.execute(f"""
+                    SELECT DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%Y-%m') as label, COUNT(*) as valor
+                    FROM obra o
+                    JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
+                    JOIN contratacion c ON o.contratacion_id_contratacion = c.id_contratacion
+                    LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
+                    LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
+                    LEFT JOIN empleados e ON e.id_empleados = a.gerente
+                    {where_sql}
+                    GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%Y-%m') ORDER BY label ASC
+                """, params)
+                stats['por_fecha'] = cursor.fetchall()
+            elif agrupacion == 'semana':
+                cursor.execute(f"""
+                    SELECT DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%x-W%v') as label, COUNT(*) as valor
+                    FROM obra o
+                    JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
+                    JOIN contratacion c ON o.contratacion_id_contratacion = c.id_contratacion
+                    LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
+                    LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
+                    LEFT JOIN empleados e ON e.id_empleados = a.gerente
+                    {where_sql}
+                    GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%x-W%v') ORDER BY label ASC
+                """, params)
+                stats['por_fecha'] = cursor.fetchall()
+            else:
+                cursor.execute(f"""
+                    SELECT DATE(COALESCE(o.fecha_inicio, o.fecha_fin)) as label, COUNT(*) as valor
+                    FROM obra o
+                    JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
+                    JOIN contratacion c ON o.contratacion_id_contratacion = c.id_contratacion
+                    LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
+                    LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
+                    LEFT JOIN empleados e ON e.id_empleados = a.gerente
+                    {where_sql}
+                    GROUP BY DATE(COALESCE(o.fecha_inicio, o.fecha_fin)) ORDER BY label ASC
+                """, params)
+                stats['por_fecha'] = cursor.fetchall()
+
             cursor.execute(f"""
                 SELECT s.estado as label, COUNT(*) as valor
                 FROM obra o
                 JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
+                LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
+                LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
+                LEFT JOIN empleados e ON e.id_empleados = a.gerente
                 {where_sql}
                 GROUP BY s.estado
             """, params)
@@ -218,6 +268,9 @@ class ReporteEstadisticoModel:
                 SELECT c.empresa_ganadora as label, COUNT(*) as valor
                 FROM obra o
                 JOIN contratacion c ON o.contratacion_id_contratacion = c.id_contratacion
+                LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
+                LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
+                LEFT JOIN empleados e ON e.id_empleados = a.gerente
                 {where_sql}
                 GROUP BY c.empresa_ganadora
             """, params)
@@ -226,6 +279,9 @@ class ReporteEstadisticoModel:
             cursor.execute(f"""
                 SELECT o.ubicacion_obra as label, COUNT(*) as valor
                 FROM obra o
+                LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
+                LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
+                LEFT JOIN empleados e ON e.id_empleados = a.gerente
                 {where_sql}
                 GROUP BY o.ubicacion_obra
             """, params)
@@ -235,19 +291,25 @@ class ReporteEstadisticoModel:
                 SELECT s.color as label, COUNT(*) as valor
                 FROM obra o
                 JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
+                LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
+                LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
+                LEFT JOIN empleados e ON e.id_empleados = a.gerente
                 {where_sql}
                 GROUP BY s.color
             """, params)
             stats['por_semaforo_color'] = cursor.fetchall()
 
             cursor.execute(f"""
-                SELECT CASE 
+                SELECT CASE
                     WHEN o.porcentaje_avance_obra < 25 THEN '0-25%'
                     WHEN o.porcentaje_avance_obra < 50 THEN '25-50%'
                     WHEN o.porcentaje_avance_obra < 75 THEN '50-75%'
                     ELSE '75-100%'
                 END as label, COUNT(*) as valor
                 FROM obra o
+                LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
+                LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
+                LEFT JOIN empleados e ON e.id_empleados = a.gerente
                 {where_sql}
                 GROUP BY label
             """, params)
@@ -309,18 +371,18 @@ class ReporteEstadisticoModel:
 
             if agrupacion == 'mes':
                 cursor.execute(f"""
-                    SELECT CONCAT(YEAR(e.fecha_ingreso), '-', LPAD(MONTH(e.fecha_ingreso),2,'0')) as label, COUNT(*) as valor
+                    SELECT DATE_FORMAT(e.fecha_ingreso, '%Y-%m') as label, COUNT(*) as valor
                     FROM empleados e
                     {where_sql}
-                    GROUP BY YEAR(e.fecha_ingreso), MONTH(e.fecha_ingreso) ORDER BY label ASC
+                    GROUP BY DATE_FORMAT(e.fecha_ingreso, '%Y-%m') ORDER BY label ASC
                 """, params)
                 stats['por_fecha_ingreso'] = cursor.fetchall()
             elif agrupacion == 'semana':
                 cursor.execute(f"""
-                    SELECT CONCAT(YEAR(e.fecha_ingreso), '-W', LPAD(WEEK(e.fecha_ingreso, 3),2,'0')) as label, COUNT(*) as valor
+                    SELECT DATE_FORMAT(e.fecha_ingreso, '%x-W%v') as label, COUNT(*) as valor
                     FROM empleados e
                     {where_sql}
-                    GROUP BY YEAR(e.fecha_ingreso), WEEK(e.fecha_ingreso, 3) ORDER BY label ASC
+                    GROUP BY DATE_FORMAT(e.fecha_ingreso, '%x-W%v') ORDER BY label ASC
                 """, params)
                 stats['por_fecha_ingreso'] = cursor.fetchall()
             else:
@@ -401,6 +463,31 @@ class ReporteEstadisticoModel:
             """, params)
             stats['por_empresa'] = cursor.fetchall()
 
+            if agrupacion == 'mes':
+                cursor.execute(f"""
+                    SELECT DATE_FORMAT(c.fecha_registro, '%Y-%m') as label, COUNT(*) as valor
+                    FROM contratacion c
+                    {where_sql}
+                    GROUP BY DATE_FORMAT(c.fecha_registro, '%Y-%m') ORDER BY label ASC
+                """, params)
+                stats['por_fecha'] = cursor.fetchall()
+            elif agrupacion == 'semana':
+                cursor.execute(f"""
+                    SELECT DATE_FORMAT(c.fecha_registro, '%x-W%v') as label, COUNT(*) as valor
+                    FROM contratacion c
+                    {where_sql}
+                    GROUP BY DATE_FORMAT(c.fecha_registro, '%x-W%v') ORDER BY label ASC
+                """, params)
+                stats['por_fecha'] = cursor.fetchall()
+            else:
+                cursor.execute(f"""
+                    SELECT DATE(c.fecha_registro) as label, COUNT(*) as valor
+                    FROM contratacion c
+                    {where_sql}
+                    GROUP BY DATE(c.fecha_registro) ORDER BY label ASC
+                """, params)
+                stats['por_fecha'] = cursor.fetchall()
+
             return stats
         finally:
             cursor.close()
@@ -442,18 +529,18 @@ class ReporteEstadisticoModel:
 
             if agrupacion == 'mes':
                 cursor.execute(f"""
-                    SELECT CONCAT(YEAR(fecha_publicacion), '-', LPAD(MONTH(fecha_publicacion),2,'0')) as label, COUNT(*) as valor
+                    SELECT DATE_FORMAT(fecha_publicacion, '%Y-%m') as label, COUNT(*) as valor
                     FROM publicacion
                     {where_sql}
-                    GROUP BY YEAR(fecha_publicacion), MONTH(fecha_publicacion) ORDER BY label ASC
+                    GROUP BY DATE_FORMAT(fecha_publicacion, '%Y-%m') ORDER BY label ASC
                 """, params)
                 stats['por_fecha'] = cursor.fetchall()
             elif agrupacion == 'semana':
                 cursor.execute(f"""
-                    SELECT CONCAT(YEAR(fecha_publicacion), '-W', LPAD(WEEK(fecha_publicacion, 3),2,'0')) as label, COUNT(*) as valor
+                    SELECT DATE_FORMAT(fecha_publicacion, '%x-W%v') as label, COUNT(*) as valor
                     FROM publicacion
                     {where_sql}
-                    GROUP BY YEAR(fecha_publicacion), WEEK(fecha_publicacion, 3) ORDER BY label ASC
+                    GROUP BY DATE_FORMAT(fecha_publicacion, '%x-W%v') ORDER BY label ASC
                 """, params)
                 stats['por_fecha'] = cursor.fetchall()
             else:

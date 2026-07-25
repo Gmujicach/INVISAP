@@ -267,10 +267,17 @@ class ObraModel:
 
             sql = """
                 INSERT INTO obra (
+<<<<<<< Updated upstream
                     titulo_obra, ubicacion_obra, periodo_ejecucion, fecha_inicio,
                     fecha_fin, mediciones_obra, valuaciones, modificaciones_contrato,
                     certificaciones_obras_ejecutadas, numero_contrato, porcentaje_avance_obra,
                     semaforo_id_semaforo, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto,
+=======
+                    titulo_obra, ubicacion_obra, periodo_ejecucion, fecha_inicio, 
+                    fecha_fin, mediciones_obra, valuaciones, modificaciones_contrato, 
+                    certificaciones_obras_ejecutadas, numero_contrato, porcentaje_avance_obra, 
+                    semaforo_id_semaforo, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto, 
+>>>>>>> Stashed changes
                     estado
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 1)
             """

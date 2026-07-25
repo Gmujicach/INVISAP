@@ -28,6 +28,74 @@ class BitacoraService:
         'Informes de Avance', 'Roles y Permisos'
     }
 
+    # Mapeo de blueprints a nombre legible de módulo
+    _BLUEPRINT_A_MODULO = {
+        'login_bp': 'Login',
+        'respaldo_bp': 'Respaldos',
+        'user_bp': 'Usuarios',
+        'empleado_bp': 'Empleados',
+        'empresa_bp': 'Empresas',
+        'evidencia_bp': 'Evidencias',
+        'reporte_excel_bp': 'Reportes',
+        'reporte_pdf_bp': 'Reportes',
+        'reporte_estadistico_bp': 'Reportes',
+        'informe_avance_bp': 'Informes de Avance',
+        'obra_bp': 'Obras',
+        'contrataciones_bp': 'Contrataciones',
+        'inspeccion_bp': 'Inspecciones',
+        'notificacion_bp': 'Notificaciones',
+    }
+
+    # Reglas de ruta -> módulo (home_bp agrupa varios módulos)
+    _RUTA_A_MODULO = [
+        ('informe', 'Informes de Avance'),
+        ('inf_avance', 'Informes de Avance'),
+        ('reporte', 'Reportes'),
+        ('evidencia', 'Evidencias'),
+        ('inspeccion', 'Inspecciones'),
+        ('solicitud', 'Solicitudes'),
+        ('proyecto', 'Proyectos'),
+        ('publicacion', 'Publicaciones'),
+        ('contratacion', 'Contrataciones'),
+        ('obra', 'Obras'),
+        ('empleado', 'Empleados'),
+        ('empresa', 'Empresas'),
+        ('maquinaria', 'Maquinaria'),
+        ('gravedad', 'Gravedad'),
+        ('prioridad', 'Prioridad'),
+        ('permiso', 'Roles y Permisos'),
+        ('seguridad', 'Roles y Permisos'),
+        ('rol', 'Roles y Permisos'),
+        ('bitacora', 'Bitacora'),
+        ('respaldo', 'Respaldos'),
+        ('usuario', 'Usuarios'),
+        ('/users', 'Usuarios'),
+        ('perfil', 'Login'),
+        ('manual', 'Principal'),
+    ]
+
+    @staticmethod
+    def mapear_modulo(endpoint: str, path: str) -> str:
+        """
+        Convierte un endpoint/ruta en el nombre legible del módulo correspondiente.
+        Se usa en la auditoría global para que el campo 'modulo' de la bitácora
+        muestre el nombre del módulo y no el identificador interno del blueprint.
+        """
+        ep = (endpoint or '').lower()
+        ruta = (path or '').lower()
+
+        bp = ep.split('.')[0] if '.' in ep else ''
+        if bp in BitacoraService._BLUEPRINT_A_MODULO:
+            return BitacoraService._BLUEPRINT_A_MODULO[bp]
+
+        for clave, nombre in BitacoraService._RUTA_A_MODULO:
+            if clave in ruta:
+                return nombre
+
+        if bp == 'home_bp':
+            return 'Principal'
+        return (ep.split('.')[-1] if ep else ruta) or 'General'
+
     @staticmethod
     def _validar_texto(texto: str, max_len: int = 100) -> str:
         """Sanitiza un texto eliminando caracteres peligrosos."""
@@ -76,13 +144,39 @@ class BitacoraService:
 
             # Llamar al modelo para insertar el registro
             modelo = BitacoraModel()
-            return modelo.registrar(
+            resultado = modelo.registrar(
                 usuario=nombre_usuario,
                 id_usuario=id_usuario,
                 modulo=modulo,
                 accion=accion,
                 descripcion=descripcion
             )
+
+            # Conectar la bitácora con el sistema de notificaciones:
+            # las acciones relevantes (no solo lectura) generan una
+            # notificación para los administradores.
+            if resultado and accion != 'VER':
+                try:
+                    from models.model_notificacion import notificar_a_roles
+                    notificar_a_roles(
+                        ['Super Usuario', 'Administrador'],
+                        modulo,
+                        f'{accion.title()}: {modulo}',
+                        descripcion or f'Acción {accion} en {modulo}',
+                        creado_por=nombre_usuario
+                    )
+                except Exception as e:
+                    print(f"[BitacoraService] Error al crear notificación: {e}")
+
+            # Marcar que esta petición ya quedó registrada en la bitácora,
+            # para que el hook global de auditoría no la duplique.
+            try:
+                from flask import g
+                g.bitacora_logged = True
+            except Exception:
+                pass
+
+            return resultado
 
         except Exception as e:
             # Silenciosamente registrar el error sin lanzarlo al caller

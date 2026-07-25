@@ -132,7 +132,7 @@ class RespaldoModel:
     def _obtener_config_bd():
         host = os.getenv('DB_HOST', 'localhost')
         user = os.getenv('DB_USER', 'root')
-        password = _get_env('DB_PASSWORD', '1234')
+        password = _get_env('DB_PASSWORD', '')
         database = os.getenv('DB_NAME', 'invilara')
         charset = 'utf8mb4'
 

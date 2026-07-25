@@ -41,6 +41,15 @@ app.register_blueprint(login_bp)
 app.register_blueprint(respaldo_bp)
 
 # ============================================
+# Notificaciones de cercanía de fecha de culminación (al iniciar la app)
+# ============================================
+try:
+    from services.notificacion_vencimiento_service import notificar_obras_por_vencer
+    notificar_obras_por_vencer(dias_ventana=7)
+except Exception as e:
+    print(f"[app] No se pudieron generar notificaciones de vencimiento: {e}")
+
+# ============================================
 # datos del perfil del usuario
 # Inyecta el avatar y el nombre en TODAS las plantillas
 # ============================================
@@ -78,3 +87,65 @@ def inject_permisos_usuario():
         'rol_usuario': rol,
         'permisos_usuario': PERMISOS.get(rol, [])
     }
+
+
+# ============================================
+# Conteo de notificaciones no leídas (badge del campanita)
+# ============================================
+@app.context_processor
+def inject_notificaciones():
+    from models.model_notificacion import NotificacionModel
+    if 'conectado' in session:
+        try:
+            uid = session.get('id')
+            return {'notificaciones_no_leidas': NotificacionModel().contar_no_leidas(uid)}
+        except Exception:
+            return {'notificaciones_no_leidas': 0}
+    return {'notificaciones_no_leidas': 0}
+
+
+# ============================================
+# Auditoría global: la bitácora registra TODAS las acciones del sistema.
+# Se ejecuta en cada petición autenticada que aún no haya sido registrada
+# manualmente por el controlador (evita duplicados).
+# ============================================
+@app.teardown_request
+def auditar_todas_acciones(excepcion):
+    try:
+        from flask import g, request
+        from services.bitacora_service import BitacoraService
+
+        # Solo usuarios autenticados
+        if 'conectado' not in session:
+            return
+
+        # Si el controlador ya registró la acción, no duplicar
+        if getattr(g, 'bitacora_logged', False):
+            return
+
+        path = request.path or ''
+        # Ignorar recursos estáticos, notificaciones y favicon
+        if (path.startswith('/static')
+                or path.startswith('/notificaciones')
+                or path.startswith('/api/obtener-bitacora')
+                or path in ('/favicon.ico',)):
+            return
+
+        metodo = (request.method or 'GET').upper()
+        if metodo in ('HEAD', 'OPTIONS'):
+            return
+
+        accion = {
+            'GET': 'VER',
+            'POST': 'CREAR',
+            'PUT': 'EDITAR',
+            'PATCH': 'EDITAR',
+            'DELETE': 'ELIMINAR'
+        }.get(metodo, metodo)
+
+        modulo = BitacoraService.mapear_modulo(request.endpoint, path)
+        descripcion = f'{metodo} {path}'
+
+        BitacoraService.registrar_accion(session, modulo, accion, descripcion)
+    except Exception as e:
+        print(f"[auditar_todas_acciones] Error: {e}")

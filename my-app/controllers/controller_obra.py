@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
 from models.model_obra import ObraModel
 from models.model_bitacora import BitacoraModel
+from models.model_notificacion import notificar_a_roles
+from models.model_proyecto import ProyectoModel
 
 obra_bp = Blueprint('obra_bp', __name__)
 
@@ -171,7 +173,14 @@ def detalle_obra(id_obra):
         return redirect(url_for('obra_bp.vista_gestionar_obras'))
 
     avances = modelo.obtener_avances_por_obra(id_obra)
-    return render_template('obras/detalle_obra.html', obra=obra, avances=avances)
+
+    proyecto = None
+    if obra.get('gestionar_proyectos_codigo_proyecto'):
+        proyecto_detalle = ProyectoModel().obtener_detalle_proyecto_por_codigo(obra['gestionar_proyectos_codigo_proyecto'])
+        if proyecto_detalle:
+            proyecto = proyecto_detalle
+
+    return render_template('obras/detalle_obra.html', obra=obra, avances=avances, proyecto=proyecto)
 
 
 @obra_bp.route('/obra/editar/<int:id_obra>', methods=['GET'])
@@ -255,6 +264,11 @@ def actualizar_obra(id_obra):
         if not ok:
             return jsonify({'status': 'error', 'message': msg}), 400
 
+        # Valores previos para detectar cambios en porcentaje y fecha de culminación
+        obra_previa = modelo.obtener_obra_por_id(id_obra) or {}
+        porcentaje_previo = int(obra_previa.get('porcentaje_avance_obra') or 0)
+        fecha_previa = str(obra_previa.get('fecha_fin') or '')
+
         resultado, extra = modelo.actualizar_obra(id_obra, datos_actualizar)
         if resultado:
             BitacoraModel().registrar(
@@ -264,6 +278,39 @@ def actualizar_obra(id_obra):
                 accion='EDITAR',
                 descripcion=f"Actualizó la obra: {datos_actualizar['titulo_obra']} (ID: {id_obra})"
             )
+            titulo_obra = datos_actualizar.get('titulo_obra') or obra_previa.get('titulo_obra') or f'Obra #{id_obra}'
+            roles_obra = ['Super Usuario', 'Administrador', 'Gerente', 'Inspector', 'Proyectista']
+            try:
+                # Notificación por cambio en el porcentaje de avance de la obra
+                try:
+                    nuevo_porcentaje = int(float(datos_actualizar.get('porcentaje_avance_obra') or 0))
+                except (TypeError, ValueError):
+                    nuevo_porcentaje = porcentaje_previo
+                if nuevo_porcentaje != porcentaje_previo:
+                    if nuevo_porcentaje >= 100:
+                        mensaje_pct = f"¡La obra '{titulo_obra}' alcanzó el 100% de avance!"
+                    else:
+                        mensaje_pct = f"La obra '{titulo_obra}' está al {nuevo_porcentaje}% de avance."
+                    notificar_a_roles(
+                        roles_obra, 'Obras',
+                        'Avance de obra actualizado',
+                        mensaje_pct,
+                        enlace='/gestionar-obras',
+                        creado_por=session.get('usuario', 'Sistema')
+                    )
+
+                # Notificación por cambio en la fecha de culminación
+                nueva_fecha = str(datos_actualizar.get('fecha_fin') or '')
+                if nueva_fecha and nueva_fecha != fecha_previa:
+                    notificar_a_roles(
+                        roles_obra, 'Obras',
+                        'Fecha de culminación de obra',
+                        f"Se actualizó la fecha de culminación de la obra '{titulo_obra}': {nueva_fecha}",
+                        enlace='/gestionar-obras',
+                        creado_por=session.get('usuario', 'Sistema')
+                    )
+            except Exception as e:
+                print(f"[actualizar_obra] Error al notificar: {e}")
             return jsonify({'status': 'success', 'message': 'Obra actualizada exitosamente.'}), 200
         else:
             return jsonify({'status': 'error', 'message': extra}), 400

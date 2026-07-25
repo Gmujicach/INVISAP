@@ -26,6 +26,9 @@ class ReportePDFModel:
             if key == 'nombre_solicitante':
                 where_clauses.append("(COALESCE(part.nombre, inst.razon_social, com.nombre_comunidad) LIKE %s)")
                 params.append(f"%{val}%")
+            elif key == 'correo_dominio':
+                where_clauses.append(f"{columna} LIKE %s")
+                params.append(f"%{val}%")
             elif key.startswith('fecha_') and key.endswith('_desde'):
                 where_clauses.append(f"DATE({columna}) >= %s")
                 params.append(val)
@@ -64,6 +67,10 @@ class ReportePDFModel:
                 s.estatus_solicitud,
                 s.problematica,
                 p.cedula_persona AS cedula,
+                COALESCE(part.nombre, inst.razon_social, com.nombre_comunidad) AS nombre_solicitante,
+                p.correo,
+                p.telefono,
+                CONCAT(COALESCE(p.municipio, ''), ' / ', COALESCE(p.parroquia, '')) AS municipio_parroquia,
                 pr.rango_prioridad AS prioridad
             FROM solicitudes s
             JOIN persona p ON s.persona_id_persona = p.id_persona
@@ -80,13 +87,14 @@ class ReportePDFModel:
             'estatus_solicitud': 's.estatus_solicitud',
             'problematica': 's.problematica',
             'cedula': 'p.cedula_persona',
+            'correo': 'p.correo',
+            'correo_dominio': 'p.correo',
             'fecha_desde': 's.fecha',
             'fecha_hasta': 's.fecha',
             'municipio': 'p.municipio',
             'parroquia': 'p.parroquia',
             'direccion': 'p.direccion',
             'telefono': 'p.telefono',
-            'correo': 'p.correo',
             'sector': 'com.sector',
             'ambito': 'com.ambito',
         }
@@ -101,7 +109,9 @@ class ReportePDFModel:
             SELECT 
                 pa.nombre,
                 pa.apellido,
-                p.cedula_persona AS cedula
+                p.cedula_persona AS cedula,
+                p.correo,
+                p.telefono
             FROM particular pa
             JOIN persona p ON pa.persona_id_persona = p.id_persona
             JOIN solicitudes s ON s.persona_id_persona = p.id_persona
@@ -113,11 +123,13 @@ class ReportePDFModel:
             'nombre': 'pa.nombre',
             'apellido': 'pa.apellido',
             'cedula': 'p.cedula_persona',
+            'correo': 'p.correo',
+            'correo_dominio': 'p.correo',
         }
         self._aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
-        query += " GROUP BY pa.id_particular, pa.nombre, pa.apellido, p.cedula_persona ORDER BY pa.nombre ASC"
+        query += " GROUP BY pa.id_particular, pa.nombre, pa.apellido, p.cedula_persona, p.correo, p.telefono ORDER BY pa.nombre ASC"
         return self._ejecutar_query(query, params)
 
     def obtener_empleados(self, filtros=None):
@@ -223,15 +235,23 @@ class ReportePDFModel:
     def obtener_obras(self, filtros=None):
         query = """
             SELECT 
+                o.id_obra,
                 o.titulo_obra AS nombre_obra,
                 o.ubicacion_obra,
                 o.porcentaje_avance_obra,
                 s.estado AS semaforo,
                 s.color,
-                c.empresa_ganadora AS contratista
+                c.empresa_ganadora AS contratista,
+                MAX(g.criticidad) AS criticidad,
+                MAX(g.nivel_gravedad) AS nivel_gravedad,
+                MAX(e.nombre_empleado) AS gerente,
+                DATE_FORMAT(o.fecha_inicio, '%d/%m/%Y') AS fecha_inicio
             FROM obra o
             JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
             JOIN contratacion c ON o.contratacion_id_contratacion = c.id_contratacion
+            LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
+            LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
+            LEFT JOIN empleados e ON e.id_empleados = a.gerente
             WHERE o.estado = 1
         """
         params = []
@@ -245,11 +265,14 @@ class ReportePDFModel:
             'fecha_fin_hasta': 'o.fecha_fin',
             'semaforo_estado': 's.estado',
             'contratista': 'c.empresa_ganadora',
+            'criticidad': 'g.criticidad',
+            'nivel_gravedad': 'g.nivel_gravedad',
+            'gerente': 'e.nombre_empleado',
         }
         self._aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
-        query += " ORDER BY o.titulo_obra ASC"
+        query += " GROUP BY o.id_obra, o.titulo_obra, o.ubicacion_obra, o.porcentaje_avance_obra, s.estado, s.color, c.empresa_ganadora ORDER BY o.titulo_obra ASC"
         return self._ejecutar_query(query, params)
 
     def obtener_publicaciones_reporte(self, filtros=None):
