@@ -26,6 +26,9 @@ class ReporteExcelModel:
             if key == 'nombre_solicitante':
                 where_clauses.append("(COALESCE(part.nombre, inst.razon_social, com.nombre_comunidad) LIKE %s)")
                 params.append(f"%{val}%")
+            elif key == 'correo_dominio':
+                where_clauses.append(f"{columna} LIKE %s")
+                params.append(f"%{val}%")
             elif key.startswith('fecha_') and key.endswith('_desde'):
                 where_clauses.append(f"DATE({columna}) >= %s")
                 params.append(val)
@@ -64,6 +67,10 @@ class ReporteExcelModel:
                 s.estatus_solicitud,
                 s.problematica,
                 p.cedula_persona AS cedula,
+                COALESCE(part.nombre, inst.razon_social, com.nombre_comunidad) AS nombre_solicitante,
+                p.correo,
+                p.telefono,
+                CONCAT(COALESCE(p.municipio, ''), ' / ', COALESCE(p.parroquia, '')) AS municipio_parroquia,
                 pr.rango_prioridad AS prioridad
             FROM solicitudes s
             JOIN persona p ON s.persona_id_persona = p.id_persona
@@ -80,13 +87,14 @@ class ReporteExcelModel:
             'estatus_solicitud': 's.estatus_solicitud',
             'problematica': 's.problematica',
             'cedula': 'p.cedula_persona',
+            'correo': 'p.correo',
+            'correo_dominio': 'p.correo',
             'fecha_desde': 's.fecha',
             'fecha_hasta': 's.fecha',
             'municipio': 'p.municipio',
             'parroquia': 'p.parroquia',
             'direccion': 'p.direccion',
             'telefono': 'p.telefono',
-            'correo': 'p.correo',
             'sector': 'com.sector',
             'ambito': 'com.ambito',
         }
@@ -101,7 +109,9 @@ class ReporteExcelModel:
             SELECT 
                 pa.nombre,
                 pa.apellido,
-                p.cedula_persona AS cedula
+                p.cedula_persona AS cedula,
+                p.correo,
+                p.telefono
             FROM particular pa
             JOIN persona p ON pa.persona_id_persona = p.id_persona
             JOIN solicitudes s ON s.persona_id_persona = p.id_persona
@@ -113,11 +123,13 @@ class ReporteExcelModel:
             'nombre': 'pa.nombre',
             'apellido': 'pa.apellido',
             'cedula': 'p.cedula_persona',
+            'correo': 'p.correo',
+            'correo_dominio': 'p.correo',
         }
         self._aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
-        query += " GROUP BY pa.id_particular, pa.nombre, pa.apellido, p.cedula_persona ORDER BY pa.nombre ASC"
+        query += " GROUP BY pa.id_particular, pa.nombre, pa.apellido, p.cedula_persona, p.correo, p.telefono ORDER BY pa.nombre ASC"
         return self._ejecutar_query(query, params)
 
     def obtener_empleados_reporte(self, filtros=None):
@@ -223,15 +235,23 @@ class ReporteExcelModel:
     def obtener_obras_reporte(self, filtros=None):
         query = """
             SELECT 
+                o.id_obra,
                 o.titulo_obra AS nombre_obra,
                 o.ubicacion_obra,
                 o.porcentaje_avance_obra,
                 s.estado AS semaforo,
                 s.color,
-                c.empresa_ganadora AS contratista
+                c.empresa_ganadora AS contratista,
+                MAX(g.criticidad) AS criticidad,
+                MAX(g.nivel_gravedad) AS nivel_gravedad,
+                MAX(e.nombre_empleado) AS gerente,
+                DATE_FORMAT(o.fecha_inicio, '%d/%m/%Y') AS fecha_inicio
             FROM obra o
             JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
             JOIN contratacion c ON o.contratacion_id_contratacion = c.id_contratacion
+            LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
+            LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
+            LEFT JOIN empleados e ON e.id_empleados = a.gerente
             WHERE o.estado = 1
         """
         params = []
@@ -245,11 +265,14 @@ class ReporteExcelModel:
             'fecha_fin_hasta': 'o.fecha_fin',
             'semaforo_estado': 's.estado',
             'contratista': 'c.empresa_ganadora',
+            'criticidad': 'g.criticidad',
+            'nivel_gravedad': 'g.nivel_gravedad',
+            'gerente': 'e.nombre_empleado',
         }
         self._aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
-        query += " ORDER BY o.titulo_obra ASC"
+        query += " GROUP BY o.id_obra, o.titulo_obra, o.ubicacion_obra, o.porcentaje_avance_obra, s.estado, s.color, c.empresa_ganadora ORDER BY o.titulo_obra ASC"
         return self._ejecutar_query(query, params)
 
     def obtener_publicaciones_reporte(self, filtros=None):
@@ -275,6 +298,117 @@ class ReporteExcelModel:
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY fecha_publicacion DESC"
+        return self._ejecutar_query(query, params)
+
+    def obtener_avances_reporte(self, filtros=None):
+        query = """
+            SELECT 
+                a.id_avance,
+                a.porcentaje_avance,
+                a.descripcion,
+                a.fecha_avance,
+                o.titulo_obra AS nombre_obra,
+                e.nombre_empleado AS gerente
+            FROM avance a
+            JOIN obra o ON a.obra_id_obra = o.id_obra
+            JOIN empleados e ON a.gerente = e.id_empleados
+            WHERE a.estado = 1
+        """
+        params = []
+        where = []
+        mapeo = {
+            'fecha_avance_desde': 'a.fecha_avance',
+            'fecha_avance_hasta': 'a.fecha_avance',
+            'porcentaje_avance_min': 'a.porcentaje_avance',
+            'porcentaje_avance_max': 'a.porcentaje_avance',
+            'titulo_obra': 'o.titulo_obra',
+            'gerente': 'e.nombre_empleado',
+        }
+        self._aplicar_filtros(where, params, filtros, mapeo)
+        if where:
+            query += " AND " + " AND ".join(where)
+        query += " ORDER BY a.fecha_avance DESC"
+        return self._ejecutar_query(query, params)
+
+    def obtener_inspecciones_reporte(self, filtros=None):
+        query = """
+            SELECT 
+                i.id_inspeccion,
+                i.fecha_inspeccion,
+                i.tipo_inspeccion,
+                i.observaciones,
+                o.titulo_obra AS nombre_obra,
+                e.nombre_empleado AS inspector
+            FROM inspeccion i
+            JOIN obra o ON i.obra_id_obra = o.id_obra
+            JOIN empleados e ON i.inspector = e.id_empleados
+            WHERE i.estado = 1
+        """
+        params = []
+        where = []
+        mapeo = {
+            'fecha_inspeccion_desde': 'i.fecha_inspeccion',
+            'fecha_inspeccion_hasta': 'i.fecha_inspeccion',
+            'tipo_inspeccion': 'i.tipo_inspeccion',
+            'titulo_obra': 'o.titulo_obra',
+            'inspector': 'e.nombre_empleado',
+        }
+        self._aplicar_filtros(where, params, filtros, mapeo)
+        if where:
+            query += " AND " + " AND ".join(where)
+        query += " ORDER BY i.fecha_inspeccion DESC"
+        return self._ejecutar_query(query, params)
+
+    def obtener_evidencias_reporte(self, filtros=None):
+        query = """
+            SELECT 
+                ev.id_evidencia,
+                ev.fotos,
+                ev.url_archivos,
+                ev.fecha_registro,
+                ev.etapa,
+                o.titulo_obra AS nombre_obra
+            FROM evidencia ev
+            JOIN inspeccion i ON ev.id_evidencia = i.evidencia_id_evidencia
+            JOIN obra o ON i.obra_id_obra = o.id_obra
+            WHERE ev.estado = 1
+        """
+        params = []
+        where = []
+        mapeo = {
+            'etapa': 'ev.etapa',
+            'fecha_registro_desde': 'ev.fecha_registro',
+            'fecha_registro_hasta': 'ev.fecha_registro',
+            'titulo_obra': 'o.titulo_obra',
+        }
+        self._aplicar_filtros(where, params, filtros, mapeo)
+        if where:
+            query += " AND " + " AND ".join(where)
+        query += " ORDER BY ev.fecha_registro DESC"
+        return self._ejecutar_query(query, params)
+
+    def obtener_gravedades_reporte(self, filtros=None):
+        query = """
+            SELECT 
+                g.id_gravedad,
+                g.nivel_gravedad,
+                g.criticidad,
+                o.titulo_obra AS nombre_obra
+            FROM gravedad_obra g
+            JOIN obra o ON g.obra_id_obra = o.id_obra
+            WHERE g.estado = 1
+        """
+        params = []
+        where = []
+        mapeo = {
+            'nivel_gravedad': 'g.nivel_gravedad',
+            'criticidad': 'g.criticidad',
+            'titulo_obra': 'o.titulo_obra',
+        }
+        self._aplicar_filtros(where, params, filtros, mapeo)
+        if where:
+            query += " AND " + " AND ".join(where)
+        query += " ORDER BY g.criticidad DESC"
         return self._ejecutar_query(query, params)
 
     def obtener_estadisticas_generales(self):

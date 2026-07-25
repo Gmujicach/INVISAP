@@ -129,7 +129,7 @@ def generar_grafico_circular(labels, valores, titulo, color_hex):
     return Image.open(buffer)
 
 
-def generar_pagina_pdf(tipo_reporte, stats):
+def generar_pagina_pdf(tipo_reporte, stats, agrupacion='dia'):
     pagina = Image.new('RGB', (PAGE_W, PAGE_H), 'white')
     draw = ImageDraw.Draw(pagina)
 
@@ -148,6 +148,8 @@ def generar_pagina_pdf(tipo_reporte, stats):
     draw.text((MARGIN, y), f'ANÁLISIS ESTADÍSTICO DE {tipo_reporte}', fill='black', font=font_subtitulo)
     y += 28
 
+    agrupacion_texto = {'mes': 'por Mes', 'semana': 'por Semana'}.get(agrupacion, 'por Día')
+
     graficos = []
     for key, items in stats.items():
         if not items:
@@ -155,9 +157,11 @@ def generar_pagina_pdf(tipo_reporte, stats):
         labels = [str(d['label']) for d in items]
         valores = [int(d['valor']) for d in items]
         titulo = STAT_TITLES.get(key, key.replace('_', ' ').title())
+        if key in ('por_fecha', 'por_fecha_ingreso', 'por_mes', 'por_semana'):
+            titulo = f'{titulo} {agrupacion_texto}'
         color = STAT_COLORS.get(key, '#0d6efd')
 
-        if key in ('por_fecha', 'por_fecha_ingreso'):
+        if key in ('por_fecha', 'por_fecha_ingreso', 'por_mes', 'por_semana'):
             graficos.append(generar_grafico_lineas(labels, valores, titulo, color))
         elif key in ('por_tipo', 'por_estatus', 'por_municipio', 'por_parroquia', 'por_estado',
                      'por_contratista', 'por_ubicacion', 'por_semaforo_color', 'por_avance',
@@ -220,7 +224,7 @@ def _colectar_filtros_form():
     campos_posibles = [
         'tipo_solicitud', 'estatus_solicitud', 'problematica', 'cedula', 'nombre_solicitante',
         'fecha_desde', 'fecha_hasta', 'municipio', 'parroquia', 'direccion', 'telefono', 'correo',
-        'sector', 'ambito',
+        'sector', 'ambito', 'correo_dominio',
         'nombre_empleado', 'cargo', 'fecha_ingreso_desde', 'fecha_ingreso_hasta', 'estado_empleado',
         'cedula_persona', 'gerencia_asignada', 'tipo_contrato', 'modalidad', 'objeto',
         'fecha_registro_desde', 'fecha_registro_hasta', 'fecha_inicio_procedimiento_desde',
@@ -228,6 +232,7 @@ def _colectar_filtros_form():
         'numero_contrato',
         'titulo_obra', 'ubicacion_obra', 'fecha_inicio_desde', 'fecha_inicio_hasta',
         'fecha_fin_desde', 'fecha_fin_hasta', 'semaforo_estado', 'contratista',
+        'criticidad', 'nivel_gravedad', 'gerente',
         'titulo_publicacion', 'nombre_responsable', 'tipo_publicacion',
         'fecha_publicacion_desde', 'fecha_publicacion_hasta',
         'apellido', 'nombre', 'rol',
@@ -256,7 +261,7 @@ def generarReporteEstadistico():
         tipo_reporte_label = TIPO_REPORTE_LABELS.get(tipo_reporte, 'SOLICITUDES')
 
     stats = _obtener_stats_por_tipo(tipo_reporte, filtros, agrupacion)
-    paginas = list(generar_pagina_pdf(tipo_reporte_label, stats))
+    paginas = list(generar_pagina_pdf(tipo_reporte_label, stats, agrupacion))
 
     pdf_buffer = BytesIO()
     paginas[0].save(pdf_buffer, format='PDF', resolution=150.0, save_all=True, append_images=paginas[1:])
@@ -278,37 +283,41 @@ def datosEstadisticos():
     if 'conectado' not in session:
         return jsonify({'error': 'No autorizado'}), 401
 
-    tipo_reporte = request.args.get('tipo_reporte', 'solicitudes').strip().lower()
-    agrupacion = request.args.get('agrupacion', 'dia').strip().lower()
-    filtros = {}
-    campos_posibles = [
-        'tipo_solicitud', 'estatus_solicitud', 'problematica', 'cedula', 'nombre_solicitante',
-        'fecha_desde', 'fecha_hasta', 'municipio', 'parroquia', 'direccion', 'telefono', 'correo',
-        'sector', 'ambito',
-        'nombre_empleado', 'cargo', 'fecha_ingreso_desde', 'fecha_ingreso_hasta', 'estado_empleado',
-        'cedula_persona', 'gerencia_asignada', 'tipo_contrato', 'modalidad', 'objeto',
-        'fecha_registro_desde', 'fecha_registro_hasta', 'fecha_inicio_procedimiento_desde',
-        'fecha_inicio_procedimiento_hasta', 'fecha_adjudicacion_desde', 'fecha_adjudicacion_hasta',
-        'numero_contrato',
-        'titulo_obra', 'ubicacion_obra', 'fecha_inicio_desde', 'fecha_inicio_hasta',
-        'fecha_fin_desde', 'fecha_fin_hasta', 'semaforo_estado', 'contratista',
-        'titulo_publicacion', 'nombre_responsable', 'tipo_publicacion',
-        'fecha_publicacion_desde', 'fecha_publicacion_hasta',
-        'apellido', 'nombre', 'rol',
-    ]
-    for campo in campos_posibles:
-        val = request.args.get(campo, '').strip()
-        if val:
-            filtros[campo] = val
+    try:
+        tipo_reporte = request.args.get('tipo_reporte', 'solicitudes').strip().lower()
+        agrupacion = request.args.get('agrupacion', 'dia').strip().lower()
+        filtros = {}
+        campos_posibles = [
+            'tipo_solicitud', 'estatus_solicitud', 'problematica', 'cedula', 'nombre_solicitante',
+            'fecha_desde', 'fecha_hasta', 'municipio', 'parroquia', 'direccion', 'telefono', 'correo',
+            'sector', 'ambito', 'correo_dominio',
+            'nombre_empleado', 'cargo', 'fecha_ingreso_desde', 'fecha_ingreso_hasta', 'estado_empleado',
+            'cedula_persona', 'gerencia_asignada', 'tipo_contrato', 'modalidad', 'objeto',
+            'fecha_registro_desde', 'fecha_registro_hasta', 'fecha_inicio_procedimiento_desde',
+            'fecha_inicio_procedimiento_hasta', 'fecha_adjudicacion_desde', 'fecha_adjudicacion_hasta',
+            'numero_contrato',
+            'titulo_obra', 'ubicacion_obra', 'fecha_inicio_desde', 'fecha_inicio_hasta',
+            'fecha_fin_desde', 'fecha_fin_hasta', 'semaforo_estado', 'contratista',
+            'criticidad', 'nivel_gravedad', 'gerente',
+            'titulo_publicacion', 'nombre_responsable', 'tipo_publicacion',
+            'fecha_publicacion_desde', 'fecha_publicacion_hasta',
+            'apellido', 'nombre', 'rol',
+        ]
+        for campo in campos_posibles:
+            val = request.args.get(campo, '').strip()
+            if val:
+                filtros[campo] = val
 
-    stats = _obtener_stats_por_tipo(tipo_reporte, filtros, agrupacion)
+        stats = _obtener_stats_por_tipo(tipo_reporte, filtros, agrupacion)
 
-    result = {}
-    for key, items in stats.items():
-        if items:
-            result[key] = [
-                {'label': str(item['label']), 'valor': int(item['valor'])}
-                for item in items
-            ]
+        result = {}
+        for key, items in stats.items():
+            if items:
+                result[key] = [
+                    {'label': str(item['label']), 'valor': int(item['valor'])}
+                    for item in items
+                ]
 
-    return jsonify(result)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
