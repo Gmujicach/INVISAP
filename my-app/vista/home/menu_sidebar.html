@@ -40,6 +40,24 @@
     </li>
     {% endif %}
 
+    {% if tiene_permiso('gravedad') %}
+    <li class="menu-item {% if request.path == '/gestionar-gravedad' %} active {% endif %}">
+      <a href="{{ url_for('home_bp.viewFormGravedad') }}" class="menu-link">
+        <i class="menu-icon bi bi-exclamation-triangle"></i>
+        <div data-i18n="Gravity">Gravedad de la Obra</div>
+      </a>
+    </li>
+    {% endif %}
+
+    {% if tiene_permiso('prioridad') %}
+    <li class="menu-item {% if request.path == '/gestionar-prioridad' %} active {% endif %}">
+      <a href="{{ url_for('home_bp.viewFormPrioridad') }}" class="menu-link">
+        <i class="menu-icon bi bi-arrow-up"></i>
+        <div data-i18n="Priority">Prioridad</div>
+      </a>
+    </li>
+    {% endif %}
+
     {% if tiene_permiso('proyectos') %}
     <li class="menu-item {% if request.path == '/gestionar-proyectos' %} active {% endif %}">
       <a href="{{ url_for('home_bp.viewFormProyectos') }}" class="menu-link">
@@ -49,30 +67,21 @@
     </li>
     {% endif %}
 
-    {% if tiene_permiso('obras') %}
-    <li class="menu-item {% if request.path == '/gestionar-obras' %} active {% endif %}">
-      <a href="{{ url_for('obra_bp.vista_gestionar_obras') }}" class="menu-link">
-        <i class="menu-icon bi bi-house-gear"></i>
-        <div data-i18n="Basic">Obras</div>
-      </a>
-    </li>
-    {% endif %}
-
-    {% if tiene_permiso('publicaciones') %}
-    <li class="menu-item {% if request.path in ['/registrar-publicaciones', '/lista-publicaciones'] %} active open {% endif %}">
+    {% if tiene_permiso('empresas') %}
+    <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon bi bi-newspaper"></i>
-        <div data-i18n="Basic">Publicaciones</div>
+        <i class="menu-icon bi bi-building"></i>
+        <div data-i18n="Companies">Empresas</div>
       </a>
       <ul class="menu-sub">
-        <li class="menu-item {% if request.path == '/registrar-publicaciones' %} active {% endif %}">
-          <a href="{{ url_for('home_bp.viewFormPublicaciones') }}" class="menu-link">
-            <div data-i18n="Basic">Registrar Publicaciones</div>
+        <li class="menu-item {% if request.path == '/registrar-empresas' %} active {% endif %}">
+          <a href="{{ url_for('home_bp.viewFormEmpresa') }}" class="menu-link">
+            <div data-i18n="Basic">Registrar Empresas</div>
           </a>
         </li>
-        <li class="menu-item {% if request.path == '/lista-publicaciones' %} active {% endif %}">
-          <a href="{{ url_for('home_bp.lista_publicaciones') }}" class="menu-link">
-            <div data-i18n="Basic">Listar Publicaciones</div>
+        <li class="menu-item {% if request.path == '/lista-empresas' %} active {% endif %}">
+          <a href="{{ url_for('lista_empresas') }}" class="menu-link">
+            <div data-i18n="Basic">Listar Empresas</div>
           </a>
         </li>
       </ul>
@@ -88,41 +97,11 @@
     </li>
     {% endif %}
 
-    {% if tiene_permiso('usuarios') %}
-    <li class="menu-item {% if request.path in ['/users/register', '/users'] %} active open {% endif %}">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon bi bi-people-fill"></i>
-        <div data-i18n="Users">Usuarios</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item {% if request.path == '/users/register' %} active {% endif %}">
-          <a href="{{ url_for('user_bp.show_register_form') }}" class="menu-link">
-            <div data-i18n="Register Users">Registrar Usuarios</div>
-          </a>
-        </li>
-        <li class="menu-item {% if request.path == '/users' %} active {% endif %}">
-          <a href="{{ url_for('user_bp.list_users') }}" class="menu-link">
-            <div data-i18n="List Users">Listar Usuarios</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-    {% endif %}
-
-    {% if tiene_permiso('roles_permisos') %}
-    <li class="menu-item {% if request.path == '/gestionar-permisos' %} active {% endif %}">
-      <a href="{{ url_for('home_bp.viewFormPermisos') }}" class="menu-link">
-        <i class="menu-icon bi bi-shield-lock"></i>
-        <div data-i18n="Role Permissions">Permisos por Rol</div>
-      </a>
-    </li>
-    {% endif %}
-
-    {% if tiene_permiso('bitacora') %}
-    <li class="menu-item {% if request.path == '/bitacora' %} active {% endif %}">
-      <a href="{{ url_for('home_bp.viewBitacora') }}" class="menu-link">
-        <i class="menu-icon bi bi-clock-history"></i>
-        <div data-i18n="Tables">Bitacora</div>
+    {% if tiene_permiso('obras') %}
+    <li class="menu-item {% if request.path == '/gestionar-obras' %} active {% endif %}">
+      <a href="{{ url_for('obra_bp.vista_gestionar_obras') }}" class="menu-link">
+        <i class="menu-icon bi bi-house-gear"></i>
+        <div data-i18n="Basic">Obras</div>
       </a>
     </li>
     {% endif %}
@@ -157,47 +136,24 @@
     </li>
     {% endif %}
 
-    {% if tiene_permiso('reportes') %}
-    <li class="menu-item {% if request.path in ['/reportes', '/descargar-informe-publicaciones', '/reportes-estadisticos'] %} active open {% endif %}">
+    {% if tiene_permiso('publicaciones') %}
+    <li class="menu-item {% if request.path in ['/registrar-publicaciones', '/lista-publicaciones'] %} active open {% endif %}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon bi bi-bar-chart-line-fill"></i>
-        <div data-i18n="Reports">Reportes</div>
+        <i class="menu-icon bi bi-newspaper"></i>
+        <div data-i18n="Basic">Publicaciones</div>
       </a>
       <ul class="menu-sub">
-        <li class="menu-item {% if request.path == '/reportes/reporte-excel' %} active {% endif %}">
-          <a href="{{ url_for('home_bp.viewFormReportesExcel') }}" class="menu-link">
-            <div data-i18n="Excel">Reportes Excel</div>
+        <li class="menu-item {% if request.path == '/registrar-publicaciones' %} active {% endif %}">
+          <a href="{{ url_for('home_bp.viewFormPublicaciones') }}" class="menu-link">
+            <div data-i18n="Basic">Registrar Publicaciones</div>
           </a>
         </li>
-        <li class="menu-item {% if request.path == '/reportes/reporte-pdf' %} active {% endif %}">
-          <a href="{{ url_for('home_bp.viewFormReportesPDF') }}" class="menu-link">
-            <div data-i18n="PDF">Reportes PDF</div>
-          </a>
-        </li>
-        <li class="menu-item {% if request.path == '/reportes/reporte-estadistico' %} active {% endif %}">
-          <a href="{{ url_for('home_bp.viewFormReportesEstadisticos') }}" class="menu-link">
-            <div data-i18n="Stats">Reportes Estadísticos</div>
+        <li class="menu-item {% if request.path == '/lista-publicaciones' %} active {% endif %}">
+          <a href="{{ url_for('home_bp.lista_publicaciones') }}" class="menu-link">
+            <div data-i18n="Basic">Listar Publicaciones</div>
           </a>
         </li>
       </ul>
-    </li>
-    {% endif %}
-
-    {% if tiene_permiso('gravedad') %}
-    <li class="menu-item {% if request.path == '/gestionar-gravedad' %} active {% endif %}">
-      <a href="{{ url_for('home_bp.viewFormGravedad') }}" class="menu-link">
-        <i class="menu-icon bi bi-exclamation-triangle"></i>
-        <div data-i18n="Gravity">Gravedad de la Obra</div>
-      </a>
-    </li>
-    {% endif %}
-
-    {% if tiene_permiso('prioridad') %}
-    <li class="menu-item {% if request.path == '/gestionar-prioridad' %} active {% endif %}">
-      <a href="{{ url_for('home_bp.viewFormPrioridad') }}" class="menu-link">
-        <i class="menu-icon bi bi-arrow-up"></i>
-        <div data-i18n="Priority">Prioridad</div>
-      </a>
     </li>
     {% endif %}
 
@@ -216,27 +172,6 @@
         <li class="menu-item {% if request.path == '/empleados' %} active {% endif %}">
           <a href="{{ url_for('viewFormListarEmpleados') }}" class="menu-link">
             <div data-i18n="List Employees">Listar Empleados</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-    {% endif %}
-
-    {% if tiene_permiso('empresas') %}
-    <li class="menu-item">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon bi bi-building"></i>
-        <div data-i18n="Companies">Empresas</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item {% if request.path == '/registrar-empresas' %} active {% endif %}">
-          <a href="{{ url_for('home_bp.viewFormEmpresa') }}" class="menu-link">
-            <div data-i18n="Basic">Registrar Empresas</div>
-          </a>
-        </li>
-        <li class="menu-item {% if request.path == '/lista-empresas' %} active {% endif %}">
-          <a href="{{ url_for('lista_empresas') }}" class="menu-link">
-            <div data-i18n="Basic">Listar Empresas</div>
           </a>
         </li>
       </ul>
@@ -287,6 +222,71 @@
       <a href="{{ url_for('manual_sistema') }}" class="menu-link" target="_blank" rel="noopener noreferrer">
         <i class="menu-icon bi bi-journal-bookmark-fill"></i>
         <div data-i18n="System Manual">Manual del Sistema</div>
+      </a>
+    </li>
+    {% endif %}
+
+    {% if tiene_permiso('usuarios') %}
+    <li class="menu-item {% if request.path in ['/users/register', '/users'] %} active open {% endif %}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon bi bi-people-fill"></i>
+        <div data-i18n="Users">Usuarios</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {% if request.path == '/users/register' %} active {% endif %}">
+          <a href="{{ url_for('user_bp.show_register_form') }}" class="menu-link">
+            <div data-i18n="Register Users">Registrar Usuarios</div>
+          </a>
+        </li>
+        <li class="menu-item {% if request.path == '/users' %} active {% endif %}">
+          <a href="{{ url_for('user_bp.list_users') }}" class="menu-link">
+            <div data-i18n="List Users">Listar Usuarios</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+    {% endif %}
+
+    {% if tiene_permiso('roles_permisos') %}
+    <li class="menu-item {% if request.path == '/gestionar-permisos' %} active {% endif %}">
+      <a href="{{ url_for('home_bp.viewFormPermisos') }}" class="menu-link">
+        <i class="menu-icon bi bi-shield-lock"></i>
+        <div data-i18n="Role Permissions">Permisos por Rol</div>
+      </a>
+    </li>
+    {% endif %}
+
+    {% if tiene_permiso('reportes') %}
+    <li class="menu-item {% if request.path in ['/reportes', '/descargar-informe-publicaciones', '/reportes-estadisticos'] %} active open {% endif %}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon bi bi-bar-chart-line-fill"></i>
+        <div data-i18n="Reports">Reportes</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {% if request.path == '/reportes/reporte-excel' %} active {% endif %}">
+          <a href="{{ url_for('home_bp.viewFormReportesExcel') }}" class="menu-link">
+            <div data-i18n="Excel">Reportes Excel</div>
+          </a>
+        </li>
+        <li class="menu-item {% if request.path == '/reportes/reporte-pdf' %} active {% endif %}">
+          <a href="{{ url_for('home_bp.viewFormReportesPDF') }}" class="menu-link">
+            <div data-i18n="PDF">Reportes PDF</div>
+          </a>
+        </li>
+        <li class="menu-item {% if request.path == '/reportes/reporte-estadistico' %} active {% endif %}">
+          <a href="{{ url_for('home_bp.viewFormReportesEstadisticos') }}" class="menu-link">
+            <div data-i18n="Stats">Reportes Estadísticos</div>
+          </a>
+        </li>
+      </ul>
+    </li>
+    {% endif %}
+
+    {% if tiene_permiso('bitacora') %}
+    <li class="menu-item {% if request.path == '/bitacora' %} active {% endif %}">
+      <a href="{{ url_for('home_bp.viewBitacora') }}" class="menu-link">
+        <i class="menu-icon bi bi-clock-history"></i>
+        <div data-i18n="Tables">Bitacora</div>
       </a>
     </li>
     {% endif %}

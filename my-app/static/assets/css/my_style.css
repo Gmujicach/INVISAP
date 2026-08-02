@@ -1350,3 +1350,19 @@ body.dark-mode .difference {
 body.dark-mode .noLeido {
   color: #cfcde9 !important;
 }
+
+/* ============================================
+   Sidebar: Separator Lines Between Modules
+   ============================================ */
+.bg-menu-theme .menu-inner > .menu-item:not(.menu-divider-item) {
+  border-bottom: 1px solid rgba(105, 122, 141, 0.08);
+}
+body.dark-mode .bg-menu-theme .menu-inner > .menu-item:not(.menu-divider-item) {
+  border-bottom-color: rgba(173, 178, 191, 0.12);
+}
+.bg-menu-theme .menu-inner > .menu-item .menu-sub > .menu-item {
+  border-bottom: 1px solid rgba(105, 122, 141, 0.05);
+}
+body.dark-mode .menu-inner > .menu-item .menu-sub > .menu-item {
+  border-bottom-color: rgba(173, 178, 191, 0.08);
+}
