@@ -241,6 +241,28 @@
   background-color: #4a4b66 !important;
 }
 
+/* ---------- Sidebar Verde Oscuro en Modo Oscuro ---------- */
+body.dark-mode #layout-menu,
+html[data-bs-theme="dark"] body #layout-menu {
+  background-color: #0d3d1a !important;
+}
+body.dark-mode #layout-menu .menu-link,
+html[data-bs-theme="dark"] body #layout-menu .menu-link {
+  color: #fff !important;
+}
+body.dark-mode #layout-menu .menu-icon,
+html[data-bs-theme="dark"] body #layout-menu .menu-icon {
+  color: #fff !important;
+}
+body.dark-mode #layout-menu .menu-sub,
+html[data-bs-theme="dark"] body #layout-menu .menu-sub {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+body.dark-mode #layout-menu .menu-item.active > .menu-link,
+html[data-bs-theme="dark"] body #layout-menu .menu-item.active > .menu-link {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
 /* Scrollbar nativo del menú en modo oscuro (evita el "brillo" blanco) */
 :is(body.dark-mode, html[data-bs-theme="dark"] body) .layout-menu::-webkit-scrollbar,
 :is(body.dark-mode, html[data-bs-theme="dark"] body) .menu-inner::-webkit-scrollbar {

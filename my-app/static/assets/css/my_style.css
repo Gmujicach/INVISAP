@@ -917,25 +917,29 @@ body.dark-mode .card-header.bg-white {
 .cpanel-footer {
   background-color: #14532d;
   color: #fff;
-  padding: 2.5rem 0 1.5rem;
+  padding: 1.5rem 0 1rem;
   margin-top: auto;
 }
 
 .cpanel-footer h4 {
   font-weight: 700;
-  font-size: 1rem;
-  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
   letter-spacing: 0.05em;
 }
 
 .cpanel-footer .footer-brand {
-  max-width: 280px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: none;
 }
 
 .cpanel-footer .footer-logo {
-  max-height: 50px;
+  max-height: 80px;
   filter: brightness(0) invert(1);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
 }
 
 .cpanel-footer .footer-links li {
@@ -992,8 +996,8 @@ body.dark-mode .card-header.bg-white {
 
 .cpanel-footer .footer-bottom {
   border-top: 1px solid rgba(255,255,255,0.1);
-  margin-top: 1.5rem;
-  padding-top: 1rem;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
   text-align: center;
 }
 
@@ -1005,17 +1009,18 @@ body.dark-mode .card-header.bg-white {
 @media (max-width: 767.98px) {
   .cpanel-footer {
     text-align: center;
-    padding: 2rem 0 1.25rem;
+    padding: 1.5rem 0 1rem;
   }
   .cpanel-footer .footer-brand {
-    max-width: 100%;
-    margin-bottom: 1rem;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0.75rem;
   }
   .cpanel-footer .footer-contact li {
     justify-content: center;
   }
-  .cpanel-footer .row.g-3 > [class*="col-"] {
-    margin-bottom: 1.5rem;
+  .cpanel-footer .row.g-2 > [class*="col-"] {
+    margin-bottom: 1rem;
   }
 }
 
@@ -1026,6 +1031,7 @@ body.dark-mode .card-header.bg-white {
 
 :is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer h4 {
   color: #fff !important;
+  font-weight: bold !important;
 }
 
 :is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-link {
@@ -1365,4 +1371,35 @@ body.dark-mode .bg-menu-theme .menu-inner > .menu-item:not(.menu-divider-item) {
 }
 body.dark-mode .menu-inner > .menu-item .menu-sub > .menu-item {
   border-bottom-color: rgba(173, 178, 191, 0.08);
+}
+
+/* ============================================
+    Sidebar Green Background + White Text
+    ============================================ */
+#layout-menu {
+  background-color: #08b324 !important;
+}
+#layout-menu .menu-link {
+  color: #fff !important;
+}
+#layout-menu .menu-icon {
+  color: #fff !important;
+}
+#layout-menu .menu-sub {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+}
+#layout-menu .menu-item.active > .menu-link {
+  background-color: rgba(0, 0, 0, 0.2) !important;
+}
+#layout-menu .menu-item > .menu-link:hover {
+  background: linear-gradient(90deg, #06a020 0%, rgba(0, 0, 0, 0.15) 100%) !important;
+  color: #fff !important;
+}
+
+/* ============================================
+    Footer Section Headings - White Bold Text
+    ============================================ */
+.cpanel-footer h4 {
+  color: #fff !important;
+  font-weight: bold !important;
 }
