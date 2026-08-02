@@ -221,7 +221,7 @@
 :is(body.dark-mode, html[data-bs-theme="dark"] body) .layout-menu,
 :is(body.dark-mode, html[data-bs-theme="dark"] body) .menu-inner,
 :is(body.dark-mode, html[data-bs-theme="dark"] body) .menu {
-  background-color: #1e1e2d !important;
+  background-color: #14532d !important;
   box-shadow: none !important;
 }
 
@@ -244,7 +244,7 @@
 /* ---------- Sidebar Verde Oscuro en Modo Oscuro ---------- */
 body.dark-mode #layout-menu,
 html[data-bs-theme="dark"] body #layout-menu {
-  background-color: #0d3d1a !important;
+  background-color: #14532d !important;
 }
 body.dark-mode #layout-menu .menu-link,
 html[data-bs-theme="dark"] body #layout-menu .menu-link {
