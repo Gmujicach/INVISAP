@@ -67,6 +67,19 @@
   border-left: 0 !important;
 }
 
+/* Ocultar el ojo nativo del navegador en inputs password para evitar duplicados */
+.password-input::-ms-reveal,
+.password-input::-ms-clear {
+  display: none !important;
+}
+
+.password-input::-webkit-credentials-auto-fill-button,
+.password-input::-webkit-textfield-decoration-container {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* Atomic Design: Profile Components */
 .molecule-avatar-upload .atom-avatar {
   transition: transform 0.3s ease;

@@ -6,7 +6,7 @@
   manager.getCurrentModule = function() {
     const body = document.body;
     if (body && body.dataset.module) return body.dataset.module;
-    
+
     const hash = window.location.hash.replace('#', '');
     if (hash) {
       const hashMap = {
@@ -22,32 +22,43 @@
       };
       if (hashMap[hash]) return hashMap[hash];
     }
-    
+
     const path = window.location.pathname.replace(/\/+$/, '');
     if (!path || path === '') return 'home';
-    const segment = path.split('/').pop();
-    const map = {
-      proyectos: 'proyectos', solicitudes: 'solicitudes', empleados: 'empleados',
-      empresas: 'empresas', obras: 'obras', bitacora: 'bitacora',
-      contratacion: 'contratacion', contrataciones: 'contratacion',
-      evidencia: 'evidencia', evidencias: 'evidencia',
-      inspeccion: 'inspeccion', inspecciones: 'inspeccion',
-      inf_avance_obra: 'inf_avance_obra', publicaciones: 'publicaciones',
-      perfil: 'perfil', reportes: 'reportes', respaldo: 'respaldo',
-      seguridad: 'seguridad', usuarios: 'usuarios', ia: 'ia',
-      login: 'login', manual: 'manual', home: 'home', dashboard: 'home'
-    };
-    if (map[segment]) return map[segment];
-    for (const key of Object.keys(map)) {
-      if (path.indexOf(key) !== -1) return map[key];
+
+    const moduleRules = [
+      { pattern: /solicitud|solicitudes/i, module: 'solicitudes' },
+      { pattern: /proyecto|proyectos/i, module: 'proyectos' },
+      { pattern: /empleado|empleados/i, module: 'empleados' },
+      { pattern: /empresa|empresas/i, module: 'empresas' },
+      { pattern: /obra|obras/i, module: 'obras' },
+      { pattern: /contratacion|contrataciones/i, module: 'contratacion' },
+      { pattern: /evidencia|evidencias/i, module: 'evidencia' },
+      { pattern: /inspeccion|inspecciones/i, module: 'inspeccion' },
+      { pattern: /avance_obra|inf_avance_obra|avanceobra/i, module: 'inf_avance_obra' },
+      { pattern: /publicacion|publicaciones/i, module: 'publicaciones' },
+      { pattern: /perfil/i, module: 'perfil' },
+      { pattern: /reporte|reportes/i, module: 'reportes' },
+      { pattern: /respaldo/i, module: 'respaldo' },
+      { pattern: /seguridad/i, module: 'seguridad' },
+      { pattern: /usuario|usuarios/i, module: 'usuarios' },
+      { pattern: /ia|prioridad|gravedad/i, module: 'ia' },
+      { pattern: /manual/i, module: 'manual' },
+      { pattern: /login|inicio|landing/i, module: 'login' },
+      { pattern: /home|dashboard/i, module: 'home' }
+    ];
+
+    for (const rule of moduleRules) {
+      if (rule.pattern.test(path)) return rule.module;
     }
+
     return 'default';
   };
 
   manager.startTour = function(moduleName) {
     if (manager.isActive()) manager.stopTour();
     const module = moduleName || manager.getCurrentModule();
-    
+
     const registry = window.INVISAP_TOURS || {};
     const factory = registry[module] || registry['default'];
     if (typeof factory !== 'function') {
@@ -59,6 +70,7 @@
         console.error('[Tour] Driver.js no se ha cargado correctamente.');
         return null;
       }
+
       const driverInstance = factory();
       if (!driverInstance || typeof driverInstance.drive !== 'function') {
         console.error('[Tour] La factory no devolvió una instancia válida.');
@@ -66,7 +78,7 @@
       }
       manager.activeInstance = driverInstance;
       manager.setActive(true);
-      
+
       const validModules = ['proyectos', 'solicitudes', 'empleados', 'empresas', 'obras', 'bitacora',
         'contratacion', 'evidencia', 'inspeccion', 'inf_avance_obra', 'publicaciones',
         'perfil', 'reportes', 'respaldo', 'seguridad', 'usuarios', 'ia', 'login', 'manual'];
@@ -77,7 +89,7 @@
           }
         } catch (e) {}
       }
-      
+
       driverInstance.drive();
       return driverInstance;
     } catch (error) {
@@ -112,10 +124,12 @@
     if (!fab) return;
     if (active) {
       fab.setAttribute('aria-label', 'Detener tour del sistema');
+      fab.setAttribute('aria-pressed', 'true');
       fab.title = 'Detener recorrido guiado';
       fab.classList.add('tour-active');
     } else {
       fab.setAttribute('aria-label', 'Iniciar tour del sistema');
+      fab.setAttribute('aria-pressed', 'false');
       fab.title = 'Guía del Sistema';
       fab.classList.remove('tour-active');
     }
@@ -147,7 +161,17 @@
 
   manager.autoStart = function() {
     if (manager.hasSeenTour()) return;
-    const factory = (window.INVISAP_TOURS || {})[manager.getCurrentModule()] || (window.INVISAP_TOURS || {})['default'];
+    const pageTourButton = document.getElementById('btnTourInvilara');
+    if (!pageTourButton) return;
+
+    const pathname = window.location.pathname || '';
+    const isLandingLikePage = pathname === '/' || pathname === '' || pathname.indexOf('landing') !== -1 || pathname.indexOf('login') !== -1;
+    if (isLandingLikePage) return;
+
+    const currentModule = manager.getCurrentModule();
+    if (!currentModule || currentModule === 'default' || currentModule === 'login') return;
+
+    const factory = (window.INVISAP_TOURS || {})[currentModule] || (window.INVISAP_TOURS || {})['default'];
     if (typeof factory !== 'function') return;
     setTimeout(function() { manager.startTour(); }, 700);
   };
@@ -168,6 +192,29 @@
     animate: true
   };
 
+  manager.filterAvailableSteps = function(steps) {
+    if (!Array.isArray(steps)) return [];
+    return steps.filter(function(step) {
+      if (!step || !step.element || typeof step.element !== 'string') return false;
+      const selectorList = step.element.split(',').map(function(item) {
+        return item.trim();
+      }).filter(Boolean);
+
+      for (const selector of selectorList) {
+        try {
+          const element = document.querySelector(selector);
+          if (!element) continue;
+          const rect = element.getBoundingClientRect();
+          if (rect.width === 0 && rect.height === 0) continue;
+          return true;
+        } catch (e) {
+          continue;
+        }
+      }
+      return false;
+    });
+  };
+
   manager.applyDriverDefaults = function() {
     if (!window.driver || !window.driver.js || typeof window.driver.js.driver !== 'function') return;
     const original = window.driver.js.driver;
@@ -176,6 +223,19 @@
       if (opts && opts.popover) {
         merged.popover = Object.assign({}, manager.DRIVER_DEFAULTS.popover, opts.popover);
       }
+      if (Array.isArray(opts && opts.steps)) {
+        merged.steps = manager.filterAvailableSteps(opts.steps);
+      }
+
+      if (!Array.isArray(merged.steps) || merged.steps.length === 0) {
+        console.warn('[Tour] No hay pasos válidos para el módulo actual. Se omite la ejecución del recorrido.');
+        return {
+          drive: function() {},
+          destroy: function() {},
+          hasNextStep: function() { return false; }
+        };
+      }
+
       return original(merged);
     };
   };
@@ -199,6 +259,12 @@
       event.stopPropagation();
       manager.toggleTour();
     });
+
+    const fab = document.getElementById('btnTourInvilara');
+    if (fab) {
+      fab.setAttribute('aria-pressed', 'false');
+      fab.setAttribute('aria-label', 'Iniciar tour del sistema');
+    }
 
     const inst = manager.activeInstance;
     if (inst && typeof inst.hasNextStep === 'function') {
