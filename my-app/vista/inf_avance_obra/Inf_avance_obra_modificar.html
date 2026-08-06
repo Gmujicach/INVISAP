@@ -16,6 +16,17 @@
     background: linear-gradient(135deg, var(--invilara-verde) 0%, var(--invilara-verde-oscuro) 100%);
     color: white;
   }
+  .hero-card h3,
+  .hero-card p,
+  .hero-card .opacity-75 {
+    color: #ffffff !important;
+  }
+  .btn-back-list {
+    color: var(--invilara-verde) !important;
+  }
+  .btn-back-list:hover {
+    color: var(--invilara-verde-oscuro) !important;
+  }
   .form-section-title {
     color: var(--invilara-verde);
     font-weight: 700;
@@ -128,6 +139,17 @@
     color: white;
     border-color: #2b2c40;
   }
+  body.dark-mode .btn-back-list {
+    background: #08b324 !important;
+    border-color: #08b324 !important;
+    color: #ffffff !important;
+    box-shadow: 0 6px 16px rgba(8, 179, 36, 0.25);
+  }
+  body.dark-mode .btn-back-list:hover {
+    background: #059b1f !important;
+    border-color: #059b1f !important;
+    color: #ffffff !important;
+  }
 </style>
 {% endblock %}
 
@@ -140,7 +162,7 @@
           <h3 class="mb-1"><i class="bx bx-edit-alt me-2"></i>Modificar Informe de Avance</h3>
           <p class="mb-0 opacity-75">Actualice los datos del informe seleccionado.</p>
         </div>
-        <a href="{{ url_for('informe_avance_bp.listar_informes') }}" class="btn btn-light text-success">
+        <a href="{{ url_for('informe_avance_bp.listar_informes') }}" class="btn btn-light text-success btn-back-list">
           <i class="bx bx-arrow-back me-1"></i> Volver a la lista
         </a>
       </div>
