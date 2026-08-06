@@ -1,17 +1,20 @@
-{# Notificaciones Flash modernas con animación slide #}
+{# Notificaciones Flash modernas con estilo consistente en todo el sistema #}
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <div class="notification-container" id="flashToastContainer">
       {% for category, msg in messages %}
-        <div class="toast-custom {{ 'error' if category in ['error','danger'] else category }}" role="alert">
+        {% set normalized_category = 'error' if category in ['error', 'danger'] else category %}
+        {% set icon_class = 'bi-exclamation-triangle-fill' if normalized_category == 'error' else 'bi-exclamation-circle-fill' if normalized_category == 'warning' else 'bi-info-circle-fill' if normalized_category == 'info' else 'bi-check-circle-fill' %}
+        {% set icon_color = '#ff3e1d' if normalized_category == 'error' else '#ffab00' if normalized_category == 'warning' else '#03c3ec' if normalized_category == 'info' else '#08b324' %}
+        <div class="toast-custom {{ normalized_category }}" role="alert">
           <div class="toast-content">
-            <div class="toast-icon" style="color: {{ '#ff3e1d' if category in ['error','danger'] else '#08b324' }};">
-              <i class="bi {{ 'bi-exclamation-triangle-fill' if category in ['error','danger'] else 'bi-check-circle-fill' }}"></i>
+            <div class="toast-icon" style="color: {{ icon_color }};">
+              <i class="bi {{ icon_class }}"></i>
             </div>
             <span class="toast-message">{{ msg }}</span>
             <button class="toast-close" aria-label="Cerrar">&times;</button>
           </div>
-          <div class="toast-progress"></div>
+          <div class="toast-progress" style="color: {{ icon_color }};"></div>
         </div>
       {% endfor %}
     </div>

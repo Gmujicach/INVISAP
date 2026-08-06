@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/reportesEstadisticos.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/usuarios.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/login.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/notifications.css') }}">
       <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
       {% block customCSS %} {% endblock %}
       <!-- Estilos globales de Modo Oscuro (debe cargarse al final para prevalecer) -->
@@ -89,29 +90,6 @@
         display: none;
       }
 
-      /* --- Atomic Design: Notification Molecule --- */
-      .toast-container-custom {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 9999;
-        width: 350px;
-      }
-      .alert-molecule {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
-        display: flex;
-        align-items: center;
-        padding: 1rem;
-        margin-bottom: 12px;
-        animation: slideInNotification 0.4s ease-out forwards;
-      }
-      @keyframes slideInNotification {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      /* ------------------------------------------- */
 
       .ls-1 { letter-spacing: 1px; }
       .bg-label-primary { background-color: #e7e7ff; color: #696cff; }
@@ -622,25 +600,7 @@
         <div class="layout-page">
           <div class="content-wrapper">
             <div class="container-xxl flex-grow-1 container-p-y">
-              <div class="toast-container-custom" id="notification-area">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                  {% if messages %}
-                    {% for category, message in messages %}
-                      <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-molecule alert-dismissible fade show bg-white" role="alert">
-                        <div class="d-flex align-items-center">
-                          {% if category == 'success' %}
-                            <i class="bi bi-check-circle-fill text-success fs-4 me-3"></i>
-                          {% else %}
-                            <i class="bi bi-exclamation-triangle-fill text-danger fs-4 me-3"></i>
-                          {% endif %}
-                          <div class="text-dark small fw-semibold">{{ message }}</div>
-                        </div>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                      </div>
-                    {% endfor %}
-                  {% endif %}
-                {% endwith %}
-              </div>
+              {% include 'includes/messages.html' %}
               <!---->
               {% block body %}
               <!--fin del bloque-->
@@ -1153,17 +1113,6 @@
       }
     </style>
     <script>
-      // --- Senior Logic: Auto-dismiss Notifications ---
-      document.addEventListener('DOMContentLoaded', function() {
-        const alerts = document.querySelectorAll('.alert-molecule');
-        alerts.forEach(function(alert) {
-          setTimeout(function() {
-            const bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
-          }, 5000); // 5 Segundos
-        });
-      });
-
       // --- Navegación desde el Hub de Configuración ---
       document.querySelectorAll('[data-config-target]').forEach(function(el) {
         el.addEventListener('click', function(e) {
