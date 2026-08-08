@@ -23,10 +23,10 @@ def _get_env(key, default=''):
 def connectionBD():
     """Return a new MySQL connection. Reads configuration from env vars with sane defaults."""
     db_config = {
-        'host': _get_env('DB_HOST', 'localhost'),
-        'user': _get_env('DB_USER', 'root'),
-        'password': _get_env('DB_PASSWORD', ''),
-        'database': _get_env('DB_NAME', 'invilara'),
+        'host': os.getenv('DB_HOST', 'localhost'),
+        'user': os.getenv('DB_USER', 'root'),
+        'password': os.getenv('DB_PASSWORD', ''),
+        'database': os.getenv('DB_NAME', 'invilara'),
         'charset': 'utf8mb4',
         'use_unicode': True,
         'auth_plugin': _get_env('DB_AUTH_PLUGIN', 'mysql_native_password')
@@ -61,10 +61,10 @@ def connectionBD_invilara():
 def connectionBD_seguridad():
     """Return a new MySQL connection. Reads configuration from env vars with sane defaults."""
     db_config = {
-        'host': _get_env('DB_HOST', 'localhost'),
-        'user': _get_env('DB_USER', 'root'),
-        'password': _get_env('DB_PASSWORD', ''),
-        'database': _get_env('DB_NAME_SEGURIDAD', 'invilara_seguridad'),
+        'host': os.getenv('DB_HOST', 'localhost'),
+        'user': os.getenv('DB_USER', 'root'),
+        'password': os.getenv('DB_PASSWORD', ''),
+        'database': os.getenv('DB_NAME_SEGURIDAD', 'invilara_seguridad'),
         'charset': 'utf8mb4',
         'use_unicode': True,
         'auth_plugin': _get_env('DB_AUTH_PLUGIN', 'mysql_native_password')

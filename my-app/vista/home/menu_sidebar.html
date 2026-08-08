@@ -67,6 +67,24 @@
     </li>
     {% endif %}
 
+    {% if tiene_permiso('maquinaria') %}
+    <li class="menu-item {% if request.path == '/maquinaria' %} active {% endif %}">
+      <a href="{{ url_for('home_bp.viewFormMaquinaria') }}" class="menu-link">
+        <i class="menu-icon bi bi-truck"></i>
+        <div data-i18n="Machinery">Maquinaria</div>
+      </a>
+    </li>
+    {% endif %}
+
+    {% if tiene_permiso('contrataciones') %}
+    <li class="menu-item {% if request.path == '/contratacion' %} active {% endif %}">
+      <a href="{{ url_for('contrataciones_bp.gestionar_contrataciones') }}" class="menu-link">
+        <i class="menu-icon bi bi-briefcase"></i>
+        <div data-i18n="Contracts">Contratación</div>
+      </a>
+    </li>
+    {% endif %}
+
     {% if tiene_permiso('empresas') %}
     <li class="menu-item">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -88,21 +106,33 @@
     </li>
     {% endif %}
 
-    {% if tiene_permiso('contrataciones') %}
-    <li class="menu-item {% if request.path == '/contratacion' %} active {% endif %}">
-      <a href="{{ url_for('contrataciones_bp.gestionar_contrataciones') }}" class="menu-link">
-        <i class="menu-icon bi bi-briefcase"></i>
-        <div data-i18n="Contracts">Contratación</div>
-      </a>
-    </li>
-    {% endif %}
-
     {% if tiene_permiso('obras') %}
     <li class="menu-item {% if request.path == '/gestionar-obras' %} active {% endif %}">
       <a href="{{ url_for('obra_bp.vista_gestionar_obras') }}" class="menu-link">
         <i class="menu-icon bi bi-house-gear"></i>
         <div data-i18n="Basic">Obras</div>
       </a>
+    </li>
+    {% endif %}
+
+    {% if tiene_permiso('inspecciones') %}
+    <li class="menu-item {% if '/inspecciones' in request.path %} active open {% endif %}">
+      <a href="javascript:void(0);" class="menu-link menu-toggle">
+        <i class="menu-icon bi bi-clipboard-check"></i>
+        <div data-i18n="Inspections">Inspecciones</div>
+      </a>
+      <ul class="menu-sub">
+        <li class="menu-item {% if request.path == '/inspecciones/crear' %} active {% endif %}">
+          <a href="{{ url_for('inspeccion_bp.view_form_inspeccion') }}" class="menu-link">
+            <div data-i18n="Register Inspection">Registrar Inspeccion</div>
+          </a>
+        </li>
+        <li class="menu-item {% if '/inspecciones/' in request.path and '/editar' not in request.path %} active {% endif %}">
+          <a href="{{ url_for('inspeccion_bp.list_inspecciones') }}" class="menu-link">
+            <div data-i18n="List Inspections">Listar Inspecciones</div>
+          </a>
+        </li>
+      </ul>
     </li>
     {% endif %}
 
@@ -157,72 +187,29 @@
     </li>
     {% endif %}
 
-    {% if tiene_permiso('empleados') %}
-    <li class="menu-item {% if request.path in ['/registrar-empleado', '/empleados'] %} active open {% endif %}">
+    {% if tiene_permiso('reportes') %}
+    <li class="menu-item {% if request.path in ['/reportes', '/descargar-informe-publicaciones', '/reportes-estadisticos'] %} active open {% endif %}">
       <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon bi bi-person-badge-fill"></i>
-        <div data-i18n="Employees">Empleados</div>
+        <i class="menu-icon bi bi-bar-chart-line-fill"></i>
+        <div data-i18n="Reports">Reportes</div>
       </a>
       <ul class="menu-sub">
-        <li class="menu-item {% if request.path == '/registrar-empleado' %} active {% endif %}">
-          <a href="{{ url_for('viewFormRegistrarEmpleados') }}" class="menu-link">
-            <div data-i18n="Register Employees">Registrar Empleados</div>
+        <li class="menu-item {% if request.path == '/reportes/reporte-excel' %} active {% endif %}">
+          <a href="{{ url_for('home_bp.viewFormReportesExcel') }}" class="menu-link">
+            <div data-i18n="Excel">Reportes Excel</div>
           </a>
         </li>
-        <li class="menu-item {% if request.path == '/empleados' %} active {% endif %}">
-          <a href="{{ url_for('viewFormListarEmpleados') }}" class="menu-link">
-            <div data-i18n="List Employees">Listar Empleados</div>
+        <li class="menu-item {% if request.path == '/reportes/reporte-pdf' %} active {% endif %}">
+          <a href="{{ url_for('home_bp.viewFormReportesPDF') }}" class="menu-link">
+            <div data-i18n="PDF">Reportes PDF</div>
+          </a>
+        </li>
+        <li class="menu-item {% if request.path == '/reportes/reporte-estadistico' %} active {% endif %}">
+          <a href="{{ url_for('home_bp.viewFormReportesEstadisticos') }}" class="menu-link">
+            <div data-i18n="Stats">Reportes Estadísticos</div>
           </a>
         </li>
       </ul>
-    </li>
-    {% endif %}
-
-    {% if tiene_permiso('inspecciones') %}
-    <li class="menu-item {% if '/inspecciones' in request.path %} active open {% endif %}">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon bi bi-clipboard-check"></i>
-        <div data-i18n="Inspections">Inspecciones</div>
-      </a>
-      <ul class="menu-sub">
-        <li class="menu-item {% if request.path == '/inspecciones/crear' %} active {% endif %}">
-          <a href="{{ url_for('inspeccion_bp.view_form_inspeccion') }}" class="menu-link">
-            <div data-i18n="Register Inspection">Registrar Inspeccion</div>
-          </a>
-        </li>
-        <li class="menu-item {% if '/inspecciones/' in request.path and '/editar' not in request.path %} active {% endif %}">
-          <a href="{{ url_for('inspeccion_bp.list_inspecciones') }}" class="menu-link">
-            <div data-i18n="List Inspections">Listar Inspecciones</div>
-          </a>
-        </li>
-      </ul>
-    </li>
-    {% endif %}
-
-    {% if tiene_permiso('maquinaria') %}
-    <li class="menu-item {% if request.path == '/maquinaria' %} active {% endif %}">
-      <a href="{{ url_for('home_bp.viewFormMaquinaria') }}" class="menu-link">
-        <i class="menu-icon bi bi-truck"></i>
-        <div data-i18n="Machinery">Maquinaria</div>
-      </a>
-    </li>
-    {% endif %}
-
-    {% if tiene_permiso('respaldos') %}
-    <li class="menu-item {% if request.path == '/administrar-respaldos' %} active {% endif %}">
-      <a href="{{ url_for('home_bp.viewFormRespaldos') }}" class="menu-link">
-        <i class="menu-icon bi bi-download"></i>
-        <div data-i18n="Tables">Administrar Respaldos</div>
-      </a>
-    </li>
-    {% endif %}
-
-    {% if tiene_permiso('manual') %}
-    <li class="menu-item">
-      <a href="{{ url_for('manual_sistema') }}" class="menu-link" target="_blank" rel="noopener noreferrer">
-        <i class="menu-icon bi bi-journal-bookmark-fill"></i>
-        <div data-i18n="System Manual">Manual del Sistema</div>
-      </a>
     </li>
     {% endif %}
 
@@ -256,29 +243,12 @@
     </li>
     {% endif %}
 
-    {% if tiene_permiso('reportes') %}
-    <li class="menu-item {% if request.path in ['/reportes', '/descargar-informe-publicaciones', '/reportes-estadisticos'] %} active open {% endif %}">
-      <a href="javascript:void(0);" class="menu-link menu-toggle">
-        <i class="menu-icon bi bi-bar-chart-line-fill"></i>
-        <div data-i18n="Reports">Reportes</div>
+    {% if tiene_permiso('respaldos') %}
+    <li class="menu-item {% if request.path == '/administrar-respaldos' %} active {% endif %}">
+      <a href="{{ url_for('home_bp.viewFormRespaldos') }}" class="menu-link">
+        <i class="menu-icon bi bi-download"></i>
+        <div data-i18n="Tables">Administrar Respaldos</div>
       </a>
-      <ul class="menu-sub">
-        <li class="menu-item {% if request.path == '/reportes/reporte-excel' %} active {% endif %}">
-          <a href="{{ url_for('home_bp.viewFormReportesExcel') }}" class="menu-link">
-            <div data-i18n="Excel">Reportes Excel</div>
-          </a>
-        </li>
-        <li class="menu-item {% if request.path == '/reportes/reporte-pdf' %} active {% endif %}">
-          <a href="{{ url_for('home_bp.viewFormReportesPDF') }}" class="menu-link">
-            <div data-i18n="PDF">Reportes PDF</div>
-          </a>
-        </li>
-        <li class="menu-item {% if request.path == '/reportes/reporte-estadistico' %} active {% endif %}">
-          <a href="{{ url_for('home_bp.viewFormReportesEstadisticos') }}" class="menu-link">
-            <div data-i18n="Stats">Reportes Estadísticos</div>
-          </a>
-        </li>
-      </ul>
     </li>
     {% endif %}
 
@@ -287,6 +257,15 @@
       <a href="{{ url_for('home_bp.viewBitacora') }}" class="menu-link">
         <i class="menu-icon bi bi-clock-history"></i>
         <div data-i18n="Tables">Bitacora</div>
+      </a>
+    </li>
+    {% endif %}
+
+    {% if tiene_permiso('manual') %}
+    <li class="menu-item">
+      <a href="{{ url_for('manual_sistema') }}" class="menu-link" target="_blank" rel="noopener noreferrer">
+        <i class="menu-icon bi bi-journal-bookmark-fill"></i>
+        <div data-i18n="System Manual">Manual del Sistema</div>
       </a>
     </li>
     {% endif %}
