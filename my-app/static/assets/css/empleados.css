@@ -1,6 +1,22 @@
 /* Estilos mínimos para el módulo de Empleados */
 .card img{ max-height:60px; }
-.table td, .table th{ vertical-align:middle }
+.table td, .table th{ vertical-align:middle; padding: 0.5rem; }
+
+/* Distribución de columnas para evitar scroll horizontal */
+#tablaEmpleados colgroup .col-id { width: 5%; }
+#tablaEmpleados colgroup .col-nombre { width: 20%; }
+#tablaEmpleados colgroup .col-cargo { width: 15%; }
+#tablaEmpleados colgroup .col-gerencia { width: 15%; }
+#tablaEmpleados colgroup .col-ingreso { width: 10%; }
+#tablaEmpleados colgroup .col-estado { width: 10%; }
+#tablaEmpleados colgroup .col-acciones { width: 15%; }
+
+/* Encabezado de tabla - Verde sidebar en ambos modos */
+.table thead th {
+  background-color: #08b324 !important;
+  color: #ffffff !important;
+  border-color: #08b324 !important;
+}
 
 /* ============================================
    Modo oscuro - Empleados
@@ -20,9 +36,11 @@ body.dark-mode .table {
 body.dark-mode .table :is(td, th) {
   border-color: #444564 !important;
 }
-body.dark-mode .table thead th {
-  background: #2b2c40 !important;
-  color: #cfcde9 !important;
+body.dark-mode .table thead th,
+body.dark-mode #tablaEmpleados thead th {
+  background-color: #14532d !important;
+  color: #ffffff !important;
+  border-color: #14532d !important;
 }
 body.dark-mode .form-control,
 body.dark-mode .form-select {
@@ -32,4 +50,49 @@ body.dark-mode .form-select {
 }
 body.dark-mode .text-dark {
   color: #cfcde9 !important;
+}
+
+/* Paginación moderna */
+.pagination .page-link {
+  color: #14532d;
+  border: 1px solid #08b324;
+  background-color: #ffffff;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+.pagination .page-link:hover {
+  background-color: #08b324;
+  color: #ffffff;
+  border-color: #08b324;
+}
+.pagination .page-item.active .page-link {
+  background-color: #14532d;
+  border-color: #14532d;
+  color: #ffffff;
+}
+.pagination .page-item.disabled .page-link {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border-color: #dee2e6;
+}
+
+body.dark-mode .pagination .page-link {
+  color: #ffffff;
+  border-color: #14532d;
+  background-color: #2b2c40;
+}
+body.dark-mode .pagination .page-link:hover {
+  background-color: #14532d;
+  color: #ffffff;
+  border-color: #14532d;
+}
+body.dark-mode .pagination .page-item.active .page-link {
+  background-color: #08b324;
+  border-color: #08b324;
+  color: #ffffff;
+}
+body.dark-mode .pagination .page-item.disabled .page-link {
+  background-color: #2b2c40;
+  color: #6c757d;
+  border-color: #444564;
 }

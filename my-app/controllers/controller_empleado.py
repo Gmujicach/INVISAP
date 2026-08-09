@@ -13,14 +13,25 @@ empleado_bp = Blueprint('empleado_bp', __name__, template_folder='../vista', url
 @empleado_bp.route('', methods=['GET'])
 @empleado_bp.route('/', methods=['GET'])
 def list_empleados():
-    """Muestra el listado de empleados activos."""
+    """Muestra el listado de empleados activos paginados."""
     if 'conectado' not in session:
         flash('Primero debes iniciar sesión.', 'error')
         return redirect(url_for('login_bp.inicio'))
     
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    
     modelo = EmpleadoModel()
-    empleados = modelo.obtener_todos_empleados()
-    return render_template('empleados/empleados.html', resp_empleadosBD=empleados)
+    empleados = modelo.obtener_empleados_paginados(page=page, per_page=per_page)
+    total_empleados = modelo.contar_empleados()
+    total_pages = (total_empleados + per_page - 1) // per_page
+    
+    return render_template('empleados/empleados.html', 
+                           resp_empleadosBD=empleados,
+                           page=page,
+                           per_page=per_page,
+                           total_empleados=total_empleados,
+                           total_pages=total_pages)
 
 
 @empleado_bp.route('/create', methods=['GET'])

@@ -15,7 +15,7 @@ class EmpleadoModel:
     _RE_GERENCIA = re.compile(r'^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{5,100}$')
     _RE_FECHA = re.compile(r'^\d{4}-\d{2}-\d{2}$')
     _RE_CEDULA = re.compile(r'^\d{7,8}$')
-    _RE_TELEFONO = re.compile(r'^(0414|0424|0412|0416|0426|0251)-?\d{7}$')
+    _RE_TELEFONO = re.compile(r'^\d{10,11}$')
     _RE_CORREO = re.compile(r'^[\w._%+\-]+@[\w.\-]+\.[a-zA-Z]{2,}$')
     
     # Cargos válidos (catálogo)
@@ -176,7 +176,7 @@ class EmpleadoModel:
             self.__direccion or 'No especificado',
             self.__parroquia or 'No especificado',
             self.__municipio or 'No especificado',
-            self.__telefono or '0000-0000000',
+                self.__telefono or '0000000000',
             self.__correo or 'sin_correo@invilara.gob.ve'
         ))
         
@@ -204,8 +204,8 @@ class EmpleadoModel:
                 return None
             
             # Paso 2: Insertar empleado con FK a persona
-            cursor.execute("SELECT COALESCE(MAX(id_empleados), 0) + 1 AS siguiente_id FROM empleados")
-            fila = cursor.fetchone()
+            cur.execute("SELECT COALESCE(MAX(id_empleados), 0) + 1 AS siguiente_id FROM empleados")
+            fila = cur.fetchone()
             siguiente_id = fila['siguiente_id'] if isinstance(fila, dict) else (fila[0] if fila else 1)
 
             sql = """
@@ -312,8 +312,8 @@ class EmpleadoModel:
             if conn:
                 conn.close()
     
-    def __obtener_todos_empleados_db(self):
-        """Método PRIVADO que obtiene todos los empleados activos."""
+    def __obtener_todos_empleados_db(self, limite=None, offset=None):
+        """Método PRIVADO que obtiene empleados activos con paginación opcional."""
         conn = None
         cur = None
         
@@ -334,12 +334,42 @@ class EmpleadoModel:
                 WHERE e.estado = 1 
                 ORDER BY e.id_empleados DESC
             """
-            cur.execute(sql)
+            parametros = []
+            if limite is not None and offset is not None:
+                sql += " LIMIT %s OFFSET %s"
+                parametros.extend([limite, offset])
+            
+            cur.execute(sql, parametros)
             return cur.fetchall()
             
         except Exception as e:
             print(f"Error al obtener empleados: {e}")
             return []
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+    
+    def contar_empleados(self):
+        """Retorna el total de empleados activos."""
+        conn = None
+        cur = None
+        
+        try:
+            conn = connectionBD_invilara()
+            if not conn:
+                return 0
+            
+            cur = conn.cursor()
+            sql = "SELECT COUNT(*) FROM empleados WHERE estado = 1"
+            cur.execute(sql)
+            resultado = cur.fetchone()
+            return resultado[0] if resultado else 0
+            
+        except Exception as e:
+            print(f"Error al contar empleados: {e}")
+            return 0
         finally:
             if cur:
                 cur.close()
@@ -454,7 +484,11 @@ class EmpleadoModel:
             self.__direccion = data.get('direccion', 'No especificado')
             self.__parroquia = data.get('parroquia', 'No especificado')
             self.__municipio = data.get('municipio', 'No especificado')
-            self.__telefono = data.get('telefono', '0000-0000000')
+            
+            telefono = data.get('telefono', '').strip()
+            if telefono and not self._validar_telefono(telefono):
+                raise ValueError("El teléfono debe contener solo números (10 u 11 dígitos). Ej: 04141234567")
+            self.__telefono = telefono if telefono else '0000000000'
             self.__correo = data.get('correo', 'sin_correo@invilara.gob.ve')
             
             return self.__guardar_empleado_db()
@@ -515,6 +549,13 @@ class EmpleadoModel:
     def obtener_todos_empleados(self):
         """Método PÚBLICO para obtener todos los empleados activos."""
         return self.__obtener_todos_empleados_db()
+    
+    def obtener_empleados_paginados(self, page=1, per_page=10):
+        """Método PÚBLICO para obtener empleados activos paginados."""
+        if page < 1:
+            page = 1
+        offset = (page - 1) * per_page
+        return self.__obtener_todos_empleados_db(limite=per_page, offset=offset)
     
     def obtener_empleado_por_id(self, id_empleado):
         """Método PÚBLICO para obtener un empleado específico."""

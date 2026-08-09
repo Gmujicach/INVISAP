@@ -1,3 +1,19 @@
+import sys
+import pkgutil
+import importlib.util
+
+def _get_loader(name):
+    if name == '__main__':
+        mod = sys.modules.get('__main__')
+        return getattr(mod, '__loader__', None)
+    try:
+        spec = importlib.util.find_spec(name)
+        return spec.loader if spec else None
+    except (ImportError, AttributeError, ValueError):
+        return None
+
+pkgutil.get_loader = _get_loader
+
 from flask import Flask, session
 from flask_mail import Mail
 import os
@@ -5,7 +21,7 @@ import os
 # Claves de seguridad locales (reCAPTCHA + SECRET_KEY de la app)
 import claveApi
 
-app = Flask(__name__, template_folder='vista')
+app = Flask(__name__, template_folder='vista', instance_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'instance'))
 application = app
 
 # Clave secreta de la aplicación (protección de sesiones / CSRF).

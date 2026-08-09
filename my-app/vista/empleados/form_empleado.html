@@ -26,30 +26,30 @@
               <i class="bi bi-person-vcard me-2"></i>Datos Laborales
             </p>
             <div class="row g-3 mb-4">
-              <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-person me-1"></i>Nombre Completo del Empleado</label>
-                <input type="text" name="nombre_empleado" class="form-control" 
-                       placeholder="Ej: Juan Carlos Pérez González" required 
-                       pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{3,45}$" 
-                       title="Solo letras, mínimo 3, máximo 45 caracteres.">
-                <div class="invalid-feedback">Obligatorio (mín. 3 letras, máx. 45).</div>
-              </div>
+               <div class="col-md-6">
+                 <label class="form-label fw-medium"><i class="bi bi-person me-1"></i>Nombre Completo del Empleado</label>
+                 <input type="text" name="nombre_empleado" class="form-control" 
+                        placeholder="Ej: Juan Carlos Pérez González" required 
+                        pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{3,45}$" 
+                        title="Solo letras y espacios, mínimo 3, máximo 45 caracteres.">
+                 <div class="invalid-feedback">Nombre inválido. Use solo letras (mín. 3, máx. 45).</div>
+               </div>
               
-              <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-briefcase me-1"></i>Cargo Institucional</label>
-                <select name="cargo" class="form-select" required>
-                  <option value="" disabled selected>Seleccione el cargo...</option>
-                  <option value="Gerente">Gerente</option>
-                  <option value="Inspector">Inspector</option>
-                  <option value="Asistente">Asistente</option>
-                  <option value="Proyectista">Proyectista</option>
-                  <option value="Recepcionista">Recepcionista</option>
-                  <option value="Ingeniero">Ingeniero</option>
-                  <option value="Coordinador">Coordinador</option>
-                  <option value="Operador">Operador</option>
-                </select>
-                <div class="invalid-feedback">Seleccione un cargo válido.</div>
-              </div>
+               <div class="col-md-6">
+                 <label class="form-label fw-medium"><i class="bi bi-briefcase me-1"></i>Cargo Institucional</label>
+                 <select name="cargo" class="form-select" required>
+                   <option value="" disabled selected>Seleccione el cargo...</option>
+                   <option value="Gerente">Gerente</option>
+                   <option value="Inspector">Inspector</option>
+                   <option value="Asistente">Asistente</option>
+                   <option value="Proyectista">Proyectista</option>
+                   <option value="Recepcionista">Recepcionista</option>
+                   <option value="Ingeniero">Ingeniero</option>
+                   <option value="Coordinador">Coordinador</option>
+                   <option value="Operador">Operador</option>
+                 </select>
+                 <div class="invalid-feedback">Seleccione un cargo de la lista.</div>
+               </div>
               
               <div class="col-md-6">
                 <label class="form-label fw-medium"><i class="bi bi-calendar-event me-1"></i>Fecha de Ingreso</label>
@@ -58,14 +58,14 @@
                 <div class="invalid-feedback">La fecha de ingreso es obligatoria.</div>
               </div>
               
-              <div class="col-md-6">
-                <label class="form-label fw-medium"><i class="bi bi-building me-1"></i>Gerencia Asignada</label>
-                <input type="text" name="gerencia_asignada" class="form-control" 
-                       placeholder="Ej: Gerencia de Infraestructura y Mantenimiento" required
-                       pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{5,100}$" 
-                       title="Solo letras, mínimo 5, máximo 100 caracteres.">
-                <div class="invalid-feedback">Especifique la gerencia (mínimo 5 caracteres).</div>
-              </div>
+               <div class="col-md-6">
+                 <label class="form-label fw-medium"><i class="bi bi-building me-1"></i>Gerencia Asignada</label>
+                 <input type="text" name="gerencia_asignada" class="form-control" 
+                        placeholder="Ej: Gerencia de Infraestructura y Mantenimiento" required
+                        pattern="^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{5,100}$" 
+                        title="Solo letras y espacios, mínimo 5, máximo 100 caracteres.">
+                 <div class="invalid-feedback">Ingrese solo letras (mín. 5 caracteres).</div>
+               </div>
             </div>
 
             <p class="text-uppercase text-xs font-weight-bolder opacity-7 mb-3 mt-4">
@@ -84,9 +84,11 @@
               <div class="col-md-4">
                 <label class="form-label fw-medium"><i class="bi bi-telephone me-1"></i>Teléfono</label>
                 <input type="tel" name="telefono" class="form-control" 
-                       placeholder="Ej: 0414-1234567"
-                       pattern="^(0414|0424|0412|0416|0426|0251)-?\d{7}$">
-                <div class="invalid-feedback">Formato: 0414-1234567 (opcional).</div>
+                       placeholder="Ej: 04141234567" maxlength="11"
+                       pattern="^\d{10,11}$"
+                       inputmode="numeric"
+                       title="Solo números, 10 u 11 dígitos. Ej: 04141234567">
+                <div class="invalid-feedback">Ingrese solo números (10 u 11 dígitos). Ej: 04141234567</div>
               </div>
               
               <div class="col-md-4">

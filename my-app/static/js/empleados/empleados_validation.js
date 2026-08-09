@@ -29,6 +29,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
     
+    // Validar teléfono en tiempo real (solo números, máximo 11 dígitos)
+    const inputTelefono = document.querySelector('input[name="telefono"]');
+    if (inputTelefono) {
+        inputTelefono.addEventListener('input', function() {
+            this.value = this.value.replace(/[^\d]/g, '').slice(0, 11);
+            const longitudValida = this.value.length >= 10 && this.value.length <= 11;
+            if (longitudValida) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            } else if (this.value.length > 0) {
+                this.classList.remove('is-valid');
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-valid', 'is-invalid');
+            }
+        });
+    }
+    
     // Asignar manejadores de submit
     if (formEmpleado) {
         formEmpleado.addEventListener('submit', registrarEmpleadoFetch);
@@ -80,6 +98,7 @@ async function registrarEmpleadoFetch(event) {
                 window.location.href = '/empleados/';
             }, 1500);
         } else {
+            form.classList.add('was-validated');
             mostrarError('Error: ' + result.message);
             btnGuardar.disabled = false;
             btnGuardar.innerHTML = '<i class="bi bi-check-circle me-1"></i>Guardar Empleado';
@@ -147,6 +166,7 @@ async function actualizarEmpleadoFetch(event) {
                 window.location.href = '/empleados/';
             }, 1500);
         } else {
+            form.classList.add('was-validated');
             mostrarError('Error: ' + result.message);
             btnActualizar.disabled = false;
             btnActualizar.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>Actualizar Información';
