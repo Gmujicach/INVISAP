@@ -1,0 +1,238 @@
+/* ============================================
+   Sidebar Toggle - Menú colapsado y UX visual
+   ============================================ */
+
+:root {
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 92px;
+  --sidebar-transition: 0.28s ease;
+}
+
+#layout-menu {
+  position: relative;
+  overflow: visible;
+  transition: width var(--sidebar-transition), min-width var(--sidebar-transition);
+}
+
+html.layout-menu-collapsed #layout-menu,
+#layout-menu.menu-collapsed {
+  width: var(--sidebar-collapsed-width) !important;
+  min-width: var(--sidebar-collapsed-width) !important;
+}
+
+html.layout-menu-collapsed .layout-page,
+html.layout-menu-collapsed .content-wrapper,
+html.layout-menu-collapsed .layout-container,
+html.layout-menu-collapsed .layout-wrapper {
+  transition: width var(--sidebar-transition), flex var(--sidebar-transition), margin var(--sidebar-transition);
+}
+
+html.layout-menu-collapsed .layout-page,
+html.layout-menu-collapsed .content-wrapper {
+  flex: 1 1 auto !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+html.layout-menu-collapsed .container-xxl,
+html.layout-menu-collapsed .container-xl,
+html.layout-menu-collapsed .container-lg,
+html.layout-menu-collapsed .container-md,
+html.layout-menu-collapsed .container-sm,
+html.layout-menu-collapsed .container {
+  max-width: 100%;
+  transition: max-width 0.28s ease;
+}
+
+html.layout-menu-collapsed .corner-topbar {
+  left: calc(var(--sidebar-collapsed-width) + 0.5rem) !important;
+  transition: left var(--sidebar-transition);
+}
+
+html.layout-menu-collapsed .cpanel-footer,
+html.layout-menu-collapsed footer,
+html.layout-menu-collapsed .content-footer {
+  margin-left: 0 !important;
+  left: 0 !important;
+  transition: margin-left var(--sidebar-transition), left var(--sidebar-transition);
+}
+
+.layout-page,
+.content-wrapper,
+.cpanel-footer,
+footer {
+  transition: all var(--sidebar-transition);
+}
+
+#layout-menu .app-brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 72px;
+  padding: 0.75rem 0.75rem 0.5rem;
+  gap: 0.25rem;
+}
+
+#layout-menu .app-brand-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+}
+
+#layout-menu .app-brand-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 46px;
+  line-height: 0;
+}
+
+.sidebar-logo-shell {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+}
+
+.sidebar-logo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  transition: opacity var(--sidebar-transition), transform var(--sidebar-transition), filter var(--sidebar-transition);
+}
+
+.sidebar-logo-horizontal {
+  max-height: 42px;
+}
+
+.sidebar-logo-collapsed {
+  display: none;
+  max-height: 72px;
+}
+
+html.layout-menu-collapsed #sidebar-logo-horizontal,
+#layout-menu.menu-collapsed #sidebar-logo-horizontal {
+  display: none !important;
+}
+
+html.layout-menu-collapsed #sidebar-logo-collapsed,
+#layout-menu.menu-collapsed #sidebar-logo-collapsed {
+  display: block !important;
+}
+
+html.layout-menu-collapsed #layout-menu .menu-inner,
+#layout-menu.menu-collapsed .menu-inner {
+  padding-top: 0.75rem !important;
+}
+
+html.layout-menu-collapsed #layout-menu .menu-link > div,
+html.layout-menu-collapsed #layout-menu .menu-sub,
+#layout-menu.menu-collapsed .menu-link > div,
+#layout-menu.menu-collapsed .menu-sub {
+  display: none !important;
+}
+
+html.layout-menu-collapsed #layout-menu .menu-link,
+#layout-menu.menu-collapsed .menu-link {
+  justify-content: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  min-height: 44px;
+}
+
+html.layout-menu-collapsed #layout-menu .menu-icon,
+#layout-menu.menu-collapsed .menu-icon {
+  margin-right: 0 !important;
+  font-size: 1.3rem;
+}
+
+html.layout-menu-collapsed #layout-menu .menu-item,
+#layout-menu.menu-collapsed .menu-item {
+  justify-content: center !important;
+}
+
+html.layout-menu-collapsed #layout-menu .menu-item > .menu-link,
+#layout-menu.menu-collapsed .menu-item > .menu-link {
+  padding-top: 0.7rem;
+  padding-bottom: 0.7rem;
+}
+
+html.layout-menu-collapsed #layout-menu .app-brand,
+#layout-menu.menu-collapsed .app-brand {
+  justify-content: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+#sidebarToggleBtn {
+  position: absolute;
+  top: 0.7rem;
+  right: -0.8rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  padding: 0;
+  border: 1px solid rgba(120, 130, 140, 0.18);
+  border-radius: 0.65rem;
+  background: rgba(255, 255, 255, 0.96);
+  color: #566a7f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0.25rem 0.75rem rgba(15, 23, 42, 0.12);
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+#sidebarToggleBtn:hover {
+  transform: translateY(-1px);
+  background: #f5f7fa;
+}
+
+#sidebarToggleBtn:focus-visible {
+  outline: 2px solid rgba(62, 122, 255, 0.5);
+  outline-offset: 2px;
+}
+
+#sidebarToggleBtn i {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+#icono-cerrar,
+#icono-abrir {
+  display: block;
+}
+
+body.dark-mode #sidebar-logo-collapsed,
+html[data-bs-theme="dark"] #sidebar-logo-collapsed {
+  filter: brightness(0) invert(1);
+}
+
+body.dark-mode #sidebarToggleBtn,
+html[data-bs-theme="dark"] #sidebarToggleBtn {
+  background: rgba(30, 41, 59, 0.92);
+  border-color: rgba(148, 163, 184, 0.28);
+  color: #f8fafc;
+  box-shadow: 0 0.25rem 0.75rem rgba(15, 23, 42, 0.3);
+}
+
+@media (max-width: 1199.98px) {
+  #sidebarToggleBtn {
+    display: none;
+  }
+
+  html.layout-menu-collapsed #layout-menu,
+  #layout-menu.menu-collapsed {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+}
+
