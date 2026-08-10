@@ -145,7 +145,7 @@
               {% endif %}
             </td>
             <td class="text-center">
-              <div class="btn-group" role="group">
+              <div class="d-flex flex-column gap-1 justify-content-center align-items-center">
                 <button type="button"
                    class="btn btn-outline-info btn-sm btn-ver-informe"
                    data-id="{{ informe.id_informe }}"
@@ -191,16 +191,18 @@
 </div>
 
 <!-- ========== MODAL: REGISTRAR INFORME ========== -->
-<div class="modal fade" id="modalRegistrarInforme" tabindex="-1" aria-labelledby="modalRegistrarInformeLabel" aria-hidden="true">
+<div class="modal fade" id="modalRegistrarInforme" tabindex="-1" aria-labelledby="modalRegistrarInformeLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <form class="form-horizontal" method="POST" action="/form-registrar-informe-avance-obra" 
             autocomplete="off" id="formInformeAvance">
         <div class="modal-header bg-primary text-white">
-          <h5 class="modal-title" id="modalRegistrarInformeLabel">
+          <h5 class="modal-title text-white" id="modalRegistrarInformeLabel">
             <i class="bx bx-file-blank me-2"></i>Registrar Informe de Avance de Obra
           </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn btn-sm btn-outline-light rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+            <i class="bx bx-x" style="font-size: 1.2rem; line-height: 1;"></i>
+          </button>
         </div>
         <div class="modal-body">
           <!-- ========== SECCIÓN 1: INFORMACIÓN BÁSICA ========== -->
@@ -232,7 +234,7 @@
               <select class="form-select shadow-sm" name="estado" id="estado" required>
                 <option value="" selected disabled>Seleccione el estado actual...</option>
                 <option value="Aprobado">✓ Aprobado</option>
-                <option value="En Ejecucion">⏳ En Ejecución</option>
+                <option value="En Ejecucion">En Ejecución</option>
                 <option value="Culminado">✓✓ Culminado</option>
                 <option value="Paralizado">⏸ Paralizado</option>
               </select>
@@ -394,15 +396,17 @@
 </div>
 
 <!-- ========== MODAL: SELECCIONAR INSPECTOR ========== -->
-<div class="modal fade" id="modalSeleccionarInspector" tabindex="-1" aria-labelledby="modalSeleccionarInspectorLabel" aria-hidden="true">
+<div class="modal fade" id="modalSeleccionarInspector" tabindex="-1" aria-labelledby="modalSeleccionarInspectorLabel" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="modalSeleccionarInspectorLabel">
-          <i class="bx bx-user-check me-2"></i>Seleccionar Inspector Responsable
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title text-white" id="modalSeleccionarInspectorLabel">
+            <i class="bx bx-user-check me-2"></i>Seleccionar Inspector Responsable
+          </h5>
+          <button type="button" class="btn btn-sm btn-outline-light rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+            <i class="bx bx-x" style="font-size: 1.2rem; line-height: 1;"></i>
+          </button>
+        </div>
       <div class="modal-body">
         <div class="row" id="listaInspectores">
           <div class="col-12 text-center py-5">
@@ -414,22 +418,24 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-secondary" onclick="cerrarModalHijo('modalSeleccionarInspector')">Cancelar</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ========== MODAL: EVIDENCIAS ANTES ========== -->
-<div class="modal fade" id="modalEvidenciasAntes" tabindex="-1" aria-labelledby="modalEvidenciasAntesLabel" aria-hidden="true">
+<div class="modal fade" id="modalEvidenciasAntes" tabindex="-1" aria-labelledby="modalEvidenciasAntesLabel" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="modal-header bg-success text-white">
-        <h5 class="modal-title" id="modalEvidenciasAntesLabel">
-          <i class="bx bx-image me-2"></i>Seleccionar Evidencias ANTES (Máx. 5)
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title text-white" id="modalEvidenciasAntesLabel">
+            <i class="bx bx-image me-2"></i>Seleccionar Evidencias ANTES (Máx. 5)
+          </h5>
+          <button type="button" class="btn btn-sm btn-outline-light rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+            <i class="bx bx-x" style="font-size: 1.2rem; line-height: 1;"></i>
+          </button>
+        </div>
       <div class="modal-body">
         <div class="row" id="listaEvidenciasAntes">
           <div class="col-12 text-center py-5">
@@ -441,8 +447,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-success" onclick="confirmarSeleccionEvidencias('antes')" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-secondary" onclick="cerrarModalHijo('modalEvidenciasAntes')">Cancelar</button>
+        <button type="button" class="btn btn-success" onclick="confirmarSeleccionEvidencias('antes')">
           <i class="bx bx-check"></i> Confirmar Selección
         </button>
       </div>
@@ -451,15 +457,17 @@
 </div>
 
 <!-- ========== MODAL: EVIDENCIAS DURANTE ========== -->
-<div class="modal fade" id="modalEvidenciasDurante" tabindex="-1" aria-labelledby="modalEvidenciasDuranteLabel" aria-hidden="true">
+<div class="modal fade" id="modalEvidenciasDurante" tabindex="-1" aria-labelledby="modalEvidenciasDuranteLabel" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="modal-header bg-warning text-dark">
-        <h5 class="modal-title" id="modalEvidenciasDuranteLabel">
-          <i class="bx bx-image me-2"></i>Seleccionar Evidencias DURANTE (Máx. 5)
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
+        <div class="modal-header bg-warning text-dark">
+          <h5 class="modal-title text-dark" id="modalEvidenciasDuranteLabel">
+            <i class="bx bx-image me-2"></i>Seleccionar Evidencias DURANTE (Máx. 5)
+          </h5>
+          <button type="button" class="btn btn-sm btn-outline-dark rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+            <i class="bx bx-x" style="font-size: 1.2rem; line-height: 1;"></i>
+          </button>
+        </div>
       <div class="modal-body">
         <div class="row" id="listaEvidenciasDurante">
           <div class="col-12 text-center py-5">
@@ -471,8 +479,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-warning" onclick="confirmarSeleccionEvidencias('durante')" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-secondary" onclick="cerrarModalHijo('modalEvidenciasDurante')">Cancelar</button>
+        <button type="button" class="btn btn-warning" onclick="confirmarSeleccionEvidencias('durante')">
           <i class="bx bx-check"></i> Confirmar Selección
         </button>
       </div>
@@ -481,15 +489,17 @@
 </div>
 
 <!-- ========== MODAL: EVIDENCIAS DESPUÉS ========== -->
-<div class="modal fade" id="modalEvidenciasDespues" tabindex="-1" aria-labelledby="modalEvidenciasDespuesLabel" aria-hidden="true">
+<div class="modal fade" id="modalEvidenciasDespues" tabindex="-1" aria-labelledby="modalEvidenciasDespuesLabel" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="modal-header bg-info text-white">
-        <h5 class="modal-title" id="modalEvidenciasDespuesLabel">
-          <i class="bx bx-image me-2"></i>Seleccionar Evidencias DESPUÉS (Máx. 5)
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title text-white" id="modalEvidenciasDespuesLabel">
+            <i class="bx bx-image me-2"></i>Seleccionar Evidencias DESPUÉS (Máx. 5)
+          </h5>
+          <button type="button" class="btn btn-sm btn-outline-light rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+            <i class="bx bx-x" style="font-size: 1.2rem; line-height: 1;"></i>
+          </button>
+        </div>
       <div class="modal-body">
         <div class="row" id="listaEvidenciasDespues">
           <div class="col-12 text-center py-5">
@@ -501,8 +511,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-info" onclick="confirmarSeleccionEvidencias('despues')" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-secondary" onclick="cerrarModalHijo('modalEvidenciasDespues')">Cancelar</button>
+        <button type="button" class="btn btn-info" onclick="confirmarSeleccionEvidencias('despues')">
           <i class="bx bx-check"></i> Confirmar Selección
         </button>
       </div>
@@ -664,7 +674,11 @@ function seleccionarInspector(id, nombre, gerencia, event) {
     if (icon) icon.classList.remove('d-none');
   }
   
-  const modal = bootstrap.Modal.getInstance(document.getElementById('modalSeleccionarInspector'));
+  cerrarModalHijo('modalSeleccionarInspector');
+}
+
+function cerrarModalHijo(modalId) {
+  const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
   if (modal) modal.hide();
 }
 
@@ -776,6 +790,16 @@ function toggleEvidencia(etapa, id, url, event) {
 function confirmarSeleccionEvidencias(etapa) {
   document.getElementById(`evidencias_${etapa}_ids`).value = evidenciasSeleccionadas[etapa].join(',');
   actualizarPreview(etapa);
+  
+  const modalMap = {
+    'antes': 'modalEvidenciasAntes',
+    'durante': 'modalEvidenciasDurante',
+    'despues': 'modalEvidenciasDespues'
+  };
+  const modalId = modalMap[etapa];
+  if (modalId) {
+    cerrarModalHijo(modalId);
+  }
 }
 
 async function actualizarPreview(etapa) {
