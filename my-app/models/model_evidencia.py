@@ -11,8 +11,10 @@ import unicodedata
 from datetime import datetime
 from PIL import Image
 from conexion.conexionBD import connectionBD_invilara
+from models.base_model import BaseModel
 
-class EvidenciaModel:
+
+class EvidenciaModel(BaseModel):
     """Repositorio de evidencias fotográficas con compresión y validación."""
 
     _RE_NOMBRE_ARCHIVO = re.compile(r'^[\w\-. áéíóúÁÉÍÓÚñÑ()]{1,100}\.[a-zA-Z0-9]{1,5}$')
@@ -94,12 +96,6 @@ class EvidenciaModel:
 
     def _validar_url(self, url: str) -> bool:
         return bool(self._RE_URL.match(url))
-
-    @staticmethod
-    def _limpiar_texto(texto: str, max_len: int = 100) -> str:
-        if not isinstance(texto, str):
-            texto = str(texto or '')
-        return re.sub(r'[<>\'";\\]', '', texto).strip()[:max_len]
 
     def __extraer_etapas(self, form_data, num_files):
         etapas = []

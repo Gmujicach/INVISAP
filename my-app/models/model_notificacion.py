@@ -12,9 +12,10 @@ conexiones.
 import re
 from datetime import datetime
 from conexion.conexionBD import connectionBD_seguridad
+from models.base_model import BaseModel
 
 
-class NotificacionModel:
+class NotificacionModel(BaseModel):
     """Repositorio de la tabla notificaciones."""
 
     _RE_TEXTO = re.compile(r"^[\w\s\.\,\-\#\(\)áéíóúÁÉÍÓÚñÑ/:]{1,200}$", re.UNICODE)

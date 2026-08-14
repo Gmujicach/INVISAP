@@ -7,17 +7,18 @@ import uuid
 import traceback
 from datetime import datetime
 from conexion.conexionBD import connectionBD_invilara
+from models.base_model import BaseModel
 from PIL import Image
 import os
 
 
-class InformeAvanceModel:
+class InformeAvanceModel(BaseModel):
     """Repositorio de informes de avance con validación y encapsulamiento."""
 
     # Expresiones regulares para validación
     _RE_PORCENTAJE = re.compile(r'^([0-9]|[1-9][0-9]|100)$')
     _RE_TEXTO_CORTO = re.compile(r'^[\w\s\.,\-áéíóúÁÉÍÓÚñÑ]{3,100}$', re.UNICODE)
-    _RE_OBSERVACIONES = re.compile(r'^[\w\s\.,\!\?\-\(\)\/:;áéíóúÁÉÍÓÚñÑ]{0,500}$', re.UNICODE)
+    _RE_OBSERVACIONES = re.compile(r'^[\w\s\.,\!\?\-\(\)\/:;áéíóúÁÉÍÓÚñÑ]{0,2000}$', re.UNICODE)
     _RE_POBLACION = re.compile(r'^[\w\s\.,\-\(\)/áéíóúÁÉÍÓÚñÑ]{3,200}$', re.UNICODE)
 
     # Catálogos válidos (acepta con y sin acentos)
@@ -40,6 +41,7 @@ class InformeAvanceModel:
         self.__evidencias_despues = []
         self.__estado_registro = 1
         self.__asegurar_tabla_informe()
+        self.__asegurar_tabla_avance()
 
     # ========== GETTERS Y SETTERS ==========
     
@@ -97,9 +99,9 @@ class InformeAvanceModel:
         return self.__observaciones
     
     def set_observaciones(self, valor):
-        valor = self._limpiar_texto(valor, 500)
+        valor = self._limpiar_texto(valor, 2000)
         if valor and not self._RE_OBSERVACIONES.match(valor):
-            raise ValueError("Observaciones inválidas. Máximo 500 caracteres.")
+            raise ValueError("Observaciones inválidas. Máximo 2000 caracteres.")
         self.__observaciones = valor or "Sin observaciones"
     
     def set_evidencias_antes(self, lista_ids):
@@ -151,12 +153,6 @@ class InformeAvanceModel:
     
     def get_gerente(self):
         return self.__gerente
-
-    @staticmethod
-    def _limpiar_texto(texto, max_len=255):
-        if not isinstance(texto, str):
-            texto = str(texto or '')
-        return re.sub(r'[<>\'";\\]', '', texto).strip()[:max_len]
 
     def __asegurar_columna_poblacion(self, cur):
         """Asegura que exista la columna correcta 'poblacion_beneficiada' y elimina el typo 'poblacion_benefiada'."""
@@ -217,6 +213,29 @@ class InformeAvanceModel:
                     print(f"[DB] Columna '{col}' ampliada a VARCHAR(255)")
             except Exception as e:
                 print(f"[DB] Error al asegurar columna {col}: {e}")
+
+    def __asegurar_tabla_avance(self):
+        """Amplía la columna descripcion de avance para admitir observaciones largas."""
+        try:
+            conn = connectionBD_invilara()
+            if conn:
+                cur = conn.cursor()
+                try:
+                    cur.execute("SHOW COLUMNS FROM avance LIKE 'descripcion'")
+                    row = cur.fetchone()
+                    if row:
+                        tipo = str(row[1]).lower()
+                        if 'varchar(45)' in tipo or 'varchar(100)' in tipo or 'varchar(255)' in tipo or 'varchar(2000)' in tipo or 'varchar(500)' in tipo:
+                            cur.execute("ALTER TABLE avance MODIFY COLUMN descripcion TEXT NOT NULL")
+                            conn.commit()
+                            print("[DB] Columna 'avance.descripcion' ampliada a TEXT para observaciones largas")
+                except Exception as e:
+                    print(f"[DB] Error al asegurar columna avance.descripcion: {e}")
+                finally:
+                    cur.close()
+                    conn.close()
+        except Exception as e:
+            print(f"[DB] No se pudo asegurar tabla avance: {e}")
 
     # ========== MÉTODOS PRIVADOS DE BASE DE DATOS ==========
     
@@ -306,7 +325,7 @@ class InformeAvanceModel:
 
             if self.__avance_id:
                 gerente_a_usar = self.__gerente or '1'
-                obs = self._limpiar_texto(self.__observaciones or '', 45) or 'Sin observaciones'
+                obs = self._limpiar_texto(self.__observaciones or '', 2000) or 'Sin observaciones'
                 cur.execute("UPDATE avance SET descripcion = %s, porcentaje_avance = %s WHERE id_avance = %s",
                     (obs, self.__porcentaje_avance, self.__avance_id))
 
@@ -343,12 +362,12 @@ class InformeAvanceModel:
             cur.execute("SELECT avance_id_avance FROM informe_avance_obra WHERE id_informe = %s", (self.__id_informe,))
             avance_row = cur.fetchone()
             if avance_row and avance_row[0]:
-                obs = self._limpiar_texto(self.__observaciones or '', 45) or 'Sin observaciones'
+                obs = self._limpiar_texto(self.__observaciones or '', 2000) or 'Sin observaciones'
                 cur.execute("UPDATE avance SET descripcion = %s, porcentaje_avance = %s WHERE id_avance = %s",
                     (obs, self.__porcentaje_avance, avance_row[0]))
 
             conn.commit()
-            return cur.rowcount > 0
+            return True
         except Exception as e:
             print(f"Error __actualizar_informe_db: {e}")
             if conn:

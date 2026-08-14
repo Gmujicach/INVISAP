@@ -1,7 +1,9 @@
 from conexion.conexionBD import connectionBD
+from models.base_model import BaseModel
 import datetime
 
-class ProyectoModel:
+
+class ProyectoModel(BaseModel):
     def __init__(self):
         pass
 

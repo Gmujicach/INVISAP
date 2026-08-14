@@ -1,10 +1,11 @@
 from werkzeug.security import generate_password_hash
 import os
 from conexion.conexionBD import connectionBD_seguridad
+from models.base_model import BaseModel
 
 DEFAULT_AVATAR = 'assets/img/avatars/1.png'
 
-class UsuarioModel:
+class UsuarioModel(BaseModel):
     def __init__(self, id_usuarios=None, nombre=None, correo=None, contrasena=None, cedula=None, rol='Usuario', avatar=None):
         self.__id_usuarios = id_usuarios # Privado
         self.__nombre = nombre           # Privado

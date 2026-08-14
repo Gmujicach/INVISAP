@@ -353,6 +353,23 @@ def api_actualizar_informe():
                     'message': 'El gerente/inspector seleccionado no existe o fue eliminado'
                 }), 400
         
+        try:
+            conn = connectionBD_invilara()
+            if conn:
+                cur = conn.cursor()
+                cur.execute("SHOW COLUMNS FROM avance LIKE 'descripcion'")
+                row = cur.fetchone()
+                if row:
+                    tipo = str(row[1]).lower()
+                    if 'varchar(45)' in tipo or 'varchar(100)' in tipo:
+                        cur.execute("ALTER TABLE avance MODIFY COLUMN descripcion TEXT NOT NULL")
+                        conn.commit()
+                        print("[DB] Columna 'avance.descripcion' ampliada a TEXT")
+                cur.close()
+                conn.close()
+        except Exception as e:
+            print(f"[DB] Error asegurando avance.descripcion: {e}")
+        
         # Actualizar informe
         if modelo.actualizar_informe(data):
             # Registrar en bitácora

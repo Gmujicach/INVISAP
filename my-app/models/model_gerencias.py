@@ -1,6 +1,8 @@
 from conexion.conexionBD import connectionBD_invilara
+from models.base_model import BaseModel
 
-class GerenciaModel:
+
+class GerenciaModel(BaseModel):
     def __init__(self):
         self._asegurar_tabla_gerencias()
 

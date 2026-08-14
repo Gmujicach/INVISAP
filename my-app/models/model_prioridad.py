@@ -1,9 +1,10 @@
 import re
 from datetime import datetime
 from conexion.conexionBD import connectionBD
+from models.base_model import BaseModel
 
 
-class PrioridadModel:
+class PrioridadModel(BaseModel):
     def __init__(self, id_prioridad=None, solicitud_id=None, rango_prioridad=None,
                  justificacion=None, responsable=None, estado=1):
         self.__id = id_prioridad

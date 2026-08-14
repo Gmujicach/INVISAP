@@ -1,7 +1,9 @@
 from conexion.conexionBD import connectionBD_invilara as connectionBD
+from models.base_model import BaseModel
 import re
 
-class ContratacionModel:
+
+class ContratacionModel(BaseModel):
     
     # MÉTODO PRIVADO:
     def __validar_datos(self, datos):

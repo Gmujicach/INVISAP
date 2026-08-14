@@ -1,6 +1,8 @@
 from conexion.conexionBD import connectionBD_invilara
+from models.base_model import BaseModel
 
-class EmpresaModel:
+
+class EmpresaModel(BaseModel):
     
     # MÉTODOS PRIVADOS
     

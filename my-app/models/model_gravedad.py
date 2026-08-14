@@ -1,8 +1,9 @@
 import re
 from conexion.conexionBD import connectionBD
+from models.base_model import BaseModel
 
 
-class GravedadObraModel:
+class GravedadObraModel(BaseModel):
     def __init__(self, nivel_gravedad=None, criticidad=None, estado=1, id_gravedad=None):
         # Atributos privados (Encapsulamiento - POO)
         self.__id_gravedad = id_gravedad

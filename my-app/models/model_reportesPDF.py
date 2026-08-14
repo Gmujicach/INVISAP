@@ -1,7 +1,8 @@
 from conexion.conexionBD import connectionBD, connectionBD_seguridad
+from models.base_model import BaseModel
 
 
-class ReportePDFModel:
+class ReportePDFModel(BaseModel):
     def __init__(self):
         pass
 

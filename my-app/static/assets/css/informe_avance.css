@@ -323,15 +323,18 @@ textarea.form-control::placeholder {
 .table-informe-avance .btn-ver-informe,
 .table-informe-avance .btn-editar-informe,
 .table-informe-avance .btn-eliminar-informe {
-    width: 72px;
-    height: 36px;
-    min-width: 72px;
-    padding: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    line-height: 1;
+    width: 72px !important;
+    height: 36px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.1rem !important;
+    line-height: 1 !important;
+    box-sizing: border-box !important;
+    text-decoration: none !important;
 }
 
 @media (max-width: 768px) {
