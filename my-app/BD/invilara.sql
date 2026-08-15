@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 09-07-2026 a las 04:03:14
+-- Tiempo de generación: 14-08-2026 a las 16:01:23
 -- Versión del servidor: 9.4.0
 -- Versión de PHP: 8.3.30
 
@@ -26,28 +26,13 @@ USE `invilara`;
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `administracion_respaldos`
---
-
-CREATE TABLE `administracion_respaldos` (
-  `id_respaldo` int NOT NULL,
-  `nombre_archivo` varchar(255) NOT NULL,
-  `tamano` bigint NOT NULL DEFAULT '0',
-  `descripcion` varchar(255) DEFAULT '',
-  `fecha_respaldo` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `estado` tinyint NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `avance`
 --
 
 CREATE TABLE `avance` (
   `id_avance` varchar(45) NOT NULL,
   `porcentaje_avance` int NOT NULL,
-  `descripcion` varchar(45) NOT NULL,
+  `descripcion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `gerente` int NOT NULL,
   `fecha_avance` date NOT NULL,
   `obra_id_obra` int NOT NULL,
@@ -62,58 +47,63 @@ CREATE TABLE `avance` (
 --
 
 INSERT INTO `avance` (`id_avance`, `porcentaje_avance`, `descripcion`, `gerente`, `fecha_avance`, `obra_id_obra`, `obra_semaforo_id_semaforo`, `obra_contratacion_id_contratacion`, `obra_gestionar_proyectos_codigo_proyecto`, `estado`) VALUES
-('0780c1c2a553', 67, 'Carretera Nacional hay que reparar', '6', '2026-07-04', 24, 24, 1, 'FRE-001', 1),
-('098264b7eef9', 50, 'Test obs', '1', '2026-07-05', 24, 24, 1, 'FRE-001', 1),
-('0a9a55ead39b', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 4, 4, 1, 'FRE-001', 1),
-('0c8eb3a83706', 28, 'hay que asfaltar equisde', '1', '2026-07-05', 24, 24, 1, 'FRE-001', 1),
-('113a14ea70b7', 50, 'reparar la Comunidad', '6', '2026-07-05', 24, 24, 1, 'FRE-001', 1),
-('15e07374f523', 64, 'En la comunidad Nuevo horizonte', '6', '2026-07-02', 24, 24, 1, 'FRE-001', 1),
-('1c039681733a', 90, 'Updated', '1', '2026-07-05', 24, 24, 1, 'FRE-001', 1),
-('1df486355cd0', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 8, 8, 1, 'FRE-001', 1),
-('1df6b8f707d0', 25, 'Prueba', '1', '2026-07-01', 19, 19, 1, 'FRE-001', 1),
-('22a8d98cd659', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 18, 18, 1, 'FRE-001', 1),
-('2eb5dc872fcf', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 11, 11, 1, 'FRE-001', 1),
-('3d03370f9b8b', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 13, 13, 1, 'FRE-001', 1),
-('4881290ca4c3', 7, 'hay que reparar en Av. Intercomunal', '6', '2026-07-04', 24, 24, 1, 'FRE-001', 1),
-('49143e692fde', 7, 'hay que reparar en Av. Intercomunal', '6', '2026-07-04', 24, 24, 1, 'FRE-001', 1),
-('5e48bd43ec2b', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 17, 17, 1, 'FRE-001', 1),
-('6d2ff375fef8', 30, 'Test', '1', '2026-07-05', 24, 24, 1, 'FRE-001', 1),
-('7317ea5dba7d', 44, 'Sector La Aguada se necesita asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001', 1),
-('752f90f2b837', 100, 'en la urbanizacion hay que asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001', 1),
-('7a4e67e5c2ce', 40, 'Siguiendo Las Instrucciones del gobernador Cm', '1', '2026-07-06', 24, 24, 1, 'FRE-001', 1),
-('7abe4665215b', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 16, 16, 1, 'FRE-001', 1),
-('80e3115d8f95', 44, 'Sector La Aguada se necesita asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001', 1),
-('83bc77674b51', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 15, 15, 1, 'FRE-001', 1),
-('8e85d8b4f2a0', 25, 'Test', '1', '2026-07-05', 24, 24, 1, 'FRE-001', 1),
-('9214ff06713f', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 7, 7, 1, 'FRE-001', 1),
-('942e517e2048', 38, 'En Tamaca hay que asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001', 1),
-('a09e4dfbbe8c', 64, 'En la comunidad Nuevo horizonte', '6', '2026-07-02', 23, 23, 1, 'FRE-001', 1),
-('a12e302ae883', 100, 'En la Luis Hurtado se arreglo la via', '1', '2026-07-01', 14, 14, 1, 'FRE-001', 1),
-('ad20d3759114', 13, 'En Av. Intercomunal se hizo un asfaltado y em', '5', '2026-07-03', 24, 24, 1, 'FRE-001', 1),
-('ae8c50e964e9', 50, 'reparar la Comunidad', '6', '2026-07-05', 24, 24, 1, 'FRE-001', 1),
-('b07c92e0e7ff', 13, 'En Av. Intercomunal se hizo un asfaltado y em', '5', '2026-07-03', 24, 24, 1, 'FRE-001', 1),
-('b0d8247b2d01', 100, 'en Morán hay que reparar', '1', '2026-07-06', 24, 24, 1, 'FRE-001', 1),
-('b25c0cb85384', 16, 'En san francisco se hizo un bache', '6', '2026-07-01', 21, 21, 1, 'FRE-001', 1),
-('b70e531c3f5f', 30, 'En Cabudares nos informaron de que no cargan ', '5', '2026-06-30', 2, 2, 1, 'FRE-001', 1),
-('b7b4eb5ecb30', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 3, 3, 1, 'FRE-001', 1),
-('b7c87235e5e2', 16, 'En san francisco se hizo un bache', '6', '2026-07-01', 20, 20, 1, 'FRE-001', 1),
-('b7ed15f05b88', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 9, 9, 1, 'FRE-001', 1),
-('bc2a0329e738', 56, 'Hay que reparar algo', '10', '2026-07-07', 24, 24, 1, 'FRE-001', 1),
-('beda52ea9bd1', 50, 'Test obs', '1', '2026-07-05', 24, 24, 1, 'FRE-001', 1),
-('bf0e7abdad06', 93, 'En el Cují, en la Calle 3 se realizara un asf', '5', '2026-07-04', 24, 24, 1, 'FRE-001', 1),
-('c0ecec782081', 38, 'reparaciones en Cabudares', '1', '2026-07-03', 24, 24, 1, 'FRE-001', 1),
-('c46ec2a9eb43', 39, 'En el Sector La Aguada se realizaran reparaci', '10', '2026-07-07', 24, 24, 1, 'FRE-001', 1),
-('d159b72e9c16', 28, 'En la Salle se comenzo a hacer una obra', '1', '2026-07-04', 24, 24, 1, 'FRE-001', 1),
-('d169eb15ef98', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 12, 12, 1, 'FRE-001', 1),
-('d3c620ff34ad', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 5, 5, 1, 'FRE-001', 1),
-('d9b6d8dfb228', 38, 'reparaciones en Iribarren Av. Venezuela', '1', '2026-07-03', 24, 24, 1, 'FRE-001', 1),
-('dd708c7466cf', 93, 'En el Cují, en la Calle 3 se realizara un asf', '5', '2026-07-04', 24, 24, 1, 'FRE-001', 1),
-('e316f1191384', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 6, 6, 1, 'FRE-001', 1),
-('e862a33d0c7c', 100, 'en la urbanizacion hay que asfaltar', '1', '2026-07-04', 24, 24, 1, 'FRE-001', 1),
-('f220e9404f00', 100, 'En la Luis Hurtado se llevo a cabo la restaur', '5', '2026-07-01', 10, 10, 1, 'FRE-001', 1),
-('fa7f402d9b98', 13, 'En Av. Intercomunal se hizo un asfaltado y em', '5', '2026-07-03', 24, 24, 1, 'FRE-001', 1),
-('fb5af05a3a48', 25, 'Prueba', '1', '2026-07-01', 22, 22, 1, 'FRE-001', 1),
-('fef7ab9d0883', 69, 'Se esta restaurando la via de Pueblo Nuevo', '6', '2026-06-30', 1, 1, 1, 'FRE-001', 1);
+('0780c1c2a553', 67, 'Carretera Nacional hay que reparar', 6, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
+('098264b7eef9', 50, 'Test obs', 1, '2026-07-05', 24, 24, 1, 'FRE-001', 1),
+('0a9a55ead39b', 100, 'En la Luis Hurtado se llevo a cabo la restaur', 5, '2026-07-01', 4, 4, 1, 'FRE-001', 1),
+('0c8eb3a83706', 28, 'hay que asfaltar equisde', 1, '2026-07-05', 24, 24, 1, 'FRE-001', 1),
+('113a14ea70b7', 50, 'reparar la Comunidad', 6, '2026-07-05', 24, 24, 1, 'FRE-001', 1),
+('15e07374f523', 64, 'En la comunidad Nuevo horizonte', 6, '2026-07-02', 24, 24, 1, 'FRE-001', 1),
+('1c039681733a', 90, 'Updated', 1, '2026-07-05', 24, 24, 1, 'FRE-001', 1),
+('1df486355cd0', 100, 'En la Luis Hurtado se llevo a cabo la restaur', 5, '2026-07-01', 8, 8, 1, 'FRE-001', 1),
+('1df6b8f707d0', 25, 'Prueba', 1, '2026-07-01', 19, 19, 1, 'FRE-001', 1),
+('22a8d98cd659', 100, 'En la Luis Hurtado se arreglo la via', 1, '2026-07-01', 18, 18, 1, 'FRE-001', 1),
+('2eb5dc872fcf', 100, 'En la Luis Hurtado se llevo a cabo la restaur', 5, '2026-07-01', 11, 11, 1, 'FRE-001', 1),
+('3d03370f9b8b', 100, 'En la Luis Hurtado se arreglo la via', 1, '2026-07-01', 13, 13, 1, 'FRE-001', 1),
+('4881290ca4c3', 7, 'hay que reparar en Av. Intercomunal', 6, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
+('49143e692fde', 7, 'hay que reparar en Av. Intercomunal', 6, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
+('5bdbc3bb4ed7', 48, 'esto es un informe muy serio y muy largo así ', 6, '2026-08-14', 24, 24, 1, 'FRE-001', 1),
+('5e48bd43ec2b', 100, 'En la Luis Hurtado se arreglo la via', 1, '2026-07-01', 17, 17, 1, 'FRE-001', 1),
+('6d2ff375fef8', 30, 'Test', 1, '2026-07-05', 24, 24, 1, 'FRE-001', 1),
+('7317ea5dba7d', 44, 'Sector La Aguada se necesita asfaltar', 1, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
+('752f90f2b837', 100, 'en la urbanizacion hay que asfaltar', 1, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
+('7a4e67e5c2ce', 40, 'Siguiendo Las Instrucciones del gobernador Cm', 1, '2026-07-06', 24, 24, 1, 'FRE-001', 1),
+('7abe4665215b', 100, 'En la Luis Hurtado se arreglo la via', 1, '2026-07-01', 16, 16, 1, 'FRE-001', 1),
+('80e3115d8f95', 44, 'Sector La Aguada se necesita asfaltar', 1, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
+('83bc77674b51', 100, 'En la Luis Hurtado se arreglo la via', 1, '2026-07-01', 15, 15, 1, 'FRE-001', 1),
+('8c961919a946', 67, 'Ha ocurrido una obstrucción en la vía y se ti', 1, '2026-08-10', 24, 24, 1, 'FRE-001', 1),
+('8e85d8b4f2a0', 25, 'Test', 1, '2026-07-05', 24, 24, 1, 'FRE-001', 1),
+('9214ff06713f', 100, 'En la Luis Hurtado se llevo a cabo la restaur', 5, '2026-07-01', 7, 7, 1, 'FRE-001', 1),
+('942e517e2048', 38, 'En Tamaca hay que asfaltar', 1, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
+('9594c25e7a16', 48, 'esto es un informe muy serio y muy largo así ', 6, '2026-08-14', 24, 24, 1, 'FRE-001', 1),
+('a09e4dfbbe8c', 64, 'En la comunidad Nuevo horizonte', 6, '2026-07-02', 23, 23, 1, 'FRE-001', 1),
+('a12e302ae883', 100, 'En la Luis Hurtado se arreglo la via', 1, '2026-07-01', 14, 14, 1, 'FRE-001', 1),
+('ad20d3759114', 13, 'En Av. Intercomunal se hizo un asfaltado y em', 5, '2026-07-03', 24, 24, 1, 'FRE-001', 1),
+('ae8c50e964e9', 50, 'reparar la Comunidad', 6, '2026-07-05', 24, 24, 1, 'FRE-001', 1),
+('b07c92e0e7ff', 13, 'En Av. Intercomunal se hizo un asfaltado y em', 5, '2026-07-03', 24, 24, 1, 'FRE-001', 1),
+('b0d8247b2d01', 100, 'en Morán hay que reparar', 1, '2026-07-06', 24, 24, 1, 'FRE-001', 1),
+('b25c0cb85384', 16, 'En san francisco se hizo un bache', 6, '2026-07-01', 21, 21, 1, 'FRE-001', 1),
+('b70e531c3f5f', 30, 'En Cabudares nos informaron de que no cargan ', 5, '2026-06-30', 2, 2, 1, 'FRE-001', 1),
+('b7b4eb5ecb30', 100, 'En la Luis Hurtado se llevo a cabo la restaur', 5, '2026-07-01', 3, 3, 1, 'FRE-001', 1),
+('b7c87235e5e2', 16, 'En san francisco se hizo un bache', 6, '2026-07-01', 20, 20, 1, 'FRE-001', 1),
+('b7ed15f05b88', 100, 'En la Luis Hurtado se llevo a cabo la restaur', 5, '2026-07-01', 9, 9, 1, 'FRE-001', 1),
+('bc2a0329e738', 56, 'Hay que reparar algo', 10, '2026-07-07', 24, 24, 1, 'FRE-001', 1),
+('beda52ea9bd1', 50, 'Test obs', 1, '2026-07-05', 24, 24, 1, 'FRE-001', 1),
+('bf0e7abdad06', 93, 'En el Cují, en la Calle 3 se realizara un asf', 5, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
+('c0ecec782081', 38, 'reparaciones en Cabudares', 1, '2026-07-03', 24, 24, 1, 'FRE-001', 1),
+('c46ec2a9eb43', 39, 'En el Sector La Aguada se realizaran reparaci', 10, '2026-07-07', 24, 24, 1, 'FRE-001', 1),
+('d159b72e9c16', 28, 'En la Salle se comenzo a hacer una obra', 1, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
+('d169eb15ef98', 100, 'En la Luis Hurtado se llevo a cabo la restaur', 5, '2026-07-01', 12, 12, 1, 'FRE-001', 1),
+('d3c620ff34ad', 100, 'En la Luis Hurtado se llevo a cabo la restaur', 5, '2026-07-01', 5, 5, 1, 'FRE-001', 1),
+('d9b6d8dfb228', 38, 'reparaciones en Iribarren Av. Venezuela', 1, '2026-07-03', 24, 24, 1, 'FRE-001', 1),
+('dd708c7466cf', 93, 'En el Cují, en la Calle 3 se realizara un asf', 5, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
+('e316f1191384', 100, 'En la Luis Hurtado se llevo a cabo la restaur', 5, '2026-07-01', 6, 6, 1, 'FRE-001', 1),
+('e862a33d0c7c', 100, 'en la urbanizacion hay que asfaltar', 1, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
+('f0457b38b0cb', 48, 'esto es un informe muy serio y muy largo así ', 6, '2026-08-14', 24, 24, 1, 'FRE-001', 1),
+('f220e9404f00', 100, 'En la Luis Hurtado se llevo a cabo la restaur', 5, '2026-07-01', 10, 10, 1, 'FRE-001', 1),
+('f644e245bfb0', 48, 'esto es un informe muy serio y muy largo así ', 6, '2026-08-14', 24, 24, 1, 'FRE-001', 1),
+('fa7f402d9b98', 13, 'En Av. Intercomunal se hizo un asfaltado y em', 5, '2026-07-03', 24, 24, 1, 'FRE-001', 1),
+('fb5af05a3a48', 25, 'Prueba', 1, '2026-07-01', 22, 22, 1, 'FRE-001', 1),
+('fef7ab9d0883', 69, 'Se esta restaurando la via de Pueblo Nuevo', 6, '2026-06-30', 1, 1, 1, 'FRE-001', 1);
 
 -- --------------------------------------------------------
 
@@ -225,7 +215,9 @@ INSERT INTO `empleados` (`id_empleados`, `nombre_empleado`, `cargo`, `fecha_ingr
 (7, 'Elena María Riera', 'Proyectista', '2017-02-13', 'Gerencia de Proyectos', 13, 1),
 (8, 'Javier Eduardo Páez', 'Proyectista', '2021-11-14', 'Gerencia de Proyectos', 14, 1),
 (9, 'Sofía Alexandra Guedez', 'Asistente', '2023-08-17', 'Atencion al Ciudadano', 15, 1),
-(10, 'José Gregorio Montes', 'Inspector', '2026-07-01', 'Gerencias de Obras', 12, 1);
+(10, 'José Gregorio Montes', 'Inspector', '2026-07-01', 'Gerencias de Obras', 12, 1),
+(11, 'María Antonieta Pérez Silva', 'Asistente', '2026-07-29', 'Gerencia de Comunicaciones', 19, 1),
+(12, 'Carlos Eduardo Gómez Linares', 'Ingeniero', '2026-08-01', 'Gerencia de Tecnología', 20, 1);
 
 --
 -- Disparadores `empleados`
@@ -360,9 +352,9 @@ CREATE TABLE `informe_avance_obra` (
   `estado` varchar(25) NOT NULL,
   `poblacion_beneficiada` varchar(45) NOT NULL DEFAULT 'No especificado',
   `tipo_informe` varchar(30) NOT NULL,
-  `evidencia_antes` varchar(50) NOT NULL,
-  `evidencia_durante` varchar(50) NOT NULL,
-  `evidencia_despues` varchar(50) NOT NULL,
+  `evidencia_antes` varchar(255) NOT NULL DEFAULT '',
+  `evidencia_durante` varchar(255) NOT NULL DEFAULT '',
+  `evidencia_despues` varchar(255) NOT NULL DEFAULT '',
   `avance_id_avance` varchar(45) NOT NULL,
   `estado_registro` tinyint NOT NULL DEFAULT '1' COMMENT '1=Activo, 0=Inactivo (borrado lógico)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de informes de avances de obras';
@@ -394,7 +386,8 @@ INSERT INTO `informe_avance_obra` (`id_informe`, `fecha`, `estado`, `poblacion_b
 (50, '2026-07-06 04:24:19', 'En Ejecucion', 'Urb. La Piedad, Manzana C, Casa 15', 'Ficha Inspeccion Tecnica', '20', '18,17', '', '7a4e67e5c2ce', 1),
 (51, '2026-07-06 19:53:13', 'Culminado', 'Av. Rotaria, Sector La Montañita en Morán', 'Mayor', '19,21,20', '15,16,17', '', 'b0d8247b2d01', 1),
 (52, '2026-07-07 00:44:24', 'En Ejecucion', 'Sector La Aguada, Calle Principal 20 personas', 'Menor', '19,12,22', '', '', 'c46ec2a9eb43', 1),
-(53, '2026-07-07 20:04:11', 'En Ejecucion', 'La Salle por donde los edificios', 'Avance Mensual', '19,20,21', '18,13', '', 'bc2a0329e738', 0);
+(53, '2026-07-07 20:04:11', 'En Ejecucion', 'La Salle por donde los edificios', 'Avance Mensual', '19,20,21', '18,13', '', 'bc2a0329e738', 1),
+(54, '2026-08-10 18:48:21', 'Aprobado', 'Comunidad la Salle, El Cuji', 'Ficha Inspeccion Tecnica', '30', '28', '25', '8c961919a946', 1);
 
 -- --------------------------------------------------------
 
@@ -613,7 +606,9 @@ INSERT INTO `persona` (`id_persona`, `cedula_persona`, `direccion`, `parroquia`,
 (15, 29545867, 'Av. Los Abogados, Res. El Parque, Torre A', 'Santa Rosa', 'Iribarren', '04146564722', 'LaSofi23@gmail.com', 1),
 (16, 12345678, 'Av. Principal, Sector Centro', 'Catedral', 'Iribarren', '0251-2319786', 'contacto@l-alvarado.edu.ve', 1),
 (17, 25289197, 'Calle Carabobo, Casa N° 34', 'Anzoátegui', 'Morán', '04120896778', 'FranVier@gmail.com', 1),
-(18, 28342778, 'Calle 5 con Carrera 6', 'Freitez', 'Crespo', '04127766654', 'Guille@gmail.com', 1);
+(18, 28342778, 'Calle 5 con Carrera 6', 'Freitez', 'Crespo', '04127766654', 'Guille@gmail.com', 1),
+(19, 28456734, 'Urb. Sucre, Avenida 27 con calle 30, Casa #15', 'Catedral', 'Iribarren', '04121234567', 'maria.perez@ejemplo.com', 1),
+(20, 22345678, 'Urb. Valle Hondo, Calle 3, Quinta La Perla', 'Cabudare', 'Palavecino', '04129876543', 'CarlosGomezIng@gmail.com', 1);
 
 -- --------------------------------------------------------
 
@@ -657,9 +652,9 @@ CREATE TABLE `proyecto` (
 -- Volcado de datos para la tabla `proyecto`
 --
 
-INSERT INTO `proyecto` (`codigo_proyecto`, `fecha_planificacion`, `descripcion_tecnica`, `computos_metricos`, `estimacion_costo`, `estado`) VALUES
-('FRE-001', '2026-06-24 00:00:00', 'Restauración Vial', '230 m2', '200000 dolares', 0),
-('WEY-001', '2026-07-01 00:00:00', 'Servicio Basico ', '11513424m2', '237523', 1);
+INSERT INTO `proyecto` (`codigo_proyecto`, `fecha_planificacion`, `descripcion_tecnica`, `computos_metricos`, `estimacion_costo`, `proyecto_has_empleado`, `estado`) VALUES
+('FRE-001', '2026-06-24 00:00:00', 'Restauración Vial', '230 m2', '200000 dolares', NULL, 0),
+('WEY-001', '2026-07-01 00:00:00', 'Servicio Basico ', '11513424m2', '237523', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -763,28 +758,6 @@ CREATE TABLE `reporte` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `respaldo_bd`
---
-
-CREATE TABLE `respaldo_bd` (
-  `id_respaldo` int NOT NULL,
-  `nombre_archivo` varchar(255) NOT NULL,
-  `tamano` bigint NOT NULL DEFAULT '0',
-  `descripcion` varchar(255) DEFAULT '',
-  `fecha_respaldo` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `estado` tinyint NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Volcado de datos para la tabla `respaldo_bd`
---
-
-INSERT INTO `respaldo_bd` (`id_respaldo`, `nombre_archivo`, `tamano`, `descripcion`, `fecha_respaldo`, `estado`) VALUES
-(2, 'respaldo_20260708_225811.sql', 62834, 'respaldo general', '2026-07-09 02:58:12', 1);
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `semaforo`
 --
 
@@ -878,12 +851,6 @@ CREATE TABLE `vista_evidencia_informe` (
 --
 -- Índices para tablas volcadas
 --
-
---
--- Indices de la tabla `administracion_respaldos`
---
-ALTER TABLE `administracion_respaldos`
-  ADD PRIMARY KEY (`id_respaldo`);
 
 --
 -- Indices de la tabla `avance`
@@ -1057,12 +1024,6 @@ ALTER TABLE `reporte`
   ADD KEY `fk_reporte_informe_avance_obra1_idx` (`informe_avance_obra_id_informe`);
 
 --
--- Indices de la tabla `respaldo_bd`
---
-ALTER TABLE `respaldo_bd`
-  ADD PRIMARY KEY (`id_respaldo`);
-
---
 -- Indices de la tabla `semaforo`
 --
 ALTER TABLE `semaforo`
@@ -1079,12 +1040,6 @@ ALTER TABLE `solicitudes`
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
-
---
--- AUTO_INCREMENT de la tabla `administracion_respaldos`
---
-ALTER TABLE `administracion_respaldos`
-  MODIFY `id_respaldo` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `catalogo_cargos`
@@ -1108,7 +1063,7 @@ ALTER TABLE `contratacion`
 -- AUTO_INCREMENT de la tabla `empleados`
 --
 ALTER TABLE `empleados`
-  MODIFY `id_empleados` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_empleados` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `evidencia`
@@ -1126,7 +1081,7 @@ ALTER TABLE `gravedad_obra`
 -- AUTO_INCREMENT de la tabla `informe_avance_obra`
 --
 ALTER TABLE `informe_avance_obra`
-  MODIFY `id_informe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id_informe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT de la tabla `inspeccion`
@@ -1162,7 +1117,7 @@ ALTER TABLE `particular`
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `id_persona` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id_persona` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `prioridad`
@@ -1181,12 +1136,6 @@ ALTER TABLE `publicacion`
 --
 ALTER TABLE `reporte`
   MODIFY `id_reporte` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de la tabla `respaldo_bd`
---
-ALTER TABLE `respaldo_bd`
-  MODIFY `id_respaldo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `semaforo`
@@ -1217,8 +1166,8 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 -- Filtros para la tabla `avance`
 --
 ALTER TABLE `avance`
-  ADD CONSTRAINT `fk_avance_obra1` FOREIGN KEY (`obra_id_obra`,`obra_semaforo_id_semaforo`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`) REFERENCES `obra` (`id_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`),
-  ADD CONSTRAINT `fk_avance_empleado1` FOREIGN KEY (`gerente`) REFERENCES `empleados` (`id_empleados`);
+  ADD CONSTRAINT `fk_avance_empleado1` FOREIGN KEY (`gerente`) REFERENCES `empleados` (`id_empleados`),
+  ADD CONSTRAINT `fk_avance_obra1` FOREIGN KEY (`obra_id_obra`,`obra_semaforo_id_semaforo`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`) REFERENCES `obra` (`id_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`);
 
 --
 -- Filtros para la tabla `comunidad`
@@ -1255,9 +1204,9 @@ ALTER TABLE `informe_avance_obra`
 -- Filtros para la tabla `inspeccion`
 --
 ALTER TABLE `inspeccion`
+  ADD CONSTRAINT `fk_inspeccion_empleado1` FOREIGN KEY (`inspector`) REFERENCES `empleados` (`id_empleados`),
   ADD CONSTRAINT `fk_inspeccion_evidencia1` FOREIGN KEY (`evidencia_id_evidencia`) REFERENCES `evidencia` (`id_evidencia`),
-  ADD CONSTRAINT `fk_inspeccion_obra1` FOREIGN KEY (`obra_id_obra1`,`obra_semaforo_id_semaforo1`,`obra_contratacion_id_contratacion1`,`obra_gestionar_proyectos_codigo_proyecto1`) REFERENCES `obra` (`id_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`),
-  ADD CONSTRAINT `fk_inspeccion_empleado1` FOREIGN KEY (`inspector`) REFERENCES `empleados` (`id_empleados`);
+  ADD CONSTRAINT `fk_inspeccion_obra1` FOREIGN KEY (`obra_id_obra1`,`obra_semaforo_id_semaforo1`,`obra_contratacion_id_contratacion1`,`obra_gestionar_proyectos_codigo_proyecto1`) REFERENCES `obra` (`id_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`);
 
 --
 -- Filtros para la tabla `institucion`

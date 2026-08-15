@@ -1,8 +1,10 @@
 import re
 from datetime import datetime
 from conexion.conexionBD import connectionBD_invilara
+from models.base_model import BaseModel
 
-class PublicacionModel:
+
+class PublicacionModel(BaseModel):
     def __init__(self, titulo=None, responsable=None, tipo=None, id_informe=None, id_publicacion=None):
         self.__id_publicacion = id_publicacion
         self.__titulo = titulo

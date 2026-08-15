@@ -1,7 +1,9 @@
 from conexion.conexionBD import connectionBD
+from models.base_model import BaseModel
 import re
 
-class MaquinariaModel:
+
+class MaquinariaModel(BaseModel):
     _RE_NOMBRE = re.compile(r'^[\w\s\.\-áéíóúÁÉÍÓÚñÑ]{3,50}$', re.UNICODE)
     
     def obtener_maquinarias(self, page=1, per_page=10):

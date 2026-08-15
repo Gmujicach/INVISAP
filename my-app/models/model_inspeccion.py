@@ -6,9 +6,10 @@ Implementa encapsulamiento, validaciones Regex, borrado logico y relacion con ob
 import re
 from datetime import datetime
 from conexion.conexionBD import connectionBD_invilara, connectionBD_invilara_seguridad
+from models.base_model import BaseModel
 
 
-class InspeccionModel:
+class InspeccionModel(BaseModel):
     """Repositorio de inspecciones con validacion y encapsulamiento."""
 
     _RE_FECHA = re.compile(r'^\d{4}-\d{2}-\d{2}$')
@@ -186,12 +187,6 @@ class InspeccionModel:
     def _validar_observaciones(self, observaciones: str) -> bool:
         texto = str(observaciones or '').strip()
         return len(texto) >= 5 and len(texto) <= 255
-
-    @staticmethod
-    def _limpiar_texto(texto: str, max_len: int = 255) -> str:
-        if not isinstance(texto, str):
-            texto = str(texto or '')
-        return re.sub(r'[<>\'";\\]', '', texto).strip()[:max_len]
 
     @staticmethod
     def __obtener_siguiente_id_inspeccion(conn):

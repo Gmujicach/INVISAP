@@ -150,6 +150,10 @@
     border-color: #059b1f !important;
     color: #ffffff !important;
   }
+  .form-control::placeholder, textarea::placeholder {
+    color: #cca025;
+    opacity: 1;
+  }
 </style>
 {% endblock %}
 
@@ -212,7 +216,10 @@
             </div>
             <div class="col-12">
               <label class="form-label">Observaciones</label>
-              <textarea class="form-control" name="observaciones" rows="5" placeholder="Describa las observaciones técnicas o recomendaciones del informe" maxlength="500">{{ informe.observaciones or '' }}</textarea>
+              <textarea class="form-control" name="observaciones" rows="10" maxlength="2000" placeholder="Describa las observaciones técnicas o recomendaciones del informe (máx. 2000 caracteres)">{{ informe.observaciones or '' }}</textarea>
+              <small class="form-text text-muted">
+                <span id="contador_observaciones_editar">0 / 2000</span>
+              </small>
             </div>
           </div>
         </div>
@@ -430,8 +437,13 @@
 <script src="{{ url_for('static', filename='js/tour/inf_avance_obra/tour.js') }}"></script>
   <script src="{{ url_for('static', filename='js/inf_avance_obra/informe_avance.js') }}"></script>
 <script>
-(function() {
-  'use strict';
+  window.cerrarModalHijo = function(modalId) {
+    const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+    if (modal) modal.hide();
+  };
+
+  (function() {
+    'use strict';
 
   const idInforme = '{{ informe.id_informe }}';
 
@@ -716,6 +728,15 @@ async function actualizarPreview(etapa) {
 ['antes', 'durante', 'despues'].forEach(etapa => {
      actualizarPreview(etapa);
    });
+
+   const obsTextarea = document.querySelector('textarea[name="observaciones"]');
+   const obsCounter = document.getElementById('contador_observaciones_editar');
+   if (obsTextarea && obsCounter) {
+     obsCounter.textContent = obsTextarea.value.length + ' / 2000';
+     obsTextarea.addEventListener('input', function() {
+       obsCounter.textContent = this.value.length + ' / 2000';
+     });
+   }
 })();
 </script>
 {% endblock %}

@@ -8,9 +8,10 @@ Conexión: connectionBD_seguridad() (BD de seguridad).
 """
 import re
 from conexion.conexionBD import connectionBD_seguridad
+from models.base_model import BaseModel
 
 
-class ModuloModel:
+class ModuloModel(BaseModel):
     """Catálogo de módulos del sistema (sidebar)."""
 
     _RE_NOMBRE = re.compile(r'^[a-z0-9_]{2,40}$')
@@ -133,7 +134,7 @@ class ModuloModel:
             if con: con.close()
 
 
-class RolModel:
+class RolModel(BaseModel):
     """Catálogo de roles/cargos."""
 
     _RE_NOMBRE = re.compile(r'^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,20}$')
@@ -235,7 +236,7 @@ class RolModel:
             if con: con.close()
 
 
-class RolPermisoModel:
+class RolPermisoModel(BaseModel):
     """Asignación de permisos (CRUD granulares) de un rol sobre los módulos."""
 
     def obtener_por_rol(self, id_rol):

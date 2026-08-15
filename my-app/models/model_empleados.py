@@ -5,9 +5,10 @@ Implementa encapsulamiento, validaciones Regex, borrado lógico y relación con 
 import re
 from datetime import datetime
 from conexion.conexionBD import connectionBD_invilara
+from models.base_model import BaseModel
 
 
-class EmpleadoModel:
+class EmpleadoModel(BaseModel):
     """Repositorio de empleados con validación y encapsulamiento."""
 
     # Expresiones regulares para validación (Principio de Responsabilidad Única)
@@ -138,13 +139,6 @@ class EmpleadoModel:
         """Valida el correo con Regex."""
         return bool(self._RE_CORREO.match(str(correo)))
     
-    @staticmethod
-    def _limpiar_texto(texto: str, max_len: int = 255) -> str:
-        """Limpia y sanitiza texto para evitar inyecciones."""
-        if not isinstance(texto, str):
-            texto = str(texto or '')
-        return re.sub(r'[<>\'";\\]', '', texto).strip()[:max_len]
-
     # ========== MÉTODOS PRIVADOS DE LÓGICA DE NEGOCIO ==========
     
     def __buscar_o_crear_persona(self, cursor):

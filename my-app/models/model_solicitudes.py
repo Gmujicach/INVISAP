@@ -5,8 +5,10 @@ Refactorizado con encapsulamiento, getters/setters y validaciones Regex.
 import re
 from datetime import datetime
 from conexion.conexionBD import connectionBD_invilara
+from models.base_model import BaseModel
 
-class SolicitudModel:
+
+class SolicitudModel(BaseModel):
     """Repositorio y entidad de solicitudes."""
 
     _RE_CEDULA = re.compile(r'^\d{7,10}$')

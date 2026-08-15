@@ -95,7 +95,6 @@ async function actualizarInformeConFetch(form) {
     console.log('Iniciando actualización con Fetch...');
 
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
     const btnSubmit = form.querySelector('button[type="submit"]');
     const textoOriginal = btnSubmit.innerHTML;
     btnSubmit.disabled = true;
@@ -104,8 +103,7 @@ async function actualizarInformeConFetch(form) {
     try {
         const response = await fetch('/api/informes/actualizar', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: formData
         });
 
         const result = await response.json();

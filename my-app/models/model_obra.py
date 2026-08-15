@@ -1,7 +1,9 @@
 from conexion.conexionBD import connectionBD
+from models.base_model import BaseModel
 import re
 
-class ObraModel:
+
+class ObraModel(BaseModel):
     _RE_NUMERO_CONTRATO = re.compile(r'^[A-Za-z0-9\-\/\.\#\s]{1,20}$')
     _RE_TEXTO = re.compile(r'^[\w\s\.\,\-\#\/\(\)\:°º²ºáéíóúÁÉÍÓÚñÑ]{1,200}$')
 

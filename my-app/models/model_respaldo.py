@@ -10,10 +10,11 @@ import traceback
 from datetime import datetime
 from decimal import Decimal
 from conexion.conexionBD import connectionBD_invilara, connectionBD_invilara_seguridad, _get_env
+from models.base_model import BaseModel
 
 logger = logging.getLogger(__name__)
 
-class RespaldoModel:
+class RespaldoModel(BaseModel):
     CARPETA_RESPALDOS = os.path.join('static', 'respaldos_bd')
 
     def __init__(self):

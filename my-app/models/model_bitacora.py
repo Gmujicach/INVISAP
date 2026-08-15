@@ -6,9 +6,10 @@ Toda entrada es validada con regex antes de ejecutar consultas parametrizadas.
 import re
 from datetime import datetime
 from conexion.conexionBD import connectionBD_seguridad
+from models.base_model import BaseModel
 
 
-class BitacoraModel:
+class BitacoraModel(BaseModel):
     """
     Repositorio de la tabla bitacora.
     Métodos privados (_): contienen SQL directamente.

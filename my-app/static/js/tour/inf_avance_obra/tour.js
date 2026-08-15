@@ -3,9 +3,12 @@
 
   window.INVISAP_TOURS['inf_avance_obra'] = function() {
     const path = window.location.pathname || '';
-    const isRegisterPage = path.indexOf('form-registrar-informe-avance-obra') !== -1 || !!document.querySelector('#modalRegistrarInforme') || !!document.querySelector('#formInformeAvance');
+    const modalRegistrar = document.getElementById('modalRegistrarInforme');
+    const isRegisterPage = path.indexOf('form-registrar-informe-avance-obra') !== -1 || 
+                           (!!modalRegistrar && modalRegistrar.classList.contains('show'));
     const isEditPage = path.indexOf('editar-informe') !== -1 || path.indexOf('Inf_avance_obra_modificar') !== -1 || !!document.querySelector('#formEditarInforme');
-    const isListPage = path.indexOf('inf_avance_obra') !== -1 && !isRegisterPage && !isEditPage || !!document.querySelector('#tablaInformes');
+    const isListPage = (path.indexOf('inf_avance_obra') !== -1 && !isRegisterPage && !isEditPage) || 
+                       (!!document.querySelector('#tablaInformes') && !isRegisterPage && !isEditPage);
 
     const steps = [];
 
@@ -186,7 +189,7 @@
           element: '#observaciones',
           popover: {
             title: 'Paso 6: Observaciones Técnicas',
-            description: 'Escribe las observaciones técnicas captadas en campo. Este campo es opcional pero recomendado. Máximo 500 caracteres.'
+            description: 'Escribe las observaciones técnicas captadas en campo. Este campo es opcional pero recomendado. Máximo 2000 caracteres.'
           },
           side: 'right'
         },
@@ -234,7 +237,7 @@
     } else if (isEditPage) {
       steps.push(
         {
-          element: '#formEditarInforme .card-header h5, #formEditarInforme .hero-card h3',
+          element: '.hero-card h3',
           popover: {
             title: 'Modificar Informe de Avance',
             description: 'Aquí puedes actualizar la información del informe seleccionado. Asegúrate de revisar el estado, el avance y las observaciones antes de guardar.'
@@ -285,7 +288,7 @@
           element: 'textarea[name="observaciones"]',
           popover: {
             title: 'Observaciones Técnicas',
-            description: 'Modifica las observaciones técnicas si es necesario. Máximo 500 caracteres.'
+            description: 'Modifica las observaciones técnicas si es necesario. Máximo 2000 caracteres.'
           },
           side: 'right'
         },

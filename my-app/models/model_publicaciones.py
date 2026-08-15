@@ -1,6 +1,8 @@
 from conexion.conexionBD import connectionBD_invilara
+from models.base_model import BaseModel
 
-class PublicacionModel:
+
+class PublicacionModel(BaseModel):
     def obtener_todas_las_publicaciones(self):
         try:
             conexion = connectionBD_invilara() # Asumiendo que esta es la conexión correcta a la base de datos de prueba completa

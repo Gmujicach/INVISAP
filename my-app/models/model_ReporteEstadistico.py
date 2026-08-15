@@ -1,7 +1,8 @@
 from conexion.conexionBD import connectionBD
+from models.base_model import BaseModel
 
 
-class ReporteEstadisticoModel:
+class ReporteEstadisticoModel(BaseModel):
     def __init__(self):
         pass
 

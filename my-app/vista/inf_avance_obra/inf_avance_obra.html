@@ -3,6 +3,12 @@
 
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/informe_avance.css') }}" />
+<style>
+  .form-control::placeholder, textarea::placeholder {
+    color: #cca025;
+    opacity: 1;
+  }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -313,10 +319,11 @@
                 Observaciones del Inspector
               </label>
               <textarea class="form-control shadow-sm" name="observaciones" id="observaciones" 
-                        rows="8" maxlength="500" 
-                        placeholder="Describa las observaciones técnicas captadas en campo (máx. 500 caracteres)"></textarea>
+                        rows="10" maxlength="2000" 
+                        placeholder="Describa las observaciones técnicas captadas en campo (máx. 2000 caracteres)"></textarea>
               <small class="form-text text-muted">
                 <i class="bx bx-info-circle"></i> Campo opcional para detalles técnicos adicionales
+                <span id="contador_observaciones" class="float-end">0 / 2000</span>
               </small>
             </div>
           </div>
@@ -576,7 +583,6 @@
 /**
  * Script para Selección de Evidencias e Inspector
  * Autor: David - Equipo INVILARA
- * Aplicando principios de modularidad según Prof. Escalona
  */
 
 // Variables globales para almacenar selecciones
@@ -977,7 +983,82 @@ document.getElementById('btnConfirmarEliminarInforme').addEventListener('click',
 document.addEventListener('DOMContentLoaded', function() {
   aplicarPorcentajesDeProgreso();
   inicializarPaginacionInformes();
-  console.log('✅ Módulo Informe de Avance cargado correctamente');
+  console.log('Módulo Informe de Avance cargado correctamente');
+
+  const formInforme = document.getElementById('formInformeAvance');
+  if (formInforme) {
+    formInforme.addEventListener('submit', function(e) {
+      if (!formInforme.checkValidity()) {
+        e.preventDefault();
+        formInforme.classList.add('was-validated');
+        return;
+      }
+
+      e.preventDefault();
+
+      const formData = new FormData(formInforme);
+      const submitBtn = formInforme.querySelector('button[type="submit"]');
+      const originalContent = submitBtn.innerHTML;
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
+
+      fetch(formInforme.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(response => {
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          location.reload();
+          return;
+        }
+        if (!response.ok) {
+          return response.json().then(data => {
+            throw new Error(data.message || 'Error en el servidor');
+          });
+        }
+        return response.json();
+      })
+        .then(data => {
+            if (data && (data.success === true || data.id_informe)) {
+                const modalEl = document.getElementById('modalRegistrarInforme');
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) {
+                    modal.hide();
+                    modalEl.addEventListener('hidden.bs.modal', function handler() {
+                        modalEl.removeEventListener('hidden.bs.modal', handler);
+                        location.reload();
+                    });
+                } else {
+                    location.reload();
+                }
+            } else if (data && data.message) {
+                throw new Error(data.message);
+            } else {
+                location.reload();
+            }
+        })
+      .catch(error => {
+        console.error('Error al registrar informe:', error);
+        alert(error.message || 'Error al registrar el informe');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalContent;
+      });
+    });
+  }
+
+  const obsTextarea = document.getElementById('observaciones');
+  const obsCounter = document.getElementById('contador_observaciones');
+  if (obsTextarea && obsCounter) {
+    obsCounter.textContent = obsTextarea.value.length + ' / 2000';
+    obsTextarea.addEventListener('input', function() {
+      obsCounter.textContent = this.value.length + ' / 2000';
+    });
+  }
 });
 </script>
 {% endblock %}
