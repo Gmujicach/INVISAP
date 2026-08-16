@@ -449,9 +449,39 @@
 
   function getEvidenciaImageUrl(path) {
     if (!path) return '';
-    if (/^https?:\/\//i.test(path)) return path;
-    const cleanPath = String(path).replace(/^\/+/, '').replace(/^static\//, '');
+    const strPath = String(path).trim();
+
+    if (/^https?:\/\//i.test(strPath)) {
+      return strPath;
+    }
+
+    if (strPath.includes('..') || strPath.includes('\x00') || strPath.includes('%00')) {
+      console.warn('[SECURITY] Ruta de evidencia con path traversal bloqueada:', strPath);
+      return '';
+    }
+
+    let cleanPath = strPath.replace(/^\/+/, '').replace(/^static\//, '');
+
+    if (!/^[a-zA-Z0-9_\-./]+$/.test(cleanPath)) {
+      console.warn('[SECURITY] Ruta de evidencia con caracteres no permitidos:', strPath);
+      return '';
+    }
+
     return `/static/${cleanPath}`;
+  }
+
+  function escapeHtml(str) {
+    if (str == null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function escapeJs(str) {
+    return String(str).replace(/\\/g, '\\\\').replace(/'/g, '\\\'');
   }
 
   function parseEvidencias(raw) {
@@ -537,16 +567,16 @@ const inspectorNombre = '{{ informe.gerente_nombre|default("") }}';
             <div class="col-md-3 mb-3">
               <div class="card modal-evidencia-item h-100 ${isSelected ? 'selected' : ''}" 
                    data-id="${evidencia.id_evidencia}"
-                   onclick="toggleEvidencia('${etapa}', ${evidencia.id_evidencia}, '${evidencia.url_archivos}', event)">
+                   onclick="toggleEvidencia('${etapa}', ${evidencia.id_evidencia}, '${escapeJs(evidencia.url_archivos)}', event)">
                 <div class="position-relative">
                   <span class="badge badge-etapa bg-${etapa === 'antes' ? 'success' : etapa === 'durante' ? 'warning' : 'info'}">
                     ${etapa.toUpperCase()}
                   </span>
-                  <img src="${getEvidenciaImageUrl(evidencia.url_archivos)}" alt="${evidencia.fotos}" class="card-img-top" />
+                  <img src="${getEvidenciaImageUrl(evidencia.url_archivos)}" alt="${escapeHtml(evidencia.fotos)}" class="card-img-top" />
                 </div>
                 <div class="card-body p-2">
-                  <p class="mb-1 small text-truncate" title="${evidencia.fotos}">
-                    <i class="bx bx-file me-1"></i>${evidencia.fotos}
+                  <p class="mb-1 small text-truncate" title="${escapeHtml(evidencia.fotos)}">
+                    <i class="bx bx-file me-1"></i>${escapeHtml(evidencia.fotos)}
                   </p>
                   <small class="text-muted">
                     <i class="bx bx-calendar me-1"></i>${new Date(evidencia.fecha_registro).toLocaleDateString('es-VE')}
@@ -641,12 +671,12 @@ async function actualizarPreview(etapa) {
          if (evidencia) {
            const preview = document.createElement('div');
            preview.className = 'preview-evidencia-item';
-           preview.innerHTML = `
-             <img src="${getEvidenciaImageUrl(evidencia.url_archivos)}" alt="${evidencia.fotos}" title="${evidencia.fotos}" />
-             <div class="remove-btn" onclick="removerEvidencia('${etapa}', ${id})">
-               <i class="bx bx-x"></i>
-             </div>
-           `;
+            preview.innerHTML = `
+              <img src="${getEvidenciaImageUrl(evidencia.url_archivos)}" alt="${escapeHtml(evidencia.fotos)}" title="${escapeHtml(evidencia.fotos)}" />
+              <div class="remove-btn" onclick="removerEvidencia('${etapa}', ${id})">
+                <i class="bx bx-x"></i>
+              </div>
+            `;
            previewContainer.appendChild(preview);
          }
        });
@@ -690,20 +720,20 @@ async function actualizarPreview(etapa) {
         const card = document.createElement('div');
         card.className = 'col-md-6 mb-3';
         card.innerHTML = `
-          <div class="card inspector-card h-100" onclick="seleccionarInspectorParaEdicion(${inspector.id_empleados}, '${inspector.nombre_empleado}', '${inspector.gerencia_asignada || 'Sin asignar'}', event)">
+          <div class="card inspector-card h-100" onclick="seleccionarInspectorParaEdicion(${inspector.id_empleados}, '${escapeJs(inspector.nombre_empleado)}', '${escapeJs(inspector.gerencia_asignada || 'Sin asignar')}', event)">
             <div class="card-body">
               <div class="d-flex align-items-center">
                 <div class="avatar avatar-lg bg-label-primary rounded-circle me-3">
                   <i class="bx bx-user fs-3"></i>
                 </div>
                 <div class="flex-grow-1">
-                  <h6 class="mb-1">${inspector.nombre_empleado}</h6>
-                  <p class="mb-0 text-muted small">
-                    <i class="bx bx-briefcase me-1"></i>${inspector.cargo}
-                  </p>
-                  <p class="mb-0 text-muted small">
-                    <i class="bx bx-buildings me-1"></i>${inspector.gerencia_asignada || 'Sin asignar'}
-                  </p>
+                   <h6 class="mb-1">${escapeHtml(inspector.nombre_empleado)}</h6>
+                   <p class="mb-0 text-muted small">
+                     <i class="bx bx-briefcase me-1"></i>${escapeHtml(inspector.cargo)}
+                   </p>
+                   <p class="mb-0 text-muted small">
+                     <i class="bx bx-buildings me-1"></i>${escapeHtml(inspector.gerencia_asignada || 'Sin asignar')}
+                   </p>
                 </div>
                 <div>
                   <i class="bx bx-check-circle text-success fs-4 d-none check-icon"></i>

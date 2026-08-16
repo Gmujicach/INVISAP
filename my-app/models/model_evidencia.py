@@ -18,7 +18,7 @@ class EvidenciaModel(BaseModel):
     """Repositorio de evidencias fotográficas con compresión y validación."""
 
     _RE_NOMBRE_ARCHIVO = re.compile(r'^[\w\-. áéíóúÁÉÍÓÚñÑ()]{1,100}\.[a-zA-Z0-9]{1,5}$')
-    _RE_URL = re.compile(r'^[\w\-/. ]{10,90}$')
+    _RE_URL = re.compile(r'^[a-zA-Z0-9_\-./]{10,90}$')
     _ETAPAS_VALIDAS = {'antes', 'durante', 'despues'}
     _RE_ETAPA = re.compile(r'^(antes|durante|despues)$')
     
@@ -95,6 +95,10 @@ class EvidenciaModel(BaseModel):
         return bool(self._RE_NOMBRE_ARCHIVO.match(nombre))
 
     def _validar_url(self, url: str) -> bool:
+        if not isinstance(url, str):
+            return False
+        if '..' in url or '\x00' in url:
+            return False
         return bool(self._RE_URL.match(url))
 
     def __extraer_etapas(self, form_data, num_files):
