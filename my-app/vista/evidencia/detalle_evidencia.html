@@ -2,95 +2,6 @@
 
 {% block title %}Detalle de Evidencia{% endblock %}
 
-{% block body %}
-<div class="evidencia-container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="fw-bold mb-0">
-            <span class="text-muted fw-light">Gestion /</span>
-            <span class="text-gradient">Evidencias</span>
-        </h4>
-        <a href="{{ url_for('evidencia_bp.show_listar_evidencias') }}" class="btn btn-outline-secondary btn-custom-cta">
-            <i class="bi bi-arrow-left me-2"></i>Volver al listado
-        </a>
-    </div>
-
-    <div class="card-modern">
-        <div class="card-header-custom d-flex align-items-center">
-            <div class="header-icon-shield">
-                <i class="bi bi-images"></i>
-            </div>
-            <h5 class="mb-0">Detalle de la Evidencia #{{ evidencia.id_evidencia }}</h5>
-            {% if evidencia.estado == 1 %}
-            <span class="badge-count ms-auto">Activo</span>
-            {% else %}
-            <span class="badge-count ms-auto" style="background-color: #6c757d;">Inactivo</span>
-            {% endif %}
-        </div>
-        <div class="card-body-custom">
-            <div class="row g-4">
-                <div class="col-lg-7">
-                    <div class="detail-image-wrapper">
-                        <img src="{{ url_for('static', filename=evidencia.url_archivos) }}"
-                             class="detail-image-main"
-                             alt="Evidencia {{ evidencia.id_evidencia }}">
-                    </div>
-                </div>
-                <div class="col-lg-5">
-                    <div class="detail-info-card">
-                        <div class="info-item">
-                            <span class="info-label">ID Registro</span>
-                            <span class="info-value">{{ evidencia.id_evidencia }}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Descripcion</span>
-                            <span class="info-value">{{ evidencia.fotos }}</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Etapa</span>
-                            <span class="info-value">
-                                <span class="badge-etapa-modern {{ evidencia.etapa }}">
-                                    <i class="bi bi-circle-fill"></i>
-                                    {{ evidencia.etapa|capitalize }}
-                                </span>
-                            </span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Fecha de Registro</span>
-                            <span class="info-value">
-                                {{ evidencia.fecha_registro.strftime('%Y-%m-%d') }}
-                                <br>
-                                <small class="text-muted-soft">{{ evidencia.fecha_registro.strftime('%H:%M') }}</small>
-                            </span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Estado</span>
-                            <span class="info-value">
-                                {% if evidencia.estado == 1 %}
-                                    <span class="badge bg-success">Activo</span>
-                                {% else %}
-                                    <span class="badge bg-secondary">Inactivo</span>
-                                {% endif %}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="detail-actions mt-4">
-                        <a href="{{ url_for('evidencia_bp.show_modificar_evidencia', id_evidencia=evidencia.id_evidencia) }}"
-                           class="btn btn-primary btn-custom-cta me-2">
-                            <i class="bi bi-pencil-square me-2"></i>Modificar
-                        </a>
-                        <button onclick="eliminarEvidenciaJS({{ evidencia.id_evidencia }})"
-                                class="btn btn-outline-danger">
-                            <i class="bi bi-trash3 me-2"></i>Desactivar
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/evidencia.css') }}">
 <style>
@@ -172,6 +83,95 @@
         color: #cfcde9;
     }
 </style>
+{% endblock %}
+
+{% block body %}
+<div class="evidencia-container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold mb-0">
+            <span class="text-muted fw-light">Gestion /</span>
+            <span class="text-gradient">Evidencias</span>
+        </h4>
+        <a href="{{ url_for('evidencia_bp.show_listar_evidencias') }}" class="btn btn-outline-secondary btn-custom-cta">
+            <i class="bi bi-arrow-left me-2"></i>Volver al listado
+        </a>
+    </div>
+
+    <div class="card-modern">
+        <div class="card-header-custom d-flex align-items-center">
+            <div class="header-icon-shield">
+                <i class="bi bi-images"></i>
+            </div>
+            <h5 class="mb-0">Detalle de la Evidencia #{{ evidencia.id_evidencia }}</h5>
+            {% if evidencia.estado == 1 %}
+            <span class="badge-count ms-auto">Activo</span>
+            {% else %}
+            <span class="badge-count ms-auto" style="background-color: #6c757d;">Inactivo</span>
+            {% endif %}
+        </div>
+        <div class="card-body-custom">
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <div class="detail-image-wrapper">
+                        <img src="{{ url_for('static', filename=evidencia.url_archivos) }}"
+                             class="detail-image-main"
+                             alt="Evidencia {{ evidencia.id_evidencia }}">
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="detail-info-card">
+                        <div class="info-item">
+                            <span class="info-label">ID Registro</span>
+                            <span class="info-value">{{ evidencia.id_evidencia }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Descripcion</span>
+                            <span class="info-value">{{ evidencia.fotos }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Etapa</span>
+                            <span class="info-value">
+                                <span class="badge-etapa-modern {{ evidencia.etapa }}">
+                                    <i class="bi bi-circle-fill"></i>
+                                    {{ evidencia.etapa|capitalize }}
+                                </span>
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Fecha de Registro</span>
+                            <span class="info-value">
+                                {{ evidencia.fecha_registro.strftime('%Y-%m-%d') }}
+                                <br>
+                                <small class="text-muted-soft">{{ evidencia.fecha_registro.strftime('%H:%M') }}</small>
+                            </span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Estado</span>
+                            <span class="info-value">
+                                {% if evidencia.estado == 1 %}
+                                    <span class="badge bg-success">Activo</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Inactivo</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="detail-actions mt-4">
+                        <a href="{{ url_for('evidencia_bp.show_modificar_evidencia', id_evidencia=evidencia.id_evidencia) }}"
+                           class="btn btn-primary btn-custom-cta me-2">
+                            <i class="bi bi-pencil-square me-2"></i>Modificar
+                        </a>
+                        <button onclick="eliminarEvidenciaJS('{{ evidencia.id_evidencia }}')"
+                                class="btn btn-outline-danger">
+                            <i class="bi bi-trash3 me-2"></i>Desactivar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block customJS %}

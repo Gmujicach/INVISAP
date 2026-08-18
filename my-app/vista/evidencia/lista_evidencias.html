@@ -28,7 +28,7 @@
         <div class="card-body-custom">
             {% if evidencias %}
             <div class="table-responsive-custom">
-                <table class="table-evidencias-modern">
+                <table class="table-evidencias-modern" id="tablaEvidencias">
                     <thead>
                         <tr>
                             <th class="text-center" style="width: 70px;">#</th>
@@ -83,7 +83,7 @@
                                        title="Editar">
                                         <i class="bx bx-edit"></i>
                                     </a>
-                                    <button onclick="eliminarEvidenciaJS({{ evidencia.id_evidencia }})"
+                                    <button onclick="eliminarEvidenciaJS('{{ evidencia.id_evidencia }}')"
                                             class="btn btn-outline-danger btn-sm"
                                             title="Eliminar">
                                         <i class="bx bx-trash"></i>
