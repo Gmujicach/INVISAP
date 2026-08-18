@@ -235,6 +235,23 @@ class RolModel(BaseModel):
             if cursor: cursor.close()
             if con: con.close()
 
+    def obtener_usuarios_por_rol(self):
+        con = cursor = None
+        try:
+            con = connectionBD_seguridad()
+            cursor = con.cursor(dictionary=True)
+            sql = """
+                SELECT id_usuarios, nombre, correo, cedula_usuario, rol, avatar, estado
+                FROM usuarios
+                WHERE rol = %s AND estado = 1
+                ORDER BY nombre ASC
+            """
+            cursor.execute(sql, (self.__nombre.strip(),))
+            return cursor.fetchall()
+        finally:
+            if cursor: cursor.close()
+            if con: con.close()
+
 
 class RolPermisoModel(BaseModel):
     """Asignación de permisos (CRUD granulares) de un rol sobre los módulos."""

@@ -55,7 +55,8 @@ from controllers.controller_seguridad import (
     actualizar_modulo_controller, eliminar_modulo_controller,
     registrar_rol_controller, listar_roles_controller, obtener_rol_controller,
     actualizar_rol_controller, eliminar_rol_controller,
-    obtener_permisos_rol_controller, guardar_permisos_controller
+    obtener_permisos_rol_controller, guardar_permisos_controller,
+    obtener_usuarios_por_rol_controller
 )
 from controllers.UserController import verificar_permiso
 app.register_blueprint(empresa_bp)
@@ -618,6 +619,13 @@ def api_guardar_permisos_rol():
         except Exception:
             permisos = []
     return jsonify(guardar_permisos_controller(id_rol, permisos)), 200
+
+
+@home_bp.route('/api/seguridad/roles/<int:id_rol>/usuarios', methods=['GET'])
+def api_obtener_usuarios_por_rol(id_rol):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida', 'usuarios': []}), 401
+    return jsonify(obtener_usuarios_por_rol_controller(id_rol))
 
 
 @home_bp.route('/gestionar-prioridad', methods=['GET'])

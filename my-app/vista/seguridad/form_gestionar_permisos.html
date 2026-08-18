@@ -104,14 +104,24 @@
     <!-- ============ TAB PERMISOS ============ -->
     <div class="tab-pane fade" id="pane-permisos" role="tabpanel">
       <div class="seguridad-filter-card">
-        <div class="row g-3 align-items-end">
-          <div class="col-md-6">
-            <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase;">
-              <i class="bi bi-people-fill me-1"></i> Rol
-            </label>
-            <select id="selectRol" class="form-select form-select-sm"></select>
-          </div>
-          <div class="col-md-6 text-end">
+      <div class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase;">
+            <i class="bi bi-people-fill me-1"></i> Rol
+          </label>
+          <select id="selectRol" class="form-select form-select-sm">
+            <option value="">Seleccione un rol...</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold text-secondary" style="font-size:0.8rem; text-transform:uppercase;">
+            <i class="bi bi-person-lines-fill me-1"></i> Usuarios con este rol
+          </label>
+          <select id="selectUsuariosPorRol" class="form-select form-select-sm" disabled>
+            <option value="">Seleccione primero un rol...</option>
+          </select>
+        </div>
+        <div class="col-md-6 text-end">
             <button class="btn btn-outline-secondary btn-sm" onclick="cargarPermisos()">
               <i class="bi bi-arrow-clockwise me-1"></i> Recargar
             </button>
@@ -252,6 +262,69 @@
       ValidacionesComunes.initSelects(formModulo);
       ValidacionesComunes.initBotonesSubmit(formModulo, { textoGuardando: 'Guardando...' });
     }
+
+    var selectRol = document.getElementById('selectRol');
+    var selectUsuarios = document.getElementById('selectUsuariosPorRol');
+
+    function cargarRoles() {
+      fetch('/api/seguridad/roles/listar')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var roles = Array.isArray(data) ? data : (data.roles || []);
+          selectRol.innerHTML = '<option value=\"\">Seleccione un rol...</option>';
+          roles.forEach(function (r) {
+            var opt = document.createElement('option');
+            opt.value = r.id_rol;
+            opt.textContent = r.nombre;
+            selectRol.appendChild(opt);
+          });
+        })
+        .catch(function () {
+          selectRol.innerHTML = '<option value=\"\">Seleccione un rol...</option>';
+        });
+    }
+
+    function cargarUsuariosPorRol(idRol) {
+      if (!idRol) {
+        selectUsuarios.innerHTML = '<option value=\"\">Seleccione primero un rol...</option>';
+        selectUsuarios.disabled = true;
+        return;
+      }
+      selectUsuarios.innerHTML = '<option value=\"\">Cargando...</option>';
+      selectUsuarios.disabled = true;
+      fetch('/api/seguridad/roles/' + idRol + '/usuarios')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          selectUsuarios.innerHTML = '<option value=\"\">-- Usuarios con este rol --</option>';
+          if (data.success && Array.isArray(data.usuarios) && data.usuarios.length > 0) {
+            data.usuarios.forEach(function (u) {
+              var opt = document.createElement('option');
+              opt.value = u.id_usuarios;
+              opt.textContent = (u.nombre || '') + ' (' + (u.correo || '') + ')';
+              selectUsuarios.appendChild(opt);
+            });
+            selectUsuarios.disabled = false;
+          } else {
+            var opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = 'Sin usuarios para este rol';
+            selectUsuarios.appendChild(opt);
+            selectUsuarios.disabled = true;
+          }
+        })
+        .catch(function () {
+          selectUsuarios.innerHTML = '<option value=\"\">Error al cargar</option>';
+          selectUsuarios.disabled = true;
+        });
+    }
+
+    if (selectRol) {
+      selectRol.addEventListener('change', function () {
+        cargarUsuariosPorRol(this.value);
+      });
+    }
+
+    cargarRoles();
   })();
 </script>
 {% endblock %}

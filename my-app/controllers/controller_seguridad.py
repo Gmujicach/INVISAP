@@ -173,3 +173,18 @@ def guardar_permisos_controller(id_rol, permisos):
     except Exception as e:
         print(f"Error en guardar_permisos_controller: {e}")
         return {"success": False, "message": "Error interno del servidor."}
+
+
+def obtener_usuarios_por_rol_controller(id_rol):
+    try:
+        rol = RolModel(id_rol=id_rol).obtener_por_id(id_rol)
+        if not rol:
+            return {"success": False, "message": "Rol no encontrado.", "usuarios": []}
+        return {
+            "success": True,
+            "rol": rol.get('nombre'),
+            "usuarios": RolModel(nombre=rol.get('nombre')).obtener_usuarios_por_rol()
+        }
+    except Exception as e:
+        print(f"Error en obtener_usuarios_por_rol_controller: {e}")
+        return {"success": False, "message": "Error interno del servidor.", "usuarios": []}
