@@ -31,11 +31,11 @@
           {% for usuario in resp_usuariosBD %}
           <tr>
             <td>
-              <img src="{{ url_for('static', filename=usuario.avatar) }}"
-                   class="rounded-circle"
-                   style="width: 40px; height: 40px; object-fit: cover;"
-                   alt="Avatar"
-                   onerror="this.src='{{ url_for('static', filename='assets/img/avatars/1.png') }}'">
+               <img src="{{ url_for('static', filename=usuario.avatar) }}"
+                    class="rounded-circle"
+                    style="width: 40px; height: 40px; object-fit: cover;"
+                    alt="Avatar"
+                    onerror="this.src='/static/assets/img/avatars/1.png'">
             </td>
             <td>{{ usuario.nombre }}</td>
             <td>{{ usuario.cedula_usuario }}</td>
@@ -70,7 +70,7 @@
   <div class="row justify-content-md-center mb-2">
     <div class="col-12 text-center">
       <h2>No hay usuarios registrados</h2>
-      <a href="{{ url_for('user_bp.view_register_form') }}" class="btn btn-primary mt-3">
+      <a href="{{ url_for('user_bp.show_register_form') }}" class="btn btn-primary mt-3">
         <i class="bi bi-person-plus me-1"></i> Registrar primer usuario
       </a>
     </div>
