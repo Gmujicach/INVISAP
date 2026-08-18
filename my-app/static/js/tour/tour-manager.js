@@ -41,7 +41,7 @@
       { pattern: /reporte|reportes/i, module: 'reportes' },
       { pattern: /respaldo/i, module: 'respaldo' },
       { pattern: /seguridad/i, module: 'seguridad' },
-      { pattern: /usuario|usuarios/i, module: 'usuarios' },
+      { pattern: /users|usuario|usuarios/i, module: 'usuarios' },
       { pattern: /ia|prioridad|gravedad/i, module: 'ia' },
       { pattern: /manual/i, module: 'manual' },
       { pattern: /login|inicio|landing/i, module: 'login' },

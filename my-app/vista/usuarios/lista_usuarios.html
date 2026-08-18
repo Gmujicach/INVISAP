@@ -7,12 +7,16 @@
 
 <div class="card">
   <section id="respuestaFiltroMes">
-    <h2 class="text-center mt-0 mb-5" style="background-color: #08b324; color: #ffffff; padding: 40px 0 10px 0;">
-      Lista de Usuarios Creados
-      <hr />
-    </h2>
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+      <h2 class="text-center mt-0 mb-0" style="background-color: #08b324; color: #ffffff; padding: 10px 15px; border-radius: 8px;">
+        Lista de Usuarios Creados
+      </h2>
+      <a href="{{ url_for('user_bp.show_register_form') }}" class="btn btn-primary btn-sm">
+        <i class="bi bi-person-plus me-1"></i> Registrar Usuario
+      </a>
+    </div>
     <div class="table-responsive text-nowrap">
-      <table class="table table-hover">
+      <table class="table table-hover" id="tablaUsuarios">
         <thead>
           <tr style="background-color: #ddd">
             <th>Avatar</th>
@@ -27,9 +31,9 @@
           {% for usuario in resp_usuariosBD %}
           <tr>
             <td>
-              <img src="{{ url_for('static', filename=usuario.avatar) }}" 
-                   class="rounded-circle" 
-                   style="width: 40px; height: 40px; object-fit: cover;" 
+              <img src="{{ url_for('static', filename=usuario.avatar) }}"
+                   class="rounded-circle"
+                   style="width: 40px; height: 40px; object-fit: cover;"
                    alt="Avatar"
                    onerror="this.src='{{ url_for('static', filename='assets/img/avatars/1.png') }}'">
             </td>
@@ -64,8 +68,11 @@
 {% else %}
 <div class="container mt-3 mb-3" style="width: 100% !important">
   <div class="row justify-content-md-center mb-2">
-    <div class="col-12">
-      <h2 class="text-center">No hay usuarios registrados</h2>
+    <div class="col-12 text-center">
+      <h2>No hay usuarios registrados</h2>
+      <a href="{{ url_for('user_bp.view_register_form') }}" class="btn btn-primary mt-3">
+        <i class="bi bi-person-plus me-1"></i> Registrar primer usuario
+      </a>
     </div>
   </div>
 </div>

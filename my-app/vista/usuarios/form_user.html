@@ -68,6 +68,7 @@
 </div>
 {% endblock %}
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/tour/usuarios/tour.js') }}"></script>
 <script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
