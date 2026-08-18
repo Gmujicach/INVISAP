@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // ==========================================
     // LÓGICA EXISTENTE: FORMULARIO
     // ==========================================
-    const formulario = document.getElementById('form_registro_empresa');
+    const formulario = document.getElementById('formRegistroEmpresa') || document.getElementById('formEditarEmpresa');
     if (formulario) {
         
         // RIF

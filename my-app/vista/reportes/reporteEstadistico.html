@@ -725,4 +725,14 @@
   cargarDatos(colectarFiltros());
 })();
 </script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const formEstadisticos = document.getElementById('formEstadisticos');
+    if (formEstadisticos) {
+      ValidacionesComunes.initSelects(formEstadisticos);
+      ValidacionesComunes.initBotonesSubmit(formEstadisticos, { textoGuardando: 'Generando...' });
+    }
+  });
+</script>
 {% endblock %}

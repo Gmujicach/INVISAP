@@ -16,7 +16,7 @@
 
   <div class="row justify-content-center mb-4">
     <div class="col-md-11 col-lg-10">
-      <form class="form-horizontal mx-auto" method="POST" action="/form-registrar-solicitud" autocomplete="off">
+      <form id="formRegistrarSolicitud" class="form-horizontal mx-auto" method="POST" action="/form-registrar-solicitud" autocomplete="off">
         
         <div class="card-body pt-0">
           
@@ -266,6 +266,7 @@
 <script src="{{ url_for('static', filename='js/tour/solicitudes/tour.js') }}"></script>
   <script src="{{ url_for('static', filename='js/solicitudes/solicitud_ajax.js') }}"></script>
   <script src="{{ url_for('static', filename='js/solicitudes/solicitud.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script>
   const laraData = {
     "Iribarren": ["Aguedo Felipe Alvarado", "Buena Vista", "Catedral", "Concepción", "El Cují", "Juares", "Guerrera Ana Soto (Juan de Villegas)", "Santa Rosa", "Tamaca", "Unión"],
@@ -298,5 +299,86 @@
       parroquiaSelect.disabled = true;
     }
   }
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('formRegistrarSolicitud');
+  if (!form) return;
+
+  ValidacionesComunes.initSelects(form);
+  ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Registrando...' });
+
+  const tipoSolicitudSelect = form.querySelector('select[name="tipo_solicitud"]');
+  const seccionComunidad = document.getElementById('seccion_comunidad');
+  const seccionInstitucion = document.getElementById('seccion_institucion');
+  const seccionParticular = document.getElementById('seccion_particular');
+
+  var limpiarSeccion = function(seccion) {
+    if (!seccion) return;
+    seccion.style.display = 'none';
+    seccion.querySelectorAll('input, select, textarea').forEach(function(el) {
+      if (el.type !== 'hidden') {
+        el.value = '';
+        el.disabled = true;
+        el.classList.remove('is-valid', 'is-invalid');
+      }
+    });
+    seccion.querySelectorAll('select').forEach(function(sel) {
+      var opts = sel.options;
+      for (var i = 0; i < opts.length; i++) {
+        if (opts[i].value === '' || opts[i].text === 'Seleccione...') {
+          opts[i].selected = true;
+          break;
+        }
+      }
+    });
+    var parroquiaSel = seccion.querySelector('select[name$="_parroquia"]');
+    if (parroquiaSel) {
+      parroquiaSel.innerHTML = '<option value="" selected disabled>Seleccione primero el municipio...</option>';
+    }
+  };
+
+  var habilitarSeccion = function(seccion) {
+    if (!seccion) return;
+    seccion.style.display = 'block';
+    seccion.querySelectorAll('input, select, textarea').forEach(function(el) {
+      if (el.type !== 'hidden') {
+        el.disabled = false;
+      }
+    });
+  };
+
+  if (tipoSolicitudSelect) {
+    tipoSolicitudSelect.addEventListener('change', function() {
+      var valor = this.value.trim();
+
+      limpiarSeccion(seccionComunidad);
+      limpiarSeccion(seccionInstitucion);
+      limpiarSeccion(seccionParticular);
+
+      if (valor === '') {
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Atención',
+            text: 'Debe seleccionar un tipo de solicitante válido.',
+            confirmButtonText: 'Entendido'
+          });
+        } else {
+          alert('Debe seleccionar un tipo de solicitante válido.');
+        }
+        return;
+      }
+
+      if (valor === 'Comunidad') {
+        habilitarSeccion(seccionComunidad);
+      } else if (valor === 'Institucion') {
+        habilitarSeccion(seccionInstitucion);
+      } else if (valor === 'Particular') {
+        habilitarSeccion(seccionParticular);
+      }
+    });
+  }
+});
 </script>
 {% endblock %}

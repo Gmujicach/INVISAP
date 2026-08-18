@@ -205,4 +205,14 @@
 <script src="{{ url_for('static', filename='js/tour/bitacora/tour.js') }}"></script> 
 <!-- Importación del script JS externo -->
 <script src="{{ url_for('static', filename='js/bitacora/bitacora.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script>
+  (function () {
+    var form = document.getElementById('formFiltrosBitacora');
+    if (form) {
+      ValidacionesComunes.initSelects(form);
+      ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Filtrando...' });
+    }
+  })();
+</script>
 {% endblock %}

@@ -505,4 +505,19 @@
     input.value = val;
   }
 </script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const formCrear = document.getElementById('formCrearSolicitud');
+    if (formCrear) {
+      ValidacionesComunes.initSelects(formCrear);
+      ValidacionesComunes.initBotonesSubmit(formCrear, { textoGuardando: 'Registrando...' });
+    }
+    const formEditar = document.getElementById('formEditarSolicitud');
+    if (formEditar) {
+      ValidacionesComunes.initSelects(formEditar);
+      ValidacionesComunes.initBotonesSubmit(formEditar, { textoGuardando: 'Guardando...' });
+    }
+  });
+</script>
 {% endblock %}

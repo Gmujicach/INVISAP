@@ -161,4 +161,19 @@
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/respaldo/tour.js') }}"></script>
   <script src="{{ url_for('static', filename='js/respaldo/respaldo.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+  <script>
+    (function () {
+      var formExportar = document.getElementById('formExportarRespaldo');
+      if (formExportar) {
+        ValidacionesComunes.initSelects(formExportar);
+        ValidacionesComunes.initBotonesSubmit(formExportar, { textoGuardando: 'Procesando...' });
+      }
+      var formImportar = document.getElementById('formImportarRespaldo');
+      if (formImportar) {
+        ValidacionesComunes.initSelects(formImportar);
+        ValidacionesComunes.initBotonesSubmit(formImportar, { textoGuardando: 'Procesando...' });
+      }
+    })();
+  </script>
 {% endblock %}

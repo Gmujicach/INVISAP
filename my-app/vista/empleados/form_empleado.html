@@ -136,5 +136,16 @@
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/empleados/tour.js') }}"></script>
 <script src="{{ url_for('static', filename='js/libs/sweetalert2.all.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/empleados/empleados_validation.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('formEmpleado');
+  if (!form) return;
+
+  ValidacionesComunes.initSelects(form);
+  ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Registrando...' });
+  ValidacionesComunes.initSelects(form, { selector: 'select[name="cargo"]' });
+});
+</script>
 {% endblock %}

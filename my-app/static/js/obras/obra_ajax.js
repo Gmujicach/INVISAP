@@ -94,6 +94,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const placeholderValue = select.options[0] ? select.options[0].value : '';
                 if (!Array.isArray(data) || data.length === 0) {
                     select.innerHTML = '<option value="">' + placeholder + ' (sin registros)</option>';
+                    if (typeof ValidacionesComunes !== 'undefined' && ValidacionesComunes.marcarSelectInvalido) {
+                        ValidacionesComunes.marcarSelectInvalido(select);
+                    }
                     return;
                 }
                 select.innerHTML = '<option value="">' + placeholder + '</option>';
@@ -103,6 +106,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     option.textContent = item[textKey];
                     select.appendChild(option);
                 });
+                if (typeof ValidacionesComunes !== 'undefined' && ValidacionesComunes.marcarSelectInvalido) {
+                    ValidacionesComunes.marcarSelectInvalido(select);
+                }
             })
             .catch(err => console.error('[obra_ajax] Error cargando ' + selectId + ':', err));
     }
@@ -112,7 +118,11 @@ document.addEventListener('DOMContentLoaded', function() {
             cargarSelect('/api/obra/semaforos', 'semaforo_id_semaforo', 'id_semaforo', 'nombre'),
             cargarSelect('/api/obra/contrataciones', 'contratacion_id_contratacion', 'id_contratacion', 'numero_contrato'),
             cargarSelect('/api/obra/proyectos', 'gestionar_proyectos_codigo_proyecto', 'codigo_proyecto', 'codigo_proyecto')
-        ]);
+        ]).then(() => {
+            if (typeof ValidacionesComunes !== 'undefined' && ValidacionesComunes.initSelects && formObra) {
+                ValidacionesComunes.initSelects(formObra);
+            }
+        });
     }
 
     function cargarCatalogosEditar() {
@@ -120,7 +130,11 @@ document.addEventListener('DOMContentLoaded', function() {
             cargarSelect('/api/obra/semaforos', 'edit_semaforo_id_semaforo', 'id_semaforo', 'nombre'),
             cargarSelect('/api/obra/contrataciones', 'edit_contratacion_id_contratacion', 'id_contratacion', 'numero_contrato'),
             cargarSelect('/api/obra/proyectos', 'edit_gestionar_proyectos_codigo_proyecto', 'codigo_proyecto', 'codigo_proyecto')
-        ]);
+        ]).then(() => {
+            if (typeof ValidacionesComunes !== 'undefined' && ValidacionesComunes.initSelects && formEditarObra) {
+                ValidacionesComunes.initSelects(formEditarObra);
+            }
+        });
     }
 
     const modalNueva = document.getElementById('modalNuevaObra');
@@ -382,6 +396,10 @@ function cargarDatosEditar(id_obra) {
         populateSelect('edit_semaforo_id_semaforo', 'id_semaforo', 'nombre', obra.semaforo_id_semaforo);
         populateSelect('edit_contratacion_id_contratacion', 'id_contratacion', 'numero_contrato', obra.contratacion_id_contratacion);
         populateSelect('edit_gestionar_proyectos_codigo_proyecto', 'codigo_proyecto', 'codigo_proyecto', obra.gestionar_proyectos_codigo_proyecto);
+
+        if (typeof ValidacionesComunes !== 'undefined' && ValidacionesComunes.initSelects && formEditarObra) {
+            ValidacionesComunes.initSelects(formEditarObra);
+        }
     })
     .catch(error => {
         console.error('Error al cargar obra:', error);

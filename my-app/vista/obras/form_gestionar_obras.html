@@ -412,7 +412,21 @@
 {% endblock %}
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tour/obras/tour.js') }}"></script>
 <script src="{{ url_for('static', filename='js/libs/sweetalert2.all.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/obras/obra_ajax.js') }}"></script>
+<script>
+  const formNuevaObra = document.getElementById('formNuevaObra');
+  if (formNuevaObra) {
+    ValidacionesComunes.initSelects(formNuevaObra);
+    ValidacionesComunes.initBotonesSubmit(formNuevaObra, { textoGuardando: 'Guardando...' });
+  }
+
+  const formEditarObra = document.getElementById('formEditarObra');
+  if (formEditarObra) {
+    ValidacionesComunes.initSelects(formEditarObra);
+    ValidacionesComunes.initBotonesSubmit(formEditarObra, { textoGuardando: 'Actualizando...' });
+  }
+</script>
 {% endblock %}

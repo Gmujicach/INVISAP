@@ -9,7 +9,7 @@
     </h3>
     <hr />
 
-    <form method="POST" action="/update-solicitud">
+    <form id="formEditarSolicitud" method="POST" action="/update-solicitud">
       <input type="hidden" name="id_solicitud" value="{{ solicitud.id_solicitud }}">
 
       <div class="mb-3">
@@ -38,4 +38,14 @@
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/solicitudes/tour.js') }}"></script>
   <script src="{{ url_for('static', filename='js/solicitudes/solicitud_ajax.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('formEditarSolicitud');
+  if (form) {
+    ValidacionesComunes.initSelects(form);
+    ValidacionesComunes.initBotonesSubmit(form);
+  }
+});
+</script>
 {% endblock %}

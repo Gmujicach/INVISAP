@@ -27,7 +27,8 @@
         class="form-horizontal mx-auto"
         method="POST"
         action="{{ url_for('actualizarPublicacion', id = publicacion.id_publicaciones ) }}"
-        autocomplete="off">
+        autocomplete="off"
+        id="formActualizarPublicacion">
         <input
           type="text"
           class="form-control"
@@ -113,4 +114,14 @@
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/solicitudes/tour.js') }}"></script>
 <script src="{{ url_for('static', filename ='js/file.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formActualizarPublicacion');
+    if (form) {
+      ValidacionesComunes.initSelects(form);
+      ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Modificando...' });
+    }
+  });
+</script>
 {% endblock %}

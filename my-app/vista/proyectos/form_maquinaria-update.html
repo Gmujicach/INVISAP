@@ -9,7 +9,7 @@
             <h5 class="mb-0 fw-bold text-warning"><i class="bx bx-edit me-1"></i> Editando Registro #{{ maquinaria.id_maquinaria }}</h5>
         </div>
         <div class="card-body">
-            <form action="{{ url_for('home_bp.formActualizarMaquinaria') }}" method="POST" class="mt-3">
+            <form action="{{ url_for('home_bp.formActualizarMaquinaria') }}" method="POST" class="mt-3" id="formActualizarMaquinaria">
                 <input type="hidden" name="id_maquinaria" value="{{ maquinaria.id_maquinaria }}">
                 
                 <div class="row">
@@ -41,4 +41,15 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formActualizarMaquinaria');
+    ValidacionesComunes.initSelects(form);
+    ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Actualizando...' });
+  });
+</script>
 {% endblock %}

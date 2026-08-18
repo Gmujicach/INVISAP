@@ -322,11 +322,20 @@
 {% endblock %} 
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tour/proyectos/tour.js') }}"></script>
 <script src="{{ url_for('static', filename='js/proyectos/proyectoregister.js') }}"></script>
 <script src="{{ url_for('static', filename='js/libs/sweetalert2.all.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/proyectos/proyectoregister_ajax.js') }}"></script>
 <script src="{{ url_for('static', filename='js/empleados/empleados.js') }}"></script>
+
+<script>
+  const formRegistrarProyecto = document.getElementById('formRegistrarProyecto');
+  if (formRegistrarProyecto) {
+    ValidacionesComunes.initSelects(formRegistrarProyecto);
+    ValidacionesComunes.initBotonesSubmit(formRegistrarProyecto, { textoGuardando: 'Registrando...' });
+  }
+</script>
 
 <script>
 // 2. Control de la carga de Solicitudes Activas vía AJAX (Fetch)
@@ -451,7 +460,12 @@ function seleccionarSolicitud(id, solicitante, tipo, problematica) {
 const modalRegistrarProyecto = document.getElementById('modalRegistrarProyecto');
 if (modalRegistrarProyecto && typeof cargarEmpleadosPorCargo === 'function') {
     modalRegistrarProyecto.addEventListener('shown.bs.modal', function () {
-        cargarEmpleadosPorCargo('Proyectista', 'proyectista_p');
+        cargarEmpleadosPorCargo('Proyectista', 'proyectista_p').then(() => {
+            const formRegistrarProyecto = document.getElementById('formRegistrarProyecto');
+            if (typeof ValidacionesComunes !== 'undefined' && ValidacionesComunes.initSelects && formRegistrarProyecto) {
+                ValidacionesComunes.initSelects(formRegistrarProyecto);
+            }
+        });
     });
 }
 

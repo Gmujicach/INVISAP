@@ -9,7 +9,7 @@
         <h4 class="text-white mb-0">Actualizar Datos de la Empresa</h4>
       </div>
       <div class="card-body mt-4">
-        <form action="{{ url_for('update_empresa') }}" method="POST" autocomplete="off" id="form_registro_empresa">
+        <form action="{{ url_for('update_empresa') }}" method="POST" autocomplete="off" id="formEditarEmpresa">
           <input type="hidden" name="rif" value="{{ empresa.rif }}">
 
           <div class="row">
@@ -59,4 +59,23 @@
 <script src="{{ url_for('static', filename='js/tour/empresas/tour.js') }}"></script>
 <script src="{{ url_for('static', filename ='js/file.js') }}"></script>
 <script src="{{ url_for('static', filename ='js/empresa.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('formEditarEmpresa');
+  if (!form) return;
+
+  ValidacionesComunes.initSelects(form);
+  ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Modificando...' });
+
+  form.addEventListener('submit', function() {
+    const prefijoTelefono = document.getElementById('prefijo_telefono');
+    const numeroTelefono = document.getElementById('numero_telefono');
+    const telefonoFinal = document.getElementById('telefono_final');
+    if (prefijoTelefono && numeroTelefono && telefonoFinal) {
+      telefonoFinal.value = prefijoTelefono.value + numeroTelefono.value;
+    }
+  });
+});
+</script>
 {% endblock %}

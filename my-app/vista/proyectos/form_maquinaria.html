@@ -71,7 +71,15 @@
 {% endblock %}
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tour/proyectos/tour.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/proyectos/maquinaria.js') }}"></script>
+<script src="{{ url_for('static', filename='js/proyectos/maquinaria.js') }}"></script>
 <script src="{{ url_for('static', filename='js/libs/sweetalert2.all.min.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formRegistrarMaquinaria');
+    ValidacionesComunes.initSelects(form);
+    ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Registrando...' });
+  });
+</script>
 {% endblock %}

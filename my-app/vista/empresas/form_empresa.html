@@ -15,7 +15,7 @@
 
   <div class="row justify-content-center mb-2"> 
     <div class="col-md-10"> 
-      <form method="POST" action="{{ url_for('procesar_registro') }}" autocomplete="off" id="form_registro_empresa"> 
+      <form method="POST" action="{{ url_for('procesar_registro') }}" autocomplete="off" id="formRegistroEmpresa"> 
         <div class="card-body"> 
           <div class="row"> 
             
@@ -75,7 +75,33 @@
 {% endblock %} 
 
 {% block customJS %}
-<script src="{{ url_for('static', filename='js/tour/empresas/tour.js') }}"></script> 
-<script src="{{ url_for('static', filename ='js/file.js') }}"></script> 
-<script src="{{ url_for('static', filename ='js/empresa.js') }}"></script> 
+<script src="{{ url_for('static', filename='js/tour/empresas/tour.js') }}"></script>
+<script src="{{ url_for('static', filename ='js/file.js') }}"></script>
+<script src="{{ url_for('static', filename ='js/empresa.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('formRegistroEmpresa');
+  if (!form) return;
+
+  ValidacionesComunes.initSelects(form);
+  ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Registrando...' });
+
+  form.addEventListener('submit', function() {
+    const tipoRif = document.getElementById('tipo_rif');
+    const numeroRif = document.getElementById('numero_rif');
+    const rifFinal = document.getElementById('rif_final');
+    if (tipoRif && numeroRif && rifFinal) {
+      rifFinal.value = tipoRif.value + numeroRif.value;
+    }
+
+    const prefijoTelefono = document.getElementById('prefijo_telefono');
+    const numeroTelefono = document.getElementById('numero_telefono');
+    const telefonoFinal = document.getElementById('telefono_final');
+    if (prefijoTelefono && numeroTelefono && telefonoFinal) {
+      telefonoFinal.value = prefijoTelefono.value + numeroTelefono.value;
+    }
+  });
+});
+</script>
 {% endblock %}

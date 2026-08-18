@@ -239,4 +239,19 @@
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/seguridad/tour.js') }}"></script>
 <script src="{{ url_for('static', filename='js/seguridad/seguridad.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script>
+  (function () {
+    var formRol = document.getElementById('formRol');
+    if (formRol) {
+      ValidacionesComunes.initSelects(formRol);
+      ValidacionesComunes.initBotonesSubmit(formRol, { textoGuardando: 'Guardando...' });
+    }
+    var formModulo = document.getElementById('formModulo');
+    if (formModulo) {
+      ValidacionesComunes.initSelects(formModulo);
+      ValidacionesComunes.initBotonesSubmit(formModulo, { textoGuardando: 'Guardando...' });
+    }
+  })();
+</script>
 {% endblock %}

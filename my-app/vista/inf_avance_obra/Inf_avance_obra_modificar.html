@@ -435,7 +435,17 @@
 
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/inf_avance_obra/tour.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
   <script src="{{ url_for('static', filename='js/inf_avance_obra/informe_avance.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var formEditarInforme = document.getElementById('formEditarInforme');
+    if (formEditarInforme) {
+      ValidacionesComunes.initSelects(formEditarInforme);
+      ValidacionesComunes.initBotonesSubmit(formEditarInforme, { textoGuardando: 'Guardando...' });
+    }
+  });
+</script>
 <script>
   window.cerrarModalHijo = function(modalId) {
     const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));

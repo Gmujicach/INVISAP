@@ -62,7 +62,7 @@
       <h4 class="text-center mb-4 text-secondary">Registrar Nueva Publicación</h4>
       <hr class="w-75 mx-auto mb-4"/>
       
-      <form action="/form-registrar-publicacion" method="POST" class="px-md-5">
+      <form action="/form-registrar-publicacion" method="POST" class="px-md-5" id="formRegistrarPublicacionCollapse">
         <div class="row g-3">
           <div class="col-md-12">
             <label for="titulo_publicacion" class="form-label">Título de la Publicación</label>
@@ -104,4 +104,14 @@
   </div>
 </div>
 <script src="{{ url_for('static', filename='js/publicaciones/publicaciones.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formRegistrarPublicacionCollapse');
+    if (form) {
+      ValidacionesComunes.initSelects(form);
+      ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Guardando...' });
+    }
+  });
+</script>
 {% endblock %}

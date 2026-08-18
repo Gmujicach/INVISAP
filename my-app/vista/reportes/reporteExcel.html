@@ -439,4 +439,14 @@
   }
 })();
 </script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formReporteExcel');
+    if (form) {
+      ValidacionesComunes.initSelects(form);
+      ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Generando...' });
+    }
+  });
+</script>
 {% endblock %}

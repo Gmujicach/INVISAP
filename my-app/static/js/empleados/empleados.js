@@ -430,9 +430,16 @@ async function cargarEmpleadosPorCargo(cargo, selectId) {
         // Habilitar el select
         selectElement.disabled = false;
         
+        if (typeof ValidacionesComunes !== 'undefined' && ValidacionesComunes.marcarSelectInvalido) {
+            ValidacionesComunes.marcarSelectInvalido(selectElement);
+        }
+        
     } catch (error) {
         console.error('Error al cargar empleados:', error);
         selectElement.innerHTML = '<option value="" disabled selected>Error al cargar empleados</option>';
+        if (typeof ValidacionesComunes !== 'undefined' && ValidacionesComunes.marcarSelectInvalido) {
+            ValidacionesComunes.marcarSelectInvalido(selectElement);
+        }
     }
 }
 

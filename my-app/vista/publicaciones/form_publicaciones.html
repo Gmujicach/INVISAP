@@ -29,7 +29,7 @@
                 <div class="card-body p-4 bg-white">
                     <p class="text-muted small mb-4">Complete el siguiente formulario para difundir información institucional en el portal de INVISAP.</p>
                     
-                    <form action="{{ url_for('home_bp.formRegistrarPublicacion') }}" method="POST">
+                     <form action="{{ url_for('home_bp.formRegistrarPublicacion') }}" method="POST" id="formRegistrarPublicacion">
                         <div class="mb-3">
                             <label for="titulo_publicacion" class="form-label">Título de la Publicacion</label>
                             <div class="input-group">
@@ -91,4 +91,14 @@
     document.getElementById('fecha_publicacion').valueAsDate = new Date();
 </script>
 <script src="{{ url_for('static', filename='js/publicaciones/publicaciones.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('formRegistrarPublicacion');
+    if (form) {
+      ValidacionesComunes.initSelects(form);
+      ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Registrando...' });
+    }
+  });
+</script>
 {% endblock %}

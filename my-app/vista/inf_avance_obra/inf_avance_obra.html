@@ -556,13 +556,15 @@
 <!-- ========== MODAL: DETALLE DEL INFORME ========== -->
 <div class="modal fade" id="modalDetalleInforme" tabindex="-1" aria-labelledby="modalDetalleInformeLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-invilara-verde text-white">
-        <h5 class="modal-title" id="modalDetalleInformeLabel">
-          <i class="bx bx-file me-2"></i>Detalle del Informe de Avance
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title text-white" id="modalDetalleInformeLabel">
+            <i class="bx bx-file me-2"></i>Detalle del Informe de Avance
+          </h5>
+          <button type="button" class="btn btn-sm btn-outline-light rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
+            <i class="bx bx-x" style="font-size: 1.2rem; line-height: 1;"></i>
+          </button>
+        </div>
       <div class="modal-body" id="detalleInformeBody">
         <div class="text-center py-4">
           <div class="spinner-border text-success" role="status"></div>
@@ -577,8 +579,18 @@
 
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/inf_avance_obra/tour.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/inf_avance_obra/informe_avance.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
+<script src="{{ url_for('static', filename='js/inf_avance_obra/informe_avance.js') }}"></script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var formInformeAvance = document.getElementById('formInformeAvance');
+    if (formInformeAvance) {
+      ValidacionesComunes.initSelects(formInformeAvance);
+      ValidacionesComunes.initBotonesSubmit(formInformeAvance, { textoGuardando: 'Registrando...' });
+    }
+  });
+</script>
 <script>
 /**
  * Script para Selección de Evidencias e Inspector

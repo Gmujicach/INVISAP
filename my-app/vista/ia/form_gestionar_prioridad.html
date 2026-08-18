@@ -102,12 +102,18 @@
 {% endblock %}
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tour/ia/tour.js') }}"></script>
 <script>
   const PER_PAGE = 6;
   let paginaActual = 1;
 
-  document.addEventListener('DOMContentLoaded', () => cargarPrioridades());
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('formEditarPrioridad');
+    ValidacionesComunes.initSelects(form);
+    ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Guardando...' });
+    cargarPrioridades();
+  });
 
   function cargarPrioridades(pagina = 1) {
     paginaActual = pagina;

@@ -118,7 +118,17 @@
 {% endblock %}
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tour/inspeccion/tour.js') }}"></script>
 <script src="{{ url_for('static', filename='js/libs/sweetalert2.all.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/inspeccion/inspecciones.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var formInspeccion = document.getElementById('formInspeccion');
+    if (formInspeccion) {
+      ValidacionesComunes.initSelects(formInspeccion);
+      ValidacionesComunes.initBotonesSubmit(formInspeccion, { textoGuardando: 'Registrando...' });
+    }
+  });
+</script>
 {% endblock %}

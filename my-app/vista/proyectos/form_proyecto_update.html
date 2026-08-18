@@ -111,16 +111,25 @@
 {% endblock %}
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tour/proyectos/tour.js') }}"></script>
   <script src="{{ url_for('static', filename='js/proyectos/proyecto.js') }}"></script>
 <script src="{{ url_for('static', filename='js/empleados/empleados.js') }}"></script>
 <script>
-  // Cargar proyectistas y preseleccionar el asignado al proyecto
+  const formEditarProyecto = document.getElementById('formEditarProyecto');
+  if (formEditarProyecto) {
+    ValidacionesComunes.initSelects(formEditarProyecto);
+    ValidacionesComunes.initBotonesSubmit(formEditarProyecto, { textoGuardando: 'Guardando...' });
+  }
+
   const proyectistaActual = "{{ proyecto.proyecto_has_empleado if proyecto.proyecto_has_empleado is not none else '' }}";
   if (typeof cargarEmpleadosPorCargo === 'function') {
     cargarEmpleadosPorCargo('Proyectista', 'proyectista_p').then(() => {
       if (proyectistaActual) {
         document.getElementById('proyectista_p').value = proyectistaActual;
+      }
+      if (typeof ValidacionesComunes !== 'undefined' && ValidacionesComunes.initSelects && formEditarProyecto) {
+        ValidacionesComunes.initSelects(formEditarProyecto);
       }
     });
   }

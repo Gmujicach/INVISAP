@@ -48,8 +48,18 @@
 {% endblock %}
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tour/evidencia/tour.js') }}"></script>
 <script>window.evidenciaData = JSON.parse('{{ evidencia | tojson | safe }}');</script>
 <script src="{{ url_for('static', filename='js/libs/sweetalert2.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/evidencia/evidencias.js') }}"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var formEvidenciasUpdate = document.getElementById('formEvidenciasUpdate');
+    if (formEvidenciasUpdate) {
+      ValidacionesComunes.initSelects(formEvidenciasUpdate);
+      ValidacionesComunes.initBotonesSubmit(formEvidenciasUpdate, { textoGuardando: 'Actualizando...' });
+    }
+  });
+</script>
 {% endblock %}

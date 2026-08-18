@@ -79,7 +79,7 @@
               <div class="col-md-4">
                 <label class="form-label fw-bold text-secondary">Monto</label>
                 <div class="input-group shadow-sm">
-                    <select id="moneda_select" class="form-select text-center" style="max-width: 80px;" required>
+                    <select id="moneda_select" name="moneda_select" class="form-select text-center" style="max-width: 80px;" required>
                         <option value="BS">BS</option>
                         <option value="USD">USD</option>
                         <option value="EUR">EUR</option>
@@ -197,6 +197,14 @@
 {% endblock %}
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tour/contratacion/tour.js') }}"></script>
 <script src="{{ url_for('static', filename ='js/contratacion.js') }}"></script>
+<script>
+  const formContratacion = document.getElementById('formContratacion');
+  if (formContratacion) {
+    ValidacionesComunes.initSelects(formContratacion);
+    ValidacionesComunes.initBotonesSubmit(formContratacion, { textoGuardando: 'Guardando...' });
+  }
+</script>
 {% endblock %}
