@@ -305,7 +305,40 @@ document.addEventListener('DOMContentLoaded', function () {
             cancelButtonText: 'Cancelar'
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = `/evidencias/eliminar/${id_evidencia}`;
+                fetch(`/evidencias/eliminar/${id_evidencia}`)
+                    .then(function(response) { return response.json(); })
+                    .then(function(data) {
+                        if (data && data.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Éxito!',
+                                text: data.message || 'Registro desactivado.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            var row = document.querySelector(`tr[data-id-evidencia="${id_evidencia}"]`);
+                            if (row) {
+                                row.style.transition = 'opacity 0.4s';
+                                row.style.opacity = '0';
+                                setTimeout(function() { row.remove(); }, 400);
+                            } else {
+                                setTimeout(function() { location.reload(); }, 1200);
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: (data && data.message) || 'No se pudo desactivar.'
+                            });
+                        }
+                    })
+                    .catch(function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error de conexión con el servidor.'
+                        });
+                    });
             }
         });
     };

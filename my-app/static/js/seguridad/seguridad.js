@@ -91,7 +91,7 @@ function eliminarRol(id) {
     fetch(`/api/seguridad/roles/eliminar/${id}`, { method: 'DELETE' })
       .then(r => r.json())
       .then(d => {
-        if (d.success) { Swal.fire('Listo', d.message, 'success'); cargarRoles(); cargarSelectRol(); }
+        if (d.success) { Swal.fire('Listo', d.message, 'success'); cargarRoles(); cargarSelectRol(); localStorage.setItem('invisap_roles_updated', Date.now()); }
         else Swal.fire('Error', d.message, 'error');
       });
   });
@@ -100,8 +100,26 @@ function guardarRol() {
   const form = document.getElementById('formRol');
   if (!form.checkValidity()) { form.classList.add('was-validated'); return; }
   const id = document.getElementById('id_rol').value;
+  const nombre = document.getElementById('nombre_rol').value.trim();
+  if (nombre.toLowerCase() === 'super usuario') {
+    fetch('/api/seguridad/roles/listar')
+      .then(r => r.json())
+      .then(roles => {
+        const existe = roles.some(r => (r.nombre || '').trim().toLowerCase() === 'super usuario' && (id ? parseInt(r.id_rol) !== parseInt(id) : true));
+        if (existe) {
+          Swal.fire('Restricción', 'Ya existe un Super Usuario activo. No se permite crear ni asignar este rol a otro usuario.', 'warning');
+          return;
+        }
+        enviarGuardadoRol(id, nombre);
+      })
+      .catch(() => Swal.fire('Error', 'No se pudo validar el rol.', 'error'));
+    return;
+  }
+  enviarGuardadoRol(id, nombre);
+}
+function enviarGuardadoRol(id, nombre) {
   const payload = {
-    nombre: document.getElementById('nombre_rol').value.trim(),
+    nombre: nombre,
     descripcion: document.getElementById('descripcion_rol').value.trim(),
     estado: document.getElementById('estado_rol').checked ? 1 : 0
   };
@@ -116,7 +134,7 @@ function guardarRol() {
     if (d.success) {
       Swal.fire('Listo', d.message, 'success');
       bootstrap.Modal.getInstance(document.getElementById('modalRol')).hide();
-      cargarRoles(); cargarSelectRol();
+      cargarRoles(); cargarSelectRol(); localStorage.setItem('invisap_roles_updated', Date.now());
     } else alertaSeguridad(d.message, 'danger', 'mensajeRol');
   })
   .catch(() => alertaSeguridad('Error de conexión.', 'danger', 'mensajeRol'));
@@ -240,13 +258,14 @@ function cargarSelectRol() {
     .then(roles => {
       const sel = document.getElementById('selectRol');
       sel.innerHTML = '';
-      roles.forEach(r => {
+      const filtered = Array.isArray(roles) ? roles.filter(r => (r.nombre || '').trim().toLowerCase() !== 'super usuario') : [];
+      filtered.forEach(r => {
         const opt = document.createElement('option');
         opt.value = r.id_rol;
         opt.textContent = r.nombre;
         sel.appendChild(opt);
       });
-      if (roles.length) cargarPermisos();
+      if (filtered.length) cargarPermisos();
     })
     .catch(() => {});
 }

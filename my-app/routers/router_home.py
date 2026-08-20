@@ -3,6 +3,21 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for,
 from mysql.connector.errors import Error
 from flask import jsonify
 from conexion.conexionBD import connectionBD
+import time
+
+
+# Cache simple en memoria para gráficos del dashboard (TTL 5 minutos)
+_DASHBOARD_CHART_CACHE = {}
+_DASHBOARD_CHART_TTL = 300
+
+def _get_cached_chart(key):
+    entry = _DASHBOARD_CHART_CACHE.get(key)
+    if entry and time.time() - entry['ts'] < _DASHBOARD_CHART_TTL:
+        return entry['data']
+    return None
+
+def _set_cached_chart(key, data):
+    _DASHBOARD_CHART_CACHE[key] = {'data': data, 'ts': time.time()}
 
 
 # Importando conexión a BD y controladores
@@ -1398,6 +1413,11 @@ def api_dashboard_grafico_tipos():
     if 'conectado' not in session:
         return Response('No autorizado', status=401)
     
+    cache_key = 'dashboard:grafico-tipos'
+    cached = _get_cached_chart(cache_key)
+    if cached:
+        return Response(cached, mimetype='image/png')
+    
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -1422,13 +1442,20 @@ def api_dashboard_grafico_tipos():
     fig.savefig(buffer, format='png', dpi=100)
     buffer.seek(0)
     plt.close(fig)
-    return Response(buffer.read(), mimetype='image/png')
+    png_data = buffer.read()
+    _set_cached_chart(cache_key, png_data)
+    return Response(png_data, mimetype='image/png')
 
 
 @app.route('/api/dashboard/grafico-estatus', methods=['GET'])
 def api_dashboard_grafico_estatus():
     if 'conectado' not in session:
         return Response('No autorizado', status=401)
+    
+    cache_key = 'dashboard:grafico-estatus'
+    cached = _get_cached_chart(cache_key)
+    if cached:
+        return Response(cached, mimetype='image/png')
     
     import matplotlib
     matplotlib.use('Agg')
@@ -1452,13 +1479,20 @@ def api_dashboard_grafico_estatus():
     fig.savefig(buffer, format='png', dpi=100)
     buffer.seek(0)
     plt.close(fig)
-    return Response(buffer.read(), mimetype='image/png')
+    png_data = buffer.read()
+    _set_cached_chart(cache_key, png_data)
+    return Response(png_data, mimetype='image/png')
 
 
 @app.route('/api/dashboard/grafico-parroquias', methods=['GET'])
 def api_dashboard_grafico_parroquias():
     if 'conectado' not in session:
         return Response('No autorizado', status=401)
+    
+    cache_key = 'dashboard:grafico-parroquias'
+    cached = _get_cached_chart(cache_key)
+    if cached:
+        return Response(cached, mimetype='image/png')
     
     import matplotlib
     matplotlib.use('Agg')
@@ -1487,7 +1521,9 @@ def api_dashboard_grafico_parroquias():
     fig.savefig(buffer, format='png', dpi=100)
     buffer.seek(0)
     plt.close(fig)
-    return Response(buffer.read(), mimetype='image/png')
+    png_data = buffer.read()
+    _set_cached_chart(cache_key, png_data)
+    return Response(png_data, mimetype='image/png')
 
 
 # Registrar el blueprint en la aplicación

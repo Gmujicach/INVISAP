@@ -14,9 +14,17 @@ fadeOut(loaderOut);
 
 function eliminarEmpleado(id_empleado, foto_empleado) {
   if (confirm("¿Estas seguro que deseas Eliminar el empleado?")) {
-    let url = `/borrar-empleado/${id_empleado}/${foto_empleado}`;
-    if (url) {
-      window.location.href = url;
-    }
+    fetch(`/borrar-empleado/${id_empleado}/${foto_empleado}`)
+      .then(function(response) { return response.json(); })
+      .then(function(data) {
+        if (data && data.status === 'success') {
+          location.reload();
+        } else {
+          alert(data && data.message ? data.message : 'Error al eliminar');
+        }
+      })
+      .catch(function() {
+        alert('Error de conexión');
+      });
   }
 }

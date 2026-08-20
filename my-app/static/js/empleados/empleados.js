@@ -327,7 +327,6 @@ function editarEmpleadoModal(id_empleado) {
  */
 function eliminarEmpleadoJS(id_empleado) {
     if (typeof Swal !== 'undefined') {
-        // Usar SweetAlert2 si está disponible
         Swal.fire({
             title: '¿Estás seguro?',
             text: "El empleado será desactivado (borrado lógico) y no aparecerá en el listado activo.",
@@ -340,13 +339,64 @@ function eliminarEmpleadoJS(id_empleado) {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = `/empleados/delete/${id_empleado}`;
+                fetch(`/empleados/delete/${id_empleado}`)
+                    .then(function(response) { return response.json(); })
+                    .then(function(data) {
+                        if (data && data.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Éxito!',
+                                text: data.message || 'Empleado desactivado correctamente.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            var row = document.querySelector(`tr[data-id-empleado="${id_empleado}"]`);
+                            if (row) {
+                                row.style.transition = 'opacity 0.4s';
+                                row.style.opacity = '0';
+                                setTimeout(function() { row.remove(); }, 400);
+                            } else {
+                                setTimeout(function() { location.reload(); }, 1200);
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: (data && data.message) || 'No se pudo desactivar el empleado.'
+                            });
+                        }
+                    })
+                    .catch(function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error de conexión con el servidor.'
+                        });
+                    });
             }
         });
     } else {
-        // Fallback a confirm nativo
         if (confirm("¿Estás seguro de desactivar este empleado? (Borrado Lógico)")) {
-            window.location.href = `/empleados/delete/${id_empleado}`;
+            fetch(`/empleados/delete/${id_empleado}`)
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data && data.status === 'success') {
+                        alert('Empleado desactivado correctamente.');
+                        var row = document.querySelector(`tr[data-id-empleado="${id_empleado}"]`);
+                        if (row) {
+                            row.style.transition = 'opacity 0.4s';
+                            row.style.opacity = '0';
+                            setTimeout(function() { row.remove(); }, 400);
+                        } else {
+                            setTimeout(function() { location.reload(); }, 800);
+                        }
+                    } else {
+                        alert((data && data.message) || 'No se pudo desactivar el empleado.');
+                    }
+                })
+                .catch(function() {
+                    alert('Error de conexión');
+                });
         }
     }
 }

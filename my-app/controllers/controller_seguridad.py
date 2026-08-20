@@ -89,18 +89,21 @@ def eliminar_modulo_controller(id_modulo):
 # ===================== ROLES =====================
 def registrar_rol_controller(datos):
     try:
+        nombre = (datos.get('nombre') or '').strip()
         modelo = RolModel(
-            nombre=datos.get('nombre'),
+            nombre=nombre,
             descripcion=datos.get('descripcion'),
             estado=int(datos.get('estado', 1))
         )
         if modelo.validar_nombre_existente():
             return {"success": False, "message": "Ya existe un rol con ese nombre."}
+        if nombre.lower() == "super usuario" and modelo.existe_super_usuario_activo():
+            return {"success": False, "message": "Ya existe un Super Usuario activo. No se permite crear otro."}
         resultado = modelo.registrar()
         if resultado:
             BitacoraService.registrar_accion(
                 session, MODULO_BITACORA, 'CREAR',
-                f'Registró el rol: {datos.get("nombre")}')
+                f'Registró el rol: {nombre}')
             return {"success": True, "message": "Rol registrado exitosamente."}
         return {"success": False, "message": "No se pudo registrar el rol."}
     except ValueError as ve:
@@ -120,14 +123,17 @@ def obtener_rol_controller(id_rol):
 
 def actualizar_rol_controller(id_rol, datos):
     try:
+        nombre = (datos.get('nombre') or '').strip()
         modelo = RolModel(
             id_rol=id_rol,
-            nombre=datos.get('nombre'),
+            nombre=nombre,
             descripcion=datos.get('descripcion'),
             estado=int(datos.get('estado', 1))
         )
         if modelo.validar_nombre_existente(excluir_id=id_rol):
             return {"success": False, "message": "Ya existe otro rol con ese nombre."}
+        if nombre.lower() == "super usuario" and modelo.existe_super_usuario_activo(excluir_id=id_rol):
+            return {"success": False, "message": "Ya existe un Super Usuario activo. No se permite asignar este rol a otro."}
         resultado = modelo.actualizar()
         if resultado:
             BitacoraService.registrar_accion(

@@ -306,7 +306,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         text: data.message,
                         confirmButtonText: 'Entendido'
                     }).then(() => {
-                        window.location.reload();
+                        var row = document.querySelector(`tr[data-id-obra="${idObraEliminar}"]`);
+                        if (row) {
+                            row.style.transition = 'opacity 0.4s';
+                            row.style.opacity = '0';
+                            setTimeout(function() { row.remove(); }, 400);
+                        } else {
+                            location.reload();
+                        }
                     });
                 } else {
                     Swal.fire({

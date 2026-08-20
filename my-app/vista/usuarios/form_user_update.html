@@ -35,14 +35,12 @@
             </div>
             <div class="col-md-6 mb-3">
               <label for="rol" class="form-label">Rol</label>
-              <select id="rol" name="rol" class="form-control" required>
-                <option value="Super Usuario" {% if usuario.rol == 'Super Usuario' %}selected{% endif %}>Super Usuario</option>
-                <option value="Administrador" {% if usuario.rol == 'Administrador' %}selected{% endif %}>Administrador</option>
-                <option value="Recepcionista" {% if usuario.rol == 'Recepcionista' %}selected{% endif %}>Recepcionista</option>
-                <option value="Gerente" {% if usuario.rol == 'Gerente' %}selected{% endif %}>Gerente</option>
-                <option value="Presidente" {% if usuario.rol == 'Presidente' %}selected{% endif %}>Presidente</option>
-                <option value="Asistente" {% if usuario.rol == 'Asistente' %}selected{% endif %}>Asistente</option>
+              <select id="rol" name="rol" class="form-control" required {% if usuario.rol == 'Super Usuario' %}disabled{% endif %}>
+                <option value="">Cargando...</option>
               </select>
+              {% if usuario.rol == 'Super Usuario' %}
+                <small class="text-muted">El Super Usuario no puede cambiar de rol.</small>
+              {% endif %}
             </div>
             <div class="col-md-6 mb-3 molecule-password-field">
               <label for="pass_user" class="form-label">Nueva Contraseña <small class="text-muted">(Opcional)</small></label>
@@ -77,6 +75,27 @@
     if (form) {
       ValidacionesComunes.initSelects(form);
       ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Actualizando...' });
+    }
+
+    const rolSelect = document.getElementById('rol');
+    const rolActual = '{{ usuario.rol }}';
+    if (rolSelect && !rolSelect.disabled) {
+      fetch('/api/seguridad/roles/listar')
+        .then(function(r) { return r.json(); })
+        .then(function(roles) {
+          rolSelect.innerHTML = '<option value=\"\">Seleccione un rol...</option>';
+          (Array.isArray(roles) ? roles : (roles.roles || [])).forEach(function(r) {
+            if ((r.nombre || '').trim().toLowerCase() === 'super usuario') return;
+            var opt = document.createElement('option');
+            opt.value = r.nombre;
+            opt.textContent = r.nombre;
+            if (rolActual && opt.value === rolActual) opt.selected = true;
+            rolSelect.appendChild(opt);
+          });
+        })
+        .catch(function() {
+          rolSelect.innerHTML = '<option value=\"\">Error al cargar</option>';
+        });
     }
   });
 </script>

@@ -157,6 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function confirmarEliminacion(elemento) {
     const url = elemento.getAttribute('data-delete-url');
+    const id = elemento.getAttribute('data-id');
     
     Swal.fire({
         title: '¿Estás seguro?',
@@ -169,8 +170,40 @@ function confirmarEliminacion(elemento) {
         cancelButtonText: 'Cancelar'
     }).then((result) => {
         if (result.isConfirmed) {
-           
-            window.location.href = url;
+            fetch(url, { method: 'POST' })
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data && data.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: data.message || 'Eliminado correctamente.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        var row = document.querySelector(`tr[data-id-proyecto="${id}"]`);
+                        if (row) {
+                            row.style.transition = 'opacity 0.4s';
+                            row.style.opacity = '0';
+                            setTimeout(function() { row.remove(); }, 400);
+                        } else {
+                            setTimeout(function() { location.reload(); }, 1200);
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: (data && data.message) || 'No se pudo eliminar.'
+                        });
+                    }
+                })
+                .catch(function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error de conexión con el servidor.'
+                    });
+                });
         }
     });
 }

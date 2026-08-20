@@ -6,18 +6,19 @@ async function buscadorTable(tableId) {
   busqueda = input.value.toUpperCase();
 
   const dataPeticion = { busqueda };
-  const headers = {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-  };
 
   try {
-    const response = await axios.post(url, dataPeticion, { headers });
-    if (!response.status) {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dataPeticion)
+    });
+    if (!response.ok) {
       console.log(`HTTP error! status: ${response.status} 😭`);
     }
 
-    if (response.data.fin === 0) {
+    const data = await response.json();
+    if (data.fin === 0) {
       $(`#${tableId} tbody`).html("");
       $(`#${tableId} tbody`).html(`
       <tr>
@@ -26,9 +27,9 @@ async function buscadorTable(tableId) {
       return false;
     }
 
-    if (response.data) {
+    if (data) {
       $(`#${tableId} tbody`).html("");
-      let miData = response.data;
+      let miData = data;
       $(`#${tableId} tbody`).append(miData);
     }
   } catch (error) {

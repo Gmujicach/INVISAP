@@ -90,7 +90,27 @@
 #tablaPermisos td:nth-child(n+2) { text-align: center; }
 
 .modal-content { border-radius: 16px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
-.modal-header { background: #f8fafc; border-bottom: 2px solid #f1c40f; border-radius: 16px 16px 0 0; }
+.modal-header { background: #f8fafc; border-bottom: 2px solid #f1c40f; border-radius: 16px 16px 0 0; position: relative; }
+.modal-header .btn-close {
+  width: 2rem; height: 2rem;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  opacity: 1;
+  color: #1a1a1a;
+}
+.modal-header .btn-close:hover {
+  background-color: #f1f5f9;
+  transform: rotate(90deg);
+}
+body.dark-mode .modal-header .btn-close {
+  background-color: #2b2c40;
+  color: #e7e7f3;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+body.dark-mode .modal-header .btn-close:hover {
+  background-color: #34354f;
+}
 .modal-title { color: #1a1a1a; font-size: 1.2rem; }
 .modal-title i { color: #f1c40f; }
 .modal-body .form-label { color: #1a1a1a; font-weight: 600; }

@@ -87,6 +87,11 @@ def register_user():
         flash('Todos los campos son obligatorios.', 'error')
         return render_template('usuarios/form_user.html')
     
+    # No permitir registrar Super Usuario
+    if rol.strip().lower() == 'super usuario':
+        flash('🔒 No está permitido registrar usuarios con el rol Super Usuario.', 'error')
+        return render_template('usuarios/form_user.html', nombre=name_surname)
+    
     # Validar si ya existe el correo o cédula
     if user_model.validar_duplicados(email_user, cedula):
         flash('Ya existe un usuario con este correo o cédula.', 'error')
@@ -143,6 +148,11 @@ def update_user():
     user_to_update = user_model.buscar_por_id(user_id)
     if user_to_update and user_to_update['rol'] == 'Super Usuario':
         flash('🔒 El Super Usuario no puede ser modificado por razones de seguridad.', 'error')
+        return redirect(url_for('user_bp.list_users'))
+
+    # No permitir asignar el rol Super Usuario a otro usuario
+    if rol and rol.strip().lower() == 'super usuario':
+        flash('🔒 No está permitido asignar el rol Super Usuario a otro usuario.', 'error')
         return redirect(url_for('user_bp.list_users'))
 
     nombre = request.form.get('nombre')

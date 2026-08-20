@@ -35,13 +35,7 @@
             <div class="col-md-6 mb-3">
               <label for="rol" class="form-label">Rol</label>
               <select id="rol" name="rol" class="form-control" required>
-                <option value="Asistente">Asistente</option>
-                <option value="Recepcionista">Recepcionista</option>
-                <option value="Gerente">Gerente</option>
-                <option value="Presidente">Presidente</option>
-                <option value="Administrador">Administrador</option>
-                <option value="Proyectista">Proyectista</option>
-                <option value="Inspector">Inspector</option>
+                <option value="">Cargando...</option>
               </select>
             </div>
             <div class="col-md-6 mb-3">
@@ -77,6 +71,33 @@
       ValidacionesComunes.initSelects(form);
       ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Registrando...' });
     }
+
+    const rolSelect = document.getElementById('rol');
+    function cargarRolesSelect() {
+      fetch('/api/seguridad/roles/listar')
+        .then(function(r) { return r.json(); })
+        .then(function(roles) {
+          rolSelect.innerHTML = '<option value="">Seleccione un rol...</option>';
+          (Array.isArray(roles) ? roles : (roles.roles || [])).forEach(function(r) {
+            if ((r.nombre || '').trim().toLowerCase() === 'super usuario') return;
+            var opt = document.createElement('option');
+            opt.value = r.nombre;
+            opt.textContent = r.nombre;
+            rolSelect.appendChild(opt);
+          });
+        })
+        .catch(function() {
+          rolSelect.innerHTML = '<option value="">Error al cargar</option>';
+        });
+    }
+
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'invisap_roles_updated') {
+        cargarRolesSelect();
+      }
+    });
+
+    cargarRolesSelect();
   });
 </script>
 {% endblock %}

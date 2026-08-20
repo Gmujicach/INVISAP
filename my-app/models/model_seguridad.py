@@ -235,6 +235,38 @@ class RolModel(BaseModel):
             if cursor: cursor.close()
             if con: con.close()
 
+    def existe_super_usuario_activo(self, excluir_id=None):
+        con = cursor = None
+        try:
+            con = connectionBD_seguridad()
+            cursor = con.cursor(dictionary=True)
+            if excluir_id:
+                cursor.execute(
+                    "SELECT id_rol FROM roles WHERE nombre = %s AND estado = 1 AND id_rol <> %s LIMIT 1",
+                    ("Super Usuario", excluir_id))
+            else:
+                cursor.execute(
+                    "SELECT id_rol FROM roles WHERE nombre = %s AND estado = 1 LIMIT 1",
+                    ("Super Usuario",))
+            return cursor.fetchone() is not None
+        finally:
+            if cursor: cursor.close()
+            if con: con.close()
+
+    def obtener_super_usuario_id(self):
+        con = cursor = None
+        try:
+            con = connectionBD_seguridad()
+            cursor = con.cursor(dictionary=True)
+            cursor.execute(
+                "SELECT id_rol FROM roles WHERE nombre = %s AND estado = 1 LIMIT 1",
+                ("Super Usuario",))
+            row = cursor.fetchone()
+            return row['id_rol'] if row else None
+        finally:
+            if cursor: cursor.close()
+            if con: con.close()
+
     def obtener_usuarios_por_rol(self):
         con = cursor = None
         try:

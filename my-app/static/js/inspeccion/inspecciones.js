@@ -330,12 +330,64 @@ function eliminarInspeccionJS(id_inspeccion) {
             reverseButtons: true
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = `/inspecciones/eliminar/${id_inspeccion}`;
+                fetch(`/inspecciones/eliminar/${id_inspeccion}`)
+                    .then(function(response) { return response.json(); })
+                    .then(function(data) {
+                        if (data && data.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Éxito!',
+                                text: data.message || 'Inspección desactivada.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            var row = document.querySelector(`tr[data-id-inspeccion="${id_inspeccion}"]`);
+                            if (row) {
+                                row.style.transition = 'opacity 0.4s';
+                                row.style.opacity = '0';
+                                setTimeout(function() { row.remove(); }, 400);
+                            } else {
+                                setTimeout(function() { location.reload(); }, 1200);
+                            }
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: (data && data.message) || 'No se pudo desactivar.'
+                            });
+                        }
+                    })
+                    .catch(function() {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Error de conexión con el servidor.'
+                        });
+                    });
             }
         });
     } else {
         if (confirm("Estas seguro de desactivar esta inspeccion?")) {
-            window.location.href = `/inspecciones/eliminar/${id_inspeccion}`;
+            fetch(`/inspecciones/eliminar/${id_inspeccion}`)
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data && data.status === 'success') {
+                        alert('Inspección desactivada correctamente.');
+                        var row = document.querySelector(`tr[data-id-inspeccion="${id_inspeccion}"]`);
+                        if (row) {
+                            row.style.transition = 'opacity 0.4s';
+                            row.style.opacity = '0';
+                            setTimeout(function() { row.remove(); }, 400);
+                        } else {
+                            setTimeout(function() { location.reload(); }, 800);
+                        }
+                    } else {
+                        alert((data && data.message) || 'No se pudo desactivar.');
+                    }
+                })
+                .catch(function() {
+                    alert('Error de conexión');
+                });
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿﻿function openDashboard(htmlContent) {
+﻿function openDashboard(htmlContent) {
     const panel = document.getElementById('moduleDashboard');
     const overlay = document.getElementById('dashboardOverlay');
     const container = document.getElementById('dashboardInjectedContent');
@@ -15,7 +15,25 @@ function closeDashboard() {
 
 function eliminarUsuario(id) {
     if (confirm("¿Está seguro que desea eliminar este usuario de Invilara?")) {
-        window.location.href = `/users/delete/${id}`;
+        fetch(`/users/delete/${id}`)
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data && data.status === 'success') {
+                    var row = document.querySelector(`tr[data-id-usuario="${id}"]`);
+                    if (row) {
+                        row.style.transition = 'opacity 0.4s';
+                        row.style.opacity = '0';
+                        setTimeout(function() { row.remove(); }, 400);
+                    } else {
+                        setTimeout(function() { location.reload(); }, 800);
+                    }
+                } else {
+                    alert(data && data.message ? data.message : 'Error al eliminar');
+                }
+            })
+            .catch(function() {
+                alert('Error de conexión');
+            });
     }
 }
 
