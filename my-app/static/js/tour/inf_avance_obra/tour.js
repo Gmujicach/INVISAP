@@ -3,22 +3,60 @@
 
   window.INVISAP_TOURS['inf_avance_obra'] = function() {
     const path = window.location.pathname || '';
+
+    const isEditPage = path.indexOf('editar-informe') !== -1 ||
+                        path.indexOf('Inf_avance_obra_modificar') !== -1 ||
+                        !!document.querySelector('#formEditarInforme');
+
     const modalRegistrar = document.getElementById('modalRegistrarInforme');
-    const isRegisterPage = path.indexOf('form-registrar-informe-avance-obra') !== -1 || 
-                           (!!modalRegistrar && modalRegistrar.classList.contains('show'));
-    const isEditPage = path.indexOf('editar-informe') !== -1 || path.indexOf('Inf_avance_obra_modificar') !== -1 || !!document.querySelector('#formEditarInforme');
-    const isListPage = (path.indexOf('inf_avance_obra') !== -1 && !isRegisterPage && !isEditPage) || 
-                       (!!document.querySelector('#tablaInformes') && !isRegisterPage && !isEditPage);
+    const isRegisterModalOpen = !!modalRegistrar && modalRegistrar.classList.contains('show');
+    const isRegisterPage = path.indexOf('form-registrar-informe-avance-obra') !== -1 ||
+                            (!!document.querySelector('#formInformeAvance') && isRegisterModalOpen);
+
+    const isListPage = (path.indexOf('inf_avance_obra') !== -1 && !isRegisterPage && !isEditPage) ||
+                        (!!document.querySelector('#tablaInformes') && !isRegisterPage && !isEditPage);
 
     const steps = [];
 
     if (isListPage) {
       steps.push(
         {
-          element: '.card-header h5, .text-invilara-verde',
+          element: '.text-invilara-verde, .card-header h5',
           popover: {
-            title: 'Listado de Informes de Avance',
-            description: 'Aquí puedes ver todos los informes registrados. Usa los filtros y la paginación para navegar entre los registros.'
+            title: 'Informes de Avance de Obras',
+            description: 'Aquí puedes ver todos los informes de avance registrados en el sistema. Usa los estadísticos para obtener un resumen rápido.'
+          },
+          side: 'bottom'
+        },
+        {
+          element: '.card-estadistica.bg-light',
+          popover: {
+            title: 'Total de Informes',
+            description: 'Muestra el número total de informes de avance registrados en el sistema.'
+          },
+          side: 'bottom'
+        },
+        {
+          element: '.card-aprobados',
+          popover: {
+            title: 'Informes Aprobados',
+            description: 'Indicador con la cantidad de informes cuyo estado es "Aprobado".'
+          },
+          side: 'bottom'
+        },
+        {
+          element: '.bg-warning.text-white',
+          popover: {
+            title: 'Informes en Ejecución',
+            description: 'Indicador con la cantidad de informes cuyo estado es "En Ejecución".'
+          },
+          side: 'bottom'
+        },
+        {
+          element: '.card-culminados',
+          popover: {
+            title: 'Informes Culminados',
+            description: 'Indicador con la cantidad de informes cuyo estado es "Culminado".'
           },
           side: 'bottom'
         },
@@ -26,7 +64,7 @@
           element: 'button[data-bs-target="#modalRegistrarInforme"], .btn-invilara-primary',
           popover: {
             title: 'Registrar Nuevo Informe',
-            description: 'Haz clic aquí para abrir el formulario y crear un nuevo informe de avance de obra.'
+            description: 'Haz clic aquí para abrir el formulario y crear un nuevo informe de avance de obra. Podrás ingresar tipo, estado, población, avance, responsable y evidencias.'
           },
           side: 'left'
         },
@@ -34,7 +72,7 @@
           element: '#tablaInformes',
           popover: {
             title: 'Tabla de Informes',
-            description: 'Cada fila representa un informe con su tipo, estado, población beneficiada, porcentaje de avance, responsable y fecha.'
+            description: 'Esta tabla muestra todos los informes de avance registrados. Cada fila representa un informe con su información completa.'
           },
           side: 'top'
         },
@@ -121,7 +159,7 @@
         {
           element: '#tablaInformes tbody tr:first-child .btn-eliminar-informe',
           popover: {
-            title: 'Botón Eliminar',
+            title: 'Botón Eliminar (Borrado Lógico)',
             description: 'Desactiva el informe (borrado lógico). No se borra permanentemente para preservar el historial y auditoría.'
           },
           side: 'left'
@@ -141,14 +179,14 @@
           element: '#modalRegistrarInforme .modal-title',
           popover: {
             title: 'Formulario de Registro',
-            description: 'Aquí registrarás un nuevo informe de avance de obra. Sigue los pasos: completa la información básica, selecciona el responsable, agrega observaciones y adjunta evidencias.'
+            description: 'Aquí registrarás un nuevo informe de avance de obra. Completa la información básica, selecciona el inspector responsable, agrega observaciones y adjunta evidencias fotográficas.'
           },
           side: 'bottom'
         },
         {
           element: '#tipo_informe',
           popover: {
-            title: 'Paso 1: Tipo de Informe',
+            title: 'Tipo de Informe',
             description: 'Selecciona el tipo de informe según la naturaleza del avance: Ficha Inspección Técnica, Informe Menor, Informe Mayor o Avance Mensual.'
           },
           side: 'right'
@@ -156,7 +194,7 @@
         {
           element: '#estado',
           popover: {
-            title: 'Paso 2: Estado de la Obra',
+            title: 'Estado de la Obra',
             description: 'Indica el estado actual de la obra: Aprobado, En Ejecución, Culminado o Paralizado.'
           },
           side: 'right'
@@ -164,15 +202,15 @@
         {
           element: '#poblacion_beneficiada',
           popover: {
-            title: 'Paso 3: Población Beneficiada',
-            description: 'Escribe el nombre de la comunidad o población que se beneficia con la obra. Ejemplo: Comunidad La Salle, Sector El Cuji.'
+            title: 'Población Beneficiada',
+            description: 'Escribe el nombre de la comunidad o población que se beneficia con la obra. Ejemplo: Comunidad La Salle, Sector El Cuji. Máximo 45 caracteres.'
           },
           side: 'right'
         },
         {
           element: '#porcentaje_avance',
           popover: {
-            title: 'Paso 4: % de Avance',
+            title: '% de Avance',
             description: 'Ingresa el porcentaje de avance físico de la obra. Debe ser un número entre 0 y 100.'
           },
           side: 'right'
@@ -180,7 +218,7 @@
         {
           element: '#inspector_nombre_display, #gerente_responsable_id',
           popover: {
-            title: 'Paso 5: Inspector Responsable',
+            title: 'Inspector Responsable',
             description: 'Haz clic en el botón "Seleccionar Inspector" para abrir un modal donde podrás elegir al empleado responsable del informe. Solo se muestran inspectores activos.'
           },
           side: 'right'
@@ -188,7 +226,7 @@
         {
           element: '#observaciones',
           popover: {
-            title: 'Paso 6: Observaciones Técnicas',
+            title: 'Observaciones Técnicas',
             description: 'Escribe las observaciones técnicas captadas en campo. Este campo es opcional pero recomendado. Máximo 2000 caracteres.'
           },
           side: 'right'
@@ -196,7 +234,7 @@
         {
           element: 'button[data-bs-target="#modalEvidenciasAntes"]',
           popover: {
-            title: 'Paso 7: Evidencias ANTES',
+            title: 'Evidencias ANTES',
             description: 'Haz clic aquí para seleccionar las fotografías del estado ANTES de la obra. Máximo 5 imágenes.'
           },
           side: 'right'
@@ -204,7 +242,7 @@
         {
           element: 'button[data-bs-target="#modalEvidenciasDurante"]',
           popover: {
-            title: 'Paso 8: Evidencias DURANTE',
+            title: 'Evidencias DURANTE',
             description: 'Haz clic aquí para seleccionar las fotografías del estado DURANTE la obra. Máximo 5 imágenes.'
           },
           side: 'right'
@@ -212,7 +250,7 @@
         {
           element: 'button[data-bs-target="#modalEvidenciasDespues"]',
           popover: {
-            title: 'Paso 9: Evidencias DESPUÉS',
+            title: 'Evidencias DESPUÉS',
             description: 'Haz clic aquí para seleccionar las fotografías del estado DESPUÉS de la obra. Máximo 5 imágenes.'
           },
           side: 'right'
@@ -345,7 +383,7 @@
           element: '#btnTourInvilara, .tour-fab',
           popover: {
             title: 'Guía del módulo de Informes de Avance',
-            description: 'Navega por las opciones del módulo para ver el recorrido guiado de registro, listado o edición.'
+            description: 'Navega por las opciones del módulo para ver el recorrido guiado de listado, registro o edición.'
           },
           side: 'left'
         }
