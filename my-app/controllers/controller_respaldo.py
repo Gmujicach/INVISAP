@@ -46,7 +46,8 @@ def exportar_respaldo():
 
     try:
         descripcion = request.form.get('descripcion', '')
-        resultado = modelo_respaldo.crear_respaldo(descripcion, session.get('id'))
+        nombre_archivo = request.form.get('nombre_archivo', '').strip()
+        resultado = modelo_respaldo.crear_respaldo(descripcion, session.get('id'), nombre_archivo)
         BitacoraService.registrar_accion(
             session, 'Respaldos', 'CREAR',
             f'Generó un respaldo de la base de datos'

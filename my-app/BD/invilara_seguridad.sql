@@ -32,18 +32,20 @@ USE `invilara_seguridad`;
 CREATE TABLE `administracion_respaldos` (
   `id_respaldo` int NOT NULL,
   `fecha_respaldo` datetime NOT NULL,
-  `tamaño_respaldo` decimal(4,2) NOT NULL,
+  `tamaño_respaldo` decimal(10,2) NOT NULL,
   `usuarios_id_usuarios` int NOT NULL,
-  `estado` tinyint(1) NOT NULL
+  `estado` tinyint(1) NOT NULL,
+  `nombre_archivo` varchar(255) NOT NULL DEFAULT '',
+  `descripcion` varchar(255) DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla de administracion de respaldos.';
 
 --
 -- Volcado de datos para la tabla `administracion_respaldos`
 --
 
-INSERT INTO `administracion_respaldos` (`id_respaldo`, `fecha_respaldo`, `tamaño_respaldo`, `usuarios_id_usuarios`, `estado`) VALUES
-(2, '2026-07-09 09:49:58', 0.06, 1, 1),
-(3, '2026-07-09 09:49:26', 0.06, 1, 1);
+INSERT INTO `administracion_respaldos` (`id_respaldo`, `fecha_respaldo`, `tamaño_respaldo`, `usuarios_id_usuarios`, `estado`, `nombre_archivo`, `descripcion`) VALUES
+(2, '2026-07-09 09:49:58', 0.06, 1, 1, '', ''),
+(3, '2026-07-09 09:49:26', 0.06, 1, 1, '', '');
 
 -- --------------------------------------------------------
 

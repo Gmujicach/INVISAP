@@ -1,6 +1,7 @@
 """
 RespaldoModel — Modelo SOLID para respaldo y restauración de base de datos MySQL.
-Genera dumps con mysqldump, importa archivos .sql y registra metadatos en administracion_respaldos.
+Genera dumps con mysqldump, importa archivos .sql y registra metadatos en
+`administracion_respaldos` de la base de datos de seguridad (invilara_seguridad).
 """
 import os
 import re
@@ -9,10 +10,11 @@ import logging
 import traceback
 from datetime import datetime
 from decimal import Decimal
-from conexion.conexionBD import connectionBD_invilara, connectionBD_invilara_seguridad, _get_env
+from conexion.conexionBD import connectionBD_invilara_seguridad, _get_env
 from models.base_model import BaseModel
 
 logger = logging.getLogger(__name__)
+
 
 class RespaldoModel(BaseModel):
     CARPETA_RESPALDOS = os.path.join('static', 'respaldos_bd')
@@ -21,47 +23,23 @@ class RespaldoModel(BaseModel):
         if not os.path.exists(self.CARPETA_RESPALDOS):
             os.makedirs(self.CARPETA_RESPALDOS, exist_ok=True)
 
-    def _asegurar_tabla_respaldo(self):
-        """Crea la tabla administracion_respaldos si no existe (auto-reparacion)."""
-        try:
-            conn = connectionBD_invilara()
-            if not conn:
-                return False
-            cur = conn.cursor()
-            try:
-                cur.execute("""
-                    CREATE TABLE IF NOT EXISTS administracion_respaldos (
-                        id_respaldo INT NOT NULL AUTO_INCREMENT,
-                        nombre_archivo VARCHAR(255) NOT NULL,
-                        tamano BIGINT NOT NULL DEFAULT 0,
-                        descripcion VARCHAR(255) DEFAULT '',
-                        fecha_respaldo TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                        estado TINYINT NOT NULL DEFAULT 1,
-                        PRIMARY KEY (id_respaldo)
-                    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-                """)
-                conn.commit()
-            finally:
-                cur.close()
-                conn.close()
-            return True
-        except Exception as e:
-            print(f"[DB] No se pudo asegurar tabla administracion_respaldos: {e}")
-            return False
-
     def _asegurar_tabla_seguridad(self):
-        """Crea la tabla administracion_respaldos en la BD de seguridad si no existe,
-        con el esquema real (incluye columna estado y PK compuesta)."""
+        """Crea (o migra) la tabla administracion_respaldos en invilara_seguridad.
+
+        La tabla real de producción vive en la BD de seguridad; aquí nos aseguramos
+        de que exista y de que tenga las columnas que usa la interfaz
+        (nombre_archivo, descripcion) y un tamaño adecuado para tamaño_respaldo.
+        """
         conn = connectionBD_invilara_seguridad()
         if not conn:
-            return
+            return False
         cur = conn.cursor()
         try:
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS `administracion_respaldos` (
                     `id_respaldo` int(11) NOT NULL,
                     `fecha_respaldo` datetime NOT NULL,
-                    `tamaño_respaldo` decimal(4,2) NOT NULL,
+                    `tamaño_respaldo` decimal(10,2) NOT NULL,
                     `usuarios_id_usuarios` int(11) NOT NULL,
                     `estado` tinyint(4) NOT NULL,
                     PRIMARY KEY (`id_respaldo`, `usuarios_id_usuarios`),
@@ -69,14 +47,62 @@ class RespaldoModel(BaseModel):
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
                 COMMENT='Tabla de administracion de respaldos.'
             """)
+
+            # Migración: añadir columnas que la interfaz necesita y que la
+            # tabla original de seguridad no tenía.
+            cur.execute("SHOW COLUMNS FROM `administracion_respaldos` LIKE 'nombre_archivo'")
+            if cur.fetchone() is None:
+                cur.execute(
+                    "ALTER TABLE `administracion_respaldos` "
+                    "ADD COLUMN `nombre_archivo` varchar(255) NOT NULL DEFAULT ''"
+                )
+
+            cur.execute("SHOW COLUMNS FROM `administracion_respaldos` LIKE 'descripcion'")
+            if cur.fetchone() is None:
+                cur.execute(
+                    "ALTER TABLE `administracion_respaldos` "
+                    "ADD COLUMN `descripcion` varchar(255) DEFAULT ''"
+                )
+
+            # Ensanchar tamaño_respaldo si todavía es muy pequeño (decimal(4,2)).
+            cur.execute("SHOW COLUMNS FROM `administracion_respaldos` WHERE Field='tamaño_respaldo'")
+            col = cur.fetchone()
+            if col and 'decimal(4' in str(col[1]).lower():
+                cur.execute(
+                    "ALTER TABLE `administracion_respaldos` "
+                    "MODIFY `tamaño_respaldo` decimal(10,2) NOT NULL"
+                )
+
             conn.commit()
+            return True
+        except Exception as e:
+            print(f"[DB] No se pudo asegurar tabla administracion_respaldos (seguridad): {e}")
+            return False
         finally:
             cur.close()
             conn.close()
 
-    def _registrar_en_bd_seguridad(self, id_respaldo, tamano_bytes, id_usuario):
+    def _siguiente_id(self):
+        """Calcula el siguiente id_respaldo disponible en la BD de seguridad."""
+        conn = connectionBD_invilara_seguridad()
+        if not conn:
+            raise RuntimeError('No se pudo conectar a la base de datos de seguridad.')
+        cur = conn.cursor()
+        try:
+            cur.execute(
+                "SELECT COALESCE(MAX(`id_respaldo`), 0) + 1 AS siguiente_id "
+                "FROM `administracion_respaldos`"
+            )
+            fila = cur.fetchone()
+            return fila[0] if fila else 1
+        finally:
+            cur.close()
+            conn.close()
+
+    def _guardar_en_seguridad(self, id_respaldo, nombre_archivo, tamano_bytes, descripcion, id_usuario):
+        """Inserta/actualiza el registro del respaldo en invilara_seguridad."""
         tamano_mb = Decimal(str(round(tamano_bytes / (1024 * 1024), 2)))
-        tamano_mb = min(tamano_mb, Decimal('99.99'))
+        tamano_mb = min(tamano_mb, Decimal('99999999.99'))
         id_usuario = id_usuario or 1
 
         conn = connectionBD_invilara_seguridad()
@@ -86,31 +112,25 @@ class RespaldoModel(BaseModel):
         cur = conn.cursor()
         try:
             self._asegurar_tabla_seguridad()
-            # Detectar si la tabla tiene una PK propia (id) o la PK compuesta original.
-            cur.execute("SHOW COLUMNS FROM `administracion_respaldos` LIKE 'id'")
-            tiene_id = cur.fetchone() is not None
-
-            columnas = ("`id_respaldo`, `fecha_respaldo`, `tamaño_respaldo`, "
-                        "`usuarios_id_usuarios`, `estado`")
-            valores = (id_respaldo, datetime.now(), tamano_mb, id_usuario, 1)
-            if tiene_id:
-                cur.execute(
-                    f"INSERT INTO `administracion_respaldos` ({columnas}) VALUES (%s, %s, %s, %s, %s)",
-                    valores
-                )
-            else:
-                # PK compuesta (id_respaldo, usuarios_id_usuarios): evita el choque por id reusado.
-                cur.execute(
-                    f"INSERT INTO `administracion_respaldos` ({columnas}) VALUES (%s, %s, %s, %s, %s) "
-                    "ON DUPLICATE KEY UPDATE "
-                    "`fecha_respaldo` = VALUES(`fecha_respaldo`), "
-                    "`tamaño_respaldo` = VALUES(`tamaño_respaldo`), "
-                    "`estado` = VALUES(`estado`)",
-                    valores
-                )
+            columnas = (
+                "`id_respaldo`, `fecha_respaldo`, `tamaño_respaldo`, "
+                "`usuarios_id_usuarios`, `estado`, `nombre_archivo`, `descripcion`"
+            )
+            valores = (id_respaldo, datetime.now(), tamano_mb, id_usuario, 1,
+                       nombre_archivo, descripcion)
+            cur.execute(
+                f"INSERT INTO `administracion_respaldos` ({columnas}) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s) "
+                "ON DUPLICATE KEY UPDATE "
+                "`fecha_respaldo` = VALUES(`fecha_respaldo`), "
+                "`tamaño_respaldo` = VALUES(`tamaño_respaldo`), "
+                "`estado` = VALUES(`estado`), "
+                "`nombre_archivo` = VALUES(`nombre_archivo`), "
+                "`descripcion` = VALUES(`descripcion`)",
+                valores
+            )
             conn.commit()
-            logger.info("[Respaldo] Registro en seguridad OK (BD=%s, tabla=%s).", db_actual,
-                        'id' if tiene_id else 'compuesta')
+            logger.info("[Respaldo] Registro en seguridad OK (BD=%s, id=%s).", db_actual, id_respaldo)
         finally:
             cur.close()
             conn.close()
@@ -123,7 +143,7 @@ class RespaldoModel(BaseModel):
 
     @staticmethod
     def _formatear_tamano(bytes_size):
-        for unit in ['B','KB','MB','GB']:
+        for unit in ['B', 'KB', 'MB', 'GB']:
             if bytes_size < 1024:
                 return f"{bytes_size:.1f} {unit}"
             bytes_size /= 1024
@@ -214,12 +234,17 @@ class RespaldoModel(BaseModel):
             raise RuntimeError(resultado.stderr or 'Error al ejecutar importación mysql.')
         return True
 
-    def crear_respaldo(self, descripcion='', id_usuario=None):
+    def crear_respaldo(self, descripcion='', id_usuario=None, nombre_archivo=''):
         if not os.path.exists(self.CARPETA_RESPALDOS):
             os.makedirs(self.CARPETA_RESPALDOS, exist_ok=True)
 
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        nombre_archivo = f"respaldo_{timestamp}.sql"
+        if nombre_archivo:
+            nombre_archivo = self._limpiar_nombre(nombre_archivo)
+            if not nombre_archivo.lower().endswith('.sql'):
+                nombre_archivo += '.sql'
+        else:
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            nombre_archivo = f"respaldo_{timestamp}.sql"
         ruta_salida = os.path.join(self.CARPETA_RESPALDOS, nombre_archivo)
 
         try:
@@ -232,39 +257,22 @@ class RespaldoModel(BaseModel):
             raise RuntimeError(f"Error al generar respaldo: {e}")
 
         tamano = os.path.getsize(ruta_salida)
-        self._asegurar_tabla_respaldo()
         descripcion = re.sub(r'[<\'";\\]', '', descripcion).strip()[:255]
 
-        conn = connectionBD_invilara()
-        if not conn:
-            raise RuntimeError('No se pudo conectar a la base de datos para registrar el respaldo.')
-        cur = conn.cursor()
+        self._asegurar_tabla_seguridad()
         try:
-            cur.execute("SELECT COALESCE(MAX(id_respaldo), 0) + 1 AS siguiente_id FROM administracion_respaldos")
-            fila = cur.fetchone()
-            siguiente_id = fila[0] if fila else 1
-
-            cur.execute(
-                "INSERT INTO administracion_respaldos (id_respaldo, nombre_archivo, tamano, descripcion) VALUES (%s, %s, %s, %s)",
-                (siguiente_id, nombre_archivo, tamano, descripcion)
-            )
-            conn.commit()
-            id_respaldo = siguiente_id
+            siguiente_id = self._siguiente_id()
         except Exception as e:
-            conn.rollback()
-            raise RuntimeError(f"Error al registrar respaldo: {e}")
-        finally:
-            cur.close()
-            conn.close()
+            raise RuntimeError(f"Error al obtener el siguiente ID de respaldo: {e}")
 
         try:
-            self._registrar_en_bd_seguridad(id_respaldo, tamano, id_usuario)
+            self._guardar_en_seguridad(siguiente_id, nombre_archivo, tamano, descripcion, id_usuario)
         except Exception as e:
             logger.error("[Respaldo] Error al registrar en BD seguridad:\n%s", traceback.format_exc())
-            print(f"[Respaldo] Error al registrar en BD seguridad: {e}")
+            raise RuntimeError(f"Error al registrar respaldo en la base de datos de seguridad: {e}")
 
         return {
-            'id_respaldo': id_respaldo,
+            'id_respaldo': siguiente_id,
             'nombre_archivo': nombre_archivo,
             'fecha_respaldo': datetime.now(),
             'tamano': tamano,
@@ -272,18 +280,33 @@ class RespaldoModel(BaseModel):
             'estado': 1
         }
 
+    @staticmethod
+    def _normalizar_fila(r):
+        """Convierte una fila de la BD de seguridad a lo que espera la interfaz."""
+        tamano_mb = r.get('tamaño_respaldo') or 0
+        try:
+            tamano_bytes = int(round(float(tamano_mb) * 1024 * 1024))
+        except (TypeError, ValueError):
+            tamano_bytes = 0
+        r['tamano'] = tamano_bytes
+        r['tamano_formateado'] = RespaldoModel._formatear_tamano(tamano_bytes)
+        r['nombre_archivo'] = r.get('nombre_archivo') or ''
+        r['descripcion'] = r.get('descripcion') or ''
+        return r
+
     def listar_respaldos(self):
-        self._asegurar_tabla_respaldo()
-        conn = connectionBD_invilara()
+        self._asegurar_tabla_seguridad()
+        conn = connectionBD_invilara_seguridad()
         if not conn:
             return []
         cur = conn.cursor(dictionary=True)
         try:
-            cur.execute("SELECT * FROM administracion_respaldos WHERE estado=1 ORDER BY fecha_respaldo DESC")
+            cur.execute(
+                "SELECT * FROM `administracion_respaldos` "
+                "WHERE `estado`=1 ORDER BY `fecha_respaldo` DESC"
+            )
             respaldos = cur.fetchall() or []
-            for r in respaldos:
-                r['tamano_formateado'] = self._formatear_tamano(r.get('tamano', 0) or 0)
-            return respaldos
+            return [self._normalizar_fila(dict(r)) for r in respaldos]
         except Exception as e:
             print(f"[Respaldo] Error al listar respaldos: {e}")
             return []
@@ -292,14 +315,19 @@ class RespaldoModel(BaseModel):
             conn.close()
 
     def obtener_por_id(self, id_respaldo):
-        self._asegurar_tabla_respaldo()
-        conn = connectionBD_invilara()
+        self._asegurar_tabla_seguridad()
+        conn = connectionBD_invilara_seguridad()
         if not conn:
             return None
         cur = conn.cursor(dictionary=True)
         try:
-            cur.execute("SELECT * FROM administracion_respaldos WHERE id_respaldo=%s AND estado=1", (id_respaldo,))
-            return cur.fetchone()
+            cur.execute(
+                "SELECT * FROM `administracion_respaldos` "
+                "WHERE `id_respaldo`=%s AND `estado`=1",
+                (id_respaldo,)
+            )
+            fila = cur.fetchone()
+            return self._normalizar_fila(dict(fila)) if fila else None
         except Exception:
             return None
         finally:
@@ -307,22 +335,27 @@ class RespaldoModel(BaseModel):
             conn.close()
 
     def eliminar_respaldo(self, id_respaldo):
-        self._asegurar_tabla_respaldo()
+        self._asegurar_tabla_seguridad()
         respaldo = self.obtener_por_id(id_respaldo)
         if not respaldo:
             return False
         ruta = os.path.join(self.CARPETA_RESPALDOS, respaldo['nombre_archivo'])
         try:
-            if os.path.exists(ruta):
+            if respaldo['nombre_archivo'] and os.path.exists(ruta):
                 os.remove(ruta)
         except Exception:
             pass
-        conn = connectionBD_invilara()
+
+        conn = connectionBD_invilara_seguridad()
         if not conn:
             return False
         cur = conn.cursor()
         try:
-            cur.execute("UPDATE administracion_respaldos SET estado=0 WHERE id_respaldo=%s AND estado=1", (id_respaldo,))
+            cur.execute(
+                "UPDATE `administracion_respaldos` SET `estado`=0 "
+                "WHERE `id_respaldo`=%s AND `estado`=1",
+                (id_respaldo,)
+            )
             conn.commit()
             afectados = cur.rowcount
         except Exception:
@@ -331,29 +364,7 @@ class RespaldoModel(BaseModel):
             cur.close()
             conn.close()
 
-        # Borrado lógico en la BD de seguridad (estado=0 = eliminado).
-        try:
-            self._marcar_borrado_seguridad(id_respaldo)
-        except Exception as e:
-            print(f"[Respaldo] No se pudo marcar borrado lógico en seguridad: {e}")
-
         return afectados > 0
-
-    def _marcar_borrado_seguridad(self, id_respaldo):
-        """Borrado lógico del registro en administracion_respaldos (estado=0)."""
-        conn = connectionBD_invilara_seguridad()
-        if not conn:
-            return
-        cur = conn.cursor()
-        try:
-            cur.execute(
-                "UPDATE `administracion_respaldos` SET `estado`=0 WHERE `id_respaldo`=%s AND `estado`=1",
-                (id_respaldo,)
-            )
-            conn.commit()
-        finally:
-            cur.close()
-            conn.close()
 
     def importar_respaldo(self, ruta_archivo, descripcion='', id_usuario=None):
         try:
@@ -364,37 +375,22 @@ class RespaldoModel(BaseModel):
         tamano = os.path.getsize(ruta_archivo)
         descripcion = re.sub(r'[<\'";\\]', '', descripcion).strip()[:255] or 'Respaldo importado'
         nombre_archivo = os.path.basename(ruta_archivo)
-        self._asegurar_tabla_respaldo()
+        self._asegurar_tabla_seguridad()
 
-        conn = connectionBD_invilara()
-        if not conn:
-            raise RuntimeError('No se pudo conectar a la base de datos para registrar la importación.')
-        cur = conn.cursor()
         try:
-            cur.execute("SELECT COALESCE(MAX(id_respaldo), 0) + 1 AS siguiente_id FROM administracion_respaldos")
-            fila = cur.fetchone()
-            siguiente_id = fila[0] if fila else 1
-
-            cur.execute(
-                "INSERT INTO administracion_respaldos (id_respaldo, nombre_archivo, tamano, descripcion) VALUES (%s, %s, %s, %s)",
-                (siguiente_id, nombre_archivo, tamano, descripcion)
-            )
-            conn.commit()
-            id_respaldo = siguiente_id
+            siguiente_id = self._siguiente_id()
         except Exception as e:
-            conn.rollback()
-            raise RuntimeError(f"Error al registrar importación: {e}")
-        finally:
-            cur.close()
-            conn.close()
+            raise RuntimeError(f"Error al obtener el siguiente ID de respaldo: {e}")
 
         advertencia = None
         db_seguridad = None
         try:
-            db_seguridad = self._registrar_en_bd_seguridad(id_respaldo, tamano, id_usuario)
+            db_seguridad = self._guardar_en_seguridad(
+                siguiente_id, nombre_archivo, tamano, descripcion, id_usuario
+            )
         except Exception as e:
             advertencia = f"No se pudo registrar el respaldo en la base de datos de seguridad: {e}"
             logger.error("[Respaldo] Error al registrar importación en BD seguridad:\n%s", traceback.format_exc())
             print(f"[Respaldo] Error al registrar importación en BD seguridad: {e}")
 
-        return {'id_respaldo': id_respaldo, 'advertencia': advertencia, 'db_seguridad': db_seguridad}
+        return {'id_respaldo': siguiente_id, 'advertencia': advertencia, 'db_seguridad': db_seguridad}
