@@ -1,435 +1,604 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-page="invilara-landing">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Instituto de Vialidad del Estado Lara - Portal institucional de gestión vial.">
+  <meta name="description" content="Instituto de Vialidad del Estado Lara — gestión pública, infraestructura y territorio.">
   <meta name="theme-color" content="#14532d">
+  <title>Invilara — Instituto de Vialidad del Estado Lara</title>
 
-  <title>Invilara - Inicio</title>
-
-  <!-- Favicon institucional -->
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/INVILARA-LOGO-OFICIAL-HORIZONTAL.ico') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@400;500;600;700;800&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Bootstrap 3 local (sin CDN) -->
+  <!-- Dependencias locales conservadas para compatibilidad con el resto del proyecto. -->
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}">
-
-  <!-- Iconos Boxicons locales (sin CDN) -->
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/fonts/boxicons.css') }}">
-
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/landing.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dark-mode.css') }}">
 </head>
 <body>
-  <script>
-    (function() {
-      try {
-        var t = localStorage.getItem('theme');
-        if (t === 'dark') {
-          document.body.classList.add('dark-mode');
-          document.documentElement.setAttribute('data-bs-theme', 'dark');
-        }
-      } catch(e) {}
-    })();
-  </script>
-
-  <!-- Skip Link para accesibilidad WCAG (navegación por teclado) -->
-  <a href="#inicio" class="skip-link">Saltar al contenido principal</a>
-
-  <!-- ============================================
-       NAVBAR / MOBILE DRAWER
-       ============================================ -->
-  <nav class="navbar navbar-invilara navbar-fixed-top" id="mainNav" role="navigation" aria-label="Navegación principal">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" id="navbarDrawerOpen" aria-label="Abrir menú">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="{{ url_for('login_bp.inicio') }}" aria-label="Invilara - Página de inicio">
-          <img src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}" alt="Logo Invilara" class="img-responsive navbar-logo" aria-hidden="true">
-          <span class="navbar-brand-text">Invilara</span>
-        </a>
-      </div>
-      <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="#inicio">Inicio</a></li>
-          <li><a href="#acerca">Acerca de</a></li>
-          <li><a href="#servicios">Servicios</a></li>
-          <li><a href="#contacto">Contacto</a></li>
-          <li class="nav-login"><a href="{{ url_for('login_bp.loginCliente') }}">Iniciar Sesión</a></li>
-          <li>
-            <button type="button" id="landing-dark-toggle" class="btn btn-outline-light" style="border-radius: 50%; width: 38px; height: 38px; padding: 0; display: inline-flex; align-items: center; justify-content: center; margin-left: 8px;" aria-label="Cambiar modo oscuro" title="Modo Oscuro">
-              <i class="bx bx-moon" id="landing-theme-icon"></i>
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Drawer menú móvil -->
-  <div class="navbar-drawer-backdrop" id="navbarDrawerBackdrop" aria-hidden="true"></div>
-  <aside class="navbar-drawer" id="navbarDrawer" aria-label="Menú móvil" aria-hidden="true">
-    <div class="navbar-drawer-header">
-      <span class="fw-bold text-white">Menú</span>
-      <button type="button" class="navbar-drawer-close" id="navbarDrawerClose" aria-label="Cerrar menú">
-        <i class="bx bx-x"></i>
-      </button>
-    </div>
-    <ul class="nav drawer-nav">
-      <li><a href="#inicio" class="drawer-link">Inicio</a></li>
-      <li><a href="#acerca" class="drawer-link">Acerca de</a></li>
-      <li><a href="#servicios" class="drawer-link">Servicios</a></li>
-      <li><a href="#contacto" class="drawer-link">Contacto</a></li>
-      <li class="mt-2">
-        <a href="{{ url_for('login_bp.loginCliente') }}" class="btn btn-invilara-gold w-100">Iniciar Sesión</a>
-      </li>
-    </ul>
-  </aside>
-
-  <!-- ============================================
-       HERO SECTION (BIENVENIDA)
-       ============================================ -->
-  <header class="hero-section" id="inicio" aria-labelledby="hero-title">
-    <div class="hero-overlay" aria-hidden="true"></div>
-    <div class="container text-white position-relative">
-      <div class="row hero-content align-items-center">
-        <div class="col-md-6">
-          <h1 class="hero-title" id="hero-title">
-            Bienvenido al Sistema <span class="text-gold">Invilara</span>
-          </h1>
-          <p class="lead hero-lead">
-            Instituto de Vialidad del Estado Lara — Gestionamos el desarrollo vial de nuestro estado con excelencia, transparencia y compromiso institucional.
-          </p>
-          <div class="hero-btns">
-            <a href="{{ url_for('login_bp.loginCliente') }}" class="btn btn-invilara-gold btn-hero">
-              <i class="bx bx-log-in btn-icon" aria-hidden="true"></i>Acceder al Sistema
-            </a>
-            <a href="#acerca" class="btn btn-outline-light btn-hero">
-              <i class="bx bx-info-circle btn-icon" aria-hidden="true"></i>Conocer más
-            </a>
-          </div>
-        </div>
-        <div class="col-md-6 mt-4 mt-md-0">
-          <div class="hero-image-wrapper" aria-hidden="true">
-            <img src="{{ url_for('static', filename='img/invilara_entrada.jpeg') }}" alt="Invilara entrada" class="hero-image">
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- ============================================
-       ACERCA DE INVILARA
-       ============================================ -->
-  <section class="py-section" id="acerca" aria-labelledby="acerca-title">
-    <div class="container py-section">
-      <div class="section-header text-center mb-5">
-        <h2 class="section-title" id="acerca-title">Acerca de <span class="text-green">Invilara</span></h2>
-        <div class="divider-custom mx-auto" aria-hidden="true"></div>
-        <p class="text-muted mx-auto section-intro">
-          Entidad encargada de planificar, construir y conservar la infraestructura vial del Estado Lara.
-        </p>
-      </div>
-
-      <!-- Video institucional tipo GIF animado -->
-      <div class="text-center mb-5">
-        <div class="hero-video-wrapper d-inline-block">
-          <video class="hero-video" autoplay loop muted playsinline aria-hidden="true">
-            <source src="{{ url_for('static', filename='video/invilara.mp4') }}" type="video/mp4">
-          </video>
-        </div>
-      </div>
-
-      <div class="row g-cards">
-        <div class="col-md-4 col-sm-6">
-          <div class="card feature-card h-100 border-0 shadow-sm">
-            <div class="card-body p-0">
-              <img src="{{ url_for('static', filename='img/1.jpeg') }}" alt="Obras viales" class="card-img-top feature-img">
-              <div class="p-card">
-                <h3 class="h5 text-green mb-2">Obras Viales</h3>
-                <p class="text-muted small mb-0">Ejecutamos proyectos de construcción, rehabilitación y mantenimiento de carreteras y autopistas en todo el estado Lara.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <div class="card feature-card h-100 border-0 shadow-sm">
-            <div class="card-body p-0">
-              <img src="{{ url_for('static', filename='img/2.jpeg') }}" alt="Inspecciones" class="card-img-top feature-img">
-              <div class="p-card">
-                <h3 class="h5 text-green mb-2">Inspecciones</h3>
-                <p class="text-muted small mb-0">Supervisamos el estado de la vialidad mediante inspecciones técnicas que garantizan seguridad y cumplimiento normativo.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <div class="card feature-card h-100 border-0 shadow-sm">
-            <div class="card-body p-0">
-              <img src="{{ url_for('static', filename='img/3.jpeg') }}" alt="Proyectos" class="card-img-top feature-img">
-              <div class="p-card">
-                <h3 class="h5 text-green mb-2">Proyectos</h3>
-                <p class="text-muted small mb-0">Planificamos y ejecutamos proyectos estratégicos para ampliar y optimizar la red vial regional con criterios de sostenibilidad.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <div class="card feature-card h-100 border-0 shadow-sm">
-            <div class="card-body p-0">
-              <img src="{{ url_for('static', filename='img/4.jpeg') }}" alt="Empleados" class="card-img-top feature-img">
-              <div class="p-card">
-                <h3 class="h5 text-green mb-2">Empleados</h3>
-                <p class="text-muted small mb-0">Contamos con un equipo multidisciplinario de ingenieros, técnicos y supervisores comprometidos con la gestión vial.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <div class="card feature-card h-100 border-0 shadow-sm">
-            <div class="card-body p-0">
-              <img src="{{ url_for('static', filename='img/5.jpeg') }}" alt="Contrataciones" class="card-img-top feature-img">
-              <div class="p-card">
-                <h3 class="h5 text-green mb-2">Contrataciones</h3>
-                <p class="text-muted small mb-0">Gestionamos procesos de contratación transparentes para ejecutar obras y servicios con aliados estratégicos calificados.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <div class="card feature-card h-100 border-0 shadow-sm">
-            <div class="card-body p-0">
-              <img src="{{ url_for('static', filename='img/6.jpeg') }}" alt="Solicitudes" class="card-img-top feature-img">
-              <div class="p-card">
-                <h3 class="h5 text-green mb-2">Solicitudes</h3>
-                <p class="text-muted small mb-0">Las solicitudes son el origen de los proyectos: canalizamos requerimientos ciudadanos para priorizar intervenciones viales.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="text-center mt-4">
-          <a href="{{ url_for('login_bp.sobre_nosotros') }}" class="btn btn-invilara-gold btn-hero">
-            <i class="bx bx-info-circle btn-icon" aria-hidden="true"></i>Más Información
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       SERVICIOS
-       ============================================ -->
-  <section class="py-section bg-light" id="servicios" aria-labelledby="servicios-title">
-    <div class="container py-section">
-      <div class="section-header text-center mb-5">
-        <h2 class="section-title" id="servicios-title">Nuestros <span class="text-green">Servicios</span></h2>
-        <div class="divider-custom mx-auto" aria-hidden="true"></div>
-        <p class="text-muted mx-auto section-intro">
-          Brindamos soluciones integrales para la gestión vial del Estado Lara.
-        </p>
-      </div>
-      <div class="row g-cards">
-        <div class="col-md-4 col-sm-6">
-          <div class="card service-card h-100 text-center">
-            <div class="card-body">
-              <div class="service-icon mb-3" aria-hidden="true">
-                <i class="bx bx-road"></i>
-              </div>
-              <h4 class="h5 text-green mb-3">Construcción de Vías</h4>
-              <p class="text-muted small mb-0">
-                Diseño y construcción de carreteras, autopistas y vías urbanas con
-                estándares de ingeniería de clase mundial.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <div class="card service-card h-100 text-center">
-            <div class="card-body">
-              <div class="service-icon mb-3" aria-hidden="true">
-                <i class="bx bx-wrench"></i>
-              </div>
-              <h4 class="h5 text-green mb-3">Mantenimiento Vial</h4>
-              <p class="text-muted small mb-0">
-                Conservación periódica y correctiva de la infraestructura vial existente
-                para garantizar su durabilidad y la seguridad de los usuarios.
-              </p>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4 col-sm-6">
-          <div class="card service-card h-100 text-center">
-            <div class="card-body">
-              <div class="service-icon mb-3" aria-hidden="true">
-                <i class="bx bx-clipboard"></i>
-              </div>
-              <h4 class="h5 text-green mb-3">Fiscalización y Control</h4>
-              <p class="text-muted small mb-0">
-                Supervisión técnica y administrativa de proyectos viales para asegurar
-                el cumplimiento de normativas y plazos establecidos.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       CONTACTO
-       ============================================ -->
-  <section class="py-section" id="contacto" aria-labelledby="contacto-title">
-    <div class="container py-section">
-      <div class="section-header text-center mb-5">
-        <h2 class="section-title" id="contacto-title">Contacto</h2>
-        <div class="divider-custom mx-auto" aria-hidden="true"></div>
-      </div>
-      <div class="row g-cards justify-content-center">
-        <div class="col-md-5">
-          <div class="card h-100">
-            <div class="card-body p-card">
-              <h3 class="h5 text-green mb-3">Información de Contacto</h3>
-              <ul class="list-contact">
-                <li>
-                  <i class="bx bx-map contact-icon" aria-hidden="true"></i>
-                  <span>Avenida Fuerzas Armadas, Esquina con Calle 57, Barquisimeto, Estado Lara, Venezuela.</span>
-                </li>
-                <li>
-                  <i class="bx bx-phone contact-icon" aria-hidden="true"></i>
-                  <span>+58 251-4424548</span>
-                </li>
-                <li>
-                  <i class="bx bx-envelope contact-icon" aria-hidden="true"></i>
-                  <span>info@invilara.gob.ve</span>
-                </li>
-                <li>
-                  <i class="bx bx-time contact-icon" aria-hidden="true"></i>
-                  <span>Lunes a Viernes — 8:00 AM a 4:00 PM</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-5">
-          <div class="card h-100 bg-invilara-gold-light">
-            <div class="card-body p-card text-center">
-              <h3 class="h5 text-green mb-3">Acceso a Funcionarios</h3>
-              <p class="text-muted small mb-3">
-                Si eres funcionario de Invilara, ingresa al sistema para gestionar solicitudes, proyectos, inspecciones y más.
-              </p>
-              <a href="{{ url_for('login_bp.loginCliente') }}" class="btn btn-invilara-gold fw-bold px-4 py-2">
-                Iniciar Sesión
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       FOOTER
-       ============================================ -->
-  <footer class="bg-green text-white" role="contentinfo">
-    <div class="container py-5">
-      <div class="row g-4">
-        <div class="col-md-4">
-          <div class="footer-brand">
-            <img src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}" alt="Invilara" class="footer-logo mb-3">
-            <p class="small mb-0 opacity-75">
-              Instituto de Vialidad del Estado Lara. Gestionando el desarrollo vial con excelencia, transparencia y compromiso institucional.
-            </p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <h4 class="h6 text-uppercase text-white mb-3">Contacto</h4>
-          <ul class="list-unstyled small mb-0">
-            <li class="mb-2"><i class="bx bx-map me-2" aria-hidden="true"></i> Avenida Fuerzas Armadas, Esquina con Calle 57, Barquisimeto, Estado Lara, Venezuela.</li>
-            <li class="mb-2"><i class="bx bx-phone me-2" aria-hidden="true"></i> +58 251-4424548</li>
-            <li class="mb-2"><i class="bx bx-envelope me-2" aria-hidden="true"></i> info@invilara.gob.ve</li>
-            <li><i class="bx bx-time me-2" aria-hidden="true"></i> Lunes a Viernes - 8:00 AM a 4:00 PM</li>
-          </ul>
-        </div>
-        <div class="col-md-4">
-          <h4 class="h6 text-uppercase text-white mb-3">Redes Sociales</h4>
-          <a href="https://www.instagram.com/invilaraoficial?igsh=Z3J5b2ptMnJwY2Zq" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram Invilara">
-            <i class="bx bxl-instagram"></i>
-            <span class="small">@invilaraoficial</span>
-          </a>
-          <hr class="border-white border-opacity-10 my-3">
-          <p class="small mb-0 opacity-75">
-            © 2025 Instituto de Vialidad del Estado Lara (Invilara). Todos los derechos reservados.
-          </p>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Scripts locales de Bootstrap 3 -->
-  <script src="{{ url_for('static', filename='libs/jquery/jquery.js') }}"></script>
-  <script src="{{ url_for('static', filename='assets/vendor/js/bootstrap.js') }}"></script>
-
-   <script>
-     (function() {
-       var openBtn = document.getElementById('navbarDrawerOpen');
-       var closeBtn = document.getElementById('navbarDrawerClose');
-       var drawer = document.getElementById('navbarDrawer');
-       var backdrop = document.getElementById('navbarDrawerBackdrop');
-       var drawerLinks = document.querySelectorAll('.drawer-link');
-
-       function openDrawer() {
-         drawer.classList.add('is-open');
-         backdrop.classList.add('is-open');
-         drawer.setAttribute('aria-hidden', 'false');
-         backdrop.setAttribute('aria-hidden', 'false');
-         document.body.style.overflow = 'hidden';
-         closeBtn.focus();
-       }
-
-       function closeDrawer() {
-         drawer.classList.remove('is-open');
-         backdrop.classList.remove('is-open');
-         drawer.setAttribute('aria-hidden', 'true');
-         backdrop.setAttribute('aria-hidden', 'true');
-         document.body.style.overflow = '';
-         openBtn.focus();
-       }
-
-       openBtn.addEventListener('click', openDrawer);
-       closeBtn.addEventListener('click', closeDrawer);
-       backdrop.addEventListener('click', closeDrawer);
-
-       drawerLinks.forEach(function(link) {
-         link.addEventListener('click', closeDrawer);
-       });
-
-       document.addEventListener('keydown', function(e) {
-         if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
-           closeDrawer();
-         }
-       });
-     })();
-
-     var landingToggle = document.getElementById('landing-dark-toggle');
-     var landingIcon = document.getElementById('landing-theme-icon');
-     if (landingToggle) {
-       var initDark = document.body.classList.contains('dark-mode');
-       if (landingIcon) {
-         landingIcon.className = initDark ? 'bx bx-sun' : 'bx bx-moon';
-       }
-       landingToggle.addEventListener('click', function() {
-         var isDark = document.body.classList.toggle('dark-mode');
-         document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
-         localStorage.setItem('theme', isDark ? 'dark' : 'light');
-         if (landingIcon) {
-           landingIcon.className = isDark ? 'bx bx-sun' : 'bx bx-moon';
-         }
-       });
-     }
+  <div id="invilara-page" data-theme="light">
+    <script>
+      (function () {
+        try {
+          var storedTheme = localStorage.getItem('invilara-theme') || localStorage.getItem('theme');
+          if (storedTheme === 'dark') {
+            document.getElementById('invilara-page').dataset.theme = 'dark';
+          }
+        } catch (error) {}
+      }());
     </script>
 
- </body>
+    <div class="scroll-line" aria-hidden="true"><span id="scrollProgress"></span></div>
+    <a class="skip-link" href="#contenido-principal">Saltar al contenido principal</a>
+
+    <header class="site-header" id="siteHeader">
+      <div class="header-inner">
+        <a class="brand" href="#inicio" aria-label="Invilara, inicio">
+          <img src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}" data-theme-logo data-light-src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}" data-dark-src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL_WHITE.png') }}" alt="Logo Invilara" width="138" height="43" fetchpriority="high">
+          <span class="brand-copy">
+            <strong>INVILARA</strong>
+            <small>Instituto de Vialidad<br>Estado Lara</small>
+          </span>
+        </a>
+
+        <nav class="desktop-nav" aria-label="Navegación principal">
+          <a class="nav-link is-active" data-section="inicio" href="#inicio">Inicio</a>
+          <a class="nav-link" data-section="acerca" href="#acerca">Cómo trabajamos</a>
+          <a class="nav-link" data-section="servicios" href="#servicios">Capacidades</a>
+          <a class="nav-link" data-section="contacto" href="#contacto">Contacto</a>
+        </nav>
+
+        <div class="header-actions">
+          <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="Activar modo oscuro" title="Cambiar modo de color">
+            <i class="bx bx-moon icon" data-theme-icon aria-hidden="true"></i>
+            <span class="sr-only" data-theme-label>Activar modo oscuro</span>
+          </button>
+          <a class="header-login" href="{{ url_for('login_bp.loginCliente') }}">
+            Acceso institucional
+            <i class="bx bx-right-arrow-alt icon" aria-hidden="true"></i>
+          </a>
+          <button class="menu-toggle" id="drawerOpen" type="button" aria-controls="mobileDrawer" aria-expanded="false" aria-label="Abrir menú móvil">
+            <i class="bx bx-menu icon" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+    <aside class="mobile-drawer" id="mobileDrawer" aria-label="Menú móvil" aria-hidden="true">
+      <div class="drawer-header">
+        <strong>MENÚ INVILARA</strong>
+        <button class="drawer-close" id="drawerClose" type="button" aria-label="Cerrar menú">
+          <i class="bx bx-x icon" aria-hidden="true"></i>
+        </button>
+      </div>
+      <nav class="drawer-nav" aria-label="Navegación móvil">
+        <a class="drawer-link" href="#inicio">Inicio</a>
+        <a class="drawer-link" href="#acerca">Cómo trabajamos</a>
+        <a class="drawer-link" href="#servicios">Capacidades</a>
+        <a class="drawer-link" href="#contacto">Contacto</a>
+      </nav>
+      <div class="drawer-actions">
+        <button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false" aria-label="Activar modo oscuro">
+          <i class="bx bx-moon icon" data-theme-icon aria-hidden="true"></i>
+          <span data-theme-label>Activar modo oscuro</span>
+        </button>
+        <a class="button button-primary" href="{{ url_for('login_bp.loginCliente') }}">
+          Entrar al sistema
+          <i class="bx bx-log-in icon" aria-hidden="true"></i>
+        </a>
+      </div>
+    </aside>
+
+    <main id="contenido-principal">
+      <section class="hero-section" id="inicio" aria-labelledby="hero-title">
+        <div class="section-frame">
+          <div class="hero-topline">
+            <span class="line-label">Instituto de Vialidad del Estado Lara</span>
+            <span>Gestión pública · Infraestructura · Territorio</span>
+          </div>
+
+          <div class="hero-grid">
+            <article class="hero-lead-cell js-reveal">
+              <div>
+                <span class="eyebrow">Una gestión que se mueve</span>
+                <h1 id="hero-title">Conectamos Lara, municipio a municipio.</h1>
+                <p>Planificamos, construimos y conservamos la red vial que une municipios, parroquias y comunidades del estado. Cada intervención empieza con una lectura cercana del territorio.</p>
+                <div class="hero-actions">
+                  <a class="button button-primary" href="{{ url_for('login_bp.loginCliente') }}">
+                    Acceder al sistema
+                    <i class="bx bx-log-in icon" aria-hidden="true"></i>
+                  </a>
+                  <a class="button button-ghost" href="#acerca">
+                    Conocer nuestra gestión
+                    <i class="bx bx-down-arrow-alt icon" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+              <div class="hero-signature"><span aria-hidden="true"></span>Excelencia, transparencia y compromiso institucional</div>
+            </article>
+
+            <figure class="hero-image-cell js-reveal">
+              <img src="{{ url_for('static', filename='img/invilara_entrada.jpeg') }}" alt="Entrada de la sede de Invilara en Lara" width="720" height="620" fetchpriority="high">
+              <figcaption class="image-caption">
+                <span>Sede Invilara</span>
+                <span>Barquisimeto · Lara</span>
+              </figcaption>
+            </figure>
+
+            <div class="hero-info-cell js-reveal">
+              <span class="cell-index">01 / 04</span>
+              <strong>Obras viales</strong>
+              <p>Construcción, rehabilitación y mantenimiento con presencia en el territorio.</p>
+            </div>
+            <div class="hero-info-cell accent js-reveal">
+              <span class="cell-index">02 / 04</span>
+              <strong>Inspecciones técnicas</strong>
+              <p>Observamos la vía para decidir con responsabilidad.</p>
+            </div>
+            <div class="hero-info-cell dark js-reveal">
+              <span class="cell-index">03 / 04</span>
+              <strong>Solicitudes ciudadanas</strong>
+              <p>La comunidad ayuda a orientar las prioridades de atención.</p>
+            </div>
+            <div class="hero-info-cell js-reveal">
+              <span class="cell-index">04 / 04</span>
+              <strong>Municipios y parroquias</strong>
+              <p>Una gestión regional que entiende los recorridos cotidianos.</p>
+            </div>
+          </div>
+
+          <div class="hero-scroll-note"><span class="scroll-arrow" aria-hidden="true">↓</span>Explora la gestión vial</div>
+        </div>
+      </section>
+
+      <section class="section about-section" id="acerca" aria-labelledby="about-title">
+        <div class="section-frame">
+          <div class="section-heading js-reveal">
+            <span class="eyebrow">01 / Presencia territorial</span>
+            <h2 id="about-title">La gestión vial se entiende mejor desde el territorio.</h2>
+            <p>Invilara articula equipos, proyectos y decisiones para responder a las condiciones reales de Lara: sus rutas, sus comunidades y las personas que las recorren cada día.</p>
+          </div>
+
+          <div class="impact-layout">
+            <div class="ladder" aria-label="Pilares de la gestión de Invilara">
+              <article class="ladder-item js-reveal">
+                <div class="ladder-copy">
+                  <span class="mini-label">Construcción / Rehabilitación</span>
+                  <h3>Obras que devuelven continuidad.</h3>
+                  <p>Intervenimos carreteras y autopistas para recuperar trayectos, conectar servicios y acompañar el desarrollo regional.</p>
+                </div>
+                <figure class="ladder-media">
+                  <img src="{{ url_for('static', filename='img/1.jpeg') }}" alt="Equipo trabajando en una obra vial" width="560" height="360" loading="lazy">
+                </figure>
+              </article>
+              <article class="ladder-item js-reveal">
+                <div class="ladder-copy">
+                  <span class="mini-label">Supervisión / Seguridad</span>
+                  <h3>Inspeccionar antes de decidir.</h3>
+                  <p>La observación técnica permite priorizar mantenimiento y actuar con criterios de seguridad, cumplimiento y durabilidad.</p>
+                </div>
+                <figure class="ladder-media">
+                  <img src="{{ url_for('static', filename='img/2.jpeg') }}" alt="Personal realizando una inspección en carretera" width="560" height="360" loading="lazy">
+                </figure>
+              </article>
+              <article class="ladder-item js-reveal">
+                <div class="ladder-copy">
+                  <span class="mini-label">Comunidad / Atención</span>
+                  <h3>Escuchar también es construir.</h3>
+                  <p>Las solicitudes ciudadanas acercan las necesidades de municipios y parroquias a la planificación de la gestión vial.</p>
+                </div>
+                <figure class="ladder-media">
+                  <img src="{{ url_for('static', filename='img/6.jpeg') }}" alt="Trabajadores atendiendo una afectación en la vía" width="560" height="360" loading="lazy">
+                </figure>
+              </article>
+            </div>
+
+            <aside class="impact-aside js-reveal">
+              <span class="aside-mark" aria-hidden="true">L</span>
+              <h3>Del territorio a la decisión.</h3>
+              <p>Una institución vial se reconoce en la forma en que convierte una necesidad concreta en una respuesta organizada.</p>
+              <ul class="territory-list">
+                <li>Planificación con lectura de las rutas.</li>
+                <li>Proyectos con seguimiento técnico.</li>
+                <li>Contrataciones con responsabilidad pública.</li>
+                <li>Equipos comprometidos con Lara.</li>
+              </ul>
+              <a class="inline-link" href="#servicios">Ver nuestras capacidades <i class="bx bx-right-arrow-alt icon" aria-hidden="true"></i></a>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="video-section" id="video" aria-labelledby="video-title">
+        <div class="video-inner">
+          <div class="video-heading js-reveal">
+            <div>
+              <span class="eyebrow">02 / Invilara en movimiento</span>
+              <h2 id="video-title">El trabajo se ve en la vía.</h2>
+            </div>
+            <p>Una mirada institucional al equipo, la infraestructura y el compromiso que sostienen cada jornada de gestión.</p>
+          </div>
+
+          <div class="video-cutout js-reveal">
+            <div class="video-frame">
+              <video id="institutionalVideo" autoplay loop muted playsinline preload="metadata" aria-label="Video institucional de Invilara">
+                <source src="{{ url_for('static', filename='video/invilara.mp4') }}" type="video/mp4">
+              </video>
+              <div class="video-bar">
+                <span>Registro institucional · Lara</span>
+                <button class="video-toggle" id="videoToggle" type="button" aria-label="Pausar video">
+                  <i class="bx bx-pause icon" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section services-section" id="servicios" aria-labelledby="services-title">
+        <div class="section-frame">
+          <div class="section-heading js-reveal">
+            <span class="eyebrow">03 / Capacidades</span>
+            <h2 id="services-title">Una gestión completa para cada etapa de la vía.</h2>
+            <p>Conoce cómo se organiza el trabajo de Invilara y encuentra el punto de contacto que corresponde a tu necesidad.</p>
+          </div>
+
+          <div class="service-layout">
+            <div class="service-list">
+              <p class="service-list-intro">Selecciona una capacidad para ver su enfoque operativo y la forma en que acompaña al territorio.</p>
+
+              <button class="service-row is-active" type="button" data-service="obras" aria-controls="servicePreview" aria-expanded="true">
+                <span class="service-row-top">
+                  <span class="service-row-title"><span class="service-row-index">01</span><span>Obras viales</span></span>
+                  <span class="service-row-arrow"><i class="bx bx-right-arrow-alt icon" aria-hidden="true"></i></span>
+                </span>
+                <span class="service-row-summary">Construcción, rehabilitación y conservación de carreteras y autopistas.</span>
+                <span class="service-row-mobile-detail" hidden>Convertimos la planificación en intervenciones concretas que recuperan la continuidad y la seguridad de la red vial.</span>
+              </button>
+
+              <button class="service-row" type="button" data-service="inspecciones" aria-controls="servicePreview" aria-expanded="false">
+                <span class="service-row-top">
+                  <span class="service-row-title"><span class="service-row-index">02</span><span>Inspecciones técnicas</span></span>
+                  <span class="service-row-arrow"><i class="bx bx-right-arrow-alt icon" aria-hidden="true"></i></span>
+                </span>
+                <span class="service-row-summary">Supervisión del estado de la vialidad para orientar decisiones responsables.</span>
+                <span class="service-row-mobile-detail" hidden>Observamos, registramos y acompañamos el cumplimiento técnico y administrativo de los proyectos viales.</span>
+              </button>
+
+              <button class="service-row" type="button" data-service="proyectos" aria-controls="servicePreview" aria-expanded="false">
+                <span class="service-row-top">
+                  <span class="service-row-title"><span class="service-row-index">03</span><span>Proyectos y contratos</span></span>
+                  <span class="service-row-arrow"><i class="bx bx-right-arrow-alt icon" aria-hidden="true"></i></span>
+                </span>
+                <span class="service-row-summary">Planificación estratégica y alianzas calificadas para ampliar el alcance regional.</span>
+                <span class="service-row-mobile-detail" hidden>Gestionamos proyectos y contrataciones con criterios de transparencia, seguimiento y responsabilidad institucional.</span>
+              </button>
+
+              <button class="service-row" type="button" data-service="solicitudes" aria-controls="servicePreview" aria-expanded="false">
+                <span class="service-row-top">
+                  <span class="service-row-title"><span class="service-row-index">04</span><span>Solicitudes ciudadanas</span></span>
+                  <span class="service-row-arrow"><i class="bx bx-right-arrow-alt icon" aria-hidden="true"></i></span>
+                </span>
+                <span class="service-row-summary">Un canal para acercar requerimientos del territorio a la gestión vial.</span>
+                <span class="service-row-mobile-detail" hidden>La información de la comunidad ayuda a comprender dónde la vialidad necesita atención y seguimiento.</span>
+              </button>
+            </div>
+
+            <div class="service-preview js-reveal" id="servicePreview" aria-live="polite">
+              <div class="service-preview-image-wrap">
+                <img class="service-preview-image" id="servicePreviewImage" src="{{ url_for('static', filename='img/3.jpeg') }}" alt="Obra vial en ejecución" width="760" height="520" loading="lazy">
+              </div>
+              <div class="service-preview-copy">
+                <p class="preview-tag" id="servicePreviewTag">Construcción / Mantenimiento</p>
+                <h3 id="servicePreviewTitle">Obras viales</h3>
+                <p id="servicePreviewDescription">Diseñamos y ejecutamos intervenciones que ayudan a mantener conectadas a las comunidades de Lara.</p>
+                <a class="inline-link" id="servicePreviewLink" href="#acceso">Solicitar orientación <i class="bx bx-right-arrow-alt icon" aria-hidden="true"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section" id="contacto" aria-labelledby="contact-title">
+        <div class="section-frame">
+          <div class="contact-layout">
+            <div class="contact-panel js-reveal">
+              <span class="eyebrow">04 / Atención institucional</span>
+              <h2 id="contact-title">Hablemos del territorio.</h2>
+              <p>Estamos disponibles para orientar a funcionarios, contratistas y comunidades sobre la gestión vial del Estado Lara.</p>
+              <ul class="contact-list">
+                <li><i class="bx bx-map icon" aria-hidden="true"></i><span>Avenida Fuerzas Armadas, esquina con Calle 57, Barquisimeto, Estado Lara.</span></li>
+                <li><i class="bx bx-phone icon" aria-hidden="true"></i><span>+58 251-4424548</span></li>
+                <li><i class="bx bx-envelope icon" aria-hidden="true"></i><span>info@invilara.gob.ve</span></li>
+                <li><i class="bx bx-time icon" aria-hidden="true"></i><span>Lunes a viernes · 8:00 AM a 4:00 PM</span></li>
+              </ul>
+            </div>
+
+            <div class="official-panel js-reveal" id="acceso">
+              <span class="eyebrow">Acceso para funcionarios</span>
+              <h2>La gestión también continúa en línea.</h2>
+              <p>Ingresa al sistema para administrar solicitudes, proyectos, inspecciones y procesos de Invilara desde un solo lugar.</p>
+              <div class="access-points">
+                <div class="access-point"><strong>Solicitudes</strong><span>Registra y consulta requerimientos del territorio.</span></div>
+                <div class="access-point"><strong>Proyectos</strong><span>Da seguimiento a la planificación y ejecución.</span></div>
+              </div>
+              <a class="button button-primary" href="{{ url_for('login_bp.loginCliente') }}">Iniciar sesión <i class="bx bx-log-in icon" aria-hidden="true"></i></a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="utility-footer" role="contentinfo">
+      <div class="section-frame">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <img src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}" alt="Invilara" width="155" height="48" loading="lazy">
+            <p>Instituto de Vialidad del Estado Lara. Gestionando el desarrollo vial con excelencia, transparencia y compromiso institucional.</p>
+          </div>
+          <div>
+            <h3 class="footer-heading">Navegación</h3>
+            <ul class="footer-links">
+              <li><a href="#inicio">Inicio</a></li>
+              <li><a href="#acerca">Cómo trabajamos</a></li>
+              <li><a href="#servicios">Capacidades</a></li>
+              <li><a href="#contacto">Contacto</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="footer-heading">Atención</h3>
+            <ul class="footer-links">
+              <li><a href="#contacto">Información de contacto</a></li>
+              <li><a href="#acceso">Acceso institucional</a></li>
+              <li><a href="#video">Video institucional</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="footer-heading">Redes sociales</h3>
+            <ul class="footer-links">
+              <li><a href="https://www.instagram.com/invilaraoficial" target="_blank" rel="noopener noreferrer"><i class="bx bxl-instagram icon" aria-hidden="true"></i>@invilaraoficial</a></li>
+              <li><span>Estado Lara · Venezuela</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <span>© Instituto de Vialidad del Estado Lara (Invilara).</span>
+          <span>Transparencia · Compromiso · Territorio</span>
+        </div>
+      </div>
+    </footer>
+
+    <div class="access-dock" aria-label="Accesos rápidos">
+      <a class="dock-button primary" href="{{ url_for('login_bp.loginCliente') }}" aria-label="Ir al acceso institucional" title="Acceso institucional"><i class="bx bx-log-in icon" aria-hidden="true"></i></a>
+      <a class="dock-button" href="#contacto" aria-label="Ir a contacto" title="Contacto"><i class="bx bx-phone icon" aria-hidden="true"></i></a>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='libs/jquery/jquery.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/js/bootstrap.js') }}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script>
+    (function () {
+      var page = document.getElementById('invilara-page');
+      if (!page) return;
+
+      var drawer = document.getElementById('mobileDrawer');
+      var backdrop = document.getElementById('drawerBackdrop');
+      var drawerOpen = document.getElementById('drawerOpen');
+      var drawerClose = document.getElementById('drawerClose');
+      var lastFocus = drawerOpen;
+      var previousBodyOverflow = '';
+
+      function setTheme(theme) {
+        var dark = theme === 'dark';
+        page.dataset.theme = dark ? 'dark' : 'light';
+        try { localStorage.setItem('invilara-theme', dark ? 'dark' : 'light'); } catch (error) {}
+        page.querySelectorAll('[data-theme-toggle]').forEach(function (button) {
+          button.setAttribute('aria-pressed', String(dark));
+          button.setAttribute('aria-label', dark ? 'Activar modo claro' : 'Activar modo oscuro');
+          var label = button.querySelector('[data-theme-label]');
+          if (label) label.textContent = dark ? 'Activar modo claro' : 'Activar modo oscuro';
+          var icon = button.querySelector('[data-theme-icon]');
+          if (icon) icon.className = 'bx ' + (dark ? 'bx-sun' : 'bx-moon') + ' icon';
+        });
+        page.querySelectorAll('[data-theme-logo]').forEach(function (image) {
+          var source = dark ? image.dataset.darkSrc : image.dataset.lightSrc;
+          if (source) image.src = source;
+        });
+      }
+
+      var savedTheme = 'light';
+      try { savedTheme = localStorage.getItem('invilara-theme') || localStorage.getItem('theme') || 'light'; } catch (error) {}
+      setTheme(savedTheme);
+      page.querySelectorAll('[data-theme-toggle]').forEach(function (button) {
+        button.addEventListener('click', function () { setTheme(page.dataset.theme === 'dark' ? 'light' : 'dark'); });
+      });
+
+      function openDrawer() {
+        if (!drawer || !backdrop || !drawerOpen || !drawerClose) return;
+        lastFocus = document.activeElement || drawerOpen;
+        previousBodyOverflow = document.body.style.overflow;
+        drawer.classList.add('is-open');
+        backdrop.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+        backdrop.setAttribute('aria-hidden', 'false');
+        drawerOpen.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+        drawerClose.focus();
+      }
+
+      function closeDrawer(restoreFocus) {
+        if (!drawer || !backdrop || !drawerOpen) return;
+        drawer.classList.remove('is-open');
+        backdrop.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        backdrop.setAttribute('aria-hidden', 'true');
+        drawerOpen.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = previousBodyOverflow;
+        if (restoreFocus !== false && lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus();
+      }
+
+      if (drawerOpen) drawerOpen.addEventListener('click', openDrawer);
+      if (drawerClose) drawerClose.addEventListener('click', function () { closeDrawer(true); });
+      if (backdrop) backdrop.addEventListener('click', function () { closeDrawer(true); });
+      page.querySelectorAll('.drawer-link, .drawer-actions .button').forEach(function (link) {
+        link.addEventListener('click', function () { closeDrawer(false); });
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (!drawer || !drawer.classList.contains('is-open')) return;
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          closeDrawer(true);
+          return;
+        }
+        if (event.key !== 'Tab') return;
+        var focusable = drawer.querySelectorAll('button, a[href]');
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (!first || !last) return;
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      var navLinks = Array.prototype.slice.call(page.querySelectorAll('.nav-link[data-section]'));
+      var observedSections = Array.prototype.slice.call(page.querySelectorAll('main section[id]'));
+      if ('IntersectionObserver' in window) {
+        var sectionObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            navLinks.forEach(function (link) { link.classList.toggle('is-active', link.dataset.section === entry.target.id); });
+          });
+        }, { rootMargin: '-35% 0px -55% 0px', threshold: 0 });
+        observedSections.forEach(function (section) { sectionObserver.observe(section); });
+      }
+
+      var progress = document.getElementById('scrollProgress');
+      function updateProgress() {
+        if (!progress) return;
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        progress.style.width = (max > 0 ? Math.min(100, (window.scrollY / max) * 100) : 0) + '%';
+      }
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      window.addEventListener('resize', updateProgress, { passive: true });
+      updateProgress();
+
+      var video = document.getElementById('institutionalVideo');
+      var videoToggle = document.getElementById('videoToggle');
+      if (video && videoToggle) {
+        videoToggle.addEventListener('click', function () {
+          if (video.paused) {
+            var playback = video.play();
+            if (playback && typeof playback.catch === 'function') playback.catch(function () {});
+            videoToggle.setAttribute('aria-label', 'Pausar video');
+            videoToggle.innerHTML = '<i class="bx bx-pause icon" aria-hidden="true"></i>';
+          } else {
+            video.pause();
+            videoToggle.setAttribute('aria-label', 'Reproducir video');
+            videoToggle.innerHTML = '<i class="bx bx-play icon" aria-hidden="true"></i>';
+          }
+        });
+      }
+
+      var serviceRows = Array.prototype.slice.call(page.querySelectorAll('.service-row'));
+      var previewImage = document.getElementById('servicePreviewImage');
+      var previewTag = document.getElementById('servicePreviewTag');
+      var previewTitle = document.getElementById('servicePreviewTitle');
+      var previewDescription = document.getElementById('servicePreviewDescription');
+      var serviceData = {
+        obras: { image: "{{ url_for('static', filename='img/3.jpeg') }}", alt: 'Obra vial en ejecución', tag: 'Construcción / Mantenimiento', title: 'Obras viales', description: 'Diseñamos y ejecutamos intervenciones que ayudan a mantener conectadas a las comunidades de Lara.' },
+        inspecciones: { image: "{{ url_for('static', filename='img/4.jpeg') }}", alt: 'Personal inspeccionando una carretera', tag: 'Supervisión / Seguridad', title: 'Inspecciones técnicas', description: 'Observamos, registramos y acompañamos el cumplimiento técnico y administrativo de los proyectos viales.' },
+        proyectos: { image: "{{ url_for('static', filename='img/5.jpeg') }}", alt: 'Maquinaria para un proyecto vial', tag: 'Planificación / Contratación', title: 'Proyectos y contratos', description: 'Gestionamos proyectos y contrataciones con criterios de transparencia, seguimiento y responsabilidad institucional.' },
+        solicitudes: { image: "{{ url_for('static', filename='img/6.jpeg') }}", alt: 'Equipo atendiendo una solicitud en la vía', tag: 'Comunidad / Atención', title: 'Solicitudes ciudadanas', description: 'La información de la comunidad ayuda a comprender dónde la vialidad necesita atención y seguimiento.' }
+      };
+
+      function selectService(row, toggleMobile) {
+        if (!row) return;
+        var wasActive = row.classList.contains('is-active');
+        var isMobile = window.matchMedia('(max-width: 760px)').matches;
+        if (toggleMobile && wasActive && isMobile) {
+          row.classList.remove('is-active');
+          row.setAttribute('aria-expanded', 'false');
+          var collapsedDetail = row.querySelector('.service-row-mobile-detail');
+          if (collapsedDetail) collapsedDetail.hidden = true;
+          return;
+        }
+        var data = serviceData[row.dataset.service];
+        serviceRows.forEach(function (item) {
+          var active = item === row;
+          item.classList.toggle('is-active', active);
+          item.setAttribute('aria-expanded', String(active));
+          var detail = item.querySelector('.service-row-mobile-detail');
+          if (detail) detail.hidden = !(active && isMobile);
+        });
+        if (!data || !previewImage || !previewTag || !previewTitle || !previewDescription) return;
+        previewImage.src = data.image;
+        previewImage.alt = data.alt;
+        previewTag.textContent = data.tag;
+        previewTitle.textContent = data.title;
+        previewDescription.textContent = data.description;
+        if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          window.gsap.fromTo(previewImage, { autoAlpha: 0, x: 14 }, { autoAlpha: 1, x: 0, duration: .35, ease: 'power2.out', clearProps: 'transform' });
+        }
+      }
+
+      serviceRows.forEach(function (row) {
+        row.addEventListener('click', function () { selectService(row, true); });
+        row.addEventListener('mouseenter', function () { if (!window.matchMedia('(max-width: 760px)').matches) selectService(row, false); });
+        row.addEventListener('focus', function () { if (!window.matchMedia('(max-width: 760px)').matches) selectService(row, false); });
+      });
+      if (serviceRows[0]) selectService(serviceRows[0], false);
+
+      if (window.gsap && window.ScrollTrigger) {
+        window.gsap.registerPlugin(window.ScrollTrigger);
+        var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var rootSelector = '#invilara-page';
+        var revealElements = window.gsap.utils.toArray(rootSelector + ' .js-reveal');
+        var narrativeImages = window.gsap.utils.toArray(rootSelector + ' .ladder-media img, ' + rootSelector + ' .service-preview-image');
+
+        if (reduceMotion) {
+          window.gsap.set(revealElements, { autoAlpha: 1, y: 0, clearProps: 'all' });
+          window.gsap.set(narrativeImages, { clearProps: 'all' });
+        } else {
+          var heroStory = window.gsap.timeline({ defaults: { ease: 'power3.out' } });
+          heroStory
+            .fromTo(rootSelector + ' .hero-grid .js-reveal', { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: .62, stagger: .07, clearProps: 'transform,opacity,visibility' })
+            .fromTo(rootSelector + ' .hero-lead-cell > div', { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, duration: .62, clearProps: 'transform,opacity,visibility' }, .12)
+            .fromTo(rootSelector + ' .hero-signature', { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: .48, clearProps: 'transform,opacity,visibility' }, .48)
+            .fromTo(rootSelector + ' .hero-image-cell img', { scale: 1.06 }, { scale: 1, duration: 1.15, ease: 'power2.out', clearProps: 'transform' }, 0)
+            .fromTo(rootSelector + ' .image-caption', { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: .5, clearProps: 'transform,opacity,visibility' }, .48);
+
+          window.gsap.utils.toArray(rootSelector + ' .js-reveal').forEach(function (element) {
+            if (element.closest('.hero-grid')) return;
+            window.gsap.fromTo(element, { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: .62, ease: 'power2.out', clearProps: 'transform,opacity,visibility', scrollTrigger: { trigger: element, start: 'top 86%', once: true } });
+          });
+
+          narrativeImages.forEach(function (image) {
+            var frame = image.closest('.ladder-media') || image.closest('.service-preview-image-wrap');
+            if (!frame) return;
+            window.gsap.to(image, { yPercent: -4, ease: 'none', scrollTrigger: { trigger: frame, start: 'top bottom', end: 'bottom top', scrub: .9 } });
+          });
+
+          window.gsap.to(rootSelector + ' .hero-image-cell img', { yPercent: -3, ease: 'none', scrollTrigger: { trigger: rootSelector + ' .hero-section', start: 'top top', end: 'bottom top', scrub: .8 } });
+          window.gsap.to(rootSelector + ' .video-cutout', { y: -14, ease: 'none', scrollTrigger: { trigger: rootSelector + ' .video-section', start: 'top bottom', end: 'bottom top', scrub: 1 } });
+          window.gsap.to(rootSelector + ' .impact-aside', { y: -10, ease: 'none', scrollTrigger: { trigger: rootSelector + ' .about-section', start: 'top bottom', end: 'bottom top', scrub: 1 } });
+          window.gsap.fromTo(rootSelector + ' .service-row', { autoAlpha: 0, x: -12 }, { autoAlpha: 1, x: 0, duration: .52, ease: 'power2.out', stagger: .08, clearProps: 'transform,opacity,visibility', scrollTrigger: { trigger: rootSelector + ' .service-list', start: 'top 78%', once: true } });
+        }
+
+        function refreshMotion() { window.ScrollTrigger.refresh(); }
+        if (document.readyState === 'complete') refreshMotion();
+        else window.addEventListener('load', refreshMotion, { once: true });
+      }
+    }());
+  </script>
+</body>
 </html>
