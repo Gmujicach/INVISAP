@@ -1,6 +1,6 @@
 """
 RespaldoModel — Modelo SOLID para respaldo y restauración de base de datos MySQL.
-Genera dumps con mysqldump, importa archivos .sql y registra metadatos en respaldo_bd.
+Genera dumps con mysqldump, importa archivos .sql y registra metadatos en administracion_respaldos.
 """
 import os
 import re
@@ -22,7 +22,7 @@ class RespaldoModel(BaseModel):
             os.makedirs(self.CARPETA_RESPALDOS, exist_ok=True)
 
     def _asegurar_tabla_respaldo(self):
-        """Crea la tabla respaldo_bd si no existe (auto-reparacion)."""
+        """Crea la tabla administracion_respaldos si no existe (auto-reparacion)."""
         try:
             conn = connectionBD_invilara()
             if not conn:
@@ -30,7 +30,7 @@ class RespaldoModel(BaseModel):
             cur = conn.cursor()
             try:
                 cur.execute("""
-                    CREATE TABLE IF NOT EXISTS respaldo_bd (
+                    CREATE TABLE IF NOT EXISTS administracion_respaldos (
                         id_respaldo INT NOT NULL AUTO_INCREMENT,
                         nombre_archivo VARCHAR(255) NOT NULL,
                         tamano BIGINT NOT NULL DEFAULT 0,
@@ -46,7 +46,7 @@ class RespaldoModel(BaseModel):
                 conn.close()
             return True
         except Exception as e:
-            print(f"[DB] No se pudo asegurar tabla respaldo_bd: {e}")
+            print(f"[DB] No se pudo asegurar tabla administracion_respaldos: {e}")
             return False
 
     def _asegurar_tabla_seguridad(self):
@@ -240,12 +240,12 @@ class RespaldoModel(BaseModel):
             raise RuntimeError('No se pudo conectar a la base de datos para registrar el respaldo.')
         cur = conn.cursor()
         try:
-            cur.execute("SELECT COALESCE(MAX(id_respaldo), 0) + 1 AS siguiente_id FROM respaldo_bd")
+            cur.execute("SELECT COALESCE(MAX(id_respaldo), 0) + 1 AS siguiente_id FROM administracion_respaldos")
             fila = cur.fetchone()
             siguiente_id = fila[0] if fila else 1
 
             cur.execute(
-                "INSERT INTO respaldo_bd (id_respaldo, nombre_archivo, tamano, descripcion) VALUES (%s, %s, %s, %s)",
+                "INSERT INTO administracion_respaldos (id_respaldo, nombre_archivo, tamano, descripcion) VALUES (%s, %s, %s, %s)",
                 (siguiente_id, nombre_archivo, tamano, descripcion)
             )
             conn.commit()
@@ -279,7 +279,7 @@ class RespaldoModel(BaseModel):
             return []
         cur = conn.cursor(dictionary=True)
         try:
-            cur.execute("SELECT * FROM respaldo_bd WHERE estado=1 ORDER BY fecha_respaldo DESC")
+            cur.execute("SELECT * FROM administracion_respaldos WHERE estado=1 ORDER BY fecha_respaldo DESC")
             respaldos = cur.fetchall() or []
             for r in respaldos:
                 r['tamano_formateado'] = self._formatear_tamano(r.get('tamano', 0) or 0)
@@ -298,7 +298,7 @@ class RespaldoModel(BaseModel):
             return None
         cur = conn.cursor(dictionary=True)
         try:
-            cur.execute("SELECT * FROM respaldo_bd WHERE id_respaldo=%s AND estado=1", (id_respaldo,))
+            cur.execute("SELECT * FROM administracion_respaldos WHERE id_respaldo=%s AND estado=1", (id_respaldo,))
             return cur.fetchone()
         except Exception:
             return None
@@ -322,7 +322,7 @@ class RespaldoModel(BaseModel):
             return False
         cur = conn.cursor()
         try:
-            cur.execute("UPDATE respaldo_bd SET estado=0 WHERE id_respaldo=%s AND estado=1", (id_respaldo,))
+            cur.execute("UPDATE administracion_respaldos SET estado=0 WHERE id_respaldo=%s AND estado=1", (id_respaldo,))
             conn.commit()
             afectados = cur.rowcount
         except Exception:
@@ -371,12 +371,12 @@ class RespaldoModel(BaseModel):
             raise RuntimeError('No se pudo conectar a la base de datos para registrar la importación.')
         cur = conn.cursor()
         try:
-            cur.execute("SELECT COALESCE(MAX(id_respaldo), 0) + 1 AS siguiente_id FROM respaldo_bd")
+            cur.execute("SELECT COALESCE(MAX(id_respaldo), 0) + 1 AS siguiente_id FROM administracion_respaldos")
             fila = cur.fetchone()
             siguiente_id = fila[0] if fila else 1
 
             cur.execute(
-                "INSERT INTO respaldo_bd (id_respaldo, nombre_archivo, tamano, descripcion) VALUES (%s, %s, %s, %s)",
+                "INSERT INTO administracion_respaldos (id_respaldo, nombre_archivo, tamano, descripcion) VALUES (%s, %s, %s, %s)",
                 (siguiente_id, nombre_archivo, tamano, descripcion)
             )
             conn.commit()

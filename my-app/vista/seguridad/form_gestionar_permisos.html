@@ -156,7 +156,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title fw-bold"><i class="bi bi-person-badge me-2"></i><span id="modalRolTitle">Nuevo Rol</span></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="modal-close-btn" data-bs-dismiss="modal" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
       </div>
       <div class="modal-body">
         <form id="formRol" novalidate>
@@ -187,11 +189,13 @@
 
 <!-- ============ MODAL MÓDULO ============ -->
 <div class="modal fade" id="modalModulo" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title fw-bold"><i class="bi bi-grid-1x2 me-2"></i><span id="modalModuloTitle">Nuevo Módulo</span></h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="modal-close-btn" data-bs-dismiss="modal" aria-label="Close">
+          <i class="bi bi-x-lg"></i>
+        </button>
       </div>
       <div class="modal-body">
         <form id="formModulo" novalidate>
@@ -206,7 +210,7 @@
             <div class="col-md-6">
               <label class="form-label fw-semibold">URL del menú</label>
               <input type="text" class="form-control" id="url_modulo" maxlength="120"
-                     placeholder="/gestionar-..." required>
+                     placeholder="Ej: /usuarios, /solicitudes" required>
             </div>
             <div class="col-md-4">
               <label class="form-label fw-semibold">Tipo</label>
@@ -218,11 +222,23 @@
             </div>
             <div class="col-md-4">
               <label class="form-label fw-semibold">Ícono (clase)</label>
-              <input type="text" class="form-control" id="icono_modulo" maxlength="60" placeholder="bi-folder">
+              <div class="dropdown icon-picker-dropdown w-100">
+                  <button class="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-between" type="button" data-bs-toggle="dropdown" data-bs-boundary="viewport" aria-expanded="false">
+                  <span class="d-flex align-items-center">
+                    <i class="bi bi-folder me-2" id="icono_dropdown_preview"></i>
+                    <span id="icono_dropdown_text" class="text-truncate">Selecciona icono</span>
+                  </span>
+                  <i class="bi bi-chevron-down ms-2"></i>
+                </button>
+                <div class="dropdown-menu p-2" id="icono_dropdown_menu" style="max-height:300px;overflow-y:auto;">
+                  <div class="row g-1" id="icono_dropdown_grid"></div>
+                </div>
+              </div>
+              <input type="hidden" id="icono_modulo" value="">
             </div>
             <div class="col-md-4">
               <label class="form-label fw-semibold">Orden</label>
-              <input type="number" class="form-control" id="orden_modulo" value="0" min="0">
+              <input type="number" class="form-control" id="orden_modulo" value="0" min="0" placeholder="0">
             </div>
             <div class="col-12">
               <label class="form-label fw-semibold">Descripción</label>

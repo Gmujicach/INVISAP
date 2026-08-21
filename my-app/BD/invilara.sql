@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 14-08-2026 a las 16:01:23
+-- Tiempo de generación: 21-08-2026 a las 06:37:11
 -- Versión del servidor: 9.4.0
 -- Versión de PHP: 8.3.30
 
@@ -32,7 +32,7 @@ USE `invilara`;
 CREATE TABLE `avance` (
   `id_avance` varchar(45) NOT NULL,
   `porcentaje_avance` int NOT NULL,
-  `descripcion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `descripcion` text NOT NULL,
   `gerente` int NOT NULL,
   `fecha_avance` date NOT NULL,
   `obra_id_obra` int NOT NULL,
@@ -70,11 +70,13 @@ INSERT INTO `avance` (`id_avance`, `porcentaje_avance`, `descripcion`, `gerente`
 ('7abe4665215b', 100, 'En la Luis Hurtado se arreglo la via', 1, '2026-07-01', 16, 16, 1, 'FRE-001', 1),
 ('80e3115d8f95', 44, 'Sector La Aguada se necesita asfaltar', 1, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
 ('83bc77674b51', 100, 'En la Luis Hurtado se arreglo la via', 1, '2026-07-01', 15, 15, 1, 'FRE-001', 1),
-('8c961919a946', 67, 'Ha ocurrido una obstrucción en la vía y se ti', 1, '2026-08-10', 24, 24, 1, 'FRE-001', 1),
+('86e4fcc4dfbe', 100, 'Se termino de reconstruir la vía para darle paso a los vehículos y a los peatones', 1, '2026-08-18', 24, 24, 1, 'FRE-001', 1),
+('8c961919a946', 67, 'Se ha constatado una obstrucción crítica en la vía principal de la Comunidad La Salle en El Cují, la cual interrumpe de manera parcial/total el libre tránsito vehicular y peatonal. Dicha interrupción se origina por la acumulación de sedimentos, material granular y/o fallas conexas en el sistema de drenaje superficial, lo que ha propiciado el colapso operativo del tramo afectado.\r\n2. Evaluación de Riesgos y Afectaciones\r\n\r\n    Vulnerabilidad Vial: La presencia de este obstáculo genera un embotellamiento del tráfico local, incrementando el riesgo de colisiones y dificultando el acceso de vehículos de emergencia y transporte público a la zona residencial.\r\n\r\n    Sistema de Drenaje: Se observa un estancamiento de aguas pluviales debido a la obstrucción de lasalcantarillas y cunetas, lo que acelera el deterioro prematuro de la capa de rodamiento (asfalto/concreto) por saturación de la sub-base.\r\n\r\n    Seguridad Peatonal: Los transeúntes, en especial niños y adultos mayores, se ven en la obligación de invadir el canal de circulación vehicular para sortear el área afectada, exponiéndose a situaciones de peligro inminente.\r\n\r\n3. Conclusiones y Recomendaciones Técnicas\r\n\r\n    Remoción Inmediata: Se requiere la movilización prioritaria de maquinaria pesada (minicargador o retroexcavadora) y cuadrilla de obreros para el saneamiento, despeje y retiro de escombros o material sedimentado en la calzada.\r\n\r\n    Mantenimiento Preventivo de Drenajes: Realizar una inspección con hidrojet o limpieza manual de los colectores y cunetas adyacentes para garantizar la fluidez hidráulica y evitar futuras inundaciones o socavaciones en la vía.\r\n\r\n    Señalización Temporal: Colocar señalización preventiva de obra (conos, vallas y cinta de peligro) en el perímetro afectado para alertar a los conductores sobre la reducción de la calzada, mitigando así el riesgo de accidentes durante las horas nocturnas y diurnas.', 1, '2026-08-10', 24, 24, 1, 'FRE-001', 1),
 ('8e85d8b4f2a0', 25, 'Test', 1, '2026-07-05', 24, 24, 1, 'FRE-001', 1),
 ('9214ff06713f', 100, 'En la Luis Hurtado se llevo a cabo la restaur', 5, '2026-07-01', 7, 7, 1, 'FRE-001', 1),
 ('942e517e2048', 38, 'En Tamaca hay que asfaltar', 1, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
 ('9594c25e7a16', 48, 'esto es un informe muy serio y muy largo así ', 6, '2026-08-14', 24, 24, 1, 'FRE-001', 1),
+('9a6e2816e7f4', 100, 'Se termino de reconstruir la vía para darle paso a los vehículos y a los peatones', 1, '2026-08-18', 24, 24, 1, 'FRE-001', 1),
 ('a09e4dfbbe8c', 64, 'En la comunidad Nuevo horizonte', 6, '2026-07-02', 23, 23, 1, 'FRE-001', 1),
 ('a12e302ae883', 100, 'En la Luis Hurtado se arreglo la via', 1, '2026-07-01', 14, 14, 1, 'FRE-001', 1),
 ('ad20d3759114', 13, 'En Av. Intercomunal se hizo un asfaltado y em', 5, '2026-07-03', 24, 24, 1, 'FRE-001', 1),
@@ -387,7 +389,9 @@ INSERT INTO `informe_avance_obra` (`id_informe`, `fecha`, `estado`, `poblacion_b
 (51, '2026-07-06 19:53:13', 'Culminado', 'Av. Rotaria, Sector La Montañita en Morán', 'Mayor', '19,21,20', '15,16,17', '', 'b0d8247b2d01', 1),
 (52, '2026-07-07 00:44:24', 'En Ejecucion', 'Sector La Aguada, Calle Principal 20 personas', 'Menor', '19,12,22', '', '', 'c46ec2a9eb43', 1),
 (53, '2026-07-07 20:04:11', 'En Ejecucion', 'La Salle por donde los edificios', 'Avance Mensual', '19,20,21', '18,13', '', 'bc2a0329e738', 1),
-(54, '2026-08-10 18:48:21', 'Aprobado', 'Comunidad la Salle, El Cuji', 'Ficha Inspeccion Tecnica', '30', '28', '25', '8c961919a946', 1);
+(54, '2026-08-10 18:48:21', 'Aprobado', 'Comunidad la Salle, El Cuji', 'Ficha Inspeccion Tecnica', '', '16,15,28', '', '8c961919a946', 1),
+(55, '2026-08-18 03:31:50', 'Culminado', 'Comunidad santa la Rosa', 'Avance Mensual', '19,12,30', '16', '', '9a6e2816e7f4', 1),
+(56, '2026-08-18 03:31:51', 'Culminado', 'Comunidad santa la Rosa', 'Avance Mensual', '19,12,30', '16', '', '86e4fcc4dfbe', 1);
 
 -- --------------------------------------------------------
 
@@ -567,7 +571,8 @@ CREATE TABLE `particular` (
 INSERT INTO `particular` (`id_particular`, `nombre`, `apellido`, `persona_id_persona`, `estado`) VALUES
 (1, 'Gabriel', 'Mujica', 1, 1),
 (2, 'Mariangel', 'Bokor', 11, 1),
-(3, 'Guillermo', 'Torres', 18, 1);
+(3, 'Guillermo', 'Torres', 18, 1),
+(4, 'Susana', 'Torres', 21, 1);
 
 -- --------------------------------------------------------
 
@@ -608,7 +613,8 @@ INSERT INTO `persona` (`id_persona`, `cedula_persona`, `direccion`, `parroquia`,
 (17, 25289197, 'Calle Carabobo, Casa N° 34', 'Anzoátegui', 'Morán', '04120896778', 'FranVier@gmail.com', 1),
 (18, 28342778, 'Calle 5 con Carrera 6', 'Freitez', 'Crespo', '04127766654', 'Guille@gmail.com', 1),
 (19, 28456734, 'Urb. Sucre, Avenida 27 con calle 30, Casa #15', 'Catedral', 'Iribarren', '04121234567', 'maria.perez@ejemplo.com', 1),
-(20, 22345678, 'Urb. Valle Hondo, Calle 3, Quinta La Perla', 'Cabudare', 'Palavecino', '04129876543', 'CarlosGomezIng@gmail.com', 1);
+(20, 22345678, 'Urb. Valle Hondo, Calle 3, Quinta La Perla', 'Cabudare', 'Palavecino', '04129876543', 'CarlosGomezIng@gmail.com', 1),
+(21, 29057934, 'Calle 5 con carrera 6B', 'Cabudare', 'Palavecino', '04128763478', 'Susanita@gmail.com', 1);
 
 -- --------------------------------------------------------
 
@@ -827,7 +833,8 @@ INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus
 (7, '2026-06-16 17:58:23', 'Comunidad', 'En Proceso', '[Infraestructura y Vialidad] Acondicionamiento vial', 6, 1, 1),
 (8, '2026-06-24 16:04:42', 'Particular', 'En Proceso', '[Servicios Básicos (Agua, Luz, Gas)] No hay agua y todos nos estamos derritiendo, porfis traigan aguita aaaaaaaaa', 11, 1, 1),
 (9, '2026-07-05 22:32:39', 'Institucion', 'En Proceso', '[Infraestructura y Vialidad] Reparación de bacheo profundo en el acceso principal de la institución por filtraciones.', 16, 1, 1),
-(10, '2026-07-07 19:59:35', 'Particular', 'En Proceso', '[Salud y Asistencia Médica] Se necesita una jornada de vacunacion', 18, 1, 1);
+(10, '2026-07-07 19:59:35', 'Particular', 'En Proceso', '[Salud y Asistencia Médica] Se necesita una jornada de vacunacion', 18, 1, 1),
+(11, '2026-08-17 00:55:59', 'Particular', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] En la comunidad no hay agua', 21, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -836,16 +843,16 @@ INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `vista_evidencia_informe` (
-`estado` tinyint
-,`estado_informe` varchar(25)
-,`etapa` enum('antes','durante','despues')
-,`fecha_informe` datetime
-,`fecha_registro` datetime
+`id_evidencia` int
 ,`fotos` varchar(255)
-,`id_evidencia` int
-,`id_informe` int
-,`tipo_informe` varchar(30)
 ,`url_archivos` varchar(255)
+,`fecha_registro` datetime
+,`etapa` enum('antes','durante','despues')
+,`estado` tinyint
+,`id_informe` int
+,`fecha_informe` datetime
+,`tipo_informe` varchar(30)
+,`estado_informe` varchar(25)
 );
 
 --
@@ -1081,7 +1088,7 @@ ALTER TABLE `gravedad_obra`
 -- AUTO_INCREMENT de la tabla `informe_avance_obra`
 --
 ALTER TABLE `informe_avance_obra`
-  MODIFY `id_informe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+  MODIFY `id_informe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT de la tabla `inspeccion`
@@ -1111,13 +1118,13 @@ ALTER TABLE `obra`
 -- AUTO_INCREMENT de la tabla `particular`
 --
 ALTER TABLE `particular`
-  MODIFY `id_particular` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_particular` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `persona`
 --
 ALTER TABLE `persona`
-  MODIFY `id_persona` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_persona` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `prioridad`
@@ -1147,7 +1154,7 @@ ALTER TABLE `semaforo`
 -- AUTO_INCREMENT de la tabla `solicitudes`
 --
 ALTER TABLE `solicitudes`
-  MODIFY `id_solicitudes` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_solicitudes` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 -- --------------------------------------------------------
 

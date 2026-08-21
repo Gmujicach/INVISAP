@@ -91,26 +91,23 @@
 
 .modal-content { border-radius: 16px; border: none; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
 .modal-header { background: #f8fafc; border-bottom: 2px solid #f1c40f; border-radius: 16px 16px 0 0; position: relative; }
-.modal-header .btn-close {
-  width: 2rem; height: 2rem;
-  background-color: #fff;
+.modal-close-btn {
+  width: 2.2rem; height: 2.2rem;
   border-radius: 50%;
+  border: none;
+  background: #fff;
   box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  opacity: 1;
-  color: #1a1a1a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
-.modal-header .btn-close:hover {
-  background-color: #f1f5f9;
-  transform: rotate(90deg);
-}
-body.dark-mode .modal-header .btn-close {
-  background-color: #2b2c40;
-  color: #e7e7f3;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
-}
-body.dark-mode .modal-header .btn-close:hover {
-  background-color: #34354f;
-}
+.modal-close-btn:hover { transform: rotate(90deg); background: #f1f5f9; }
+.modal-close-btn i { color: #dc3545; font-size: 1.1rem; }
+body.dark-mode .modal-close-btn { background: #2b2c40; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+body.dark-mode .modal-close-btn:hover { background: #34354f; }
+body.dark-mode .modal-close-btn i { color: #f1c40f; }
 .modal-title { color: #1a1a1a; font-size: 1.2rem; }
 .modal-title i { color: #f1c40f; }
 .modal-body .form-label { color: #1a1a1a; font-weight: 600; }
@@ -124,6 +121,11 @@ body.dark-mode .modal-header .btn-close:hover {
 .modal-footer .btn-primary { background: #2e7d32; border-color: #2e7d32; border-radius: 30px; padding: 0.5rem 2rem; font-weight: 600; }
 .modal-footer .btn-primary:hover { background: #1b5e20; border-color: #1b5e20; }
 .modal-footer .btn-secondary { border-radius: 30px; padding: 0.5rem 1.8rem; }
+.modal-footer { flex-wrap: wrap; gap: 0.5rem; }
+.modal-body { overflow-y: auto; max-height: 70vh; }
+.icon-picker-dropdown .dropdown-menu { min-width: 0; width: 100%; left: 0; right: auto; }
+.icon-picker-dropdown .dropdown-toggle { overflow: hidden; }
+.icon-picker-dropdown .dropdown-toggle #icono_dropdown_text { min-width: 0; flex: 1 1 auto; }
 
 /* ---- Modo Oscuro (accesibilidad) ---- */
 body.dark-mode .seguridad-header,
@@ -151,6 +153,66 @@ body.dark-mode .seguridad-table-card .badge { color: #ffffff !important; }
 body.dark-mode .seguridad-table-card .badge.bg-info,
 body.dark-mode .seguridad-table-card .badge.bg-success,
 body.dark-mode .seguridad-table-card .badge.bg-secondary { color: #ffffff !important; }
+
+.url-editable {
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+  display: inline-block;
+  min-width: 60px;
+}
+.url-editable:hover {
+  background: #e2e8f0;
+}
+.url-editable-input {
+  width: 100%;
+  min-width: 180px;
+  padding: 6px 10px;
+  border: 2px solid #2e7d32;
+  border-radius: 6px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.92rem;
+  color: #1a1a1a;
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(46,125,50,0.25);
+}
+.icon-picker-dropdown .icon-grid-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: all 0.15s;
+  aspect-ratio: 1 / 1;
+}
+.icon-picker-dropdown .icon-grid-item i {
+  font-size: 1.3rem;
+  color: #475569;
+}
+.icon-picker-dropdown .icon-grid-item:hover {
+  background: #f0f7f0;
+  border-color: #2e7d32;
+}
+.icon-picker-dropdown .icon-grid-item.active {
+  background: #e8f5e9;
+  border-color: #2e7d32;
+  color: #2e7d32;
+  font-weight: 600;
+}
+.icon-picker-dropdown .icon-grid-item.active i {
+  color: #2e7d32;
+}
+body.dark-mode .icon-picker-dropdown .icon-grid-item i { color: #c9c9e0; }
+body.dark-mode .icon-picker-dropdown .icon-grid-item:hover { background: #34354f; border-color: #f1c40f; }
+body.dark-mode .icon-picker-dropdown .icon-grid-item.active { background: #34354f; border-color: #f1c40f; color: #f1c40f; }
+body.dark-mode .icon-picker-dropdown .icon-grid-item.active i { color: #f1c40f; }
 
 @media (max-width: 768px) {
   .seguridad-header { padding: 1.5rem; }

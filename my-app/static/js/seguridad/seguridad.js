@@ -25,6 +25,46 @@ function tipoBadge(tipo) {
   return `<span class="badge ${color}">${tipo}</span>`;
 }
 
+const ICONOS_MODULO = [
+  'bi-folder','bi-folder2','bi-person','bi-people','bi-people-fill',
+  'bi-person-bounding-box','bi-house','bi-building','bi-gear','bi-tools',
+  'bi-clipboard','bi-clipboard-check','bi-card-list','bi-list-task','bi-images',
+  'bi-newspaper','bi-bar-chart','bi-bar-chart-line','bi-graph-up','bi-truck',
+  'bi-briefcase','bi-exclamation-triangle','bi-arrow-up','bi-shield',
+  'bi-journal-text','bi-table','bi-envelope','bi-bell','bi-lock','bi-key',
+  'bi-cart','bi-calendar','bi-clock','bi-geo-alt','bi-wrench','bi-tag',
+  'bi-star','bi-heart','bi-check-circle','bi-x-circle','bi-plus-circle',
+  'bi-pencil','bi-eye','bi-search','bi-download','bi-upload','bi-trash',
+  'bi-recycle','bi-link','bi-box','bi-bag','bi-moon','bi-sun'
+];
+
+function populateIconPicker() {
+  const grid = document.getElementById('icono_dropdown_grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  ICONOS_MODULO.forEach(function(icono) {
+    const col = document.createElement('div');
+    col.className = 'col-4 col-sm-3 col-md-2';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn btn-outline-secondary w-100 icon-grid-item py-2';
+    btn.dataset.icon = icono;
+    btn.innerHTML = '<i class="bi ' + icono + '" style="font-size:1.2rem;"></i>';
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('icono_modulo').value = icono;
+      document.getElementById('icono_dropdown_preview').className = 'bi ' + icono + ' me-2';
+      document.getElementById('icono_dropdown_text').textContent = icono;
+      document.querySelectorAll('.icon-grid-item').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      bootstrap.Dropdown.getInstance(document.querySelector('.icon-picker-dropdown > button')).hide();
+    });
+    col.appendChild(btn);
+    grid.appendChild(col);
+  });
+}
+
 // ============================================================
 // ROLES
 // ============================================================
@@ -82,16 +122,16 @@ function editarRol(id) {
 }
 function eliminarRol(id) {
   Swal.fire({
-    title: '¿Desactivar este rol?',
-    text: 'No se eliminará físicamente, solo se desactivará.',
+    title: '¿Desea eliminar este rol?',
+    text: 'Se eliminará este rol del sistema.',
     icon: 'warning', showCancelButton: true,
-    confirmButtonText: 'Sí, desactivar', cancelButtonText: 'Cancelar'
+    confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar'
   }).then(res => {
     if (!res.isConfirmed) return;
     fetch(`/api/seguridad/roles/eliminar/${id}`, { method: 'DELETE' })
       .then(r => r.json())
       .then(d => {
-        if (d.success) { Swal.fire('Listo', d.message, 'success'); cargarRoles(); cargarSelectRol(); localStorage.setItem('invisap_roles_updated', Date.now()); }
+        if (d.success) { Swal.fire('Listo', 'Rol eliminado exitosamente', 'success'); cargarRoles(); cargarSelectRol(); localStorage.setItem('invisap_roles_updated', Date.now()); }
         else Swal.fire('Error', d.message, 'error');
       });
   });
@@ -162,7 +202,7 @@ function renderTablaModulos(modulos) {
     tr.innerHTML = `
       <td>${m.id_modulo}</td>
       <td><strong>${m.nombre}</strong></td>
-      <td><code>${m.url}</code></td>
+      <td><code class="url-editable" data-id="${m.id_modulo}" data-url="${m.url}">${m.url}</code></td>
       <td>${tipoBadge(m.tipo)}</td>
       <td>${estadoBadge(m.estado)}</td>
       <td>
@@ -172,6 +212,40 @@ function renderTablaModulos(modulos) {
     tb.appendChild(tr);
   });
 }
+function guardarUrlModulo(idModulo, nuevaUrl) {
+  fetch(`/api/seguridad/modulos/obtener/${idModulo}`)
+    .then(r => r.json())
+    .then(d => {
+      if (!d) return Promise.reject('Módulo no encontrado');
+      const payload = {
+        nombre: d.nombre,
+        descripcion: d.descripcion || '',
+        url: nuevaUrl,
+        tipo: d.tipo,
+        icono: d.icono || '',
+        orden: d.orden || 0,
+        estado: d.estado
+      };
+      return fetch(`/api/seguridad/modulos/actualizar/${idModulo}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    })
+    .then(r => r ? r.json() : null)
+    .then(d => {
+      if (d && d.success) {
+        cargarModulos();
+      } else if (d) {
+        Swal.fire('Error', d.message || 'No se pudo actualizar la URL.', 'error');
+        cargarModulos();
+      }
+    })
+    .catch(() => {
+      Swal.fire('Error', 'Error de conexión.', 'error');
+      cargarModulos();
+    });
+}
 function resetFormModulo() {
   document.getElementById('modalModuloTitle').textContent = 'Nuevo Módulo';
   document.getElementById('id_modulo').value = '';
@@ -180,6 +254,8 @@ function resetFormModulo() {
   document.getElementById('descripcion_modulo').value = '';
   document.getElementById('tipo_modulo').value = 'CRUD';
   document.getElementById('icono_modulo').value = '';
+  document.getElementById('icono_dropdown_preview').className = 'bi bi-folder me-2';
+  document.getElementById('icono_dropdown_text').textContent = 'Selecciona icono del módulo';
   document.getElementById('orden_modulo').value = '0';
   document.getElementById('estado_modulo').checked = true;
   document.getElementById('formModulo').classList.remove('was-validated');
@@ -197,8 +273,20 @@ function editarModulo(id) {
       document.getElementById('descripcion_modulo').value = d.descripcion || '';
       document.getElementById('tipo_modulo').value = d.tipo;
       document.getElementById('icono_modulo').value = d.icono || '';
+      if (d.icono) {
+        document.getElementById('icono_dropdown_preview').className = 'bi ' + d.icono + ' me-2';
+        document.getElementById('icono_dropdown_text').textContent = d.icono;
+      } else {
+        document.getElementById('icono_dropdown_preview').className = 'bi bi-folder me-2';
+        document.getElementById('icono_dropdown_text').textContent = 'Selecciona icono del módulo';
+      }
       document.getElementById('orden_modulo').value = d.orden || 0;
       document.getElementById('estado_modulo').checked = d.estado == 1;
+      document.querySelectorAll('.icon-grid-item').forEach(function(b) { b.classList.remove('active'); });
+      if (d.icono) {
+        const match = document.querySelector('.icon-grid-item[data-icon="' + d.icono + '"]');
+        if (match) match.classList.add('active');
+      }
       ocultarAlertaSeguridad('mensajeModulo');
       new bootstrap.Modal(document.getElementById('modalModulo')).show();
     })
@@ -206,15 +294,15 @@ function editarModulo(id) {
 }
 function eliminarModulo(id) {
   Swal.fire({
-    title: '¿Desactivar este módulo?', text: 'Se ocultará del sistema.',
+    title: '¿Desea eliminar este módulo?', text: 'Se eliminará del sistema.',
     icon: 'warning', showCancelButton: true,
-    confirmButtonText: 'Sí, desactivar', cancelButtonText: 'Cancelar'
+    confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar'
   }).then(res => {
     if (!res.isConfirmed) return;
     fetch(`/api/seguridad/modulos/eliminar/${id}`, { method: 'DELETE' })
       .then(r => r.json())
       .then(d => {
-        if (d.success) { Swal.fire('Listo', d.message, 'success'); cargarModulos(); }
+        if (d.success) { Swal.fire('Listo', 'Módulo eliminado exitosamente', 'success'); cargarModulos(); }
         else Swal.fire('Error', d.message, 'error');
       });
   });
@@ -335,6 +423,7 @@ document.addEventListener('DOMContentLoaded', function () {
   cargarRoles();
   cargarModulos();
   cargarSelectRol();
+  populateIconPicker();
 
   document.getElementById('btnGuardarRol').addEventListener('click', guardarRol);
   document.getElementById('btnGuardarModulo').addEventListener('click', guardarModulo);
@@ -342,4 +431,44 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('selectRol').addEventListener('change', cargarPermisos);
   document.getElementById('buscarRol').addEventListener('keyup', () => filaFiltro('buscarRol', 'cuerpoRoles'));
   document.getElementById('buscarModulo').addEventListener('keyup', () => filaFiltro('buscarModulo', 'cuerpoModulos'));
+
+  document.getElementById('cuerpoModulos').addEventListener('click', function(e) {
+    const celda = e.target.closest('.url-editable');
+    if (!celda) return;
+    const idModulo = celda.dataset.id;
+    const urlActual = celda.dataset.url;
+    if (!idModulo || urlActual === undefined) return;
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = urlActual;
+    input.className = 'url-editable-input';
+    input.maxLength = 120;
+
+    celda.replaceWith(input);
+    input.focus();
+    input.select();
+
+    let guardando = false;
+    function guardar() {
+      if (guardando) return;
+      guardando = true;
+      const nuevaUrl = input.value.trim();
+      if (nuevaUrl !== urlActual) {
+        guardarUrlModulo(idModulo, nuevaUrl);
+      } else {
+        cargarModulos();
+      }
+    }
+    input.addEventListener('blur', guardar);
+    input.addEventListener('keydown', function(ev) {
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        input.blur();
+      } else if (ev.key === 'Escape') {
+        guardando = true;
+        cargarModulos();
+      }
+    });
+  });
 });
