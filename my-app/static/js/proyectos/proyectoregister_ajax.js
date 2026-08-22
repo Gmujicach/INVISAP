@@ -38,7 +38,6 @@ document.getElementById('btnGuardarProyecto').addEventListener('click', function
     const observaciones = document.getElementById('observaciones');
     const codigoProyecto = document.getElementById('Codigo_p');
     const maquinaria = document.getElementById('maquinaria_p');
-    const computos = document.getElementById('computos_p');
     const estimacion = document.getElementById('estimacion_p');
 
     let tieneErrores = false;
@@ -85,12 +84,43 @@ document.getElementById('btnGuardarProyecto').addEventListener('click', function
         maquinaria.classList.add('is-valid');
     }
 
-    if (!computos || computos.value.trim() === '') {
-        marcarInvalidoCustom(computos, 'Los cômputos métricos son obligatorios.');
+    const computosContainer = document.getElementById('computos_metricos_container');
+    const computosItems = computosContainer ? computosContainer.querySelectorAll('.computos_metrico_item') : [];
+    let computosValidos = [];
+    let computosTieneError = false;
+
+    computosItems.forEach(item => {
+        const metrica = item.querySelector('.computos_metrica');
+        const opcion = item.querySelector('.computos_opcion');
+        const costo = item.querySelector('.computos_costo');
+        if (metrica && metrica.value && opcion && opcion.value.trim() && costo && costo.value.trim()) {
+            computosValidos.push({
+                metrica: metrica.value,
+                opcion: opcion.value.trim(),
+                costo: costo.value.trim()
+            });
+        }
+    });
+
+    if (computosValidos.length === 0) {
+        computosTieneError = true;
+        if (computosContainer) {
+            computosContainer.classList.add('is-invalid');
+            let fb = computosContainer.parentElement.querySelector('.invalid-feedback');
+            if (!fb) {
+                fb = document.createElement('div');
+                fb.className = 'invalid-feedback d-block';
+                computosContainer.parentElement.appendChild(fb);
+            }
+            fb.textContent = 'Debe agregar al menos un cómputo métrico.';
+        }
         tieneErrores = true;
     } else {
-        computos.classList.remove('is-invalid');
-        computos.classList.add('is-valid');
+        if (computosContainer) {
+            computosContainer.classList.remove('is-invalid');
+            const fb = computosContainer.parentElement.querySelector('.invalid-feedback');
+            if (fb) fb.remove();
+        }
     }
 
     if (!estimacion || estimacion.value.trim() === '') {
@@ -126,9 +156,17 @@ document.getElementById('btnGuardarProyecto').addEventListener('click', function
                 codigoProyecto.focus();
                 return;
             }
+            const hiddenComputos = document.getElementById('computos_p');
+            if (hiddenComputos) {
+                hiddenComputos.value = JSON.stringify(computosValidos);
+            }
             enviarFormulario(form);
         });
     } else {
+        const hiddenComputos = document.getElementById('computos_p');
+        if (hiddenComputos) {
+            hiddenComputos.value = JSON.stringify(computosValidos);
+        }
         enviarFormulario(form);
     }
 });
@@ -154,7 +192,7 @@ function enviarFormulario(form) {
                         <td>${formatFecha(p.fecha_planificacion)}</td>
                         <td class="text-uppercase">${p.nombre_solicitante || '—'}</td>
                         <td>${p.descripcion_tecnica || '—'}</td>
-                        <td>${p.computos_metricos || '—'}</td>
+                        <td>${p.computos_metricos_texto || '—'}</td>
                         <td>${p.problematica || '—'}</td>
                         <td><span class="badge bg-dark">${p.nombre_maquinaria || 'PENDIENTE'}</span></td>
                         <td><span class="badge bg-info">${p.nombre_proyectista || 'Sin asignar'}</span></td>
@@ -172,6 +210,29 @@ function enviarFormulario(form) {
                 form.reset();
                 const allInvalids = form.querySelectorAll('.is-invalid');
                 allInvalids.forEach(el => el.classList.remove('is-invalid'));
+                
+                const computosContainer = document.getElementById('computos_metricos_container');
+                if (computosContainer) {
+                    computosContainer.innerHTML = `
+                        <div class="computos_metrico_item input-group shadow-sm mb-2" data-index="0">
+                          <select class="form-select computos_metrica" name="computos_metrica_0" style="max-width: 120px;" required>
+                            <option value="" selected disabled>Métrica</option>
+                            <option value="m2">m2</option>
+                            <option value="m3">m3</option>
+                            <option value="ml">ml</option>
+                            <option value="unidades">unidades</option>
+                            <option value="kg">kg</option>
+                            <option value="lt">lt</option>
+                          </select>
+                          <input type="text" class="form-control computos_opcion" name="computos_opcion_0" placeholder="Ej: asfalto" list="opciones_computos_list" required />
+                          <input type="number" class="form-control computos_costo" name="computos_costo_0" placeholder="Costo" style="max-width: 140px;" min="0" step="0.01" required />
+                          <button type="button" class="btn btn-outline-danger btn-eliminar-computo" style="display: none;">
+                            <i class="bx bx-trash"></i>
+                          </button>
+                        </div>
+                    `;
+                }
+                
                 actualizarContador(1);
             });
         } else {

@@ -477,8 +477,8 @@ function verObra(id_obra) {
                 const desc = p.descripcion_tecnica || '-';
                 document.getElementById('ver_proy_descripcion').textContent = desc;
                 document.getElementById('ver_proy_descripcion').title = desc;
-                document.getElementById('ver_proy_computos').textContent = p.computos_metricos || '-';
-                document.getElementById('ver_proy_computos').title = p.computos_metricos || '';
+                document.getElementById('ver_proy_computos').textContent = p.computos_metricos_texto || '-';
+                document.getElementById('ver_proy_computos').title = p.computos_metricos_texto || '';
 
                 const solicitudes = resp.data.solicitudes || [];
                 const maquinaria = resp.data.maquinaria || [];

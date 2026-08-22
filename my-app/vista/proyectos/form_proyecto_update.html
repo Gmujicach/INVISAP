@@ -64,17 +64,45 @@
             </div>
 
             <div class="row mb-4">
-              <div class="col-md-6">
-                <label for="computos_p" class="form-label fw-bold text-secondary">Cómputos Métricos</label>
-                <input type="text" class="form-control shadow-sm" name="computos_p" id="computos_p" value="{{ proyecto.computos_metricos if proyecto.computos_metricos else '' }}" placeholder="Ej: 150m2 de asfalto" />
-              </div>
-              <div class="col-md-6">
-                <label for="estimacion_p" class="form-label fw-bold text-secondary">Estimación de Costo</label>
-                <input type="text" class="form-control shadow-sm" name="estimacion_p" id="estimacion_p" value="{{ proyecto.estimacion_costo if proyecto.estimacion_costo else '' }}" placeholder="Ej: 50.000,00" />
+              <div class="col-md-12">
+                <label class="form-label fw-bold text-secondary">Cómputos Métricos</label>
+                <div id="computos_metricos_container">
+                  {% set computos_lista = proyecto.computos_metricos if proyecto.computos_metricos is string else proyecto.computos_metricos %}
+                  {% if not computos_lista %}
+                    {% set computos_lista = [{'metrica': '', 'opcion': '', 'costo': ''}] %}
+                  {% endif %}
+                  {% for item in computos_lista %}
+                  <div class="computos_metrico_item input-group shadow-sm mb-2" data-index="{{ loop.index0 }}">
+                    <select class="form-select computos_metrica" name="computos_metrica_{{ loop.index0 }}" style="max-width: 120px;" required>
+                      <option value="" disabled>Métrica</option>
+                      <option value="m2" {{ 'selected' if item.metrica == 'm2' }}>m2</option>
+                      <option value="m3" {{ 'selected' if item.metrica == 'm3' }}>m3</option>
+                      <option value="ml" {{ 'selected' if item.metrica == 'ml' }}>ml</option>
+                      <option value="unidades" {{ 'selected' if item.metrica == 'unidades' }}>unidades</option>
+                      <option value="kg" {{ 'selected' if item.metrica == 'kg' }}>kg</option>
+                      <option value="lt" {{ 'selected' if item.metrica == 'lt' }}>lt</option>
+                    </select>
+                    <input type="text" class="form-control computos_opcion" name="computos_opcion_{{ loop.index0 }}" value="{{ item.opcion or '' }}" placeholder="Ej: asfalto" list="opciones_computos_list" required />
+                    <input type="number" class="form-control computos_costo" name="computos_costo_{{ loop.index0 }}" value="{{ item.costo if item.costo is not none else '' }}" placeholder="Costo" style="max-width: 140px;" min="0" step="0.01" required />
+                    <button type="button" class="btn btn-outline-danger btn-eliminar-computo" style="display: none;">
+                      <i class="bx bx-trash"></i>
+                    </button>
+                  </div>
+                  {% endfor %}
+                </div>
+                <datalist id="opciones_computos_list"></datalist>
+                <input type="hidden" name="computos_p" id="computos_p" />
+                <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="btnAgregarComputo">
+                  <i class="bx bx-plus me-1"></i> Añadir
+                </button>
               </div>
             </div>
 
             <div class="row mb-4">
+              <div class="col-md-6">
+                <label for="estimacion_p" class="form-label fw-bold text-secondary">Estimación de Costo</label>
+                <input type="text" class="form-control shadow-sm" name="estimacion_p" id="estimacion_p" value="{{ proyecto.estimacion_costo if proyecto.estimacion_costo else '' }}" placeholder="Ej: 50.000,00" />
+              </div>
               <div class="col-md-6">
                 <label for="maquinaria_p" class="form-label fw-bold text-secondary">Maquinaria Requerida</label>
                 <select class="form-select shadow-sm" name="maquinaria_p" id="maquinaria_p" required>
@@ -86,6 +114,9 @@
                   {% endfor %}
                 </select>
               </div>
+            </div>
+
+            <div class="row mb-4">
               <div class="col-md-6">
                 <label for="proyectista_p" class="form-label fw-bold text-secondary">Proyectista Asignado</label>
                 <select class="form-select shadow-sm" name="proyectista_p" id="proyectista_p">
@@ -115,6 +146,81 @@
 <script src="{{ url_for('static', filename='js/tour/proyectos/tour.js') }}"></script>
   <script src="{{ url_for('static', filename='js/proyectos/proyecto.js') }}"></script>
 <script src="{{ url_for('static', filename='js/empleados/empleados.js') }}"></script>
+
+<script>
+  function initComputosMetricos(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const btnAgregar = container.parentElement.querySelector('#btnAgregarComputo');
+    const datalist = document.getElementById('opciones_computos_list');
+
+    function actualizarIndices() {
+      const items = container.querySelectorAll('.computos_metrico_item');
+      items.forEach((item, index) => {
+        item.setAttribute('data-index', index);
+        const select = item.querySelector('.computos_metrica');
+        const opcion = item.querySelector('.computos_opcion');
+        const costo = item.querySelector('.computos_costo');
+        const eliminar = item.querySelector('.btn-eliminar-computo');
+        if (select) select.name = `computos_metrica_${index}`;
+        if (opcion) opcion.name = `computos_opcion_${index}`;
+        if (costo) costo.name = `computos_costo_${index}`;
+        if (eliminar) eliminar.style.display = items.length > 1 ? '' : 'none';
+      });
+    }
+
+    function crearItem(index) {
+      const div = document.createElement('div');
+      div.className = 'computos_metrico_item input-group shadow-sm mb-2';
+      div.setAttribute('data-index', index);
+      div.innerHTML = `
+        <select class="form-select computos_metrica" name="computos_metrica_${index}" style="max-width: 120px;" required>
+          <option value="" selected disabled>Métrica</option>
+          <option value="m2">m2</option>
+          <option value="m3">m3</option>
+          <option value="ml">ml</option>
+          <option value="unidades">unidades</option>
+          <option value="kg">kg</option>
+          <option value="lt">lt</option>
+        </select>
+        <input type="text" class="form-control computos_opcion" name="computos_opcion_${index}" placeholder="Ej: asfalto" list="opciones_computos_list" required />
+        <input type="number" class="form-control computos_costo" name="computos_costo_${index}" placeholder="Costo" style="max-width: 140px;" min="0" step="0.01" required />
+        <button type="button" class="btn btn-outline-danger btn-eliminar-computo" style="display: none;">
+          <i class="bx bx-trash"></i>
+        </button>
+      `;
+      return div;
+    }
+
+    if (btnAgregar) {
+      btnAgregar.addEventListener('click', function() {
+        const items = container.querySelectorAll('.computos_metrico_item');
+        const nuevoIndex = items.length;
+        const nuevoItem = crearItem(nuevoIndex);
+        container.appendChild(nuevoItem);
+        actualizarIndices();
+        nuevoItem.querySelector('.computos_opcion').focus();
+      });
+    }
+
+    container.addEventListener('click', function(e) {
+      const btnEliminar = e.target.closest('.btn-eliminar-computo');
+      if (!btnEliminar) return;
+      const item = btnEliminar.closest('.computos_metrico_item');
+      if (item && container.querySelectorAll('.computos_metrico_item').length > 1) {
+        item.remove();
+        actualizarIndices();
+      }
+    });
+
+    actualizarIndices();
+  }
+
+  if (document.getElementById('computos_metricos_container')) {
+    initComputosMetricos('computos_metricos_container');
+  }
+</script>
 <script>
   const formEditarProyecto = document.getElementById('formEditarProyecto');
   if (formEditarProyecto) {

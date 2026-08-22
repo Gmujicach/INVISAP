@@ -1,11 +1,71 @@
 from conexion.conexionBD import connectionBD
 from models.base_model import BaseModel
 import datetime
+import json
 
 
 class ProyectoModel(BaseModel):
     def __init__(self):
         pass
+
+    @staticmethod
+    def _parsear_computos_metricos(valor):
+        if valor is None:
+            return []
+        if isinstance(valor, list):
+            return valor
+        if isinstance(valor, str):
+            valor = valor.strip()
+            if not valor:
+                return []
+            try:
+                datos = json.loads(valor)
+                if isinstance(datos, list):
+                    return datos
+            except (json.JSONDecodeError, TypeError):
+                pass
+            return [{'metrica': '', 'opcion': valor, 'costo': ''}]
+        return []
+
+    @staticmethod
+    def _serializar_computos_metricos(items):
+        if not items:
+            return json.dumps([])
+        if isinstance(items, str):
+            valor = items.strip()
+            if not valor:
+                return json.dumps([])
+            try:
+                json.loads(valor)
+                return valor
+            except (json.JSONDecodeError, TypeError):
+                return json.dumps([{'metrica': '', 'opcion': valor, 'costo': ''}])
+        limpios = []
+        for item in items:
+            if isinstance(item, dict):
+                limpios.append({
+                    'metrica': item.get('metrica', ''),
+                    'opcion': item.get('opcion', ''),
+                    'costo': item.get('costo', '')
+                })
+            elif isinstance(item, str) and item.strip():
+                limpios.append({'metrica': '', 'opcion': item.strip(), 'costo': ''})
+        return json.dumps(limpios)
+
+    @staticmethod
+    def _formatear_computos_metricos(items):
+        datos = ProyectoModel._parsear_computos_metricos(items)
+        if not datos:
+            return ''
+        partes = []
+        for item in datos:
+            costo = item.get('costo', '')
+            metrica = item.get('metrica', '')
+            opcion = item.get('opcion', '')
+            texto = ' '.join(filter(None, [str(costo), metrica, opcion]))
+            if texto.strip():
+                partes.append(texto.strip())
+        return ', '.join(partes) if partes else ''
 
     def validar_codigo_proyecto(self, codigo_proyecto):
         conexion = None
@@ -59,7 +119,7 @@ class ProyectoModel(BaseModel):
                 codigo_proy, 
                 fecha_plan,
                 datos.get('observaciones', '')[:200], 
-                datos.get('computos_p', '')[:255],
+                self._serializar_computos_metricos(datos.get('computos_p', [])),
                 datos.get('estimacion_p', '')[:45],
                 id_proyectista
             )
@@ -132,7 +192,11 @@ class ProyectoModel(BaseModel):
                      WHERE p.estado = 1
                      ORDER BY p.codigo_proyecto DESC"""
             cursor.execute(sql)
-            return cursor.fetchall()
+            proyectos = cursor.fetchall()
+            for p in proyectos:
+                p['computos_metricos'] = self._parsear_computos_metricos(p.get('computos_metricos'))
+                p['computos_metricos_texto'] = self._formatear_computos_metricos(p['computos_metricos'])
+            return proyectos
         except Exception as e:
             print(f"Error en ProyectoModel.obtener_proyectos: {e}")
             return []
@@ -164,7 +228,11 @@ class ProyectoModel(BaseModel):
                      LEFT JOIN empleados e ON p.proyecto_has_empleado = e.id_empleados
                      WHERE p.codigo_proyecto = %s"""
             cursor.execute(sql, (codigo_proyecto,))
-            return cursor.fetchone()
+            proyecto = cursor.fetchone()
+            if proyecto:
+                proyecto['computos_metricos'] = self._parsear_computos_metricos(proyecto.get('computos_metricos'))
+                proyecto['computos_metricos_texto'] = self._formatear_computos_metricos(proyecto['computos_metricos'])
+            return proyecto
         except Exception as e:
             print(f"Error en ProyectoModel.obtener_proyecto_por_id: {e}")
             return None
@@ -187,6 +255,8 @@ class ProyectoModel(BaseModel):
             proyecto = cursor.fetchone()
             if not proyecto:
                 return None
+            proyecto['computos_metricos'] = self._parsear_computos_metricos(proyecto.get('computos_metricos'))
+            proyecto['computos_metricos_texto'] = self._formatear_computos_metricos(proyecto['computos_metricos'])
             cursor.execute("""
                 SELECT s.id_solicitudes, s.tipo_solicitud, s.estatus_solicitud, s.problematica,
                        COALESCE(CONCAT(part.nombre, ' ', part.apellido), inst.razon_social, com.nombre_comunidad) as nombre_solicitante
@@ -249,7 +319,7 @@ class ProyectoModel(BaseModel):
                 codigo_nuevo,
                 fecha_plan,
                 descripcion[:200],
-                datos.get('computos_p', '')[:255],
+                datos.get('computos_p', []) and self._serializar_computos_metricos(datos.get('computos_p', [])) or '',
                 datos.get('estimacion_p', '')[:45],
                 id_proyectista,
                 codigo_proyecto_actual

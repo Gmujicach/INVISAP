@@ -5,9 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const fechaPlan = document.getElementById("fecha_p") || document.getElementsByName("fecha_p")[0];
     const observaciones = document.getElementById("observaciones") || document.getElementsByName("observaciones")[0];
-    const computos = document.getElementById("computos_p") || document.getElementsByName("computos_p")[0];
     const estimacion = document.getElementById("estimacion_p") || document.getElementsByName("estimacion_p")[0];
-
 
     function marcarInvalido(input, mensaje) {
         if (!input) return;
@@ -61,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-         
+           
             let opciones = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
             estimacion.value = (entero / 100).toLocaleString("de-DE", opciones);
             marcarValido(estimacion);
@@ -88,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
     formulario.addEventListener("submit", function (e) {
         let tieneErrores = false;
 
-       
+        
         if (fechaPlan) {
             if (!fechaPlan.value) {
                 marcarInvalido(fechaPlan, "Por favor, seleccione una fecha de planificación.");
@@ -108,14 +106,55 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
+        const computosContainer = document.getElementById('computos_metricos_container');
+        const computosItems = computosContainer ? computosContainer.querySelectorAll('.computos_metrico_item') : [];
+        let computosValidos = [];
+
+        computosItems.forEach(item => {
+            const metrica = item.querySelector('.computos_metrica');
+            const opcion = item.querySelector('.computos_opcion');
+            const costo = item.querySelector('.computos_costo');
+            if (metrica && metrica.value && opcion && opcion.value.trim() && costo && costo.value.trim()) {
+                computosValidos.push({
+                    metrica: metrica.value,
+                    opcion: opcion.value.trim(),
+                    costo: costo.value.trim()
+                });
+            }
+        });
+
+        if (computosValidos.length === 0) {
+            tieneErrores = true;
+            if (computosContainer) {
+                computosContainer.classList.add('is-invalid');
+                let fb = computosContainer.parentElement.querySelector('.invalid-feedback');
+                if (!fb) {
+                    fb = document.createElement('div');
+                    fb.className = 'invalid-feedback d-block';
+                    computosContainer.parentElement.appendChild(fb);
+                }
+                fb.textContent = 'Debe agregar al menos un cómputo métrico.';
+            }
+        } else {
+            if (computosContainer) {
+                computosContainer.classList.remove('is-invalid');
+                const fb = computosContainer.parentElement.querySelector('.invalid-feedback');
+                if (fb) fb.remove();
+            }
+        }
+
         if (tieneErrores) {
             e.preventDefault(); 
             const primerError = formulario.querySelector(".is-invalid");
             if (primerError) primerError.focus();
         } else {
-           
+            
             if (estimacion && estimacion.value.trim() !== "") {
                 estimacion.value = estimacion.value.replace(/\./g, "").replace(",", ".");
+            }
+            const hiddenComputos = document.getElementById('computos_p');
+            if (hiddenComputos) {
+                hiddenComputos.value = JSON.stringify(computosValidos);
             }
         }
     });
