@@ -153,17 +153,23 @@ class RespaldoModel(BaseModel):
     def _obtener_config_bd():
         host = os.getenv('DB_HOST', 'localhost')
         user = os.getenv('DB_USER', 'root')
-        password = _get_env('DB_PASSWORD', '')
+        password = os.getenv('DB_PASSWORD', 'balto04*')
         database = os.getenv('DB_NAME', 'invilara')
         charset = 'utf8mb4'
 
         rutas_mysqldump = [
             r'C:\laragon\bin\mysql\mysql-8.4.3-winx64\bin\mysqldump.exe',
             r'C:\laragon\bin\mysql\mysql-9.4.0-winx64\bin\mysqldump.exe',
+            r'C:\laragon\bin\mysql\mysql-9.7.1-winx64\bin\mysqldump.exe',
+            r'D:\laragon\bin\mysql\mysql-9.7.1-winx64\bin\mysqldump.exe',
             r'C:\laragon\bin\mysql\mysql-8.0.33\bin\mysqldump.exe',
             r'C:\laragon\bin\mysql\mysql-8.0.31\bin\mysqldump.exe',
             r'C:\laragon\bin\mysql\mysql\bin\mysqldump.exe',
             r'C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysqldump.exe',
+            '/usr/bin/mysqldump',
+            '/usr/local/mysql/bin/mysqldump',
+            '/usr/local/bin/mysqldump',
+            '/opt/mysql/bin/mysqldump',
             'mysqldump'
         ]
         mysqldump = next((r for r in rutas_mysqldump if os.path.exists(r)), 'mysqldump')
@@ -171,10 +177,16 @@ class RespaldoModel(BaseModel):
         rutas_mysql = [
             r'C:\laragon\bin\mysql\mysql-8.4.3-winx64\bin\mysql.exe',
             r'C:\laragon\bin\mysql\mysql-9.4.0-winx64\bin\mysql.exe',
+            r'C:\laragon\bin\mysql\mysql-9.7.1-winx64\bin\mysql.exe',
+            r'D:\laragon\bin\mysql\mysql-9.7.1-winx64\bin\mysql.exe',
             r'C:\laragon\bin\mysql\mysql-8.0.33\bin\mysql.exe',
             r'C:\laragon\bin\mysql\mysql-8.0.31\bin\mysql.exe',
             r'C:\laragon\bin\mysql\mysql\bin\mysql.exe',
             r'C:\Program Files\MySQL\MySQL Workbench 8.0 CE\mysql.exe',
+            '/usr/bin/mysql',
+            '/usr/local/mysql/bin/mysql',
+            '/usr/local/bin/mysql',
+            '/opt/mysql/bin/mysql',
             'mysql'
         ]
         mysql = next((r for r in rutas_mysql if os.path.exists(r)), 'mysql')
@@ -191,8 +203,6 @@ class RespaldoModel(BaseModel):
 
     def _exportar_dump(self, ruta_salida):
         cfg = self._obtener_config_bd()
-        env = os.environ.copy()
-        env['MYSQL_PWD'] = cfg['password']
         comando = [
             cfg['mysqldump'],
             f"--host={cfg['host']}",
@@ -206,8 +216,10 @@ class RespaldoModel(BaseModel):
             '--skip-lock-tables',
             cfg['database']
         ]
+        if cfg['password']:
+            comando.insert(3, f"--password={cfg['password']}")
         with open(ruta_salida, 'w', encoding='utf-8') as archivo:
-            resultado = subprocess.run(comando, stdout=archivo, stderr=subprocess.PIPE, text=True, env=env)
+            resultado = subprocess.run(comando, stdout=archivo, stderr=subprocess.PIPE, text=True)
 
         if resultado.returncode != 0:
             if not (os.path.exists(ruta_salida) and os.path.getsize(ruta_salida) > 0):
@@ -217,8 +229,6 @@ class RespaldoModel(BaseModel):
 
     def _importar_sql(self, ruta_archivo):
         cfg = self._obtener_config_bd()
-        env = os.environ.copy()
-        env['MYSQL_PWD'] = cfg['password']
         comando = [
             cfg['mysql'],
             f"--host={cfg['host']}",
@@ -228,8 +238,10 @@ class RespaldoModel(BaseModel):
             '--auto-rehash',
             cfg['database']
         ]
+        if cfg['password']:
+            comando.insert(3, f"--password={cfg['password']}")
         with open(ruta_archivo, 'r', encoding='utf-8') as entrada:
-            resultado = subprocess.run(comando, stdin=entrada, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env)
+            resultado = subprocess.run(comando, stdin=entrada, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if resultado.returncode != 0:
             raise RuntimeError(resultado.stderr or 'Error al ejecutar importación mysql.')
         return True
