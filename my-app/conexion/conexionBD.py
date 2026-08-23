@@ -20,9 +20,9 @@ def _get_env(key, default=''):
     val = os.getenv(key, '')
     return val if val else default
 
-def connectionBD():
-    """Return a new MySQL connection. Reads configuration from env vars with sane defaults."""
-    db_config = {
+def get_db_config():
+    """Retorna la configuración de conexión a la base de datos principal."""
+    return {
         'host': os.getenv('DB_HOST', 'localhost'),
         'user': os.getenv('DB_USER', 'root'),
         'password': os.getenv('DB_PASSWORD', 'balto04*'),
@@ -31,6 +31,10 @@ def connectionBD():
         'use_unicode': True,
         'auth_plugin': _get_env('DB_AUTH_PLUGIN', 'mysql_native_password')
     }
+
+def connectionBD():
+    """Return a new MySQL connection. Reads configuration from env vars with sane defaults."""
+    db_config = get_db_config()
     
     print(f"[DEBUG] Conectando a MySQL: host={db_config['host']}, user={db_config['user']}, db={db_config['database']}")
 

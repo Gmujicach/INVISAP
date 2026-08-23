@@ -10,7 +10,7 @@ import logging
 import traceback
 from datetime import datetime
 from decimal import Decimal
-from conexion.conexionBD import connectionBD_invilara_seguridad, _get_env
+from conexion.conexionBD import connectionBD_invilara_seguridad, get_db_config
 from models.base_model import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -151,11 +151,12 @@ class RespaldoModel(BaseModel):
 
     @staticmethod
     def _obtener_config_bd():
-        host = os.getenv('DB_HOST', 'localhost')
-        user = os.getenv('DB_USER', 'root')
-        password = os.getenv('DB_PASSWORD', 'balto04*')
-        database = os.getenv('DB_NAME', 'invilara')
-        charset = 'utf8mb4'
+        cfg = get_db_config()
+        host = cfg['host']
+        user = cfg['user']
+        password = cfg['password']
+        database = cfg['database']
+        charset = cfg['charset']
 
         rutas_mysqldump = [
             r'C:\laragon\bin\mysql\mysql-8.4.3-winx64\bin\mysqldump.exe',
