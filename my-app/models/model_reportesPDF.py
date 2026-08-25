@@ -248,7 +248,7 @@ class ReportePDFModel(BaseModel):
                 MAX(e.nombre_empleado) AS gerente,
                 DATE_FORMAT(o.fecha_inicio, '%d/%m/%Y') AS fecha_inicio
             FROM obra o
-            JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
+            JOIN semaforo s ON o.estado = s.id_semaforo
             JOIN contratacion c ON o.contratacion_id_contratacion = c.id_contratacion
             LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
             LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1

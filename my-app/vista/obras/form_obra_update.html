@@ -68,12 +68,6 @@
         </div>
 
         <div class="col-md-4">
-          <label class="form-label">Semáforo</label>
-          <select name="semaforo_id_semaforo" id="edit_semaforo_id_semaforo" class="form-select" required>
-            <option value="">Seleccione un semáforo</option>
-          </select>
-        </div>
-        <div class="col-md-4">
           <label class="form-label">Contratación</label>
           <select name="contratacion_id_contratacion" id="edit_contratacion_id_contratacion" class="form-select" required>
             <option value="">Seleccione una contratación</option>
@@ -105,7 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!form) return;
 
     const selects = [
-        { url: '/api/obra/semaforos', selectId: 'edit_semaforo_id_semaforo', valueKey: 'id_semaforo', textKey: 'nombre', selectedValue: '{{ obra.semaforo_id_semaforo }}' },
         { url: '/api/obra/contrataciones', selectId: 'edit_contratacion_id_contratacion', valueKey: 'id_contratacion', textKey: 'numero_contrato', selectedValue: '{{ obra.contratacion_id_contratacion }}' },
         { url: '/api/obra/proyectos', selectId: 'edit_gestionar_proyectos_codigo_proyecto', valueKey: 'codigo_proyecto', textKey: 'codigo_proyecto', selectedValue: '{{ obra.gestionar_proyectos_codigo_proyecto }}' }
     ];

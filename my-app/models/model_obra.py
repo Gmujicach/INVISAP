@@ -77,9 +77,9 @@ class ObraModel(BaseModel):
             sql = """
                 SELECT o.*, s.color, s.descripcion 
                 FROM obra o
-                LEFT JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
-                WHERE o.estado = 1
-                ORDER BY o.fecha_inicio DESC
+                LEFT JOIN semaforo s ON o.estado = s.id_semaforo
+                WHERE o.activo = 1
+                ORDER BY o.id_obra DESC
             """
             cursor.execute(sql)
             return cursor.fetchall()
@@ -102,8 +102,8 @@ class ObraModel(BaseModel):
             sql = """
                 SELECT o.*, s.color, s.descripcion 
                 FROM obra o
-                LEFT JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
-                WHERE o.id_obra = %s AND o.estado = 1
+                LEFT JOIN semaforo s ON o.estado = s.id_semaforo
+                WHERE o.id_obra = %s AND o.activo = 1
             """
             cursor.execute(sql, (id_obra,))
             return cursor.fetchone()
@@ -116,17 +116,17 @@ class ObraModel(BaseModel):
             if conn:
                 conn.close()
 
-    def _sql_validar_semaforo(self, id_semaforo) -> bool:
+    def _sql_validar_estado(self, id_estado) -> bool:
         conn = cursor = None
         try:
             conn = self._con()
             if not conn:
                 return False
             cursor = conn.cursor()
-            cursor.execute("SELECT 1 FROM semaforo WHERE id_semaforo = %s LIMIT 1", (id_semaforo,))
+            cursor.execute("SELECT 1 FROM semaforo WHERE id_semaforo = %s AND estado_registro = 1 LIMIT 1", (id_estado,))
             return cursor.fetchone() is not None
         except Exception as e:
-            print(f"[ObraModel._sql_validar_semaforo] Error: {e}")
+            print(f"[ObraModel._sql_validar_estado] Error: {e}")
             return False
         finally:
             if cursor:
@@ -211,7 +211,7 @@ class ObraModel(BaseModel):
                 'fecha_inicio', 'fecha_fin', 'mediciones_obra',
                 'valuaciones', 'modificaciones_contrato',
                 'certificaciones_obras_ejecutadas', 'numero_contrato',
-                'porcentaje_avance_obra', 'semaforo_id_semaforo',
+                'porcentaje_avance_obra',
                 'contratacion_id_contratacion', 'gestionar_proyectos_codigo_proyecto'
             ]
 
@@ -237,15 +237,22 @@ class ObraModel(BaseModel):
             try:
                 certificaciones = int(datos.get('certificaciones_obras_ejecutadas') or 0)
                 porcentaje = int(datos.get('porcentaje_avance_obra') or 0)
-                id_semaforo = int(datos.get('semaforo_id_semaforo'))
-                id_contratacion = int(datos.get('contratacion_id_contratacion'))
+                id_estado_manual = int(datos.get('estado') or 0)
+                id_contratacion = int(datos.get('contratacion_id_contratacion') or 0)
             except (TypeError, ValueError):
-                return False, "Campos numéricos inválidos. Verifique certificaciones, avance, semáforo y contratación."
+                return False, "Campos numéricos inválidos. Verifique certificaciones, avance, estado y contratación."
 
             if porcentaje < 0 or porcentaje > 100:
                 return False, "Porcentaje de avance debe estar entre 0 y 100."
             if certificaciones < 0:
                 return False, "Certificaciones ejecutadas debe ser mayor o igual a 0."
+
+            if porcentaje >= 70:
+                id_estado = 1
+            elif porcentaje >= 30:
+                id_estado = 2
+            else:
+                id_estado = 3
 
             if not self._validar_fechas(datos.get('fecha_inicio'), datos.get('fecha_fin')):
                 return False, "La fecha de fin no puede ser anterior a la fecha de inicio."
@@ -253,8 +260,8 @@ class ObraModel(BaseModel):
             if self._sql_validar_numero_contrato_duplicado(datos.get('numero_contrato')):
                 return False, "El número de contrato ya está registrado en otra obra."
 
-            if not self._sql_validar_semaforo(id_semaforo):
-                return False, "El semáforo seleccionado no existe."
+            if not self._sql_validar_estado(id_estado):
+                return False, "El estado seleccionado no existe."
             if not self._sql_validar_contratacion(id_contratacion):
                 return False, "La contratación seleccionada no existe."
             if not self._sql_validar_proyecto(datos.get('gestionar_proyectos_codigo_proyecto')):
@@ -269,18 +276,11 @@ class ObraModel(BaseModel):
 
             sql = """
                 INSERT INTO obra (
-<<<<<<< Updated upstream
-                    titulo_obra, ubicacion_obra, periodo_ejecucion, fecha_inicio,
-                    fecha_fin, mediciones_obra, valuaciones, modificaciones_contrato,
-                    certificaciones_obras_ejecutadas, numero_contrato, porcentaje_avance_obra,
-                    semaforo_id_semaforo, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto,
-=======
                     titulo_obra, ubicacion_obra, periodo_ejecucion, fecha_inicio, 
                     fecha_fin, mediciones_obra, valuaciones, modificaciones_contrato, 
                     certificaciones_obras_ejecutadas, numero_contrato, porcentaje_avance_obra, 
-                    semaforo_id_semaforo, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto, 
->>>>>>> Stashed changes
-                    estado
+                    estado, contratacion_id_contratacion, gestionar_proyectos_codigo_proyecto, 
+                    activo
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 1)
             """
             valores = (
@@ -295,7 +295,7 @@ class ObraModel(BaseModel):
                 certificaciones,
                 str(datos.get('numero_contrato')).strip()[:20],
                 porcentaje,
-                id_semaforo,
+                id_estado,
                 id_contratacion,
                 str(datos.get('gestionar_proyectos_codigo_proyecto')).strip()[:15]
             )
@@ -343,15 +343,22 @@ class ObraModel(BaseModel):
             try:
                 certificaciones = int(datos.get('certificaciones_obras_ejecutadas') or 0)
                 porcentaje = int(datos.get('porcentaje_avance_obra') or 0)
-                id_semaforo = int(datos.get('semaforo_id_semaforo'))
-                id_contratacion = int(datos.get('contratacion_id_contratacion'))
+                id_estado_manual = int(datos.get('estado') or 0)
+                id_contratacion = int(datos.get('contratacion_id_contratacion') or 0)
             except (TypeError, ValueError):
-                return False, "Campos numéricos inválidos. Verifique certificaciones, avance, semáforo y contratación."
+                return False, "Campos numéricos inválidos. Verifique certificaciones, avance, estado y contratación."
 
             if porcentaje < 0 or porcentaje > 100:
                 return False, "Porcentaje de avance debe estar entre 0 y 100."
             if certificaciones < 0:
                 return False, "Certificaciones ejecutadas debe ser mayor o igual a 0."
+
+            if porcentaje >= 70:
+                id_estado = 1
+            elif porcentaje >= 30:
+                id_estado = 2
+            else:
+                id_estado = 3
 
             if not self._validar_fechas(datos.get('fecha_inicio'), datos.get('fecha_fin')):
                 return False, "La fecha de fin no puede ser anterior a la fecha de inicio."
@@ -360,8 +367,8 @@ class ObraModel(BaseModel):
             if self._sql_validar_numero_contrato_duplicado(numero_contrato, excluir_id_obra=id_obra):
                 return False, "El número de contrato ya está registrado en otra obra."
 
-            if not self._sql_validar_semaforo(id_semaforo):
-                return False, "El semáforo seleccionado no existe."
+            if not self._sql_validar_estado(id_estado):
+                return False, "El estado seleccionado no existe."
             if not self._sql_validar_contratacion(id_contratacion):
                 return False, "La contratación seleccionada no existe."
             if not self._sql_validar_proyecto(datos.get('gestionar_proyectos_codigo_proyecto')):
@@ -381,9 +388,9 @@ class ObraModel(BaseModel):
                     fecha_inicio = %s, fecha_fin = %s, mediciones_obra = %s,
                     valuaciones = %s, modificaciones_contrato = %s,
                     certificaciones_obras_ejecutadas = %s, numero_contrato = %s,
-                    porcentaje_avance_obra = %s, semaforo_id_semaforo = %s,
+                    porcentaje_avance_obra = %s, estado = %s,
                     contratacion_id_contratacion = %s, gestionar_proyectos_codigo_proyecto = %s
-                WHERE id_obra = %s AND estado = 1
+                WHERE id_obra = %s AND activo = 1
             """
             valores = (
                 str(datos.get('titulo_obra')).strip()[:45],
@@ -397,7 +404,7 @@ class ObraModel(BaseModel):
                 certificaciones,
                 numero_contrato,
                 porcentaje,
-                id_semaforo,
+                id_estado,
                 id_contratacion,
                 str(datos.get('gestionar_proyectos_codigo_proyecto')).strip()[:15],
                 id_obra
@@ -454,17 +461,17 @@ class ObraModel(BaseModel):
             if conn:
                 conn.close()
 
-    def _sql_listar_semaforos(self) -> list:
+    def _sql_listar_estados(self) -> list:
         conn = cursor = None
         try:
             conn = self._con()
             if not conn:
                 return []
             cursor = conn.cursor(dictionary=True)
-            cursor.execute("SELECT id_semaforo, color, color AS nombre FROM semaforo")
+            cursor.execute("SELECT id_semaforo, color, descripcion AS nombre FROM semaforo WHERE estado_registro = 1")
             return cursor.fetchall()
         except Exception as e:
-            print(f"[ObraModel._sql_listar_semaforos] Error: {e}")
+            print(f"[ObraModel._sql_listar_estados] Error: {e}")
             return []
         finally:
             if cursor:
@@ -523,8 +530,8 @@ class ObraModel(BaseModel):
     def eliminar_obra(self, id_obra: int) -> tuple:
         return self._sql_eliminar(id_obra)
 
-    def validar_semaforo(self, id_semaforo) -> bool:
-        return self._sql_validar_semaforo(id_semaforo)
+    def validar_estado(self, id_estado) -> bool:
+        return self._sql_validar_estado(id_estado)
 
     def validar_contratacion(self, id_contratacion) -> bool:
         return self._sql_validar_contratacion(id_contratacion)
@@ -532,8 +539,8 @@ class ObraModel(BaseModel):
     def validar_proyecto(self, codigo_proyecto) -> bool:
         return self._sql_validar_proyecto(codigo_proyecto)
 
-    def listar_semaforos(self) -> list:
-        return self._sql_listar_semaforos()
+    def listar_estados(self) -> list:
+        return self._sql_listar_estados()
 
     def listar_contrataciones(self) -> list:
         return self._sql_listar_contrataciones()

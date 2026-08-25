@@ -10,7 +10,6 @@ function validarFormularioObra(form) {
     const numeroContrato = form.querySelector('[name="numero_contrato"]').value.trim();
     const modificaciones = form.querySelector('[name="modificaciones_contrato"]').value.trim();
     const certificaciones = form.querySelector('[name="certificaciones_obras_ejecutadas"]').value.trim();
-    const semaforo = form.querySelector('[name="semaforo_id_semaforo"]').value.trim();
     const contratacion = form.querySelector('[name="contratacion_id_contratacion"]').value.trim();
     const proyecto = form.querySelector('[name="gestionar_proyectos_codigo_proyecto"]').value.trim();
 
@@ -62,10 +61,6 @@ function validarFormularioObra(form) {
         Swal.fire({ icon: 'error', title: 'Validación', text: 'Certificaciones ejecutadas debe ser un número mayor o igual a 0.', confirmButtonText: 'Aceptar' });
         return false;
     }
-    if (!semaforo) {
-        Swal.fire({ icon: 'error', title: 'Validación', text: 'Debe seleccionar un semáforo.', confirmButtonText: 'Aceptar' });
-        return false;
-    }
     if (!contratacion) {
         Swal.fire({ icon: 'error', title: 'Validación', text: 'Debe seleccionar una contratación.', confirmButtonText: 'Aceptar' });
         return false;
@@ -115,7 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function cargarCatalogosNueva() {
         return Promise.all([
-            cargarSelect('/api/obra/semaforos', 'semaforo_id_semaforo', 'id_semaforo', 'nombre'),
             cargarSelect('/api/obra/contrataciones', 'contratacion_id_contratacion', 'id_contratacion', 'numero_contrato'),
             cargarSelect('/api/obra/proyectos', 'gestionar_proyectos_codigo_proyecto', 'codigo_proyecto', 'codigo_proyecto')
         ]).then(() => {
@@ -127,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function cargarCatalogosEditar() {
         return Promise.all([
-            cargarSelect('/api/obra/semaforos', 'edit_semaforo_id_semaforo', 'id_semaforo', 'nombre'),
             cargarSelect('/api/obra/contrataciones', 'edit_contratacion_id_contratacion', 'id_contratacion', 'numero_contrato'),
             cargarSelect('/api/obra/proyectos', 'edit_gestionar_proyectos_codigo_proyecto', 'codigo_proyecto', 'codigo_proyecto')
         ]).then(() => {
@@ -234,7 +227,6 @@ document.addEventListener('DOMContentLoaded', function() {
             btnSubmit.disabled = true;
 
             const formData = new FormData(formEditarObra);
-            formData.delete('semaforo_id_semaforo_locked');
             formData.delete('contratacion_id_contratacion_locked');
             formData.delete('gestionar_proyectos_codigo_proyecto_locked');
 
@@ -359,10 +351,9 @@ document.addEventListener('DOMContentLoaded', function() {
 function cargarDatosEditar(id_obra) {
     return Promise.all([
         fetch(`/api/obra/obtener/${id_obra}`).then(r => r.json()),
-        fetch('/api/obra/semaforos').then(r => r.json()),
         fetch('/api/obra/contrataciones').then(r => r.json()),
         fetch('/api/obra/proyectos').then(r => r.json())
-    ]).then(([obraResp, semaforos, contrataciones, proyectos]) => {
+    ]).then(([obraResp, contrataciones, proyectos]) => {
         if (obraResp.status !== 'success' || !obraResp.data) {
             throw new Error('No se pudo cargar la obra');
         }
@@ -386,8 +377,8 @@ function cargarDatosEditar(id_obra) {
             const select = document.getElementById(selectId);
             if (!select) return;
             select.innerHTML = '<option value="">Seleccione...</option>';
-            const lista = selectId === 'edit_semaforo_id_semaforo' ? semaforos : (selectId === 'edit_contratacion_id_contratacion' ? contrataciones : proyectos);
-            const vKey = valueKey || 'id_semaforo';
+            const lista = selectId === 'edit_contratacion_id_contratacion' ? contrataciones : proyectos;
+            const vKey = valueKey || 'id_contratacion';
             const tKey = textKey || 'descripcion';
             lista.forEach(item => {
                 const option = document.createElement('option');
@@ -400,7 +391,6 @@ function cargarDatosEditar(id_obra) {
             });
         };
 
-        populateSelect('edit_semaforo_id_semaforo', 'id_semaforo', 'nombre', obra.semaforo_id_semaforo);
         populateSelect('edit_contratacion_id_contratacion', 'id_contratacion', 'numero_contrato', obra.contratacion_id_contratacion);
         populateSelect('edit_gestionar_proyectos_codigo_proyecto', 'codigo_proyecto', 'codigo_proyecto', obra.gestionar_proyectos_codigo_proyecto);
 
@@ -458,7 +448,6 @@ function verObra(id_obra) {
         document.getElementById('ver_numero_contrato').value = obra.numero_contrato || '';
         document.getElementById('ver_modificaciones_contrato').value = obra.modificaciones_contrato || '';
         document.getElementById('ver_certificaciones_obras_ejecutadas').value = obra.certificaciones_obras_ejecutadas || '';
-        document.getElementById('ver_semaforo').value = obra.color || '';
         document.getElementById('ver_contratacion').value = obra.contratacion_id_contratacion || '';
         document.getElementById('ver_proyecto').value =obra.gestionar_proyectos_codigo_proyecto || '';
 

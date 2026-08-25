@@ -134,8 +134,8 @@ class PrioridadModel(BaseModel):
                        ON phs.solicitudes_id_solicitudes = s.id_solicitudes
                 LEFT JOIN obra o
                        ON o.gestionar_proyectos_codigo_proyecto = phs.proyecto_codigo_proyecto
-                LEFT JOIN semaforo sm
-                       ON sm.id_semaforo = o.semaforo_id_semaforo
+                 LEFT JOIN semaforo sm
+                        ON sm.id_semaforo = o.estado
                 WHERE p.estado = 1
                 GROUP BY p.id_gestion_prioridad, p.rango_prioridad, p.justificacion_cambio,
                          p.fecha_asignacion, p.responsable_ajuste, p.estado
@@ -217,8 +217,8 @@ class PrioridadModel(BaseModel):
                           ON phs.solicitudes_id_solicitudes = s.id_solicitudes
                    LEFT JOIN obra o
                           ON o.gestionar_proyectos_codigo_proyecto = phs.proyecto_codigo_proyecto
-                   LEFT JOIN semaforo sm
-                          ON sm.id_semaforo = o.semaforo_id_semaforo
+                    LEFT JOIN semaforo sm
+                           ON sm.id_semaforo = o.estado
                    LEFT JOIN gravedad_obra_has_prioridad ghp
                           ON ghp.prioridad_id_gestion_prioridad = s.prioridad_id_gestion_prioridad
                    LEFT JOIN gravedad_obra g

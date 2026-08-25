@@ -217,7 +217,7 @@ class ReporteEstadisticoModel(BaseModel):
                 cursor.execute(f"""
                     SELECT DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%Y-%m') as label, COUNT(*) as valor
                     FROM obra o
-                    JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
+                    JOIN semaforo s ON o.estado = s.id_semaforo
                     JOIN contratacion c ON o.contratacion_id_contratacion = c.id_contratacion
                     LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
                     LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
@@ -230,7 +230,7 @@ class ReporteEstadisticoModel(BaseModel):
                 cursor.execute(f"""
                     SELECT DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%x-W%v') as label, COUNT(*) as valor
                     FROM obra o
-                    JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
+                    JOIN semaforo s ON o.estado = s.id_semaforo
                     JOIN contratacion c ON o.contratacion_id_contratacion = c.id_contratacion
                     LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
                     LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
@@ -243,7 +243,7 @@ class ReporteEstadisticoModel(BaseModel):
                 cursor.execute(f"""
                     SELECT DATE(COALESCE(o.fecha_inicio, o.fecha_fin)) as label, COUNT(*) as valor
                     FROM obra o
-                    JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
+                    JOIN semaforo s ON o.estado = s.id_semaforo
                     JOIN contratacion c ON o.contratacion_id_contratacion = c.id_contratacion
                     LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
                     LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
@@ -256,7 +256,7 @@ class ReporteEstadisticoModel(BaseModel):
             cursor.execute(f"""
                 SELECT s.estado as label, COUNT(*) as valor
                 FROM obra o
-                JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
+                JOIN semaforo s ON o.estado = s.id_semaforo
                 LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
                 LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
                 LEFT JOIN empleados e ON e.id_empleados = a.gerente
@@ -291,7 +291,7 @@ class ReporteEstadisticoModel(BaseModel):
             cursor.execute(f"""
                 SELECT s.color as label, COUNT(*) as valor
                 FROM obra o
-                JOIN semaforo s ON o.semaforo_id_semaforo = s.id_semaforo
+                JOIN semaforo s ON o.estado = s.id_semaforo
                 LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
                 LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
                 LEFT JOIN empleados e ON e.id_empleados = a.gerente

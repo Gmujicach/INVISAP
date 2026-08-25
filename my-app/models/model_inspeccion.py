@@ -227,28 +227,28 @@ class InspeccionModel(BaseModel):
             if not evidencia:
                 raise ValueError("La evidencia seleccionada no existe en la base de datos.")
 
-            semaforo_id = obra.get('semaforo_id_semaforo') or 1
+            estado_id = obra.get('estado') or 1
             contratacion_id = obra.get('contratacion_id_contratacion') or 1
             codigo_proyecto = obra.get('gestionar_proyectos_codigo_proyecto') or 'FRE-001'
             etapa_sincronizada = self.__mapear_tipo_a_etapa(self.__tipo_inspeccion)
 
             tiene_estado = self.__columna_existe('inspeccion', 'estado')
             if tiene_estado:
-                columnas = "(id_inspeccion, inspector, fecha_inspeccion, tipo_inspeccion, observaciones, obra_id_obra, obra_semaforo_id_semaforo, obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto, obra_id_obra1, obra_semaforo_id_semaforo1, obra_contratacion_id_contratacion1, obra_gestionar_proyectos_codigo_proyecto1, evidencia_id_evidencia, estado)"
+                columnas = "(id_inspeccion, inspector, fecha_inspeccion, tipo_inspeccion, observaciones, obra_id_obra, obra_estado, obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto, obra_id_obra1, obra_estado1, obra_contratacion_id_contratacion1, obra_gestionar_proyectos_codigo_proyecto1, evidencia_id_evidencia, estado)"
                 valores = "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
                 params = (
                     self.__obtener_siguiente_id_inspeccion(conn), self.__inspector, self.__fecha_inspeccion, self.__tipo_inspeccion, self.__observaciones,
-                    self.__obra_id_obra, semaforo_id, contratacion_id, codigo_proyecto,
-                    self.__obra_id_obra, semaforo_id, contratacion_id, codigo_proyecto,
+                    self.__obra_id_obra, estado_id, contratacion_id, codigo_proyecto,
+                    self.__obra_id_obra, estado_id, contratacion_id, codigo_proyecto,
                     self.__evidencia_id_evidencia, 1
                 )
             else:
-                columnas = "(id_inspeccion, inspector, fecha_inspeccion, tipo_inspeccion, observaciones, obra_id_obra, obra_semaforo_id_semaforo, obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto, obra_id_obra1, obra_semaforo_id_semaforo1, obra_contratacion_id_contratacion1, obra_gestionar_proyectos_codigo_proyecto1, evidencia_id_evidencia)"
+                columnas = "(id_inspeccion, inspector, fecha_inspeccion, tipo_inspeccion, observaciones, obra_id_obra, obra_estado, obra_contratacion_id_contratacion, obra_gestionar_proyectos_codigo_proyecto, obra_id_obra1, obra_estado1, obra_contratacion_id_contratacion1, obra_gestionar_proyectos_codigo_proyecto1, evidencia_id_evidencia)"
                 valores = "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s"
                 params = (
                     self.__obtener_siguiente_id_inspeccion(conn), self.__inspector, self.__fecha_inspeccion, self.__tipo_inspeccion, self.__observaciones,
-                    self.__obra_id_obra, semaforo_id, contratacion_id, codigo_proyecto,
-                    self.__obra_id_obra, semaforo_id, contratacion_id, codigo_proyecto,
+                    self.__obra_id_obra, estado_id, contratacion_id, codigo_proyecto,
+                    self.__obra_id_obra, estado_id, contratacion_id, codigo_proyecto,
                     self.__evidencia_id_evidencia
                 )
 
@@ -290,7 +290,7 @@ class InspeccionModel(BaseModel):
             if not evidencia:
                 raise ValueError("La evidencia seleccionada no existe en la base de datos.")
 
-            semaforo_id = obra.get('semaforo_id_semaforo') or 1
+            estado_id = obra.get('estado') or 1
             contratacion_id = obra.get('contratacion_id_contratacion') or 1
             codigo_proyecto = obra.get('gestionar_proyectos_codigo_proyecto') or 'FRE-001'
             etapa_sincronizada = self.__mapear_tipo_a_etapa(self.__tipo_inspeccion)
@@ -302,9 +302,9 @@ class InspeccionModel(BaseModel):
                 UPDATE inspeccion
                 SET inspector = %s, fecha_inspeccion = %s, tipo_inspeccion = %s,
                     observaciones = %s, obra_id_obra = %s,
-                    obra_semaforo_id_semaforo = %s, obra_contratacion_id_contratacion = %s,
+                    obra_estado = %s, obra_contratacion_id_contratacion = %s,
                     obra_gestionar_proyectos_codigo_proyecto = %s,
-                    obra_id_obra1 = %s, obra_semaforo_id_semaforo1 = %s,
+                    obra_id_obra1 = %s, obra_estado1 = %s,
                     obra_contratacion_id_contratacion1 = %s,
                     obra_gestionar_proyectos_codigo_proyecto1 = %s,
                     evidencia_id_evidencia = %s{set_estado}
@@ -312,8 +312,8 @@ class InspeccionModel(BaseModel):
             """
             cur.execute(sql, (
                 self.__inspector, self.__fecha_inspeccion, self.__tipo_inspeccion, self.__observaciones,
-                self.__obra_id_obra, semaforo_id, contratacion_id, codigo_proyecto,
-                self.__obra_id_obra, semaforo_id, contratacion_id, codigo_proyecto,
+                self.__obra_id_obra, estado_id, contratacion_id, codigo_proyecto,
+                self.__obra_id_obra, estado_id, contratacion_id, codigo_proyecto,
                 self.__evidencia_id_evidencia, self.__id_inspeccion
             ))
 
@@ -491,7 +491,7 @@ class InspeccionModel(BaseModel):
         try:
             cur.execute("""
                 SELECT id_obra, titulo_obra, ubicacion_obra,
-                       semaforo_id_semaforo, contratacion_id_contratacion,
+                       estado, contratacion_id_contratacion,
                        gestionar_proyectos_codigo_proyecto
                 FROM obra
                 ORDER BY id_obra DESC
@@ -509,7 +509,7 @@ class InspeccionModel(BaseModel):
         try:
             cur.execute("""
                 SELECT id_obra, titulo_obra, ubicacion_obra,
-                       semaforo_id_semaforo, contratacion_id_contratacion,
+                       estado, contratacion_id_contratacion,
                        gestionar_proyectos_codigo_proyecto
                 FROM obra
                 WHERE id_obra = %s

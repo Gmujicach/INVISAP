@@ -36,7 +36,7 @@ CREATE TABLE `avance` (
   `gerente` int NOT NULL,
   `fecha_avance` date NOT NULL,
   `obra_id_obra` int NOT NULL,
-  `obra_semaforo_id_semaforo` int NOT NULL,
+  `obra_estado` int NOT NULL,
   `obra_contratacion_id_contratacion` int NOT NULL,
   `obra_gestionar_proyectos_codigo_proyecto` varchar(15) NOT NULL,
   `estado` tinyint NOT NULL DEFAULT '1'
@@ -46,7 +46,7 @@ CREATE TABLE `avance` (
 -- Volcado de datos para la tabla `avance`
 --
 
-INSERT INTO `avance` (`id_avance`, `porcentaje_avance`, `descripcion`, `gerente`, `fecha_avance`, `obra_id_obra`, `obra_semaforo_id_semaforo`, `obra_contratacion_id_contratacion`, `obra_gestionar_proyectos_codigo_proyecto`, `estado`) VALUES
+INSERT INTO `avance` (`id_avance`, `porcentaje_avance`, `descripcion`, `gerente`, `fecha_avance`, `obra_id_obra`, `obra_estado`, `obra_contratacion_id_contratacion`, `obra_gestionar_proyectos_codigo_proyecto`, `estado`) VALUES
 ('0780c1c2a553', 67, 'Carretera Nacional hay que reparar', 6, '2026-07-04', 24, 24, 1, 'FRE-001', 1),
 ('098264b7eef9', 50, 'Test obs', 1, '2026-07-05', 24, 24, 1, 'FRE-001', 1),
 ('0a9a55ead39b', 100, 'En la Luis Hurtado se llevo a cabo la restaur', 5, '2026-07-01', 4, 4, 1, 'FRE-001', 1),
@@ -406,11 +406,11 @@ CREATE TABLE `inspeccion` (
   `tipo_inspeccion` varchar(45) NOT NULL,
   `observaciones` varchar(255) NOT NULL,
   `obra_id_obra` int NOT NULL,
-  `obra_semaforo_id_semaforo` int NOT NULL,
+  `obra_estado` int NOT NULL,
   `obra_contratacion_id_contratacion` int NOT NULL,
   `obra_gestionar_proyectos_codigo_proyecto` varchar(15) NOT NULL,
   `obra_id_obra1` int NOT NULL,
-  `obra_semaforo_id_semaforo1` int NOT NULL,
+  `obra_estado1` int NOT NULL,
   `obra_contratacion_id_contratacion1` int NOT NULL,
   `obra_gestionar_proyectos_codigo_proyecto1` varchar(15) NOT NULL,
   `evidencia_id_evidencia` int NOT NULL,
@@ -493,7 +493,7 @@ CREATE TABLE `obra` (
   `id_obra` int NOT NULL,
   `titulo_obra` varchar(45) NOT NULL,
   `ubicacion_obra` varchar(80) NOT NULL,
-  `periodo_ejecucion` int NOT NULL,
+  `periodo_ejecucion` varchar(10) NOT NULL,
   `fecha_inicio` date NOT NULL,
   `fecha_fin` date NOT NULL,
   `mediciones_obra` varchar(45) NOT NULL,
@@ -502,17 +502,17 @@ CREATE TABLE `obra` (
   `certificaciones_obras_ejecutadas` int NOT NULL,
   `numero_contrato` varchar(20) NOT NULL,
   `porcentaje_avance_obra` int NOT NULL,
-  `semaforo_id_semaforo` int NOT NULL,
+  `estado` int NOT NULL,
   `contratacion_id_contratacion` int NOT NULL,
   `gestionar_proyectos_codigo_proyecto` varchar(15) NOT NULL,
-  `estado` tinyint NOT NULL DEFAULT '1'
+  `activo` tinyint NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de las inspecciones';
 
 --
 -- Volcado de datos para la tabla `obra`
 --
 
-INSERT INTO `obra` (`id_obra`, `titulo_obra`, `ubicacion_obra`, `periodo_ejecucion`, `fecha_inicio`, `fecha_fin`, `mediciones_obra`, `valuaciones`, `modificaciones_contrato`, `certificaciones_obras_ejecutadas`, `numero_contrato`, `porcentaje_avance_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`, `estado`) VALUES
+INSERT INTO `obra` (`id_obra`, `titulo_obra`, `ubicacion_obra`, `periodo_ejecucion`, `fecha_inicio`, `fecha_fin`, `mediciones_obra`, `valuaciones`, `modificaciones_contrato`, `certificaciones_obras_ejecutadas`, `numero_contrato`, `porcentaje_avance_obra`, `estado`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`, `activo`) VALUES
 (1, 'Obra Generada', 'Sin ubicacion', 1, '2026-06-30', '2026-06-30', 'N/A', 'N/A', 'N/A', 0, 'N/A', 69, 1, 1, 'FRE-001', 1),
 (2, 'Obra Generada', 'Sin ubicacion', 1, '2026-06-30', '2026-06-30', 'N/A', 'N/A', 'N/A', 0, 'N/A', 30, 2, 1, 'FRE-001', 1),
 (3, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 3, 1, 'FRE-001', 1),
@@ -780,30 +780,9 @@ CREATE TABLE `semaforo` (
 --
 
 INSERT INTO `semaforo` (`id_semaforo`, `estado`, `color`, `descripcion`, `estado_registro`) VALUES
-(1, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(2, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(3, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(4, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(5, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(6, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(7, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(8, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(9, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(10, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(11, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(12, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(13, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(14, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(15, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(16, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(17, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(18, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(19, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(20, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(21, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(22, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(23, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0),
-(24, 'Activo', 'VERDE', 'Semáforo generado automáticamente', 0);
+(1, 'Por Culminar', 'VERDE', 'Por Culminar', 1),
+(2, 'En progreso', 'AMARILLO', 'En progreso', 1),
+(3, 'Paralizada', 'ROJO', 'Paralizada', 1);
 
 -- --------------------------------------------------------
 
@@ -864,7 +843,7 @@ CREATE TABLE `vista_evidencia_informe` (
 --
 ALTER TABLE `avance`
   ADD PRIMARY KEY (`id_avance`),
-  ADD KEY `fk_avance_obra1_idx` (`obra_id_obra`,`obra_semaforo_id_semaforo`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`),
+  ADD KEY `fk_avance_obra1_idx` (`obra_id_obra`,`obra_estado`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`),
   ADD KEY `fk_avance_empleado1_idx` (`gerente`);
 
 --
@@ -938,7 +917,7 @@ ALTER TABLE `informe_avance_obra`
 --
 ALTER TABLE `inspeccion`
   ADD PRIMARY KEY (`id_inspeccion`,`evidencia_id_evidencia`),
-  ADD KEY `fk_inspeccion_obra1_idx` (`obra_id_obra1`,`obra_semaforo_id_semaforo1`,`obra_contratacion_id_contratacion1`,`obra_gestionar_proyectos_codigo_proyecto1`),
+  ADD KEY `fk_inspeccion_obra1_idx` (`obra_id_obra1`,`obra_estado1`,`obra_contratacion_id_contratacion1`,`obra_gestionar_proyectos_codigo_proyecto1`),
   ADD KEY `fk_inspeccion_evidencia1_idx` (`evidencia_id_evidencia`),
   ADD KEY `fk_inspeccion_empleado1_idx` (`inspector`);
 
@@ -959,9 +938,9 @@ ALTER TABLE `maquinaria`
 -- Indices de la tabla `obra`
 --
 ALTER TABLE `obra`
-  ADD PRIMARY KEY (`id_obra`,`semaforo_id_semaforo`,`contratacion_id_contratacion`,`gestionar_proyectos_codigo_proyecto`),
+  ADD PRIMARY KEY (`id_obra`,`estado`,`contratacion_id_contratacion`,`gestionar_proyectos_codigo_proyecto`),
   ADD UNIQUE KEY `id_obra_UNIQUE` (`id_obra`),
-  ADD KEY `fk_obra_semaforo1_idx` (`semaforo_id_semaforo`),
+  ADD KEY `fk_obra_semaforo1_idx` (`estado`),
   ADD KEY `fk_obra_contratacion1_idx` (`contratacion_id_contratacion`),
   ADD KEY `fk_obra_gestionar_proyectos1_idx` (`gestionar_proyectos_codigo_proyecto`);
 
@@ -1148,7 +1127,7 @@ ALTER TABLE `reporte`
 -- AUTO_INCREMENT de la tabla `semaforo`
 --
 ALTER TABLE `semaforo`
-  MODIFY `id_semaforo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_semaforo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitudes`
@@ -1174,7 +1153,7 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 ALTER TABLE `avance`
   ADD CONSTRAINT `fk_avance_empleado1` FOREIGN KEY (`gerente`) REFERENCES `empleados` (`id_empleados`),
-  ADD CONSTRAINT `fk_avance_obra1` FOREIGN KEY (`obra_id_obra`,`obra_semaforo_id_semaforo`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`) REFERENCES `obra` (`id_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`);
+  ADD CONSTRAINT `fk_avance_obra1` FOREIGN KEY (`obra_id_obra`,`obra_estado`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`) REFERENCES `obra` (`id_obra`, `estado`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`);
 
 --
 -- Filtros para la tabla `comunidad`
@@ -1213,7 +1192,7 @@ ALTER TABLE `informe_avance_obra`
 ALTER TABLE `inspeccion`
   ADD CONSTRAINT `fk_inspeccion_empleado1` FOREIGN KEY (`inspector`) REFERENCES `empleados` (`id_empleados`),
   ADD CONSTRAINT `fk_inspeccion_evidencia1` FOREIGN KEY (`evidencia_id_evidencia`) REFERENCES `evidencia` (`id_evidencia`),
-  ADD CONSTRAINT `fk_inspeccion_obra1` FOREIGN KEY (`obra_id_obra1`,`obra_semaforo_id_semaforo1`,`obra_contratacion_id_contratacion1`,`obra_gestionar_proyectos_codigo_proyecto1`) REFERENCES `obra` (`id_obra`, `semaforo_id_semaforo`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`);
+  ADD CONSTRAINT `fk_inspeccion_obra1` FOREIGN KEY (`obra_id_obra1`,`obra_estado1`,`obra_contratacion_id_contratacion1`,`obra_gestionar_proyectos_codigo_proyecto1`) REFERENCES `obra` (`id_obra`, `estado`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`);
 
 --
 -- Filtros para la tabla `institucion`
@@ -1227,7 +1206,7 @@ ALTER TABLE `institucion`
 ALTER TABLE `obra`
   ADD CONSTRAINT `fk_obra_contratacion1` FOREIGN KEY (`contratacion_id_contratacion`) REFERENCES `contratacion` (`id_contratacion`),
   ADD CONSTRAINT `fk_obra_gestionar_proyectos1` FOREIGN KEY (`gestionar_proyectos_codigo_proyecto`) REFERENCES `proyecto` (`codigo_proyecto`),
-  ADD CONSTRAINT `fk_obra_semaforo1` FOREIGN KEY (`semaforo_id_semaforo`) REFERENCES `semaforo` (`id_semaforo`);
+  ADD CONSTRAINT `fk_obra_semaforo1` FOREIGN KEY (`estado`) REFERENCES `semaforo` (`id_semaforo`);
 
 --
 -- Filtros para la tabla `particular`

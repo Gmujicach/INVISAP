@@ -18,9 +18,9 @@ def _convertir_campos_numericos_obra(datos):
     except (TypeError, ValueError):
         return False, "Porcentaje de avance debe ser un número entero."
     try:
-        datos['semaforo_id_semaforo'] = int(datos.get('semaforo_id_semaforo') or 0)
+        datos['estado'] = int(datos.get('estado') or 0)
     except (TypeError, ValueError):
-        return False, "Semáforo inválido."
+        return False, "Estado inválido."
     try:
         datos['contratacion_id_contratacion'] = int(datos.get('contratacion_id_contratacion') or 0)
     except (TypeError, ValueError):
@@ -61,12 +61,12 @@ def registrar_obra():
         data = request.form
         modelo = ObraModel()
 
-        id_semaforo = data.get('semaforo_id_semaforo')
+        id_estado = data.get('estado')
         id_contratacion = data.get('contratacion_id_contratacion')
         codigo_proyecto = data.get('gestionar_proyectos_codigo_proyecto')
 
-        if not id_semaforo or not id_contratacion or not codigo_proyecto:
-            return jsonify({'status': 'error', 'message': 'Debe seleccionar semáforo, contratación y proyecto.'}), 400
+        if not id_contratacion or not codigo_proyecto:
+            return jsonify({'status': 'error', 'message': 'Debe seleccionar contratación y proyecto.'}), 400
 
         datos_insertar = {
             'titulo_obra': data.get('titulo_obra'),
@@ -80,7 +80,7 @@ def registrar_obra():
             'certificaciones_obras_ejecutadas': data.get('certificaciones_obras_ejecutadas'),
             'numero_contrato': data.get('numero_contrato'),
             'porcentaje_avance_obra': data.get('porcentaje_avance_obra'),
-            'semaforo_id_semaforo': id_semaforo,
+            'estado': id_estado,
             'contratacion_id_contratacion': id_contratacion,
             'gestionar_proyectos_codigo_proyecto': codigo_proyecto
         }
@@ -124,15 +124,15 @@ def api_obtener_obra(id_obra):
         return jsonify({'status': 'error', 'message': f'Error interno: {e}'}), 500
 
 
-@obra_bp.route('/api/obra/semaforos', methods=['GET'])
-def api_listar_semaforos():
+@obra_bp.route('/api/obra/estados', methods=['GET'])
+def api_listar_estados():
     if 'conectado' not in session:
         return jsonify([]), 401
     try:
         modelo = ObraModel()
-        return jsonify(modelo.listar_semaforos())
+        return jsonify(modelo.listar_estados())
     except Exception as e:
-        print(f"Error en api_listar_semaforos: {e}")
+        print(f"Error en api_listar_estados: {e}")
         return jsonify([])
 
 
@@ -228,12 +228,12 @@ def actualizar_obra(id_obra):
         except (TypeError, ValueError):
             return jsonify({'status': 'error', 'message': 'ID de obra inválido.'}), 400
 
-        id_semaforo = data.get('semaforo_id_semaforo')
+        id_estado = data.get('estado')
         id_contratacion = data.get('contratacion_id_contratacion')
         codigo_proyecto = data.get('gestionar_proyectos_codigo_proyecto')
 
-        if not id_semaforo or not id_contratacion or not codigo_proyecto:
-            return jsonify({'status': 'error', 'message': 'Debe seleccionar semáforo, contratación y proyecto.'}), 400
+        if not id_contratacion or not codigo_proyecto:
+            return jsonify({'status': 'error', 'message': 'Debe seleccionar contratación y proyecto.'}), 400
 
         def to_int(value, default=0):
             if value is None or value == '':
@@ -255,7 +255,7 @@ def actualizar_obra(id_obra):
             'certificaciones_obras_ejecutadas': data.get('certificaciones_obras_ejecutadas'),
             'numero_contrato': data.get('numero_contrato'),
             'porcentaje_avance_obra': data.get('porcentaje_avance_obra'),
-            'semaforo_id_semaforo': id_semaforo,
+            'estado': id_estado,
             'contratacion_id_contratacion': id_contratacion,
             'gestionar_proyectos_codigo_proyecto': codigo_proyecto
         }

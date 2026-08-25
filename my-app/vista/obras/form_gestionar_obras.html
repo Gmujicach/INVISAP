@@ -25,7 +25,7 @@
             <th>Ubicación</th>             
             <th>Inicio</th>             
             <th>Avance (%)</th>         
-            <th>Semáforo</th>
+            <th>ESTADO</th>
             <th class="text-center">Acciones</th>           
           </tr>   
         </thead>         
@@ -39,11 +39,11 @@
             <td>{{ obra.porcentaje_avance_obra }}%</td>             
             <td>
               {% if obra.color == 'VERDE' %}
-                <span class="badge bg-success">Verde</span>
+                <span class="badge bg-success">Por Culminar</span>
               {% elif obra.color == 'AMARILLO' %}
-                <span class="badge bg-warning text-dark">Amarillo</span>
+                <span class="badge bg-warning text-dark">En progreso</span>
               {% elif obra.color == 'ROJO' %}
-                <span class="badge bg-danger">Rojo</span>
+                <span class="badge bg-danger">Paralizada</span>
               {% else %}
                 <span class="badge bg-secondary">-</span>
               {% endif %}
@@ -125,12 +125,6 @@
             </div>
 
             <div class="col-md-4">
-              <label class="form-label">Semáforo</label>
-              <select name="semaforo_id_semaforo" id="semaforo_id_semaforo" class="form-select" required>
-                <option value="">Seleccione un semáforo</option>
-              </select>
-            </div>
-            <div class="col-md-4">
               <label class="form-label">Contratación</label>
               <select name="contratacion_id_contratacion" id="contratacion_id_contratacion" class="form-select" required>
                 <option value="">Seleccione una contratación</option>
@@ -178,10 +172,7 @@
               <label class="form-label">Ubicación</label>
               <input type="text" id="ver_ubicacion_obra" class="form-control" readonly>
             </div>
-            <div class="col-md-6">
-              <label class="form-label">Semáforo</label>
-              <input type="text" id="ver_semaforo" class="form-control" readonly>
-            </div>
+
             <div class="col-md-6">
               <label class="form-label">Contratación</label>
               <input type="text" id="ver_contratacion" class="form-control" readonly>
@@ -384,10 +375,6 @@
               <input type="number" name="certificaciones_obras_ejecutadas" id="edit_certificaciones_obras_ejecutadas" class="form-control" required>
             </div>
 
-            <div class="col-md-4">
-              <label class="form-label">ID Semáforo (no editable)</label>
-              <input type="text" name="semaforo_id_semaforo_locked" id="edit_semaforo_id_semaforo" class="form-control" readonly tabindex="-1">
-            </div>
             <div class="col-md-4">
               <label class="form-label">ID Contratación (no editable)</label>
               <input type="text" name="contratacion_id_contratacion_locked" id="edit_contratacion_id_contratacion" class="form-control" readonly tabindex="-1">
