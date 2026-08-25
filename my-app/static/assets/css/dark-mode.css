@@ -399,3 +399,75 @@ body.dark-mode .authentication-card {
   --swal2-validation-message-color: #ffffff;
   --swal2-footer-border-color: #3a3b53;
 }
+
+/* ---------- Footer institucional: dark mode scoped ---------- */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer {
+  --footer-bg: #0b311f;
+  --footer-bg-deep: #062218;
+  --footer-surface: rgba(255, 255, 255, .08);
+  --footer-ink: #f7fbf8;
+  --footer-muted: rgba(247, 251, 248, .82);
+  --footer-muted-soft: rgba(247, 251, 248, .62);
+  --footer-accent: #f6c928;
+  --footer-accent-soft: #ffda54;
+  --footer-border: rgba(247, 251, 248, .2);
+  --footer-border-subtle: rgba(247, 251, 248, .12);
+  background: var(--footer-bg) !important;
+  color: var(--footer-ink) !important;
+  border-top-color: var(--footer-accent) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-logo {
+  filter: none !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-heading,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-group-title {
+  color: var(--footer-accent-soft) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-link,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-contact li,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-contact-link,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-bottom {
+  color: var(--footer-muted) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-link i,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-contact li > i,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .social-link i {
+  color: var(--footer-accent-soft) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-link:hover,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-contact-link:hover,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .social-link:hover {
+  color: var(--footer-ink) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-link:hover,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .footer-contact-link:hover {
+  background: var(--footer-surface) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .social-link {
+  color: var(--footer-muted) !important;
+  background: var(--footer-surface) !important;
+  border-color: var(--footer-border) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer .social-link:hover {
+  background: var(--footer-bg-deep) !important;
+  border-color: var(--footer-accent) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .cpanel-footer a:focus-visible {
+  outline-color: var(--footer-accent-soft) !important;
+}
+
+body.dark-mode #cpanel-footer h2.footer-heading,
+body.dark-mode #cpanel-footer h3.footer-group-title,
+html[data-bs-theme="dark"] body #cpanel-footer h2.footer-heading,
+html[data-bs-theme="dark"] body #cpanel-footer h3.footer-group-title {
+  color: var(--footer-accent-soft) !important;
+}
