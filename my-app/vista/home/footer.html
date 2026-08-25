@@ -1,62 +1,72 @@
-<footer class="cpanel-footer" role="contentinfo">
+<footer class="cpanel-footer" id="cpanel-footer" role="contentinfo">
   <div class="container">
-    <div class="row g-2 align-items-start">
-      <div class="col-md-2">
+    <div class="row footer-layout">
+      <div class="col-xs-12 col-12 col-sm-4 col-md-3 footer-brand-column">
         <div class="footer-brand">
-          <img src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}" alt="Invilara" class="footer-logo">
-        </div>
-      </div>
-      <div class="col-md-5">
-        <h4>Navegación</h4>
-        <div class="row">
-          <div class="col-4">
-            <ul class="list-unstyled mb-0 footer-links">
-              <li><a href="{{ url_for('home_bp.viewFormSolicitud') }}" class="footer-link"><i class="bi bi-card-text" aria-hidden="true"></i> Solicitudes</a></li>
-              <li><a href="{{ url_for('home_bp.viewFormGravedad') }}" class="footer-link"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Gravedad</a></li>
-              <li><a href="{{ url_for('home_bp.viewFormPrioridad') }}" class="footer-link"><i class="bi bi-arrow-up" aria-hidden="true"></i> Prioridad</a></li>
-              <li><a href="{{ url_for('home_bp.viewFormProyectos') }}" class="footer-link"><i class="bi bi-folder" aria-hidden="true"></i> Proyectos</a></li>
-              <li><a href="{{ url_for('home_bp.viewFormMaquinaria') }}" class="footer-link"><i class="bi bi-truck" aria-hidden="true"></i> Maquinaria</a></li>
-              <li><a href="{{ url_for('contrataciones_bp.gestionar_contrataciones') }}" class="footer-link"><i class="bi bi-briefcase" aria-hidden="true"></i> Contratación</a></li>
-            </ul>
-          </div>
-          <div class="col-4">
-            <ul class="list-unstyled mb-0 footer-links">
-              <li><a href="{{ url_for('home_bp.viewFormEmpresa') }}" class="footer-link"><i class="bi bi-building" aria-hidden="true"></i> Empresas</a></li>
-              <li><a href="{{ url_for('obra_bp.vista_gestionar_obras') }}" class="footer-link"><i class="bi bi-house-gear" aria-hidden="true"></i> Obras</a></li>
-              <li><a href="{{ url_for('empleado_bp.viewFormEmpleado') }}" class="footer-link"><i class="bi bi-person" aria-hidden="true"></i> Empleados</a></li>
-              <li><a href="{{ url_for('inspeccion_bp.view_form_inspeccion') }}" class="footer-link"><i class="bi bi-clipboard-check" aria-hidden="true"></i> Inspecciones</a></li>
-              <li><a href="{{ url_for('evidencia_bp.show_registrar_evidencia') }}" class="footer-link"><i class="bi bi-images" aria-hidden="true"></i> Evidencias</a></li>
-              <li><a href="{{ url_for('home_bp.viewFormInforme_avan_obras') }}" class="footer-link"><i class="bi bi-graph-up" aria-hidden="true"></i> Informes</a></li>
-            </ul>
-          </div>
-          <div class="col-4">
-            <ul class="list-unstyled mb-0 footer-links">
-              <li><a href="{{ url_for('home_bp.viewFormPublicaciones') }}" class="footer-link"><i class="bi bi-newspaper" aria-hidden="true"></i> Publicaciones</a></li>
-              <li><a href="{{ url_for('home_bp.viewFormReportesExcel') }}" class="footer-link"><i class="bi bi-bar-chart-line-fill" aria-hidden="true"></i> Reportes</a></li>
-              <li><a href="{{ url_for('user_bp.show_register_form') }}" class="footer-link"><i class="bi bi-people-fill" aria-hidden="true"></i> Usuarios</a></li>
-              <li><a href="{{ url_for('home_bp.viewFormPermisos') }}" class="footer-link"><i class="bi bi-shield-lock" aria-hidden="true"></i> Permisos</a></li>
-              <li><a href="{{ url_for('home_bp.viewFormRespaldos') }}" class="footer-link"><i class="bi bi-download" aria-hidden="true"></i> Respaldos</a></li>
-              <li><a href="{{ url_for('home_bp.viewBitacora') }}" class="footer-link"><i class="bi bi-clock-history" aria-hidden="true"></i> Bitácora</a></li>
-              <li><a href="{{ url_for('manual_sistema') }}" class="footer-link" target="_blank" rel="noopener noreferrer"><i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i> Manual</a></li>
-            </ul>
-          </div>
+          <img src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL_WHITE.png') }}" alt="Invilara" class="footer-logo" width="220" height="69" loading="lazy">
         </div>
       </div>
 
-      <div class="col-md-4">
-        <h4>Contacto</h4>
-        <ul class="list-unstyled mb-1 footer-contact">
-          <li><i class="bx bx-map" aria-hidden="true"></i> Av. Fuerzas Armadas, Esquina con Calle 57, Barquisimeto, Estado Lara, Venezuela.</li>
-          <li><i class="bx bx-phone" aria-hidden="true"></i> +58 251-4424548</li>
-          <li><i class="bx bx-envelope" aria-hidden="true"></i> info@invilara.gob.ve</li>
-          <li><i class="bx bx-time" aria-hidden="true"></i> Lunes a Viernes - 8:00 AM a 4:00 PM</li>
-        </ul>
+      <div class="col-xs-12 col-12 col-sm-8 col-md-6 footer-navigation-column">
+        <nav class="footer-navigation" aria-labelledby="footer-navigation-title">
+          <h2 class="footer-heading" id="footer-navigation-title">Navegación</h2>
+          <div class="footer-navigation-groups">
+            <section class="footer-link-group" aria-labelledby="footer-operation-title">
+              <h3 class="footer-group-title" id="footer-operation-title">Operación</h3>
+              <ul class="list-unstyled mb-0 footer-links">
+                <li><a href="{{ url_for('home_bp.viewFormSolicitud') }}" class="footer-link"><i class="bi bi-card-text" aria-hidden="true"></i><span>Solicitudes</span></a></li>
+                <li><a href="{{ url_for('home_bp.viewFormGravedad') }}" class="footer-link"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i><span>Gravedad</span></a></li>
+                <li><a href="{{ url_for('home_bp.viewFormPrioridad') }}" class="footer-link"><i class="bi bi-arrow-up" aria-hidden="true"></i><span>Prioridad</span></a></li>
+                <li><a href="{{ url_for('home_bp.viewFormMaquinaria') }}" class="footer-link"><i class="bi bi-truck" aria-hidden="true"></i><span>Maquinaria</span></a></li>
+                <li><a href="{{ url_for('obra_bp.vista_gestionar_obras') }}" class="footer-link"><i class="bi bi-house-gear" aria-hidden="true"></i><span>Obras</span></a></li>
+                <li><a href="{{ url_for('inspeccion_bp.view_form_inspeccion') }}" class="footer-link"><i class="bi bi-clipboard-check" aria-hidden="true"></i><span>Inspecciones</span></a></li>
+                <li><a href="{{ url_for('evidencia_bp.show_registrar_evidencia') }}" class="footer-link"><i class="bi bi-images" aria-hidden="true"></i><span>Evidencias</span></a></li>
+              </ul>
+            </section>
 
-        <h4>Redes Sociales</h4>
-        <a href="https://www.instagram.com/invilaraoficial?igsh=Z3J5b2ptMnJwY2Zq" target="_blank" rel="noopener noreferrer" class="social-link">
-          <i class="bx bxl-instagram"></i>
-          <span>@invilaraoficial</span>
-        </a>
+            <section class="footer-link-group" aria-labelledby="footer-management-title">
+              <h3 class="footer-group-title" id="footer-management-title">Gestión</h3>
+              <ul class="list-unstyled mb-0 footer-links">
+                <li><a href="{{ url_for('home_bp.viewFormProyectos') }}" class="footer-link"><i class="bi bi-folder" aria-hidden="true"></i><span>Proyectos</span></a></li>
+                <li><a href="{{ url_for('contrataciones_bp.gestionar_contrataciones') }}" class="footer-link"><i class="bi bi-briefcase" aria-hidden="true"></i><span>Contratación</span></a></li>
+                <li><a href="{{ url_for('home_bp.viewFormEmpresa') }}" class="footer-link"><i class="bi bi-building" aria-hidden="true"></i><span>Empresas</span></a></li>
+                <li><a href="{{ url_for('empleado_bp.viewFormEmpleado') }}" class="footer-link"><i class="bi bi-person" aria-hidden="true"></i><span>Empleados</span></a></li>
+                <li><a href="{{ url_for('home_bp.viewFormPublicaciones') }}" class="footer-link"><i class="bi bi-newspaper" aria-hidden="true"></i><span>Publicaciones</span></a></li>
+                <li><a href="{{ url_for('home_bp.viewFormReportesExcel') }}" class="footer-link"><i class="bi bi-bar-chart-line-fill" aria-hidden="true"></i><span>Reportes</span></a></li>
+                <li><a href="{{ url_for('home_bp.viewFormInforme_avan_obras') }}" class="footer-link"><i class="bi bi-graph-up" aria-hidden="true"></i><span>Informes</span></a></li>
+              </ul>
+            </section>
+
+            <section class="footer-link-group" aria-labelledby="footer-system-title">
+              <h3 class="footer-group-title" id="footer-system-title">Sistema y ayuda</h3>
+              <ul class="list-unstyled mb-0 footer-links">
+                <li><a href="{{ url_for('user_bp.show_register_form') }}" class="footer-link"><i class="bi bi-people-fill" aria-hidden="true"></i><span>Usuarios</span></a></li>
+                <li><a href="{{ url_for('home_bp.viewFormPermisos') }}" class="footer-link"><i class="bi bi-shield-lock" aria-hidden="true"></i><span>Permisos</span></a></li>
+                <li><a href="{{ url_for('home_bp.viewFormRespaldos') }}" class="footer-link"><i class="bi bi-download" aria-hidden="true"></i><span>Respaldos</span></a></li>
+                <li><a href="{{ url_for('home_bp.viewBitacora') }}" class="footer-link"><i class="bi bi-clock-history" aria-hidden="true"></i><span>Bitácora</span></a></li>
+                <li><a href="{{ url_for('manual_sistema') }}" class="footer-link" target="_blank" rel="noopener noreferrer"><i class="bi bi-journal-bookmark-fill" aria-hidden="true"></i><span>Manual</span></a></li>
+              </ul>
+            </section>
+          </div>
+        </nav>
+      </div>
+
+      <div class="col-xs-12 col-12 col-sm-12 col-md-3 footer-contact-column">
+        <section class="footer-contact-panel" aria-labelledby="footer-contact-title">
+          <h2 class="footer-heading" id="footer-contact-title">Contacto</h2>
+          <ul class="list-unstyled mb-0 footer-contact">
+            <li><i class="bx bx-map" aria-hidden="true"></i><span>Av. Fuerzas Armadas, Esquina con Calle 57, Barquisimeto, Estado Lara, Venezuela.</span></li>
+            <li><i class="bx bx-phone" aria-hidden="true"></i><a href="tel:+582514424548" class="footer-contact-link">+58 251-4424548</a></li>
+            <li><i class="bx bx-envelope" aria-hidden="true"></i><a href="mailto:info@invilara.gob.ve" class="footer-contact-link">info@invilara.gob.ve</a></li>
+            <li><i class="bx bx-time" aria-hidden="true"></i><span>Lunes a Viernes - 8:00 AM a 4:00 PM</span></li>
+          </ul>
+
+          <h2 class="footer-heading footer-social-heading" id="footer-social-title">Redes Sociales</h2>
+          <a href="https://www.instagram.com/invilaraoficial?igsh=Z3J5b2ptMnJwY2Zq" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram Invilara">
+            <i class="bx bxl-instagram" aria-hidden="true"></i>
+            <span>@invilaraoficial</span>
+          </a>
+        </section>
       </div>
     </div>
 

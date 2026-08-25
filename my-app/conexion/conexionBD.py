@@ -25,7 +25,7 @@ def get_db_config():
     return {
         'host': os.getenv('DB_HOST', 'localhost'),
         'user': os.getenv('DB_USER', 'root'),
-        'password': os.getenv('DB_PASSWORD', 'balto04*'),
+        'password': os.getenv('DB_PASSWORD', ''),
         'database': os.getenv('DB_NAME', 'invilara'),
         'charset': 'utf8mb4',
         'use_unicode': True,
@@ -67,7 +67,7 @@ def connectionBD_seguridad():
     db_config = {
         'host': os.getenv('DB_HOST', 'localhost'),
         'user': os.getenv('DB_USER', 'root'),
-        'password': os.getenv('DB_PASSWORD', 'balto04*'),
+        'password': os.getenv('DB_PASSWORD', ''),
         'database': os.getenv('DB_NAME_SEGURIDAD', 'invilara_seguridad'),
         'charset': 'utf8mb4',
         'use_unicode': True,
