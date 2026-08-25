@@ -19,78 +19,9 @@
       <!-- Estilos globales de Modo Oscuro (debe cargarse al final para prevalecer) -->
       <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dark-mode.css') }}">
       <link rel="stylesheet" href="{{ url_for('static', filename='js/driver/driver.css') }}">
+      <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/cpanel-utility.css') }}">
     <style>
-      /* Contenedor fijo superior derecho: notificaciones + perfil */
-      .corner-topbar {
-        position: fixed;
-        top: 5px;
-        right: 20px;
-        z-index: 1100;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      /* Estilos para el acceso rápido a Mi Perfil */
-      .corner-profile-container {
-        position: static;
-        z-index: 1100;
-      }
-      .corner-notifications {
-        display: flex;
-        align-items: center;
-      }
-      .profile-link-fixed {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 16px;
-        background-color: #fff;
-        border-radius: 50px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        color: #697a8d;
-        text-decoration: none;
-        font-weight: 400;
-        transition: all 0.3s ease;
-      }
-      .profile-link-fixed:hover, .profile-link-fixed.active, .corner-profile-container .show > .profile-link-fixed {
-        background-color: #08b324;
-        color: #fff !important;
-      }
-      /* Avatar + nombre en el acceso rápido a Mi Perfil */
-      .corner-profile-avatar {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid rgba(255,255,255,0.7);
-      }
-      .corner-profile-text {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.1;
-        text-align: left;
-      }
-      .corner-profile-name {
-        font-weight: 600;
-        font-size: 0.85rem;
-        white-space: nowrap;
-        max-width: 140px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .corner-profile-sub {
-        font-size: 0.7rem;
-        opacity: 0.75;
-      }
-      .profile-link-fixed:hover .corner-profile-avatar,
-      .corner-profile-container .show > .profile-link-fixed .corner-profile-avatar {
-        border-color: #fff;
-      }
-      .dropdown-toggle::after {
-        display: none;
-      }
-
-
+      /* Utilidades compartidas de la plantilla */
       .ls-1 { letter-spacing: 1px; }
       .bg-label-primary { background-color: #e7e7ff; color: #696cff; }
 
@@ -269,12 +200,7 @@
       body.dark-mode .developer-role { color: #a2a3b7; }
       body.dark-mode .developers-version { color: #a2a3b7; border-top-color: rgba(255,255,255,0.08); }
 
-/* Ajustes de Modo Oscuro en Plantilla Base */
-      .dark-mode .profile-link-fixed {
-        background-color: #2b2c40 !important;
-        color: #cfcde9 !important;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
-      }
+ /* Ajustes de Modo Oscuro en Plantilla Base */
       .dark-mode .alert-molecule.bg-white {
         background-color: #2b2c40 !important;
         color: #cfcde9 !important;
@@ -515,85 +441,148 @@
 
     <div class="layout-wrapper layout-content-navbar">
       <div class="layout-container">
-        <!-- Acceso persistente a Mi Perfil -->
-        <div class="corner-topbar">
-        <!-- Notificaciones: campanita -->
-        <div class="corner-notifications">
-          <div class="btn-group">
-            <button type="button" class="btn btn-icon rounded-pill btn-text-secondary position-relative border-0 shadow-sm"
-                    id="btn-notificaciones" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
-                    aria-label="Notificaciones">
-              <i class="bi bi-bell fs-4"></i>
-              <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle {% if notificaciones_no_leidas == 0 %}d-none{% endif %}"
-                    id="notif-badge">{{ notificaciones_no_leidas }}</span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-0" style="border-radius:12px; min-width:340px; max-width:360px;">
-              <li class="d-flex align-items-center justify-content-between px-3 py-2 border-bottom">
-                <span class="fw-semibold">Notificaciones <span class="badge bg-label-primary" id="notif-count-label">{{ notificaciones_no_leidas }}</span></span>
-                <div class="d-flex gap-2">
-                  <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none text-primary" id="notif-eliminar-todas">Borrar todas</button>
-                  <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none" id="notif-marcar-todas">Marcar leídas</button>
-                </div>
-              </li>
-              <li>
-                <ul class="list-group list-group-flush" id="notif-lista" style="max-height:380px; overflow-y:auto;">
-                  <li class="list-group-item text-center text-muted small py-4">Cargando...</li>
-                </ul>
-              </li>
-              <li class="text-center border-top py-2">
-                <span class="small text-muted" id="notif-ver-todas">No hay más notificaciones</span>
-              </li>
-            </ul>
-            </div>
-        </div>
+        <!-- Utilidades persistentes: notificaciones + Mi Perfil -->
+        <div class="corner-topbar" id="corner-topbar" aria-label="Utilidades de cuenta">
+          <div class="utility-pill" role="group" aria-label="Notificaciones y cuenta">
+            <div class="corner-notifications">
+              <button type="button"
+                      class="utility-trigger notification-trigger"
+                      id="btn-notificaciones"
+                      aria-controls="notif-dropdown"
+                      aria-expanded="false"
+                      aria-label="Abrir notificaciones{% if notificaciones_no_leidas %}, {{ notificaciones_no_leidas }} pendientes{% endif %}">
+                <span class="utility-icon" aria-hidden="true"><i class="bi bi-bell"></i></span>
+                <span class="badge notification-badge {% if notificaciones_no_leidas == 0 %}d-none{% endif %}"
+                      id="notif-badge">{{ notificaciones_no_leidas }}</span>
+                <span class="visually-hidden">Notificaciones</span>
+              </button>
 
-        <div class="corner-profile-container">
-          <div class="btn-group">
-            <button type="button" class="profile-link-fixed dropdown-toggle border-0 shadow-sm" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-              <img id="corner-profile-img"
-                   src="{{ url_for('static', filename=perfil.perfil_avatar if perfil.perfil_avatar else 'assets/img/avatars/1.png') }}"
-                   class="corner-profile-avatar"
-                   alt="Foto de perfil"
-                   onerror="this.src='{{ url_for('static', filename='assets/img/avatars/1.png') }}'">
-              <span class="corner-profile-text">
-                <span id="corner-profile-name" class="corner-profile-name">{{ perfil.perfil_nombre }}</span>
-                <span class="corner-profile-sub">Mi Perfil</span>
-              </span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2 p-2" style="border-radius: 12px; min-width: 220px;">
-              <li>
-                <a class="dropdown-item rounded d-flex align-items-center py-2" href="{{ url_for('login_bp.perfil') }}">
-                  <i class="bi bi-person-vcard me-2 fs-5 text-primary"></i>
-                  <span>Editar Perfil</span>
-                </a>
-              </li>
-              <li>
-                <div class="dropdown-item rounded d-flex align-items-center justify-content-between py-2">
-                  <div class="d-flex align-items-center">
-                     <i id="theme-icon" class="bi bi-sun-fill me-2 fs-5 text-warning"></i>
-                     <span id="theme-label">Modo Claro</span>
+              <section class="utility-panel dropdown-menu dropdown-menu-end"
+                       id="notif-dropdown"
+                       data-utility-panel
+                       aria-labelledby="btn-notificaciones"
+                       aria-live="polite"
+                       hidden>
+                <div class="utility-panel-header">
+                  <div>
+                    <h2 class="utility-panel-title">
+                      <span>Notificaciones</span>
+                      <span class="utility-panel-count" id="notif-count-label">{{ notificaciones_no_leidas }}</span>
+                    </h2>
+                    <p class="utility-panel-subtitle" id="notif-summary" aria-live="polite">
+                      {% if notificaciones_no_leidas %}{{ notificaciones_no_leidas }} notificaciones pendientes{% else %}No tienes notificaciones pendientes{% endif %}
+                    </p>
                   </div>
-                  <div class="form-check form-switch mb-0">
-                    <input class="form-check-input cursor-pointer" type="checkbox" id="dark-mode-switch" role="switch" aria-label="Activar modo oscuro">
+                  <button type="button" class="utility-panel-close" data-utility-close aria-label="Cerrar notificaciones">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                  </button>
+                </div>
+
+                <div class="utility-panel-actions">
+                  <button type="button" class="utility-action utility-action-primary" id="notif-marcar-todas">
+                    <i class="bi bi-check2-all me-1" aria-hidden="true"></i>Marcar leídas
+                  </button>
+                  <a class="utility-action" id="notif-ver-todas" href="/bitacora">
+                    <i class="bi bi-arrow-up-right me-1" aria-hidden="true"></i>Ver auditoría
+                  </a>
+                  <button type="button" class="utility-action utility-action-danger ms-auto" id="notif-eliminar-todas">
+                    <i class="bi bi-trash3 me-1" aria-hidden="true"></i>Borrar todas
+                  </button>
+                </div>
+
+                <ul class="list-group list-group-flush notification-list" id="notif-lista" aria-label="Lista de notificaciones" aria-busy="true">
+                  <li class="list-group-item text-center text-muted small py-4">Cargando notificaciones...</li>
+                </ul>
+                <div class="notification-empty" id="notif-empty" role="status" hidden>
+                  <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                  <strong>Todo al día</strong>
+                  <span>No tienes notificaciones pendientes.</span>
+                </div>
+                <div class="notification-error" id="notif-error" role="alert" hidden>
+                  <i class="bi bi-cloud-slash" aria-hidden="true"></i>
+                  <strong>No pudimos cargar las notificaciones</strong>
+                  <span>Comprueba tu conexión e inténtalo de nuevo.</span>
+                  <button type="button" class="notification-retry" id="notif-reintentar">Reintentar</button>
+                </div>
+                <div class="utility-panel-footer">
+                  <span class="utility-status" id="notif-status" role="status" aria-live="polite">Cargando...</span>
+                  <span class="visually-hidden" id="notif-feedback" aria-live="polite"></span>
+                </div>
+              </section>
+            </div>
+
+            <span class="utility-divider" aria-hidden="true"></span>
+
+            <div class="corner-profile-container">
+              <button type="button"
+                      class="profile-link-fixed"
+                      id="btn-mi-perfil"
+                      aria-controls="profile-dropdown"
+                      aria-expanded="false"
+                      aria-label="Abrir menú de Mi Perfil para {{ perfil.perfil_nombre }}">
+                <img id="corner-profile-img"
+                     src="{{ url_for('static', filename=perfil.perfil_avatar if perfil.perfil_avatar else 'assets/img/avatars/1.png') }}"
+                     class="corner-profile-avatar"
+                     alt="Foto de perfil de {{ perfil.perfil_nombre }}"
+                     onerror="this.src='{{ url_for('static', filename='assets/img/avatars/1.png') }}'">
+                <span class="corner-profile-text">
+                  <span id="corner-profile-name" class="corner-profile-name">{{ perfil.perfil_nombre }}</span>
+                  <span class="corner-profile-sub">Mi Perfil</span>
+                </span>
+                <i class="bi bi-chevron-down profile-chevron" aria-hidden="true"></i>
+              </button>
+
+              <section class="utility-panel profile-panel dropdown-menu dropdown-menu-end"
+                       id="profile-dropdown"
+                       data-utility-panel
+                       aria-labelledby="btn-mi-perfil"
+                       hidden>
+                <div class="profile-menu-summary">
+                  <img src="{{ url_for('static', filename=perfil.perfil_avatar if perfil.perfil_avatar else 'assets/img/avatars/1.png') }}"
+                       alt="Avatar de {{ perfil.perfil_nombre }}"
+                       onerror="this.src='{{ url_for('static', filename='assets/img/avatars/1.png') }}'">
+                  <div>
+                    <strong>{{ perfil.perfil_nombre }}</strong>
+                    <span>Sesión activa · {{ rol_usuario|default('Usuario') }}</span>
                   </div>
                 </div>
-              </li>
-              <li>
-                <a class="dropdown-item rounded d-flex align-items-center py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalConfig">
-                  <i class="bi bi-gear-wide-connected me-2 fs-5 text-info"></i>
-                  <span>Configuración</span>
-                </a>
-              </li>
-              <li><hr class="dropdown-divider mx-n2"></li>
-              <li>
-                <a class="dropdown-item rounded d-flex align-items-center py-2 text-danger" href="{{ url_for('login_bp.logout') }}">
-                  <i class="bi bi-power me-2 fs-5"></i>
-                  <span>Cerrar Sesión</span>
-                </a>
-              </li>
-            </ul>
+                <div class="profile-menu">
+                  <a class="profile-menu-item" href="{{ url_for('login_bp.perfil') }}">
+                    <i class="bi bi-person-vcard" aria-hidden="true"></i>
+                    <span class="menu-copy">
+                      <strong>Editar Perfil</strong>
+                      <small>Datos y foto de usuario</small>
+                    </span>
+                    <i class="bi bi-chevron-right ms-auto" aria-hidden="true"></i>
+                  </a>
+                  <label class="theme-row" for="dark-mode-switch">
+                    <i id="theme-icon" class="bi bi-sun-fill" aria-hidden="true"></i>
+                    <span class="menu-copy">
+                      <strong id="theme-label">Modo Claro</strong>
+                      <small>Preferencia de apariencia</small>
+                    </span>
+                    <input class="theme-switch" type="checkbox" id="dark-mode-switch" role="switch" aria-label="Activar modo oscuro">
+                  </label>
+                  <a class="profile-menu-item" href="#" data-utility-action="config" data-bs-toggle="modal" data-bs-target="#modalConfig">
+                    <i class="bi bi-gear-wide-connected" aria-hidden="true"></i>
+                    <span class="menu-copy">
+                      <strong>Configuración</strong>
+                      <small>Preferencias y accesibilidad</small>
+                    </span>
+                    <i class="bi bi-chevron-right ms-auto" aria-hidden="true"></i>
+                  </a>
+                  <hr class="menu-separator">
+                  <a class="profile-menu-item logout" href="{{ url_for('login_bp.logout') }}">
+                    <i class="bi bi-power" aria-hidden="true"></i>
+                    <span class="menu-copy">
+                      <strong>Cerrar Sesión</strong>
+                      <small>Finalizar sesión de forma segura</small>
+                    </span>
+                  </a>
+                </div>
+              </section>
+            </div>
           </div>
-        </div>
         </div><!-- /corner-topbar -->
 
         {% include 'home/menu_sidebar.html' %}
@@ -1184,169 +1173,8 @@
       <script src="{{ url_for('static', filename='js/tour/default/tour.js') }}"></script>
       {% block customJS %} {% endblock %}
       <!-- Notificaciones: carga, render y acciones -->
-      <script>
-      (function () {
-        const badge = document.getElementById('notif-badge');
-        const countLabel = document.getElementById('notif-count-label');
-        const lista = document.getElementById('notif-lista');
-        const btnMarcarTodas = document.getElementById('notif-marcar-todas');
-        const btnEliminarTodas = document.getElementById('notif-eliminar-todas');
-
-        if (!lista) return;
-
-        function escapar(texto) {
-          const d = document.createElement('div');
-          d.textContent = texto == null ? '' : String(texto);
-          return d.innerHTML;
-        }
-
-        function tiempoRelativo(fechaStr) {
-          if (!fechaStr) return '';
-          const f = new Date(fechaStr.replace(' ', 'T'));
-          if (isNaN(f)) return fechaStr;
-          const diff = (Date.now() - f.getTime()) / 1000;
-          if (diff < 60) return 'hace un momento';
-          if (diff < 3600) return 'hace ' + Math.floor(diff / 60) + ' min';
-          if (diff < 86400) return 'hace ' + Math.floor(diff / 3600) + ' h';
-          return 'hace ' + Math.floor(diff / 86400) + ' d';
-        }
-
-        function actualizarBadge(n) {
-          if (badge) {
-            badge.textContent = n;
-            badge.classList.toggle('d-none', n === 0);
-          }
-          if (countLabel) countLabel.textContent = n;
-        }
-
-        function renderNotificaciones(notificaciones) {
-          if (!notificaciones.length) {
-            lista.innerHTML = '<li class="list-group-item text-center text-muted small py-4">Sin notificaciones</li>';
-            return;
-          }
-          lista.innerHTML = '';
-          notificaciones.forEach(function (n) {
-            const li = document.createElement('li');
-            li.className = 'list-group-item list-group-item-action py-2 px-3' + (n.leida ? '' : ' notif-no-leida');
-            li.style.cursor = 'pointer';
-            li.dataset.id = n.id_notificacion;
-            li.innerHTML =
-              '<div class="d-flex align-items-start gap-2">' +
-                '<i class="bi bi-' + iconoModulo(n.modulo) + ' fs-5 ' + (n.leida ? 'text-muted' : 'text-primary') + ' mt-1"></i>' +
-                '<div class="flex-grow-1">' +
-                  '<div class="small fw-semibold">' + escapar(n.titulo) + '</div>' +
-                  '<div class="small text-muted">' + escapar(n.mensaje) + '</div>' +
-                  '<div class="small text-muted mt-1">' + escapar(tiempoRelativo(n.fecha)) + '</div>' +
-                '</div>' +
-                (n.leida ? '' : '<span class="badge bg-primary rounded-pill ms-1 mt-1">&nbsp;</span>') +
-                '<button type="button" class="btn btn-sm btn-link p-0 ms-1 text-danger notif-eliminar" data-id="' + n.id_notificacion + '" aria-label="Eliminar notificación">' +
-                  '<i class="bi bi-x-lg"></i>' +
-                '</button>' +
-              '</div>';
-
-            const btnEliminar = li.querySelector('.notif-eliminar');
-            btnEliminar.addEventListener('click', function (e) {
-              e.stopPropagation();
-              eliminar(n.id_notificacion, li);
-            });
-
-            li.addEventListener('click', function () {
-              marcarLeida(n.id_notificacion, li);
-              if (n.enlace) window.location.href = n.enlace;
-            });
-            lista.appendChild(li);
-          });
-        }
-
-        function iconoModulo(modulo) {
-          const mapa = {
-            'Inspecciones': 'clipboard-check',
-            'Evidencias': 'images',
-            'Obras': 'house-gear',
-            'Usuarios': 'people-fill',
-            'Publicaciones': 'newspaper',
-            'Solicitudes': 'card-text',
-            'Contrataciones': 'briefcase',
-            'Informes': 'graph-up',
-            'Empleados': 'person-badge-fill',
-            'Empresas': 'building',
-            'Maquinaria': 'truck',
-            'Respaldos': 'download'
-          };
-          return mapa[modulo] || 'bell';
-        }
-
-        function marcarLeida(id, li) {
-          fetch('/notificaciones/marcar-leida/' + id, { method: 'POST' })
-            .then(function (r) { return r.json(); })
-            .then(function (d) {
-              if (d.status === 'success') {
-                actualizarBadge(d.no_leidas || 0);
-                if (li) {
-                  li.classList.remove('notif-no-leida');
-                  const punto = li.querySelector('.badge.bg-primary');
-                  if (punto) punto.remove();
-                }
-              }
-            })
-            .catch(function () {});
-        }
-
-        function eliminar(id, li) {
-          fetch('/notificaciones/eliminar/' + id, { method: 'POST' })
-            .then(function (r) { return r.json(); })
-            .then(function (d) {
-              if (d.status === 'success') {
-                actualizarBadge(d.no_leidas || 0);
-                if (li) li.remove();
-              }
-            })
-            .catch(function () {});
-        }
-
-        function cargarNotificaciones() {
-          fetch('/notificaciones/lista')
-            .then(function (r) { return r.json(); })
-            .then(function (d) {
-              if (d.status === 'success') {
-                actualizarBadge(d.no_leidas || 0);
-                renderNotificaciones(d.notificaciones || []);
-              }
-            })
-            .catch(function () {});
-        }
-
-        if (btnMarcarTodas) {
-          btnMarcarTodas.addEventListener('click', function (e) {
-            e.stopPropagation();
-            fetch('/notificaciones/marcar-todas', { method: 'POST' })
-              .then(function (r) { return r.json(); })
-              .then(function () {
-                actualizarBadge(0);
-                cargarNotificaciones();
-              })
-              .catch(function () {});
-          });
-        }
-
-        if (btnEliminarTodas) {
-          btnEliminarTodas.addEventListener('click', function (e) {
-            e.stopPropagation();
-            if (!confirm('¿Eliminar todas las notificaciones?')) return;
-            fetch('/notificaciones/eliminar-todas', { method: 'POST' })
-              .then(function (r) { return r.json(); })
-              .then(function () {
-                actualizarBadge(0);
-                cargarNotificaciones();
-              })
-              .catch(function () {});
-          });
-        }
-
-        cargarNotificaciones();
-        setInterval(cargarNotificaciones, 30000);
-      })();
-    </script>
+      <script src="{{ url_for('static', filename='js/cpanel-utility.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/cpanel-notifications.js') }}"></script>
     </body>
 </html>
 

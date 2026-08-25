@@ -1,0 +1,860 @@
+:root {
+  --cpanel-utility-surface: #ffffff;
+  --cpanel-utility-surface-soft: #f7f8fb;
+  --cpanel-utility-border: #e3e5ec;
+  --cpanel-utility-ink: #263238;
+  --cpanel-utility-body: #566273;
+  --cpanel-utility-muted: #7c8797;
+  --cpanel-utility-quiet: #9aa3b1;
+  --cpanel-utility-accent: #08b324;
+  --cpanel-utility-accent-strong: #059b1f;
+  --cpanel-utility-accent-soft: rgba(8, 179, 36, 0.10);
+  --cpanel-utility-danger: #dc3545;
+  --cpanel-utility-danger-soft: rgba(220, 53, 69, 0.10);
+  --cpanel-utility-warning: #d89d00;
+  --cpanel-utility-focus: rgba(8, 179, 36, 0.35);
+  --cpanel-utility-pill-shadow: 0 10px 24px rgba(36, 48, 58, 0.16);
+  --cpanel-utility-panel-shadow: 0 18px 40px rgba(36, 48, 58, 0.20);
+  --cpanel-utility-control-size: 44px;
+}
+
+.corner-topbar,
+.corner-topbar * {
+  box-sizing: border-box;
+}
+
+.corner-topbar {
+  position: fixed;
+  top: max(0.75rem, env(safe-area-inset-top));
+  right: max(1rem, env(safe-area-inset-right));
+  z-index: 1040;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0;
+  max-width: calc(100vw - 1.5rem);
+  font-family: "Open Sans", sans-serif;
+}
+
+.corner-topbar .utility-pill {
+  align-items: center;
+  display: flex;
+  gap: 0.25rem;
+  min-height: 58px;
+  max-width: 100%;
+  padding: 0.375rem;
+  background: var(--cpanel-utility-surface);
+  border: 1px solid var(--cpanel-utility-border);
+  border-radius: 50px;
+  box-shadow: var(--cpanel-utility-pill-shadow);
+}
+
+.corner-topbar .corner-notifications,
+.corner-topbar .corner-profile-container {
+  position: static;
+  z-index: auto;
+  display: flex;
+  align-items: center;
+}
+
+.corner-topbar .utility-trigger,
+.corner-topbar .profile-link-fixed {
+  position: relative;
+  align-items: center;
+  display: inline-flex;
+  min-width: var(--cpanel-utility-control-size);
+  min-height: var(--cpanel-utility-control-size);
+  padding: 0.375rem 0.625rem;
+  color: var(--cpanel-utility-body);
+  background: transparent;
+  border: 0;
+  border-radius: 40px;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.corner-topbar .utility-trigger:hover,
+.corner-topbar .utility-trigger[aria-expanded="true"],
+.corner-topbar .profile-link-fixed:hover,
+.corner-topbar .profile-link-fixed[aria-expanded="true"] {
+  color: var(--cpanel-utility-ink);
+  background: var(--cpanel-utility-accent-soft);
+}
+
+.corner-topbar .utility-trigger:active,
+.corner-topbar .profile-link-fixed:active {
+  transform: scale(0.98);
+}
+
+.corner-topbar .utility-trigger:focus-visible,
+.corner-topbar .profile-link-fixed:focus-visible,
+.corner-topbar .utility-panel button:focus-visible,
+.corner-topbar .utility-panel a:focus-visible,
+.corner-topbar .utility-panel input:focus-visible {
+  outline: 3px solid var(--cpanel-utility-focus);
+  outline-offset: 3px;
+}
+
+.corner-topbar .notification-trigger {
+  justify-content: center;
+  width: 48px;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.corner-topbar .utility-divider {
+  width: 1px;
+  height: 28px;
+  flex: 0 0 1px;
+  background: var(--cpanel-utility-border);
+}
+
+.corner-topbar .utility-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.corner-topbar .notification-badge {
+  position: absolute;
+  top: 0;
+  right: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 0.3rem;
+  color: #ffffff;
+  background: var(--cpanel-utility-danger);
+  border: 2px solid var(--cpanel-utility-surface);
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.corner-topbar .profile-link-fixed {
+  gap: 0.625rem;
+  padding-left: 0.375rem;
+  padding-right: 0.75rem;
+}
+
+.corner-topbar .corner-profile-avatar {
+  display: block;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  object-fit: cover;
+  border: 2px solid var(--cpanel-utility-accent);
+  border-radius: 50%;
+  transition: box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.corner-topbar .profile-link-fixed[aria-expanded="true"] .corner-profile-avatar,
+.corner-topbar .profile-link-fixed:hover .corner-profile-avatar {
+  border-color: var(--cpanel-utility-accent-strong);
+  box-shadow: 0 0 0 4px var(--cpanel-utility-accent-soft);
+}
+
+.corner-topbar .corner-profile-text {
+  display: flex;
+  min-width: 68px;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.15;
+}
+
+.corner-topbar .corner-profile-name {
+  max-width: 140px;
+  overflow: hidden;
+  color: var(--cpanel-utility-ink);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.corner-topbar .corner-profile-sub {
+  margin-top: 0.2rem;
+  color: var(--cpanel-utility-muted);
+  font-size: 0.64rem;
+  white-space: nowrap;
+}
+
+.corner-topbar .profile-chevron {
+  margin-left: 0.1rem;
+  color: var(--cpanel-utility-muted);
+  font-size: 0.78rem;
+  transition: transform 180ms ease;
+}
+
+.corner-topbar .profile-link-fixed[aria-expanded="true"] .profile-chevron {
+  transform: rotate(180deg);
+}
+
+.corner-topbar .utility-panel {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  z-index: 1041;
+  display: none;
+  width: min(380px, calc(100vw - 24px));
+  max-width: calc(100vw - 24px);
+  padding: 0;
+  overflow: hidden;
+  color: var(--cpanel-utility-body);
+  background: var(--cpanel-utility-surface);
+  border: 1px solid var(--cpanel-utility-border);
+  border-radius: 16px;
+  box-shadow: var(--cpanel-utility-panel-shadow);
+}
+
+.corner-topbar .utility-panel.show {
+  display: block;
+  animation: cpanel-utility-panel-in 180ms ease-out both;
+}
+
+.corner-topbar .utility-panel[hidden] {
+  display: none !important;
+}
+
+.corner-topbar .profile-panel {
+  width: min(286px, calc(100vw - 24px));
+}
+
+.corner-topbar .utility-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1rem 0.75rem;
+  border-bottom: 1px solid var(--cpanel-utility-border);
+}
+
+.corner-topbar .utility-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  color: var(--cpanel-utility-ink);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.corner-topbar .utility-panel-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--cpanel-utility-muted);
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.corner-topbar .utility-panel-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 0.35rem;
+  color: #ffffff;
+  background: var(--cpanel-utility-danger);
+  border-radius: 999px;
+  font-size: 0.65rem;
+  line-height: 1;
+}
+
+.corner-topbar .utility-panel-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cpanel-utility-control-size);
+  height: var(--cpanel-utility-control-size);
+  flex: 0 0 var(--cpanel-utility-control-size);
+  color: var(--cpanel-utility-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.corner-topbar .utility-panel-close:hover {
+  color: var(--cpanel-utility-danger);
+  background: var(--cpanel-utility-danger-soft);
+}
+
+.corner-topbar .utility-panel-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.35rem 0.55rem;
+  border-bottom: 1px solid var(--cpanel-utility-border);
+}
+
+.corner-topbar .utility-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--cpanel-utility-control-size);
+  padding: 0.45rem 0.55rem;
+  color: var(--cpanel-utility-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.67rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.corner-topbar .utility-action:hover {
+  color: var(--cpanel-utility-ink);
+  background: var(--cpanel-utility-accent-soft);
+}
+
+.corner-topbar .utility-action-primary {
+  color: var(--cpanel-utility-accent-strong);
+  font-weight: 700;
+}
+
+.corner-topbar .utility-action-danger {
+  color: var(--cpanel-utility-danger);
+}
+
+.corner-topbar .utility-action-danger:hover {
+  color: var(--cpanel-utility-danger);
+  background: var(--cpanel-utility-danger-soft);
+}
+
+.corner-topbar .notification-list {
+  max-height: min(380px, calc(100vh - 250px));
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.corner-topbar #notif-lista .list-group-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 44px;
+  gap: 0.65rem;
+  align-items: start;
+  padding: 0.8rem 0.65rem 0.8rem 0.9rem;
+  color: var(--cpanel-utility-body);
+  background: var(--cpanel-utility-surface);
+  border: 0;
+  border-bottom: 1px solid var(--cpanel-utility-border);
+}
+
+.corner-topbar #notif-lista .list-group-item:last-child {
+  border-bottom: 0;
+}
+
+.corner-topbar #notif-lista .list-group-item.notif-no-leida {
+  background: var(--cpanel-utility-accent-soft);
+}
+
+.corner-topbar .notification-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: var(--cpanel-utility-accent-strong);
+  background: var(--cpanel-utility-accent-soft);
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+.corner-topbar .notification-icon.info {
+  color: #1aa9c4;
+  background: rgba(26, 169, 196, 0.12);
+}
+
+.corner-topbar .notification-icon.auth {
+  color: var(--cpanel-utility-muted);
+  background: rgba(124, 135, 151, 0.14);
+}
+
+.corner-topbar .notification-main {
+  min-width: 0;
+}
+
+.corner-topbar .notification-title {
+  overflow-wrap: anywhere;
+  color: var(--cpanel-utility-ink);
+  font-size: 0.73rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.corner-topbar .notification-message {
+  display: -webkit-box;
+  margin-top: 0.2rem;
+  overflow: hidden;
+  color: var(--cpanel-utility-body);
+  font-size: 0.68rem;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.corner-topbar .notification-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.55rem;
+  margin-top: 0.45rem;
+}
+
+.corner-topbar .notification-priority,
+.corner-topbar .notification-date {
+  font-size: 0.62rem;
+  line-height: 1.3;
+}
+
+.corner-topbar .notification-priority {
+  color: var(--cpanel-utility-accent-strong);
+  font-weight: 700;
+}
+
+.corner-topbar .notification-priority.medium {
+  color: var(--cpanel-utility-warning);
+}
+
+.corner-topbar .notification-priority.low {
+  color: var(--cpanel-utility-muted);
+}
+
+.corner-topbar .notification-date {
+  color: var(--cpanel-utility-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.corner-topbar .notification-date::before {
+  margin-right: 0.45rem;
+  color: var(--cpanel-utility-border);
+  content: "•";
+}
+
+.corner-topbar .notification-preview {
+  font-size: 0.72rem;
+  color: var(--cpanel-utility-muted);
+  margin-top: 0.15rem;
+  line-height: 1.35;
+}
+
+.corner-topbar .notification-detail {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--cpanel-utility-control-size);
+  margin-top: 0.25rem;
+  padding: 0.35rem 0.45rem;
+  color: var(--cpanel-utility-accent-strong);
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.64rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.corner-topbar .notification-detail:hover {
+  color: var(--cpanel-utility-ink);
+  background: var(--cpanel-utility-accent-soft);
+}
+
+.corner-topbar .notification-detail i {
+  margin-right: 0.3rem;
+  font-size: 0.7rem;
+}
+
+.corner-topbar .notification-details {
+  display: grid;
+  gap: 0.28rem;
+  margin-top: 0.25rem;
+  padding: 0.6rem 0.65rem;
+  overflow-wrap: anywhere;
+  color: var(--cpanel-utility-muted);
+  background: var(--cpanel-utility-surface-soft);
+  border-left: 2px solid var(--cpanel-utility-accent);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.62rem;
+  line-height: 1.45;
+}
+
+.corner-topbar .notification-details[hidden] {
+  display: none;
+}
+
+.corner-topbar .notification-detail-row strong {
+  color: var(--cpanel-utility-body);
+  font-weight: 700;
+}
+
+.corner-topbar .notification-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cpanel-utility-control-size);
+  height: var(--cpanel-utility-control-size);
+  padding: 0;
+  color: var(--cpanel-utility-quiet);
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.corner-topbar .notification-delete:hover {
+  color: var(--cpanel-utility-danger);
+  background: var(--cpanel-utility-danger-soft);
+}
+
+.corner-topbar .notification-item.is-read {
+  opacity: 0.68;
+}
+
+.corner-topbar .utility-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 42px;
+  padding: 0.35rem 0.9rem;
+  color: var(--cpanel-utility-muted);
+  border-top: 1px solid var(--cpanel-utility-border);
+  font-size: 0.62rem;
+}
+
+.corner-topbar .utility-panel-footer a {
+  color: var(--cpanel-utility-accent-strong);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.corner-topbar .utility-panel-footer a:hover {
+  text-decoration: underline;
+}
+
+.corner-topbar .utility-status {
+  color: var(--cpanel-utility-muted);
+  font-size: 0.64rem;
+}
+
+.corner-topbar .utility-status.is-error {
+  color: var(--cpanel-utility-danger);
+}
+
+.corner-topbar .notification-error,
+.corner-topbar .notification-empty {
+  display: flex;
+  min-height: 170px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 1.25rem;
+  color: var(--cpanel-utility-muted);
+  text-align: center;
+}
+
+.corner-topbar .notification-error[hidden],
+.corner-topbar .notification-empty[hidden] {
+  display: none;
+}
+
+.corner-topbar .notification-empty i,
+.corner-topbar .notification-error i {
+  color: var(--cpanel-utility-accent-strong);
+  font-size: 1.5rem;
+}
+
+.corner-topbar .notification-error i {
+  color: var(--cpanel-utility-danger);
+}
+
+.corner-topbar .notification-empty strong,
+.corner-topbar .notification-error strong {
+  color: var(--cpanel-utility-ink);
+  font-size: 0.75rem;
+}
+
+.corner-topbar .notification-empty p,
+.corner-topbar .notification-error p {
+  max-width: 245px;
+  margin: 0;
+  font-size: 0.66rem;
+  line-height: 1.45;
+}
+
+.corner-topbar .notification-retry {
+  min-height: var(--cpanel-utility-control-size);
+  margin-top: 0.2rem;
+  padding: 0.4rem 0.7rem;
+  color: var(--cpanel-utility-body);
+  background: transparent;
+  border: 1px solid var(--cpanel-utility-border);
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.65rem;
+  cursor: pointer;
+}
+
+.corner-topbar .notification-retry:hover {
+  color: var(--cpanel-utility-accent-strong);
+  border-color: var(--cpanel-utility-accent);
+}
+
+.corner-topbar .profile-menu-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--cpanel-utility-border);
+}
+
+.corner-topbar .profile-menu-summary img {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border: 2px solid var(--cpanel-utility-accent);
+  border-radius: 50%;
+}
+
+.corner-topbar .profile-menu-summary strong,
+.corner-topbar .profile-menu-summary span {
+  display: block;
+}
+
+.corner-topbar .profile-menu-summary strong {
+  color: var(--cpanel-utility-ink);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.corner-topbar .profile-menu-summary span {
+  margin-top: 0.2rem;
+  color: var(--cpanel-utility-muted);
+  font-size: 0.62rem;
+}
+
+.corner-topbar .profile-menu {
+  padding: 0.4rem;
+}
+
+.corner-topbar .profile-menu-item,
+.corner-topbar .theme-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.45rem 0.6rem;
+  color: var(--cpanel-utility-body);
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+}
+
+.corner-topbar .profile-menu-item:hover,
+.corner-topbar .profile-menu-item:focus-visible,
+.corner-topbar .theme-row:hover {
+  color: var(--cpanel-utility-ink);
+  background: var(--cpanel-utility-accent-soft);
+}
+
+.corner-topbar .profile-menu-item > i,
+.corner-topbar .theme-row > i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  color: var(--cpanel-utility-accent-strong);
+  font-size: 1rem;
+}
+
+.corner-topbar .profile-menu-item.logout,
+.corner-topbar .profile-menu-item.logout > i {
+  color: var(--cpanel-utility-danger);
+}
+
+.corner-topbar .menu-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+.corner-topbar .menu-copy strong {
+  color: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.corner-topbar .menu-copy small {
+  overflow: hidden;
+  color: var(--cpanel-utility-muted);
+  font-size: 0.61rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.corner-topbar .theme-switch {
+  appearance: none;
+  position: relative;
+  width: 44px;
+  height: 24px;
+  flex: 0 0 44px;
+  margin-left: auto;
+  background: var(--cpanel-utility-border);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.corner-topbar .theme-switch::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  content: "";
+  transition: transform 180ms ease;
+}
+
+.corner-topbar .theme-switch:checked {
+  background: var(--cpanel-utility-accent);
+}
+
+.corner-topbar .theme-switch:checked::after {
+  transform: translateX(20px);
+}
+
+.corner-topbar .menu-separator {
+  margin: 0.35rem 0.25rem;
+  border: 0;
+  border-top: 1px solid var(--cpanel-utility-border);
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar {
+  --cpanel-utility-surface: #2b2c40;
+  --cpanel-utility-surface-soft: #232333;
+  --cpanel-utility-border: #444564;
+  --cpanel-utility-ink: #f5f4fb;
+  --cpanel-utility-body: #cfcde9;
+  --cpanel-utility-muted: #a2a3b7;
+  --cpanel-utility-quiet: #777991;
+  --cpanel-utility-accent-soft: rgba(8, 179, 36, 0.14);
+  --cpanel-utility-pill-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
+  --cpanel-utility-panel-shadow: 0 18px 38px rgba(0, 0, 0, 0.42);
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar .utility-pill,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar .utility-panel {
+  background-color: var(--cpanel-utility-surface) !important;
+  border-color: var(--cpanel-utility-border) !important;
+  color: var(--cpanel-utility-body) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar #notif-lista .list-group-item,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar .profile-menu-item,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar .theme-row {
+  background-color: var(--cpanel-utility-surface) !important;
+  color: var(--cpanel-utility-body) !important;
+  border-color: var(--cpanel-utility-border) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar #notif-lista .list-group-item.notif-no-leida,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar .profile-menu-item:hover,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar .theme-row:hover {
+  background-color: var(--cpanel-utility-accent-soft) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar .notification-date,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar .notification-message,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar .notification-preview,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar .menu-copy small {
+  color: var(--cpanel-utility-muted) !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .corner-topbar .notification-details {
+  background-color: var(--cpanel-utility-surface-soft) !important;
+}
+
+body.high-contrast .corner-topbar .utility-pill,
+body.high-contrast .corner-topbar .utility-panel {
+  border-width: 2px;
+}
+
+@keyframes cpanel-utility-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .corner-topbar {
+    top: max(0.5rem, env(safe-area-inset-top));
+    right: max(0.75rem, env(safe-area-inset-right));
+    max-width: calc(100vw - 1.5rem);
+  }
+
+  .corner-topbar .utility-pill {
+    min-height: 56px;
+  }
+
+  .corner-topbar .corner-profile-text,
+  .corner-topbar .profile-chevron {
+    display: none;
+  }
+
+  .corner-topbar .profile-link-fixed {
+    width: 48px;
+    padding-left: 0.375rem;
+    padding-right: 0.375rem;
+  }
+
+  .corner-topbar .utility-panel {
+    width: min(380px, calc(100vw - 24px));
+    max-height: calc(100vh - 86px);
+  }
+
+  .corner-topbar .profile-panel {
+    width: min(286px, calc(100vw - 24px));
+  }
+
+  .corner-topbar .notification-list {
+    max-height: min(330px, calc(100vh - 280px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .corner-topbar *,
+  .corner-topbar *::before,
+  .corner-topbar *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
