@@ -521,39 +521,16 @@ function seleccionarSolicitud(id, solicitante, tipo, problematica) {
     document.getElementById('tipo_solicitud_p').value = tipo;
     document.getElementById('problematica_p').value = problematica;
 
-    // Actualizar el estado de la solicitud a 'En Proceso'
-    fetch(`/api/solicitudes/${id}/actualizar-estatus`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ estatus: 'En Proceso' })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Ocultar la fila seleccionada de la tabla
-            const filas = document.querySelectorAll('#tablaSolicitudesCuerpo tr');
-            filas.forEach(fila => {
-                const btnSeleccionar = fila.querySelector('button[onclick*="seleccionarSolicitud"]');
-                if (btnSeleccionar && btnSeleccionar.getAttribute('onclick').includes(`'${id}'`)) {
-                    fila.remove();
-                }
-            });
-        }
-    })
-    .catch(error => console.error('Error al actualizar estatus:', error));
-
-    // Obtenemos instancias de los modales mediante Bootstrap JS nativo
     const modalSolicitudesEl = document.getElementById('modalSolicitudes');
     const modalRegistroEl = document.getElementById('modalRegistrarProyecto');
 
     const instanceSolicitudes = bootstrap.Modal.getInstance(modalSolicitudesEl) || new bootstrap.Modal(modalSolicitudesEl);
     const instanceRegistro = bootstrap.Modal.getInstance(modalRegistroEl) || new bootstrap.Modal(modalRegistroEl);
 
-    // Ocultamos de forma controlada y esperamos que termine la transición para abrir el formulario
     instanceSolicitudes.hide();
     modalSolicitudesEl.addEventListener('hidden.bs.modal', function bienOcultado() {
         instanceRegistro.show();
-        modalSolicitudesEl.removeEventListener('hidden.bs.modal', bienOcultado); // Evita duplicar triggers
+        modalSolicitudesEl.removeEventListener('hidden.bs.modal', bienOcultado);
     });
 }
 
