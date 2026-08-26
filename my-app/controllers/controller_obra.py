@@ -296,7 +296,8 @@ def actualizar_obra(id_obra):
                         'Avance de obra actualizado',
                         mensaje_pct,
                         enlace='/gestionar-obras',
-                        creado_por=session.get('usuario', 'Sistema')
+                        creado_por=session.get('usuario', 'Sistema'),
+                        creado_por_id=session.get('id_usuario') or session.get('id')
                     )
 
                 # Notificación por cambio en la fecha de culminación
@@ -307,7 +308,8 @@ def actualizar_obra(id_obra):
                         'Fecha de culminación de obra',
                         f"Se actualizó la fecha de culminación de la obra '{titulo_obra}': {nueva_fecha}",
                         enlace='/gestionar-obras',
-                        creado_por=session.get('usuario', 'Sistema')
+                        creado_por=session.get('usuario', 'Sistema'),
+                        creado_por_id=session.get('id_usuario') or session.get('id')
                     )
             except Exception as e:
                 print(f"[actualizar_obra] Error al notificar: {e}")

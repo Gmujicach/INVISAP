@@ -29,7 +29,7 @@ class NotificacionModel(BaseModel):
         return connectionBD_seguridad()
 
     def _asegurar_tabla(self):
-        """Crea la tabla notificaciones si no existe."""
+        """Crea la tabla notificaciones si no existe y asegura columnas nuevas."""
         conn = cursor = None
         try:
             conn = self._con()
@@ -52,6 +52,9 @@ class NotificacionModel(BaseModel):
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
                 """
             )
+            cursor.execute("SHOW COLUMNS FROM notificaciones LIKE 'creado_por_id'")
+            if cursor.fetchone() is None:
+                cursor.execute("ALTER TABLE notificaciones ADD COLUMN creado_por_id INT NULL AFTER creado_por, ADD COLUMN creado_por_avatar VARCHAR(255) NULL AFTER creado_por_id")
             conn.commit()
         except Exception as e:
             print(f"[NotificacionModel._asegurar_tabla] Error: {e}")
@@ -67,7 +70,7 @@ class NotificacionModel(BaseModel):
     # -----------------------------------------------------------------
     # SQL privado
     # -----------------------------------------------------------------
-    def _sql_crear(self, id_usuario, modulo, titulo, mensaje, enlace, creado_por):
+    def _sql_crear(self, id_usuario, modulo, titulo, mensaje, enlace, creado_por, creado_por_id=None, creado_por_avatar=None):
         conn = cursor = None
         try:
             self._asegurar_tabla()
@@ -77,8 +80,8 @@ class NotificacionModel(BaseModel):
             cursor = conn.cursor()
             sql = """
                 INSERT INTO notificaciones
-                    (usuarios_id_usuarios, modulo, titulo, mensaje, enlace, leida, creado_por, fecha)
-                VALUES (%s, %s, %s, %s, %s, 0, %s, %s)
+                    (usuarios_id_usuarios, modulo, titulo, mensaje, enlace, leida, creado_por, creado_por_id, creado_por_avatar, fecha)
+                VALUES (%s, %s, %s, %s, %s, 0, %s, %s, %s, %s)
             """
             cursor.execute(sql, (
                 int(id_usuario) if str(id_usuario).isdigit() else 0,
@@ -87,6 +90,8 @@ class NotificacionModel(BaseModel):
                 mensaje[:255],
                 (enlace or '')[:255],
                 (creado_por or '')[:60],
+                int(creado_por_id) if str(creado_por_id).isdigit() else None,
+                (creado_por_avatar or '')[:255] if creado_por_avatar else None,
                 datetime.now()
             ))
             conn.commit()
@@ -112,7 +117,7 @@ class NotificacionModel(BaseModel):
             cursor = conn.cursor(dictionary=True)
             sql = """
                 SELECT id_notificacion, modulo, titulo, mensaje, enlace,
-                       leida, creado_por, fecha
+                       leida, creado_por, creado_por_id, creado_por_avatar, fecha
                 FROM notificaciones
                 WHERE usuarios_id_usuarios = %s
                 ORDER BY leida ASC, fecha DESC
@@ -292,13 +297,13 @@ class NotificacionModel(BaseModel):
     # -----------------------------------------------------------------
     # Métodos públicos (fachada)
     # -----------------------------------------------------------------
-    def crear(self, id_usuario, modulo, titulo, mensaje, enlace=None, creado_por=None):
+    def crear(self, id_usuario, modulo, titulo, mensaje, enlace=None, creado_por=None, creado_por_id=None, creado_por_avatar=None):
         modulo = str(modulo or 'General').strip()[:30]
         titulo = str(titulo or '').strip()[:120]
         mensaje = str(mensaje or '').strip()[:255]
         if not titulo:
             return False
-        return self._sql_crear(id_usuario, modulo, titulo, mensaje, enlace, creado_por)
+        return self._sql_crear(id_usuario, modulo, titulo, mensaje, enlace, creado_por, creado_por_id, creado_por_avatar)
 
     def listar(self, id_usuario, limit=20):
         return self._sql_listar(id_usuario, limit)
@@ -329,19 +334,19 @@ class NotificacionModel(BaseModel):
 # Funciones auxiliares (fachada global) para usar desde cualquier
 # controlador sin instanciar el modelo.
 # -----------------------------------------------------------------
-def notificar(id_usuario, modulo, titulo, mensaje, enlace=None, creado_por=None):
+def notificar(id_usuario, modulo, titulo, mensaje, enlace=None, creado_por=None, creado_por_id=None, creado_por_avatar=None):
     """Crea una notificación para un usuario específico."""
-    return NotificacionModel().crear(id_usuario, modulo, titulo, mensaje, enlace, creado_por)
+    return NotificacionModel().crear(id_usuario, modulo, titulo, mensaje, enlace, creado_por, creado_por_id, creado_por_avatar)
 
 
-def notificar_a_rol(rol, modulo, titulo, mensaje, enlace=None, creado_por=None):
+def notificar_a_rol(rol, modulo, titulo, mensaje, enlace=None, creado_por=None, creado_por_id=None, creado_por_avatar=None):
     """Crea una notificación para todos los usuarios con el rol indicado."""
     modelo = NotificacionModel()
     for uid in modelo.ids_por_rol(rol):
-        modelo.crear(uid, modulo, titulo, mensaje, enlace, creado_por)
+        modelo.crear(uid, modulo, titulo, mensaje, enlace, creado_por, creado_por_id, creado_por_avatar)
 
 
-def notificar_a_roles(roles, modulo, titulo, mensaje, enlace=None, creado_por=None, excluir_id=None):
+def notificar_a_roles(roles, modulo, titulo, mensaje, enlace=None, creado_por=None, creado_por_id=None, creado_por_avatar=None, excluir_id=None):
     """Crea una notificación para todos los usuarios de varios roles.
     Si se indica excluir_id, omite a ese usuario (p. ej. el autor de la acción)."""
     modelo = NotificacionModel()
@@ -349,4 +354,4 @@ def notificar_a_roles(roles, modulo, titulo, mensaje, enlace=None, creado_por=No
         for uid in modelo.ids_por_rol(rol):
             if excluir_id is not None and int(uid) == int(excluir_id):
                 continue
-            modelo.crear(uid, modulo, titulo, mensaje, enlace, creado_por)
+            modelo.crear(uid, modulo, titulo, mensaje, enlace, creado_por, creado_por_id, creado_por_avatar)

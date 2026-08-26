@@ -2,11 +2,26 @@
  * GESTIÓN DE NOTIFICACIONES ELEGANTES
  * Transforma alertas estáticas y flash-toast en notificaciones modernas con auto-cierre.
  */
+function sanitizeNotificationText(text) {
+  var value = String(text || '').trim();
+  if (!value) return '';
+  if (/cannot read.*this model does not support image input/i.test(value)) {
+    return 'Error en el análisis de IA: el modelo actual no soporta imágenes.';
+  }
+  if (/this model does not support image input/i.test(value)) {
+    return 'Error en el análisis de IA: el modelo actual no soporta imágenes.';
+  }
+  if (/ollama no est[aá] disponible/i.test(value)) {
+    return 'Servicio de inteligencia artificial no disponible en este momento.';
+  }
+  return value;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Manejar elementos .alert-to-toast existentes
     const alerts = document.querySelectorAll('.alert-to-toast');
     alerts.forEach(alert => {
-        const message = alert.textContent.trim();
+        const message = sanitizeNotificationText(alert.textContent.trim());
         const type = alert.dataset.type === 'danger' ? 'error' : (alert.dataset.type || 'success');
         createToastNotification(message, type);
         alert.remove();
@@ -16,7 +31,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const existingToasts = document.querySelectorAll('.toast-custom');
     if (existingToasts.length > 0) {
         existingToasts.forEach((toast, index) => {
-            // Agregar evento click al botón cerrar
+            const messageEl = toast.querySelector('.toast-message');
+            if (messageEl) {
+                messageEl.textContent = sanitizeNotificationText(messageEl.textContent);
+            }
             const closeBtn = toast.querySelector('.toast-close');
             if (closeBtn) {
                 closeBtn.onclick = (e) => {
@@ -72,7 +90,7 @@ function createToastNotification(message, type) {
             <div class="toast-icon" style="color: ${progressColor}">
                 <i class="bi ${icons[type] || icons.success}"></i>
             </div>
-            <span class="toast-message">${message}</span>
+            <span class="toast-message">${sanitizeNotificationText(message)}</span>
         </div>
         <button class="toast-close">&times;</button>
         <div class="toast-progress" style="color: ${progressColor}"></div>

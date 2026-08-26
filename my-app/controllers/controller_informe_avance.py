@@ -283,7 +283,8 @@ def api_crear_informe():
                     'Nuevo informe de avance',
                     f'Se registró el informe de avance #{nuevo_id}',
                     enlace='/inf_avance_obra',
-                    creado_por=session.get('name_surname') or session.get('nombre') or ''
+                    creado_por=session.get('name_surname') or session.get('nombre') or '',
+                    creado_por_id=session.get('id')
                 )
             except Exception as e:
                 print(f"[api_crear_informe] Error al notificar: {e}")

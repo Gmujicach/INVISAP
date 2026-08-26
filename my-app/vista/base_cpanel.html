@@ -371,16 +371,32 @@
            margin-top: 15px !important;
            padding-right: 15px !important;
        }
-       /* Notificaciones: item no leído */
-       #notif-lista .notif-no-leida {
-           background-color: rgba(105, 108, 255, 0.08);
-       }
-       #notif-lista .list-group-item-action:hover {
-           background-color: rgba(0, 0, 0, 0.04);
-       }
-       body.dark-mode #notif-lista .list-group-item-action:hover {
-           background-color: rgba(255, 255, 255, 0.06);
-         }
+        /* Notificaciones: item no leído */
+        #notif-lista .notif-no-leida {
+            background-color: rgba(105, 108, 255, 0.08);
+        }
+        #notif-lista .list-group-item-action:hover {
+            background-color: rgba(0, 0, 0, 0.04);
+        }
+        body.dark-mode #notif-lista .list-group-item-action:hover {
+            background-color: rgba(255, 255, 255, 0.06);
+        }
+        #notif-lista .notification-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #notif-lista .notification-main {
+            flex: 1;
+            min-width: 0;
+        }
+        .notification-actor-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
        </style>
      </head>
      <body class="transition-all">
@@ -483,7 +499,7 @@
                     <i class="bi bi-check2-all me-1" aria-hidden="true"></i>Marcar leídas
                   </button>
                   <a class="utility-action" id="notif-ver-todas" href="/bitacora">
-                    <i class="bi bi-arrow-up-right me-1" aria-hidden="true"></i>Ver auditoría
+                     <i class="bi bi-arrow-up-right me-1" aria-hidden="true"></i>Ver historial
                   </a>
                   <button type="button" class="utility-action utility-action-danger ms-auto" id="notif-eliminar-todas">
                     <i class="bi bi-trash3 me-1" aria-hidden="true"></i>Borrar todas

@@ -40,6 +40,17 @@ def lista():
             fecha_str = fecha.strftime('%Y-%m-%d %H:%M')
         else:
             fecha_str = ''
+        avatar = n.get('creado_por_avatar') or ''
+        if not avatar and n.get('creado_por_id'):
+            try:
+                from models.model_usuarios import UsuarioModel, DEFAULT_AVATAR
+                usuario = UsuarioModel().buscar_por_id(n['creado_por_id'])
+                if usuario:
+                    avatar = usuario.get('avatar') or DEFAULT_AVATAR
+            except Exception:
+                pass
+        if avatar and not avatar.startswith('/'):
+            avatar = '/static/' + avatar
         datos.append({
             'id_notificacion': n.get('id_notificacion'),
             'modulo': n.get('modulo'),
@@ -48,6 +59,8 @@ def lista():
             'enlace': n.get('enlace') or '',
             'leida': int(n.get('leida') or 0),
             'creado_por': n.get('creado_por') or '',
+            'creado_por_id': n.get('creado_por_id'),
+            'creado_por_avatar': avatar,
             'fecha': fecha_str
         })
 

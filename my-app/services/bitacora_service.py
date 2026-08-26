@@ -158,12 +158,22 @@ class BitacoraService:
             if resultado and accion != 'VER':
                 try:
                     from models.model_notificacion import notificar_a_roles
+                    accion_amigable = {
+                        'CREAR': 'Nuevo registro en',
+                        'EDITAR': 'Actualización en',
+                        'ELIMINAR': 'Eliminación en',
+                        'LOGIN': 'Inicio de sesión en',
+                        'LOGOUT': 'Cierre de sesión en',
+                        'ACCESO_DENEGADO': 'Acceso denegado en',
+                        'GENERAR_REPORTE': 'Reporte generado en'
+                    }.get(accion, 'Cambio en')
                     notificar_a_roles(
                         ['Super Usuario', 'Administrador'],
                         modulo,
-                        f'{accion.title()}: {modulo}',
-                        descripcion or f'Acción {accion} en {modulo}',
-                        creado_por=nombre_usuario
+                        f'{accion_amigable} {modulo}',
+                        descripcion or f'Se registró una actividad en {modulo}',
+                        creado_por=nombre_usuario,
+                        creado_por_id=id_usuario
                     )
                 except Exception as e:
                     print(f"[BitacoraService] Error al crear notificación: {e}")

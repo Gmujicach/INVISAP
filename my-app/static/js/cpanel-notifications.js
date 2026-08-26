@@ -129,6 +129,7 @@
     function friendlyDescription(notification) {
       var raw = String(notification.titulo || '').trim();
       var moduleName = String(notification.modulo || '').trim();
+      var message = String(notification.mensaje || '').trim();
       var actionMatch = raw.match(/^\s*([^:]+):\s*(.+)\s*$/);
       var action = actionMatch ? actionMatch[1].trim().toLowerCase() : '';
       var subject = actionMatch ? actionMatch[2].trim() : moduleName;
@@ -151,6 +152,21 @@
       else article = singular;
 
       return 'Se ' + verb + ' ' + article;
+    }
+
+    function sanitizeNotificationText(text) {
+      var value = String(text || '').trim();
+      if (!value) return '';
+      if (/cannot read.*this model does not support image input/i.test(value)) {
+        return 'Error en el análisis de IA: el modelo actual no soporta imágenes.';
+      }
+      if (/this model does not support image input/i.test(value)) {
+        return 'Error en el análisis de IA: el modelo actual no soporta imágenes.';
+      }
+      if (/ollama no est[aá] disponible/i.test(value)) {
+        return 'Servicio de inteligencia artificial no disponible en este momento.';
+      }
+      return value;
     }
 
     function detailId(notificationId) {
@@ -221,23 +237,29 @@
         var detail = detailId(id);
         var unreadClass = Number(notification.leida) === 1 ? ' is-read' : ' notif-no-leida';
         var iconClass = iconClassForModule(notification.modulo);
-        var message = notification.mensaje || 'Actualización registrada en el sistema.';
+        var message = sanitizeNotificationText(notification.mensaje || 'Actualización registrada en el sistema.');
         var moduleName = notification.modulo || 'General';
         var formattedDate = formatDateTime(notification.fecha);
         var friendly = friendlyDescription(notification);
+        var avatarSrc = String(notification.creado_por_avatar || '').trim();
+        if (!avatarSrc) {
+          avatarSrc = '/static/assets/img/avatars/1.png';
+        }
+        var actorName = String(notification.creado_por || '').trim();
+        var enlace = String(notification.enlace || '').trim();
 
-        return '<li class="list-group-item notification-item' + unreadClass + '" data-id="' + escapeHtml(id) + '" data-unread="' + (Number(notification.leida) === 1 ? 'false' : 'true') + '">' +
+        return '<li class="list-group-item notification-item' + unreadClass + '" data-id="' + escapeHtml(id) + '" data-unread="' + (Number(notification.leida) === 1 ? 'false' : 'true') + '" data-enlace="' + escapeHtml(enlace) + '">' +
           '<span class="notification-icon ' + iconClass + '"><i class="bi bi-' + iconForModule(notification.modulo) + '" aria-hidden="true"></i></span>' +
           '<div class="notification-main">' +
             '<div class="notification-title">' + escapeHtml(normalizedTitle) + '</div>' +
-            '<div class="notification-preview">' + escapeHtml(friendly) + '</div>' +
+            (actorName ? '<div class="notification-preview">Por <strong>' + escapeHtml(actorName) + '</strong></div>' : '') +
             '<div class="notification-message">' + escapeHtml(message) + '</div>' +
             '<div class="notification-meta">' +
               '<span class="notification-priority ' + priority.className + '">' + escapeHtml(priority.label) + '</span>' +
               '<time class="notification-date" datetime="' + escapeHtml(notification.fecha || '') + '">' + escapeHtml(formattedDate) + '</time>' +
             '</div>' +
             '<button type="button" class="notification-detail" data-notification-detail="true" aria-expanded="false" aria-controls="' + detail + '">' +
-              '<i class="bi bi-info-circle" aria-hidden="true"></i><span>Ver detalles</span>' +
+              '<i class="bi bi-info-circle" aria-hidden="true"></i><span>Más información</span>' +
             '</button>' +
             '<div class="notification-details" id="' + detail + '" hidden>' +
               '<div class="notification-detail-row"><strong>Descripción:</strong> ' + escapeHtml(friendly) + '</div>' +
@@ -245,6 +267,7 @@
               '<div class="notification-detail-row"><strong>Fecha:</strong> ' + escapeHtml(formattedDate) + '</div>' +
             '</div>' +
           '</div>' +
+          '<img class="notification-actor-avatar" src="' + avatarSrc + '" alt="Foto de ' + escapeHtml(actorName || 'responsable') + '" onerror="this.style.display=\'none\'">' +
           '<button type="button" class="notification-delete notif-eliminar" data-id="' + escapeHtml(id) + '" aria-label="Eliminar notificación: ' + escapeHtml(normalizedTitle) + '"><i class="bi bi-x-lg" aria-hidden="true"></i></button>' +
         '</li>';
       }).join('');
@@ -325,8 +348,8 @@
         else detail.setAttribute('hidden', '');
         detailButton.setAttribute('aria-expanded', String(willOpen));
         var label = detailButton.querySelector('span');
-        if (label) label.textContent = willOpen ? 'Ocultar detalles' : 'Ver detalles';
-        updateStatus(willOpen ? 'Detalles técnicos visibles' : 'Detalles técnicos ocultos');
+        if (label) label.textContent = willOpen ? 'Ocultar información' : 'Más información';
+        updateStatus(willOpen ? 'Información adicional visible' : 'Información adicional oculta');
         return;
       }
 
@@ -341,6 +364,13 @@
 
       var item = event.target.closest('.notification-item');
       if (item && item.dataset.unread === 'true') markAsRead(item.dataset.id, item);
+
+      if (item && item.dataset.enlace) {
+        var url = String(item.dataset.enlace).trim();
+        if (url) {
+          window.location.href = url;
+        }
+      }
     });
 
     if (markAllButton) {

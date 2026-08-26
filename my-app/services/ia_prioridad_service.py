@@ -180,5 +180,8 @@ def calcular_prioridad_con_ia(descripcion, gravedad_nivel=None, color_semaforo=N
     try:
         return _resultado_final()
     except Exception as e:
+        mensaje = str(e)
+        if "this model does not support image input" in mensaje or "Cannot read" in mensaje:
+            mensaje = "Error en IA: el modelo configurado no soporta imágenes. Usa un modelo de texto o envía solo texto."
         return {"prioridad": 0.5,
-                "justificacion": f"Error en IA: {str(e)}"}
+                "justificacion": mensaje}

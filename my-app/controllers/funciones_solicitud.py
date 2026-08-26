@@ -88,7 +88,8 @@ def actualizar_solicitud(id_solicitud, datos_formulario: dict, session: dict | N
                     'Cambio de estado de solicitud',
                     f'La solicitud #{id_solicitud} cambió a estado: {estatus}',
                     enlace='/lista-de-solicitudes',
-                    creado_por=session.get('name_surname') or session.get('nombre') or ''
+                    creado_por=session.get('name_surname') or session.get('nombre') or '',
+                    creado_por_id=session.get('id')
                 )
                 # Culminación de la solicitud: al llegar a un estatus final
                 if str(estatus).strip().lower() in ('completada', 'procesada'):
@@ -98,7 +99,8 @@ def actualizar_solicitud(id_solicitud, datos_formulario: dict, session: dict | N
                         'Solicitud culminada',
                         f'La solicitud #{id_solicitud} fue culminada (estado: {estatus}).',
                         enlace='/lista-de-solicitudes',
-                        creado_por=session.get('name_surname') or session.get('nombre') or ''
+                        creado_por=session.get('name_surname') or session.get('nombre') or '',
+                        creado_por_id=session.get('id')
                     )
             except Exception as e:
                 print(f"[actualizar_solicitud] Error al notificar: {e}")
