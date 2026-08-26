@@ -270,4 +270,98 @@ document.addEventListener('DOMContentLoaded', function() {
             this.value = this.value.replace(/[^A-Za-z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,\-#\/()]/g, '');
         });
     }
+
+    // ==========================================
+    // LÓGICA: VERIFICACIÓN DE REQUISITOS LEGALES
+    // ==========================================
+    const modalRequisitosEl = document.getElementById('modalRequisitos');
+    if (modalRequisitosEl) {
+        const modalRequisitos = new bootstrap.Modal(modalRequisitosEl);
+        const checkboxRequisito = document.getElementById('checkboxCumpleRequisitos');
+        const btnGuardarRequisito = document.getElementById('btnGuardarRequisito');
+        const requisitoRifInput = document.getElementById('requisitoRifEmpresa');
+        const requisitoNombreEl = document.getElementById('requisitoNombreEmpresa');
+        const requisitoFeedback = document.getElementById('requisitoFeedback');
+
+        document.querySelectorAll('.btn-ver-requisitos').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const rif = this.getAttribute('data-rif');
+                const nombre = this.getAttribute('data-nombre');
+                const cumple = this.getAttribute('data-cumple') === '1';
+
+                requisitoRifInput.value = rif;
+                requisitoNombreEl.textContent = nombre;
+                checkboxRequisito.checked = cumple;
+                requisitoFeedback.classList.add('d-none');
+
+                modalRequisitos.show();
+            });
+        });
+
+        btnGuardarRequisito.addEventListener('click', function() {
+            const rif = requisitoRifInput.value;
+            const valor = checkboxRequisito.checked ? 1 : 0;
+
+            btnGuardarRequisito.disabled = true;
+            btnGuardarRequisito.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Guardando...';
+
+            const formData = new FormData();
+            formData.append('valor', valor);
+
+            fetch(`/marcar-cumple-requisitos/${encodeURIComponent(rif)}`, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body: formData
+            })
+            .then(response => {
+                let body;
+                try { body = response.json(); } catch (e) { body = {}; }
+                if (!response.ok) {
+                    throw new Error(body.mensaje || 'Error en el servidor');
+                }
+                return body;
+            })
+            .then(data => {
+                if (data.exito) {
+                    const fila = document.querySelector(`tr[data-rif="${CSS.escape(rif)}"]`);
+                    if (fila) {
+                        const badgeCell = fila.cells[4];
+                        if (badgeCell) {
+                            badgeCell.innerHTML = valor === 1
+                                ? '<span class="badge bg-success badge-cumple"><i class="bx bx-check-circle"></i> Verificado</span>'
+                                : '<span class="badge bg-secondary badge-cumple"><i class="bx bx-x-circle"></i> Pendiente</span>';
+                        }
+                        const btn = fila.querySelector('.btn-ver-requisitos');
+                        if (btn) btn.setAttribute('data-cumple', String(valor));
+                    }
+
+                    requisitoFeedback.classList.remove('d-none');
+                    setTimeout(() => {
+                        requisitoFeedback.classList.add('d-none');
+                        modalRequisitos.hide();
+                    }, 2000);
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.mensaje || 'No se pudo actualizar el estado.',
+                        target: modalRequisitosEl
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: 'No se pudo comunicar con el servidor.',
+                    target: modalRequisitosEl
+                });
+            })
+            .finally(() => {
+                btnGuardarRequisito.disabled = false;
+                btnGuardarRequisito.innerHTML = 'Guardar <i class="bi bi-save ms-1"></i>';
+            });
+        });
+    }
 });

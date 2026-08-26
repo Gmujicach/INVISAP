@@ -94,3 +94,16 @@ def eliminar_empresa_por_rif(rif):
     except Exception as e:
         print(f"DEBUG: ERROR CRÍTICO AL ELIMINAR -> {str(e)}")
         return False
+
+def marcar_cumple_requisitos(rif, valor):
+    try:
+        resultado = EmpresaModel().actualizar_cumple_requisitos(rif, valor)
+        if resultado:
+            BitacoraService.registrar_accion(
+                session, 'Empresas', 'EDITAR',
+                f'{"Marcó" if valor else "Desmarcó"} cumplimiento de requisitos legales para el RIF: {rif}'
+            )
+        return resultado
+    except Exception as e:
+        print(f"DEBUG: ERROR AL MARCAR CUMPLE REQUISITOS -> {str(e)}")
+        return False

@@ -182,7 +182,7 @@ class ContratacionModel(BaseModel):
         if conexion is None: return []
         try:
             cursor = conexion.cursor(dictionary=True)
-            sql = "SELECT rif, nombre_empresa FROM empresa WHERE estado = 1"
+            sql = "SELECT rif, nombre_empresa, cumple_requisitos FROM empresa WHERE estado = 1 AND cumple_requisitos = 1"
             cursor.execute(sql)
             return cursor.fetchall()
         except Exception as e:

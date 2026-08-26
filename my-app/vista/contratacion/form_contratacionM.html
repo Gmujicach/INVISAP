@@ -164,7 +164,7 @@
           <h5 class="modal-title fw-bold text-white" id="modalEmpresasLabel">
             <i class="bx bx-buildings me-1 text-warning"></i> Directorio de Empresas
           </h5>
-          <small class="text-light-50">Seleccione la empresa ganadora para esta contratación</small>
+           <small class="text-light-50">Seleccione la empresa ganadora para esta contratación. Solo se listan empresas que cumplen con los requisitos legales.</small>
         </div>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -175,6 +175,7 @@
               <tr>
                 <th>RIF</th>
                 <th>Nombre de la Empresa</th>
+                <th class="text-center">Requisitos Legales</th>
                 <th class="text-center">Acción</th>
               </tr>
             </thead>
@@ -199,7 +200,7 @@
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tour/contratacion/tour.js') }}"></script>
-<script src="{{ url_for('static', filename ='js/contratacion.js') }}"></script>
+<script src="{{ url_for('static', filename ='js/contratacion/contratacion.js') }}"></script>
 <script>
   const formContratacion = document.getElementById('formContratacion');
   if (formContratacion) {

@@ -18,24 +18,29 @@ document.getElementById('btnCargarEmpresas').addEventListener('click', function(
             let contenidoHTML = ''; 
 
             if (data.length === 0) {
-                tablaCuerpo.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4">No hay empresas registradas.</td></tr>`;
+                tablaCuerpo.innerHTML = `<tr><td colspan="4" class="text-center text-muted py-4"><i class="bx bx-info-circle me-1"></i> No hay empresas que cumplan con los requisitos legales.</td></tr>`;
                 return;
             }
 
             data.forEach((empresa) => {
-                contenidoHTML += `
-                    <tr>
-                        <td class="fw-bold">${empresa.rif || '—'}</td>
-                        <td class="text-uppercase">${empresa.nombre_empresa || '—'}</td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-outline-primary btn-sm" 
-                                    onclick="seleccionarEmpresa('${(empresa.rif || '').replace(/'/g, "\\'")}', '${(empresa.nombre_empresa || '').replace(/'/g, "\\'")}')">
-                                <i class="bx bx-check"></i> Seleccionar
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
+                 contenidoHTML += `
+                     <tr>
+                         <td class="fw-bold">${empresa.rif || '—'}</td>
+                         <td class="text-uppercase">${empresa.nombre_empresa || '—'}</td>
+                         <td class="text-center">
+                             <span class="badge bg-success bg-opacity-10 text-success">
+                                 <i class="bx bx-check-circle"></i> Cumple requisitos legales
+                             </span>
+                         </td>
+                         <td class="text-center">
+                             <button type="button" class="btn btn-outline-primary btn-sm" 
+                                     onclick="seleccionarEmpresa('${(empresa.rif || '').replace(/'/g, "\\'")}', '${(empresa.nombre_empresa || '').replace(/'/g, "\\'")}')">
+                                 <i class="bx bx-check"></i> Seleccionar
+                             </button>
+                         </td>
+                     </tr>
+                 `;
+             });
             tablaCuerpo.innerHTML = contenidoHTML; 
         })
         .catch(error => {

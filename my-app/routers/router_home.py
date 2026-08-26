@@ -1075,12 +1075,14 @@ def viewFormEmpresa():
 
 @app.route('/form-registrar-empresas', methods=['POST'])
 def procesar_registro():
+    if 'conectado' not in session:
+        return jsonify({'exito': False, 'mensaje': 'Debes iniciar sesión.', 'categoria': 'error'}), 401
+    
     from controllers.controller_empresa import procesar_registro_empresa
     
     exito, mensaje, categoria = procesar_registro_empresa(request.form)
     
-    if exito:
-        return jsonify({
+    return jsonify({
         'exito': exito,
         'mensaje': mensaje,
         'categoria': categoria
@@ -1130,6 +1132,17 @@ def eliminar_empresa(rif):
             return jsonify({'exito': False, 'mensaje': 'Error al intentar eliminar la empresa.', 'categoria': 'error'})
     else:
         return jsonify({'exito': False, 'mensaje': 'Debes iniciar sesión.', 'categoria': 'error'})
+
+@app.route('/marcar-cumple-requisitos/<string:rif>', methods=['POST'])
+def marcar_cumple_requisitos(rif):
+    if 'conectado' in session:
+        from controllers.controller_empresa import marcar_cumple_requisitos
+        valor = request.form.get('valor', '1')
+        valor_int = 1 if valor in ('1', 'true', 'True', True) else 0
+        if marcar_cumple_requisitos(rif, valor_int):
+            return jsonify({'exito': True, 'mensaje': 'Cumplimiento de requisitos legales actualizado.', 'valor': valor_int})
+        return jsonify({'exito': False, 'mensaje': 'Error al actualizar el estado de la empresa.'})
+    return jsonify({'exito': False, 'mensaje': 'Debes iniciar sesión.', 'categoria': 'error'})
 
 
 @home_bp.route('/bitacora', methods=['GET'])

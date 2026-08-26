@@ -243,6 +243,7 @@ CREATE TABLE `empresa` (
   `nombre_empresa` varchar(80) NOT NULL,
   `telefono` varchar(12) NOT NULL COMMENT 'Tabla de empresas.',
   `domicilio_fiscal` varchar(100) NOT NULL,
+  `cumple_requisitos` tinyint(1) NOT NULL DEFAULT 0,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -250,9 +251,9 @@ CREATE TABLE `empresa` (
 -- Volcado de datos para la tabla `empresa`
 --
 
-INSERT INTO `empresa` (`rif`, `nombre_empresa`, `telefono`, `domicilio_fiscal`, `estado`) VALUES
-('12', 'Polar', '04122212121', 'Calle 13c', 0),
-('J-714712571', 'Empresa Pereira', '0414-5125412', 'Calle 14, Sector Centro', 1);
+INSERT INTO `empresa` (`rif`, `nombre_empresa`, `telefono`, `domicilio_fiscal`, `cumple_requisitos`, `estado`) VALUES
+('12', 'Polar', '04122212121', 'Calle 13c', 0, 0),
+('J-714712571', 'Empresa Pereira', '0414-5125412', 'Calle 14, Sector Centro', 1, 1);
 
 -- --------------------------------------------------------
 

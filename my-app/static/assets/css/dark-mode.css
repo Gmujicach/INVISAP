@@ -1,14 +1,36 @@
 /* ============================================================
-   INVILARA - MODO OSCURO UNIFICADO (Global)
-   Se activa con:
-     • body.dark-mode          -> toggle del sistema (navbar)
-     • [data-bs-theme="dark"] -> módulos inspección/evidencia
-   Objetivo:
-     • Todas las letras en BLANCO y legibles.
-     • Superficies oscuras coherentes en todos los módulos.
-     • Eliminar la estela / brillo blanco al hacer scroll en el sidebar.
-     • Interfaces responsivas en cualquier pantalla.
-   Se carga al FINAL para prevalecer sobre los CSS de módulo.
+   BOTÓN DE CERRAR MODAL (consistente claro/oscuro)
+   ============================================================ */
+.modal-header .btn-close {
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  transition: all 0.2s ease;
+}
+.modal-header .btn-close i {
+  color: #fff;
+}
+.modal-header .btn-close:hover {
+  background-color: #dc3545;
+}
+
+/* ============================================================
+   BOTÓN CERRAR EN MODO OSCURO
+   ============================================================ */
+body.dark-mode .modal-header .btn-close {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+body.dark-mode .modal-header .btn-close i {
+  color: #dc3545;
+}
+body.dark-mode .modal-header .btn-close:hover {
+  background-color: #dc3545;
+}
+body.dark-mode .modal-header .btn-close:hover i {
+  color: #fff;
+}
+
+/* ============================================================
+   ... resto del archivo ...
    ============================================================ */
 
 :root {

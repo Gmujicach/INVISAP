@@ -48,7 +48,7 @@ class EmpresaModel(BaseModel):
     def obtener_todas_las_empresas(self):
         #Lista de todas las empresas activas.
         sql = """
-            SELECT rif, nombre_empresa, telefono, domicilio_fiscal 
+            SELECT rif, nombre_empresa, telefono, domicilio_fiscal, cumple_requisitos 
             FROM empresa 
             WHERE estado = 1 
             ORDER BY nombre_empresa ASC
@@ -108,6 +108,10 @@ class EmpresaModel(BaseModel):
     def eliminar_empresa(self, rif):
         sql = "UPDATE empresa SET estado = 0 WHERE rif = %s"
         return self._ejecutar_modificacion(sql, (rif,), retornar_rowcount=True)
+
+    def actualizar_cumple_requisitos(self, rif, valor):
+        sql = "UPDATE empresa SET cumple_requisitos = %s WHERE rif = %s AND estado = 1"
+        return self._ejecutar_modificacion(sql, (valor, rif), retornar_rowcount=True)
 
     def obtener_relaciones_activas(self):
         sql = """

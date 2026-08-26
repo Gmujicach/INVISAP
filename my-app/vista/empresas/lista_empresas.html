@@ -7,6 +7,11 @@
   .search-modern .input-group-text { background-color: transparent; border-right: none; }
   .search-modern .form-control { border-left: none; }
   .search-modern .form-control:focus { box-shadow: none; border-color: #dee2e6; }
+  .badge-cumple { font-size: 0.75rem; }
+  #modalRequisitos .form-check-input:checked {
+    background-color: #2e7d32;
+    border-color: #2e7d32;
+  }
 </style>
 {% endblock %}
 
@@ -45,16 +50,24 @@
             <th>Nombre Empresa</th>
             <th>Teléfono</th>
             <th>D Fiscal</th>
+            <th class="text-center">Cumple Requisitos</th>
             <th class="text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {% for e in empresas %}
-          <tr>
+          <tr data-rif="{{ e.rif }}">
             <td>{{ e.rif }}</td>
             <td>{{ e.nombre_empresa }}</td>
             <td>{{ e.telefono }}</td>
             <td>{{ e.domicilio_fiscal }}</td>
+            <td class="text-center">
+              {% if e.cumple_requisitos %}
+                <span class="badge bg-success badge-cumple"><i class="bx bx-check-circle"></i> Verificado</span>
+              {% else %}
+                <span class="badge bg-secondary badge-cumple"><i class="bx bx-x-circle"></i> Pendiente</span>
+              {% endif %}
+            </td>
             <td class="text-center">
               <a href="{{ url_for('viewEditarEmpresa', rif=e.rif) }}" 
                  class="btn rounded-pill btn-warning me-2" 
@@ -67,11 +80,19 @@
                 data-nombre="{{ e.nombre_empresa }}">
                 <i class="bi bi-trash3"></i>
               </a>
+              <button type="button" 
+                      class="btn rounded-pill btn-success btn-ver-requisitos" 
+                      title="Verificar requisitos legales"
+                      data-rif="{{ e.rif }}"
+                      data-nombre="{{ e.nombre_empresa }}"
+                      data-cumple="{{ e.cumple_requisitos }}">
+                <i class="bi bi-shield-check"></i>
+              </button>
             </td>
           </tr>
           {% else %}
           <tr id="filaVacia">
-            <td colspan="5" class="text-center text-muted py-4">No hay Empresas registradas en el sistema.</td>
+            <td colspan="6" class="text-center text-muted py-4">No hay Empresas registradas en el sistema.</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -86,10 +107,50 @@
     </div>
   </div>
 </div>
-{% endblock %}
+
+<div class="modal fade" id="modalRequisitos" tabindex="-1" aria-labelledby="modalRequisitosLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 0px !important">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold" id="modalRequisitosLabel">
+          <i class="bi bi-shield-check me-1"></i> Verificación de Requisitos Legales
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <i class="bx bx-x" style="font-size: 24px;"></i>
+        </button>
+      </div>
+      <div class="modal-body p-4 text-center">
+        <input type="hidden" id="requisitoRifEmpresa">
+        <div class="mb-3">
+          <span class="fw-bold text-dark" id="requisitoNombreEmpresa"></span>
+        </div>
+        <div class="mb-4">
+          <div class="form-check form-switch d-flex justify-content-center align-items-center">
+            <input type="checkbox" id="checkboxCumpleRequisitos">
+            <label class="form-check-label mb-0 ms-2 text-center" for="checkboxCumpleRequisitos">
+              <span class="d-block">Esta empresa cumple con todos los requisitos legales</span>
+            </label>
+          </div>
+        </div>
+        <div id="requisitoFeedback" class="alert alert-success py-2 mb-0 d-none">
+          <i class="bi bi-check-circle me-1"></i> Estado actualizado correctamente.
+        </div>
+      </div>
+      <div class="modal-footer bg-light text-center d-flex justify-content-center">
+        <button type="button" class="btn rounded-pill btn-primary px-5" id="btnGuardarRequisito">
+          Guardar <i class="bi bi-save ms-1"></i>
+        </button>
+        <button type="button" class="btn rounded-pill btn-outline-secondary px-4" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} 
 
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/empresas/tour.js') }}"></script>
 <script src="{{ url_for('static', filename ='js/file.js') }}"></script>
-<script src="{{ url_for('static', filename ='js/empresa.js') }}"></script>
+<script src="{{ url_for('static', filename ='js/empresas/empresa.js') }}"></script>
 {% endblock %}
