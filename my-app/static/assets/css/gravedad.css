@@ -247,6 +247,97 @@
   .modal-dialog {
     margin: 0.5rem;
   }
+  .riesgo-gauge-wrapper {
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+}
+
+/* ============================================
+   Dial Slider Redondo (Gauge Circular)
+   ============================================ */
+.riesgo-gauge-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 0;
+}
+
+.riesgo-gauge {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #2e7d32 0deg 180deg,
+    #c62828 180deg 360deg
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.riesgo-gauge-inner {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.riesgo-gauge-valor {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #1a1a1a;
+}
+
+.riesgo-gauge-texto {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.25rem;
+}
+
+.riesgo-gauge-leyenda {
+  font-size: 0.7rem;
+  color: #6c757d;
+  margin-top: 0.1rem;
+}
+
+/* Marcas del gauge */
+.riesgo-gauge-marcas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.riesgo-gauge-marca {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  transform-origin: center 110px;
+}
+
+/* Mejora visual del btn-close en modal */
+.modal-header .btn-close {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.modal-header .btn-close:hover {
+  opacity: 1;
 }
 
 /* ============================================
@@ -385,4 +476,16 @@ body.dark-mode .text-dark {
 }
 body.dark-mode .text-muted {
   color: #a2a3b7 !important;
+}
+body.dark-mode .riesgo-gauge {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+}
+body.dark-mode .riesgo-gauge-inner {
+  background: #232333;
+}
+body.dark-mode .riesgo-gauge-valor {
+  color: #cfcde9;
+}
+body.dark-mode .riesgo-gauge-leyenda {
+  color: #a2a3b7;
 }

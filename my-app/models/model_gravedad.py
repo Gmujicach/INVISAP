@@ -29,12 +29,12 @@ class GravedadObraModel(BaseModel):
 
     def set_criticidad(self, valor):
         try:
-            v = float(valor)
+            v = int(float(valor))
         except (TypeError, ValueError):
-            raise ValueError("La criticidad debe ser un número entre 0 y 1 (porcentaje).")
-        if not (0 <= v <= 1):
-            raise ValueError("La criticidad debe estar entre 0.00 y 1.00.")
-        self.__criticidad = round(v, 2)
+            raise ValueError("La criticidad debe ser un número entero entre 0 y 100.")
+        if not (0 <= v <= 100):
+            raise ValueError("La criticidad debe estar entre 0 y 100.")
+        self.__criticidad = v
 
     # ----- Métodos de persistencia (la conexión se abre y cierra por consulta) -----
     def registrar_gravedad(self):
@@ -62,7 +62,22 @@ class GravedadObraModel(BaseModel):
                 "SELECT id_gravedad, nivel_gravedad, criticidad, estado "
                 "FROM gravedad_obra WHERE estado = 1 ORDER BY id_gravedad ASC"
             )
-            return cursor.fetchall()
+            filas = cursor.fetchall()
+            for f in filas:
+                try:
+                    c = float(f.get('criticidad'))
+                    if c <= 1:
+                        f['criticidad'] = int(round(c * 100))
+                    else:
+                        f['criticidad'] = int(c)
+                except Exception:
+                    f['criticidad'] = 0
+                nivel = (f.get('nivel_gravedad') or '').strip().lower()
+                if nivel in ('baja', 'bajo'):
+                    f['nivel_gravedad'] = 'Bajo'
+                elif nivel in ('media', 'alto'):
+                    f['nivel_gravedad'] = 'Alto'
+            return filas
         finally:
             cursor.close()
             conexion.close()
@@ -75,7 +90,22 @@ class GravedadObraModel(BaseModel):
                 "SELECT id_gravedad, nivel_gravedad, criticidad, estado "
                 "FROM gravedad_obra WHERE id_gravedad = %s", (id_gravedad,)
             )
-            return cursor.fetchone()
+            fila = cursor.fetchone()
+            if fila:
+                try:
+                    c = float(fila.get('criticidad'))
+                    if c <= 1:
+                        fila['criticidad'] = int(round(c * 100))
+                    else:
+                        fila['criticidad'] = int(c)
+                except Exception:
+                    fila['criticidad'] = 0
+                nivel = (fila.get('nivel_gravedad') or '').strip().lower()
+                if nivel in ('baja', 'bajo'):
+                    fila['nivel_gravedad'] = 'Bajo'
+                elif nivel in ('media', 'alto'):
+                    fila['nivel_gravedad'] = 'Alto'
+            return fila
         finally:
             cursor.close()
             conexion.close()

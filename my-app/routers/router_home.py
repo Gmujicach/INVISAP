@@ -523,6 +523,7 @@ def api_validar_nivel_gravedad():
     existe = GravedadObraModel(nivel_gravedad=nivel).validar_nivel_existente(excluir)
     return jsonify({'existe': bool(existe)})
 
+
 # ===================== MÓDULO PERMISOS POR ROL (Seguridad) =====================
 @home_bp.route('/gestionar-permisos', methods=['GET'])
 def viewFormPermisos():

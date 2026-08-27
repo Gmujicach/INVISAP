@@ -25,6 +25,25 @@
     </div>
   </div>
 
+  <!-- Dial Slider Redondo de Riesgo -->
+  <div class="card border-0 shadow-sm mb-3">
+    <div class="card-body py-3 text-center">
+      <div class="riesgo-gauge-wrapper">
+        <div class="riesgo-gauge">
+          <div class="riesgo-gauge-inner">
+            <span class="riesgo-gauge-valor" id="gaugeValor">0%</span>
+            <span class="riesgo-gauge-texto" id="gaugeTexto">Bajo</span>
+            <span class="riesgo-gauge-leyenda">Riesgo</span>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between mt-2 text-muted" style="font-size:0.8rem; max-width: 220px; margin: 0 auto;">
+        <span><i class="bi bi-shield-check me-1"></i>0% - 50% Bajo</span>
+        <span><i class="bi bi-exclamation-triangle me-1"></i>51% - 100% Alto</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Filtro / búsqueda rápida -->
   <div class="gravedad-filter-card">
     <div class="row g-3 align-items-center">
@@ -72,35 +91,32 @@
 <div class="modal fade" id="modalGravedad" tabindex="-1" aria-labelledby="modalGravedadLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header" style="border-bottom: 2px solid #f1c40f;">
+      <div class="modal-header" style="border-bottom: 2px solid #f1c40f; position: relative;">
         <h5 class="modal-title fw-bold" id="modalGravedadLabel">
           <i class="bi bi-pencil-square me-2"></i> <span id="modalTitle">Nuevo Nivel de Gravedad</span>
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" style="position: absolute; right: 1rem; top: 1rem;"></button>
       </div>
       <div class="modal-body">
         <form id="formGravedad" novalidate>
           <input type="hidden" id="id_gravedad" value="">
 
           <div class="mb-3">
-            <label for="nivel_gravedad" class="form-label fw-semibold">Nivel de Gravedad</label>
-            <input type="text" class="form-control" id="nivel_gravedad"
-                   placeholder="Ej: Alta, Media, Baja, Crítica"
-                   maxlength="20" required>
-            <div class="invalid-feedback">Solo letras y espacios (3-20 caracteres).</div>
-            <div id="nivelFeedback" class="form-text text-muted" style="font-size:0.8rem;">
-              <i class="bi bi-info-circle"></i> Debe ser único en el catálogo.
+            <label for="criticidad" class="form-label fw-semibold">Criticidad (porcentaje)</label>
+            <input type="number" class="form-control" id="criticidad"
+                    placeholder="Valor entero de 0 a 100 (ej: 80 = 80% crítico)"
+                    min="0" max="100" step="1" required>
+            <div class="invalid-feedback">Ingrese un número entero entre 0 y 100.</div>
+            <div id="criticidadFeedback" class="form-text text-muted" style="font-size:0.8rem;">
+              <i class="bi bi-info-circle"></i> 100 = máxima criticidad, 0 = mínima.
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="criticidad" class="form-label fw-semibold">Criticidad (porcentaje)</label>
-            <input type="number" class="form-control" id="criticidad"
-                    placeholder="Valor de 0.00 a 1.00 (ej: 0.80 = 80% crítico)"
-                    min="0" max="1" step="0.01" required>
-            <div class="invalid-feedback">Ingrese un número entre 0.00 y 1.00 (porcentaje de criticidad).</div>
-            <div id="criticidadFeedback" class="form-text text-muted" style="font-size:0.8rem;">
-              <i class="bi bi-info-circle"></i> 1.00 = máxima criticidad, 0.00 = mínima.
+            <label class="form-label fw-semibold">Nivel de Gravedad</label>
+            <div id="riesgoBadge" class="badge bg-secondary fs-6">Sin datos</div>
+            <div class="form-text text-muted" style="font-size:0.8rem;">
+              <i class="bi bi-info-circle"></i> Se calcula automáticamente: 0-50 = Bajo, 51-100 = Alto.
             </div>
           </div>
 
@@ -116,10 +132,34 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-primary" id="btnGuardarGravedad">
-          <i class="bi bi-check2-circle me-1"></i> Registrar
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x me-1"></i>Cerrar
         </button>
+        <button type="button" class="btn btn-primary" id="btnGuardarGravedad">
+          <i class="bi bi-check2-circle me-1"></i> <span id="textoBotonGuardar">Registrar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Detalles -->
+<div class="modal fade" id="modalDetallesGravedad" tabindex="-1" aria-labelledby="modalDetallesGravedadLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 2px solid #f1c40f; position: relative;">
+        <h5 class="modal-title fw-bold" id="modalDetallesGravedadLabel">
+          <i class="bi bi-eye me-2"></i> Detalles del Nivel de Gravedad
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar" style="position: absolute; right: 1rem; top: 1rem;"></button>
+      </div>
+      <div class="modal-body">
+        <dl class="row mb-0" id="detallesGravedadList">
+          <!-- Se llena dinámicamente -->
+        </dl>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
@@ -137,6 +177,41 @@
     ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Guardando...' });
     cargarGravedades();
   });
+
+  function actualizarGauge() {
+    const criticidadInput = document.getElementById('criticidad');
+    const gaugeValor = document.getElementById('gaugeValor');
+    const gaugeTexto = document.getElementById('gaugeTexto');
+    const badge = document.getElementById('riesgoBadge');
+    if (!criticidadInput || !gaugeValor || !gaugeTexto || !badge) return;
+
+    const valor = parseInt(criticidadInput.value, 10);
+    if (isNaN(valor) || criticidadInput.value.trim() === '') {
+      gaugeValor.textContent = '0%';
+      gaugeTexto.textContent = 'Bajo';
+      badge.className = 'badge bg-secondary fs-6';
+      badge.textContent = 'Sin datos';
+      return;
+    }
+
+    const valorClamp = Math.max(0, Math.min(100, valor));
+    gaugeValor.textContent = valorClamp + '%';
+
+    if (valorClamp <= 50) {
+      gaugeTexto.textContent = 'Bajo';
+      gaugeTexto.style.color = '#2e7d32';
+      badge.className = 'badge bg-success fs-6';
+      badge.textContent = 'Bajo Riesgo';
+    } else {
+      gaugeTexto.textContent = 'Alto';
+      gaugeTexto.style.color = '#c62828';
+      badge.className = 'badge bg-danger fs-6';
+      badge.textContent = 'Alto Riesgo';
+    }
+  }
+
+  document.getElementById('criticidad').addEventListener('input', actualizarGauge);
+  document.getElementById('criticidad').addEventListener('change', actualizarGauge);
 
   // Función para cargar la tabla vía Fetch
   function cargarGravedades() {
@@ -170,17 +245,25 @@
       const estadoBadge = r.estado == 1 
         ? '<span class="badge bg-success">Activo</span>' 
         : '<span class="badge bg-secondary">Inactivo</span>';
+
+      const nivelBadge = r.nivel_gravedad === 'Alto'
+        ? '<span class="badge bg-danger">Alto</span>'
+        : '<span class="badge bg-success">Bajo</span>';
+
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${r.id_gravedad}</td>
-        <td><strong>${r.nivel_gravedad}</strong></td>
-        <td>${r.criticidad}</td>
+        <td>${nivelBadge}</td>
+        <td>${r.criticidad}%</td>
         <td>${estadoBadge}</td>
         <td>
-          <button class="btn btn-sm btn-outline-primary me-1" onclick="editarGravedad(${r.id_gravedad})">
+          <button class="btn btn-sm btn-outline-info me-1" onclick="verDetallesGravedad(${r.id_gravedad})" title="Ver detalles">
+            <i class="bi bi-eye"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-primary me-1" onclick="editarGravedad(${r.id_gravedad})" title="Modificar">
             <i class="bi bi-pencil"></i>
           </button>
-          <button class="btn btn-sm btn-outline-danger" onclick="eliminarGravedad(${r.id_gravedad})">
+          <button class="btn btn-sm btn-outline-danger" onclick="eliminarGravedad(${r.id_gravedad})" title="Eliminar">
             <i class="bi bi-trash"></i>
           </button>
         </td>
@@ -203,11 +286,12 @@
   function resetForm() {
     document.getElementById('modalTitle').textContent = 'Nuevo Nivel de Gravedad';
     document.getElementById('id_gravedad').value = '';
-    document.getElementById('nivel_gravedad').value = '';
     document.getElementById('criticidad').value = '';
     document.getElementById('estado').checked = true;
     document.getElementById('formGravedad').classList.remove('was-validated');
+    document.getElementById('textoBotonGuardar').textContent = 'Registrar';
     ocultarFeedback();
+    actualizarGauge();
   }
 
   // Editar: cargar datos en el modal
@@ -218,12 +302,13 @@
         if (data) {
           document.getElementById('modalTitle').textContent = 'Editar Nivel de Gravedad';
           document.getElementById('id_gravedad').value = data.id_gravedad;
-          document.getElementById('nivel_gravedad').value = data.nivel_gravedad;
           document.getElementById('criticidad').value = data.criticidad;
           document.getElementById('estado').checked = data.estado == 1;
+          document.getElementById('textoBotonGuardar').textContent = 'Actualizar';
           document.getElementById('formGravedad').classList.remove('was-validated');
           ocultarFeedback();
-          // Abrir modal
+          actualizarGauge();
+
           const modal = new bootstrap.Modal(document.getElementById('modalGravedad'));
           modal.show();
         } else {
@@ -233,6 +318,38 @@
       .catch(error => {
         console.error('Error al obtener gravedad:', error);
         mostrarAlerta('Error al cargar los datos para editar.', 'danger');
+      });
+  }
+
+  // Ver detalles
+  function verDetallesGravedad(id) {
+    fetch(`/api/gravedad/obtener/${id}`)
+      .then(response => response.json())
+      .then(data => {
+        if (!data) {
+          mostrarAlerta('No se encontró el registro.', 'warning');
+          return;
+        }
+        const nivel = (data.nivel_gravedad || '').trim();
+        const criticidad = data.criticidad != null ? data.criticidad + '%' : 'N/A';
+        const estado = data.estado == 1 ? 'Activo' : 'Inactivo';
+
+        const html = `
+          <dt class="col-sm-4">ID</dt>
+          <dd class="col-sm-8">${data.id_gravedad}</dd>
+          <dt class="col-sm-4">Nivel de Gravedad</dt>
+          <dd class="col-sm-8">${nivel}</dd>
+          <dt class="col-sm-4">Criticidad</dt>
+          <dd class="col-sm-8">${criticidad}</dd>
+          <dt class="col-sm-4">Estado</dt>
+          <dd class="col-sm-8">${estado}</dd>
+        `;
+        document.getElementById('detallesGravedadList').innerHTML = html;
+        new bootstrap.Modal(document.getElementById('modalDetallesGravedad')).show();
+      })
+      .catch(error => {
+        console.error('Error al obtener detalles:', error);
+        mostrarAlerta('Error al cargar los detalles.', 'danger');
       });
   }
 
@@ -264,11 +381,16 @@
     }
 
     const id = document.getElementById('id_gravedad').value;
-    const nivel = document.getElementById('nivel_gravedad').value.trim();
     const criticidad = document.getElementById('criticidad').value.trim();
     const estado = document.getElementById('estado').checked ? 1 : 0;
 
-    const payload = { nivel_gravedad: nivel, criticidad, estado };
+    const nivel = criticidad ? (parseInt(criticidad, 10) <= 50 ? 'Bajo' : 'Alto') : '';
+
+    const payload = {
+      nivel_gravedad: nivel,
+      criticidad: parseInt(criticidad, 10),
+      estado: estado
+    };
     const url = id ? `/api/gravedad/actualizar/${id}` : '/api/gravedad/registrar';
     const method = id ? 'PUT' : 'POST';
 
@@ -281,7 +403,6 @@
     .then(data => {
       if (data.success) {
         mostrarAlerta(data.message, 'success');
-        // Cerrar modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('modalGravedad'));
         modal.hide();
         cargarGravedades();
@@ -310,28 +431,5 @@
   function recargarTabla() {
     cargarGravedades();
   }
-
-  // Validación en tiempo real: al perder el foco del campo nivel, verificar duplicado
-  document.getElementById('nivel_gravedad').addEventListener('blur', function() {
-    const nivel = this.value.trim();
-    const idActual = document.getElementById('id_gravedad').value;
-    if (nivel.length < 3) return;
-
-    fetch(`/api/gravedad/validar-nivel?nivel=${encodeURIComponent(nivel)}&excluir=${idActual}`)
-      .then(response => response.json())
-      .then(data => {
-        const feedback = document.getElementById('nivelFeedback');
-        if (data.existe) {
-          feedback.innerHTML = '<i class="bi bi-exclamation-triangle-fill text-warning"></i> Este nivel ya existe en el catálogo.';
-          feedback.className = 'form-text text-warning';
-          document.getElementById('nivel_gravedad').classList.add('is-invalid');
-        } else {
-          feedback.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i> Nivel disponible.';
-          feedback.className = 'form-text text-success';
-          document.getElementById('nivel_gravedad').classList.remove('is-invalid');
-        }
-      })
-      .catch(() => {});
-  });
 </script>
 {% endblock %}

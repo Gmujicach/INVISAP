@@ -2,33 +2,48 @@ from models.model_gravedad import GravedadObraModel
 from services.bitacora_service import BitacoraService
 from flask import session
 
+
+def _calcular_nivel_gravedad(criticidad):
+    try:
+        v = int(float(criticidad))
+    except (TypeError, ValueError):
+        return None
+    if v <= 50:
+        return "Bajo"
+    return "Alto"
+
+
 def registrar_gravedad_controller(datos):
     """
     Recibe los datos del frontend (vía Fetch).
-    Instancia el modelo POO, el cual ejecutará las validaciones Regex automáticamente en sus setters.
+    Instancia el modelo POO, el cual ejecutará las validaciones automáticamente en sus setters.
+    El nivel de gravedad se calcula automáticamente según la criticidad:
+      - 0 a 50 => Bajo
+      - 51 a 100 => Alto
     """
     try:
-        # Aplicamos el principio de encapsulamiento exigido por Escalona.
-        # Al instanciar, los setters privados validan los datos (Ej: longitud, sin inyecciones).
+        nivel_gravedad = _calcular_nivel_gravedad(datos.get('criticidad'))
+        if not nivel_gravedad:
+            return {"success": False, "message": "Debe ingresar una criticidad válida (0 a 100)."}
+
         modelo = GravedadObraModel(
-            nivel_gravedad=datos.get('nivel_gravedad'),
-            criticidad=datos.get('criticidad')
+            nivel_gravedad=nivel_gravedad,
+            criticidad=datos.get('criticidad'),
+            estado=int(datos.get('estado', 1))
         )
-        
-        # Invocamos el método público que ejecuta la transacción privada en BD
+
         resultado = modelo.registrar_gravedad()
-        
+
         if resultado:
             BitacoraService.registrar_accion(
                 session, 'Gravedad', 'CREAR',
-                f'Registró el nivel de gravedad: {datos.get("nivel_gravedad")}'
+                f'Registró nivel de gravedad {nivel_gravedad} (criticidad {datos.get("criticidad")})'
             )
             return {"success": True, "message": "Nivel de gravedad registrado exitosamente."}
         else:
             return {"success": False, "message": "No se pudo registrar la gravedad en la base de datos."}
-            
+
     except ValueError as ve:
-        # Aquí capturamos si la Regex del modelo detectó un formato inválido
         return {"success": False, "message": str(ve)}
     except Exception as e:
         print(f"Error crítico en registrar_gravedad_controller: {e}")
@@ -52,24 +67,30 @@ def obtener_gravedad_controller(id_gravedad):
 def actualizar_gravedad_controller(id_gravedad, datos):
     """
     Actualiza los datos pasando nuevamente por la validación POO.
+    El nivel de gravedad se calcula automáticamente según la criticidad.
     """
     try:
+        nivel_gravedad = _calcular_nivel_gravedad(datos.get('criticidad'))
+        if not nivel_gravedad:
+            return {"success": False, "message": "Debe ingresar una criticidad válida (0 a 100)."}
+
         modelo = GravedadObraModel(
             id_gravedad=id_gravedad,
-            nivel_gravedad=datos.get('nivel_gravedad'),
-            criticidad=datos.get('criticidad')
+            nivel_gravedad=nivel_gravedad,
+            criticidad=datos.get('criticidad'),
+            estado=int(datos.get('estado', 1))
         )
         resultado = modelo.actualizar_gravedad()
-        
+
         if resultado:
             BitacoraService.registrar_accion(
                 session, 'Gravedad', 'EDITAR',
-                f'Actualizó el nivel de gravedad ID: {id_gravedad}'
+                f'Actualizó el nivel de gravedad ID: {id_gravedad} a {nivel_gravedad}'
             )
             return {"success": True, "message": "Registro actualizado correctamente."}
         else:
             return {"success": False, "message": "No se realizaron cambios."}
-            
+
     except ValueError as ve:
         return {"success": False, "message": str(ve)}
 
