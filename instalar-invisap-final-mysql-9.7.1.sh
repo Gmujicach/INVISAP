@@ -241,7 +241,11 @@ install_system_packages() {
     info "Actualizando repositorios y dependencias base..."
     apt-get update
 
-    DEBIAN_FRONTEND=noninteractive apt-get install -y         git curl wget ca-certificates gnupg xz-utils build-essential         python3 python3-venv python3-dev python3-pip         libaio1t64 libncurses6 libnuma1 libssl3t64 pkg-config openssl         libmecab2
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        git curl wget ca-certificates gnupg xz-utils build-essential \
+        python3 python3-venv python3-dev python3-pip \
+        libaio1t64 libncurses6 libnuma1 libssl3t64 pkg-config openssl \
+        libmecab2
 
     if [[ -f /usr/lib/x86_64-linux-gnu/libaio.so.1t64 ]] && [[ ! -f /usr/lib/x86_64-linux-gnu/libaio.so.1 ]]; then
         ln -s /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1
@@ -530,14 +534,25 @@ import_databases() {
     if database_has_tables "$DB_MAIN"; then
         warn "La base ${DB_MAIN} ya contiene tablas. NO se importará el SQL para proteger los datos existentes."
     else
-        mysql -u root -p"${MYSQL_ROOT_PASSWORD}" "$DB_MAIN" < "$APP_DIR/BD/invilara.sql"
+        # CORRECCIÓN AQUÍ: Se agrupan los comandos para desactivar/activar llaves foráneas
+        # antes y después de inyectar el contenido del archivo SQL, mitigando el ERROR 1452.
+        {
+            echo "SET FOREIGN_KEY_CHECKS=0;"
+            cat "$APP_DIR/BD/invilara.sql"
+            echo "SET FOREIGN_KEY_CHECKS=1;"
+        } | mysql -u root -p"${MYSQL_ROOT_PASSWORD}" "$DB_MAIN"
         msg "SQL de ${DB_MAIN} importado."
     fi
 
     if database_has_tables "$DB_SECURITY"; then
         warn "La base ${DB_SECURITY} ya contiene tablas. NO se importará el SQL para proteger los datos existentes."
     else
-        mysql -u root -p"${MYSQL_ROOT_PASSWORD}" "$DB_SECURITY" < "$APP_DIR/BD/invilara_seguridad.sql"
+        # CORRECCIÓN AQUÍ: Se aplica la misma lógica para la base de datos de seguridad.
+        {
+            echo "SET FOREIGN_KEY_CHECKS=0;"
+            cat "$APP_DIR/BD/invilara_seguridad.sql"
+            echo "SET FOREIGN_KEY_CHECKS=1;"
+        } | mysql -u root -p"${MYSQL_ROOT_PASSWORD}" "$DB_SECURITY"
         msg "SQL de ${DB_SECURITY} importado."
     fi
 
