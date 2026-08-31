@@ -4,15 +4,36 @@
 
 {% block customCSS %} 
 <link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" /> 
+<style>
+  .btn-accion-obra {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+  .btn-accion-obra i {
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+</style>
 {% endblock %} 
 
 {% block body %} 
 <div class="card mb-4 shadow-sm" style="border-radius: 0px !important">   
-  <div class="card-header d-flex justify-content-between align-items-center bg-white border-bottom">     
-    <h5 class="mb-0 text-primary fw-bold">GESTIÓN DE OBRAS Y PROYECTOS</h5>          
-    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalNuevaObra">       
-      <i class="bx bx-plus"></i> Registrar Obra     
-    </button>   
+  <div class="card-header bg-white border-bottom">
+    <div class="d-flex flex-column">
+      <h5 class="mb-2 text-primary fw-bold">GESTIÓN DE OBRAS Y PROYECTOS</h5>
+      <div>
+        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#modalNuevaObra">
+          <i class="bx bx-plus"></i> Registrar Obra
+        </button>
+      </div>
+    </div>
   </div>   
   
   <div class="card-body">     
@@ -49,9 +70,11 @@
               {% endif %}
             </td>
             <td class="text-center">
-              <button class="btn btn-outline-info btn-sm" title="Ver detalle" onclick="verObra({{ obra.id_obra }})"><i class="bx bx-show"></i></button>
-              <a href="{{ url_for('obra_bp.vista_editar_obra', id_obra=obra.id_obra) }}" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
-              <button class="btn btn-outline-danger btn-sm btn-eliminar-obra" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminarObra" data-id="{{ obra.id_obra }}" data-nombre="{{ obra.titulo_obra }}"><i class="bx bx-trash"></i></button>
+              <div class="d-inline-flex gap-1 align-items-center">
+                <button class="btn btn-outline-info btn-sm btn-accion-obra" title="Ver detalle" onclick="verObra({{ obra.id_obra }})"><i class="bx bx-show"></i></button>
+                <a href="{{ url_for('obra_bp.vista_editar_obra', id_obra=obra.id_obra) }}" class="btn btn-outline-warning btn-sm btn-accion-obra" title="Editar"><i class="bx bx-edit"></i></a>
+                <button class="btn btn-outline-danger btn-sm btn-accion-obra btn-eliminar-obra" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminarObra" data-id="{{ obra.id_obra }}" data-nombre="{{ obra.titulo_obra }}"><i class="bx bx-trash"></i></button>
+              </div>
             </td>           
           </tr>           
           {% else %}           
@@ -68,26 +91,34 @@
 <div class="modal fade" id="modalNuevaObra" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title text-primary fw-bold">Registrar Nueva Obra</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title text-white fw-bold">
+          <i class="bx bx-plus-circle me-2"></i>Registrar Nueva Obra
+        </h5>
+        <button type="button" data-bs-dismiss="modal" aria-label="Cerrar"
+          style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);border:2px solid #fff;color:#fff;font-size:1.4rem;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;"
+          onmouseover="this.style.background='#fff';this.style.color='#0d6efd';"
+          onmouseout="this.style.background='rgba(255,255,255,0.15)';this.style.color='#fff';">×</button>
       </div>
-      
+
       <form id="formNuevaObra" action="{{ url_for('obra_bp.registrar_obra') }}" method="POST">
         <div class="modal-body">
           <div class="row g-3">
             <div class="col-md-6">
               <label class="form-label">Título de la Obra</label>
-              <input type="text" name="titulo_obra" class="form-control" maxlength="45" required>
+              <input type="text" name="titulo_obra" class="form-control" maxlength="45"
+                     placeholder="Restauración Vial Av. Principal" required>
             </div>
             <div class="col-md-6">
               <label class="form-label">Ubicación de la Obra</label>
-              <input type="text" name="ubicacion_obra" class="form-control" maxlength="80" required>
+              <input type="text" name="ubicacion_obra" class="form-control" maxlength="80"
+                     placeholder="Calle 5 con Carrera 6, Barquisimeto" required>
             </div>
 
             <div class="col-md-4">
               <label class="form-label">Período Ejecución (Días/Meses)</label>
-              <input type="text" name="periodo_ejecucion" class="form-control" maxlength="10" placeholder="Ej. 2 meses" required>
+              <input type="text" name="periodo_ejecucion" class="form-control" maxlength="10"
+                     placeholder="2 meses" required>
             </div>
             <div class="col-md-4">
               <label class="form-label">Fecha de Inicio</label>
@@ -100,49 +131,57 @@
 
             <div class="col-md-4">
               <label class="form-label">Mediciones Obra</label>
-              <input type="text" name="mediciones_obra" class="form-control" maxlength="45" required>
+              <input type="text" name="mediciones_obra" class="form-control" maxlength="45"
+                     placeholder="230 m² de asfalto" required>
             </div>
             <div class="col-md-4">
               <label class="form-label">Valuaciones</label>
-              <input type="text" name="valuaciones" class="form-control" maxlength="100" required>
+              <input type="text" name="valuaciones" class="form-control" maxlength="100"
+                     placeholder="Bs. 31.745.715,41" required>
             </div>
             <div class="col-md-4">
               <label class="form-label">Avance Obra (%)</label>
-              <input type="number" name="porcentaje_avance_obra" class="form-control" min="0" max="100" required>
+              <input type="number" name="porcentaje_avance_obra" class="form-control" min="0" max="100"
+                     placeholder="0 - 100" required>
             </div>
 
             <div class="col-md-4">
               <label class="form-label">Número Contrato</label>
-              <input type="text" name="numero_contrato" class="form-control" maxlength="20" required>
+              <input type="text" name="numero_contrato" class="form-control" maxlength="20"
+                     placeholder="FLR-23580" required>
             </div>
             <div class="col-md-4">
               <label class="form-label">Modificaciones Contrato</label>
-              <input type="text" name="modificaciones_contrato" class="form-control" maxlength="100" required>
+              <input type="text" name="modificaciones_contrato" class="form-control" maxlength="100"
+                     placeholder="N/A o describa la modificación" required>
             </div>
             <div class="col-md-4">
               <label class="form-label">Certificaciones Ejecutadas</label>
-              <input type="number" name="certificaciones_obras_ejecutadas" class="form-control" required>
+              <input type="number" name="certificaciones_obras_ejecutadas" class="form-control"
+                     min="0" placeholder="3" required>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Contratación</label>
               <select name="contratacion_id_contratacion" id="contratacion_id_contratacion" class="form-select" required>
-                <option value="">Seleccione una contratación</option>
+                <option value="" disabled selected>Seleccione una contratación…</option>
               </select>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
               <label class="form-label">Código de Proyecto</label>
               <select name="gestionar_proyectos_codigo_proyecto" id="gestionar_proyectos_codigo_proyecto" class="form-select" required>
-                <option value="">Seleccione un proyecto</option>
+                <option value="" disabled selected>Seleccione un proyecto…</option>
               </select>
             </div>
 
           </div>
         </div>
-        
+
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Guardar Obra</button>
+          <button type="submit" class="btn btn-primary">
+            <i class="bx bx-save me-1"></i>Guardar Obra
+          </button>
         </div>
       </form>
       
@@ -403,17 +442,20 @@
 <script src="{{ url_for('static', filename='js/tour/obras/tour.js') }}"></script>
 <script src="{{ url_for('static', filename='js/libs/sweetalert2.all.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/obras/obra_ajax.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/obras/validaciones_obra.js') }}"></script>
 <script>
   const formNuevaObra = document.getElementById('formNuevaObra');
   if (formNuevaObra) {
     ValidacionesComunes.initSelects(formNuevaObra);
     ValidacionesComunes.initBotonesSubmit(formNuevaObra, { textoGuardando: 'Guardando...' });
+    if (window.ValidacionesObra) ValidacionesObra.init('formNuevaObra');
   }
 
   const formEditarObra = document.getElementById('formEditarObra');
   if (formEditarObra) {
     ValidacionesComunes.initSelects(formEditarObra);
     ValidacionesComunes.initBotonesSubmit(formEditarObra, { textoGuardando: 'Actualizando...' });
+    if (window.ValidacionesObra) ValidacionesObra.init('formEditarObra');
   }
 </script>
 {% endblock %}

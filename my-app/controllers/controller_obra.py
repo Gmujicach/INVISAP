@@ -160,6 +160,40 @@ def api_listar_proyectos():
         return jsonify([])
 
 
+@obra_bp.route('/api/obra/validar-contratacion', methods=['GET'])
+def api_validar_contratacion():
+    """Validación asíncrona (concurrencia multiusuario).
+    Verifica que la contratación seleccionada exista y esté activa antes
+    de permitir el envío del formulario.
+    """
+    if 'conectado' not in session:
+        return jsonify({'valido': False, 'mensaje': 'Sesión caducada.'}), 401
+    id_contratacion = request.args.get('id', type=int)
+    if not id_contratacion:
+        return jsonify({'valido': False, 'mensaje': 'Debe seleccionar una contratación.'})
+    modelo = ObraModel()
+    if modelo.validar_contratacion(id_contratacion):
+        return jsonify({'valido': True})
+    return jsonify({'valido': False, 'mensaje': 'La contratación seleccionada no existe o fue desactivada por otro usuario.'})
+
+
+@obra_bp.route('/api/obra/validar-proyecto', methods=['GET'])
+def api_validar_proyecto():
+    """Validación asíncrona (concurrencia multiusuario).
+    Verifica que el proyecto seleccionado exista y esté activo antes
+    de permitir el envío del formulario.
+    """
+    if 'conectado' not in session:
+        return jsonify({'valido': False, 'mensaje': 'Sesión caducada.'}), 401
+    codigo = request.args.get('id', type=str)
+    if not codigo:
+        return jsonify({'valido': False, 'mensaje': 'Debe seleccionar un proyecto.'})
+    modelo = ObraModel()
+    if modelo.validar_proyecto(codigo):
+        return jsonify({'valido': True})
+    return jsonify({'valido': False, 'mensaje': 'El proyecto seleccionado no existe o fue desactivado por otro usuario.'})
+
+
 @obra_bp.route('/obra/detalle/<int:id_obra>', methods=['GET'])
 def detalle_obra(id_obra):
     if 'conectado' not in session:
