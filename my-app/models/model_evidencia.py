@@ -273,14 +273,32 @@ class EvidenciaModel(BaseModel):
             cur.close()
             conn.close()
 
-    def __obtener_todas_evidencias_db(self):
+    def __obtener_todas_evidencias_db(self, page=None, per_page=None):
         conn = connectionBD_invilara()
         if not conn:
             raise Exception("Error de conexión a la base de datos.")
         cur = conn.cursor(dictionary=True)
         try:
-            cur.execute("SELECT * FROM evidencia WHERE estado = 1 ORDER BY fecha_registro DESC")
+            sql = "SELECT * FROM evidencia WHERE estado = 1 ORDER BY fecha_registro DESC"
+            params = []
+            if page is not None and per_page is not None:
+                offset = (page - 1) * per_page
+                sql += " LIMIT %s OFFSET %s"
+                params = [per_page, offset]
+            cur.execute(sql, params)
             return cur.fetchall()
+        finally:
+            cur.close()
+            conn.close()
+
+    def __contar_evidencias_db(self):
+        conn = connectionBD_invilara()
+        if not conn:
+            raise Exception("Error de conexión a la base de datos.")
+        cur = conn.cursor()
+        try:
+            cur.execute("SELECT COUNT(*) FROM evidencia WHERE estado = 1")
+            return cur.fetchone()[0]
         finally:
             cur.close()
             conn.close()
@@ -333,8 +351,11 @@ class EvidenciaModel(BaseModel):
     def obtener_evidencia_por_id(self, id_evidencia):
         return self.__obtener_evidencia_por_id_db(id_evidencia)
 
-    def obtener_todas_evidencias(self):
-        return self.__obtener_todas_evidencias_db()
+    def obtener_todas_evidencias(self, page=None, per_page=None):
+        return self.__obtener_todas_evidencias_db(page=page, per_page=per_page)
+
+    def contar_evidencias(self):
+        return self.__contar_evidencias_db()
 
     def validar_evidencia_activa(self, id_evidencia):
         return self.__validar_evidencia_activa_db(id_evidencia)

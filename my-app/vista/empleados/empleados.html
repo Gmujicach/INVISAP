@@ -136,4 +136,9 @@
 <script src="{{ url_for('static', filename='js/tour/empleados/tour.js') }}"></script>
 <script src="{{ url_for('static', filename='js/libs/sweetalert2.all.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/empleados/empleados.js') }}"></script>
+<script>
+    if (typeof initPaginacionEmpleados === 'function') {
+        initPaginacionEmpleados();
+    }
+</script>
 {% endblock %}
