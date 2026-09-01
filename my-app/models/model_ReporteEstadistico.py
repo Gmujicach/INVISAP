@@ -193,7 +193,7 @@ class ReporteEstadisticoModel(BaseModel):
         conexion = connectionBD()
         cursor = conexion.cursor(dictionary=True)
         params = []
-        where = ["o.estado = 1"]
+        where = ["o.activo = 1"]
         mapeo = {
             'titulo_obra': 'o.titulo_obra',
             'ubicacion_obra': 'o.ubicacion_obra',
@@ -201,7 +201,7 @@ class ReporteEstadisticoModel(BaseModel):
             'fecha_inicio_hasta': 'o.fecha_inicio',
             'fecha_fin_desde': 'o.fecha_fin',
             'fecha_fin_hasta': 'o.fecha_fin',
-            'semaforo_estado': 's.estado',
+            'semaforo_estado': 's.color',
             'contratista': 'c.empresa_ganadora',
             'criticidad': 'g.criticidad',
             'nivel_gravedad': 'g.nivel_gravedad',

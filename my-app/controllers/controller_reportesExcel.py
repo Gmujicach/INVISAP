@@ -3,6 +3,7 @@ import re
 import openpyxl
 from openpyxl.styles import PatternFill, Font, Border, Side, Alignment
 from openpyxl.utils import get_column_letter
+from openpyxl.drawing.image import Image as XLImage
 import os
 import datetime
 from models.model_reportesExcel import ReporteExcelModel
@@ -10,6 +11,10 @@ from services.bitacora_service import BitacoraService
 
 reporte_excel_bp = Blueprint('reporte_excel_bp', __name__, template_folder='../vista')
 modelo_reporte = ReporteExcelModel()
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LOGO_GOBERNACION = os.path.join(BASE_DIR, 'static', 'assets', 'img', 'NUEVO LOGO GOBERNACION DE LARA JUNIO 2025.png')
+LOGO_INVILARA = os.path.join(BASE_DIR, 'static', 'assets', 'img', 'INVILARA LOGO OFICIAL HORIZONTAL.png')
 
 header_fill = PatternFill(start_color='DC3545', end_color='DC3545', fill_type='solid')
 header_font = Font(color='FFFFFF', bold=True, size=11)
@@ -119,44 +124,48 @@ def obtener_modulos_excel_por_filtro(filtro):
     return []
 
 
+CAMPOS_COMUNES = [
+    'nombre_solicitante', 'cedula', 'telefono', 'correo', 'correo_dominio',
+    'fecha_desde', 'fecha_hasta', 'municipio', 'direccion',
+]
+
+CAMPOS_POR_MODULO_EXCEL = {
+    'solicitudes': [
+        'tipo_solicitud', 'estatus_solicitud', 'problematica', 'cedula', 'nombre_solicitante',
+        'fecha_desde', 'fecha_hasta', 'municipio', 'parroquia', 'direccion', 'telefono', 'correo',
+        'correo_dominio', 'sector', 'ambito',
+    ],
+    'empleados': [
+        'nombre_empleado', 'cargo', 'fecha_ingreso_desde', 'fecha_ingreso_hasta', 'estado_empleado',
+        'cedula_persona', 'telefono', 'correo', 'direccion', 'parroquia', 'municipio', 'gerencia_asignada',
+    ],
+    'usuarios': [
+        'nombre', 'cedula_usuario', 'correo', 'rol', 'estado',
+    ],
+    'contrataciones': [
+        'empresa_ganadora', 'tipo_contrato', 'modalidad', 'objeto',
+        'fecha_registro_desde', 'fecha_registro_hasta', 'fecha_inicio_procedimiento_desde',
+        'fecha_inicio_procedimiento_hasta', 'fecha_adjudicacion_desde', 'fecha_adjudicacion_hasta',
+        'numero_contrato',
+    ],
+    'obras': [
+        'titulo_obra', 'ubicacion_obra', 'fecha_inicio_desde', 'fecha_inicio_hasta',
+        'fecha_fin_desde', 'fecha_fin_hasta', 'semaforo_estado', 'contratista',
+        'criticidad', 'nivel_gravedad', 'gerente',
+    ],
+    'publicaciones': [
+        'titulo_publicacion', 'nombre_responsable', 'tipo_publicacion',
+        'fecha_publicacion_desde', 'fecha_publicacion_hasta',
+    ],
+    'solicitantes': [
+        'nombre', 'apellido', 'cedula', 'correo', 'correo_dominio',
+    ],
+}
+
+
 def _colectar_filtros_form(modulo='general'):
-    campos_por_modulo = {
-        'solicitudes': [
-            'tipo_solicitud', 'estatus_solicitud', 'problematica', 'cedula', 'nombre_solicitante',
-            'fecha_desde', 'fecha_hasta', 'municipio', 'parroquia', 'direccion', 'telefono', 'correo',
-            'correo_dominio', 'sector', 'ambito',
-        ],
-        'empleados': [
-            'nombre_empleado', 'cargo', 'fecha_ingreso_desde', 'fecha_ingreso_hasta', 'estado_empleado',
-            'cedula_persona', 'telefono', 'correo', 'direccion', 'parroquia', 'municipio', 'gerencia_asignada',
-        ],
-        'usuarios': [
-            'nombre', 'cedula_usuario', 'correo', 'rol', 'estado',
-        ],
-        'contrataciones': [
-            'empresa_ganadora', 'tipo_contrato', 'modalidad', 'objeto',
-            'fecha_registro_desde', 'fecha_registro_hasta', 'fecha_inicio_procedimiento_desde',
-            'fecha_inicio_procedimiento_hasta', 'fecha_adjudicacion_desde', 'fecha_adjudicacion_hasta',
-            'numero_contrato',
-        ],
-        'obras': [
-            'titulo_obra', 'ubicacion_obra', 'fecha_inicio_desde', 'fecha_inicio_hasta',
-            'fecha_fin_desde', 'fecha_fin_hasta', 'semaforo_estado', 'contratista',
-            'criticidad', 'nivel_gravedad', 'gerente',
-        ],
-        'publicaciones': [
-            'titulo_publicacion', 'nombre_responsable', 'tipo_publicacion',
-            'fecha_publicacion_desde', 'fecha_publicacion_hasta',
-        ],
-        'solicitantes': [
-            'nombre', 'apellido', 'cedula', 'correo', 'correo_dominio',
-        ],
-        'general': [
-            'nombre_solicitante', 'cedula', 'telefono', 'correo', 'correo_dominio',
-            'fecha_desde', 'fecha_hasta', 'municipio', 'direccion',
-        ],
-    }
-    campos = campos_por_modulo.get(modulo, campos_por_modulo['general'])
+    campos_especificos = CAMPOS_POR_MODULO_EXCEL.get(modulo, [])
+    campos = list(dict.fromkeys(CAMPOS_COMUNES + campos_especificos))
     filtros = {}
     for campo in campos:
         val = request.form.get(campo, '').strip()
@@ -232,10 +241,53 @@ def generarReporteExcel():
             sheet_title = re.sub(r'[\\\/\?\*\[\]]', ' ', mod_config['label'])
             ws = wb.create_sheet(title=sheet_title)
             ws.sheet_view.showGridLines = True
-            ws.freeze_panes = 'A2'
 
-            start_row = 1
+            if os.path.exists(LOGO_GOBERNACION):
+                try:
+                    img_izq = XLImage(LOGO_GOBERNACION)
+                    img_izq.width = 140
+                    img_izq.height = 42
+                    ws.add_image(img_izq, 'A2')
+                except Exception:
+                    pass
+            if os.path.exists(LOGO_INVILARA):
+                try:
+                    img_der = XLImage(LOGO_INVILARA)
+                    img_der.width = 130
+                    img_der.height = 40
+                    total_cols = len(mod_config['headers'])
+                    right_col_letter = get_column_letter(total_cols)
+                    ws.add_image(img_der, f'{right_col_letter}2')
+                except Exception:
+                    pass
+
+            ws.row_dimensions[1].height = 18
+            ws.row_dimensions[2].height = 48
+            ws.row_dimensions[3].height = 20
+            ws.row_dimensions[4].height = 16
+            ws.row_dimensions[5].height = 20
+            ws.row_dimensions[6].height = 20
+
+            total_cols = len(mod_config['headers'])
+            last_col_letter = get_column_letter(total_cols)
+            fecha_cell = ws.cell(row=1, column=total_cols, value=f'Fecha de Emisión: {datetime.datetime.now().strftime("%d/%m/%Y %I:%M:%S %p")}')
+            fecha_cell.font = Font(italic=True, size=8, color='666666')
+            fecha_cell.alignment = Alignment(horizontal='right', vertical='center')
+            ws.merge_cells(start_row=1, start_column=2, end_row=1, end_column=total_cols)
+
+            header_title = ws.cell(row=3, column=1, value='GOBERNACIÓN DEL ESTADO LARA - INVILARA')
+            ws.merge_cells(start_row=3, start_column=1, end_row=3, end_column=total_cols)
+            header_title.font = Font(bold=True, size=11)
+            header_title.alignment = Alignment(horizontal='center', vertical='center')
+
+            header_subtitle = ws.cell(row=4, column=1, value='REPORTE DETALLADO DE GESTIÓN')
+            ws.merge_cells(start_row=4, start_column=1, end_row=4, end_column=total_cols)
+            header_subtitle.font = Font(bold=True, size=9, color='666666')
+            header_subtitle.alignment = Alignment(horizontal='center', vertical='center')
+
+            start_row = 6
             ws.cell(row=start_row, column=1, value=sheet_title)
+            ws.row_dimensions[start_row].height = 24
             ws.merge_cells(start_row=start_row, start_column=1, end_row=start_row, end_column=len(mod_config['headers']))
             title_cell = ws.cell(row=start_row, column=1)
             title_cell.font = Font(bold=True, size=13, color='FFFFFF')

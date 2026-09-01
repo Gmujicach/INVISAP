@@ -63,7 +63,7 @@ class ReporteExcelModel(BaseModel):
         query = """
             SELECT 
                 s.id_solicitudes,
-                DATE_FORMAT(s.fecha, '%d/%m/%Y %H:%i') AS fecha,
+                DATE_FORMAT(s.fecha, '%d/%m/%Y %r') AS fecha,
                 s.tipo_solicitud,
                 s.estatus_solicitud,
                 s.problematica,
@@ -253,7 +253,7 @@ class ReporteExcelModel(BaseModel):
             LEFT JOIN gravedad_obra g ON g.obra_id_obra = o.id_obra AND g.estado = 1
             LEFT JOIN avance a ON a.obra_id_obra = o.id_obra AND a.estado = 1
             LEFT JOIN empleados e ON e.id_empleados = a.gerente
-            WHERE o.estado = 1
+            WHERE o.activo = 1
         """
         params = []
         where = []
@@ -264,7 +264,7 @@ class ReporteExcelModel(BaseModel):
             'fecha_inicio_hasta': 'o.fecha_inicio',
             'fecha_fin_desde': 'o.fecha_fin',
             'fecha_fin_hasta': 'o.fecha_fin',
-            'semaforo_estado': 's.estado',
+            'semaforo_estado': 's.color',
             'contratista': 'c.empresa_ganadora',
             'criticidad': 'g.criticidad',
             'nivel_gravedad': 'g.nivel_gravedad',
