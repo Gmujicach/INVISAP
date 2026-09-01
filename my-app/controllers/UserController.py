@@ -143,7 +143,12 @@ def update_user():
         return redirect(url_for('login_bp.inicio'))
 
     user_id = request.form.get('id_user')
-    
+    nombre = request.form.get('nombre')
+    correo = request.form.get('correo')
+    cedula = request.form.get('cedula_usuario')
+    rol = request.form.get('rol')
+    new_password = request.form.get('pass_user')
+
     # Medida de seguridad: No permitir modificar al Super Usuario
     user_to_update = user_model.buscar_por_id(user_id)
     if user_to_update and user_to_update['rol'] == 'Super Usuario':
@@ -154,12 +159,6 @@ def update_user():
     if rol and rol.strip().lower() == 'super usuario':
         flash('🔒 No está permitido asignar el rol Super Usuario a otro usuario.', 'error')
         return redirect(url_for('user_bp.list_users'))
-
-    nombre = request.form.get('nombre')
-    correo = request.form.get('correo')
-    cedula = request.form.get('cedula_usuario')
-    rol = request.form.get('rol')
-    new_password = request.form.get('pass_user')
 
     if user_model.actualizar(user_id, nombre, correo, cedula, rol, new_password if new_password else None):
         BitacoraService.registrar_accion(
