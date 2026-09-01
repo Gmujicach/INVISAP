@@ -21,8 +21,8 @@
                 <i class="bi bi-images"></i>
             </div>
             <h5 class="mb-0">Registros de Evidencias</h5>
-            {% if evidencias %}
-            <span class="badge-count ms-auto">{{ evidencias|length }} registros</span>
+            {% if total_evidencias %}
+            <span class="badge-count ms-auto">{{ total_evidencias }} registros</span>
             {% endif %}
         </div>
         <div class="card-body-custom">
@@ -41,7 +41,7 @@
                     </thead>
                     <tbody>
                         {% for evidencia in evidencias %}
-                        <tr class="table-row-animated">
+                        <tr class="table-row-animated" data-id-evidencia="{{ evidencia.id_evidencia }}">
                             <td class="text-center">
                                 <span class="fw-bold text-primary fw-bold-id">{{ evidencia.id_evidencia }}</span>
                             </td>
@@ -107,9 +107,54 @@
                 </a>
             </div>
             {% endif %}
+            {% if total_pages > 1 %}
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-3 pt-3 border-top">
+                <span class="text-muted small" id="infoRegistrosEvidencias">
+                    Mostrando {{ ((page - 1) * per_page + 1) if page > 0 else 0 }}-{{ (page * per_page) if page * per_page <= total_evidencias else total_evidencias }} de {{ total_evidencias }} registros
+                </span>
+                <nav aria-label="Paginación de evidencias">
+                    <ul class="pagination pagination-sm mb-0" id="paginacionEvidencias">
+                        {% if page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('evidencia_bp.show_listar_evidencias', page=page-1) }}" aria-label="Anterior">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link" aria-hidden="true">&laquo;</span>
+                        </li>
+                        {% endif %}
+                        
+                        {% for p in range(1, total_pages + 1) %}
+                            {% if p == page %}
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link">{{ p }}</span>
+                            </li>
+                            {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="{{ url_for('evidencia_bp.show_listar_evidencias', page=p) }}">{{ p }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page < total_pages %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('evidencia_bp.show_listar_evidencias', page=page+1) }}" aria-label="Siguiente">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link" aria-hidden="true">&raquo;</span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block customJS %}

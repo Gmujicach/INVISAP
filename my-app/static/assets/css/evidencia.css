@@ -644,3 +644,106 @@ body.dark-mode .empty-icon-circle {
         flex-wrap: wrap;
     }
 }
+
+/* ============================================
+   Paginación Moderna - Evidencias
+   ============================================ */
+
+.pagination {
+    gap: 0.35rem;
+}
+
+.pagination .page-item {
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.pagination .page-item .page-link {
+    border: none;
+    background: #f1f3f5;
+    color: #495057;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.9rem;
+    border-radius: 10px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 38px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.pagination .page-item:hover:not(.disabled):not(.active) .page-link {
+    background: #08b324;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(8, 179, 36, 0.35);
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #08b324, #069e1f);
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 14px rgba(8, 179, 36, 0.4);
+    font-weight: 700;
+}
+
+.pagination .page-item.disabled .page-link {
+    background: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.pagination .page-item:first-child .page-link {
+    border-radius: 10px 0 0 10px;
+}
+
+.pagination .page-item:last-child .page-link {
+    border-radius: 0 10px 10px 0;
+}
+
+/* Modo oscuro */
+body.dark-mode .pagination .page-item .page-link {
+    background: #2b2c40;
+    color: #cfcde9;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .pagination .page-item:hover:not(.disabled):not(.active) .page-link {
+    background: #08b324;
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(8, 179, 36, 0.3);
+}
+
+body.dark-mode .pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #08b324, #069e1f);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(8, 179, 36, 0.35);
+}
+
+body.dark-mode .pagination .page-item.disabled .page-link {
+    background: #1e1f2e;
+    color: #555;
+}
+
+body.dark-mode #infoRegistrosEvidencias {
+    color: #cfcde9;
+}
+
+body.dark-mode .border-top {
+    border-top-color: #444564 !important;
+}
+
+/* Responsive paginación */
+@media (max-width: 576px) {
+    .pagination .page-item .page-link {
+        padding: 0.4rem 0.65rem;
+        font-size: 0.8rem;
+        min-width: 32px;
+    }
+    
+    #infoRegistrosEvidencias {
+        font-size: 0.78rem;
+    }
+}

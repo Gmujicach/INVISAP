@@ -19,13 +19,25 @@ def show_registrar_evidencia():
 
 @evidencia_bp.route('/evidencias/listar', methods=['GET'])
 def show_listar_evidencias():
-    """Muestra el listado de evidencias activas."""
+    """Muestra el listado de evidencias activas paginadas."""
     if 'conectado' not in session:
         flash('Primero debes iniciar sesion', 'error')
         return redirect(url_for('login_bp.inicio'))
+    
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    
     modelo = EvidenciaModel()
-    evidencias = modelo.obtener_todas_evidencias()
-    return render_template('evidencia/lista_evidencias.html', evidencias=evidencias)
+    evidencias = modelo.obtener_todas_evidencias(page=page, per_page=per_page)
+    total_evidencias = modelo.contar_evidencias()
+    total_pages = (total_evidencias + per_page - 1) // per_page
+    
+    return render_template('evidencia/lista_evidencias.html', 
+                           evidencias=evidencias,
+                           page=page,
+                           per_page=per_page,
+                           total_evidencias=total_evidencias,
+                           total_pages=total_pages)
 
 @evidencia_bp.route('/evidencias/modificar/<int:id_evidencia>', methods=['GET'])
 def show_modificar_evidencia(id_evidencia):

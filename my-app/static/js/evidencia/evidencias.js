@@ -345,4 +345,59 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function mostrarExito(msj) { Swal.fire({ icon: 'success', title: 'Éxito', text: msj, timer: 2000, showConfirmButton: false }); }
     function mostrarError(msj) { Swal.fire({ icon: 'error', title: 'Error', text: msj }); }
+
+    window.initPaginacionEvidencias = function() {
+        const paginacion = document.querySelector('#paginacionEvidencias');
+        if (!paginacion) return;
+
+        paginacion.addEventListener('click', async function(e) {
+            const link = e.target.closest('a.page-link');
+            if (!link) return;
+
+            e.preventDefault();
+
+            const url = link.getAttribute('href');
+            if (!url || url === '#') return;
+
+            try {
+                const response = await fetch(url, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                });
+                if (!response.ok) throw new Error('Error en la respuesta del servidor');
+
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                const nuevaTabla = doc.querySelector('#tablaEvidencias');
+                const nuevaInfo = doc.querySelector('#infoRegistrosEvidencias');
+                const nuevaPaginacion = doc.querySelector('#paginacionEvidencias');
+
+                const tablaBody = document.querySelector('#tablaEvidencias tbody');
+                if (nuevaTabla && tablaBody) {
+                    const nuevoTbody = nuevaTabla.querySelector('tbody');
+                    if (nuevoTbody) {
+                        tablaBody.innerHTML = nuevoTbody.innerHTML;
+                    }
+                }
+
+                if (nuevaInfo) {
+                    const infoActual = document.getElementById('infoRegistrosEvidencias');
+                    if (infoActual) infoActual.outerHTML = nuevaInfo.outerHTML;
+                }
+
+                if (nuevaPaginacion && paginacion) {
+                    paginacion.outerHTML = nuevaPaginacion.outerHTML;
+                    window.initPaginacionEvidencias();
+                }
+            } catch (error) {
+                console.error('Error al cargar la página:', error);
+                mostrarError('No se pudo cargar la página solicitada.');
+            }
+        });
+    };
+
+    if (typeof initPaginacionEvidencias === 'function') {
+        initPaginacionEvidencias();
+    }
 });

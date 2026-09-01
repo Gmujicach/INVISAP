@@ -14,13 +14,14 @@ user_model = UsuarioModel()
 # ============================================
 PERMISOS = {
     'Super Usuario': ['usuarios', 'solicitudes', 'empleados', 'empresas', 'maquinaria', 'obras', 'proyectos', 'evidencias', 'publicaciones', 'reportes', 'bitacora', 'contrataciones', 'inspecciones', 'respaldos', 'gravedad', 'prioridad', 'informes', 'manual', 'roles_permisos'],
-    'Administrador': ['usuarios', 'solicitudes', 'empleados', 'obras', 'proyectos', 'evidencias', 'publicaciones', 'reportes', 'bitacora', 'gravedad', 'prioridad', 'informes', 'manual', 'roles_permisos'],
+    'Administrador': ['usuarios', 'solicitudes', 'empleados', 'empresas', 'maquinaria', 'obras', 'proyectos', 'evidencias', 'publicaciones', 'reportes', 'bitacora', 'contrataciones', 'inspecciones', 'respaldos', 'gravedad', 'prioridad', 'informes', 'manual', 'roles_permisos'],
     'Gerente': ['solicitudes', 'obras', 'empleados', 'reportes', 'informes', 'gravedad', 'prioridad'],
     'Inspector': ['solicitudes', 'obras', 'inspecciones', 'evidencias', 'informes'],
     'Recepcionista': ['solicitudes', 'reportes', 'informes'],
     'Asistente': ['solicitudes'],
     'Proyectista': ['proyectos', 'obras', 'informes'],
-    'Usuario': ['solicitudes', 'informes']
+    'Usuario': ['solicitudes', 'informes'],
+    'Presidente': ['solicitudes', 'gravedad', 'prioridad', 'proyectos', 'contrataciones', 'maquinaria', 'empresas', 'obras', 'inspecciones', 'evidencias', 'publicaciones', 'informes', 'reportes', 'empleados', 'bitacora', 'manual']
 }
 
 def verificar_permiso(modulo):

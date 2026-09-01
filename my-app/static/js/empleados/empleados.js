@@ -494,6 +494,65 @@ async function cargarEmpleadosPorCargo(cargo, selectId) {
 }
 
 /**
+ * Paginación AJAX del listado de empleados (empleados.html)
+ * Actualiza solo la tabla y los controles de paginación sin recargar la vista.
+ */
+function initPaginacionEmpleados() {
+    const paginacion = document.querySelector('.pagination');
+    if (!paginacion) return;
+
+    paginacion.addEventListener('click', async function(e) {
+        const link = e.target.closest('a.page-link');
+        if (!link) return;
+
+        e.preventDefault();
+
+        const url = link.getAttribute('href');
+        if (!url || url === '#') return;
+
+        try {
+            const response = await fetch(url, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            if (!response.ok) throw new Error('Error en la respuesta del servidor');
+
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            const nuevaTabla = doc.querySelector('#tablaEmpleados');
+            const nuevaInfo = doc.querySelector('#infoRegistros');
+            const nuevaPaginacion = doc.querySelector('.pagination');
+
+            const tbody = document.getElementById('tbodyEmpleados');
+            if (nuevaTabla && tbody) {
+                const nuevoTbody = nuevaTabla.querySelector('tbody');
+                if (nuevoTbody) {
+                    tbody.innerHTML = nuevoTbody.innerHTML;
+                }
+            }
+
+            if (nuevaInfo) {
+                const infoActual = document.getElementById('infoRegistros');
+                if (infoActual) infoActual.outerHTML = nuevaInfo.outerHTML;
+            }
+
+            if (nuevaPaginacion && paginacion) {
+                paginacion.outerHTML = nuevaPaginacion.outerHTML;
+                initPaginacionEmpleados();
+            }
+        } catch (error) {
+            console.error('Error al cargar la página:', error);
+            mostrarNotificacion('No se pudo cargar la página solicitada.', 'error');
+        }
+    });
+}
+
+if (typeof window !== 'undefined') {
+    window.initPaginacionEmpleados = initPaginacionEmpleados;
+}
+
+/**
  * Exportar funciones para uso global (si se usa módulos ES6)
  * Si no usas módulos, estas funciones ya están en el scope global
  */
@@ -505,6 +564,7 @@ if (typeof module !== 'undefined' && module.exports) {
         obtenerEmpleadosPorCargo,
         cargarEmpleadosPorCargo,
         filtrarEmpleados,
-        editarEmpleadoModal
+        editarEmpleadoModal,
+        initPaginacionEmpleados
     };
 }
