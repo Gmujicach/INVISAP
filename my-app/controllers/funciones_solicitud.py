@@ -51,7 +51,13 @@ def crear_solicitud(datos_formulario: dict, session: dict | None = None) -> dict
                 nuevo_id,
                 'Solicitud creada desde el sistema'
             )
-            return {'success': True, 'id': nuevo_id, 'message': 'Solicitud registrada correctamente.'}
+            try:
+                from models.model_prioridad import PrioridadModel
+                responsable = session.get('name_surname', 'Sistema') if session else 'Sistema'
+                PrioridadModel.clasificar_nueva_solicitud(nuevo_id, responsable)
+            except Exception as e:
+                print(f"[crear_solicitud] Error en clasificación automática: {e}")
+            return {'success': True, 'id': nuevo_id, 'message': 'Solicitud registrada y clasificada correctamente.'}
         return {'success': False, 'message': 'Error en la base de datos al guardar.'}
     except ValueError as e:
         return {'success': False, 'message': str(e)}

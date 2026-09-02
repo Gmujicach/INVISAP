@@ -315,62 +315,68 @@
 
   function clasificarNueva(idSolicitud) {
     if (!idSolicitud) return;
-    const btn = event.target.closest('button');
+    var btn = null;
+    if (event && event.target) {
+      btn = event.target.closest('button');
+    }
     if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>...'; }
-    fetch(`/api/prioridad/clasificar-nueva/${idSolicitud}`, { method: 'POST' })
-      .then(res => res.json())
-      .then(data => {
+    console.log('Clasificando solicitud #' + idSolicitud + '...');
+    fetch('/api/prioridad/clasificar-nueva/' + idSolicitud, { method: 'POST' })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
         if (data.success) {
-          const d = data.data;
-          const calc = d.calculo || '';
-          let msg = `Clasificacion Ponderada:\n\n`;
-          msg += `Prioridad: ${parseFloat(d.rango).toFixed(3)}\n`;
-          msg += `Tipo Obra: ${d.tipo_obra || 'N/A'}\n`;
-          msg += `Riesgo: ${d.gravedad_sugerida || 'N/A'}\n`;
-          msg += `Origen: ${d.origen || 'N/A'}\n`;
+          var d = data.data;
+          var calc = d.calculo || '';
+          var msg = 'Clasificacion Ponderada:\n\n';
+          msg += 'Prioridad: ' + parseFloat(d.rango).toFixed(3) + '\n';
+          msg += 'Tipo Obra: ' + (d.tipo_obra || 'N/A') + '\n';
+          msg += 'Riesgo: ' + (d.gravedad_sugerida || 'N/A') + '\n';
           if (calc) {
-            msg += `\nFormula: (Solicitante x 0.30) + (Gravedad x 0.40) + (TipoObra x 0.30)\n`;
-            msg += `  Solicitante: ${calc.peso_solicitante} x 0.30 = ${(calc.peso_solicitante * 0.30).toFixed(2)}\n`;
-            msg += `  Gravedad: ${calc.peso_gravedad} x 0.40 = ${(calc.peso_gravedad * 0.40).toFixed(2)}\n`;
-            msg += `  Tipo Obra: ${calc.peso_tipo_obra} x 0.30 = ${(calc.peso_tipo_obra * 0.30).toFixed(2)}\n`;
-            msg += `  = Puntaje: ${calc.puntaje_ponderado} → Rango: ${d.rango}`;
+            msg += '\nFormula: (Solicitante x 0.30) + (Gravedad x 0.40) + (TipoObra x 0.30)\n';
+            msg += '  Solicitante: ' + calc.peso_solicitante + ' x 0.30 = ' + (calc.peso_solicitante * 0.30).toFixed(2) + '\n';
+            msg += '  Gravedad: ' + calc.peso_gravedad + ' x 0.40 = ' + (calc.peso_gravedad * 0.40).toFixed(2) + '\n';
+            msg += '  Tipo Obra: ' + calc.peso_tipo_obra + ' x 0.30 = ' + (calc.peso_tipo_obra * 0.30).toFixed(2) + '\n';
+            msg += '  = Puntaje: ' + calc.puntaje_ponderado;
           }
-          msg += `\n\nJustificacion: ${d.justificacion}`;
+          msg += '\n\nJustificacion: ' + d.justificacion;
           alert(msg);
-          cargarPrioridades(paginaActual);
+          cargarPrioridades();
         } else {
           alert(data.message || 'Error al clasificar.');
         }
       })
-      .catch(err => {
-        console.error(err);
+      .catch(function(err) {
+        console.error('Error:', err);
         alert('Error de conexion con el servidor.');
       })
-      .finally(() => {
+      .finally(function() {
         if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-cpu"></i> Re-Clasificar'; }
       });
   }
 
   function clasificarTodo() {
-    if (!confirm('Desea clasificar TODAS las solicitudes con la IA?\n\nObra Mayor + Gravedad Alta = Prioridad ALTA (meses)\nObra Menor + Gravedad Baja = Prioridad BAJA (dias)\n\nEsto puede tardar unos momentos.')) return;
-    const btn = document.querySelector('button[onclick="clasificarTodo()"]');
+    if (!confirm('¿Clasificar TODAS las solicitudes con la IA?\n\nObra Mayor + Gravedad Alta = Prioridad ALTA (meses)\nObra Menor + Gravedad Baja = Prioridad BAJA (días)\n\nEsto puede tardar unos momentos.')) return;
+    var btn = document.querySelector('btn-warning');
     if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Procesando...'; }
+    console.log('Iniciando clasificación masiva...');
     fetch('/api/prioridad/procesar-pendientes-batch', { method: 'POST' })
-      .then(res => res.json())
-      .then(data => {
+      .then(function(res) { console.log('Respuesta:', res.status); return res.json(); })
+      .then(function(data) {
+        console.log('Datos:', data);
         if (data.success) {
-          alert(`Procesamiento masivo completado:\n\n${data.message}`);
-          cargarPrioridades(paginaActual);
+          alert('Procesamiento masivo completado:\n\n' + data.message);
+          cargarPrioridades();
         } else {
           alert(data.message || 'Error en el procesamiento.');
         }
       })
-      .catch(err => {
-        console.error(err);
-        alert('Error de conexion con el servidor.');
+      .catch(function(err) {
+        console.error('Error:', err);
+        alert('Error de conexión con el servidor: ' + err.message);
       })
-      .finally(() => {
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-stars me-1"></i> Clasificar Todo'; }
+      .finally(function() {
+        var btns = document.querySelectorAll('.btn-warning');
+        btns.forEach(function(b) { b.disabled = false; b.innerHTML = '<i class="bi bi-stars me-1"></i> Clasificar Todo'; });
       });
   }
 

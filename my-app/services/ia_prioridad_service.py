@@ -24,20 +24,23 @@ def _generar_prompt(descripcion, gravedad_nivel, color_semaforo, tipo_solicitant
         contexto += f"El tipo de solicitante es: {tipo_solicitante}. "
 
     return f"""
-Eres un sistema experto en priorización de solicitudes de infraestructura vial del INVILARA (Instituto Vial del Estado Lara, Venezuela).
+Eres un ingeniero civil experto del INVILARA (Instituto Vial del Estado Lara, Venezuela). Tu trabajo es clasificar solicitudes de infraestructura vial.
 
-Analiza la siguiente solicitud ciudadana y determina su clasificación técnica:
+Analiza la siguiente solicitud:
 
 SOLICITUD: "{descripcion}"
 {contexto}
 
-INSTRUCCIONES:
-1. Determina si la magnitud del problema corresponde a una "Obra Mayor" (reconstrucción, asfalto extenso, puentes, drenajes principales) o "Obra Menor" (bacheo, reparaciones menores, mantenimiento puntual).
-2. Determina la gravedad sugerida: "Alta" si representa riesgo inminente a personas o infraestructura crítica, "Baja" si es una mejora o mantenimiento no urgente.
-3. Proporciona una justificación técnica breve (máx. 100 caracteres).
+DEFINICIONES TÉCNICAS:
+- "Obra Mayor": Proyectos complejos que requieren maquinaria pesada, permisos extensos, y tardan MESES en completarse. Ejemplos: reconstrucción de carreteras, asfaltado de avenidas principales, reparación de puentes, drenajes profundos, colapsos estructurales.
+- "Obra Menor": Reparaciones simples y rápidas que se completan en DÍAS. Ejemplos: bacheo menor, reparación de fugas simples, luminarias, señalización, jornadas de vacunación, cortes de agua/luz/gas.
+
+RIESGO (Gravedad):
+- "Alta": Riesgo inminente a personas, infraestructura crítica, o paralización total del servicio.
+- "Baaja": Situación controlada, mejora gradual, sin peligro inmediato.
 
 Responde ÚNICAMENTE con un objeto JSON válido, sin texto adicional, sin markdown:
-{{"tipo_obra": "Obra Mayor" o "Obra Menor", "gravedad_sugerida": "Alta" o "Baja", "justificacion": "<texto breve>"}}
+{{"tipo_obra": "Obra Mayor" o "Obra Menor", "gravedad_sugerida": "Alta" o "Baja", "justificacion": "<texto breve en español>"}}
 """
 
 
@@ -87,24 +90,42 @@ def _clasificacion_heuristica(gravedad_nivel, color_semaforo, tipo_solicitante, 
     tipo_obra = "Obra Menor"
     gravedad_sugerida = "Baja"
 
-    palabras_mayor = [
-        "reconstrucción", "reconstruir", "asfalto", "asfaltar", "pavimentar",
-        "puente", "drenaje", "alcantarilla", "colector", "vía principal",
-        "carretera", "avenida", "colapso", "obstrucción", "sedimentos",
-        "bacheo profundo", "reparación mayor", "infraestructura", "vialidad",
-        "vía", "calzada", "obra", "construcción", "remoción", "maquinaria"
+    obra_mayor_keywords = [
+        "reconstrucción", "reconstruir", "asfaltado extenso", "asfaltar avenida",
+        "puente", "viaducto", "drenaje profundo", "colector pluvial",
+        "carretera nacional", "carretera regional", "colapso de vía",
+        "colapso estructural", "sedimentos masivos", "remoción de escombros",
+        "maquinaria pesada", "excavadora", "retroexcavadora",
+        "acondicionamiento vial", "vialidad", "bacheo profundo",
+        "reparación mayor", "obra civil mayor", "infraestructura vial"
     ]
-    palabras_alta_gravedad = [
-        "riesgo", "peligro", "emergencia", "crítico", "crítica", "urgente",
-        "colapso", "inundación", "deslave", "accidente", "heridos", "muerte",
-        "obstrucción total", "paralizada", "rojo", "infraestructura crítica"
+    obra_menor_keywords = [
+        "no hay agua", "no hay luz", "no hay gas", "fuga de agua",
+        "fuga de gas", "bache simple", "bacheo menor", "reparación menor",
+        "luminaria", "señalización", "jornada de vacunación", "vacunación",
+        "limpieza", "pintura", "barrido", "desmalezamiento", "hueco simple",
+        "servicios básicos"
+    ]
+    alta_gravedad_keywords = [
+        "riesgo inminente", "peligro", "emergencia", "crítico", "crítica",
+        "colapso", "inundación", "deslave", "accidente", "heridos",
+        "paralizada", "obstrucción total", "infraestructura crítica",
+        "aguas negras", "contaminación"
     ]
 
-    if any(p in desc for p in palabras_mayor):
+    es_mayor = any(p in desc for p in obra_mayor_keywords)
+    es_menor = any(p in desc for p in obra_menor_keywords)
+
+    if es_mayor and not es_menor:
         tipo_obra = "Obra Mayor"
+    elif es_menor and not es_mayor:
+        tipo_obra = "Obra Menor"
+    elif es_mayor and es_menor:
+        tipo_obra = "Obra Mayor"
+
     if color in ("rojo", "roja") or gravedad in ("alta", "critica", "crítica"):
         gravedad_sugerida = "Alta"
-    if any(p in desc for p in palabras_alta_gravedad):
+    if any(p in desc for p in alta_gravedad_keywords):
         gravedad_sugerida = "Alta"
 
     if tipo_solicitante and tipo_solicitante.lower() in ("comunidad", "institucion", "institución"):
@@ -121,7 +142,7 @@ def _clasificacion_heuristica(gravedad_nivel, color_semaforo, tipo_solicitante, 
     return {
         "tipo_obra": tipo_obra,
         "gravedad_sugerida": gravedad_sugerida,
-        "justificacion": f"Heurística: {tipo_obra} con gravedad {gravedad_sugerida} ({contexto}).",
+        "justificacion": f"Clasificación: {tipo_obra} con riesgo {gravedad_sugerida} ({contexto}).",
         "origen": "heuristica"
     }
 
@@ -174,37 +195,30 @@ def _clasificar(descripcion, gravedad_nivel, color_semaforo, tipo_solicitante):
 
 def clasificar_solicitud_ia(descripcion, gravedad_nivel=None, color_semaforo=None, tipo_solicitante=None):
     """
-    Clasifica una solicitud usando el modelo local llama3.2:1b de Ollama.
-    Retorna: {"tipo_obra": str, "gravedad_sugerida": str, "justificacion": str, "origen": str}
-    Si Ollama no está disponible, intenta arrancarlo automáticamente.
-    Si el modelo no devuelve un JSON válido, usa una estimación por reglas.
+    Clasifica una solicitud. Usa heurística como método principal (más confiable)
+    y solo intenta con IA si la heurística no encuentra coincidencias claras.
     """
-    def _resultado_final():
-        res = _clasificar(descripcion, gravedad_nivel, color_semaforo, tipo_solicitante)
-        if res is not None:
-            return res
+    resultado = _clasificacion_heuristica(gravedad_nivel, color_semaforo, tipo_solicitante, descripcion)
 
-        try:
-            import urllib.request
-            urllib.request.urlopen(f"http://{OLLAMA_HOST}/api/tags", timeout=2)
-        except Exception:
-            _arrancar_ollama()
-            if _servidor_disponible():
-                res = _clasificar(descripcion, gravedad_nivel, color_semaforo, tipo_solicitante)
-                if res is not None:
-                    return res
-
-        return _clasificacion_heuristica(gravedad_nivel, color_semaforo, tipo_solicitante, descripcion)
+    if resultado.get("origen") != "heuristica":
+        return resultado
 
     try:
-        return _resultado_final()
-    except Exception as e:
-        return {
-            "tipo_obra": "Obra Menor",
-            "gravedad_sugerida": "Baja",
-            "justificacion": f"Error en IA: {str(e)[:80]}",
-            "origen": "error"
-        }
+        res_ia = _clasificar(descripcion, gravedad_nivel, color_semaforo, tipo_solicitante)
+        if res_ia is not None:
+            tipo_ia = res_ia.get("tipo_obra")
+            heuristica_tipo = resultado.get("tipo_obra")
+            if tipo_ia == heuristica_tipo:
+                return {
+                    "tipo_obra": res_ia["tipo_obra"],
+                    "gravedad_sugerida": res_ia["gravedad_sugerida"],
+                    "justificacion": res_ia["justificacion"],
+                    "origen": "ia_validada"
+                }
+    except Exception:
+        pass
+
+    return resultado
 
 
 def calcular_prioridad_con_ia(descripcion, gravedad_nivel=None, color_semaforo=None, tipo_solicitante=None):
