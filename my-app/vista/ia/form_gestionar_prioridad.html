@@ -9,6 +9,9 @@
   .rango-pill { font-weight: 700; font-size: .85rem; }
   .semaforo-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; }
   .pagination .page-link { cursor: pointer; }
+  .prioridad-alta { border-left: 4px solid #dc3545 !important; }
+  .prioridad-media { border-left: 4px solid #ffc107 !important; }
+  .prioridad-baja { border-left: 4px solid #198754 !important; }
 </style>
 {% endblock %}
 
@@ -23,12 +26,12 @@
           <i class="bi bi-cpu me-2"></i>Modulo de Priorizacion de Solicitudes
         </h3>
         <p class="mb-0 text-muted" style="font-size:0.9rem;">
-          clasifica las solicitudes ordenadas de mayor a menor prioridad
+          Clasificacion por IA: Obra Mayor + Gravedad Alta = Prioridad Alta (meses) | Obra Menor + Gravedad Baja = Prioridad Baja (dias)
         </p>
       </div>
       <div class="d-flex gap-2">
         <button class="btn btn-warning" onclick="clasificarTodo()">
-          <i class="bi bi-stars me-1"></i> Clasificar
+          <i class="bi bi-stars me-1"></i> Clasificar Todo
         </button>
         <button class="btn btn-primary" onclick="cargarPrioridades()">
           <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
@@ -37,7 +40,7 @@
     </div>
   </div>
 
-  <!-- Filtro rápido -->
+  <!-- Leyenda de prioridades -->
   <div class="prioridad-filter-card">
     <div class="row g-3 align-items-center">
       <div class="col-md-6">
@@ -45,7 +48,10 @@
                placeholder="🔍 Buscar por solicitud o justificación..." />
       </div>
       <div class="col-md-6 text-end">
-        <span class="badge bg-secondary me-2" id="contadorRegistros">0 registros</span>
+        <span class="badge bg-danger me-1">ALTA (0.0-0.3)</span>
+        <span class="badge bg-warning text-dark me-1">MEDIA (0.3-0.6)</span>
+        <span class="badge bg-success me-1">BAJA (0.6-1.0)</span>
+        <span class="badge bg-secondary ms-2" id="contadorRegistros">0 registros</span>
       </div>
     </div>
   </div>
@@ -105,7 +111,7 @@
 <script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tour/ia/tour.js') }}"></script>
 <script>
-  const PER_PAGE = 6;
+  const PER_PAGE = 9;
   let paginaActual = 1;
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -130,10 +136,27 @@
   }
 
   function colorPorRango(rango) {
-    // 0 = rojo (crítico), 0.5 = amarillo, 1 = verde (baja prioridad)
-    if (rango <= 0.34) return 'danger';
-    if (rango <= 0.67) return 'warning';
+    if (rango <= 0.30) return 'danger';
+    if (rango <= 0.60) return 'warning';
     return 'success';
+  }
+
+  function etiquetaPrioridad(rango) {
+    if (rango <= 0.30) return { texto: 'ALTA', clase: 'bg-danger', duracion: 'Meses' };
+    if (rango <= 0.60) return { texto: 'MEDIA', clase: 'bg-warning text-dark', duracion: 'Semanas' };
+    return { texto: 'BAJA', clase: 'bg-success', duracion: 'Días' };
+  }
+
+  function colorPorTipoObra(tipo) {
+    if (tipo === 'Obra Mayor') return 'danger';
+    if (tipo === 'Obra Menor') return 'info';
+    return 'secondary';
+  }
+
+  function colorPorGravedad(gravedad) {
+    if (gravedad === 'Alta') return 'danger';
+    if (gravedad === 'Baja') return 'success';
+    return 'secondary';
   }
 
   function semaforoColorHex(color) {
@@ -155,36 +178,46 @@
       return;
     }
     registros.forEach((r) => {
-      const tono = colorPorRango(parseFloat(r.rango_prioridad));
+      const rango = parseFloat(r.rango_prioridad);
+      const tono = colorPorRango(rango);
+      const prioridad = etiquetaPrioridad(rango);
       const desc = (r.solicitud_descripcion || 'Sin solicitud vinculada');
       const colorSem = r.color_semaforo ? semaforoColorHex(r.color_semaforo) : null;
       const semaforo = colorSem
         ? `<span class="semaforo-dot" style="background:${colorSem}" title="${r.descripcion_semaforo || r.color_semaforo || ''}"></span>`
         : '';
-      const gravedad = r.nivel_gravedad
-        ? `<span class="badge bg-dark me-1">${r.nivel_gravedad}</span>` : '';
-      const estadoBadge = r.estado == 1
-        ? '<span class="badge bg-success">Activo</span>'
-        : '<span class="badge bg-secondary">Inactivo</span>';
+      const tipoObra = r.tipo_obra
+        ? `<span class="badge bg-${colorPorTipoObra(r.tipo_obra)} me-1"><i class="bi bi-building"></i> ${r.tipo_obra}</span>` : '';
+      const gravedadSugerida = r.gravedad_sugerida
+        ? `<span class="badge bg-${colorPorGravedad(r.gravedad_sugerida)} me-1"><i class="bi bi-activity"></i> Riesgo ${r.gravedad_sugerida}</span>` : '';
+      const origenIA = r.origen === 'ia'
+        ? '<span class="badge bg-info me-1"><i class="bi bi-cpu"></i> IA</span>'
+        : (r.origen === 'heuristica'
+          ? '<span class="badge bg-warning text-dark me-1"><i class="bi bi-gear"></i> Auto</span>'
+          : '<span class="badge bg-secondary me-1"><i class="bi bi-pencil"></i> Manual</span>');
 
       const col = document.createElement('div');
       col.className = 'col-md-6 col-lg-4';
       col.innerHTML = `
-        <div class="card border-0 shadow-sm prioridad-card h-100">
+        <div class="card border-0 shadow-sm prioridad-card h-100 border-start border-4 border-${tono}">
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-2">
               <span class="badge bg-light text-dark">#${r.solicitud_id || r.id_gestion_prioridad}</span>
-              <span class="badge bg-${tono} rango-pill">${parseFloat(r.rango_prioridad).toFixed(3)}</span>
+              <span class="badge ${prioridad.clase} rango-pill">${prioridad.texto}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="text-${tono} fw-bold" style="font-size:1.4rem;">${rango.toFixed(3)}</span>
+              <small class="text-muted"><i class="bi bi-clock"></i> ~${prioridad.duracion}</small>
             </div>
             <p class="mb-2 small text-truncate" title="${desc.replace(/"/g,'')}">${semaforo}${desc}</p>
-            <div class="mb-2">${gravedad}${estadoBadge}</div>
+            <div class="mb-2">${tipoObra}${gravedadSugerida}${origenIA}</div>
             <p class="text-muted small mb-3 fst-italic">"${r.justificacion_cambio || ''}"</p>
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 flex-wrap">
               <button class="btn btn-sm btn-outline-primary" onclick="editarPrioridad(${r.id_gestion_prioridad})">
                 <i class="bi bi-pencil"></i> Ajustar
               </button>
-              <button class="btn btn-sm btn-outline-info" onclick="clasificarIA(${r.solicitud_id})" ${r.solicitud_id ? '' : 'disabled'}>
-                <i class="bi bi-cpu"></i> IA
+              <button class="btn btn-sm btn-outline-info" onclick="clasificarNueva(${r.solicitud_id})" ${r.solicitud_id ? '' : 'disabled'}>
+                <i class="bi bi-cpu"></i> Re-Clasificar
               </button>
               <button class="btn btn-sm btn-outline-danger" onclick="eliminarPrioridad(${r.id_gestion_prioridad})">
                 <i class="bi bi-trash"></i>
@@ -221,7 +254,6 @@
     ul.appendChild(next);
   }
 
-  // Búsqueda rápida (filtra en el cliente sobre la página actual)
   document.getElementById('buscarPrioridad').addEventListener('keyup', function() {
     const filtro = this.value.toLowerCase();
     document.querySelectorAll('#contenedorTarjetas .card').forEach(card => {
@@ -281,42 +313,69 @@
     alertDiv.textContent = mensaje;
   }
 
-  function clasificarIA(idSolicitud) {
+  function clasificarNueva(idSolicitud) {
     if (!idSolicitud) return;
-    fetch(`/api/prioridad/clasificar-ia/${idSolicitud}`, { method: 'POST' })
+    const btn = event.target.closest('button');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>...'; }
+    fetch(`/api/prioridad/clasificar-nueva/${idSolicitud}`, { method: 'POST' })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert(`IA: prioridad ${parseFloat(data.data.rango).toFixed(3)} — ${data.data.justificacion}`);
+          const d = data.data;
+          const calc = d.calculo || '';
+          let msg = `Clasificacion Ponderada:\n\n`;
+          msg += `Prioridad: ${parseFloat(d.rango).toFixed(3)}\n`;
+          msg += `Tipo Obra: ${d.tipo_obra || 'N/A'}\n`;
+          msg += `Riesgo: ${d.gravedad_sugerida || 'N/A'}\n`;
+          msg += `Origen: ${d.origen || 'N/A'}\n`;
+          if (calc) {
+            msg += `\nFormula: (Solicitante x 0.30) + (Gravedad x 0.40) + (TipoObra x 0.30)\n`;
+            msg += `  Solicitante: ${calc.peso_solicitante} x 0.30 = ${(calc.peso_solicitante * 0.30).toFixed(2)}\n`;
+            msg += `  Gravedad: ${calc.peso_gravedad} x 0.40 = ${(calc.peso_gravedad * 0.40).toFixed(2)}\n`;
+            msg += `  Tipo Obra: ${calc.peso_tipo_obra} x 0.30 = ${(calc.peso_tipo_obra * 0.30).toFixed(2)}\n`;
+            msg += `  = Puntaje: ${calc.puntaje_ponderado} → Rango: ${d.rango}`;
+          }
+          msg += `\n\nJustificacion: ${d.justificacion}`;
+          alert(msg);
           cargarPrioridades(paginaActual);
         } else {
-          alert(data.message || 'Error.');
+          alert(data.message || 'Error al clasificar.');
         }
       })
-      .catch(console.error);
+      .catch(err => {
+        console.error(err);
+        alert('Error de conexion con el servidor.');
+      })
+      .finally(() => {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-cpu"></i> Re-Clasificar'; }
+      });
   }
 
   function clasificarTodo() {
-    if (!confirm('¿Clasificar TODAS las solicitudes con la IA? Puede tardar unos momentos.')) return;
-    fetch('/api/prioridad/solicitudes-ids')
+    if (!confirm('Desea clasificar TODAS las solicitudes con la IA?\n\nObra Mayor + Gravedad Alta = Prioridad ALTA (meses)\nObra Menor + Gravedad Baja = Prioridad BAJA (dias)\n\nEsto puede tardar unos momentos.')) return;
+    const btn = document.querySelector('button[onclick="clasificarTodo()"]');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Procesando...'; }
+    fetch('/api/prioridad/procesar-pendientes-batch', { method: 'POST' })
       .then(res => res.json())
-      .then(ids => {
-        const lista = ids || [];
-        let i = 0;
-        const siguiente = () => {
-          if (i >= lista.length) { cargarPrioridades(paginaActual); return; }
-          const id = lista[i++];
-          fetch(`/api/prioridad/clasificar-ia/${id}`, { method: 'POST' })
-            .then(() => siguiente())
-            .catch(() => siguiente());
-        };
-        siguiente();
+      .then(data => {
+        if (data.success) {
+          alert(`Procesamiento masivo completado:\n\n${data.message}`);
+          cargarPrioridades(paginaActual);
+        } else {
+          alert(data.message || 'Error en el procesamiento.');
+        }
       })
-      .catch(() => alert('No se pudo obtener la lista de solicitudes.'));
+      .catch(err => {
+        console.error(err);
+        alert('Error de conexion con el servidor.');
+      })
+      .finally(() => {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-stars me-1"></i> Clasificar Todo'; }
+      });
   }
 
   function eliminarPrioridad(id) {
-    if (!confirm('¿Desactivar esta prioridad? (borrado lógico)')) return;
+    if (!confirm('Desactivar esta prioridad? (borrado logico)')) return;
     fetch(`/api/prioridad/eliminar/${id}`, { method: 'DELETE' })
       .then(res => res.json())
       .then(data => {

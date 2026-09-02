@@ -626,6 +626,9 @@ INSERT INTO `persona` (`id_persona`, `cedula_persona`, `direccion`, `parroquia`,
 CREATE TABLE `prioridad` (
   `id_gestion_prioridad` int NOT NULL,
   `rango_prioridad` float NOT NULL,
+  `tipo_obra` varchar(20) DEFAULT NULL COMMENT 'Obra Mayor | Obra Menor (clasificación IA)',
+  `gravedad_sugerida` varchar(10) DEFAULT NULL COMMENT 'Alta | Baja (sugerencia IA)',
+  `origen` varchar(20) DEFAULT 'manual' COMMENT 'ia | heuristica | error | manual',
   `fecha_asignacion` datetime NOT NULL,
   `responsable_ajuste` varchar(30) NOT NULL,
   `justificacion_cambio` varchar(150) NOT NULL,
@@ -636,8 +639,8 @@ CREATE TABLE `prioridad` (
 -- Volcado de datos para la tabla `prioridad`
 --
 
-INSERT INTO `prioridad` (`id_gestion_prioridad`, `rango_prioridad`, `fecha_asignacion`, `responsable_ajuste`, `justificacion_cambio`, `estado`) VALUES
-(1, 0.5, '2026-06-15 16:38:02', 'Test', 'Clasificación por heurística (IA no disponible): Ollama no está disponible en http://localhost:11434', 1);
+INSERT INTO `prioridad` (`id_gestion_prioridad`, `rango_prioridad`, `tipo_obra`, `gravedad_sugerida`, `origen`, `fecha_asignacion`, `responsable_ajuste`, `justificacion_cambio`, `estado`) VALUES
+(1, 0.5, NULL, NULL, 'manual', '2026-06-15 16:38:02', 'Test', 'Clasificación por heurística (IA no disponible): Ollama no está disponible en http://localhost:11434', 1);
 
 -- --------------------------------------------------------
 

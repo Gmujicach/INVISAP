@@ -715,22 +715,14 @@ def api_eliminar_prioridad(id_prioridad):
 def api_clasificar_ia(id_solicitud):
     if 'conectado' not in session:
         return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
-    datos = PrioridadModel.obtener_datos_solicitud(id_solicitud)
-    if not datos:
-        return jsonify({'success': False, 'message': 'Solicitud no encontrada.'})
     responsable = session.get('name_surname', 'IA')
-    resultado = PrioridadModel.clasificar_solicitud_con_ia(
-        id_solicitud,
-        datos.get('descripcion') or '',
-        datos.get('nivel_gravedad'),
-        datos.get('color_semaforo'),
-        responsable
-    )
-    BitacoraService.registrar_accion(
-        session, 'Prioridad', 'EDITAR',
-        f'IA clasificó la solicitud ID {id_solicitud} con prioridad {resultado.get("rango")}'
-    )
-    return jsonify({'success': True, 'message': 'Solicitud clasificada por la IA.', 'data': resultado})
+    resultado = PrioridadModel.clasificar_nueva_solicitud(id_solicitud, responsable)
+    if resultado.get('success'):
+        BitacoraService.registrar_accion(
+            session, 'Prioridad', 'EDITAR',
+            f'IA clasificó la solicitud ID {id_solicitud} con prioridad {resultado["data"]["rango"]}'
+        )
+    return jsonify(resultado)
 
 
 @home_bp.route('/api/prioridad/solicitudes-ids', methods=['GET'])
@@ -746,6 +738,24 @@ def api_solicitudes_ids():
     finally:
         cursor.close()
         conexion.close()
+
+
+@home_bp.route('/api/prioridad/clasificar-nueva/<int:id_solicitud>', methods=['POST'])
+def api_clasificar_nueva(id_solicitud):
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    from controllers.controller_prioridad import clasificar_nueva_solicitud_controller
+    resultado = clasificar_nueva_solicitud_controller(id_solicitud)
+    return jsonify(resultado)
+
+
+@home_bp.route('/api/prioridad/procesar-pendientes-batch', methods=['POST'])
+def api_procesar_pendientes_batch():
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    from controllers.controller_prioridad import procesar_pendientes_batch_controller
+    resultado = procesar_pendientes_batch_controller()
+    return jsonify(resultado)
 
 
 @home_bp.route('/gestionar-proyectos', methods=['GET'])
