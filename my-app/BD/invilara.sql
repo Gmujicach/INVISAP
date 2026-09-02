@@ -2,10 +2,10 @@
 -- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Servidor: localhost:3306
--- Tiempo de generación: 21-08-2026 a las 06:37:11
--- Versión del servidor: 9.4.0
--- Versión de PHP: 8.3.30
+-- Host: localhost:3306
+-- Generation Time: Sep 02, 2026 at 05:36 AM
+-- Server version: 9.7.1
+-- PHP Version: 8.3.33
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `invilara`
+-- Database: `invilara`
 --
 CREATE DATABASE IF NOT EXISTS `invilara` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 USE `invilara`;
@@ -26,7 +26,7 @@ USE `invilara`;
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `avance`
+-- Table structure for table `avance`
 --
 
 CREATE TABLE `avance` (
@@ -43,7 +43,7 @@ CREATE TABLE `avance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `avance`
+-- Dumping data for table `avance`
 --
 
 INSERT INTO `avance` (`id_avance`, `porcentaje_avance`, `descripcion`, `gerente`, `fecha_avance`, `obra_id_obra`, `obra_estado`, `obra_contratacion_id_contratacion`, `obra_gestionar_proyectos_codigo_proyecto`, `estado`) VALUES
@@ -110,7 +110,7 @@ INSERT INTO `avance` (`id_avance`, `porcentaje_avance`, `descripcion`, `gerente`
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `catalogo_cargos`
+-- Table structure for table `catalogo_cargos`
 --
 
 CREATE TABLE `catalogo_cargos` (
@@ -121,7 +121,7 @@ CREATE TABLE `catalogo_cargos` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Catálogo de cargos institucionales';
 
 --
--- Volcado de datos para la tabla `catalogo_cargos`
+-- Dumping data for table `catalogo_cargos`
 --
 
 INSERT INTO `catalogo_cargos` (`id_cargo`, `nombre_cargo`, `descripcion`, `estado`) VALUES
@@ -135,7 +135,7 @@ INSERT INTO `catalogo_cargos` (`id_cargo`, `nombre_cargo`, `descripcion`, `estad
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `comunidad`
+-- Table structure for table `comunidad`
 --
 
 CREATE TABLE `comunidad` (
@@ -148,7 +148,7 @@ CREATE TABLE `comunidad` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `comunidad`
+-- Dumping data for table `comunidad`
 --
 
 INSERT INTO `comunidad` (`id_comunidad`, `nombre_comunidad`, `ambito`, `sector`, `persona_id_persona`, `estado`) VALUES
@@ -160,7 +160,7 @@ INSERT INTO `comunidad` (`id_comunidad`, `nombre_comunidad`, `ambito`, `sector`,
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `contratacion`
+-- Table structure for table `contratacion`
 --
 
 CREATE TABLE `contratacion` (
@@ -181,7 +181,7 @@ CREATE TABLE `contratacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de contrataciones';
 
 --
--- Volcado de datos para la tabla `contratacion`
+-- Dumping data for table `contratacion`
 --
 
 INSERT INTO `contratacion` (`id_contratacion`, `descripcion`, `empresa_ganadora`, `numero_contrato`, `monto`, `fecha_inicio_procedimiento`, `fecha_adjudicacion`, `tipo_contrato`, `modalidad`, `objeto`, `observacion`, `fecha_registro`, `empresa_rif`, `estado`) VALUES
@@ -191,7 +191,7 @@ INSERT INTO `contratacion` (`id_contratacion`, `descripcion`, `empresa_ganadora`
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `empleados`
+-- Table structure for table `empleados`
 --
 
 CREATE TABLE `empleados` (
@@ -205,7 +205,7 @@ CREATE TABLE `empleados` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `empleados`
+-- Dumping data for table `empleados`
 --
 
 INSERT INTO `empleados` (`id_empleados`, `nombre_empleado`, `cargo`, `fecha_ingreso`, `gerencia_asignada`, `persona_id_persona`, `estado`) VALUES
@@ -222,7 +222,7 @@ INSERT INTO `empleados` (`id_empleados`, `nombre_empleado`, `cargo`, `fecha_ingr
 (12, 'Carlos Eduardo Gómez Linares', 'Ingeniero', '2026-08-01', 'Gerencia de Tecnología', 20, 1);
 
 --
--- Disparadores `empleados`
+-- Triggers `empleados`
 --
 DELIMITER $$
 CREATE TRIGGER `trg_borrado_logico_empleados` BEFORE DELETE ON `empleados` FOR EACH ROW BEGIN
@@ -235,7 +235,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `empresa`
+-- Table structure for table `empresa`
 --
 
 CREATE TABLE `empresa` (
@@ -243,12 +243,12 @@ CREATE TABLE `empresa` (
   `nombre_empresa` varchar(80) NOT NULL,
   `telefono` varchar(12) NOT NULL COMMENT 'Tabla de empresas.',
   `domicilio_fiscal` varchar(100) NOT NULL,
-  `cumple_requisitos` tinyint(1) NOT NULL DEFAULT 0,
+  `cumple_requisitos` tinyint(1) NOT NULL DEFAULT '0',
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `empresa`
+-- Dumping data for table `empresa`
 --
 
 INSERT INTO `empresa` (`rif`, `nombre_empresa`, `telefono`, `domicilio_fiscal`, `cumple_requisitos`, `estado`) VALUES
@@ -258,7 +258,7 @@ INSERT INTO `empresa` (`rif`, `nombre_empresa`, `telefono`, `domicilio_fiscal`, 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `evidencia`
+-- Table structure for table `evidencia`
 --
 
 CREATE TABLE `evidencia` (
@@ -271,7 +271,7 @@ CREATE TABLE `evidencia` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `evidencia`
+-- Dumping data for table `evidencia`
 --
 
 INSERT INTO `evidencia` (`id_evidencia`, `fotos`, `url_archivos`, `fecha_registro`, `estado`, `etapa`) VALUES
@@ -296,7 +296,7 @@ INSERT INTO `evidencia` (`id_evidencia`, `fotos`, `url_archivos`, `fecha_registr
 (30, 'WhatsApp Image 2026-06-23 at 11.53.19 AM.jpeg', 'uploads/evidencias/a77ab3b0c6ca_WhatsApp_Image_2026-06-23_at_11_53_19_AM.jpg', '2026-07-07 20:21:59', 1, 'antes');
 
 --
--- Disparadores `evidencia`
+-- Triggers `evidencia`
 --
 DELIMITER $$
 CREATE TRIGGER `trg_limite_evidencias` BEFORE INSERT ON `evidencia` FOR EACH ROW BEGIN
@@ -313,7 +313,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `gravedad_obra`
+-- Table structure for table `gravedad_obra`
 --
 
 CREATE TABLE `gravedad_obra` (
@@ -324,7 +324,7 @@ CREATE TABLE `gravedad_obra` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `gravedad_obra`
+-- Dumping data for table `gravedad_obra`
 --
 
 INSERT INTO `gravedad_obra` (`id_gravedad`, `nivel_gravedad`, `criticidad`, `estado`) VALUES
@@ -334,7 +334,7 @@ INSERT INTO `gravedad_obra` (`id_gravedad`, `nivel_gravedad`, `criticidad`, `est
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `gravedad_obra_has_prioridad`
+-- Table structure for table `gravedad_obra_has_prioridad`
 --
 
 CREATE TABLE `gravedad_obra_has_prioridad` (
@@ -346,7 +346,7 @@ CREATE TABLE `gravedad_obra_has_prioridad` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `informe_avance_obra`
+-- Table structure for table `informe_avance_obra`
 --
 
 CREATE TABLE `informe_avance_obra` (
@@ -363,7 +363,7 @@ CREATE TABLE `informe_avance_obra` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de informes de avances de obras';
 
 --
--- Volcado de datos para la tabla `informe_avance_obra`
+-- Dumping data for table `informe_avance_obra`
 --
 
 INSERT INTO `informe_avance_obra` (`id_informe`, `fecha`, `estado`, `poblacion_beneficiada`, `tipo_informe`, `evidencia_antes`, `evidencia_durante`, `evidencia_despues`, `avance_id_avance`, `estado_registro`) VALUES
@@ -397,7 +397,7 @@ INSERT INTO `informe_avance_obra` (`id_informe`, `fecha`, `estado`, `poblacion_b
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `inspeccion`
+-- Table structure for table `inspeccion`
 --
 
 CREATE TABLE `inspeccion` (
@@ -421,7 +421,7 @@ CREATE TABLE `inspeccion` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `institucion`
+-- Table structure for table `institucion`
 --
 
 CREATE TABLE `institucion` (
@@ -433,7 +433,7 @@ CREATE TABLE `institucion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `institucion`
+-- Dumping data for table `institucion`
 --
 
 INSERT INTO `institucion` (`id_institucion`, `nombre_representante`, `razon_social`, `persona_id_persona`, `estado`) VALUES
@@ -442,7 +442,7 @@ INSERT INTO `institucion` (`id_institucion`, `nombre_representante`, `razon_soci
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `maquinaria`
+-- Table structure for table `maquinaria`
 --
 
 CREATE TABLE `maquinaria` (
@@ -453,7 +453,7 @@ CREATE TABLE `maquinaria` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `maquinaria`
+-- Dumping data for table `maquinaria`
 --
 
 INSERT INTO `maquinaria` (`id_maquinaria`, `nombre_maquinaria`, `tipo_maquinaria`, `estado`) VALUES
@@ -487,7 +487,7 @@ INSERT INTO `maquinaria` (`id_maquinaria`, `nombre_maquinaria`, `tipo_maquinaria
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `obra`
+-- Table structure for table `obra`
 --
 
 CREATE TABLE `obra` (
@@ -510,37 +510,14 @@ CREATE TABLE `obra` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de las inspecciones';
 
 --
--- Volcado de datos para la tabla `obra`
+-- Dumping data for table `obra`
 --
 
 INSERT INTO `obra` (`id_obra`, `titulo_obra`, `ubicacion_obra`, `periodo_ejecucion`, `fecha_inicio`, `fecha_fin`, `mediciones_obra`, `valuaciones`, `modificaciones_contrato`, `certificaciones_obras_ejecutadas`, `numero_contrato`, `porcentaje_avance_obra`, `estado`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`, `activo`) VALUES
-(1, 'Obra Generada', 'Sin ubicacion', 1, '2026-06-30', '2026-06-30', 'N/A', 'N/A', 'N/A', 0, 'N/A', 69, 1, 1, 'FRE-001', 1),
-(2, 'Obra Generada', 'Sin ubicacion', 1, '2026-06-30', '2026-06-30', 'N/A', 'N/A', 'N/A', 0, 'N/A', 30, 2, 1, 'FRE-001', 1),
-(3, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 3, 1, 'FRE-001', 1),
-(4, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 4, 1, 'FRE-001', 1),
-(5, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 5, 1, 'FRE-001', 1),
-(6, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 6, 1, 'FRE-001', 1),
-(7, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 7, 1, 'FRE-001', 1),
-(8, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 8, 1, 'FRE-001', 1),
-(9, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 9, 1, 'FRE-001', 1),
-(10, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 10, 1, 'FRE-001', 1),
-(11, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 11, 1, 'FRE-001', 1),
-(12, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 12, 1, 'FRE-001', 1),
-(13, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 13, 1, 'FRE-001', 1),
-(14, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 14, 1, 'FRE-001', 1),
-(15, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 15, 1, 'FRE-001', 1),
-(16, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 16, 1, 'FRE-001', 1),
-(17, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 17, 1, 'FRE-001', 1),
-(18, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 100, 18, 1, 'FRE-001', 1),
-(19, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 25, 19, 1, 'FRE-001', 1),
-(20, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 16, 20, 1, 'FRE-001', 1),
-(21, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 16, 21, 1, 'FRE-001', 1),
-(22, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-01', '2026-07-01', 'N/A', 'N/A', 'N/A', 0, 'N/A', 25, 22, 1, 'FRE-001', 1),
-(23, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-02', '2026-07-02', 'N/A', 'N/A', 'N/A', 0, 'N/A', 64, 23, 1, 'FRE-001', 1),
-(24, 'Obra Generada', 'Sin ubicacion', 1, '2026-07-02', '2026-07-02', 'N/A', 'N/A', 'N/A', 0, 'N/A', 64, 24, 1, 'FRE-001', 1);
+(25, 'Obra de Cabudares', 'Carrera 7A con calles 6 y 5', '3 meses', '2026-06-02', '2026-09-18', '4 mts cuadrados', 'Valuaciones N°1 - Bs. 50.000', 'maquinas usadas por las empresas contratadas', 4, 'INV-OB-001', 47, 2, 2, 'WEY-001', 1);
 
 --
--- Disparadores `obra`
+-- Triggers `obra`
 --
 DELIMITER $$
 CREATE TRIGGER `actualizar_semaforo_obra` BEFORE UPDATE ON `obra` FOR EACH ROW BEGIN
@@ -554,7 +531,7 @@ DELIMITER ;
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `particular`
+-- Table structure for table `particular`
 --
 
 CREATE TABLE `particular` (
@@ -566,7 +543,7 @@ CREATE TABLE `particular` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `particular`
+-- Dumping data for table `particular`
 --
 
 INSERT INTO `particular` (`id_particular`, `nombre`, `apellido`, `persona_id_persona`, `estado`) VALUES
@@ -578,7 +555,7 @@ INSERT INTO `particular` (`id_particular`, `nombre`, `apellido`, `persona_id_per
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `persona`
+-- Table structure for table `persona`
 --
 
 CREATE TABLE `persona` (
@@ -593,7 +570,7 @@ CREATE TABLE `persona` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `persona`
+-- Dumping data for table `persona`
 --
 
 INSERT INTO `persona` (`id_persona`, `cedula_persona`, `direccion`, `parroquia`, `municipio`, `telefono`, `correo`, `estado`) VALUES
@@ -620,14 +597,14 @@ INSERT INTO `persona` (`id_persona`, `cedula_persona`, `direccion`, `parroquia`,
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `prioridad`
+-- Table structure for table `prioridad`
 --
 
 CREATE TABLE `prioridad` (
   `id_gestion_prioridad` int NOT NULL,
   `rango_prioridad` float NOT NULL,
-  `tipo_obra` varchar(20) DEFAULT NULL COMMENT 'Obra Mayor | Obra Menor (clasificación IA)',
-  `gravedad_sugerida` varchar(10) DEFAULT NULL COMMENT 'Alta | Baja (sugerencia IA)',
+  `tipo_obra` varchar(20) DEFAULT NULL COMMENT 'Obra Mayor | Obra Menor',
+  `gravedad_sugerida` varchar(10) DEFAULT NULL COMMENT 'Alta | Baja',
   `origen` varchar(20) DEFAULT 'manual' COMMENT 'ia | heuristica | error | manual',
   `fecha_asignacion` datetime NOT NULL,
   `responsable_ajuste` varchar(30) NOT NULL,
@@ -636,16 +613,26 @@ CREATE TABLE `prioridad` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `prioridad`
+-- Dumping data for table `prioridad`
 --
 
 INSERT INTO `prioridad` (`id_gestion_prioridad`, `rango_prioridad`, `tipo_obra`, `gravedad_sugerida`, `origen`, `fecha_asignacion`, `responsable_ajuste`, `justificacion_cambio`, `estado`) VALUES
-(1, 0.5, NULL, NULL, 'manual', '2026-06-15 16:38:02', 'Test', 'Clasificación por heurística (IA no disponible): Ollama no está disponible en http://localhost:11434', 1);
+(1, 0.3, NULL, NULL, 'manual', '2026-06-15 16:38:02', 'admin', 'La comunidad no tiene acceso a servicios básicos de agua, lo que representa un problema de seguridad', 1),
+(2, 0.7, 'Obra Mayor', 'Baja', 'ia', '2026-09-02 01:23:47', 'Test', 'Prueba', 1),
+(3, 0.7, 'Obra Mayor', 'Baja', 'ia', '2026-09-02 01:24:56', 'Test', 'No hay necesidad de intervención urgente en este caso, ya que el problema es un simple ', 1),
+(4, 0.3, 'Obra Mayor', 'Alta', 'ia', '2026-09-02 01:25:42', 'Test', 'La solicitud corresponde a una obra mayor debido a la naturaleza de los servicios básicos (agua, luz', 1),
+(5, 0, 'Obra Mayor', 'Alta', 'ia', '2026-09-02 01:25:46', 'Test', 'Necesidad de vacunación en la comunidad para proteger la salud y la asistencia médica', 1),
+(6, 0, 'Obra Mayor', 'Alta', 'ia', '2026-09-02 01:25:50', 'Test', 'La magnitud del problema corresponde a una ', 1),
+(7, 0, 'Obra Mayor', 'Alta', 'ia', '2026-09-02 01:25:54', 'Test', 'Reconstrucción de carreteras y pavimentación de vías principales', 1),
+(8, 0.7, 'Obra Mayor', 'Baja', 'ia', '2026-09-02 01:25:59', 'Test', 'La solicitud corresponde a una mejora de servicios básicos en la ciudad de Santa Ana, Venezuela.', 1),
+(9, 0.15, 'Obra Mayor', 'Alta', 'ia', '2026-09-02 01:26:05', 'Test', 'Riesgo inminente a personas y infraestructura crítica debido a la naturaleza del bacheo y las filtra', 1),
+(10, 0.3, 'Obra Mayor', 'Alta', 'ia', '2026-09-02 01:26:09', 'Test', 'Solicitación de vacunación en todo el estado Lara, Venezuela.', 1),
+(11, 0.7, 'Obra Mayor', 'Baja', 'ia', '2026-09-02 01:26:15', 'Test', 'La comunidad no tiene acceso a servicios básicos de agua, lo que representa un problema de seguridad', 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `proyecto`
+-- Table structure for table `proyecto`
 --
 
 CREATE TABLE `proyecto` (
@@ -659,7 +646,7 @@ CREATE TABLE `proyecto` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de gestion de proyectos';
 
 --
--- Volcado de datos para la tabla `proyecto`
+-- Dumping data for table `proyecto`
 --
 
 INSERT INTO `proyecto` (`codigo_proyecto`, `fecha_planificacion`, `descripcion_tecnica`, `computos_metricos`, `estimacion_costo`, `proyecto_has_empleado`, `estado`) VALUES
@@ -669,7 +656,7 @@ INSERT INTO `proyecto` (`codigo_proyecto`, `fecha_planificacion`, `descripcion_t
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `proyecto_has_maquinaria`
+-- Table structure for table `proyecto_has_maquinaria`
 --
 
 CREATE TABLE `proyecto_has_maquinaria` (
@@ -679,7 +666,7 @@ CREATE TABLE `proyecto_has_maquinaria` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `proyecto_has_maquinaria`
+-- Dumping data for table `proyecto_has_maquinaria`
 --
 
 INSERT INTO `proyecto_has_maquinaria` (`proyecto_codigo_proyecto`, `maquinaria_id_maquinaria`, `estado`) VALUES
@@ -689,7 +676,7 @@ INSERT INTO `proyecto_has_maquinaria` (`proyecto_codigo_proyecto`, `maquinaria_i
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `proyecto_has_solicitudes`
+-- Table structure for table `proyecto_has_solicitudes`
 --
 
 CREATE TABLE `proyecto_has_solicitudes` (
@@ -701,7 +688,7 @@ CREATE TABLE `proyecto_has_solicitudes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `proyecto_has_solicitudes`
+-- Dumping data for table `proyecto_has_solicitudes`
 --
 
 INSERT INTO `proyecto_has_solicitudes` (`proyecto_codigo_proyecto`, `solicitudes_id_solicitudes`, `solicitudes_persona_id_persona`, `solicitudes_prioridad_id_gestion_prioridad`, `estado`) VALUES
@@ -711,7 +698,7 @@ INSERT INTO `proyecto_has_solicitudes` (`proyecto_codigo_proyecto`, `solicitudes
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `publicacion`
+-- Table structure for table `publicacion`
 --
 
 CREATE TABLE `publicacion` (
@@ -726,7 +713,7 @@ CREATE TABLE `publicacion` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `publicacion`
+-- Dumping data for table `publicacion`
 --
 
 INSERT INTO `publicacion` (`id_publicacion`, `titulo_publicacion`, `nombre_responsable`, `tipo_publicacion`, `fecha_publicacion`, `informe_avance_obra_id_informe`, `cuerpo_publicacion`, `estado`) VALUES
@@ -735,7 +722,7 @@ INSERT INTO `publicacion` (`id_publicacion`, `titulo_publicacion`, `nombre_respo
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `recurso_obra`
+-- Table structure for table `recurso_obra`
 --
 
 CREATE TABLE `recurso_obra` (
@@ -750,7 +737,7 @@ CREATE TABLE `recurso_obra` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `reporte`
+-- Table structure for table `reporte`
 --
 
 CREATE TABLE `reporte` (
@@ -768,7 +755,7 @@ CREATE TABLE `reporte` (
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `semaforo`
+-- Table structure for table `semaforo`
 --
 
 CREATE TABLE `semaforo` (
@@ -780,7 +767,7 @@ CREATE TABLE `semaforo` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Volcado de datos para la tabla `semaforo`
+-- Dumping data for table `semaforo`
 --
 
 INSERT INTO `semaforo` (`id_semaforo`, `estado`, `color`, `descripcion`, `estado_registro`) VALUES
@@ -791,7 +778,7 @@ INSERT INTO `semaforo` (`id_semaforo`, `estado`, `color`, `descripcion`, `estado
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `solicitudes`
+-- Table structure for table `solicitudes`
 --
 
 CREATE TABLE `solicitudes` (
@@ -806,24 +793,24 @@ CREATE TABLE `solicitudes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla general de las solicitudes';
 
 --
--- Volcado de datos para la tabla `solicitudes`
+-- Dumping data for table `solicitudes`
 --
 
 INSERT INTO `solicitudes` (`id_solicitudes`, `fecha`, `tipo_solicitud`, `estatus_solicitud`, `problematica`, `persona_id_persona`, `prioridad_id_gestion_prioridad`, `estado`) VALUES
-(1, '2026-06-15 16:38:02', 'Particular', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] no hay gaz de prueba mortadela', 1, 1, 1),
-(2, '2026-06-15 16:40:32', 'Comunidad', 'Completada', '[Salud y Asistencia Médica] En la comunidad necesitamos una jornada de vacunación', 2, 1, 1),
-(3, '2026-06-15 16:46:00', 'Comunidad', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] hueco en la avenida donde salen aguas negras', 4, 1, 1),
-(7, '2026-06-16 17:58:23', 'Comunidad', 'En Proceso', '[Infraestructura y Vialidad] Acondicionamiento vial', 6, 1, 1),
-(8, '2026-06-24 16:04:42', 'Particular', 'En Proceso', '[Servicios Básicos (Agua, Luz, Gas)] No hay agua y todos nos estamos derritiendo, porfis traigan aguita aaaaaaaaa', 11, 1, 1),
-(9, '2026-07-05 22:32:39', 'Institucion', 'En Proceso', '[Infraestructura y Vialidad] Reparación de bacheo profundo en el acceso principal de la institución por filtraciones.', 16, 1, 1),
-(10, '2026-07-07 19:59:35', 'Particular', 'En Proceso', '[Salud y Asistencia Médica] Se necesita una jornada de vacunacion', 18, 1, 1),
-(11, '2026-08-17 00:55:59', 'Particular', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] En la comunidad no hay agua', 21, 1, 1);
+(1, '2026-06-15 16:38:02', 'Particular', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] no hay gaz de prueba mortadela', 1, 4, 1),
+(2, '2026-06-15 16:40:32', 'Comunidad', 'Completada', '[Salud y Asistencia Médica] En la comunidad necesitamos una jornada de vacunación', 2, 5, 1),
+(3, '2026-06-15 16:46:00', 'Comunidad', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] hueco en la avenida donde salen aguas negras', 4, 6, 1),
+(7, '2026-06-16 17:58:23', 'Comunidad', 'En Proceso', '[Infraestructura y Vialidad] Acondicionamiento vial', 6, 7, 1),
+(8, '2026-06-24 16:04:42', 'Particular', 'En Proceso', '[Servicios Básicos (Agua, Luz, Gas)] No hay agua y todos nos estamos derritiendo, porfis traigan aguita aaaaaaaaa', 11, 8, 1),
+(9, '2026-07-05 22:32:39', 'Institucion', 'En Proceso', '[Infraestructura y Vialidad] Reparación de bacheo profundo en el acceso principal de la institución por filtraciones.', 16, 9, 1),
+(10, '2026-07-07 19:59:35', 'Particular', 'En Proceso', '[Salud y Asistencia Médica] Se necesita una jornada de vacunacion', 18, 10, 1),
+(11, '2026-08-17 00:55:59', 'Particular', 'Pendiente', '[Servicios Básicos (Agua, Luz, Gas)] En la comunidad no hay agua', 21, 11, 1);
 
 -- --------------------------------------------------------
 
 --
--- Estructura Stand-in para la vista `vista_evidencia_informe`
--- (Véase abajo para la vista actual)
+-- Stand-in structure for view `vista_evidencia_informe`
+-- (See below for the actual view)
 --
 CREATE TABLE `vista_evidencia_informe` (
 `id_evidencia` int
@@ -839,11 +826,11 @@ CREATE TABLE `vista_evidencia_informe` (
 );
 
 --
--- Índices para tablas volcadas
+-- Indexes for dumped tables
 --
 
 --
--- Indices de la tabla `avance`
+-- Indexes for table `avance`
 --
 ALTER TABLE `avance`
   ADD PRIMARY KEY (`id_avance`),
@@ -851,21 +838,21 @@ ALTER TABLE `avance`
   ADD KEY `fk_avance_empleado1_idx` (`gerente`);
 
 --
--- Indices de la tabla `catalogo_cargos`
+-- Indexes for table `catalogo_cargos`
 --
 ALTER TABLE `catalogo_cargos`
   ADD PRIMARY KEY (`id_cargo`),
   ADD UNIQUE KEY `nombre_cargo_UNIQUE` (`nombre_cargo`);
 
 --
--- Indices de la tabla `comunidad`
+-- Indexes for table `comunidad`
 --
 ALTER TABLE `comunidad`
   ADD PRIMARY KEY (`id_comunidad`,`persona_id_persona`),
   ADD KEY `fk_comunidad_persona1_idx` (`persona_id_persona`);
 
 --
--- Indices de la tabla `contratacion`
+-- Indexes for table `contratacion`
 --
 ALTER TABLE `contratacion`
   ADD PRIMARY KEY (`id_contratacion`),
@@ -873,7 +860,7 @@ ALTER TABLE `contratacion`
   ADD KEY `fk_contratacion_empresa1_idx` (`empresa_rif`);
 
 --
--- Indices de la tabla `empleados`
+-- Indexes for table `empleados`
 --
 ALTER TABLE `empleados`
   ADD PRIMARY KEY (`id_empleados`),
@@ -882,26 +869,26 @@ ALTER TABLE `empleados`
   ADD KEY `idx_empleados_cargo` (`cargo`);
 
 --
--- Indices de la tabla `empresa`
+-- Indexes for table `empresa`
 --
 ALTER TABLE `empresa`
   ADD PRIMARY KEY (`rif`),
   ADD UNIQUE KEY `rif_UNIQUE` (`rif`);
 
 --
--- Indices de la tabla `evidencia`
+-- Indexes for table `evidencia`
 --
 ALTER TABLE `evidencia`
   ADD PRIMARY KEY (`id_evidencia`);
 
 --
--- Indices de la tabla `gravedad_obra`
+-- Indexes for table `gravedad_obra`
 --
 ALTER TABLE `gravedad_obra`
   ADD PRIMARY KEY (`id_gravedad`);
 
 --
--- Indices de la tabla `gravedad_obra_has_prioridad`
+-- Indexes for table `gravedad_obra_has_prioridad`
 --
 ALTER TABLE `gravedad_obra_has_prioridad`
   ADD PRIMARY KEY (`gravedad_obra_id_gravedad`,`prioridad_id_gestion_prioridad`),
@@ -909,7 +896,7 @@ ALTER TABLE `gravedad_obra_has_prioridad`
   ADD KEY `fk_gravedad_obra_has_prioridad_gravedad_obra1_idx` (`gravedad_obra_id_gravedad`);
 
 --
--- Indices de la tabla `informe_avance_obra`
+-- Indexes for table `informe_avance_obra`
 --
 ALTER TABLE `informe_avance_obra`
   ADD PRIMARY KEY (`id_informe`),
@@ -917,7 +904,7 @@ ALTER TABLE `informe_avance_obra`
   ADD KEY `idx_informe_estado_registro` (`estado_registro`);
 
 --
--- Indices de la tabla `inspeccion`
+-- Indexes for table `inspeccion`
 --
 ALTER TABLE `inspeccion`
   ADD PRIMARY KEY (`id_inspeccion`,`evidencia_id_evidencia`),
@@ -926,20 +913,20 @@ ALTER TABLE `inspeccion`
   ADD KEY `fk_inspeccion_empleado1_idx` (`inspector`);
 
 --
--- Indices de la tabla `institucion`
+-- Indexes for table `institucion`
 --
 ALTER TABLE `institucion`
   ADD PRIMARY KEY (`id_institucion`,`persona_id_persona`),
   ADD KEY `fk_institucion_persona1_idx` (`persona_id_persona`);
 
 --
--- Indices de la tabla `maquinaria`
+-- Indexes for table `maquinaria`
 --
 ALTER TABLE `maquinaria`
   ADD PRIMARY KEY (`id_maquinaria`);
 
 --
--- Indices de la tabla `obra`
+-- Indexes for table `obra`
 --
 ALTER TABLE `obra`
   ADD PRIMARY KEY (`id_obra`,`estado`,`contratacion_id_contratacion`,`gestionar_proyectos_codigo_proyecto`),
@@ -949,27 +936,27 @@ ALTER TABLE `obra`
   ADD KEY `fk_obra_gestionar_proyectos1_idx` (`gestionar_proyectos_codigo_proyecto`);
 
 --
--- Indices de la tabla `particular`
+-- Indexes for table `particular`
 --
 ALTER TABLE `particular`
   ADD PRIMARY KEY (`id_particular`,`persona_id_persona`),
   ADD KEY `fk_particular_persona1_idx` (`persona_id_persona`);
 
 --
--- Indices de la tabla `persona`
+-- Indexes for table `persona`
 --
 ALTER TABLE `persona`
   ADD PRIMARY KEY (`id_persona`),
   ADD UNIQUE KEY `cedula_persona_UNIQUE` (`cedula_persona`);
 
 --
--- Indices de la tabla `prioridad`
+-- Indexes for table `prioridad`
 --
 ALTER TABLE `prioridad`
   ADD PRIMARY KEY (`id_gestion_prioridad`);
 
 --
--- Indices de la tabla `proyecto`
+-- Indexes for table `proyecto`
 --
 ALTER TABLE `proyecto`
   ADD PRIMARY KEY (`codigo_proyecto`),
@@ -977,7 +964,7 @@ ALTER TABLE `proyecto`
   ADD KEY `fk_proyecto_empleado1_idx` (`proyecto_has_empleado`);
 
 --
--- Indices de la tabla `proyecto_has_maquinaria`
+-- Indexes for table `proyecto_has_maquinaria`
 --
 ALTER TABLE `proyecto_has_maquinaria`
   ADD PRIMARY KEY (`proyecto_codigo_proyecto`,`maquinaria_id_maquinaria`),
@@ -985,7 +972,7 @@ ALTER TABLE `proyecto_has_maquinaria`
   ADD KEY `fk_proyecto_has_maquinaria_proyecto1_idx` (`proyecto_codigo_proyecto`);
 
 --
--- Indices de la tabla `proyecto_has_solicitudes`
+-- Indexes for table `proyecto_has_solicitudes`
 --
 ALTER TABLE `proyecto_has_solicitudes`
   ADD PRIMARY KEY (`proyecto_codigo_proyecto`,`solicitudes_id_solicitudes`,`solicitudes_persona_id_persona`,`solicitudes_prioridad_id_gestion_prioridad`),
@@ -993,34 +980,34 @@ ALTER TABLE `proyecto_has_solicitudes`
   ADD KEY `fk_proyecto_has_solicitudes_proyecto1_idx` (`proyecto_codigo_proyecto`);
 
 --
--- Indices de la tabla `publicacion`
+-- Indexes for table `publicacion`
 --
 ALTER TABLE `publicacion`
   ADD PRIMARY KEY (`id_publicacion`),
   ADD KEY `fk_publicacion_informe_avance_obra1_idx` (`informe_avance_obra_id_informe`);
 
 --
--- Indices de la tabla `recurso_obra`
+-- Indexes for table `recurso_obra`
 --
 ALTER TABLE `recurso_obra`
   ADD PRIMARY KEY (`id_recurso`),
   ADD KEY `fk_recurso_obra_informe_avance_obra1_idx` (`informe_avance_obra_id_informe`);
 
 --
--- Indices de la tabla `reporte`
+-- Indexes for table `reporte`
 --
 ALTER TABLE `reporte`
   ADD PRIMARY KEY (`id_reporte`),
   ADD KEY `fk_reporte_informe_avance_obra1_idx` (`informe_avance_obra_id_informe`);
 
 --
--- Indices de la tabla `semaforo`
+-- Indexes for table `semaforo`
 --
 ALTER TABLE `semaforo`
   ADD PRIMARY KEY (`id_semaforo`);
 
 --
--- Indices de la tabla `solicitudes`
+-- Indexes for table `solicitudes`
 --
 ALTER TABLE `solicitudes`
   ADD PRIMARY KEY (`id_solicitudes`,`persona_id_persona`,`prioridad_id_gestion_prioridad`),
@@ -1028,113 +1015,113 @@ ALTER TABLE `solicitudes`
   ADD KEY `fk_solicitudes_prioridad1_idx` (`prioridad_id_gestion_prioridad`);
 
 --
--- AUTO_INCREMENT de las tablas volcadas
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT de la tabla `catalogo_cargos`
+-- AUTO_INCREMENT for table `catalogo_cargos`
 --
 ALTER TABLE `catalogo_cargos`
   MODIFY `id_cargo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT de la tabla `comunidad`
+-- AUTO_INCREMENT for table `comunidad`
 --
 ALTER TABLE `comunidad`
   MODIFY `id_comunidad` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT de la tabla `contratacion`
+-- AUTO_INCREMENT for table `contratacion`
 --
 ALTER TABLE `contratacion`
   MODIFY `id_contratacion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `empleados`
+-- AUTO_INCREMENT for table `empleados`
 --
 ALTER TABLE `empleados`
   MODIFY `id_empleados` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT de la tabla `evidencia`
+-- AUTO_INCREMENT for table `evidencia`
 --
 ALTER TABLE `evidencia`
   MODIFY `id_evidencia` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
--- AUTO_INCREMENT de la tabla `gravedad_obra`
+-- AUTO_INCREMENT for table `gravedad_obra`
 --
 ALTER TABLE `gravedad_obra`
   MODIFY `id_gravedad` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT de la tabla `informe_avance_obra`
+-- AUTO_INCREMENT for table `informe_avance_obra`
 --
 ALTER TABLE `informe_avance_obra`
   MODIFY `id_informe` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
--- AUTO_INCREMENT de la tabla `inspeccion`
+-- AUTO_INCREMENT for table `inspeccion`
 --
 ALTER TABLE `inspeccion`
   MODIFY `id_inspeccion` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `institucion`
+-- AUTO_INCREMENT for table `institucion`
 --
 ALTER TABLE `institucion`
   MODIFY `id_institucion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `maquinaria`
+-- AUTO_INCREMENT for table `maquinaria`
 --
 ALTER TABLE `maquinaria`
   MODIFY `id_maquinaria` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
--- AUTO_INCREMENT de la tabla `obra`
+-- AUTO_INCREMENT for table `obra`
 --
 ALTER TABLE `obra`
-  MODIFY `id_obra` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id_obra` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
--- AUTO_INCREMENT de la tabla `particular`
+-- AUTO_INCREMENT for table `particular`
 --
 ALTER TABLE `particular`
   MODIFY `id_particular` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT de la tabla `persona`
+-- AUTO_INCREMENT for table `persona`
 --
 ALTER TABLE `persona`
   MODIFY `id_persona` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
--- AUTO_INCREMENT de la tabla `prioridad`
+-- AUTO_INCREMENT for table `prioridad`
 --
 ALTER TABLE `prioridad`
-  MODIFY `id_gestion_prioridad` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_gestion_prioridad` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT de la tabla `publicacion`
+-- AUTO_INCREMENT for table `publicacion`
 --
 ALTER TABLE `publicacion`
   MODIFY `id_publicacion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT de la tabla `reporte`
+-- AUTO_INCREMENT for table `reporte`
 --
 ALTER TABLE `reporte`
   MODIFY `id_reporte` int NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de la tabla `semaforo`
+-- AUTO_INCREMENT for table `semaforo`
 --
 ALTER TABLE `semaforo`
   MODIFY `id_semaforo` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT de la tabla `solicitudes`
+-- AUTO_INCREMENT for table `solicitudes`
 --
 ALTER TABLE `solicitudes`
   MODIFY `id_solicitudes` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
@@ -1142,56 +1129,56 @@ ALTER TABLE `solicitudes`
 -- --------------------------------------------------------
 
 --
--- Estructura para la vista `vista_evidencia_informe`
+-- Structure for view `vista_evidencia_informe`
 --
 DROP TABLE IF EXISTS `vista_evidencia_informe`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `vista_evidencia_informe`  AS SELECT `e`.`id_evidencia` AS `id_evidencia`, `e`.`fotos` AS `fotos`, `e`.`url_archivos` AS `url_archivos`, `e`.`fecha_registro` AS `fecha_registro`, `e`.`etapa` AS `etapa`, `e`.`estado` AS `estado`, `i`.`id_informe` AS `id_informe`, `i`.`fecha` AS `fecha_informe`, `i`.`tipo_informe` AS `tipo_informe`, `i`.`estado` AS `estado_informe` FROM (`evidencia` `e` left join `informe_avance_obra` `i` on((((`e`.`etapa` = 'antes') and (`i`.`evidencia_antes` like concat('%',`e`.`id_evidencia`,'%'))) or ((`e`.`etapa` = 'durante') and (`i`.`evidencia_durante` like concat('%',`e`.`id_evidencia`,'%'))) or ((`e`.`etapa` = 'despues') and (`i`.`evidencia_despues` like concat('%',`e`.`id_evidencia`,'%')))))) WHERE (`e`.`estado` = 1) ;
 
 --
--- Restricciones para tablas volcadas
+-- Constraints for dumped tables
 --
 
 --
--- Filtros para la tabla `avance`
+-- Constraints for table `avance`
 --
 ALTER TABLE `avance`
   ADD CONSTRAINT `fk_avance_empleado1` FOREIGN KEY (`gerente`) REFERENCES `empleados` (`id_empleados`),
   ADD CONSTRAINT `fk_avance_obra1` FOREIGN KEY (`obra_id_obra`,`obra_estado`,`obra_contratacion_id_contratacion`,`obra_gestionar_proyectos_codigo_proyecto`) REFERENCES `obra` (`id_obra`, `estado`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`);
 
 --
--- Filtros para la tabla `comunidad`
+-- Constraints for table `comunidad`
 --
 ALTER TABLE `comunidad`
   ADD CONSTRAINT `fk_comunidad_persona1` FOREIGN KEY (`persona_id_persona`) REFERENCES `persona` (`id_persona`);
 
 --
--- Filtros para la tabla `contratacion`
+-- Constraints for table `contratacion`
 --
 ALTER TABLE `contratacion`
   ADD CONSTRAINT `fk_contratacion_empresa1` FOREIGN KEY (`empresa_rif`) REFERENCES `empresa` (`rif`);
 
 --
--- Filtros para la tabla `empleados`
+-- Constraints for table `empleados`
 --
 ALTER TABLE `empleados`
   ADD CONSTRAINT `fk_empleados_persona1` FOREIGN KEY (`persona_id_persona`) REFERENCES `persona` (`id_persona`);
 
 --
--- Filtros para la tabla `gravedad_obra_has_prioridad`
+-- Constraints for table `gravedad_obra_has_prioridad`
 --
 ALTER TABLE `gravedad_obra_has_prioridad`
   ADD CONSTRAINT `fk_gravedad_obra_has_prioridad_gravedad_obra1` FOREIGN KEY (`gravedad_obra_id_gravedad`) REFERENCES `gravedad_obra` (`id_gravedad`),
   ADD CONSTRAINT `fk_gravedad_obra_has_prioridad_prioridad1` FOREIGN KEY (`prioridad_id_gestion_prioridad`) REFERENCES `prioridad` (`id_gestion_prioridad`);
 
 --
--- Filtros para la tabla `informe_avance_obra`
+-- Constraints for table `informe_avance_obra`
 --
 ALTER TABLE `informe_avance_obra`
   ADD CONSTRAINT `fk_informe_avance_obra_avance1` FOREIGN KEY (`avance_id_avance`) REFERENCES `avance` (`id_avance`);
 
 --
--- Filtros para la tabla `inspeccion`
+-- Constraints for table `inspeccion`
 --
 ALTER TABLE `inspeccion`
   ADD CONSTRAINT `fk_inspeccion_empleado1` FOREIGN KEY (`inspector`) REFERENCES `empleados` (`id_empleados`),
@@ -1199,69 +1186,10 @@ ALTER TABLE `inspeccion`
   ADD CONSTRAINT `fk_inspeccion_obra1` FOREIGN KEY (`obra_id_obra1`,`obra_estado1`,`obra_contratacion_id_contratacion1`,`obra_gestionar_proyectos_codigo_proyecto1`) REFERENCES `obra` (`id_obra`, `estado`, `contratacion_id_contratacion`, `gestionar_proyectos_codigo_proyecto`);
 
 --
--- Filtros para la tabla `institucion`
+-- Constraints for table `institucion`
 --
 ALTER TABLE `institucion`
   ADD CONSTRAINT `fk_institucion_persona1` FOREIGN KEY (`persona_id_persona`) REFERENCES `persona` (`id_persona`);
-
---
--- Filtros para la tabla `obra`
---
-ALTER TABLE `obra`
-  ADD CONSTRAINT `fk_obra_contratacion1` FOREIGN KEY (`contratacion_id_contratacion`) REFERENCES `contratacion` (`id_contratacion`),
-  ADD CONSTRAINT `fk_obra_gestionar_proyectos1` FOREIGN KEY (`gestionar_proyectos_codigo_proyecto`) REFERENCES `proyecto` (`codigo_proyecto`),
-  ADD CONSTRAINT `fk_obra_semaforo1` FOREIGN KEY (`estado`) REFERENCES `semaforo` (`id_semaforo`);
-
---
--- Filtros para la tabla `particular`
---
-ALTER TABLE `particular`
-  ADD CONSTRAINT `fk_particular_persona1` FOREIGN KEY (`persona_id_persona`) REFERENCES `persona` (`id_persona`);
-
---
--- Filtros para la tabla `proyecto`
---
-ALTER TABLE `proyecto`
-  ADD CONSTRAINT `fk_proyecto_empleado1` FOREIGN KEY (`proyecto_has_empleado`) REFERENCES `empleados` (`id_empleados`);
-
---
--- Filtros para la tabla `proyecto_has_maquinaria`
---
-ALTER TABLE `proyecto_has_maquinaria`
-  ADD CONSTRAINT `fk_proyecto_has_maquinaria_maquinaria1` FOREIGN KEY (`maquinaria_id_maquinaria`) REFERENCES `maquinaria` (`id_maquinaria`),
-  ADD CONSTRAINT `fk_proyecto_has_maquinaria_proyecto1` FOREIGN KEY (`proyecto_codigo_proyecto`) REFERENCES `proyecto` (`codigo_proyecto`);
-
---
--- Filtros para la tabla `proyecto_has_solicitudes`
---
-ALTER TABLE `proyecto_has_solicitudes`
-  ADD CONSTRAINT `fk_proyecto_has_solicitudes_proyecto1` FOREIGN KEY (`proyecto_codigo_proyecto`) REFERENCES `proyecto` (`codigo_proyecto`),
-  ADD CONSTRAINT `fk_proyecto_has_solicitudes_solicitudes1` FOREIGN KEY (`solicitudes_id_solicitudes`,`solicitudes_persona_id_persona`,`solicitudes_prioridad_id_gestion_prioridad`) REFERENCES `solicitudes` (`id_solicitudes`, `persona_id_persona`, `prioridad_id_gestion_prioridad`);
-
---
--- Filtros para la tabla `publicacion`
---
-ALTER TABLE `publicacion`
-  ADD CONSTRAINT `fk_publicacion_informe_avance_obra1` FOREIGN KEY (`informe_avance_obra_id_informe`) REFERENCES `informe_avance_obra` (`id_informe`);
-
---
--- Filtros para la tabla `recurso_obra`
---
-ALTER TABLE `recurso_obra`
-  ADD CONSTRAINT `fk_recurso_obra_informe_avance_obra1` FOREIGN KEY (`informe_avance_obra_id_informe`) REFERENCES `informe_avance_obra` (`id_informe`);
-
---
--- Filtros para la tabla `reporte`
---
-ALTER TABLE `reporte`
-  ADD CONSTRAINT `fk_reporte_informe_avance_obra1` FOREIGN KEY (`informe_avance_obra_id_informe`) REFERENCES `informe_avance_obra` (`id_informe`);
-
---
--- Filtros para la tabla `solicitudes`
---
-ALTER TABLE `solicitudes`
-  ADD CONSTRAINT `fk_solicitudes_persona1` FOREIGN KEY (`persona_id_persona`) REFERENCES `persona` (`id_persona`),
-  ADD CONSTRAINT `fk_solicitudes_prioridad1` FOREIGN KEY (`prioridad_id_gestion_prioridad`) REFERENCES `prioridad` (`id_gestion_prioridad`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
