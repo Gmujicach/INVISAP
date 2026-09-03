@@ -1,0 +1,284 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | Detalle de Prioridad{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/prioridad.css') }}">
+<style>
+  .detalle-prioridad-card {
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .detalle-prioridad-card .card-header-custom {
+    background: linear-gradient(135deg, #f8fafc, #ffffff);
+    border-bottom: 2px solid #f1c40f;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .detalle-prioridad-card .card-header-custom h4 {
+    margin: 0;
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 1.25rem;
+  }
+  .detalle-prioridad-card .card-body-custom {
+    padding: 1.5rem;
+  }
+  .detalle-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .detalle-info-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid #f1f5f9;
+    gap: 1rem;
+  }
+  .detalle-info-list li:last-child { border-bottom: none; }
+  .detalle-info-list .info-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .detalle-info-list .info-value {
+    font-weight: 600;
+    color: #1a1a1a;
+    text-align: right;
+    word-break: break-word;
+  }
+  .detalle-prio-banner {
+    padding: 1.25rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .detalle-prio-banner.alta { background: linear-gradient(135deg, #FCE8E6, #fff); border-left: 5px solid #dc3545; }
+  .detalle-prio-banner.baja { background: linear-gradient(135deg, #E6F4EA, #fff); border-left: 5px solid #2e7d32; }
+  .detalle-prio-banner .prio-etiqueta {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+  }
+  .detalle-prio-banner.alta .prio-etiqueta { color: #C5221F; }
+  .detalle-prio-banner.baja .prio-etiqueta { color: #137333; }
+  .btn-volver {
+    background: #1a1a1a;
+    color: #f1c40f;
+    border: none;
+    border-radius: 30px;
+    font-weight: 700;
+    padding: 0.55rem 1.4rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  .btn-volver:hover {
+    background: #2a2a2a;
+    color: #f1c40f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+  }
+  body.dark-mode .detalle-prioridad-card { background: #2b2c40; border-color: #444564; }
+  body.dark-mode .detalle-prioridad-card .card-header-custom { background: linear-gradient(135deg, #232333, #2b2c40); border-bottom-color: #f1c40f; }
+  body.dark-mode .detalle-prioridad-card .card-header-custom h4,
+  body.dark-mode .detalle-info-list .info-value { color: #cfcde9; }
+  body.dark-mode .detalle-info-list li { border-bottom-color: #3a3b55; }
+  body.dark-mode .detalle-info-list .info-label { color: #a2a3b7; }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="prioridad-container">
+
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+    <a href="{{ url_for('home_bp.viewFormPrioridad') }}" class="btn-volver" title="Volver a Gestión de Prioridades">
+      <i class="bi bi-arrow-left-circle-fill"></i> Volver
+    </a>
+    <span class="text-muted small">
+      <i class="bi bi-clock-history me-1"></i>
+      Prioridad #{{ detalle.id_gestion_prioridad or id_prioridad }}
+    </span>
+  </div>
+
+  {% if detalle and detalle.id_gestion_prioridad %}
+    {% set rango = detalle.rango_prioridad|float %}
+    <div class="detalle-prio-banner {{ 'alta' if rango <= 0.30 else 'baja' }}">
+      <div>
+        <div class="prio-etiqueta">
+          {% if rango <= 0.30 %}
+            <i class="bi bi-exclamation-octagon-fill me-2"></i>PRIORIDAD ALTA
+          {% else %}
+            <i class="bi bi-check-circle-fill me-2"></i>PRIORIDAD BAJA
+          {% endif %}
+        </div>
+        <div class="text-muted small mt-1">
+          Rango: <strong>{{ "%.3f"|format(rango) }}</strong>
+          {% if rango <= 0.30 %} · Meses{% else %} · Días{% endif %}
+        </div>
+      </div>
+      <div>
+        <span class="badge-prioridad {{ 'badge-prioridad-alta' if rango <= 0.30 else 'badge-prioridad-baja' }}">
+          {{ 'ALTA' if rango <= 0.30 else 'BAJA' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-lg-6">
+        <div class="detalle-prioridad-card">
+          <div class="card-header-custom">
+            <h4><i class="bi bi-cpu-fill me-2 text-warning"></i>Datos de la Prioridad</h4>
+          </div>
+          <div class="card-body-custom">
+            <ul class="detalle-info-list">
+              <li><span class="info-label"><i class="bi bi-hash me-1"></i>ID Prioridad</span><span class="info-value">#{{ detalle.id_gestion_prioridad }}</span></li>
+              <li><span class="info-label"><i class="bi bi-bar-chart-fill me-1"></i>Rango</span><span class="info-value">{{ "%.3f"|format(rango) }}</span></li>
+              <li><span class="info-label"><i class="bi bi-building me-1"></i>Tipo de Obra</span><span class="info-value">{{ detalle.tipo_obra or 'N/A' }}</span></li>
+              <li><span class="info-label"><i class="bi bi-activity me-1"></i>Gravedad</span><span class="info-value">{{ detalle.gravedad_sugerida or 'N/A' }}</span></li>
+              <li><span class="info-label"><i class="bi bi-cpu me-1"></i>Origen</span><span class="info-value">{{ detalle.origen or 'N/A' }}</span></li>
+              <li><span class="info-label"><i class="bi bi-calendar3 me-1"></i>Fecha asignación</span><span class="info-value">{{ detalle.fecha_asignacion or 'N/A' }}</span></li>
+              <li><span class="info-label"><i class="bi bi-person-badge me-1"></i>Responsable</span><span class="info-value">{{ detalle.responsable_ajuste or 'N/A' }}</span></li>
+              <li><span class="info-label"><i class="bi bi-toggle-on me-1"></i>Estado</span><span class="info-value">{{ 'Activo' if detalle.estado == 1 else 'Inactivo' }}</span></li>
+              <li>
+                <span class="info-label"><i class="bi bi-chat-left-text me-1"></i>Justificación</span>
+                <span class="info-value">{{ detalle.justificacion_cambio or 'Sin justificación registrada.' }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="detalle-prioridad-card">
+          <div class="card-header-custom">
+            <h4><i class="bi bi-file-earmark-text me-2 text-success"></i>Solicitud Relacionada</h4>
+            {% if detalle.solicitud_id %}
+              <a href="/detalles-solicitud/{{ detalle.solicitud_id }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-eye me-1"></i>Ver solicitud completa
+              </a>
+            {% endif %}
+          </div>
+          <div class="card-body-custom">
+            {% if detalle.solicitud_id %}
+              <ul class="detalle-info-list">
+                <li><span class="info-label"><i class="bi bi-hash me-1"></i>ID Solicitud</span><span class="info-value">#{{ detalle.solicitud_id }}</span></li>
+                <li><span class="info-label"><i class="bi bi-person me-1"></i>Solicitante</span><span class="info-value">{{ detalle.nombre_solicitante or 'N/A' }}</span></li>
+                <li><span class="info-label"><i class="bi bi-card-text me-1"></i>Tipo</span><span class="info-value">{{ detalle.tipo_solicitud or 'N/A' }}</span></li>
+                <li><span class="info-label"><i class="bi bi-credit-card me-1"></i>Cédula</span><span class="info-value">{{ detalle.cedula_persona or 'N/A' }}</span></li>
+                <li><span class="info-label"><i class="bi bi-telephone me-1"></i>Teléfono</span><span class="info-value">{{ detalle.telefono or 'N/A' }}</span></li>
+                <li><span class="info-label"><i class="bi bi-envelope me-1"></i>Correo</span><span class="info-value">{{ detalle.correo or 'N/A' }}</span></li>
+                <li><span class="info-label"><i class="bi bi-geo-alt me-1"></i>Dirección</span><span class="info-value">{{ detalle.direccion or 'N/A' }}</span></li>
+                <li><span class="info-label"><i class="bi bi-map me-1"></i>Municipio / Parroquia</span><span class="info-value">{{ (detalle.municipio or 'N/A') ~ ' / ' ~ (detalle.parroquia or 'N/A') }}</span></li>
+                <li><span class="info-label"><i class="bi bi-bookmark-check me-1"></i>Estatus</span><span class="info-value">{{ detalle.estatus_solicitud or 'N/A' }}</span></li>
+                <li><span class="info-label"><i class="bi bi-calendar3 me-1"></i>Fecha solicitud</span><span class="info-value">{{ detalle.fecha_solicitud or 'N/A' }}</span></li>
+                <li>
+                  <span class="info-label"><i class="bi bi-chat-left-dots me-1"></i>Problemática</span>
+                  <span class="info-value">{{ detalle.solicitud_descripcion or 'Sin descripción.' }}</span>
+                </li>
+              </ul>
+            {% else %}
+              <p class="text-muted text-center mb-0">
+                <i class="bi bi-info-circle me-1"></i>Esta prioridad no está vinculada a una solicitud activa.
+              </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detalle-prioridad-card mt-3">
+      <div class="card-header-custom">
+        <h4><i class="bi bi-cpu-fill me-2 text-warning"></i>Clasificación IA · Fórmula de Priorización</h4>
+        <span class="badge bg-dark text-warning fw-bold">Origen: {{ detalle.origen or 'N/A' }}</span>
+      </div>
+      <div class="card-body-custom">
+        {% if detalle.calculo %}
+          <p class="text-muted small mb-3">
+            <i class="bi bi-calculator me-1"></i>
+            <strong>Fórmula:</strong> Puntaje = (Solicitante × 0.30) + (Gravedad × 0.40) + (Tipo Obra × 0.30)
+            <br>Rango = (3 − Puntaje) / 2  →  rango actual: <strong>{{ "%.3f"|format(detalle.calculo.rango_prioridad|float) }}</strong>
+          </p>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="p-3 rounded" style="background:#FEF7E0;">
+                <div class="text-muted small fw-semibold">Peso Solicitante</div>
+                <div style="font-size:1.5rem; font-weight:800; color:#B06000;">{{ detalle.calculo.peso_solicitante }}</div>
+                <div class="text-muted small">× 0.30 = {{ "%.2f"|format(detalle.calculo.peso_solicitante * 0.30) }}</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded" style="background:#FCE8E6;">
+                <div class="text-muted small fw-semibold">Peso Gravedad</div>
+                <div style="font-size:1.5rem; font-weight:800; color:#C5221F;">{{ detalle.calculo.peso_gravedad }}</div>
+                <div class="text-muted small">× 0.40 = {{ "%.2f"|format(detalle.calculo.peso_gravedad * 0.40) }}</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded" style="background:#E6F4EA;">
+                <div class="text-muted small fw-semibold">Peso Tipo Obra</div>
+                <div style="font-size:1.5rem; font-weight:800; color:#137333;">{{ detalle.calculo.peso_tipo_obra }}</div>
+                <div class="text-muted small">× 0.30 = {{ "%.2f"|format(detalle.calculo.peso_tipo_obra * 0.30) }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 p-3 rounded" style="background:#f8fafc; border:1px solid #e2e8f0;">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+              <div>
+                <span class="text-muted small fw-semibold">Puntaje Ponderado:</span>
+                <span style="font-size:1.3rem; font-weight:800; color:#1a1a1a;" class="ms-2">{{ "%.3f"|format(detalle.calculo.puntaje_ponderado) }}</span>
+              </div>
+              <div>
+                <span class="text-muted small fw-semibold">Rango Final:</span>
+                <span style="font-size:1.3rem; font-weight:800; color:#1a1a1a;" class="ms-2">{{ "%.3f"|format(detalle.calculo.rango_prioridad) }}</span>
+                {% if detalle.calculo.rango_prioridad <= 0.30 %}
+                  <span class="badge-prioridad badge-prioridad-alta ms-2">ALTA</span>
+                {% else %}
+                  <span class="badge-prioridad badge-prioridad-baja ms-2">BAJA</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% else %}
+          <p class="text-muted mb-0 text-center">
+            <i class="bi bi-info-circle me-1"></i>No hay datos suficientes para reconstruir el cálculo IA (falta solicitud vinculada).
+          </p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+      <a href="{{ url_for('home_bp.viewFormPrioridad') }}" class="btn-volver">
+        <i class="bi bi-arrow-left-circle-fill"></i> Volver a Gestión de Prioridades
+      </a>
+    </div>
+  {% else %}
+    <div class="alert alert-warning text-center">
+      <i class="bi bi-exclamation-triangle me-2"></i>No se encontró la prioridad solicitada.
+    </div>
+    <div class="text-center">
+      <a href="{{ url_for('home_bp.viewFormPrioridad') }}" class="btn-volver">
+        <i class="bi bi-arrow-left-circle-fill"></i> Volver
+      </a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

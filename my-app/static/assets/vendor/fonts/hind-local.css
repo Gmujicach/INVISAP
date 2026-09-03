@@ -1,0 +1,28 @@
+@font-face {
+  font-family: 'Hind';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('google-fonts/hind/hind-1.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Hind';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('../fonts/google-fonts/hind/hind-2.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Hind';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('../fonts/google-fonts/hind/hind-3.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Hind';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('../fonts/google-fonts/hind/hind-4.ttf') format('truetype');
+}

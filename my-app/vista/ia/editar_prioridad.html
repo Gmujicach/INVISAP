@@ -1,0 +1,375 @@
+{% extends 'base_cpanel.html' %}
+{% block title %}INVISAP | Editar Prioridad{% endblock %}
+
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/prioridad.css') }}">
+<style>
+  .edit-prioridad-card {
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .edit-prioridad-card .card-header-custom {
+    background: linear-gradient(135deg, #f8fafc, #ffffff);
+    border-bottom: 2px solid #f1c40f;
+    padding: 1.25rem 1.5rem;
+  }
+  .edit-prioridad-card .card-header-custom h4 {
+    margin: 0;
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 1.25rem;
+  }
+  .edit-prioridad-card .card-body-custom { padding: 1.5rem; }
+  .btn-volver {
+    background: #1a1a1a;
+    color: #f1c40f;
+    border: none;
+    border-radius: 30px;
+    font-weight: 700;
+    padding: 0.55rem 1.4rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  .btn-volver:hover {
+    background: #2a2a2a;
+    color: #f1c40f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+  }
+  .btn-guardar {
+    background: linear-gradient(135deg, #2e7d32, #1b5e20);
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-weight: 700;
+    padding: 0.55rem 1.6rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+  }
+  .btn-guardar:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1b5e20, #144b18);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(46,125,50,0.35);
+  }
+  .btn-cancelar {
+    background: #6c757d;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-weight: 700;
+    padding: 0.55rem 1.4rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+  }
+  .btn-cancelar:hover { background: #565e64; color: #fff; }
+  body.dark-mode .edit-prioridad-card { background: #2b2c40; border-color: #444564; }
+  body.dark-mode .edit-prioridad-card .card-header-custom { background: linear-gradient(135deg, #232333, #2b2c40); }
+  body.dark-mode .edit-prioridad-card .card-header-custom h4 { color: #cfcde9; }
+  body.dark-mode .form-label { color: #cfcde9; }
+  body.dark-mode .form-control, body.dark-mode .form-select {
+    background-color: #232333; border-color: #444564; color: #cfcde9;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="prioridad-container">
+
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+    <a href="{{ url_for('home_bp.viewFormPrioridad') }}" class="btn-volver" title="Volver a Gestión de Prioridades">
+      <i class="bi bi-arrow-left-circle-fill"></i> Volver
+    </a>
+    <a href="{{ url_for('home_bp.viewDetallePrioridad', id_prioridad=detalle.id_gestion_prioridad) }}"
+       class="btn btn-sm btn-outline-secondary">
+      <i class="bi bi-eye me-1"></i>Ver detalle
+    </a>
+  </div>
+
+  <div class="prioridad-header">
+    <h3 class="fw-bold mb-1">
+      <i class="bi bi-pencil-square me-2 text-warning"></i>Editar Prioridad #{{ detalle.id_gestion_prioridad }}
+    </h3>
+    <p class="mb-0 text-muted" style="font-size:0.9rem;">
+      Corrige los valores asignados por la IA <strong>llama3.2:1b</strong> si detectó información incorrecta.
+    </p>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <div class="alert alert-{{ 'warning' if category == 'warning' else ('danger' if category == 'error' else category) }} alert-dismissible fade show" role="alert">
+          {{ msg }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form id="formEditarPrioridad" method="post" action="/api/prioridad/actualizar/{{ detalle.id_gestion_prioridad }}">
+    <input type="hidden" id="edit_id_prioridad" name="id_prioridad" value="{{ detalle.id_gestion_prioridad }}">
+    <input type="hidden" id="edit_origen" name="origen" value="manual">
+
+    <div class="row g-3">
+      <div class="col-lg-7">
+        <div class="edit-prioridad-card">
+          <div class="card-header-custom">
+            <h4><i class="bi bi-cpu-fill me-2 text-warning"></i>Clasificación de la IA</h4>
+          </div>
+          <div class="card-body-custom">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="edit_tipo_obra" class="form-label fw-semibold">
+                  <i class="bi bi-building me-1"></i>Tipo de Obra
+                </label>
+                <select id="edit_tipo_obra" name="tipo_obra" class="form-select" required>
+                  <option value="Obra Mayor" {% if detalle.tipo_obra == 'Obra Mayor' %}selected{% endif %}>
+                    Obra Mayor (meses · maquinaria pesada)
+                  </option>
+                  <option value="Obra Menor" {% if detalle.tipo_obra == 'Obra Menor' %}selected{% endif %}>
+                    Obra Menor (días · reparaciones simples)
+                  </option>
+                </select>
+                <div class="form-text">Determinado por la IA. Corregir si hubo error de clasificación.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="edit_gravedad_sugerida" class="form-label fw-semibold">
+                  <i class="bi bi-activity me-1"></i>Gravedad
+                </label>
+                <select id="edit_gravedad_sugerida" name="gravedad_sugerida" class="form-select" required>
+                  <option value="Alta" {% if detalle.gravedad_sugerida == 'Alta' %}selected{% endif %}>Alta</option>
+                  <option value="Baja" {% if detalle.gravedad_sugerida == 'Baja' %}selected{% endif %}>Baja</option>
+                </select>
+                <div class="form-text">Solo Alta o Baja. No existe gravedad Media.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="edit_prioridad" class="form-label fw-semibold">
+                  <i class="bi bi-bar-chart-fill me-1"></i>Prioridad (0 = crítica, 1 = baja)
+                </label>
+                <input type="number" class="form-control" id="edit_prioridad" name="rango_prioridad"
+                       min="0" max="1" step="0.001" value="{{ '%.3f'|format(detalle.rango_prioridad|float) }}" required>
+                <div class="form-text">0.000 = máxima prioridad · 1.000 = mínima prioridad.</div>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">
+                  <i class="bi bi-flag-fill me-1"></i>Estado
+                </label>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="edit_estado" name="estado" value="1" {% if detalle.estado == 1 %}checked{% endif %}>
+                  <label class="form-check-label" for="edit_estado">Prioridad activa</label>
+                </div>
+                <input type="hidden" name="estado_hidden" value="0">
+              </div>
+
+              <div class="col-12">
+                <label for="edit_justificacion" class="form-label fw-semibold">
+                  <i class="bi bi-chat-left-text me-1"></i>Justificación del cambio
+                </label>
+                <textarea class="form-control" id="edit_justificacion" name="justificacion"
+                          rows="3" maxlength="255" required>{{ detalle.justificacion_cambio or '' }}</textarea>
+                <div class="form-text">
+                  <span id="contadorChars">0</span> / 255 caracteres.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="edit-prioridad-card">
+          <div class="card-header-custom">
+            <h4>
+              <i class="bi bi-file-earmark-text me-2 text-success"></i>Solicitud que se Priorizó
+            </h4>
+            {% if detalle.solicitud_id %}
+              <a href="/detalles-solicitud/{{ detalle.solicitud_id }}" class="btn btn-sm btn-outline-secondary" target="_blank">
+                <i class="bi bi-box-arrow-up-right me-1"></i>Abrir
+              </a>
+            {% endif %}
+          </div>
+          <div class="card-body-custom">
+            {% if detalle.solicitud_id %}
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">ID Solicitud</span>
+                  <strong>#{{ detalle.solicitud_id }}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Solicitante</span>
+                  <span class="text-end">{{ detalle.nombre_solicitante or 'N/A' }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Tipo de solicitante</span>
+                  <span>{{ detalle.tipo_solicitud or 'N/A' }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Cédula</span>
+                  <span>{{ detalle.cedula_persona or 'N/A' }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Teléfono</span>
+                  <span>{{ detalle.telefono or 'N/A' }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Correo</span>
+                  <span>{{ detalle.correo or 'N/A' }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Dirección</span>
+                  <span class="text-end" style="max-width:60%;">{{ detalle.direccion or 'N/A' }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Municipio</span>
+                  <span>{{ detalle.municipio or 'N/A' }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Parroquia</span>
+                  <span>{{ detalle.parroquia or 'N/A' }}</span>
+                </li>
+                {% if detalle.sector %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Sector</span>
+                  <span>{{ detalle.sector }}</span>
+                </li>
+                {% endif %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Estatus</span>
+                  <span class="badge bg-secondary">{{ detalle.estatus_solicitud or 'N/A' }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Fecha de la solicitud</span>
+                  <span>{{ detalle.fecha_solicitud or 'N/A' }}</span>
+                </li>
+                {% if detalle.nivel_gravedad %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Gravedad registrada</span>
+                  <span class="badge bg-danger">{{ detalle.nivel_gravedad }}</span>
+                </li>
+                {% endif %}
+                {% if detalle.color_semaforo %}
+                <li class="list-group-item d-flex justify-content-between">
+                  <span class="text-muted">Semáforo</span>
+                  <span class="d-flex align-items-center gap-2">
+                    <span class="semaforo-dot" style="background:{{ {'ROJO':'#dc3545','AMARILLO':'#ffc107','VERDE':'#198754'}.get(detalle.color_semaforo,'#6c757d') }};"></span>
+                    {{ detalle.color_semaforo }}
+                  </span>
+                </li>
+                {% endif %}
+                <li class="list-group-item">
+                  <span class="text-muted d-block mb-1 fw-semibold">Problemática</span>
+                  <span>{{ detalle.solicitud_descripcion or 'Sin descripción.' }}</span>
+                </li>
+              </ul>
+            {% else %}
+              <p class="text-muted text-center mb-0">
+                <i class="bi bi-info-circle me-1"></i>Esta prioridad no está vinculada a una solicitud activa.
+              </p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="edit-prioridad-card">
+          <div class="card-header-custom">
+            <h4><i class="bi bi-info-circle me-2 text-info"></i>Información de la prioridad</h4>
+          </div>
+          <div class="card-body-custom">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between">
+                <span class="text-muted">Origen actual</span>
+                <span class="badge bg-dark text-warning fw-bold">{{ detalle.origen or 'N/A' }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <span class="text-muted">Fecha asignación</span>
+                <span>{{ detalle.fecha_asignacion or 'N/A' }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <span class="text-muted">Responsable</span>
+                <span>{{ detalle.responsable_ajuste or 'N/A' }}</span>
+              </li>
+            </ul>
+            <div class="alert alert-info mt-3 mb-0 small">
+              <i class="bi bi-lightbulb me-1"></i>
+              <strong>Tip:</strong> Corrige el tipo de obra o la gravedad si la IA clasificó mal; pulsa <em>Guardar</em> para persistir los cambios.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-3 flex-wrap">
+      <a href="{{ url_for('home_bp.viewDetallePrioridad', id_prioridad=detalle.id_gestion_prioridad) }}" class="btn-cancelar">
+        <i class="bi bi-x-circle me-1"></i>Cancelar
+      </a>
+      <button type="submit" class="btn-guardar" id="btnGuardarEdicion">
+        <i class="bi bi-check2-circle me-1"></i>Guardar cambios
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block customJS %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const ta = document.getElementById('edit_justificacion');
+    const cont = document.getElementById('contadorChars');
+    const actualizar = () => { cont.textContent = ta.value.length; };
+    ta.addEventListener('input', actualizar);
+    actualizar();
+
+    const form = document.getElementById('formEditarPrioridad');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnGuardarEdicion');
+      const original = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Guardando...';
+
+      const estado = document.getElementById('edit_estado').checked ? 1 : 0;
+      const payload = {
+        rango_prioridad: document.getElementById('edit_prioridad').value,
+        justificacion: ta.value,
+        estado: estado,
+        tipo_obra: document.getElementById('edit_tipo_obra').value,
+        gravedad_sugerida: document.getElementById('edit_gravedad_sugerida').value,
+        origen: 'manual',
+      };
+
+      const r = await fetch('/api/prioridad/actualizar/{{ detalle.id_gestion_prioridad }}', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await r.json();
+      btn.disabled = false;
+      btn.innerHTML = original;
+
+      if (data.success) {
+        btn.innerHTML = '<i class="bi bi-check2-circle me-1"></i> Guardado';
+        btn.classList.add('btn-success');
+        setTimeout(() => {
+          window.location.href = '/prioridad/detalle/{{ detalle.id_gestion_prioridad }}';
+        }, 700);
+      } else {
+        alert(data.message || 'Error al guardar la prioridad.');
+      }
+    });
+  });
+</script>
+{% endblock %}

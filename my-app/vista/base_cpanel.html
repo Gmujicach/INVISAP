@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/usuarios.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/login.css') }}">
       <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/notifications.css') }}">
-      <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+      <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/datatables/css/dataTables.bootstrap5.min.css') }}">
       {% block customCSS %} {% endblock %}
       <!-- Estilos globales de Modo Oscuro (debe cargarse al final para prevalecer) -->
       <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dark-mode.css') }}">
@@ -799,8 +799,8 @@
     {% include 'home/js.html' %}
     <script src="{{ url_for('static', filename='js/usuarios/usuarios.js') }}"></script>
     <script src="{{ url_for('static', filename='js/login/login.js') }}"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/vendor/datatables/js/dataTables.bootstrap5.min.js') }}"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         var logo = document.querySelector('.app-brand-logo img');

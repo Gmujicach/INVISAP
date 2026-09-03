@@ -394,6 +394,53 @@
   border-radius: 16px 16px 0 0;
 }
 .modal-header .modal-title i { color: #f1c40f; }
+
+.btn-close.btn-close-round {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 2px solid #e2e8f0;
+  color: #1e293b;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .2s ease;
+  background-image: none;
+}
+.btn-close.btn-close-round::before {
+  content: "\00d7";
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.btn-close.btn-close-round:hover,
+.btn-close.btn-close-round:focus {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+  transform: rotate(90deg);
+  box-shadow: 0 4px 10px rgba(185, 28, 28, 0.18);
+}
+body.dark-mode .btn-close.btn-close-round {
+  background-color: #2b2c40;
+  border-color: #444564;
+  color: #e2e8f0;
+}
+body.dark-mode .btn-close.btn-close-round:hover,
+body.dark-mode .btn-close.btn-close-round:focus {
+  background-color: #3f1d1d;
+  border-color: #b91c1c;
+  color: #fecaca;
+}
 .modal-body .form-control,
 .modal-body .form-select { border-radius: 10px; }
 .modal-body .form-control:focus,

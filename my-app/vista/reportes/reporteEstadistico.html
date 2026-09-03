@@ -417,7 +417,7 @@
 
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/reportes/tour.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='assets/vendor/chart.js/chart.umd.min.js') }}"></script>
 <script>
 (function() {
   var chartInstances = {};

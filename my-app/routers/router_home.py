@@ -653,6 +653,22 @@ def viewFormPrioridad():
         return redirect(url_for('login_bp.inicio'))
 
 
+@home_bp.route('/prioridad/detalle/<int:id_prioridad>', methods=['GET'])
+def viewDetallePrioridad(id_prioridad):
+    if 'conectado' not in session:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    from controllers.controller_prioridad import ver_detalle_prioridad_controller
+    detalle = ver_detalle_prioridad_controller(id_prioridad) or {}
+    if not detalle.get('id_gestion_prioridad'):
+        flash('No se encontró la prioridad solicitada.', 'warning')
+    return render_template(
+        f'{PATH_URL_IA}/detalle_prioridad.html',
+        detalle=detalle,
+        id_prioridad=id_prioridad
+    )
+
+
 # ===================== API MÓDULO PRIORIDAD (IA + Paginación) =====================
 @home_bp.route('/api/prioridad/listar', methods=['GET'])
 def api_listar_prioridad():
@@ -683,23 +699,35 @@ def api_obtener_prioridad(id_prioridad):
 def api_actualizar_prioridad(id_prioridad):
     if 'conectado' not in session:
         return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    from controllers.controller_prioridad import actualizar_prioridad_controller
     data = request.get_json(silent=True) or request.form.to_dict()
-    try:
-        modelo = PrioridadModel(
-            id_prioridad=id_prioridad,
-            rango_prioridad=data.get('rango_prioridad'),
-            justificacion=data.get('justificacion'),
-            estado=int(data.get('estado', 1))
-        )
-        if modelo.actualizar():
-            BitacoraService.registrar_accion(
-                session, 'Prioridad', 'EDITAR',
-                f'Ajustó prioridad ID: {id_prioridad} a {modelo.get_rango()}'
-            )
-            return jsonify({'success': True, 'message': 'Prioridad actualizada.'})
-        return jsonify({'success': False, 'message': 'No se realizaron cambios.'})
-    except ValueError as ve:
-        return jsonify({'success': False, 'message': str(ve)})
+    resultado = actualizar_prioridad_controller(
+        id_prioridad=id_prioridad,
+        rango=data.get('rango_prioridad'),
+        justificacion=data.get('justificacion'),
+        estado=int(data.get('estado', 1)),
+        tipo_obra=data.get('tipo_obra'),
+        gravedad_sugerida=data.get('gravedad_sugerida'),
+        origen=data.get('origen'),
+    )
+    return jsonify(resultado)
+
+
+@home_bp.route('/prioridad/editar/<int:id_prioridad>', methods=['GET'])
+def viewEditarPrioridad(id_prioridad):
+    if 'conectado' not in session:
+        flash('Primero debes iniciar sesión.', 'error')
+        return redirect(url_for('login_bp.inicio'))
+    from controllers.controller_prioridad import ver_editar_prioridad_controller
+    detalle = ver_editar_prioridad_controller(id_prioridad) or {}
+    if not detalle.get('id_gestion_prioridad'):
+        flash('No se encontró la prioridad solicitada.', 'warning')
+        return redirect(url_for('home_bp.viewFormPrioridad'))
+    return render_template(
+        f'{PATH_URL_IA}/editar_prioridad.html',
+        detalle=detalle,
+        id_prioridad=id_prioridad
+    )
 
 
 @home_bp.route('/api/prioridad/eliminar/<int:id_prioridad>', methods=['DELETE', 'POST'])

@@ -8,9 +8,10 @@
   <title>Invilara — Instituto de Vialidad del Estado Lara</title>
 
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/img/INVILARA-LOGO-OFICIAL-HORIZONTAL.ico') }}">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@400;500;600;700;800&family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="{{ url_for('static', filename='assets/vendor/fonts/open-sans-local.css') }}" />
+  <link rel="preconnect" href="{{ url_for('static', filename='assets/vendor/fonts/public-sans-local.css') }}" />
+  <link rel="preconnect" href="{{ url_for('static', filename='assets/vendor/fonts/encode-sans-local.css') }}" />
+  <link rel="preconnect" href="{{ url_for('static', filename='assets/vendor/fonts/hind-local.css') }}" />
 
   <!-- Dependencias locales conservadas para compatibilidad con el resto del proyecto. -->
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}">
@@ -379,8 +380,8 @@
 
   <script src="{{ url_for('static', filename='libs/jquery/jquery.js') }}"></script>
   <script src="{{ url_for('static', filename='assets/vendor/js/bootstrap.js') }}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/gsap/gsap.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/gsap/ScrollTrigger.min.js') }}"></script>
   <script>
     (function () {
       var page = document.getElementById('invilara-page');

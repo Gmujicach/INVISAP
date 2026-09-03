@@ -32,7 +32,7 @@
 
   <!-- Tarjetas de estadísticas (estilo Bitácora) -->
   <div class="row g-3 mb-4" id="statsContainer">
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-4">
       <div class="stat-card stat-alta" data-filtro="ALTA">
         <div class="stat-icon"><i class="bi bi-exclamation-octagon-fill"></i></div>
         <div class="stat-body">
@@ -42,17 +42,7 @@
         </div>
       </div>
     </div>
-    <div class="col-6 col-md-3">
-      <div class="stat-card stat-media" data-filtro="MEDIA">
-        <div class="stat-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
-        <div class="stat-body">
-          <div class="stat-number" id="statMedia">0</div>
-          <div class="stat-label">Prioridad Media</div>
-          <div class="stat-rango">0.301 – 0.600 · Semanas</div>
-        </div>
-      </div>
-    </div>
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-4">
       <div class="stat-card stat-baja" data-filtro="BAJA">
         <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
         <div class="stat-body">
@@ -62,7 +52,7 @@
         </div>
       </div>
     </div>
-    <div class="col-6 col-md-3">
+    <div class="col-6 col-md-4">
       <div class="stat-card stat-total" data-filtro="ALL">
         <div class="stat-icon"><i class="bi bi-collection-fill"></i></div>
         <div class="stat-body">
@@ -82,7 +72,7 @@
           <i class="bi bi-search me-1"></i>Búsqueda
         </label>
         <input type="text" id="buscarPrioridad" class="form-control form-control-sm"
-               placeholder="Buscar por solicitud o justificación..." />
+               placeholder="Buscar por descripción, dirección, ubicación o fecha (YYYY-MM-DD)..." />
       </div>
       <div class="col-md-3">
         <label class="form-label fw-semibold text-secondary" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:.5px;">
@@ -91,7 +81,6 @@
         <select id="filtroRiesgo" class="form-select form-select-sm">
           <option value="ALL">Todos los riesgos</option>
           <option value="ALTA">Alta</option>
-          <option value="MEDIA">Media</option>
           <option value="BAJA">Baja</option>
         </select>
       </div>
@@ -170,39 +159,49 @@
   </div>
 </div>
 
-<!-- Modal para editar prioridad -->
-<div class="modal fade" id="modalEditarPrioridad" tabindex="-1" aria-hidden="true">
+<!-- Modal de confirmación reutilizable -->
+<div class="modal fade" id="modalConfirmarAccion" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold">
-          <i class="bi bi-sliders me-2 text-warning"></i> Ajustar Prioridad
+      <div class="modal-header position-relative">
+        <h5 class="modal-title fw-bold" id="modalConfirmarTitulo">
+          <i class="bi bi-question-circle-fill me-2 text-warning"></i>Confirmar acción
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-round" data-bs-dismiss="modal" id="modalConfirmarClose" aria-label="Cerrar"></button>
       </div>
       <div class="modal-body">
-        <form id="formEditarPrioridad">
-          <input type="hidden" id="edit_id_prioridad">
-          <div class="mb-3">
-            <label class="form-label fw-semibold">Prioridad (0 = crítica, 1 = baja)</label>
-            <input type="number" class="form-control" id="edit_prioridad" min="0" max="1" step="0.001" required>
-            <div class="form-text">0.000 = máxima prioridad · 1.000 = mínima prioridad.</div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-semibold">Justificación</label>
-            <textarea class="form-control" id="edit_justificacion" rows="2" maxlength="150" required></textarea>
-          </div>
-          <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="edit_estado" checked>
-            <label class="form-check-label">Activo</label>
-          </div>
-          <div id="feedbackEdicion" class="alert d-none"></div>
-        </form>
+        <p id="modalConfirmarMensaje" class="mb-0">¿Está seguro de realizar esta acción?</p>
+        <div class="alert alert-light border mt-3 mb-0 small" id="modalConfirmarDetalle"></div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button class="btn btn-primary" id="btnGuardarEdicion">
-          <i class="bi bi-check2-circle me-1"></i> Guardar cambios
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="modalConfirmarCancelar">
+          <i class="bi bi-x-circle me-1"></i>Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" id="modalConfirmarAceptar">
+          <i class="bi bi-check2-circle me-1"></i>Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de resultado (éxito / error) -->
+<div class="modal fade" id="modalResultadoAccion" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header position-relative" id="modalResultadoHeader">
+        <h5 class="modal-title fw-bold" id="modalResultadoTitulo">
+          <i class="bi bi-info-circle-fill me-2"></i>Resultado
+        </h5>
+        <button type="button" class="btn-close btn-close-round" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <p id="modalResultadoMensaje" class="mb-0"></p>
+        <div class="alert d-none mt-3 mb-0 small" id="modalResultadoDetalle"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+          <i class="bi bi-check2 me-1"></i>Entendido
         </button>
       </div>
     </div>
@@ -236,12 +235,6 @@
   let debounceTimer = null;
 
   document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('formEditarPrioridad');
-    if (form) {
-      ValidacionesComunes.initSelects(form);
-      ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Guardando...' });
-    }
-
     document.getElementById('buscarPrioridad').addEventListener('input', () => {
       filtroTexto = document.getElementById('buscarPrioridad').value.toLowerCase();
       clearTimeout(debounceTimer);
@@ -329,28 +322,24 @@
   }
 
   function actualizarEstadisticas(registros) {
-    let alta = 0, media = 0, baja = 0;
+    let alta = 0, baja = 0;
     registros.forEach(r => {
       const rango = parseFloat(r.rango_prioridad);
       if (rango <= 0.30) alta++;
-      else if (rango <= 0.60) media++;
       else baja++;
     });
     document.getElementById('statAlta').textContent = alta;
-    document.getElementById('statMedia').textContent = media;
     document.getElementById('statBaja').textContent = baja;
     document.getElementById('statTotal').textContent = registros.length;
   }
 
   function colorPorRango(rango) {
     if (rango <= 0.30) return 'alta';
-    if (rango <= 0.60) return 'media';
     return 'baja';
   }
 
   function etiquetaPrioridad(rango) {
     if (rango <= 0.30) return { texto: 'ALTA', clase: 'badge-prioridad-alta', duracion: 'Meses' };
-    if (rango <= 0.60) return { texto: 'MEDIA', clase: 'badge-prioridad-media', duracion: 'Semanas' };
     return { texto: 'BAJA', clase: 'badge-prioridad-baja', duracion: 'Días' };
   }
 
@@ -446,13 +435,16 @@
         <td class="col-fecha">${fecha}</td>
         <td class="col-acciones text-center">
           <div class="d-flex gap-1 justify-content-center">
-            <button class="btn btn-action-icon btn-outline-primary" onclick="editarPrioridad(${r.id_gestion_prioridad})" title="Editar">
+            <a class="btn btn-action-icon btn-outline-primary" href="/prioridad/editar/${r.id_gestion_prioridad}" title="Editar prioridad">
               <i class="bi bi-pencil"></i>
-            </button>
+            </a>
             <button class="btn btn-action-icon btn-outline-info" onclick="clasificarNueva(${r.solicitud_id})" ${r.solicitud_id ? '' : 'disabled'} title="Re-clasificar con IA">
               <i class="bi bi-cpu"></i>
             </button>
-            <button class="btn btn-action-icon btn-outline-danger" onclick="eliminarPrioridad(${r.id_gestion_prioridad})" title="Desactivar">
+            <a class="btn btn-action-icon btn-outline-secondary" href="/prioridad/detalle/${r.id_gestion_prioridad}" title="Ver detalles de la prioridad">
+              <i class="bi bi-eye"></i>
+            </a>
+            <button class="btn btn-action-icon btn-outline-danger" onclick="eliminarPrioridad(${r.id_gestion_prioridad})" title="Eliminar">
               <i class="bi bi-trash"></i>
             </button>
           </div>
@@ -510,172 +502,217 @@
       });
   }
 
-  document.getElementById('btnGuardarEdicion').addEventListener('click', function () {
-    const id = document.getElementById('edit_id_prioridad').value;
-    const prioridad = document.getElementById('edit_prioridad').value;
-    const justificacion = document.getElementById('edit_justificacion').value;
-    const estado = document.getElementById('edit_estado').checked ? 1 : 0;
-
-    if (prioridad === '' || prioridad < 0 || prioridad > 1) {
-      mostrarFeedbackEdicion('La prioridad debe estar entre 0 y 1.', 'warning');
-      return;
-    }
-    const btn = this;
-    const original = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Guardando...';
-    fetch(`/api/prioridad/actualizar/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ rango_prioridad: prioridad, justificacion: justificacion, estado: estado })
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          mostrarFeedbackEdicion('Prioridad actualizada.', 'success');
-          mostrarToast('Prioridad actualizada correctamente.', 'success');
-          setTimeout(() => {
-            bootstrap.Modal.getInstance(document.getElementById('modalEditarPrioridad')).hide();
-            cargarPrioridades(paginaActual);
-          }, 800);
-        } else {
-          mostrarFeedbackEdicion(data.message || 'Error al actualizar.', 'danger');
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        mostrarFeedbackEdicion('Error de conexión.', 'danger');
-      })
-      .finally(() => {
-        btn.disabled = false;
-        btn.innerHTML = original;
-      });
-  });
-
   function mostrarFeedbackEdicion(mensaje, tipo) {
     const alertDiv = document.getElementById('feedbackEdicion');
+    if (!alertDiv) return;
     alertDiv.className = `alert alert-${tipo} d-block`;
     alertDiv.textContent = mensaje;
   }
 
-  function clasificarNueva(idSolicitud) {
-    if (!idSolicitud) return;
-    const btn = (event && event.target) ? event.target.closest('button') : null;
-    let original = '';
-    if (btn) {
-      original = btn.innerHTML;
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
-    }
-    fetch('/api/prioridad/clasificar-nueva/' + idSolicitud, { method: 'POST' })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          const d = data.data;
-          const calc = d.calculo || '';
-          let msg = `✅ Clasificación IA\n\n`;
-          msg += `Solicitud #${idSolicitud}\n`;
-          msg += `Prioridad: ${parseFloat(d.rango).toFixed(3)}\n`;
-          msg += `Tipo Obra: ${d.tipo_obra || 'N/A'}\n`;
-          msg += `Riesgo: ${d.gravedad_sugerida || 'N/A'}\n`;
-          msg += `Origen: ${d.origen || 'N/A'}\n`;
-          if (calc && calc.peso_solicitante !== undefined) {
-            msg += `\n📊 Fórmula: (Solicitante × 0.30) + (Gravedad × 0.40) + (TipoObra × 0.30)\n`;
-            msg += `  Solicitante: ${calc.peso_solicitante} × 0.30 = ${(calc.peso_solicitante * 0.30).toFixed(2)}\n`;
-            msg += `  Gravedad: ${calc.peso_gravedad} × 0.40 = ${(calc.peso_gravedad * 0.40).toFixed(2)}\n`;
-            msg += `  Tipo Obra: ${calc.peso_tipo_obra} × 0.30 = ${(calc.peso_tipo_obra * 0.30).toFixed(2)}\n`;
-            msg += `  = Puntaje: ${calc.puntaje_ponderado}`;
-          }
-          msg += `\n\n💡 ${d.justificacion}`;
-          alert(msg);
-          mostrarToast('Solicitud re-clasificada con IA.', 'success');
-          cargarPrioridades(paginaActual);
-        } else {
-          alert(data.message || 'Error al clasificar.');
-          mostrarToast(data.message || 'Error al clasificar.', 'danger');
-        }
-      })
-      .catch(err => {
+  function mostrarConfirmacion({ titulo, mensaje, detalle, textoAceptar, claseAceptar, onAceptar }) {
+    const modalEl = document.getElementById('modalConfirmarAccion');
+    const tituloEl = document.getElementById('modalConfirmarTitulo');
+    const mensajeEl = document.getElementById('modalConfirmarMensaje');
+    const detalleEl = document.getElementById('modalConfirmarDetalle');
+    const btnAceptar = document.getElementById('modalConfirmarAceptar');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+    tituloEl.innerHTML = titulo;
+    mensajeEl.textContent = mensaje;
+    detalleEl.innerHTML = detalle || '';
+    detalleEl.classList.toggle('d-none', !detalle);
+    btnAceptar.innerHTML = textoAceptar || '<i class="bi bi-check2-circle me-1"></i>Aceptar';
+    btnAceptar.className = 'btn ' + (claseAceptar || 'btn-primary');
+    btnAceptar.disabled = false;
+
+    const handler = async () => {
+      btnAceptar.disabled = true;
+      const original = btnAceptar.innerHTML;
+      btnAceptar.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Procesando...';
+      try {
+        await onAceptar();
+        modal.hide();
+      } catch (err) {
+        btnAceptar.disabled = false;
+        btnAceptar.innerHTML = original;
         console.error(err);
-        alert('Error de conexión con el servidor.');
-      })
-      .finally(() => {
-        if (btn) { btn.disabled = false; btn.innerHTML = original; }
-      });
+        mostrarResultado({ tipo: 'error', titulo: 'Error', mensaje: err.message || 'Ocurrió un error inesperado.' });
+      }
+    };
+    btnAceptar.onclick = handler;
+    modal.show();
+  }
+
+  function mostrarResultado({ tipo, titulo, mensaje, detalle }) {
+    const modalEl = document.getElementById('modalResultadoAccion');
+    const headerEl = document.getElementById('modalResultadoHeader');
+    const tituloEl = document.getElementById('modalResultadoTitulo');
+    const mensajeEl = document.getElementById('modalResultadoMensaje');
+    const detalleEl = document.getElementById('modalResultadoDetalle');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+    const cfg = {
+      success: { icon: 'bi-check-circle-fill', color: 'text-success', header: '#d1e7dd', label: 'Éxito' },
+      error:   { icon: 'bi-x-octagon-fill',   color: 'text-danger',  header: '#f8d7da', label: 'Error' },
+      warning: { icon: 'bi-exclamation-triangle-fill', color: 'text-warning', header: '#fff3cd', label: 'Atención' },
+      info:    { icon: 'bi-info-circle-fill',  color: 'text-info',    header: '#cff4fc', label: 'Información' },
+    }[tipo] || { icon: 'bi-info-circle-fill', color: 'text-info', header: '#cff4fc', label: 'Información' };
+
+    headerEl.style.background = cfg.header;
+    tituloEl.innerHTML = `<i class="bi ${cfg.icon} me-2 ${cfg.color}"></i>${titulo || cfg.label}`;
+    mensajeEl.textContent = mensaje || '';
+    detalleEl.innerHTML = detalle || '';
+    detalleEl.classList.toggle('d-none', !detalle);
+    detalleEl.className = `alert alert-${tipo} mt-3 mb-0 small`;
+    modal.show();
+  }
+
+  async function clasificarNueva(idSolicitud) {
+    if (!idSolicitud) {
+      mostrarResultado({ tipo: 'warning', titulo: 'Sin solicitud', mensaje: 'Esta prioridad no está vinculada a una solicitud activa.' });
+      return;
+    }
+    mostrarConfirmacion({
+      titulo: '<i class="bi bi-cpu-fill me-2 text-info"></i>Re-clasificar con IA',
+      mensaje: `¿Desea que la IA (llama3.2:1b) re-clasifique la solicitud #${idSolicitud}?`,
+      detalle: 'Se recalcularán: tipo de obra, gravedad, puntaje ponderado y rango de prioridad. La operación puede tardar unos segundos.',
+      textoAceptar: '<i class="bi bi-stars me-1"></i> Re-clasificar',
+      claseAceptar: 'btn-info',
+      onAceptar: async () => {
+        const btn = document.getElementById('btnClasificarTodo');
+        mostrarToast('Re-clasificando con IA...', 'info');
+        let resp, data;
+        try {
+          resp = await fetch('/api/prioridad/clasificar-nueva/' + idSolicitud, { method: 'POST' });
+          data = await resp.json();
+        } catch (err) {
+          throw new Error('No se pudo conectar con el servidor.');
+        }
+        if (!data.success) {
+          throw new Error(data.message || 'La IA no pudo clasificar la solicitud.');
+        }
+        const d = data.data || {};
+        const calc = d.calculo || {};
+        let detalle = '';
+        if (calc.peso_solicitante !== undefined) {
+          detalle = `
+            <strong>Solicitud #${idSolicitud}</strong><br>
+            Prioridad: <strong>${parseFloat(d.rango || 0).toFixed(3)}</strong> · ${d.tipo_obra || 'N/A'} · ${d.gravedad_sugerida || 'N/A'}<br>
+            <small class="text-muted">
+              Solicitante(${calc.peso_solicitante})×0.30 + Gravedad(${calc.peso_gravedad})×0.40 + Tipo(${calc.peso_tipo_obra})×0.30
+              = Puntaje <strong>${calc.puntaje_ponderado}</strong>
+            </small>
+            ${d.justificacion ? '<br><em>' + d.justificacion + '</em>' : ''}
+          `;
+        }
+        mostrarResultado({
+          tipo: 'success',
+          titulo: 'Clasificación IA completada',
+          mensaje: 'La solicitud fue re-clasificada correctamente.',
+          detalle: detalle
+        });
+        cargarPrioridades(paginaActual);
+        if (btn) btn.disabled = false;
+      }
+    });
   }
 
   function clasificarTodo() {
-    if (!confirm('¿Clasificar TODAS las solicitudes con la IA?\n\nObra Mayor + Gravedad Alta = Prioridad ALTA (meses)\nObra Menor + Gravedad Baja = Prioridad BAJA (días)\n\nEsto puede tardar unos momentos.')) return;
-    const btn = document.getElementById('btnClasificarTodo');
-    const original = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Procesando...';
-    fetch('/api/prioridad/procesar-todas-batch', { method: 'POST' })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          alert('Re-clasificación masiva completada:\n\n' + data.message);
-          mostrarToast('Re-clasificación masiva completada.', 'success');
-          cargarPrioridades(1);
-        } else {
-          alert(data.message || 'Error en el procesamiento.');
-          mostrarToast(data.message || 'Error en el procesamiento.', 'danger');
+    mostrarConfirmacion({
+      titulo: '<i class="bi bi-stars me-2 text-warning"></i>Clasificar todas las solicitudes',
+      mensaje: '¿Clasificar TODAS las solicitudes con la IA?',
+      detalle: '<strong>Obra Mayor + Gravedad Alta = Prioridad ALTA (meses)</strong><br>Obra Menor + Gravedad Baja = Prioridad BAJA (días)<br><br>Esto puede tardar varios minutos dependiendo de la cantidad de solicitudes.',
+      textoAceptar: '<i class="bi bi-stars me-1"></i> Sí, clasificar todo',
+      claseAceptar: 'btn-warning',
+      onAceptar: async () => {
+        const btn = document.getElementById('btnClasificarTodo');
+        btn.disabled = true;
+        const original = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Procesando...';
+        mostrarToast('Iniciando clasificación masiva...', 'info');
+        let resp, data;
+        try {
+          resp = await fetch('/api/prioridad/procesar-todas-batch', { method: 'POST' });
+          data = await resp.json();
+        } catch (err) {
+          btn.disabled = false;
+          btn.innerHTML = original;
+          throw new Error('No se pudo conectar con el servidor.');
         }
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Error de conexión: ' + err.message);
-      })
-      .finally(() => {
         btn.disabled = false;
         btn.innerHTML = original;
-      });
+        if (!data.success) {
+          throw new Error(data.message || 'Error en el procesamiento masivo.');
+        }
+        mostrarResultado({
+          tipo: 'success',
+          titulo: 'Re-clasificación masiva completada',
+          mensaje: data.message || 'El proceso finalizó correctamente.',
+        });
+        cargarPrioridades(1);
+      }
+    });
   }
 
   function actualizarPendientes() {
-    if (!confirm('¿Actualizar solo las solicitudes pendientes sin priorizar?')) return;
-    const btn = document.getElementById('btnActualizarPendientes');
-    const original = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Actualizando...';
-    fetch('/api/prioridad/procesar-pendientes-batch', { method: 'POST' })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          alert('Actualización completada:\n\n' + data.message);
-          mostrarToast('Actualización de pendientes completada.', 'success');
-          cargarPrioridades(1);
-        } else {
-          alert(data.message || 'Error en el procesamiento.');
-          mostrarToast(data.message || 'Error en el procesamiento.', 'danger');
+    mostrarConfirmacion({
+      titulo: '<i class="bi bi-arrow-clockwise me-2 text-success"></i>Actualizar solicitudes pendientes',
+      mensaje: '¿Actualizar solo las solicitudes pendientes sin priorizar?',
+      detalle: 'Se procesarán únicamente las solicitudes que aún no tienen una prioridad asignada. Las ya priorizadas no se verán afectadas.',
+      textoAceptar: '<i class="bi bi-arrow-clockwise me-1"></i> Actualizar',
+      claseAceptar: 'btn-success',
+      onAceptar: async () => {
+        const btn = document.getElementById('btnActualizarPendientes');
+        btn.disabled = true;
+        const original = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Actualizando...';
+        mostrarToast('Actualizando solicitudes pendientes...', 'info');
+        let resp, data;
+        try {
+          resp = await fetch('/api/prioridad/procesar-pendientes-batch', { method: 'POST' });
+          data = await resp.json();
+        } catch (err) {
+          btn.disabled = false;
+          btn.innerHTML = original;
+          throw new Error('No se pudo conectar con el servidor.');
         }
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Error de conexión: ' + err.message);
-      })
-      .finally(() => {
         btn.disabled = false;
         btn.innerHTML = original;
-      });
+        if (!data.success) {
+          throw new Error(data.message || 'Error en el procesamiento de pendientes.');
+        }
+        mostrarResultado({
+          tipo: 'success',
+          titulo: 'Actualización completada',
+          mensaje: data.message || 'Las solicitudes pendientes fueron procesadas.',
+        });
+        cargarPrioridades(1);
+      }
+    });
   }
 
   function eliminarPrioridad(id) {
-    if (!confirm('¿Desactivar esta prioridad? (borrado lógico)')) return;
-    fetch(`/api/prioridad/eliminar/${id}`, { method: 'DELETE' })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          mostrarToast('Prioridad desactivada.', 'success');
-          cargarPrioridades(paginaActual);
-        } else {
-          mostrarToast(data.message || 'Error al desactivar.', 'danger');
+    mostrarConfirmacion({
+      titulo: '<i class="bi bi-trash-fill me-2 text-danger"></i>Eliminar prioridad',
+      mensaje: '¿Eliminar esta prioridad? (borrado lógico)',
+      detalle: 'La prioridad será desactivada pero no eliminada físicamente. Puede reactivarla posteriormente desde la base de datos.',
+      textoAceptar: '<i class="bi bi-trash me-1"></i> Eliminar',
+      claseAceptar: 'btn-danger',
+      onAceptar: async () => {
+        let resp, data;
+        try {
+          resp = await fetch(`/api/prioridad/eliminar/${id}`, { method: 'DELETE' });
+          data = await resp.json();
+        } catch (err) {
+          throw new Error('No se pudo conectar con el servidor.');
         }
-      })
-      .catch(err => {
-        console.error(err);
-        mostrarToast('Error de conexión.', 'danger');
-      });
+        if (!data.success) {
+          throw new Error(data.message || 'Error al eliminar la prioridad.');
+        }
+        mostrarToast('Prioridad Eliminada.', 'success');
+        cargarPrioridades(paginaActual);
+      }
+    });
   }
 
   function exportarCSV() {
