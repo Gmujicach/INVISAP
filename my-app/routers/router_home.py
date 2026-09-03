@@ -663,7 +663,12 @@ def api_listar_prioridad():
         per_page = int(request.args.get('per_page', 10))
     except ValueError:
         page, per_page = 1, 10
-    filas, total = PrioridadModel.listar_priorizadas(page=page, per_page=per_page)
+    q = (request.args.get('q') or '').strip()
+    riesgo = (request.args.get('riesgo') or 'ALL').strip().upper()
+    orden = (request.args.get('orden') or 'rango_asc').strip()
+    filas, total = PrioridadModel.listar_priorizadas(
+        page=page, per_page=per_page, q=q, riesgo=riesgo, orden=orden
+    )
     return jsonify({'data': filas, 'total': total, 'page': page, 'per_page': per_page})
 
 
@@ -755,6 +760,15 @@ def api_procesar_pendientes_batch():
         return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
     from controllers.controller_prioridad import procesar_pendientes_batch_controller
     resultado = procesar_pendientes_batch_controller()
+    return jsonify(resultado)
+
+
+@home_bp.route('/api/prioridad/procesar-todas-batch', methods=['POST'])
+def api_procesar_todas_batch():
+    if 'conectado' not in session:
+        return jsonify({'success': False, 'message': 'Sesión no válida'}), 401
+    from controllers.controller_prioridad import procesar_todas_batch_controller
+    resultado = procesar_todas_batch_controller()
     return jsonify(resultado)
 
 

@@ -3,16 +3,6 @@
 
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/prioridad.css') }}">
-<style>
-  .prioridad-card { transition: transform .15s ease, box-shadow .15s ease; }
-  .prioridad-card:hover { transform: translateY(-2px); box-shadow: 0 .5rem 1rem rgba(0,0,0,.12); }
-  .rango-pill { font-weight: 700; font-size: .85rem; }
-  .semaforo-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 6px; }
-  .pagination .page-link { cursor: pointer; }
-  .prioridad-alta { border-left: 4px solid #dc3545 !important; }
-  .prioridad-media { border-left: 4px solid #ffc107 !important; }
-  .prioridad-baja { border-left: 4px solid #198754 !important; }
-</style>
 {% endblock %}
 
 {% block body %}
@@ -22,58 +12,171 @@
   <div class="prioridad-header">
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
       <div>
-        <h3 class="fw-bold mb-1 text-primary">
-          <i class="bi bi-cpu me-2"></i>Modulo de Priorizacion de Solicitudes
+        <h3 class="fw-bold mb-1">
+          <i class="bi bi-cpu-fill me-2 text-warning"></i>Módulo de Priorización de Solicitudes
         </h3>
         <p class="mb-0 text-muted" style="font-size:0.9rem;">
-          Clasificacion por IA: Obra Mayor + Gravedad Alta = Prioridad Alta (meses) | Obra Menor + Gravedad Baja = Prioridad Baja (dias)
+          Clasificacion de Prioridades de cada Solicitud
         </p>
       </div>
-      <div class="d-flex gap-2">
-        <button class="btn btn-warning" onclick="clasificarTodo()">
+      <div class="d-flex gap-2 flex-wrap">
+        <button class="btn btn-ia-clasificar" id="btnClasificarTodo" onclick="clasificarTodo()">
           <i class="bi bi-stars me-1"></i> Clasificar Todo
         </button>
-        <button class="btn btn-primary" onclick="cargarPrioridades()">
-          <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
+        <button class="btn btn-ia-actualizar" id="btnActualizarPendientes" onclick="actualizarPendientes()">
+          <i class="bi bi-arrow-clockwise me-1"></i> Actualizar Pendientes
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Leyenda de prioridades -->
-  <div class="prioridad-filter-card">
-    <div class="row g-3 align-items-center">
-      <div class="col-md-6">
-        <input type="text" id="buscarPrioridad" class="form-control form-control-sm"
-               placeholder="🔍 Buscar por solicitud o justificación..." />
+  <!-- Tarjetas de estadísticas (estilo Bitácora) -->
+  <div class="row g-3 mb-4" id="statsContainer">
+    <div class="col-6 col-md-3">
+      <div class="stat-card stat-alta" data-filtro="ALTA">
+        <div class="stat-icon"><i class="bi bi-exclamation-octagon-fill"></i></div>
+        <div class="stat-body">
+          <div class="stat-number" id="statAlta">0</div>
+          <div class="stat-label">Prioridad Alta</div>
+          <div class="stat-rango">0.000 – 0.300 · Meses</div>
+        </div>
       </div>
-      <div class="col-md-6 text-end">
-        <span class="badge bg-danger me-1">ALTA (0.0-0.3)</span>
-        <span class="badge bg-warning text-dark me-1">MEDIA (0.3-0.6)</span>
-        <span class="badge bg-success me-1">BAJA (0.6-1.0)</span>
-        <span class="badge bg-secondary ms-2" id="contadorRegistros">0 registros</span>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card stat-media" data-filtro="MEDIA">
+        <div class="stat-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+        <div class="stat-body">
+          <div class="stat-number" id="statMedia">0</div>
+          <div class="stat-label">Prioridad Media</div>
+          <div class="stat-rango">0.301 – 0.600 · Semanas</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card stat-baja" data-filtro="BAJA">
+        <div class="stat-icon"><i class="bi bi-check-circle-fill"></i></div>
+        <div class="stat-body">
+          <div class="stat-number" id="statBaja">0</div>
+          <div class="stat-label">Prioridad Baja</div>
+          <div class="stat-rango">0.601 – 1.000 · Días</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card stat-total" data-filtro="ALL">
+        <div class="stat-icon"><i class="bi bi-collection-fill"></i></div>
+        <div class="stat-body">
+          <div class="stat-number" id="statTotal">0</div>
+          <div class="stat-label">Total Registros</div>
+          <div class="stat-rango">Activos en el sistema</div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Tarjetas de prioridades -->
-  <div class="row g-3" id="contenedorTarjetas">
-    <!-- Renderizado dinámico -->
+  <!-- Filtros -->
+  <div class="filter-card">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-5">
+        <label class="form-label fw-semibold text-secondary" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:.5px;">
+          <i class="bi bi-search me-1"></i>Búsqueda
+        </label>
+        <input type="text" id="buscarPrioridad" class="form-control form-control-sm"
+               placeholder="Buscar por solicitud o justificación..." />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label fw-semibold text-secondary" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:.5px;">
+          <i class="bi bi-funnel me-1"></i>Riesgo
+        </label>
+        <select id="filtroRiesgo" class="form-select form-select-sm">
+          <option value="ALL">Todos los riesgos</option>
+          <option value="ALTA">Alta</option>
+          <option value="MEDIA">Media</option>
+          <option value="BAJA">Baja</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label fw-semibold text-secondary" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:.5px;">
+          <i class="bi bi-list-ol me-1"></i>Por página
+        </label>
+        <select id="perPage" class="form-select form-select-sm">
+          <option value="6">6</option>
+          <option value="9" selected>9</option>
+          <option value="15">15</option>
+          <option value="25">25</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label fw-semibold text-secondary" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:.5px;">
+          <i class="bi bi-sort-down me-1"></i>Orden
+        </label>
+        <select id="ordenPrioridad" class="form-select form-select-sm">
+          <option value="rango_asc">Prioridad (crítica primero)</option>
+          <option value="rango_desc">Prioridad (baja primero)</option>
+          <option value="fecha_desc">Más recientes</option>
+          <option value="fecha_asc">Más antiguas</option>
+          <option value="id_desc">ID (mayor a menor)</option>
+        </select>
+      </div>
+    </div>
   </div>
 
-  <!-- Paginación -->
-  <nav class="mt-4">
-    <ul class="pagination justify-content-center" id="paginacion"></ul>
-  </nav>
+  <!-- Tabla moderna -->
+  <div class="card border-0 shadow-sm tabla-card">
+    <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2 py-3">
+      <div class="d-flex align-items-center gap-3 flex-wrap">
+        <span class="fw-semibold text-dark">
+          <i class="bi bi-table me-2 text-success"></i>
+          Prioridades <span class="badge bg-success ms-2" id="contadorRegistros" style="border-radius:20px;">0</span>
+        </span>
+        <span class="text-muted small" id="infoRegistros">
+          Sin registros para mostrar
+        </span>
+      </div>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button class="btn btn-sm btn-outline-success" onclick="exportarCSV()" title="Exportar a CSV">
+          <i class="bi bi-file-earmark-spreadsheet me-1"></i> Exportar
+        </button>
+        <button class="btn btn-sm btn-outline-secondary" onclick="cargarPrioridades(1)" title="Recargar">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover mb-0 tabla-prioridad" id="tablaPrioridades">
+        <thead>
+          <tr>
+            <th class="col-id">#</th>
+            <th class="col-solicitud"><i class="bi bi-chat-left-text me-1"></i>Solicitud</th>
+            <th class="col-tipo"><i class="bi bi-building me-1"></i>Tipo Obra</th>
+            <th class="col-riesgo"><i class="bi bi-activity me-1"></i>Riesgo</th>
+            <th class="col-prio"><i class="bi bi-bar-chart-fill me-1"></i>Prioridad</th>
+            <th class="col-origen"><i class="bi bi-cpu me-1"></i>Origen</th>
+            <th class="col-fecha"><i class="bi bi-calendar3 me-1"></i>Fecha</th>
+            <th class="col-acciones text-center"><i class="bi bi-gear me-1"></i>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="contenedorTarjetas"></tbody>
+      </table>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center px-3 py-3 gap-2 tabla-footer">
+      <span class="text-muted small" id="footerInfo">—</span>
+      <nav>
+        <ul class="pagination pagination-sm mb-0 flex-wrap" id="paginacion"></ul>
+      </nav>
+    </div>
+  </div>
 </div>
 
 <!-- Modal para editar prioridad -->
 <div class="modal fade" id="modalEditarPrioridad" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header" style="border-bottom: 2px solid #f1c40f;">
+      <div class="modal-header">
         <h5 class="modal-title fw-bold">
-          <i class="bi bi-sliders me-2"></i> Ajustar Prioridad
+          <i class="bi bi-sliders me-2 text-warning"></i> Ajustar Prioridad
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
@@ -105,179 +208,309 @@
     </div>
   </div>
 </div>
+
+<!-- Toast de notificaciones -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1080;">
+  <div id="toastNotificacion" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="toastCuerpo">Listo</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tour/ia/tour.js') }}"></script>
 <script>
-  const PER_PAGE = 9;
+  const PER_PAGE_DEFAULT = 9;
   let paginaActual = 1;
+  let totalRegistros = 0;
+  let totalPaginas = 1;
+  let perPageActual = PER_PAGE_DEFAULT;
+  let filtroTexto = '';
+  let filtroRiesgo = 'ALL';
+  let ordenPrioridad = 'rango_asc';
+  let cargando = false;
+  let debounceTimer = null;
 
   document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('formEditarPrioridad');
-    ValidacionesComunes.initSelects(form);
-    ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Guardando...' });
-    cargarPrioridades();
+    if (form) {
+      ValidacionesComunes.initSelects(form);
+      ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Guardando...' });
+    }
+
+    document.getElementById('buscarPrioridad').addEventListener('input', () => {
+      filtroTexto = document.getElementById('buscarPrioridad').value.toLowerCase();
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => { paginaActual = 1; cargarPrioridades(1); }, 300);
+    });
+    document.getElementById('filtroRiesgo').addEventListener('change', () => {
+      filtroRiesgo = document.getElementById('filtroRiesgo').value;
+      paginaActual = 1;
+      cargarPrioridades(1);
+    });
+    document.getElementById('perPage').addEventListener('change', () => {
+      perPageActual = parseInt(document.getElementById('perPage').value, 10) || PER_PAGE_DEFAULT;
+      paginaActual = 1;
+      cargarPrioridades(1);
+    });
+    document.getElementById('ordenPrioridad').addEventListener('change', () => {
+      ordenPrioridad = document.getElementById('ordenPrioridad').value;
+      cargarPrioridades(paginaActual);
+    });
+
+    document.querySelectorAll('.stat-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const f = card.dataset.filtro || 'ALL';
+        document.getElementById('filtroRiesgo').value = f;
+        filtroRiesgo = f;
+        paginaActual = 1;
+        cargarPrioridades(1);
+        document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+      });
+    });
+
+    cargarPrioridades(1);
   });
 
   function cargarPrioridades(pagina = 1) {
+    if (cargando) return;
+    cargando = true;
+    mostrarLoader(true);
     paginaActual = pagina;
-    fetch(`/api/prioridad/listar?page=${pagina}&per_page=${PER_PAGE}`)
+    const url = new URL('/api/prioridad/listar', window.location.origin);
+    url.searchParams.set('page', pagina);
+    url.searchParams.set('per_page', perPageActual);
+    if (filtroTexto) url.searchParams.set('q', filtroTexto);
+    if (filtroRiesgo !== 'ALL') url.searchParams.set('riesgo', filtroRiesgo);
+    if (ordenPrioridad) url.searchParams.set('orden', ordenPrioridad);
+
+    fetch(url.toString())
       .then(res => res.json())
       .then(resp => {
-        const registros = resp.data || [];
-        renderizarTarjetas(registros);
-        document.getElementById('contadorRegistros').textContent =
-          `${resp.total} registro(s)`;
-        renderizarPaginacion(resp.total, resp.page, resp.per_page);
+        totalRegistros = resp.total || 0;
+        totalPaginas = Math.max(1, Math.ceil(totalRegistros / perPageActual));
+        if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+        renderizarTabla(resp.data || []);
+        cargarEstadisticasGlobales();
       })
-      .catch(console.error);
+      .catch(err => {
+        console.error(err);
+        mostrarToast('Error al cargar prioridades.', 'danger');
+      })
+      .finally(() => {
+        cargando = false;
+        mostrarLoader(false);
+      });
+  }
+
+  function cargarEstadisticasGlobales() {
+    fetch(`/api/prioridad/listar?page=1&per_page=10000`)
+      .then(res => res.json())
+      .then(resp => {
+        actualizarEstadisticas(resp.data || []);
+      })
+      .catch(() => {});
+  }
+
+  function mostrarLoader(visible) {
+    const tbody = document.getElementById('contenedorTarjetas');
+    if (visible) {
+      tbody.innerHTML = `
+        <tr><td colspan="8" class="text-center py-5 text-muted">
+          <div class="spinner-border text-success" role="status"></div>
+          <div class="mt-2 small">Cargando prioridades...</div>
+        </td></tr>`;
+    }
+  }
+
+  function actualizarEstadisticas(registros) {
+    let alta = 0, media = 0, baja = 0;
+    registros.forEach(r => {
+      const rango = parseFloat(r.rango_prioridad);
+      if (rango <= 0.30) alta++;
+      else if (rango <= 0.60) media++;
+      else baja++;
+    });
+    document.getElementById('statAlta').textContent = alta;
+    document.getElementById('statMedia').textContent = media;
+    document.getElementById('statBaja').textContent = baja;
+    document.getElementById('statTotal').textContent = registros.length;
   }
 
   function colorPorRango(rango) {
-    if (rango <= 0.30) return 'danger';
-    if (rango <= 0.60) return 'warning';
-    return 'success';
+    if (rango <= 0.30) return 'alta';
+    if (rango <= 0.60) return 'media';
+    return 'baja';
   }
 
   function etiquetaPrioridad(rango) {
-    if (rango <= 0.30) return { texto: 'ALTA', clase: 'bg-danger', duracion: 'Meses' };
-    if (rango <= 0.60) return { texto: 'MEDIA', clase: 'bg-warning text-dark', duracion: 'Semanas' };
-    return { texto: 'BAJA', clase: 'bg-success', duracion: 'Días' };
+    if (rango <= 0.30) return { texto: 'ALTA', clase: 'badge-prioridad-alta', duracion: 'Meses' };
+    if (rango <= 0.60) return { texto: 'MEDIA', clase: 'badge-prioridad-media', duracion: 'Semanas' };
+    return { texto: 'BAJA', clase: 'badge-prioridad-baja', duracion: 'Días' };
   }
 
   function colorPorTipoObra(tipo) {
-    if (tipo === 'Obra Mayor') return 'danger';
-    if (tipo === 'Obra Menor') return 'info';
-    return 'secondary';
+    if (tipo === 'Obra Mayor') return 'badge-tipo-mayor';
+    if (tipo === 'Obra Menor') return 'badge-tipo-menor';
+    return 'badge-tipo-default';
   }
 
   function colorPorGravedad(gravedad) {
-    if (gravedad === 'Alta') return 'danger';
-    if (gravedad === 'Baja') return 'success';
-    return 'secondary';
+    if (gravedad === 'Alta') return 'badge-riesgo-alta';
+    if (gravedad === 'Baja') return 'badge-riesgo-baja';
+    return 'badge-riesgo-default';
   }
 
   function semaforoColorHex(color) {
-    if (color === 'ROJO') return '#e74c3c';
-    if (color === 'AMARILLO') return '#f1c40f';
-    if (color === 'VERDE') return '#2ecc71';
-    return '#95a5a6';
+    if (color === 'ROJO') return '#dc3545';
+    if (color === 'AMARILLO') return '#ffc107';
+    if (color === 'VERDE') return '#198754';
+    return '#6c757d';
   }
 
-  function renderizarTarjetas(registros) {
-    const cont = document.getElementById('contenedorTarjetas');
-    cont.innerHTML = '';
-    if (registros.length === 0) {
-      cont.innerHTML = `
-        <div class="col-12 text-center py-5 text-muted">
-          <i class="bi bi-inbox" style="font-size:2.5rem; display:block; margin-bottom:.5rem;"></i>
-          No hay prioridades registradas.
-        </div>`;
+  function renderizarTabla(datos) {
+    const tbody = document.getElementById('contenedorTarjetas');
+    tbody.innerHTML = '';
+    const total = totalRegistros;
+    const totalPag = totalPaginas;
+    const inicio = total === 0 ? 0 : (paginaActual - 1) * perPageActual;
+    const fin = Math.min(inicio + perPageActual, total);
+
+    document.getElementById('contadorRegistros').textContent = total;
+    document.getElementById('infoRegistros').textContent = total
+      ? `Mostrando ${inicio + 1}–${fin} de ${total}`
+      : 'Sin registros para mostrar';
+    document.getElementById('footerInfo').textContent = total
+      ? `Página ${paginaActual} de ${totalPag}`
+      : '—';
+
+    if (datos.length === 0) {
+      tbody.innerHTML = `
+        <tr><td colspan="8" class="text-center py-5 text-muted">
+          <i class="bi bi-inbox" style="font-size:2.5rem; display:block; margin-bottom:.5rem; opacity:.3;"></i>
+          No hay prioridades que coincidan con los filtros aplicados.
+        </td></tr>`;
+      renderizarPaginacion(total, paginaActual, perPageActual);
       return;
     }
-    registros.forEach((r) => {
+
+    const frag = document.createDocumentFragment();
+    datos.forEach((r, idx) => {
       const rango = parseFloat(r.rango_prioridad);
-      const tono = colorPorRango(rango);
       const prioridad = etiquetaPrioridad(rango);
-      const desc = (r.solicitud_descripcion || 'Sin solicitud vinculada');
+      const colorRow = colorPorRango(rango);
+      const desc = r.solicitud_descripcion || 'Sin solicitud vinculada';
       const colorSem = r.color_semaforo ? semaforoColorHex(r.color_semaforo) : null;
       const semaforo = colorSem
-        ? `<span class="semaforo-dot" style="background:${colorSem}" title="${r.descripcion_semaforo || r.color_semaforo || ''}"></span>`
+        ? `<span class="semaforo-dot" style="background:${colorSem}" title="${(r.descripcion_semaforo || r.color_semaforo || '').replace(/"/g,'')}"></span>`
         : '';
       const tipoObra = r.tipo_obra
-        ? `<span class="badge bg-${colorPorTipoObra(r.tipo_obra)} me-1"><i class="bi bi-building"></i> ${r.tipo_obra}</span>` : '';
-      const gravedadSugerida = r.gravedad_sugerida
-        ? `<span class="badge bg-${colorPorGravedad(r.gravedad_sugerida)} me-1"><i class="bi bi-activity"></i> Riesgo ${r.gravedad_sugerida}</span>` : '';
-      const origenIA = r.origen === 'ia'
-        ? '<span class="badge bg-info me-1"><i class="bi bi-cpu"></i> IA</span>'
+        ? `<span class="badge-tipo ${colorPorTipoObra(r.tipo_obra)}"><i class="bi bi-building"></i> ${r.tipo_obra}</span>` : '<span class="text-muted">—</span>';
+      const riesgo = r.gravedad_sugerida
+        ? `<span class="${colorPorGravedad(r.gravedad_sugerida)}"><i class="bi bi-activity"></i> ${r.gravedad_sugerida}</span>` : '<span class="text-muted">—</span>';
+      const origen = r.origen === 'ia'
+        ? '<span class="badge-origen origen-ia"><i class="bi bi-cpu-fill"></i> IA</span>'
         : (r.origen === 'heuristica'
-          ? '<span class="badge bg-warning text-dark me-1"><i class="bi bi-gear"></i> Auto</span>'
-          : '<span class="badge bg-secondary me-1"><i class="bi bi-pencil"></i> Manual</span>');
+          ? '<span class="badge-origen origen-auto"><i class="bi bi-gear-fill"></i> Auto</span>'
+          : '<span class="badge-origen origen-manual"><i class="bi bi-pencil-fill"></i> Manual</span>');
+      const fecha = r.fecha_asignacion ? new Date(r.fecha_asignacion).toLocaleDateString('es-VE') : '—';
 
-      const col = document.createElement('div');
-      col.className = 'col-md-6 col-lg-4';
-      col.innerHTML = `
-        <div class="card border-0 shadow-sm prioridad-card h-100 border-start border-4 border-${tono}">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start mb-2">
-              <span class="badge bg-light text-dark">#${r.solicitud_id || r.id_gestion_prioridad}</span>
-              <span class="badge ${prioridad.clase} rango-pill">${prioridad.texto}</span>
-            </div>
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <span class="text-${tono} fw-bold" style="font-size:1.4rem;">${rango.toFixed(3)}</span>
-              <small class="text-muted"><i class="bi bi-clock"></i> ~${prioridad.duracion}</small>
-            </div>
-            <p class="mb-2 small text-truncate" title="${desc.replace(/"/g,'')}">${semaforo}${desc}</p>
-            <div class="mb-2">${tipoObra}${gravedadSugerida}${origenIA}</div>
-            <p class="text-muted small mb-3 fst-italic">"${r.justificacion_cambio || ''}"</p>
-            <div class="d-flex gap-2 flex-wrap">
-              <button class="btn btn-sm btn-outline-primary" onclick="editarPrioridad(${r.id_gestion_prioridad})">
-                <i class="bi bi-pencil"></i> Ajustar
-              </button>
-              <button class="btn btn-sm btn-outline-info" onclick="clasificarNueva(${r.solicitud_id})" ${r.solicitud_id ? '' : 'disabled'}>
-                <i class="bi bi-cpu"></i> Re-Clasificar
-              </button>
-              <button class="btn btn-sm btn-outline-danger" onclick="eliminarPrioridad(${r.id_gestion_prioridad})">
-                <i class="bi bi-trash"></i>
-              </button>
-            </div>
+      const tr = document.createElement('tr');
+      tr.className = `fila-prioridad fila-${colorRow}`;
+      tr.style.animationDelay = `${idx * 40}ms`;
+      tr.innerHTML = `
+        <td class="col-id"><span class="id-badge">#${r.solicitud_id || r.id_gestion_prioridad}</span></td>
+        <td class="col-solicitud">
+          <div class="solicitud-cell">
+            ${semaforo}
+            <span class="solicitud-texto" title="${desc.replace(/"/g,'')}">${desc}</span>
           </div>
-        </div>`;
-      cont.appendChild(col);
+        </td>
+        <td class="col-tipo">${tipoObra}</td>
+        <td class="col-riesgo">${riesgo}</td>
+        <td class="col-prio">
+          <div class="prio-cell">
+            <span class="badge-prioridad ${prioridad.clase}">${prioridad.texto}</span>
+            <div class="prio-progress">
+              <div class="prio-progress-fill prio-fill-${colorRow}" style="width:${(rango * 100).toFixed(0)}%"></div>
+            </div>
+            <span class="prio-valor">${rango.toFixed(3)} · ${prioridad.duracion}</span>
+          </div>
+        </td>
+        <td class="col-origen">${origen}</td>
+        <td class="col-fecha">${fecha}</td>
+        <td class="col-acciones text-center">
+          <div class="d-flex gap-1 justify-content-center">
+            <button class="btn btn-action-icon btn-outline-primary" onclick="editarPrioridad(${r.id_gestion_prioridad})" title="Editar">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="btn btn-action-icon btn-outline-info" onclick="clasificarNueva(${r.solicitud_id})" ${r.solicitud_id ? '' : 'disabled'} title="Re-clasificar con IA">
+              <i class="bi bi-cpu"></i>
+            </button>
+            <button class="btn btn-action-icon btn-outline-danger" onclick="eliminarPrioridad(${r.id_gestion_prioridad})" title="Desactivar">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </td>`;
+      frag.appendChild(tr);
     });
+    tbody.appendChild(frag);
+    renderizarPaginacion(total, paginaActual, perPageActual);
   }
 
   function renderizarPaginacion(total, pagina, perPage) {
     const totalPag = Math.max(1, Math.ceil(total / perPage));
     const ul = document.getElementById('paginacion');
     ul.innerHTML = '';
-    const prev = document.createElement('li');
-    prev.className = 'page-item' + (pagina <= 1 ? ' disabled' : '');
-    prev.innerHTML = `<a class="page-link">Anterior</a>`;
-    prev.onclick = () => { if (pagina > 1) cargarPrioridades(pagina - 1); };
-    ul.appendChild(prev);
-
-    for (let i = 1; i <= totalPag; i++) {
+    const mkItem = (label, page, opts = {}) => {
       const li = document.createElement('li');
-      li.className = 'page-item' + (i === pagina ? ' active' : '');
-      li.innerHTML = `<a class="page-link">${i}</a>`;
-      li.onclick = () => cargarPrioridades(i);
-      ul.appendChild(li);
+      li.className = `page-item${opts.disabled ? ' disabled' : ''}${opts.active ? ' active' : ''}`;
+      li.innerHTML = `<a class="page-link">${label}</a>`;
+      if (!opts.disabled && !opts.active) {
+        li.onclick = () => cargarPrioridades(page);
+      }
+      return li;
+    };
+    ul.appendChild(mkItem('«', 1, { disabled: pagina <= 1 }));
+    ul.appendChild(mkItem('‹', pagina - 1, { disabled: pagina <= 1 }));
+
+    const maxBtns = 5;
+    let start = Math.max(1, pagina - 2);
+    let end = Math.min(totalPag, start + maxBtns - 1);
+    if (end - start < maxBtns - 1) start = Math.max(1, end - maxBtns + 1);
+    for (let i = start; i <= end; i++) {
+      ul.appendChild(mkItem(i, i, { active: i === pagina }));
     }
 
-    const next = document.createElement('li');
-    next.className = 'page-item' + (pagina >= totalPag ? ' disabled' : '');
-    next.innerHTML = `<a class="page-link">Siguiente</a>`;
-    next.onclick = () => { if (pagina < totalPag) cargarPrioridades(pagina + 1); };
-    ul.appendChild(next);
+    ul.appendChild(mkItem('›', pagina + 1, { disabled: pagina >= totalPag }));
+    ul.appendChild(mkItem('»', totalPag, { disabled: pagina >= totalPag }));
   }
-
-  document.getElementById('buscarPrioridad').addEventListener('keyup', function() {
-    const filtro = this.value.toLowerCase();
-    document.querySelectorAll('#contenedorTarjetas .card').forEach(card => {
-      const texto = card.textContent.toLowerCase();
-      card.closest('.col-md-6').style.display = texto.includes(filtro) ? '' : 'none';
-    });
-  });
 
   function editarPrioridad(id) {
     fetch(`/api/prioridad/obtener/${id}`)
       .then(res => res.json())
       .then(data => {
-        if (data) {
-          document.getElementById('edit_id_prioridad').value = data.id_gestion_prioridad;
-          document.getElementById('edit_prioridad').value = data.rango_prioridad;
-          document.getElementById('edit_justificacion').value = data.justificacion_cambio || '';
-          document.getElementById('edit_estado').checked = data.estado == 1;
+        if (data && data.success !== false) {
+          const reg = data.data || data;
+          document.getElementById('edit_id_prioridad').value = reg.id_gestion_prioridad;
+          document.getElementById('edit_prioridad').value = reg.rango_prioridad;
+          document.getElementById('edit_justificacion').value = reg.justificacion_cambio || '';
+          document.getElementById('edit_estado').checked = reg.estado == 1;
           new bootstrap.Modal(document.getElementById('modalEditarPrioridad')).show();
         }
       })
-      .catch(console.error);
+      .catch(err => {
+        console.error(err);
+        mostrarToast('No se pudo cargar la prioridad.', 'danger');
+      });
   }
 
-  document.getElementById('btnGuardarEdicion').addEventListener('click', function() {
+  document.getElementById('btnGuardarEdicion').addEventListener('click', function () {
     const id = document.getElementById('edit_id_prioridad').value;
     const prioridad = document.getElementById('edit_prioridad').value;
     const justificacion = document.getElementById('edit_justificacion').value;
@@ -287,24 +520,36 @@
       mostrarFeedbackEdicion('La prioridad debe estar entre 0 y 1.', 'warning');
       return;
     }
+    const btn = this;
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Guardando...';
     fetch(`/api/prioridad/actualizar/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ rango_prioridad: prioridad, justificacion: justificacion, estado: estado })
     })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        mostrarFeedbackEdicion('Prioridad actualizada.', 'success');
-        setTimeout(() => {
-          bootstrap.Modal.getInstance(document.getElementById('modalEditarPrioridad')).hide();
-          cargarPrioridades(paginaActual);
-        }, 900);
-      } else {
-        mostrarFeedbackEdicion(data.message || 'Error al actualizar.', 'danger');
-      }
-    })
-    .catch(console.error);
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          mostrarFeedbackEdicion('Prioridad actualizada.', 'success');
+          mostrarToast('Prioridad actualizada correctamente.', 'success');
+          setTimeout(() => {
+            bootstrap.Modal.getInstance(document.getElementById('modalEditarPrioridad')).hide();
+            cargarPrioridades(paginaActual);
+          }, 800);
+        } else {
+          mostrarFeedbackEdicion(data.message || 'Error al actualizar.', 'danger');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        mostrarFeedbackEdicion('Error de conexión.', 'danger');
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      });
   });
 
   function mostrarFeedbackEdicion(mensaje, tipo) {
@@ -315,84 +560,175 @@
 
   function clasificarNueva(idSolicitud) {
     if (!idSolicitud) return;
-    var btn = null;
-    if (event && event.target) {
-      btn = event.target.closest('button');
+    const btn = (event && event.target) ? event.target.closest('button') : null;
+    let original = '';
+    if (btn) {
+      original = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
     }
-    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>...'; }
-    console.log('Clasificando solicitud #' + idSolicitud + '...');
     fetch('/api/prioridad/clasificar-nueva/' + idSolicitud, { method: 'POST' })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
+      .then(res => res.json())
+      .then(data => {
         if (data.success) {
-          var d = data.data;
-          var calc = d.calculo || '';
-          var msg = 'Clasificacion Ponderada:\n\n';
-          msg += 'Prioridad: ' + parseFloat(d.rango).toFixed(3) + '\n';
-          msg += 'Tipo Obra: ' + (d.tipo_obra || 'N/A') + '\n';
-          msg += 'Riesgo: ' + (d.gravedad_sugerida || 'N/A') + '\n';
-          if (calc) {
-            msg += '\nFormula: (Solicitante x 0.30) + (Gravedad x 0.40) + (TipoObra x 0.30)\n';
-            msg += '  Solicitante: ' + calc.peso_solicitante + ' x 0.30 = ' + (calc.peso_solicitante * 0.30).toFixed(2) + '\n';
-            msg += '  Gravedad: ' + calc.peso_gravedad + ' x 0.40 = ' + (calc.peso_gravedad * 0.40).toFixed(2) + '\n';
-            msg += '  Tipo Obra: ' + calc.peso_tipo_obra + ' x 0.30 = ' + (calc.peso_tipo_obra * 0.30).toFixed(2) + '\n';
-            msg += '  = Puntaje: ' + calc.puntaje_ponderado;
+          const d = data.data;
+          const calc = d.calculo || '';
+          let msg = `✅ Clasificación IA\n\n`;
+          msg += `Solicitud #${idSolicitud}\n`;
+          msg += `Prioridad: ${parseFloat(d.rango).toFixed(3)}\n`;
+          msg += `Tipo Obra: ${d.tipo_obra || 'N/A'}\n`;
+          msg += `Riesgo: ${d.gravedad_sugerida || 'N/A'}\n`;
+          msg += `Origen: ${d.origen || 'N/A'}\n`;
+          if (calc && calc.peso_solicitante !== undefined) {
+            msg += `\n📊 Fórmula: (Solicitante × 0.30) + (Gravedad × 0.40) + (TipoObra × 0.30)\n`;
+            msg += `  Solicitante: ${calc.peso_solicitante} × 0.30 = ${(calc.peso_solicitante * 0.30).toFixed(2)}\n`;
+            msg += `  Gravedad: ${calc.peso_gravedad} × 0.40 = ${(calc.peso_gravedad * 0.40).toFixed(2)}\n`;
+            msg += `  Tipo Obra: ${calc.peso_tipo_obra} × 0.30 = ${(calc.peso_tipo_obra * 0.30).toFixed(2)}\n`;
+            msg += `  = Puntaje: ${calc.puntaje_ponderado}`;
           }
-          msg += '\n\nJustificacion: ' + d.justificacion;
+          msg += `\n\n💡 ${d.justificacion}`;
           alert(msg);
-          cargarPrioridades();
+          mostrarToast('Solicitud re-clasificada con IA.', 'success');
+          cargarPrioridades(paginaActual);
         } else {
           alert(data.message || 'Error al clasificar.');
+          mostrarToast(data.message || 'Error al clasificar.', 'danger');
         }
       })
-      .catch(function(err) {
-        console.error('Error:', err);
-        alert('Error de conexion con el servidor.');
+      .catch(err => {
+        console.error(err);
+        alert('Error de conexión con el servidor.');
       })
-      .finally(function() {
-        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-cpu"></i> Re-Clasificar'; }
+      .finally(() => {
+        if (btn) { btn.disabled = false; btn.innerHTML = original; }
       });
   }
 
   function clasificarTodo() {
     if (!confirm('¿Clasificar TODAS las solicitudes con la IA?\n\nObra Mayor + Gravedad Alta = Prioridad ALTA (meses)\nObra Menor + Gravedad Baja = Prioridad BAJA (días)\n\nEsto puede tardar unos momentos.')) return;
-    var btn = document.querySelector('btn-warning');
-    if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Procesando...'; }
-    console.log('Iniciando clasificación masiva...');
-    fetch('/api/prioridad/procesar-pendientes-batch', { method: 'POST' })
-      .then(function(res) { console.log('Respuesta:', res.status); return res.json(); })
-      .then(function(data) {
-        console.log('Datos:', data);
+    const btn = document.getElementById('btnClasificarTodo');
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Procesando...';
+    fetch('/api/prioridad/procesar-todas-batch', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
         if (data.success) {
-          alert('Procesamiento masivo completado:\n\n' + data.message);
-          cargarPrioridades();
+          alert('Re-clasificación masiva completada:\n\n' + data.message);
+          mostrarToast('Re-clasificación masiva completada.', 'success');
+          cargarPrioridades(1);
         } else {
           alert(data.message || 'Error en el procesamiento.');
+          mostrarToast(data.message || 'Error en el procesamiento.', 'danger');
         }
       })
-      .catch(function(err) {
-        console.error('Error:', err);
-        alert('Error de conexión con el servidor: ' + err.message);
+      .catch(err => {
+        console.error(err);
+        alert('Error de conexión: ' + err.message);
       })
-      .finally(function() {
-        var btns = document.querySelectorAll('.btn-warning');
-        btns.forEach(function(b) { b.disabled = false; b.innerHTML = '<i class="bi bi-stars me-1"></i> Clasificar Todo'; });
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      });
+  }
+
+  function actualizarPendientes() {
+    if (!confirm('¿Actualizar solo las solicitudes pendientes sin priorizar?')) return;
+    const btn = document.getElementById('btnActualizarPendientes');
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Actualizando...';
+    fetch('/api/prioridad/procesar-pendientes-batch', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('Actualización completada:\n\n' + data.message);
+          mostrarToast('Actualización de pendientes completada.', 'success');
+          cargarPrioridades(1);
+        } else {
+          alert(data.message || 'Error en el procesamiento.');
+          mostrarToast(data.message || 'Error en el procesamiento.', 'danger');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error de conexión: ' + err.message);
+      })
+      .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = original;
       });
   }
 
   function eliminarPrioridad(id) {
-    if (!confirm('Desactivar esta prioridad? (borrado logico)')) return;
+    if (!confirm('¿Desactivar esta prioridad? (borrado lógico)')) return;
     fetch(`/api/prioridad/eliminar/${id}`, { method: 'DELETE' })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          alert('Prioridad desactivada.');
+          mostrarToast('Prioridad desactivada.', 'success');
           cargarPrioridades(paginaActual);
         } else {
-          alert(data.message || 'Error.');
+          mostrarToast(data.message || 'Error al desactivar.', 'danger');
         }
       })
-      .catch(console.error);
+      .catch(err => {
+        console.error(err);
+        mostrarToast('Error de conexión.', 'danger');
+      });
+  }
+
+  function exportarCSV() {
+    if (!totalRegistros) {
+      mostrarToast('No hay datos para exportar.', 'warning');
+      return;
+    }
+    mostrarToast('Exportando datos...', 'info');
+    const url = new URL('/api/prioridad/listar', window.location.origin);
+    url.searchParams.set('page', 1);
+    url.searchParams.set('per_page', 100000);
+    if (filtroTexto) url.searchParams.set('q', filtroTexto);
+    if (filtroRiesgo !== 'ALL') url.searchParams.set('riesgo', filtroRiesgo);
+    if (ordenPrioridad) url.searchParams.set('orden', ordenPrioridad);
+
+    fetch(url.toString())
+      .then(res => res.json())
+      .then(resp => {
+        const registros = resp.data || [];
+        if (!registros.length) { mostrarToast('No hay datos para exportar.', 'warning'); return; }
+        const headers = ['ID', 'Solicitud', 'Tipo Obra', 'Riesgo', 'Prioridad', 'Origen', 'Fecha'];
+        const filas = registros.map(r => {
+          const rango = parseFloat(r.rango_prioridad);
+          return [
+            r.solicitud_id || r.id_gestion_prioridad,
+            (r.solicitud_descripcion || '').replace(/"/g, '""'),
+            r.tipo_obra || '',
+            r.gravedad_sugerida || '',
+            rango.toFixed(3),
+            r.origen || '',
+            r.fecha_asignacion || ''
+          ];
+        });
+        const csv = [headers, ...filas].map(row => row.map(v => `"${v}"`).join(',')).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `prioridades_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+        mostrarToast('Exportación completada.', 'success');
+      })
+      .catch(err => { console.error(err); mostrarToast('Error al exportar.', 'danger'); });
+  }
+
+  function mostrarToast(mensaje, tipo = 'success') {
+    const toastEl = document.getElementById('toastNotificacion');
+    const cuerpo = document.getElementById('toastCuerpo');
+    toastEl.classList.remove('bg-success', 'bg-danger', 'bg-warning', 'bg-info');
+    toastEl.classList.add(`bg-${tipo}`);
+    cuerpo.textContent = mensaje;
+    const t = bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 3500 });
+    t.show();
   }
 </script>
 {% endblock %}

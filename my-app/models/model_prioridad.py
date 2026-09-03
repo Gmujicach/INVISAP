@@ -165,15 +165,52 @@ class PrioridadModel(BaseModel):
             conexion.close()
 
     @staticmethod
-    def listar_priorizadas(page=1, per_page=10):
+    def listar_priorizadas(page=1, per_page=10, q='', riesgo='ALL', orden='rango_asc'):
         conexion = connectionBD()
         try:
             cursor = conexion.cursor(dictionary=True, buffered=True)
-            cursor.execute("SELECT COUNT(*) AS total FROM prioridad WHERE estado=1")
-            total = cursor.fetchone()['total']
+
+            where_clauses = ["p.estado = 1"]
+            params = []
+
+            if q:
+                where_clauses.append("(s.problematica LIKE %s OR p.justificacion_cambio LIKE %s)")
+                like = f"%{q}%"
+                params.extend([like, like])
+
+            riesgo_upper = (riesgo or 'ALL').upper()
+            if riesgo_upper == 'ALTA':
+                where_clauses.append("p.rango_prioridad <= 0.30")
+            elif riesgo_upper == 'MEDIA':
+                where_clauses.append("p.rango_prioridad > 0.30 AND p.rango_prioridad <= 0.60")
+            elif riesgo_upper == 'BAJA':
+                where_clauses.append("p.rango_prioridad > 0.60")
+
+            where_sql = " AND ".join(where_clauses)
+
+            orden_map = {
+                'rango_asc': 'p.rango_prioridad ASC',
+                'rango_desc': 'p.rango_prioridad DESC',
+                'fecha_desc': 'p.fecha_asignacion DESC',
+                'fecha_asc': 'p.fecha_asignacion ASC',
+                'id_desc': 'p.id_gestion_prioridad DESC',
+            }
+            order_sql = orden_map.get(orden, 'p.rango_prioridad ASC')
+
+            count_sql = f"""
+                SELECT COUNT(DISTINCT p.id_gestion_prioridad) AS total
+                FROM prioridad p
+                LEFT JOIN solicitudes s
+                       ON s.prioridad_id_gestion_prioridad = p.id_gestion_prioridad
+                      AND s.estado = 1
+                WHERE {where_sql}
+            """
+            cursor.execute(count_sql, params)
+            row = cursor.fetchone()
+            total = row['total'] if row else 0
 
             offset = (max(1, page) - 1) * per_page
-            sql = """
+            sql = f"""
                 SELECT p.id_gestion_prioridad,
                        p.rango_prioridad,
                        p.justificacion_cambio,
@@ -204,14 +241,14 @@ class PrioridadModel(BaseModel):
                        ON o.gestionar_proyectos_codigo_proyecto = phs.proyecto_codigo_proyecto
                 LEFT JOIN semaforo sm
                        ON sm.id_semaforo = o.estado
-                WHERE p.estado = 1
+                WHERE {where_sql}
                 GROUP BY p.id_gestion_prioridad, p.rango_prioridad, p.justificacion_cambio,
                          p.tipo_obra, p.gravedad_sugerida, p.origen,
                          p.fecha_asignacion, p.responsable_ajuste, p.estado
-                ORDER BY p.rango_prioridad ASC
+                ORDER BY {order_sql}
                 LIMIT %s OFFSET %s
             """
-            cursor.execute(sql, (per_page, offset))
+            cursor.execute(sql, (*params, per_page, offset))
             filas = cursor.fetchall()
             for f in filas:
                 f['rango_prioridad'] = float(f['rango_prioridad']) if f['rango_prioridad'] is not None else 0.0
@@ -271,24 +308,56 @@ class PrioridadModel(BaseModel):
             cursor = conexion.cursor(dictionary=True, buffered=True)
             cursor.execute(
                 """SELECT s.id_solicitudes       AS id,
-                          s.problematica        AS descripcion,
-                          s.tipo_solicitud      AS tipo_solicitante,
-                          g.nivel_gravedad,
-                          sm.color              AS color_semaforo
-                   FROM solicitudes s
-                   LEFT JOIN proyecto_has_solicitudes phs
-                          ON phs.solicitudes_id_solicitudes = s.id_solicitudes
-                   LEFT JOIN obra o
-                          ON o.gestionar_proyectos_codigo_proyecto = phs.proyecto_codigo_proyecto
-                   LEFT JOIN semaforo sm
-                          ON sm.id_semaforo = o.estado
-                   LEFT JOIN gravedad_obra_has_prioridad ghp
-                          ON ghp.prioridad_id_gestion_prioridad = s.prioridad_id_gestion_prioridad
-                   LEFT JOIN gravedad_obra g
-                          ON g.id_gravedad = ghp.gravedad_obra_id_gravedad
-                         AND g.estado = 1
-                   WHERE s.estado = 1
-                   ORDER BY s.fecha ASC""",
+                           s.problematica        AS descripcion,
+                           s.tipo_solicitud      AS tipo_solicitante,
+                           g.nivel_gravedad,
+                           sm.color              AS color_semaforo
+                    FROM solicitudes s
+                    LEFT JOIN proyecto_has_solicitudes phs
+                           ON phs.solicitudes_id_solicitudes = s.id_solicitudes
+                    LEFT JOIN obra o
+                           ON o.gestionar_proyectos_codigo_proyecto = phs.proyecto_codigo_proyecto
+                    LEFT JOIN semaforo sm
+                           ON sm.id_semaforo = o.estado
+                    LEFT JOIN gravedad_obra_has_prioridad ghp
+                           ON ghp.prioridad_id_gestion_prioridad = s.prioridad_id_gestion_prioridad
+                    LEFT JOIN gravedad_obra g
+                           ON g.id_gravedad = ghp.gravedad_obra_id_gravedad
+                          AND g.estado = 1
+                    WHERE s.estado = 1
+                      AND (s.prioridad_id_gestion_prioridad IS NULL OR s.prioridad_id_gestion_prioridad = 0)
+                    ORDER BY s.fecha ASC""",
+                ())
+            return cursor.fetchall()
+        finally:
+            cursor.close()
+            conexion.close()
+
+    @staticmethod
+    def obtener_todas_solicitudes():
+        conexion = connectionBD()
+        try:
+            cursor = conexion.cursor(dictionary=True, buffered=True)
+            cursor.execute(
+                """SELECT s.id_solicitudes       AS id,
+                           s.problematica        AS descripcion,
+                           s.tipo_solicitud      AS tipo_solicitante,
+                           g.nivel_gravedad,
+                           sm.color              AS color_semaforo
+                    FROM solicitudes s
+                    LEFT JOIN proyecto_has_solicitudes phs
+                           ON phs.solicitudes_id_solicitudes = s.id_solicitudes
+                    LEFT JOIN obra o
+                           ON o.gestionar_proyectos_codigo_proyecto = phs.proyecto_codigo_proyecto
+                    LEFT JOIN semaforo sm
+                           ON sm.id_semaforo = o.estado
+                    LEFT JOIN gravedad_obra_has_prioridad ghp
+                           ON ghp.prioridad_id_gestion_prioridad = s.prioridad_id_gestion_prioridad
+                    LEFT JOIN gravedad_obra g
+                           ON g.id_gravedad = ghp.gravedad_obra_id_gravedad
+                          AND g.estado = 1
+                    WHERE s.estado = 1
+                    ORDER BY s.fecha ASC""",
                 ())
             return cursor.fetchall()
         finally:
@@ -479,6 +548,52 @@ class PrioridadModel(BaseModel):
         return {
             "success": True,
             "message": f"Proceso completado. {len(resultados)} solicitudes procesadas, {errores} errores.",
+            "procesadas": len(resultados),
+            "errores": errores,
+            "detalle": resultados,
+        }
+
+    @staticmethod
+    def procesar_todas_solicitudes_batch(responsable='IA'):
+        from services.ia_prioridad_service import clasificar_solicitud_ia
+        import traceback
+
+        solicitudes = PrioridadModel.obtener_todas_solicitudes()
+        if not solicitudes:
+            return {"success": True, "message": "No hay solicitudes para procesar.", "procesadas": 0}
+
+        resultados = []
+        errores = 0
+
+        for solicitud in solicitudes:
+            try:
+                resultado = PrioridadModel.clasificar_nueva_solicitud(solicitud['id'], responsable)
+                if resultado.get('success'):
+                    resultados.append({
+                        "solicitud_id": solicitud['id'],
+                        "id_prioridad": resultado['data']['id_prioridad'],
+                        "rango": resultado['data']['rango'],
+                        "tipo_obra": resultado['data']['tipo_obra'],
+                        "gravedad_sugerida": resultado['data']['gravedad_sugerida'],
+                    })
+                else:
+                    errores += 1
+                    resultados.append({
+                        "solicitud_id": solicitud.get('id'),
+                        "error": resultado.get('message', 'Error desconocido'),
+                    })
+            except Exception as e:
+                errores += 1
+                tb = traceback.format_exc()
+                resultados.append({
+                    "solicitud_id": solicitud.get('id'),
+                    "error": str(e),
+                    "traceback": tb,
+                })
+
+        return {
+            "success": True,
+            "message": f"Re-clasificación completada. {len(resultados)} solicitudes procesadas, {errores} errores.",
             "procesadas": len(resultados),
             "errores": errores,
             "detalle": resultados,

@@ -96,6 +96,21 @@ def procesar_pendientes_batch_controller():
         return {"success": False, "message": f"Error en procesamiento batch: {str(e)}"}
 
 
+def procesar_todas_batch_controller():
+    try:
+        responsable = session.get('name_surname', 'Sistema')
+        resultado = PrioridadModel.procesar_todas_solicitudes_batch(responsable)
+        if resultado.get('success'):
+            BitacoraService.registrar_accion(
+                session, 'Prioridad', 'CLASIFICAR_BATCH',
+                f'Re-clasificación masiva: {resultado["procesadas"]} solicitudes procesadas, '
+                f'{resultado["errores"]} errores.'
+            )
+        return resultado
+    except Exception as e:
+        return {"success": False, "message": f"Error en procesamiento masivo: {str(e)}"}
+
+
 def listar_prioridades_controller(page=1, per_page=10):
     try:
         filas, total = PrioridadModel.listar_priorizadas(page=page, per_page=per_page)
