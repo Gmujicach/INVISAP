@@ -38,13 +38,45 @@
                 <option value="">Cargando...</option>
               </select>
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-md-6 mb-3 molecule-password-field position-relative">
               <label for="pass_user" class="form-label">Contraseña</label>
               <div class="input-group input-group-merge">
-                <span class="input-group-text"><i class="bi bi-key"></i></span>
-                <input id="pass_user" type="password" name="pass_user" class="form-control" placeholder="Mín. 8 caracteres, letras y símbolo" required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}">
+                <input
+                  type="password"
+                  id="pass_user"
+                  class="form-control password-input custom-placeholder border-end-0 border-secondary-subtle"
+                  name="pass_user"
+                  placeholder="Mín. 8 caracteres, letras y un símbolo (Ej: Invi2026*)"
+                  required minlength="8" maxlength="12" pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}" />
+                
+                <button 
+                  type="button" 
+                  class="input-group-text password-toggle-btn border-start-0 border-secondary-subtle px-3" 
+                  style="background-color: #fff; cursor: pointer;">
+                  <i class="bi bi-eye-slash toggle-icon fs-5 text-muted"></i>
+                </button>
               </div>
-              <small class="form-text text-muted">Formato: 8-12 caracteres, al menos una letra y un símbolo especial</small>
+
+              <!-- Indicador de fortaleza -->
+              <div class="password-strength-widget d-none mt-2">
+                <ul class="list-unstyled mb-2">
+                  <li class="rule-item transition-all" data-rule="length">
+                    <i class="bi bi-circle me-2 icon-rule"></i> De 8 a 12 caracteres
+                  </li>
+                  <li class="rule-item transition-all" data-rule="symbol">
+                    <i class="bi bi-circle me-2 icon-rule"></i> Un símbolo especial
+                  </li>
+                </ul>
+                
+                <div class="strength-indicator-header d-flex justify-content-between align-items-center mb-2">
+                  <span class="small fw-semibold text-heading">Seguridad:</span>
+                  <span class="strength-label badge bg-label-secondary">Esperando...</span>
+                </div>
+                
+                <div class="progress" style="height: 6px; background-color: rgba(67, 89, 113, 0.1);">
+                  <div class="strength-meter progress-bar transition-all" role="progressbar" style="width: 0%;"></div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="text-center mt-4">
@@ -98,6 +130,111 @@
     });
 
     cargarRolesSelect();
+  });
+
+  // Toggle de visibilidad y medidor de fortaleza de contraseña
+  document.addEventListener('DOMContentLoaded', function() {
+    const passwordFields = document.querySelectorAll('.molecule-password-field');
+
+    passwordFields.forEach(function(field) {
+      const passwordInput = field.querySelector('.password-input');
+      const toggleBtn = field.querySelector('.password-toggle-btn');
+      const strengthWidget = field.querySelector('.password-strength-widget');
+
+      if (passwordInput && toggleBtn) {
+        const cleanToggleBtn = toggleBtn.cloneNode(true);
+        toggleBtn.parentNode.replaceChild(cleanToggleBtn, toggleBtn);
+        const cleanIcon = cleanToggleBtn.querySelector('.toggle-icon');
+
+        cleanToggleBtn.addEventListener('click', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          
+          const isPassword = passwordInput.type === 'password';
+          passwordInput.type = isPassword ? 'text' : 'password';
+          
+          if (isPassword) {
+            cleanIcon.classList.remove('bi-eye-slash');
+            cleanIcon.classList.add('bi-eye');
+          } else {
+            cleanIcon.classList.remove('bi-eye');
+            cleanIcon.classList.add('bi-eye-slash');
+          }
+          
+          passwordInput.focus();
+        });
+      }
+
+      if (passwordInput && strengthWidget) {
+        const meter = strengthWidget.querySelector('.strength-meter');
+        const label = strengthWidget.querySelector('.strength-label');
+        const helpText = field.querySelector('.form-text');
+
+        passwordInput.addEventListener('input', function () {
+          const val = passwordInput.value;
+          
+          if (val.length === 0) {
+            strengthWidget.classList.add('d-none');
+            if (helpText) helpText.classList.add('d-none');
+            return;
+          }
+
+          strengthWidget.classList.remove('d-none');
+          if (helpText) helpText.classList.remove('d-none');
+
+          const hasLength = val.length >= 8 && val.length <= 12;
+          const hasSymbol = /[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]/.test(val);
+
+          const ruleLength = strengthWidget.querySelector('[data-rule="length"]');
+          const ruleSymbol = strengthWidget.querySelector('[data-rule="symbol"]');
+
+          let score = 0;
+
+          if (hasLength) {
+            score++;
+            if (ruleLength) {
+              ruleLength.className = 'rule-item text-success mb-1';
+              ruleLength.querySelector('i').className = 'bi bi-check-circle-fill me-2';
+            }
+          } else {
+            if (ruleLength) {
+              ruleLength.className = 'rule-item text-danger mb-1';
+              ruleLength.querySelector('i').className = 'bi bi-x-circle-fill me-2';
+            }
+          }
+
+          if (hasSymbol) {
+            score++;
+            if (ruleSymbol) {
+              ruleSymbol.className = 'rule-item text-success mb-1';
+              ruleSymbol.querySelector('i').className = 'bi bi-check-circle-fill me-2';
+            }
+          } else {
+            if (ruleSymbol) {
+              ruleSymbol.className = 'rule-item text-danger mb-1';
+              ruleSymbol.querySelector('i').className = 'bi bi-x-circle-fill me-2';
+            }
+          }
+
+          if (score === 0) {
+            meter.style.width = '25%';
+            meter.className = 'strength-meter progress-bar bg-danger';
+            label.textContent = 'Insegura';
+            label.className = 'strength-label badge bg-label-danger';
+          } else if (score === 1) {
+            meter.style.width = '60%';
+            meter.className = 'strength-meter progress-bar bg-warning';
+            label.textContent = 'Media';
+            label.className = 'strength-label badge bg-label-warning';
+          } else if (score === 2) {
+            meter.style.width = '100%';
+            meter.className = 'strength-meter progress-bar bg-success';
+            label.textContent = 'Fuerte (Válida)';
+            label.className = 'strength-label badge bg-label-success';
+          }
+        });
+      }
+    });
   });
 </script>
 {% endblock %}
