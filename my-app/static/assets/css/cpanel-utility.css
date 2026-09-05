@@ -408,6 +408,7 @@
   line-height: 1.4;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .corner-topbar .notification-meta {

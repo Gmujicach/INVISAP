@@ -319,6 +319,13 @@ const Helpers = {
           this._redrawLayoutMenu() ? 5 : 0
         )
       }
+      return
+    }
+
+    if (collapsed) {
+      this._addClass('layout-menu-collapsed')
+    } else {
+      this._removeClass('layout-menu-collapsed')
     }
   },
 

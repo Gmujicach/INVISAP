@@ -13,7 +13,7 @@ class EmpleadoModel(BaseModel):
 
     # Expresiones regulares para validación (Principio de Responsabilidad Única)
     _RE_NOMBRE = re.compile(r'^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{3,45}$')
-    _RE_GERENCIA = re.compile(r'^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{5,100}$')
+    _RE_GERENCIA = re.compile(r'^[A-ZñÑa-záéíóúÁÉÍÓÚ\s]{5,45}$')
     _RE_FECHA = re.compile(r'^\d{4}-\d{2}-\d{2}$')
     _RE_CEDULA = re.compile(r'^\d{7,8}$')
     _RE_TELEFONO = re.compile(r'^\d{10,11}$')
@@ -92,9 +92,9 @@ class EmpleadoModel(BaseModel):
         """Valida y establece la gerencia asignada."""
         if not self._validar_gerencia(valor):
             raise ValueError(
-                "Gerencia inválida. Mínimo 5, máximo 100 caracteres."
+                "Gerencia inválida. Mínimo 5, máximo 45 caracteres."
             )
-        self.__gerencia_asignada = self._limpiar_texto(valor, 100)
+        self.__gerencia_asignada = self._limpiar_texto(valor, 45)
     
     def get_cedula_persona(self):
         return self.__cedula_persona
