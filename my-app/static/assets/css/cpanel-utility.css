@@ -36,6 +36,10 @@
   font-family: "Open Sans", sans-serif;
 }
 
+.content-wrapper {
+  padding-top: 5.5rem;
+}
+
 .corner-topbar .utility-pill {
   align-items: center;
   display: flex;
