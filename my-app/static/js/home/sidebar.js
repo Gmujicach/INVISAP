@@ -22,11 +22,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (iconoCerrar) {
-      iconoCerrar.style.display = collapsed ? 'none' : 'block';
+      iconoCerrar.style.display = collapsed ? 'none' : 'inline-flex';
     }
 
     if (iconoAbrir) {
-      iconoAbrir.style.display = collapsed ? 'block' : 'none';
+      iconoAbrir.style.display = collapsed ? 'inline-flex' : 'none';
     }
   }
 
