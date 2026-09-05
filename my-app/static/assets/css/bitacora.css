@@ -175,3 +175,106 @@ body.dark-mode .text-dark {
 body.dark-mode .text-muted {
   color: #a2a3b7 !important;
 }
+
+/* ============================================
+   Botón Detalle Bitácora
+   ============================================ */
+.btn-detalle-bitacora {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  border: 2px solid #6366f1;
+  color: #6366f1;
+  background: transparent;
+}
+.btn-detalle-bitacora:hover {
+  background: #6366f1;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+.btn-detalle-bitacora i {
+  font-size: 0.95rem;
+}
+
+/* ============================================
+   Modal Detalle Bitácora
+   ============================================ */
+#modalDetalleBitacora .modal-content {
+  border-radius: 20px;
+  overflow: hidden;
+}
+#modalDetalleBitacora .modal-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e2e8f0;
+  gap: 1rem;
+}
+.detail-row:last-of-type {
+  border-bottom: none;
+}
+.detail-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.detail-value {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: #1e293b;
+  text-align: right;
+  word-break: break-word;
+}
+.detail-message {
+  background: linear-gradient(135deg, #f8f9ff 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.1rem;
+  margin-top: 0.5rem;
+}
+.detail-message-header {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6366f1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
+}
+.detail-message-body {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.5;
+}
+body.dark-mode .detail-row {
+  border-bottom-color: #444564;
+}
+body.dark-mode .detail-label {
+  color: #a2a3b7;
+}
+body.dark-mode .detail-value {
+  color: #cfcde9;
+}
+body.dark-mode .detail-message {
+  background: linear-gradient(135deg, #2b2c40 0%, #323248 100%);
+  border-color: #444564;
+}
+body.dark-mode .detail-message-header {
+  color: #a5b4fc;
+}
+body.dark-mode .detail-message-body {
+  color: #cfcde9;
+}

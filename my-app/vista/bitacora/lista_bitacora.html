@@ -127,6 +127,7 @@
           <th style="padding: 1rem 1.2rem;">Acción</th>
           <th style="padding: 1rem 1.2rem;">Fecha y Hora</th>
           <th style="padding: 1rem 1.2rem;">Inicio Sesión</th>
+          <th style="padding: 1rem 1.2rem; text-align:center;">Detalle</th>
         </tr>
       </thead>
       <tbody id="tbody_bitacora">
@@ -158,16 +159,30 @@
             </td>
             <td style="padding: 0.85rem 1.2rem; font-size:0.83rem; color:#475569;">
               <i class="bi bi-calendar3 me-1 text-primary opacity-50"></i>
-              {{ r.fecha.strftime('%d/%m/%Y %H:%M') if r.fecha else ' ' }}
+              {{ r.fecha if r.fecha else ' ' }}
             </td>
             <td style="padding: 0.85rem 1.2rem; font-size:0.83rem; color:#475569;">
-              {{ r.hora_inicio_sesion.strftime('%H:%M:%S') if r.hora_inicio_sesion else ' ' }}
+              {{ r.hora_inicio_sesion if r.hora_inicio_sesion else ' ' }}
+            </td>
+            <td style="padding: 0.85rem 1.2rem; text-align:center;">
+              <button type="button"
+                class="btn btn-sm btn-outline-primary btn-detalle-bitacora"
+                data-id="{{ r.id_bitacora }}"
+                data-usuario="{{ r.usuario }}"
+                data-modulo="{{ r.modulo }}"
+                data-accion="{{ r.accion }}"
+                data-fecha="{{ r.fecha_raw if r.fecha_raw else (r.fecha if r.fecha else '') }}"
+                data-hora-inicio="{{ r.hora_inicio_raw if r.hora_inicio_raw else (r.hora_inicio_sesion if r.hora_inicio_sesion else '') }}"
+                data-hora-cierre="{{ r.hora_cierre_raw if r.hora_cierre_raw else (r.hora_cierre_sesion if r.hora_cierre_sesion else '') }}"
+                title="Ver detalle del registro">
+                <i class="bi bi-eye"></i>
+              </button>
             </td>
           </tr>
           {% endfor %}
         {% else %}
           <tr class="fila-vacia">
-            <td colspan="6" class="text-center py-5 text-muted">
+            <td colspan="7" class="text-center py-5 text-muted">
               <i class="bi bi-journal-x" style="font-size:3rem; opacity:0.3; display:block; margin-bottom:1rem;"></i>
               No hay registros en la bitácora
               {% if filtro_usuario or filtro_modulo or filtro_accion %}
@@ -197,9 +212,75 @@
       <ul class="pagination pagination-sm mb-0 flex-wrap" id="pagination_controls_bitacora">
       </ul>
     </nav>
-  </div>
-</div>
-{% endblock %} 
+   </div>
+ </div>
+
+ <!-- Modal: Detalle de Registro de Bitácora -->
+ <div class="modal fade" id="modalDetalleBitacora" tabindex="-1" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered modal-lg">
+     <div class="modal-content border-0 shadow-lg" id="modalDetalleBitacoraContent">
+        <div class="modal-header border-0 text-white" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);">
+          <div class="d-flex align-items-center gap-3">
+            <span class="accessibility-icon-badge" style="width:46px;height:46px;font-size:1.3rem;">
+              <i class="bi bi-journal-check"></i>
+            </span>
+            <div>
+              <h5 class="modal-title fw-bold mb-0">Detalle del Registro</h5>
+              <p class="mb-0 small opacity-75 mt-1" id="modalDetalleBitacoraSubtitle">Información completa del registro</p>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+       <div class="modal-body p-4">
+         <div class="d-flex flex-column gap-3">
+           <div class="detail-row">
+             <span class="detail-label"><i class="bi bi-hash me-1"></i>ID Registro</span>
+             <span class="detail-value" id="detalle_id">-</span>
+           </div>
+           <div class="detail-row">
+             <span class="detail-label"><i class="bi bi-person me-1"></i>Usuario</span>
+             <span class="detail-value" id="detalle_usuario">-</span>
+           </div>
+           <div class="detail-row">
+             <span class="detail-label"><i class="bi bi-grid me-1"></i>Módulo</span>
+             <span class="detail-value" id="detalle_modulo">-</span>
+           </div>
+           <div class="detail-row">
+             <span class="detail-label"><i class="bi bi-lightning me-1"></i>Acción</span>
+             <span class="detail-value" id="detalle_accion">-</span>
+           </div>
+           <div class="detail-row">
+             <span class="detail-label"><i class="bi bi-calendar3 me-1"></i>Fecha y Hora</span>
+             <span class="detail-value" id="detalle_fecha">-</span>
+           </div>
+           <div class="detail-row">
+             <span class="detail-label"><i class="bi bi-box-arrow-in-right me-1"></i>Inicio de Sesión</span>
+             <span class="detail-value" id="detalle_hora_inicio">-</span>
+           </div>
+           <div class="detail-row">
+             <span class="detail-label"><i class="bi bi-box-arrow-right me-1"></i>Cierre de Sesión</span>
+             <span class="detail-value" id="detalle_hora_cierre">-</span>
+           </div>
+           <div class="detail-row" id="detalle_descripcion_row" style="display:none;">
+             <span class="detail-label"><i class="bi bi-text-paragraph me-1"></i>Descripción</span>
+             <span class="detail-value" id="detalle_descripcion">-</span>
+           </div>
+           <div class="detail-message" id="detalle_mensaje_container" style="display:none;">
+             <div class="detail-message-header">
+               <i class="bi bi-chat-quote me-1"></i>Mensaje de la Acción
+             </div>
+             <div class="detail-message-body" id="detalle_mensaje">-</div>
+           </div>
+         </div>
+       </div>
+       <div class="modal-footer border-0 pt-0">
+         <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+       </div>
+     </div>
+   </div>
+ </div>
+
+{% endblock %}
 
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/bitacora/tour.js') }}"></script> 

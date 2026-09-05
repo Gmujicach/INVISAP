@@ -36,7 +36,7 @@ from controllers.funciones_maquinaria import (
     restaurar_maquinaria_controller, actualizar_maquinaria_controller,
     eliminar_maquinaria_controller, contar_maquinarias_controller
 )
-from controllers.funciones_bitacora import filtrar_bitacora, obtener_estadisticas_bitacora, contar_bitacora_filtrada
+from controllers.funciones_bitacora import filtrar_bitacora, filtrar_bitacora_html, obtener_estadisticas_bitacora, contar_bitacora_filtrada
 from models.model_publicacion import PublicacionModel
 from models.model_informe_avance import InformeAvanceModel
 from models.model_solicitudes import SolicitudModel
@@ -1218,7 +1218,7 @@ def viewBitacora():
         per_page = 10
 
     # Traer los registros paginados desde el modelo
-    registros = filtrar_bitacora(
+    registros = filtrar_bitacora_html(
         usuario=filtro_usuario or None,
         modulo=filtro_modulo or None,
         accion=filtro_accion or None,
