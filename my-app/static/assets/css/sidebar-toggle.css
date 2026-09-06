@@ -31,24 +31,11 @@ html.layout-menu-collapsed .app-brand .layout-menu-toggle,
   right: 0.4rem !important;
 }
 
-.app-brand .layout-menu-toggle {
-  width: 2.35rem;
-  height: 2.35rem;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s ease, transform 0.25s ease;
-  position: absolute;
-  right: 0.5rem;
-  top: 0.75rem;
-}
-
 .app-brand .layout-menu-toggle .toggle-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
   line-height: 1;
   transition: transform 0.25s ease;
 }
@@ -72,7 +59,7 @@ html.layout-menu-collapsed .app-brand .layout-menu-toggle #icono-abrir,
 }
 
 .app-brand .layout-menu-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.18);
+  background-color: rgba(255, 255, 255, 0.22) !important;
 }
 
 .app-brand-link {
@@ -98,29 +85,52 @@ html.layout-menu-collapsed .app-brand .layout-menu-toggle #icono-abrir,
   }
 
   html.layout-menu-collapsed #layout-menu .app-brand {
-    width: 70px;
-    padding: 0.75rem 0 !important;
-  }
-
-  html.layout-menu-collapsed #layout-menu .menu-inner {
-    padding-top: 0.75rem !important;
-    padding-bottom: 0.75rem !important;
-  }
-
-  html.layout-menu-collapsed #layout-menu .menu-inner > .menu-item > .menu-link {
-    background-color: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    width: 70px !important;
+    height: 4rem !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: 0.75rem !important;
+    overflow: hidden !important;
+    position: relative !important;
   }
 
   html.layout-menu-collapsed #layout-menu .app-brand-link {
-    width: 2.5rem !important;
-    overflow: hidden;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    flex: 0 0 auto !important;
+  }
+
+  html.layout-menu-collapsed #layout-menu .app-brand-logo {
+    display: none !important;
   }
 
   html.layout-menu-collapsed #layout-menu .app-brand img {
-    width: 2.25rem !important;
-    height: 2.25rem !important;
-    object-fit: contain;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    pointer-events: none !important;
+  }
+
+  html.layout-menu-collapsed #layout-menu .sidebar-logo {
+    display: none !important;
+  }
+
+  html.layout-menu-collapsed #layout-menu .menu-inner {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  html.layout-menu-collapsed #layout-menu .menu-inner > .menu-item:first-child > .menu-link {
+    margin-top: 0.5rem !important;
   }
 
   html.layout-menu-collapsed #layout-menu .menu-link {
@@ -134,7 +144,9 @@ html.layout-menu-collapsed .app-brand .layout-menu-toggle #icono-abrir,
     padding-right: 0.75rem !important;
     border-radius: 0.85rem !important;
     margin: 0.35rem 0.55rem !important;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
   }
 
   html.layout-menu-collapsed #layout-menu .menu-link > div,
@@ -150,23 +162,33 @@ html.layout-menu-collapsed .app-brand .layout-menu-toggle #icono-abrir,
     opacity: 1 !important;
     align-items: center;
     justify-content: center;
-    width: 1.75rem;
-    min-width: 1.75rem;
+    width: 1.5rem;
+    min-width: 1.5rem;
     margin-right: 0 !important;
-    font-size: 1.6rem;
+    font-size: 1.25rem;
     line-height: 1;
+    color: rgba(255, 255, 255, 0.9);
+    transition: color 0.2s ease, transform 0.2s ease;
   }
 
   html.layout-menu-collapsed #layout-menu .menu-link:hover {
     transform: translateY(-1px);
-    background-color: rgba(255, 255, 255, 0.22) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+    background-color: rgba(45, 106, 79, 0.35) !important;
+    border-color: rgba(45, 106, 79, 0.6) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  }
+
+  html.layout-menu-collapsed #layout-menu .menu-link:hover .menu-icon,
+  html.layout-menu-collapsed #layout-menu .menu-link:hover .nav-icon {
+    color: #ffffff;
+    transform: scale(1.08);
   }
 
   html.layout-menu-collapsed #layout-menu .menu-item.active > .menu-link {
     background-color: #cca025 !important;
     color: #1f2937 !important;
-    box-shadow: 0 4px 14px rgba(204, 160, 37, 0.35);
+    border-color: #cca025 !important;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
   }
 
   html.layout-menu-collapsed #layout-menu .menu-item.active > .menu-link .menu-icon {
