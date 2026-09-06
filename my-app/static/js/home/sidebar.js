@@ -6,12 +6,42 @@ document.addEventListener('DOMContentLoaded', function () {
   const iconoCerrar = document.getElementById('icono-cerrar');
   const iconoAbrir = document.getElementById('icono-abrir');
 
-  if (!sidebar) return;
+  if (!sidebar || !btnToggle) return;
+
+  function getStorageKey() {
+    return 'invilara-sidebar-collapsed';
+  }
+
+  function readStoredState() {
+    try {
+      const raw = localStorage.getItem(getStorageKey());
+      return raw === 'true' ? true : raw === 'false' ? false : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function writeStoredState(collapsed) {
+    try {
+      localStorage.setItem(getStorageKey(), String(collapsed));
+    } catch (e) {
+      // ignore storage errors
+    }
+  }
 
   function isCollapsed() {
     const rootCollapsed = document.documentElement.classList.contains('layout-menu-collapsed');
     const sidebarCollapsed = sidebar.classList.contains('menu-collapsed');
     return rootCollapsed || sidebarCollapsed;
+  }
+
+  function setCollapsed(collapsed) {
+    document.documentElement.classList.toggle('layout-menu-collapsed', collapsed);
+    sidebar.classList.toggle('menu-collapsed', collapsed);
+    sidebar.classList.toggle('layout-menu-expanded', !collapsed);
+    setTimeout(function () {
+      window.dispatchEvent(new Event('resize'));
+    }, 30);
   }
 
   function syncIconState() {
@@ -38,15 +68,36 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.Helpers && typeof window.Helpers.toggleCollapsed === 'function') {
       window.Helpers.toggleCollapsed();
     } else {
-      document.documentElement.classList.toggle('layout-menu-collapsed', nextState);
-      sidebar.classList.toggle('menu-collapsed', nextState);
-      setTimeout(function () {
-        window.dispatchEvent(new Event('resize'));
-      }, 30);
+      setCollapsed(nextState);
     }
 
+    writeStoredState(nextState);
     requestAnimationFrame(syncIconState);
+    setTimeout(syncIconState, 50);
+    setTimeout(syncIconState, 150);
   }
+
+  function initMenuToggleItems() {
+    const toggles = sidebar.querySelectorAll('.menu-toggle');
+    toggles.forEach(function (item) {
+      item.addEventListener('click', function (e) {
+        if (isCollapsed()) {
+          e.preventDefault();
+          e.stopPropagation();
+          const target = item.getAttribute('data-collapsed-href');
+          if (target) {
+            window.location.href = target;
+          }
+        }
+      });
+    });
+  }
+
+  const stored = readStoredState();
+  if (stored !== null) {
+    setCollapsed(stored);
+  }
+  initMenuToggleItems();
 
   if (btnToggle) {
     btnToggle.addEventListener('click', toggleMenu);
