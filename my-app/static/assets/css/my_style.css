@@ -278,28 +278,7 @@ body.dark-mode #search {
   border-color: #444564 !important;
 }
 
-/* Sidebar Dark Mode Hover */
-body.dark-mode .menu-item > .menu-link:hover,
-body.dark-mode .menu-item:hover > .menu-link {
-  background: linear-gradient(90deg, #08b324 0%, #2b2c40 100%) !important;
-  color: #fff !important;
-}
-
-body.dark-mode .menu-item > .menu-link:hover i,
-body.dark-mode .menu-item:hover > .menu-link i {
-  color: #fff !important;
-}
-
-.menu-item > .menu-link:hover,
-.menu-item:hover > .menu-link {
-  background: linear-gradient(90deg, #08b324 0%, #f5f7fa 100%) !important;
-  color: #fff !important;
-}
-
-.menu-item > .menu-link:hover i,
-.menu-item:hover > .menu-link i {
-  color: #fff !important;
-}
+/* El rail y sus estados visuales se definen en sidebar-toggle.css. */
 
 /* ============================================
    Global Dark Mode Overrides (Bootstrap utilities)
@@ -1513,28 +1492,7 @@ body.dark-mode .menu-inner > .menu-item .menu-sub > .menu-item {
   border-bottom-color: rgba(173, 178, 191, 0.08);
 }
 
-/* ============================================
-    Sidebar Green Background + White Text
-    ============================================ */
-#layout-menu {
-  background-color: #08b324 !important;
-}
-#layout-menu .menu-link {
-  color: #fff !important;
-}
-#layout-menu .menu-icon {
-  color: #fff !important;
-}
-#layout-menu .menu-sub {
-  background-color: rgba(0, 0, 0, 0.12) !important;
-}
-#layout-menu .menu-item.active > .menu-link {
-  background-color: rgba(0, 0, 0, 0.2) !important;
-}
-#layout-menu .menu-item > .menu-link:hover {
-  background: linear-gradient(90deg, #06a020 0%, rgba(0, 0, 0, 0.15) 100%) !important;
-  color: #fff !important;
-}
+/* Los colores del rail se mantienen en sidebar-toggle.css para evitar duplicar estados. */
 
 /* ============================================
     Footer Section Headings - White Bold Text

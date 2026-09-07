@@ -13,7 +13,7 @@
     </a>
     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block"
        id="sidebarToggleBtn"
-       aria-controls="layout-menu" aria-expanded="true" aria-label="Colapsar menú lateral">
+       aria-controls="layout-menu" aria-expanded="false" aria-label="Expandir menú lateral">
       <i id="icono-cerrar" class="bi bi-chevron-left toggle-icon" aria-hidden="true"></i>
       <i id="icono-abrir" class="bi bi-list toggle-icon" aria-hidden="true"></i>
     </a>
@@ -90,7 +90,7 @@
     {% endif %}
 
     {% if tiene_permiso('empresas') %}
-    <li class="menu-item">
+    <li class="menu-item {% if request.path in ['/registrar-empresas', '/lista-empresas'] %} active open {% endif %}">
       <a href="javascript:void(0);" class="menu-link menu-toggle" data-tooltip="Empresas" data-collapsed-href="{{ url_for('lista_empresas') }}">
         <i class="menu-icon bi bi-building"></i>
         <div data-i18n="Companies">Empresas</div>
@@ -308,4 +308,26 @@
       </a>
     </li>
   </ul>
+</aside>
+
+<aside id="sidebar-label-panel" class="sidebar-label-panel" aria-hidden="true" aria-labelledby="sidebar-panel-title" aria-describedby="sidebar-panel-description" hidden>
+  <div class="sidebar-panel-header">
+    <div>
+      <p id="sidebar-panel-type" class="sidebar-panel-eyebrow">Módulo</p>
+      <h2 id="sidebar-panel-title" class="sidebar-panel-title">Navegación</h2>
+    </div>
+    <button id="sidebar-panel-close" class="sidebar-panel-close" type="button" aria-label="Cerrar panel de navegación">
+      <i class="bi bi-x-lg" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="sidebar-panel-body">
+    <p id="sidebar-panel-description" class="sidebar-panel-description"></p>
+    <span id="sidebar-panel-meta" class="sidebar-panel-meta"></span>
+    <p class="sidebar-panel-section-title">Submódulos</p>
+    <div id="sidebar-panel-items" class="sidebar-panel-items"></div>
+    <a id="sidebar-panel-action" class="sidebar-panel-action" href="#">
+      <i class="bi bi-arrow-right" aria-hidden="true"></i>
+      <span>Ver módulo</span>
+    </a>
+  </div>
 </aside>

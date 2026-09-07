@@ -185,19 +185,19 @@ html.layout-menu-collapsed .app-brand .layout-menu-toggle #icono-abrir,
   }
 
   html.layout-menu-collapsed #layout-menu .menu-item.active > .menu-link {
-    background-color: #cca025 !important;
-    color: #1f2937 !important;
-    border-color: #cca025 !important;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+    background-color: var(--invilara-sidebar-active-bg) !important;
+    color: var(--invilara-sidebar-active-text) !important;
+    border-color: var(--invilara-sidebar-active-bg) !important;
+    box-shadow: 0 6px 18px rgba(6, 59, 37, 0.16);
   }
 
   html.layout-menu-collapsed #layout-menu .menu-item.active > .menu-link .menu-icon {
-    color: #1f2937 !important;
+    color: var(--invilara-sidebar-active-text) !important;
   }
 
   html.layout-menu-collapsed #layout-menu .menu-link:focus-visible,
   html.layout-menu-collapsed #layout-menu .layout-menu-toggle:focus-visible {
-    outline: 3px solid #cca025;
+    outline: 3px solid var(--invilara-sidebar-focus);
     outline-offset: 2px;
   }
 }
@@ -270,4 +270,524 @@ html[data-bs-theme="dark"] html.layout-menu-collapsed .menu-link[data-tooltip]::
 body.dark-mode #layout-menu.menu-collapsed .menu-link[data-tooltip]::before,
 html[data-bs-theme="dark"] #layout-menu.menu-collapsed .menu-link[data-tooltip]::before {
   border-right-color: #f1f5f9;
+}
+
+/* ============================================================
+   Rail compacto claro Invilara
+   Estados: reposo blanco, preselección verde suave, activo verde sólido.
+   ============================================================ */
+:root {
+  --invilara-sidebar-bg: #ffffff;
+  --invilara-sidebar-text: #0b6b3d;
+  --invilara-sidebar-text-muted: #169151;
+  --invilara-sidebar-hover-bg: #e6f2eb;
+  --invilara-sidebar-active-bg: #0f7a46;
+  --invilara-sidebar-active-text: #ffffff;
+  --invilara-sidebar-border: #d8e1db;
+  --invilara-sidebar-focus: #169151;
+  --invilara-sidebar-shadow: rgba(6, 59, 37, 0.06);
+  --invilara-sidebar-tooltip-bg: #063b25;
+}
+
+html.light-style #layout-menu,
+html.light-style #layout-menu .menu-inner,
+html.light-style #layout-menu .menu-sub {
+  background-color: var(--invilara-sidebar-bg) !important;
+  color: var(--invilara-sidebar-text) !important;
+}
+
+html.light-style #layout-menu {
+  border-right: 1px solid var(--invilara-sidebar-border) !important;
+  box-shadow: 8px 0 18px var(--invilara-sidebar-shadow) !important;
+}
+
+html.light-style #layout-menu .menu-inner-shadow {
+  display: none !important;
+  background: none !important;
+}
+
+html.light-style #layout-menu .app-brand {
+  background-color: var(--invilara-sidebar-bg) !important;
+  border-bottom: 1px solid var(--invilara-sidebar-border) !important;
+  box-shadow: none !important;
+}
+
+html.light-style #layout-menu .app-brand-link {
+  color: var(--invilara-sidebar-text) !important;
+  border-bottom: 0 !important;
+}
+
+html.light-style #layout-menu .sidebar-logo img {
+  filter: brightness(0) saturate(100%) invert(25%) sepia(25%) saturate(1120%) hue-rotate(101deg) brightness(82%) contrast(96%);
+}
+
+html.light-style #layout-menu .menu-inner > .menu-item:not(.menu-divider-item),
+html.light-style #layout-menu .menu-sub > .menu-item {
+  border-bottom-color: var(--invilara-sidebar-border) !important;
+}
+
+html.light-style #layout-menu .menu-item > .menu-link {
+  color: var(--invilara-sidebar-text) !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+html.light-style #layout-menu .menu-item > .menu-link .menu-icon,
+html.light-style #layout-menu .menu-item > .menu-link .nav-icon {
+  color: var(--invilara-sidebar-text) !important;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+html.light-style #layout-menu .menu-item:hover > .menu-link,
+html.light-style #layout-menu .menu-item > .menu-link:hover,
+html.light-style #layout-menu .menu-item > .menu-link:focus-visible {
+  color: var(--invilara-sidebar-text) !important;
+  background-color: var(--invilara-sidebar-hover-bg) !important;
+  background-image: none !important;
+}
+
+html.light-style #layout-menu .menu-item:hover > .menu-link .menu-icon,
+html.light-style #layout-menu .menu-item:hover > .menu-link .nav-icon,
+html.light-style #layout-menu .menu-item > .menu-link:hover .menu-icon,
+html.light-style #layout-menu .menu-item > .menu-link:hover .nav-icon,
+html.light-style #layout-menu .menu-item > .menu-link:focus-visible .menu-icon,
+html.light-style #layout-menu .menu-item > .menu-link:focus-visible .nav-icon {
+  color: var(--invilara-sidebar-text) !important;
+}
+
+html.light-style #layout-menu .menu-inner > .menu-item.active > .menu-link,
+html.light-style #layout-menu .menu-inner > .menu-item.active > .menu-link:hover,
+html.light-style #layout-menu .menu-inner > .menu-item.active > .menu-link:focus-visible {
+  color: var(--invilara-sidebar-active-text) !important;
+  background-color: var(--invilara-sidebar-active-bg) !important;
+  background-image: none !important;
+  border-color: transparent !important;
+}
+
+html.light-style #layout-menu .menu-inner > .menu-item.active > .menu-link .menu-icon,
+html.light-style #layout-menu .menu-inner > .menu-item.active > .menu-link .nav-icon,
+html.light-style #layout-menu .menu-inner > .menu-item.active > .menu-toggle::after {
+  color: var(--invilara-sidebar-active-text) !important;
+  border-color: var(--invilara-sidebar-active-text) !important;
+}
+
+html.light-style #layout-menu .menu-inner > .menu-item.active::before {
+  background-color: var(--invilara-sidebar-active-bg) !important;
+}
+
+html.light-style #layout-menu .menu-sub > .menu-item.active > .menu-link,
+html.light-style #layout-menu .menu-sub > .menu-item.active > .menu-link:hover,
+html.light-style #layout-menu .menu-sub > .menu-item.active > .menu-link:focus-visible {
+  color: var(--invilara-sidebar-text) !important;
+  background-color: var(--invilara-sidebar-hover-bg) !important;
+  background-image: none !important;
+}
+
+html.light-style #layout-menu .menu-sub > .menu-item.active > .menu-link .menu-icon,
+html.light-style #layout-menu .menu-sub > .menu-item.active > .menu-link .nav-icon {
+  color: var(--invilara-sidebar-text) !important;
+}
+
+html.light-style #layout-menu .menu-sub > .menu-item > .menu-link::before {
+  background-color: #b6d6c0 !important;
+}
+
+html.light-style #layout-menu .menu-sub > .menu-item.active > .menu-link::before {
+  background-color: var(--invilara-sidebar-text) !important;
+}
+
+html.light-style #layout-menu .menu-item > .menu-toggle::after {
+  border-color: var(--invilara-sidebar-text-muted) !important;
+}
+
+html.light-style #layout-menu .menu-inner > .menu-item.active > .menu-toggle::after {
+  border-color: var(--invilara-sidebar-active-text) !important;
+}
+
+html.light-style #layout-menu .app-brand .layout-menu-toggle {
+  width: 2.75rem !important;
+  height: 2.75rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 0.75rem 0 auto !important;
+  padding: 0 !important;
+  border: 1px solid #a9d2b5 !important;
+  border-radius: 0.375rem !important;
+  color: var(--invilara-sidebar-text) !important;
+  background-color: var(--invilara-sidebar-bg) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+html.light-style #layout-menu .app-brand .layout-menu-toggle:hover,
+html.light-style #layout-menu .app-brand .layout-menu-toggle:focus-visible {
+  color: var(--invilara-sidebar-text) !important;
+  background-color: var(--invilara-sidebar-hover-bg) !important;
+  border-color: var(--invilara-sidebar-focus) !important;
+}
+
+html.light-style #layout-menu .app-brand .layout-menu-toggle .toggle-icon {
+  color: inherit !important;
+}
+
+html.light-style #layout-menu,
+html.light-style #layout-menu .menu-inner {
+  scrollbar-color: #a9d2b5 #f5f8f6;
+}
+
+html.light-style #layout-menu::-webkit-scrollbar-track,
+html.light-style #layout-menu .menu-inner::-webkit-scrollbar-track {
+  background-color: #f5f8f6;
+}
+
+html.light-style #layout-menu::-webkit-scrollbar-thumb,
+html.light-style #layout-menu .menu-inner::-webkit-scrollbar-thumb {
+  background-color: #a9d2b5;
+}
+
+html.light-style.layout-menu-collapsed #layout-menu .menu-inner .menu-link,
+html.light-style #layout-menu.menu-collapsed .menu-inner .menu-link {
+  color: var(--invilara-sidebar-text) !important;
+  background-color: var(--invilara-sidebar-bg) !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+html.light-style.layout-menu-collapsed #layout-menu .menu-inner .menu-link:hover,
+html.light-style.layout-menu-collapsed #layout-menu .menu-inner .menu-link:focus-visible,
+html.light-style #layout-menu.menu-collapsed .menu-inner .menu-link:hover,
+html.light-style #layout-menu.menu-collapsed .menu-inner .menu-link:focus-visible {
+  color: var(--invilara-sidebar-text) !important;
+  background-color: var(--invilara-sidebar-hover-bg) !important;
+  border-color: #b6d6c0 !important;
+  box-shadow: 0 5px 14px rgba(6, 59, 37, 0.1) !important;
+}
+
+html.light-style.layout-menu-collapsed #layout-menu .menu-inner .menu-link:hover .menu-icon,
+html.light-style.layout-menu-collapsed #layout-menu .menu-inner .menu-link:focus-visible .menu-icon,
+html.light-style #layout-menu.menu-collapsed .menu-inner .menu-link:hover .menu-icon,
+html.light-style #layout-menu.menu-collapsed .menu-inner .menu-link:focus-visible .menu-icon {
+  color: var(--invilara-sidebar-text) !important;
+  transform: scale(1.04);
+}
+
+html.light-style.layout-menu-collapsed #layout-menu .menu-inner > .menu-item.active > .menu-link,
+html.light-style.layout-menu-collapsed #layout-menu .menu-inner > .menu-item.active > .menu-link:hover,
+html.light-style.layout-menu-collapsed #layout-menu .menu-inner > .menu-item.active > .menu-link:focus-visible,
+html.light-style #layout-menu.menu-collapsed .menu-inner > .menu-item.active > .menu-link,
+html.light-style #layout-menu.menu-collapsed .menu-inner > .menu-item.active > .menu-link:hover,
+html.light-style #layout-menu.menu-collapsed .menu-inner > .menu-item.active > .menu-link:focus-visible {
+  color: var(--invilara-sidebar-active-text) !important;
+  background-color: var(--invilara-sidebar-active-bg) !important;
+  border-color: var(--invilara-sidebar-active-bg) !important;
+  box-shadow: 0 5px 14px rgba(6, 59, 37, 0.16) !important;
+}
+
+html.light-style.layout-menu-collapsed #layout-menu .menu-inner > .menu-item.active > .menu-link .menu-icon,
+html.light-style.layout-menu-collapsed #layout-menu .menu-inner > .menu-item.active > .menu-link .nav-icon,
+html.light-style #layout-menu.menu-collapsed .menu-inner > .menu-item.active > .menu-link .menu-icon,
+html.light-style #layout-menu.menu-collapsed .menu-inner > .menu-item.active > .menu-link .nav-icon {
+  color: var(--invilara-sidebar-active-text) !important;
+}
+
+html.light-style.layout-menu-collapsed .menu-link[data-tooltip]::after,
+html.light-style #layout-menu.menu-collapsed .menu-link[data-tooltip]::after {
+  background-color: var(--invilara-sidebar-tooltip-bg) !important;
+  color: #ffffff !important;
+  box-shadow: 0 5px 14px rgba(6, 59, 37, 0.18) !important;
+}
+
+html.light-style.layout-menu-collapsed .menu-link[data-tooltip]::before,
+html.light-style #layout-menu.menu-collapsed .menu-link[data-tooltip]::before {
+  border-right-color: var(--invilara-sidebar-tooltip-bg) !important;
+}
+
+html.light-style.layout-menu-collapsed .menu-link[data-tooltip]:hover::after,
+html.light-style #layout-menu.menu-collapsed .menu-link[data-tooltip]:hover::after,
+html.light-style.layout-menu-collapsed .menu-link[data-tooltip]:focus-visible::after,
+html.light-style #layout-menu.menu-collapsed .menu-link[data-tooltip]:focus-visible::after,
+html.light-style.layout-menu-collapsed .menu-link[data-tooltip]:hover::before,
+html.light-style #layout-menu.menu-collapsed .menu-link[data-tooltip]:hover::before,
+html.light-style.layout-menu-collapsed .menu-link[data-tooltip]:focus-visible::before,
+html.light-style #layout-menu.menu-collapsed .menu-link[data-tooltip]:focus-visible::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* El modo oscuro conserva su superficie, pero comparte el verde activo y no usa amarillo. */
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-inner,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-sub {
+  background-color: #14532d !important;
+  border-color: #2b2c40 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-item > .menu-link {
+  color: #e6f2eb !important;
+  background-image: none !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-item > .menu-link .menu-icon,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-item > .menu-link .nav-icon {
+  color: #e6f2eb !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-item:hover > .menu-link,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-item > .menu-link:hover,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-item > .menu-link:focus-visible {
+  color: #ffffff !important;
+  background-color: var(--invilara-sidebar-active-bg) !important;
+  background-image: none !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-item:hover > .menu-link .menu-icon,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-item > .menu-link:hover .menu-icon,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-item > .menu-link:focus-visible .menu-icon {
+  color: #ffffff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-inner > .menu-item.active > .menu-link,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-inner > .menu-item.active > .menu-link:hover,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-inner > .menu-item.active > .menu-link:focus-visible {
+  color: #ffffff !important;
+  background-color: var(--invilara-sidebar-active-bg) !important;
+  background-image: none !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-inner > .menu-item.active > .menu-link .menu-icon,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-inner > .menu-item.active > .menu-link .nav-icon {
+  color: #ffffff !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-sub > .menu-item.active > .menu-link,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-sub > .menu-item.active > .menu-link:hover,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-sub > .menu-item.active > .menu-link:focus-visible {
+  color: #e6f2eb !important;
+  background-color: rgba(230, 242, 235, 0.12) !important;
+  background-image: none !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .sidebar-logo img {
+  filter: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.light-style #layout-menu .menu-item > .menu-link,
+  html.light-style #layout-menu .menu-item > .menu-link .menu-icon,
+  html.light-style #layout-menu .menu-item > .menu-link .nav-icon {
+    transition: none;
+  }
+}
+
+/* Panel de etiqueta contextual para el rail compacto. */
+#sidebar-label-panel {
+  position: fixed;
+  top: 7.875rem;
+  left: 5.125rem;
+  z-index: 1040;
+  width: 17.25rem;
+  max-width: calc(100vw - 5.75rem);
+  color: var(--invilara-sidebar-text);
+  background-color: var(--invilara-sidebar-bg);
+  border: 1px solid var(--invilara-sidebar-text);
+  border-left: 4px solid var(--invilara-sidebar-active-bg);
+  box-shadow: 0 12px 28px rgba(6, 59, 37, 0.14);
+}
+
+#sidebar-label-panel[hidden],
+html:not(.layout-menu-collapsed) #sidebar-label-panel {
+  display: none !important;
+}
+
+.sidebar-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.875rem;
+  padding: 1rem 1rem 0.8125rem;
+  background-color: var(--invilara-sidebar-hover-bg);
+  border-bottom: 1px solid var(--invilara-sidebar-border);
+}
+
+.sidebar-panel-eyebrow,
+.sidebar-panel-section-title {
+  margin: 0;
+  color: var(--invilara-sidebar-text-muted);
+  font-family: var(--bs-font-monospace, monospace);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.sidebar-panel-title {
+  margin: 0.25rem 0 0;
+  color: var(--invilara-sidebar-text);
+  font-size: 1.125rem;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.sidebar-panel-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  padding: 0;
+  color: var(--invilara-sidebar-text-muted);
+  background-color: var(--invilara-sidebar-bg);
+  border: 1px solid var(--invilara-sidebar-border);
+  cursor: pointer;
+}
+
+.sidebar-panel-close:hover,
+.sidebar-panel-close:focus-visible {
+  color: var(--invilara-sidebar-text);
+  background-color: var(--invilara-sidebar-hover-bg);
+  border-color: var(--invilara-sidebar-focus);
+}
+
+.sidebar-panel-body {
+  padding: 0.9375rem 1rem 1rem;
+}
+
+.sidebar-panel-description {
+  margin: 0 0 0.875rem;
+  color: var(--bs-body-color, #697a8d);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.sidebar-panel-meta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5rem;
+  padding: 0 0.5rem;
+  color: var(--invilara-sidebar-text);
+  background-color: var(--invilara-sidebar-hover-bg);
+  border: 1px solid #a9d2b5;
+  font-family: var(--bs-font-monospace, monospace);
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+.sidebar-panel-section-title {
+  margin-top: 1.0625rem;
+  margin-bottom: 0.4375rem;
+  color: var(--bs-body-color, #697a8d);
+}
+
+.sidebar-panel-items {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.sidebar-panel-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2rem;
+  color: var(--bs-body-color, #697a8d);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.sidebar-panel-item .menu-icon,
+.sidebar-panel-item .nav-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  min-width: 1rem;
+  margin: 0;
+  color: var(--invilara-sidebar-text);
+  font-size: 0.875rem;
+}
+
+.sidebar-panel-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.25rem;
+  margin-top: 0.8125rem;
+  padding: 0 0.6875rem;
+  color: var(--invilara-sidebar-active-text) !important;
+  background-color: var(--invilara-sidebar-active-bg);
+  border: 1px solid var(--invilara-sidebar-active-bg);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.sidebar-panel-action:hover,
+.sidebar-panel-action:focus-visible {
+  color: var(--invilara-sidebar-active-text) !important;
+  background-color: var(--invilara-sidebar-text) !important;
+  border-color: var(--invilara-sidebar-text);
+}
+
+/* El panel contextual reemplaza el tooltip mínimo cuando el rail está compacto. */
+html.layout-menu-collapsed #layout-menu .menu-link[data-tooltip]::before,
+html.layout-menu-collapsed #layout-menu .menu-link[data-tooltip]::after,
+#layout-menu.menu-collapsed .menu-link[data-tooltip]::before,
+#layout-menu.menu-collapsed .menu-link[data-tooltip]::after {
+  display: none !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #sidebar-label-panel {
+  color: #e6f2eb;
+  background-color: #2b2c40;
+  border-color: #4a7c60;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sidebar-panel-header {
+  background-color: #153725;
+  border-bottom-color: #3a3b53;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sidebar-panel-title,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sidebar-panel-eyebrow,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sidebar-panel-item .menu-icon,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sidebar-panel-item .nav-icon {
+  color: #e6f2eb;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sidebar-panel-description,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sidebar-panel-section-title,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sidebar-panel-item {
+  color: #c9d8cf;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sidebar-panel-close {
+  color: #c9d8cf;
+  background-color: #2b2c40;
+  border-color: #3a3b53;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) .sidebar-panel-meta {
+  color: #e6f2eb;
+  background-color: rgba(230, 242, 235, 0.12);
+  border-color: #4a7c60;
+}
+
+@media (max-width: 991.98px) {
+  #sidebar-label-panel {
+    top: 5rem;
+    left: 4.625rem;
+    width: min(17.25rem, calc(100vw - 5.25rem));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #sidebar-label-panel,
+  .sidebar-panel-action {
+    transition: none;
+  }
 }

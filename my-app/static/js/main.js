@@ -21,36 +21,39 @@ let menu, animate;
     window.Helpers.mainMenu = menu;
   });
 
-  // Initialize menu togglers and bind click on each
-  let menuToggler = document.querySelectorAll('.layout-menu-toggle');
-  menuToggler.forEach(item => {
-    item.addEventListener('click', event => {
-      event.preventDefault();
+  // Initialize menu togglers and bind click on each.
+  // sidebar.js owns this behavior when the Invilara rail controller is loaded.
+  if (!window.InvilaraSidebarController) {
+    let menuToggler = document.querySelectorAll('.layout-menu-toggle');
+    menuToggler.forEach(item => {
+      item.addEventListener('click', event => {
+        event.preventDefault();
 
-      if (!window.Helpers.isSmallScreen() && item.closest('#layout-menu')) {
-        const collapsed = document.documentElement.classList.toggle('layout-menu-collapsed');
-        item.setAttribute('aria-expanded', String(!collapsed));
-        item.setAttribute('aria-label', collapsed ? 'Expandir menú lateral' : 'Colapsar menú lateral');
-        window.dispatchEvent(new Event('resize'));
-        return;
-      }
-
-      window.Helpers.toggleCollapsed();
-    });
-  });
-
-  document.querySelectorAll('#layout-menu .menu-item > .menu-toggle').forEach(item => {
-    item.addEventListener('click', event => {
-      if (!window.Helpers.isSmallScreen() && document.documentElement.classList.contains('layout-menu-collapsed')) {
-        const destination = item.dataset.collapsedHref;
-
-        if (destination) {
-          event.preventDefault();
-          window.location.assign(destination);
+        if (!window.Helpers.isSmallScreen() && item.closest('#layout-menu')) {
+          const collapsed = document.documentElement.classList.toggle('layout-menu-collapsed');
+          item.setAttribute('aria-expanded', String(!collapsed));
+          item.setAttribute('aria-label', collapsed ? 'Expandir menú lateral' : 'Colapsar menú lateral');
+          window.dispatchEvent(new Event('resize'));
+          return;
         }
-      }
+
+        window.Helpers.toggleCollapsed();
+      });
     });
-  });
+
+    document.querySelectorAll('#layout-menu .menu-item > .menu-toggle').forEach(item => {
+      item.addEventListener('click', event => {
+        if (!window.Helpers.isSmallScreen() && document.documentElement.classList.contains('layout-menu-collapsed')) {
+          const destination = item.dataset.collapsedHref;
+
+          if (destination) {
+            event.preventDefault();
+            window.location.assign(destination);
+          }
+        }
+      });
+    });
+  }
 
   // Display menu toggle (layout-menu-toggle) on hover with delay
   let delay = function (elem, callback) {
@@ -135,6 +138,6 @@ let menu, animate;
 
   // If current layout is vertical and current window screen is > small
 
-  // Auto update menu collapsed/expanded based on the themeConfig
-  window.Helpers.setCollapsed(false, false);
+  // Start in the compact rail; sidebar.js restores an explicit saved preference.
+  window.Helpers.setCollapsed(true, false);
 })();
