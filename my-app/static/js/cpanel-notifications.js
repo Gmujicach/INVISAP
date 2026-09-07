@@ -400,7 +400,6 @@
     if (deleteAllButton) {
       deleteAllButton.addEventListener('click', function (event) {
         event.stopPropagation();
-        if (!window.confirm('¿Eliminar todas las notificaciones?')) return;
         deleteAllButton.disabled = true;
         fetch('/notificaciones/eliminar-todas', { method: 'POST' })
           .then(function (response) {
