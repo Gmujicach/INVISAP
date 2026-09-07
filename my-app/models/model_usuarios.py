@@ -101,6 +101,21 @@ class UsuarioModel(BaseModel):
             cursor.close()
             conn.close()
 
+    def buscar_por_id_con_contrasena(self, id_usuario):
+        conn = connectionBD_seguridad()
+        if not conn: return None
+        try:
+            cursor = conn.cursor(dictionary=True)
+            sql = "SELECT id_usuarios, nombre, correo, cedula_usuario, rol, avatar, contrasena FROM usuarios WHERE id_usuarios = %s"
+            cursor.execute(sql, (id_usuario,))
+            user = cursor.fetchone()
+            if user and not user.get('avatar'):
+                user['avatar'] = DEFAULT_AVATAR
+            return user
+        finally:
+            cursor.close()
+            conn.close()
+
     def incluir(self, data):
         self.set_nombre(data.get('nombre'))
         self.set_correo(data.get('correo'))
