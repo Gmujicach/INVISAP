@@ -82,17 +82,20 @@ let menu, animate;
     });
   }
 
-  // Display in main menu when menu scrolls
+  // Display the scroll cue while the menu has content above the viewport.
   let menuInnerContainer = document.getElementsByClassName('menu-inner'),
     menuInnerShadow = document.getElementsByClassName('menu-inner-shadow')[0];
   if (menuInnerContainer.length > 0 && menuInnerShadow) {
-    menuInnerContainer[0].addEventListener('ps-scroll-y', function () {
-      if (this.querySelector('.ps__thumb-y').offsetTop) {
-        menuInnerShadow.style.display = 'block';
-      } else {
-        menuInnerShadow.style.display = 'none';
-      }
-    });
+    const menuInner = menuInnerContainer[0];
+    const updateMenuShadow = function () {
+      const scrollbarThumb = menuInner.querySelector('.ps__thumb-y');
+      const isScrolled = menuInner.scrollTop > 0 || (scrollbarThumb && scrollbarThumb.offsetTop > 0);
+      menuInnerShadow.classList.toggle('is-visible', isScrolled);
+    };
+
+    menuInner.addEventListener('scroll', updateMenuShadow, { passive: true });
+    menuInner.addEventListener('ps-scroll-y', updateMenuShadow);
+    updateMenuShadow();
   }
 
   // Init helpers & misc
