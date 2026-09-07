@@ -75,7 +75,8 @@ def inject_perfil_usuario():
     datos = {
         'perfil_avatar': 'assets/img/avatars/1.png',
         'perfil_nombre': session.get('name_surname', 'Usuario'),
-        'perfil_correo': session.get('email_user', '')
+        'perfil_correo': session.get('email_user', ''),
+        'usuario_logueado_id': session.get('id') or session.get('id_usuarios')
     }
     try:
         perfiles = info_perfil_session()
@@ -84,6 +85,7 @@ def inject_perfil_usuario():
             datos['perfil_avatar'] = p.get('avatar') or datos['perfil_avatar']
             datos['perfil_nombre'] = p.get('nombre') or datos['perfil_nombre']
             datos['perfil_correo'] = p.get('correo') or datos['perfil_correo']
+            datos['usuario_logueado_id'] = p.get('id_usuarios') or datos['usuario_logueado_id']
     except Exception:
         pass
     return dict(perfil=datos)

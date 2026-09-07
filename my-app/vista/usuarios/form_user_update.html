@@ -11,6 +11,7 @@
       <div class="card-body mt-4">
         <form action="{{ url_for('user_bp.update_user') }}" method="POST" id="formUpdateUser">
           <input type="hidden" name="id_user" value="{{ usuario.id_usuarios }}">
+          <input type="hidden" name="password_actual" id="passwordActualUpdate">
           <div class="row">
             <div class="col-md-12 mb-3">
               <label for="nombre" class="form-label">Nombre y Apellido</label>
@@ -39,6 +40,7 @@
                 <option value="">Cargando...</option>
               </select>
               {% if usuario.rol == 'Super Usuario' %}
+                <input type="hidden" name="rol" value="{{ usuario.rol }}">
                 <small class="text-muted">El Super Usuario no puede cambiar de rol.</small>
               {% endif %}
             </div>
@@ -51,7 +53,8 @@
                   class="form-control password-input custom-placeholder border-end-0 border-secondary-subtle"
                   name="pass_user"
                   placeholder="Opcional: 8-12 caracteres, letras y símbolo (Ej: Invi2026*)"
-                  minlength="8" maxlength="12" />
+                  minlength="8" maxlength="12"
+                  pattern="(?=.*[A-Za-zÁÉÍÓÚáéíóúÑñ])(?=.*[^A-Za-z0-9ÁÉÍÓÚáéíóúÑñ]).{8,12}" />
                 
                 <button 
                   type="button" 
@@ -60,6 +63,10 @@
                   <i class="bi bi-eye-slash toggle-icon fs-5 text-muted"></i>
                 </button>
               </div>
+              <div class="form-text text-muted d-none" id="passwordHelpUpdate">
+                Ejemplo válido: <code>Invi2026*</code> (8-12 caracteres, letras y al menos 1 símbolo).
+              </div>
+              <div class="invalid-feedback">Usa de 8 a 12 caracteres, una letra y al menos un símbolo. Ejemplo: <code>Invi2026*</code>.</div>
 
               <!-- Indicador de fortaleza -->
               <div class="password-strength-widget d-none mt-2">
@@ -96,16 +103,85 @@
     </div>
   </div>
 </div>
+
+<!-- Modales de protección para Super Usuario -->
+<div class="modal fade" id="modalConfirmarSuperUsuarioEditar" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Advertencia de Seguridad</h5>
+        <button type="button" class="btn btn-sm btn-outline-dark rounded-circle ms-auto" data-bs-dismiss="modal" aria-label="Cerrar">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Estás a punto de editar la contraseña del <strong>Super Usuario</strong>. Esta acción requiere autenticación adicional.</p>
+        <p class="mb-0">¿Estás seguro de que deseas continuar?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-warning" id="btnConfirmarEditarSuperForm">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalAutenticarSuperUsuarioEditar" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title"><i class="bi bi-shield-lock me-2"></i>Autenticación Requerida</h5>
+        <button type="button" class="btn btn-sm btn-outline-light rounded-circle ms-auto" data-bs-dismiss="modal" aria-label="Cerrar">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Ingresa tu contraseña actual para autorizar el cambio.</p>
+                  <div class="mb-3">
+                    <label for="passwordSuperUsuarioEditar" class="form-label">Contraseña actual</label>
+                    <div class="input-group input-group-merge">
+                      <input type="password" class="form-control" id="passwordSuperUsuarioEditar" placeholder="Ingresa la contraseña actual" autocomplete="current-password">
+                      <button type="button" class="input-group-text password-toggle-btn border-start-0 border-secondary-subtle px-3 toggle-password-super-editar" style="background-color: #fff; cursor: pointer;">
+                        <i class="bi bi-eye-slash toggle-icon fs-5 text-muted"></i>
+                      </button>
+                    </div>
+                    <div class="form-text text-muted d-none" id="passwordHelpAuth">Escribe exactamente tu contraseña actual.</div>
+                    <div class="invalid-feedback" id="passwordErrorEditar">Contraseña incorrecta.</div>
+                  </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-info" id="btnAutenticarSuperForm">Modificar</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/usuarios/tour.js') }}"></script>
 <script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script>
+  const urlVerificarPassword = "{{ url_for('user_bp.verify_password') }}";
+
   document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formUpdateUser');
-    if (form) {
+    const usuarioLogueadoId = '{{ session.get("id", "") }}';
+    const usuarioEditId = '{{ usuario.id_usuarios }}';
+    const rolUsuario = '{{ usuario.rol|lower|trim|replace(" ", "") }}';
+    const esSuperUsuario = rolUsuario === 'superusuario';
+
+    if (esSuperUsuario && usuarioLogueadoId && usuarioEditId && usuarioLogueadoId !== usuarioEditId) {
+      if (typeof createToastNotification === 'function') {
+        createToastNotification('No tienes permisos para cambiar la contraseña del Super Usuario.', 'error');
+      } else {
+        alert('No tienes permisos para cambiar la contraseña del Super Usuario.');
+      }
+      window.location.href = "{{ url_for('user_bp.list_users') }}";
+      return;
+    }
+
+    if (!esSuperUsuario && form) {
       ValidacionesComunes.initSelects(form);
-      ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Actualizando...' });
     }
 
     const rolSelect = document.getElementById('rol');
@@ -114,7 +190,7 @@
       fetch('/api/seguridad/roles/listar')
         .then(function(r) { return r.json(); })
         .then(function(roles) {
-          rolSelect.innerHTML = '<option value=\"\">Seleccione un rol...</option>';
+          rolSelect.innerHTML = '<option value="">Seleccione un rol...</option>';
           (Array.isArray(roles) ? roles : (roles.roles || [])).forEach(function(r) {
             if ((r.nombre || '').trim().toLowerCase() === 'super usuario') return;
             var opt = document.createElement('option');
@@ -125,7 +201,7 @@
           });
         })
         .catch(function() {
-          rolSelect.innerHTML = '<option value=\"\">Error al cargar</option>';
+          rolSelect.innerHTML = '<option value="">Error al cargar</option>';
         });
     }
   });
@@ -167,6 +243,7 @@
         const meter = strengthWidget.querySelector('.strength-meter');
         const label = strengthWidget.querySelector('.strength-label');
         const helpText = field.querySelector('.form-text');
+        const helpPassUpdate = document.getElementById('passwordHelpUpdate');
 
         passwordInput.addEventListener('input', function () {
           const val = passwordInput.value;
@@ -174,6 +251,7 @@
           if (val.length === 0) {
             strengthWidget.classList.add('d-none');
             if (helpText) helpText.classList.add('d-none');
+            if (helpPassUpdate) helpPassUpdate.classList.add('d-none');
             return;
           }
 
@@ -214,6 +292,14 @@
             }
           }
 
+          if (score === 2) {
+            if (helpPassUpdate) helpPassUpdate.classList.add('d-none');
+            passwordInput.classList.remove('is-invalid');
+          } else {
+            if (helpPassUpdate) helpPassUpdate.classList.remove('d-none');
+            passwordInput.classList.add('is-invalid');
+          }
+
           if (score === 0) {
             meter.style.width = '25%';
             meter.className = 'strength-meter progress-bar bg-danger';
@@ -232,6 +318,169 @@
           }
         });
       }
+    });
+  });
+
+  // Protección de edición de contraseña para Super Usuario
+  document.addEventListener('DOMContentLoaded', function() {
+    const rolSesion = '{{ session.get("rol", "")|lower|trim }}';
+    const esSuperUsuario = rolSesion === 'super usuario';
+
+    const form = document.getElementById('formUpdateUser');
+    const passInput = document.getElementById('pass_user');
+    const modalConfirmarEl = document.getElementById('modalConfirmarSuperUsuarioEditar');
+    const modalAutenticarEl = document.getElementById('modalAutenticarSuperUsuarioEditar');
+    const passwordAuthInput = document.getElementById('passwordSuperUsuarioEditar');
+    const passwordActualInput = document.getElementById('passwordActualUpdate');
+    const errorAuth = document.getElementById('passwordErrorEditar');
+    const helpAuth = document.getElementById('passwordHelpAuth');
+    const btnSubmit = form ? form.querySelector('button[type="submit"]') : null;
+
+    if (!form || !passInput || !modalConfirmarEl || !modalAutenticarEl) return;
+
+    const modalConfirmar = bootstrap.Modal.getInstance(modalConfirmarEl) || new bootstrap.Modal(modalConfirmarEl);
+    const modalAutenticar = bootstrap.Modal.getInstance(modalAutenticarEl) || new bootstrap.Modal(modalAutenticarEl);
+
+    let procesando = false;
+    let yaAutenticado = false;
+
+    modalConfirmarEl.addEventListener('hidden.bs.modal', function() {
+      procesando = false;
+      if (btnSubmit) btnSubmit.disabled = false;
+    });
+
+    modalAutenticarEl.addEventListener('hidden.bs.modal', function() {
+      procesando = false;
+      yaAutenticado = false;
+      if (btnSubmit) btnSubmit.disabled = false;
+    });
+
+    if (form) {
+      const helpPass = document.getElementById('passwordHelpUpdate');
+
+      form.addEventListener('submit', function(e) {
+        if (yaAutenticado) {
+          yaAutenticado = false;
+          return;
+        }
+
+        const nuevaPassword = passInput.value.trim();
+        if (!nuevaPassword) return;
+
+        if (!esSuperUsuario) {
+          e.preventDefault();
+          if (typeof createToastNotification === 'function') {
+            createToastNotification('No tienes permisos para cambiar contraseñas. Solo el Super Usuario puede realizar esta acción.', 'error');
+          }
+          return;
+        }
+
+        if (!passInput.checkValidity()) {
+          passInput.classList.add('is-invalid');
+          if (helpPass) helpPass.classList.remove('d-none');
+          return;
+        }
+
+        if (procesando) {
+          e.preventDefault();
+          return;
+        }
+
+        procesando = true;
+        if (btnSubmit) btnSubmit.disabled = true;
+        e.preventDefault();
+        modalConfirmar.show();
+      });
+    }
+
+    const btnConfirmar = document.getElementById('btnConfirmarEditarSuperForm');
+    if (btnConfirmar) {
+      btnConfirmar.addEventListener('click', function() {
+        modalConfirmar.hide();
+        modalAutenticar.show();
+      });
+    }
+
+    const btnAutenticar = document.getElementById('btnAutenticarSuperForm');
+    if (btnAutenticar && passwordAuthInput) {
+      btnAutenticar.addEventListener('click', function() {
+        passwordAuthInput.classList.remove('is-invalid');
+        if (helpAuth) helpAuth.classList.add('d-none');
+
+        const password = passwordAuthInput.value.trim();
+        if (!password) {
+          passwordAuthInput.classList.add('is-invalid');
+          if (helpAuth) helpAuth.classList.remove('d-none');
+          return;
+        }
+
+        fetch(urlVerificarPassword, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ password: passwordAuthInput.value }),
+          credentials: 'same-origin',
+          cache: 'no-store'
+        })
+        .then(function(r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then(function(data) {
+          if (data.success) {
+            yaAutenticado = true;
+            if (passwordActualInput) passwordActualInput.value = passwordAuthInput.value;
+            modalAutenticar.hide();
+            passwordAuthInput.value = '';
+            passwordAuthInput.classList.remove('is-invalid');
+            if (helpAuth) helpAuth.classList.add('d-none');
+            procesando = false;
+            if (btnSubmit) btnSubmit.disabled = false;
+            form.submit();
+          } else {
+            passwordAuthInput.classList.add('is-invalid');
+            errorAuth.textContent = data.message || 'Contraseña incorrecta.';
+            if (typeof createToastNotification === 'function') {
+              createToastNotification(data.message || 'No se pudo autenticar la operación.', 'error');
+            }
+          }
+        })
+        .catch(function() {
+          passwordAuthInput.classList.add('is-invalid');
+          errorAuth.textContent = 'Error al verificar la contraseña.';
+          if (typeof createToastNotification === 'function') {
+            createToastNotification('No se pudo autenticar la operación.', 'error');
+          }
+        });
+      });
+    }
+
+    if (passwordAuthInput) {
+      passwordAuthInput.addEventListener('input', function() {
+        this.classList.remove('is-invalid');
+        if (helpAuth) helpAuth.classList.add('d-none');
+      });
+
+      passwordAuthInput.addEventListener('blur', function() {
+        const val = this.value.trim();
+        if (!val) return;
+        if (val.length < 8 || val.length > 12) {
+          if (helpAuth) helpAuth.classList.remove('d-none');
+        }
+      });
+    }
+
+    document.querySelectorAll('.toggle-password-super-editar').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var input = document.getElementById('passwordSuperUsuarioEditar');
+        var icon = btn.querySelector('.toggle-icon');
+        if (!input || !icon) return;
+        var isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        icon.classList.toggle('bi-eye', isPassword);
+        icon.classList.toggle('bi-eye-slash', !isPassword);
+      });
     });
   });
 </script>
