@@ -3,18 +3,13 @@ window.InvilaraSidebarController = true;
 function initInvilaraSidebar() {
   'use strict';
 
+  if (window.__invilaraSidebarInitialized) return;
+  window.__invilaraSidebarInitialized = true;
+
   const sidebar = document.getElementById('layout-menu');
   const btnToggle = document.getElementById('sidebarToggleBtn');
   const iconoCerrar = document.getElementById('icono-cerrar');
   const iconoAbrir = document.getElementById('icono-abrir');
-  const labelPanel = document.getElementById('sidebar-label-panel');
-  const panelType = document.getElementById('sidebar-panel-type');
-  const panelTitle = document.getElementById('sidebar-panel-title');
-  const panelDescription = document.getElementById('sidebar-panel-description');
-  const panelMeta = document.getElementById('sidebar-panel-meta');
-  const panelItems = document.getElementById('sidebar-panel-items');
-  const panelAction = document.getElementById('sidebar-panel-action');
-  const panelClose = document.getElementById('sidebar-panel-close');
 
   if (!sidebar || !btnToggle) return;
 
@@ -40,18 +35,31 @@ function initInvilaraSidebar() {
   }
 
   function isCollapsed() {
-    const rootCollapsed = document.documentElement.classList.contains('layout-menu-collapsed');
-    const sidebarCollapsed = sidebar.classList.contains('menu-collapsed');
-    return rootCollapsed || sidebarCollapsed;
+    if (window.Helpers && typeof window.Helpers.isSmallScreen === 'function' && window.Helpers.isSmallScreen()) {
+      return !document.documentElement.classList.contains('layout-menu-expanded');
+    }
+
+    return document.documentElement.classList.contains('layout-menu-collapsed');
   }
 
   function setCollapsed(collapsed) {
-    document.documentElement.classList.toggle('layout-menu-collapsed', collapsed);
+    const isSmallScreen = window.Helpers && typeof window.Helpers.isSmallScreen === 'function'
+      ? window.Helpers.isSmallScreen()
+      : window.innerWidth < 992;
+
+    if (isSmallScreen) {
+      document.documentElement.classList.remove('layout-menu-collapsed');
+      document.documentElement.classList.toggle('layout-menu-expanded', !collapsed);
+    } else {
+      document.documentElement.classList.toggle('layout-menu-collapsed', collapsed);
+    }
+
     sidebar.classList.toggle('menu-collapsed', collapsed);
     sidebar.classList.toggle('layout-menu-expanded', !collapsed);
-    setTimeout(function () {
+
+    requestAnimationFrame(function () {
       window.dispatchEvent(new Event('resize'));
-    }, 30);
+    });
   }
 
   function getTopLevelLinks() {
@@ -61,108 +69,6 @@ function initInvilaraSidebar() {
   function getLinkLabel(link) {
     const textNode = link.querySelector(':scope > div');
     return (link.dataset.tooltip || (textNode ? textNode.textContent : link.textContent)).trim();
-  }
-
-  function getPanelData(link) {
-    const menuItem = link.closest('.menu-item');
-    const menuSub = menuItem ? menuItem.querySelector(':scope > .menu-sub') : null;
-    const subLinks = menuSub ? Array.from(menuSub.querySelectorAll(':scope > .menu-item > .menu-link')) : [];
-    const title = getLinkLabel(link);
-    const isModule = subLinks.length > 0;
-    const directHref = link.dataset.collapsedHref || (subLinks[0] ? subLinks[0].getAttribute('href') : link.getAttribute('href'));
-
-    return {
-      title,
-      type: isModule ? 'Módulo' : 'Acción',
-      description: link.dataset.panelDescription || (isModule
-        ? 'Gestiona y da seguimiento a ' + title.toLowerCase() + '.'
-        : 'Accede directamente a ' + title.toLowerCase() + '.'),
-      subLinks,
-      directHref: directHref && directHref !== 'javascript:void(0);' ? directHref : '#'
-    };
-  }
-
-  let suppressNextPanelFocus = false;
-
-  function closePanel(restoreFocus) {
-    if (!labelPanel) return;
-
-    labelPanel.hidden = true;
-    labelPanel.setAttribute('aria-hidden', 'true');
-
-    if (restoreFocus && document.activeElement && document.activeElement.closest('#sidebar-label-panel')) {
-      const currentLink = getTopLevelLinks().find(function (link) {
-        return link.closest('.menu-item').classList.contains('active');
-      });
-      if (currentLink) {
-        suppressNextPanelFocus = true;
-        currentLink.focus({ preventScroll: true });
-      }
-    }
-  }
-
-  function renderPanel(link) {
-    if (!labelPanel || !isCollapsed() || !link) return;
-
-    const data = getPanelData(link);
-    panelType.textContent = data.type;
-    panelTitle.textContent = data.title;
-    panelDescription.textContent = data.description;
-    panelMeta.textContent = data.subLinks.length
-      ? data.subLinks.length + (data.subLinks.length === 1 ? ' acción disponible' : ' acciones disponibles')
-      : 'Acción directa';
-    panelAction.href = data.directHref;
-    panelClose.setAttribute('aria-label', 'Cerrar panel de ' + data.title);
-    panelItems.innerHTML = '';
-
-    if (data.subLinks.length) {
-      data.subLinks.forEach(function (subLink) {
-        const row = document.createElement('div');
-        const icon = subLink.querySelector('.menu-icon, .nav-icon');
-        const textNode = subLink.querySelector(':scope > div');
-        const text = document.createElement('span');
-
-        row.className = 'sidebar-panel-item';
-        text.textContent = (textNode ? textNode.textContent : subLink.textContent).trim();
-
-        if (icon) {
-          const iconClone = icon.cloneNode(true);
-          iconClone.setAttribute('aria-hidden', 'true');
-          row.appendChild(iconClone);
-        }
-
-        row.appendChild(text);
-        panelItems.appendChild(row);
-      });
-    } else {
-      const row = document.createElement('div');
-      const icon = document.createElement('i');
-      const text = document.createElement('span');
-
-      row.className = 'sidebar-panel-item';
-      icon.className = 'menu-icon bi bi-arrow-right-circle';
-      icon.setAttribute('aria-hidden', 'true');
-      text.textContent = 'Acceso directo al módulo';
-      row.appendChild(icon);
-      row.appendChild(text);
-      panelItems.appendChild(row);
-    }
-
-    labelPanel.hidden = false;
-    labelPanel.setAttribute('aria-hidden', 'false');
-  }
-
-  function showCurrentPanel() {
-    if (!isCollapsed()) {
-      closePanel(false);
-      return;
-    }
-
-    const currentLink = getTopLevelLinks().find(function (link) {
-      return link.closest('.menu-item').classList.contains('active');
-    });
-
-    if (currentLink) renderPanel(currentLink);
   }
 
   function syncMenuState() {
@@ -209,11 +115,7 @@ function initInvilaraSidebar() {
 
     const nextState = !isCollapsed();
 
-    if (window.Helpers && typeof window.Helpers.toggleCollapsed === 'function') {
-      window.Helpers.toggleCollapsed();
-    } else {
-      setCollapsed(nextState);
-    }
+    setCollapsed(nextState);
 
     writeStoredState(nextState);
     requestAnimationFrame(syncIconState);
@@ -247,44 +149,14 @@ function initInvilaraSidebar() {
   initMenuToggleItems();
   btnToggle.addEventListener('click', toggleMenu);
 
-  getTopLevelLinks().forEach(function (link) {
-    link.addEventListener('mouseenter', function () {
-      renderPanel(link);
-    });
-    link.addEventListener('focusin', function () {
-      if (suppressNextPanelFocus) {
-        suppressNextPanelFocus = false;
-        return;
-      }
-      renderPanel(link);
-    });
-  });
-
-  if (panelClose) {
-    panelClose.addEventListener('click', function () {
-      closePanel(true);
-    });
-  }
-
-  document.addEventListener('click', function (event) {
-    if (labelPanel && !labelPanel.hidden && !labelPanel.contains(event.target) && !sidebar.contains(event.target)) {
-      closePanel(false);
-    }
-  });
-
-  document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape' && labelPanel && !labelPanel.hidden) {
-      closePanel(true);
-    }
-  });
-
   syncIconState();
-  showCurrentPanel();
 
   const observer = new MutationObserver(function () {
+    const collapsed = isCollapsed();
+    sidebar.classList.toggle('menu-collapsed', collapsed);
+    sidebar.classList.toggle('layout-menu-expanded', !collapsed);
     syncIconState();
     syncMenuState();
-    showCurrentPanel();
   });
 
   observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });

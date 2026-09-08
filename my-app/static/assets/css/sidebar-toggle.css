@@ -133,23 +133,30 @@ html.layout-menu-collapsed .app-brand .layout-menu-toggle #icono-abrir,
     margin-top: 0.5rem !important;
   }
 
-  html.layout-menu-collapsed #layout-menu .menu-link {
+  html.layout-menu-collapsed #layout-menu .menu-inner > .menu-item {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  html.layout-menu-collapsed #layout-menu .menu-inner > .menu-item > .menu-link {
     display: flex !important;
     align-items: center;
-    justify-content: flex-start;
-    width: 48px !important;
+    justify-content: center;
+    box-sizing: border-box;
+    width: calc(100% - 1rem) !important;
     min-height: 48px !important;
     height: 48px !important;
-    padding-left: 0.75rem !important;
-    padding-right: 0.75rem !important;
+    padding: 0 !important;
+    gap: 0 !important;
     border-radius: 0.85rem !important;
-    margin: 0.35rem 0.55rem !important;
+    margin: 0.35rem 0.5rem !important;
+    flex: 0 0 auto !important;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: all 0.2s ease;
   }
 
-  html.layout-menu-collapsed #layout-menu .menu-link > div,
+  html.layout-menu-collapsed #layout-menu .menu-inner > .menu-item > .menu-link > div,
   html.layout-menu-collapsed #layout-menu .menu-sub,
   html.layout-menu-collapsed #layout-menu .menu-toggle::after {
     display: none !important;
@@ -164,6 +171,7 @@ html.layout-menu-collapsed .app-brand .layout-menu-toggle #icono-abrir,
     justify-content: center;
     width: 1.5rem;
     min-width: 1.5rem;
+    height: 1.5rem;
     margin-right: 0 !important;
     font-size: 1.25rem;
     line-height: 1;
@@ -171,17 +179,28 @@ html.layout-menu-collapsed .app-brand .layout-menu-toggle #icono-abrir,
     transition: color 0.2s ease, transform 0.2s ease;
   }
 
-  html.layout-menu-collapsed #layout-menu .menu-link:hover {
-    transform: translateY(-1px);
+  html.layout-menu-collapsed #layout-menu:not(:hover) .menu-inner > .menu-item > .menu-link .menu-icon,
+  html.layout-menu-collapsed #layout-menu:not(:hover) .menu-inner > .menu-item > .menu-link .nav-icon,
+  html.layout-menu-collapsed #layout-menu.menu-collapsed:not(:hover) .menu-inner > .menu-item > .menu-link .menu-icon,
+  html.layout-menu-collapsed #layout-menu.menu-collapsed:not(:hover) .menu-inner > .menu-item > .menu-link .nav-icon {
+    width: 1.5rem !important;
+    min-width: 1.5rem !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    text-align: center !important;
+  }
+
+  html.layout-menu-collapsed #layout-menu .menu-inner > .menu-item > .menu-link:hover {
+    transform: none;
     background-color: rgba(45, 106, 79, 0.35) !important;
     border-color: rgba(45, 106, 79, 0.6) !important;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
   }
 
-  html.layout-menu-collapsed #layout-menu .menu-link:hover .menu-icon,
-  html.layout-menu-collapsed #layout-menu .menu-link:hover .nav-icon {
+  html.layout-menu-collapsed #layout-menu .menu-inner > .menu-item > .menu-link:hover .menu-icon,
+  html.layout-menu-collapsed #layout-menu .menu-inner > .menu-item > .menu-link:hover .nav-icon {
     color: #ffffff;
-    transform: scale(1.08);
+    transform: none;
   }
 
   html.layout-menu-collapsed #layout-menu .menu-item.active > .menu-link {
@@ -195,7 +214,7 @@ html.layout-menu-collapsed .app-brand .layout-menu-toggle #icono-abrir,
     color: var(--invilara-sidebar-active-text) !important;
   }
 
-  html.layout-menu-collapsed #layout-menu .menu-link:focus-visible,
+  html.layout-menu-collapsed #layout-menu .menu-inner > .menu-item > .menu-link:focus-visible,
   html.layout-menu-collapsed #layout-menu .layout-menu-toggle:focus-visible {
     outline: 3px solid var(--invilara-sidebar-focus);
     outline-offset: 2px;
