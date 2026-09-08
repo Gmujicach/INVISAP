@@ -4,16 +4,15 @@
     <a href="{{ url_for('login_bp.inicio') }}" class="app-brand-link" style="justify-content: center; width: 100%;">
       <span class="app-brand-logo demo sidebar-logo" style="line-height: 0; display: flex; align-items: center; justify-content: center;">
         <img src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}" 
-             data-dark-src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL_WHITE.png') }}"
              data-light-src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL HORIZONTAL.png') }}"
-             alt="Logo" 
-             onerror="this.onerror=null; this.removeAttribute('data-dark-src'); this.src='{{ fallback_logo }}';"
+             alt="Logo oficial de INVILARA"
+             onerror="this.onerror=null; this.src='{{ fallback_logo }}';"
              style="max-height: 200px; max-width: 200px; object-fit: contain; width: auto; height: auto;" />
       </span>
     </a>
     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block"
        id="sidebarToggleBtn"
-       aria-controls="layout-menu" aria-expanded="true" aria-label="Colapsar menú lateral">
+       aria-controls="layout-menu" aria-expanded="false" aria-label="Expandir menú lateral">
       <i id="icono-cerrar" class="bi bi-chevron-left toggle-icon" aria-hidden="true"></i>
       <i id="icono-abrir" class="bi bi-list toggle-icon" aria-hidden="true"></i>
     </a>
@@ -21,6 +20,11 @@
 
   <div class="menu-inner-shadow"></div>
   <ul class="menu-inner py-5">
+    {% if tiene_permiso('solicitudes') or tiene_permiso('gravedad') or tiene_permiso('prioridad') or tiene_permiso('proyectos') or tiene_permiso('maquinaria') or tiene_permiso('contrataciones') %}
+    <li class="menu-header sidebar-section" data-section="operacion">
+      <span class="menu-header-text">Operación</span>
+    </li>
+    {% endif %}
     {% if tiene_permiso('solicitudes') %}
     <li class="menu-item {% if request.path in ['/registrar-solicitud', '/lista-de-solicitudes'] %} active open {% endif %}">
       <a href="javascript:void(0);" class="menu-link menu-toggle" data-tooltip="Solicitudes" data-collapsed-href="{{ url_for('lista_solicitudes') }}">
@@ -89,8 +93,13 @@
     </li>
     {% endif %}
 
+    {% if tiene_permiso('empresas') or tiene_permiso('obras') or tiene_permiso('empleados') or tiene_permiso('inspecciones') or tiene_permiso('evidencias') %}
+    <li class="menu-header sidebar-section" data-section="territorio">
+      <span class="menu-header-text">Territorio</span>
+    </li>
+    {% endif %}
     {% if tiene_permiso('empresas') %}
-    <li class="menu-item">
+    <li class="menu-item {% if request.path in ['/registrar-empresas', '/lista-empresas'] %} active open {% endif %}">
       <a href="javascript:void(0);" class="menu-link menu-toggle" data-tooltip="Empresas" data-collapsed-href="{{ url_for('lista_empresas') }}">
         <i class="menu-icon bi bi-building"></i>
         <div data-i18n="Companies">Empresas</div>
@@ -190,6 +199,11 @@
     </li>
     {% endif %}
 
+    {% if tiene_permiso('informes') or tiene_permiso('publicaciones') or tiene_permiso('reportes') %}
+    <li class="menu-header sidebar-section" data-section="analisis-comunicacion">
+      <span class="menu-header-text">Análisis y comunicación</span>
+    </li>
+    {% endif %}
     {% if tiene_permiso('informes') %}
     <li class="menu-item {% if request.path == '/inf_avance_obra' %} active {% endif %}">
       <a href="{{ url_for('home_bp.viewFormInforme_avan_obras') }}" class="menu-link" data-tooltip="Informe Avance de Obra">
@@ -251,6 +265,10 @@
     </li>
     {% endif %}
 
+    {% if tiene_permiso('usuarios') or tiene_permiso('roles_permisos') or tiene_permiso('respaldos') or tiene_permiso('bitacora') %}
+    <li class="menu-header sidebar-section" data-section="administracion">
+      <span class="menu-header-text">Administración</span>
+    </li>
     {% if tiene_permiso('usuarios') %}
     <li class="menu-item {% if request.path in ['/users/register', '/users'] %} active open {% endif %}">
       <a href="javascript:void(0);" class="menu-link menu-toggle" data-tooltip="Usuarios" data-collapsed-href="{{ url_for('user_bp.list_users') }}">
@@ -300,14 +318,35 @@
       </a>
     </li>
     {% endif %}
+    {% endif %}
 
-    {% if tiene_permiso('manual') %}
     <li class="menu-item">
       <a href="{{ url_for('manual_sistema') }}" class="menu-link" target="_blank" rel="noopener noreferrer" data-tooltip="Manual del Sistema">
         <i class="menu-icon bi bi-journal-bookmark-fill"></i>
         <div data-i18n="System Manual">Manual del Sistema</div>
       </a>
     </li>
-    {% endif %}
   </ul>
+</aside>
+
+<aside id="sidebar-label-panel" class="sidebar-label-panel" aria-hidden="true" aria-labelledby="sidebar-panel-title" aria-describedby="sidebar-panel-description" hidden>
+  <div class="sidebar-panel-header">
+    <div>
+      <p id="sidebar-panel-type" class="sidebar-panel-eyebrow">Módulo</p>
+      <h2 id="sidebar-panel-title" class="sidebar-panel-title">Navegación</h2>
+    </div>
+    <button id="sidebar-panel-close" class="sidebar-panel-close" type="button" aria-label="Cerrar panel de navegación">
+      <i class="bi bi-x-lg" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="sidebar-panel-body">
+    <p id="sidebar-panel-description" class="sidebar-panel-description"></p>
+    <span id="sidebar-panel-meta" class="sidebar-panel-meta"></span>
+    <p class="sidebar-panel-section-title">Submódulos</p>
+    <div id="sidebar-panel-items" class="sidebar-panel-items"></div>
+    <a id="sidebar-panel-action" class="sidebar-panel-action" href="#">
+      <i class="bi bi-arrow-right" aria-hidden="true"></i>
+      <span>Ver módulo</span>
+    </a>
+  </div>
 </aside>
