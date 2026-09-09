@@ -8,6 +8,24 @@
     color: #cca025;
     opacity: 1;
   }
+  /* Fix nested modal z-index stacking */
+  .modal.show {
+    z-index: 1055;
+  }
+  .modal-backdrop.show {
+    z-index: 1050;
+  }
+  /* When parent modal is open and child modal opens */
+  .modal.show ~ .modal-backdrop.show {
+    z-index: 1050;
+  }
+  /* Ensure parent modal content stays above its backdrop */
+  #modalRegistrarInforme.modal.show {
+    z-index: 1055;
+  }
+  #modalRegistrarInforme.modal.show ~ .modal-backdrop.show {
+    z-index: 1050;
+  }
 </style>
 {% endblock %}
 
@@ -286,22 +304,22 @@
           </div>
 
           <div class="row mb-3">
-            <div class="col-md-12">
-              <label for="gerente_responsable_id" class="form-label required">
-                Inspector Responsable
-              </label>
-              <div class="input-group">
-                <input type="text" class="form-control shadow-sm" id="inspector_nombre_display"
-                       placeholder="Haga clic en el botón para seleccionar un inspector..." readonly required />
-                <input type="hidden" name="gerente_responsable_id" id="gerente_responsable_id" required />
-                <button class="btn btn-outline-primary d-flex align-items-center" type="button" data-bs-toggle="modal" data-bs-target="#modalSeleccionarInspector">
-                  <i class="bx bx-search me-1"></i> <span>Seleccionar Inspector</span>
-                </button>
+<div class="col-md-12">
+                <label for="gerente_responsable_id" class="form-label required">
+                  Inspector Responsable
+                </label>
+                <div class="input-group">
+                  <input type="text" class="form-control shadow-sm" id="inspector_nombre_display"
+                         placeholder="Haga clic en el botón para seleccionar un inspector..." readonly required />
+                  <input type="hidden" name="gerente_responsable_id" id="gerente_responsable_id" required />
+                  <button class="btn btn-outline-primary d-flex align-items-center" type="button" onclick="abrirModalHijo('modalSeleccionarInspector')">
+                    <i class="bx bx-search me-1"></i> <span>Seleccionar Inspector</span>
+                  </button>
+                </div>
+                <small class="form-text text-muted">
+                  <i class="bx bx-info-circle"></i> Solo se muestran empleados con cargo de Inspector activos
+                </small>
               </div>
-              <small class="form-text text-muted">
-                <i class="bx bx-info-circle"></i> Solo se muestran empleados con cargo de Inspector activos
-              </small>
-            </div>
           </div>
 
           <!-- ========== SECCIÓN 3: OBSERVACIONES TÉCNICAS ========== -->
@@ -347,7 +365,7 @@
               <label class="form-label">
                 <i class="bx bx-image-add me-1"></i>Fotos ANTES
               </label>
-              <button type="button" class="btn btn-outline-success w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasAntes">
+              <button type="button" class="btn btn-outline-success w-100" onclick="abrirModalHijo('modalEvidenciasAntes')">
                 <i class="bx bx-folder-open"></i> Seleccionar Evidencias ANTES
               </button>
               <input type="hidden" name="evidencias_antes" id="evidencias_antes_ids" />
@@ -362,7 +380,7 @@
               <label class="form-label">
                 <i class="bx bx-image-add me-1"></i>Fotos DURANTE
               </label>
-              <button type="button" class="btn btn-outline-warning w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasDurante">
+              <button type="button" class="btn btn-outline-warning w-100" onclick="abrirModalHijo('modalEvidenciasDurante')">
                 <i class="bx bx-folder-open"></i> Seleccionar Evidencias DURANTE
               </button>
               <input type="hidden" name="evidencias_durante" id="evidencias_durante_ids" />
@@ -377,7 +395,7 @@
               <label class="form-label">
                 <i class="bx bx-image-add me-1"></i>Fotos DESPUÉS
               </label>
-              <button type="button" class="btn btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#modalEvidenciasDespues">
+              <button type="button" class="btn btn-outline-info w-100" onclick="abrirModalHijo('modalEvidenciasDespues')">
                 <i class="bx bx-folder-open"></i> Seleccionar Evidencias DESPUÉS
               </button>
               <input type="hidden" name="evidencias_despues" id="evidencias_despues_ids" />
@@ -645,7 +663,26 @@ function escapeJs(str) {
 // CARGAR INSPECTORES AL ABRIR EL MODAL
 // ============================================
 document.getElementById('modalSeleccionarInspector').addEventListener('show.bs.modal', function() {
+  const parentModal = document.getElementById('modalRegistrarInforme');
+  if (parentModal && bootstrap.Modal.getInstance(parentModal)) {
+    const backdrop = document.querySelector('.modal-backdrop.show');
+    if (backdrop) {
+      backdrop.style.zIndex = '1055';
+    }
+    parentModal.style.zIndex = '1055';
+  }
   cargarInspectores();
+});
+
+document.getElementById('modalSeleccionarInspector').addEventListener('hidden.bs.modal', function() {
+  const parentModal = document.getElementById('modalRegistrarInforme');
+  if (parentModal && bootstrap.Modal.getInstance(parentModal)) {
+    parentModal.style.zIndex = '';
+    const backdrop = document.querySelector('.modal-backdrop.show');
+    if (backdrop) {
+      backdrop.style.zIndex = '';
+    }
+  }
 });
 
 async function cargarInspectores() {
@@ -726,24 +763,82 @@ function seleccionarInspector(id, nombre, gerencia, event) {
 }
 
 function cerrarModalHijo(modalId) {
-  const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
-  if (modal) modal.hide();
+  const modalEl = document.getElementById(modalId);
+  const modal = bootstrap.Modal.getInstance(modalEl);
+  if (modal) {
+    modal.hide();
+    modalEl.addEventListener('hidden.bs.modal', function handler() {
+      modalEl.removeEventListener('hidden.bs.modal', handler);
+      const parentModalEl = document.querySelector('.modal.show');
+      if (parentModalEl) {
+        const backdrop = document.querySelector('.modal-backdrop.show');
+        if (backdrop) {
+          backdrop.classList.add('show');
+          backdrop.style.zIndex = '1050';
+        }
+        document.body.classList.add('modal-open');
+        document.body.style.paddingRight = '';
+      }
+    }, { once: true });
+  }
+}
+
+function abrirModalHijo(modalId) {
+  const parentModalEl = document.getElementById('modalRegistrarInforme');
+  const childModalEl = document.getElementById(modalId);
+  
+  if (!childModalEl) return;
+  
+  const parentModal = bootstrap.Modal.getInstance(parentModalEl);
+  if (!parentModal) return;
+  
+  const childModal = bootstrap.Modal.getOrCreateInstance(childModalEl, {
+    backdrop: false,
+    keyboard: false
+  });
+  
+  childModalEl.addEventListener('shown.bs.modal', function handler() {
+    childModalEl.removeEventListener('shown.bs.modal', handler);
+    childModalEl.style.zIndex = '1060';
+  }, { once: true });
+  
+  childModal.show();
 }
 
 // ============================================
 // CARGAR EVIDENCIAS POR ETAPA
 // ============================================
-document.getElementById('modalEvidenciasAntes').addEventListener('show.bs.modal', function() {
-  cargarEvidencias('antes');
-});
+const parentModalId = 'modalRegistrarInforme';
 
-document.getElementById('modalEvidenciasDurante').addEventListener('show.bs.modal', function() {
-  cargarEvidencias('durante');
-});
+function setupChildModalEvents(modalId, loadFn) {
+  const childModal = document.getElementById(modalId);
+  const parentModal = document.getElementById(parentModalId);
+  
+  childModal.addEventListener('show.bs.modal', function() {
+    if (parentModal && bootstrap.Modal.getInstance(parentModal)) {
+      const backdrop = document.querySelector('.modal-backdrop.show');
+      if (backdrop) {
+        backdrop.style.zIndex = '1055';
+      }
+      parentModal.style.zIndex = '1055';
+    }
+    loadFn();
+  });
+  
+  childModal.addEventListener('hidden.bs.modal', function() {
+    if (parentModal && bootstrap.Modal.getInstance(parentModal)) {
+      parentModal.style.zIndex = '';
+      const backdrop = document.querySelector('.modal-backdrop.show');
+      if (backdrop) {
+        backdrop.style.zIndex = '';
+      }
+    }
+  });
+}
 
-document.getElementById('modalEvidenciasDespues').addEventListener('show.bs.modal', function() {
-  cargarEvidencias('despues');
-});
+setupChildModalEvents('modalEvidenciasAntes', () => cargarEvidencias('antes'));
+setupChildModalEvents('modalEvidenciasDurante', () => cargarEvidencias('durante'));
+setupChildModalEvents('modalEvidenciasDespues', () => cargarEvidencias('despues'));
 
 async function cargarEvidencias(etapa) {
   try {
