@@ -59,7 +59,7 @@ html.layout-menu-collapsed .app-brand .layout-menu-toggle #icono-abrir,
   display: inline-flex !important;
 }
 
-.app-brand .layout-menu-toggle:hover {
+html.light-style .app-brand .layout-menu-toggle:hover {
   background-color: rgba(255, 255, 255, 0.22) !important;
 }
 
@@ -606,7 +606,31 @@ html.light-style #layout-menu.menu-collapsed .menu-link[data-tooltip]:focus-visi
 }
 
 :is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .app-brand .layout-menu-toggle {
+  width: 2.75rem !important;
+  height: 2.75rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 2.75rem !important;
+  margin: 0 0.75rem 0 auto !important;
+  padding: 0 !important;
+  border: 1px solid #4a7c60 !important;
   border-radius: 0.375rem !important;
+  color: #e6f2eb !important;
+  background-color: #2b2c40 !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .app-brand .layout-menu-toggle:hover,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .app-brand .layout-menu-toggle:focus-visible {
+  color: #ffffff !important;
+  background-color: #153725 !important;
+  border-color: #4a7c60 !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .app-brand .layout-menu-toggle .toggle-icon {
+  color: inherit !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

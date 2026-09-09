@@ -396,50 +396,39 @@
             border-radius: 50%;
             object-fit: cover;
             flex-shrink: 0;
-        }
-       </style>
+       }
+      </style>
+      <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/sidebar-toggle.css') }}">
      </head>
-     <body class="transition-all">
+     <body>
     <script>
-      /* Aplica el tema guardado antes de pintar para evitar parpadeo (FOUC) */
       (function () {
+        var dark = false;
         try {
-          var t = localStorage.getItem('theme');
-          var dark = t === 'dark';
-          var d = document.documentElement;
-          if (dark) {
-            document.body.classList.add('dark-mode');
-            d.classList.add('dark-mode');
-            d.classList.remove('light-style');
-            d.classList.add('dark-style');
-            d.setAttribute('data-theme', 'theme-dark');
-          } else {
-            d.classList.add('light-style');
-            d.setAttribute('data-theme', 'theme-default');
+          dark = localStorage.getItem('theme') === 'dark';
+        } catch (e) {}
+
+        var d = document.documentElement;
+        document.body.classList.toggle('dark-mode', dark);
+        d.classList.toggle('dark-mode', dark);
+        d.classList.toggle('light-style', !dark);
+        d.classList.toggle('dark-style', dark);
+        d.setAttribute('data-theme', dark ? 'theme-dark' : 'theme-default');
+        if (dark) {
+          d.setAttribute('data-bs-theme', 'dark');
+        } else {
+          d.removeAttribute('data-bs-theme');
+        }
+
+        try {
+          var savedFont = parseInt(localStorage.getItem('a11y-font-size'), 10);
+          if (savedFont) {
+            document.documentElement.style.fontSize = (savedFont / 100 * 16) + 'px';
           }
-        }
-
-        if (localStorage.getItem('theme') === 'dark') {
-          document.body.classList.add('dark-mode');
-          document.documentElement.setAttribute('data-bs-theme', 'dark');
-        }
-
-        // Restaurar preferencias de accesibilidad
-        var savedFont = parseInt(localStorage.getItem('a11y-font-size'), 10);
-        if (savedFont) {
-          document.documentElement.style.fontSize = (savedFont / 100 * 16) + 'px';
-        }
-        if (localStorage.getItem('a11y-contrast') === 'on') {
-          document.body.classList.add('high-contrast');
-        }
-        updateLogo();
-
-        if (darkSwitch) {
-          darkSwitch.addEventListener('change', function() {
-            setTimeout(updateLogo, 50);
-          });
-        }
-        try { } catch (e) {}
+          if (localStorage.getItem('a11y-contrast') === 'on') {
+            document.body.classList.add('high-contrast');
+          }
+        } catch (e) {}
       })();
     </script>
     <div class="app-shell">
@@ -823,6 +812,11 @@
           document.documentElement.classList.toggle('light-style', !isDark);
           document.documentElement.classList.toggle('dark-style', isDark);
           document.documentElement.setAttribute('data-theme', isDark ? 'theme-dark' : 'theme-default');
+          if (isDark) {
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+          } else {
+            document.documentElement.removeAttribute('data-bs-theme');
+          }
           if (darkSwitch) darkSwitch.checked = isDark;
           if (themeIcon) themeIcon.className = isDark ? 'bi bi-moon-stars-fill me-2 fs-5 text-info' : 'bi bi-sun-fill me-2 fs-5 text-warning';
           if (themeLabel) themeLabel.textContent = isDark ? 'Modo Oscuro' : 'Modo Claro';
@@ -1117,7 +1111,6 @@
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23cfcde9'/%3e%3c/svg%3e") !important;
       }
     </style>
-    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/sidebar-toggle.css') }}">
     <script>
       // --- Navegación desde el Hub de Configuración ---
       document.querySelectorAll('[data-config-target]').forEach(function(el) {

@@ -159,7 +159,7 @@ function initInvilaraSidebar() {
     syncMenuState();
   });
 
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-bs-theme'] });
   observer.observe(sidebar, { attributes: true, attributeFilter: ['class'], subtree: true });
 }
 
