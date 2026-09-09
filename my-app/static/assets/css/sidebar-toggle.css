@@ -27,8 +27,9 @@ html #layout-menu .menu-link > div {
 /* Posición del toggle nativo del tema cuando el sidebar está colapsado */
 html.layout-menu-collapsed .app-brand .layout-menu-toggle,
 #layout-menu.menu-collapsed .app-brand .layout-menu-toggle {
-  left: auto !important;
-  right: 0.4rem !important;
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
 }
 
 .app-brand .layout-menu-toggle .toggle-icon {
@@ -551,6 +552,10 @@ html.light-style #layout-menu.menu-collapsed .menu-link[data-tooltip]:focus-visi
   border-color: #2b2c40 !important;
 }
 
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .app-brand {
+  background-color: #14532d !important;
+}
+
 :is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .menu-item > .menu-link {
   color: #e6f2eb !important;
   background-image: none !important;
@@ -598,6 +603,10 @@ html.light-style #layout-menu.menu-collapsed .menu-link[data-tooltip]:focus-visi
 
 :is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .sidebar-logo img {
   filter: none !important;
+}
+
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #layout-menu .app-brand .layout-menu-toggle {
+  border-radius: 0.375rem !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1046,22 +1046,29 @@ body.dark-mode .progress {
 }
 
 body.dark-mode .card-estadistica.bg-light {
-    background: #2b2c40 !important;
-    color: #cfcde9 !important;
+    background: #0d1b3e !important;
+    color: #90b8e8 !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
 }
 
-body.dark-mode .card-estadistica.bg-light .text-muted {
+body.dark-mode .card-estadistica.bg-light .text-muted,
+body.dark-mode .card-estadistica.bg-light h6 {
     color: #8c8ea3 !important;
 }
 
-body.dark-mode .card-estadistica.bg-light h3 {
-    color: #ffffff !important;
+body.dark-mode .card-estadistica.bg-light h3,
+body.dark-mode .card-estadistica.bg-light .text-primary {
+    color: #90b8e8 !important;
 }
 
 body.dark-mode .card-estadistica.card-aprobados {
-    background: #153725 !important;
-    color: #75b798 !important;
+    background: #0d1b3e !important;
+    color: #90b8e8 !important;
+}
+
+body.dark-mode .card-estadistica.card-aprobados h6,
+body.dark-mode .card-estadistica.card-aprobados h3 {
+    color: #90b8e8 !important;
 }
 
 body.dark-mode .card-estadistica.card-culminados {
@@ -1069,14 +1076,20 @@ body.dark-mode .card-estadistica.card-culminados {
     color: #90b8e8 !important;
 }
 
+body.dark-mode .card-estadistica.card-culminados h6,
+body.dark-mode .card-estadistica.card-culminados h3 {
+    color: #90b8e8 !important;
+}
+
 body.dark-mode .card-estadistica.bg-warning {
-    background: #3d320e !important;
-    color: #ffda6a !important;
+    background: #0d1b3e !important;
+    color: #90b8e8 !important;
 }
 
 body.dark-mode .card-estadistica.bg-warning h6,
-body.dark-mode .card-estadistica.bg-warning h3 {
-    color: #ffda6a !important;
+body.dark-mode .card-estadistica.bg-warning h3,
+body.dark-mode .card-estadistica.bg-warning .text-white {
+    color: #90b8e8 !important;
 }
 
 body.dark-mode .card-estadistica.bg-info {
