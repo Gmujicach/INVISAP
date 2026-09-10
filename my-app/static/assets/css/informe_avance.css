@@ -481,6 +481,11 @@ textarea.form-control::placeholder {
     color: var(--invilara-blanco) !important;
 }
 
+.card-estadistica.card-total-informes {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    color: #212529 !important;
+}
+
 /* ========== FORMULARIO ========== */
 .form-control,
 .form-select {
@@ -1045,28 +1050,28 @@ body.dark-mode .progress {
     background-color: #232333 !important;
 }
 
-body.dark-mode #cardTotalInformes,
-body.dark-mode #cardEnEjecucion {
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #cardTotalInformes,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #cardEnEjecucion {
     background-color: #2b2c40 !important;
     color: #ffffff !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
 }
 
-body.dark-mode #cardTotalInformes .text-muted,
-body.dark-mode #cardTotalInformes h6,
-body.dark-mode #cardEnEjecucion h6 {
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #cardTotalInformes .text-muted,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #cardTotalInformes h6,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #cardEnEjecucion h6 {
     color: #8c8ea3 !important;
 }
 
-body.dark-mode #cardTotalInformes h3,
-body.dark-mode #cardTotalInformes .text-primary,
-body.dark-mode #cardEnEjecucion h3,
-body.dark-mode #cardEnEjecucion .text-white {
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #cardTotalInformes h3,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #cardTotalInformes .text-primary,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #cardEnEjecucion h3,
+:is(body.dark-mode, html[data-bs-theme="dark"] body) #cardEnEjecucion .text-white {
     color: #ffffff !important;
 }
 
 body.dark-mode textarea.form-control::placeholder {
-    color: #8c8ea3 !important;
+    color: #6d76dc !important;
 }
 
 body.dark-mode .alert-info {
