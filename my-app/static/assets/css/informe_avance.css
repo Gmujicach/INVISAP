@@ -1128,3 +1128,34 @@ body.dark-mode .inspector-card.selected {
     background-color: #1a3a2a !important;
     border-color: #4ade80 !important;
 }
+
+/* ========== BADGES EN TABLA - MODO OSCURO ========== */
+body.dark-mode .table-informe-avance .badge.bg-success {
+    background-color: #1a3a2a !important;
+    color: #4ade80 !important;
+    border: 1px solid #4ade80 !important;
+}
+
+body.dark-mode .table-informe-avance .badge.bg-warning {
+    background-color: #3d361a !important;
+    color: #ffd60a !important;
+    border: 1px solid #ffd60a !important;
+}
+
+body.dark-mode .table-informe-avance .badge.bg-info {
+    background-color: #1a3a4a !important;
+    color: #31d2f2 !important;
+    border: 1px solid #31d2f2 !important;
+}
+
+body.dark-mode .table-informe-avance .badge.bg-danger {
+    background-color: #3a1a1a !important;
+    color: #f87171 !important;
+    border: 1px solid #f87171 !important;
+}
+
+body.dark-mode .table-informe-avance .badge.bg-secondary {
+    background-color: #3d3d5c !important;
+    color: #a3a4cc !important;
+    border: 1px solid #55567a !important;
+}
