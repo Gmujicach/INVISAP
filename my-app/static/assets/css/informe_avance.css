@@ -1045,61 +1045,24 @@ body.dark-mode .progress {
     background-color: #232333 !important;
 }
 
-body.dark-mode .card-estadistica.bg-light {
-    background: #0d1b3e !important;
-    color: #90b8e8 !important;
+body.dark-mode #cardTotalInformes,
+body.dark-mode #cardEnEjecucion {
+    background-color: #2b2c40 !important;
+    color: #ffffff !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
 }
 
-body.dark-mode .card-estadistica.bg-light .text-muted,
-body.dark-mode .card-estadistica.bg-light h6 {
+body.dark-mode #cardTotalInformes .text-muted,
+body.dark-mode #cardTotalInformes h6,
+body.dark-mode #cardEnEjecucion h6 {
     color: #8c8ea3 !important;
 }
 
-body.dark-mode .card-estadistica.bg-light h3,
-body.dark-mode .card-estadistica.bg-light .text-primary {
-    color: #90b8e8 !important;
-}
-
-body.dark-mode .card-estadistica.card-aprobados {
-    background: #0d1b3e !important;
-    color: #90b8e8 !important;
-}
-
-body.dark-mode .card-estadistica.card-aprobados h6,
-body.dark-mode .card-estadistica.card-aprobados h3 {
-    color: #90b8e8 !important;
-}
-
-body.dark-mode .card-estadistica.card-culminados {
-    background: #0d1b3e !important;
-    color: #90b8e8 !important;
-}
-
-body.dark-mode .card-estadistica.card-culminados h6,
-body.dark-mode .card-estadistica.card-culminados h3 {
-    color: #90b8e8 !important;
-}
-
-body.dark-mode .card-estadistica.bg-warning {
-    background: #0d1b3e !important;
-    color: #90b8e8 !important;
-}
-
-body.dark-mode .card-estadistica.bg-warning h6,
-body.dark-mode .card-estadistica.bg-warning h3,
-body.dark-mode .card-estadistica.bg-warning .text-white {
-    color: #90b8e8 !important;
-}
-
-body.dark-mode .card-estadistica.bg-info {
-    background: #0d1b3e !important;
-    color: #90b8e8 !important;
-}
-
-body.dark-mode .card-estadistica.bg-info h6,
-body.dark-mode .card-estadistica.bg-info h3 {
-    color: #90b8e8 !important;
+body.dark-mode #cardTotalInformes h3,
+body.dark-mode #cardTotalInformes .text-primary,
+body.dark-mode #cardEnEjecucion h3,
+body.dark-mode #cardEnEjecucion .text-white {
+    color: #ffffff !important;
 }
 
 body.dark-mode textarea.form-control::placeholder {
