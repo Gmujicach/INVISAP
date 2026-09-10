@@ -478,12 +478,12 @@
 
 .publication-report-modal .publication-report-card__check {
     position: absolute;
-    top: 0.65rem;
-    right: 0.65rem;
+    top: 0.55rem;
+    right: 0.45rem;
     z-index: 2;
     display: inline-flex;
-    width: 27px;
-    height: 27px;
+    width: 25px;
+    height: 25px;
     align-items: center;
     justify-content: center;
     border: 2px solid var(--publication-surface);
@@ -491,7 +491,7 @@
     color: var(--publication-surface);
     background: rgba(124, 135, 151, 0.74);
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
 .publication-report-modal .publication-report-card.is-selected .publication-report-card__check {
@@ -811,6 +811,36 @@ body.dark-mode .publication-report-modal .publication-report-facts,
 body.dark-mode .publication-page .publication-report-trigger__copy span,
 body.dark-mode .publication-page .publication-report-help {
     color: #a2a3b7;
+}
+
+body.dark-mode .publication-report-modal .publication-report-type {
+    color: #4ade80;
+    background: rgba(8, 179, 36, 0.18);
+}
+
+body.dark-mode .publication-report-modal .publication-report-type--warning {
+    color: #ffd60a;
+    background: rgba(255, 214, 10, 0.18);
+}
+
+body.dark-mode .publication-report-modal .publication-report-type--info {
+    color: #6ab0ff;
+    background: rgba(13, 110, 253, 0.18);
+}
+
+body.dark-mode .publication-report-modal .publication-selected-count {
+    color: #4ade80;
+    background: rgba(8, 179, 36, 0.18);
+    border-color: rgba(74, 222, 128, 0.4);
+}
+
+body.dark-mode .publication-report-modal .publication-selected-count i {
+    color: #4ade80;
+}
+
+body.dark-mode .publication-page .publication-report-trigger__icon {
+    color: #4ade80;
+    background: rgba(8, 179, 36, 0.18);
 }
 
 @media (max-width: 991.98px) {

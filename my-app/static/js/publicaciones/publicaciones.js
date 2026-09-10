@@ -496,7 +496,7 @@ function renderReportCard(report) {
     const status = formatStatus(report.estado);
     const statusClass = getStatusClass(report.estado);
     const progress = Number.isFinite(Number(report.porcentaje_avance)) ? Number(report.porcentaje_avance) : 0;
-    const searchData = normalizeText([id, type, title, description, report.gerente_nombre || ''].join(' '));
+    const searchData = normalizeText([id, type, title, description, report.gerente_nombre || '', report.fecha || ''].join(' '));
     const typeClass = getTypeClass(type);
 
     if (report.error) {
