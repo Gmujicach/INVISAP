@@ -1,39 +1,28 @@
 {% extends 'base_cpanel.html' %}
 {% block title %}INVISAP | Registrar Publicación{% endblock %}
 
-{% block custom_css %}
-<style>
-    .card-publication {
-        border-radius: 15px;
-        overflow: hidden;
-    }
-    .header-green {
-        background: linear-gradient(45deg, #08b324, #0bc92a);
-        color: white;
-    }
-    .form-label {
-        font-weight: 600;
-        color: #495057;
-    }
-</style>
+{% block customCSS %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/publicaciones.css') }}">
 {% endblock %}
 
 {% block body %}
-<div class="container py-4">
+<div class="container py-4 publication-page">
     <div class="row justify-content-center">
         <div class="col-lg-12">
             <div class="card card-publication shadow-sm border-0">
                 <div class="card-header header-green p-3">
                     <h4 class="mb-0 fs-5"><i class="bi bi-megaphone-fill me-2"></i>Registrar Publicación</h4>
                 </div>
-                <div class="card-body p-4 bg-white">
-                    <p class="text-muted small mb-4">Complete el siguiente formulario para difundir información institucional en el portal de INVISAP.</p>
-                    
-                     <form action="{{ url_for('home_bp.formRegistrarPublicacion') }}" method="POST" id="formRegistrarPublicacion">
+                <div class="card-body publication-body bg-white">
+                    <div class="publication-intro mb-4">
+                        <p class="text-muted small mb-0">Complete el siguiente formulario para difundir información institucional en el portal de INVISAP.</p>
+                    </div>
+
+                    <form action="{{ url_for('home_bp.formRegistrarPublicacion') }}" method="POST" id="formRegistrarPublicacion">
                         <div class="mb-3">
-                            <label for="titulo_publicacion" class="form-label">Título de la Publicacion</label>
+                            <label for="titulo_publicacion" class="form-label">Título de la Publicación</label>
                             <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="bi bi-card-text"></i></span>
+                                <span class="input-group-text"><i class="bi bi-card-text"></i></span>
                                 <input type="text" name="titulo_publicacion" id="titulo_publicacion" class="form-control" placeholder="Título impactante y descriptivo" required>
                             </div>
                         </div>
@@ -42,30 +31,43 @@
                             <div class="col-md-6 mb-3">
                                 <label for="nombre_responsable" class="form-label">Responsable</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light"><i class="bi bi-person-badge"></i></span>
+                                    <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
                                     <input type="text" name="nombre_responsable" id="nombre_responsable" class="form-control" value="{{ session.get('nombre', 'Administrador') }}" placeholder="Nombre del responsable" required>
                                 </div>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="fecha_publicacion" class="form-label">Fecha de Emisión</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-light"><i class="bi bi-calendar-event"></i></span>
+                                    <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
                                     <input type="date" name="fecha_publicacion" id="fecha_publicacion" class="form-control" required>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="informe_avance_obra_id_informe" class="form-label">Vincular Informe (Fotos de Obra)</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light"><i class="bi bi-images"></i></span>
-                                <select name="informe_avance_obra_id_informe" id="informe_avance_obra_id_informe" class="form-select" required>
-                                    <option value="" selected disabled>-- Seleccione un informe --</option>
-                                    {% for informe in informes %}
-                                        <option value="{{ informe.id_informe }}">Informe #{{ informe.id_informe }} - {{ informe.nombre_proyecto }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+                        <div class="mb-3 publication-report-field" id="publicationReportField">
+                            <label for="abrirSelectorInforme" class="form-label">Vincular Informe (Fotos de Obra)</label>
+                            <button type="button"
+                                    class="publication-report-trigger"
+                                    id="abrirSelectorInforme"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalSeleccionInforme"
+                                    aria-controls="modalSeleccionInforme"
+                                    aria-haspopup="dialog">
+                                <span class="publication-report-trigger__main">
+                                    <span class="publication-report-trigger__icon" aria-hidden="true"><i class="bi bi-images"></i></span>
+                                    <span class="publication-report-trigger__copy">
+                                        <strong id="informeSeleccionadoTitulo">Seleccione un informe de avance</strong>
+                                        <span id="informeSeleccionadoMeta">Revise tipo, descripción y evidencias antes de vincularlo</span>
+                                    </span>
+                                </span>
+                                <span class="publication-report-trigger__action"><i class="bi bi-search"></i> Explorar informes</span>
+                            </button>
+                            <input type="hidden" name="informe_avance_obra_id_informe" id="informe_avance_obra_id_informe" value="">
+                            <div class="publication-report-feedback" role="alert">Debe seleccionar un informe válido.</div>
+                            <small class="publication-report-help">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Seleccione un informe completo para identificar mejor la obra, su tipo, descripción y evidencias fotográficas.
+                            </small>
                         </div>
 
                         <div class="mb-4">
@@ -73,9 +75,9 @@
                             <textarea name="cuerpo_publicacion" id="cuerpo_publicacion" class="form-control" rows="8" placeholder="Escriba los detalles del avance de obra o noticia institucional..." required></textarea>
                         </div>
 
-                        <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                        <div class="d-flex justify-content-end gap-2 border-top pt-3 publication-actions">
                             <a href="{{ url_for('home_bp.viewFormPublicaciones') }}" class="btn btn-outline-secondary px-4">Limpiar</a>
-                            <button type="submit" class="btn text-white px-5 shadow-sm" style="background-color: #08b324;">
+                            <button type="submit" class="btn text-white px-5 shadow-sm publication-submit">
                                 <i class="bi bi-send-check me-1"></i> Registrar Publicación
                             </button>
                         </div>
@@ -84,9 +86,71 @@
             </div>
         </div>
     </div>
-
-
 </div>
+
+<script id="indiceInformesPublicacion" type="application/json">{{ informes|tojson }}</script>
+
+<div class="modal fade publication-report-modal" id="modalSeleccionInforme" tabindex="-1" aria-labelledby="modalSeleccionInformeLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="publication-modal-title-wrap">
+                    <span class="publication-modal-title-icon" aria-hidden="true"><i class="bi bi-folder2-open"></i></span>
+                    <div>
+                        <h5 class="modal-title" id="modalSeleccionInformeLabel">Seleccionar informe de avance</h5>
+                        <p class="publication-modal-subtitle">Revisa las evidencias antes de vincularlo a tu publicación</p>
+                    </div>
+                </div>
+                <button type="button" class="publication-modal-close" data-bs-dismiss="modal" aria-label="Cerrar modal">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="publication-report-summary">
+                    <div class="publication-summary-field">
+                        <label for="buscarInforme">Buscar informe</label>
+                        <input type="search" class="form-control publication-summary-control" id="buscarInforme" placeholder="Número, tipo o descripción" autocomplete="off">
+                    </div>
+                    <div class="publication-summary-field">
+                        <label for="filtroTipoInforme">Filtrar por tipo</label>
+                        <select class="form-select publication-summary-control" id="filtroTipoInforme">
+                            <option value="all">Todos los tipos</option>
+                        </select>
+                    </div>
+                    <div class="publication-selected-count" id="contadorInformes" aria-live="polite">
+                        <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+                        <span>0 seleccionados</span>
+                    </div>
+                </div>
+
+                <div class="publication-gallery-legend">
+                    <p><i class="bi bi-lightbulb-fill" aria-hidden="true"></i> Seleccione un informe completo; sus evidencias se publicarán junto con la noticia.</p>
+                    <div class="publication-evidence-key" aria-label="Leyenda de etapas">
+                        <span class="publication-key-item"><span class="publication-key-dot publication-key-before"></span>Antes</span>
+                        <span class="publication-key-item"><span class="publication-key-dot publication-key-during"></span>Durante</span>
+                        <span class="publication-key-item"><span class="publication-key-dot publication-key-after"></span>Después</span>
+                    </div>
+                </div>
+
+                <div class="publication-modal-status" id="estadoCargaInformes" aria-live="polite"></div>
+                <div class="publication-report-list row g-3" id="listaInformesPublicacion" role="list" aria-label="Informes disponibles"></div>
+                <div class="publication-list-state d-none" id="estadoListaInformes" role="status">
+                    <i class="bi bi-inbox" aria-hidden="true"></i>
+                    <p>No hay informes registrados disponibles para vincular.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn text-white publication-modal-confirm" id="btnConfirmarInforme" disabled>
+                    <i class="bi bi-link-45deg me-1"></i> Vincular informe seleccionado
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     document.getElementById('fecha_publicacion').valueAsDate = new Date();
 </script>
@@ -95,7 +159,7 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formRegistrarPublicacion');
-    if (form) {
+    if (form && typeof ValidacionesComunes !== 'undefined') {
       ValidacionesComunes.initSelects(form);
       ValidacionesComunes.initBotonesSubmit(form, { textoGuardando: 'Registrando...' });
     }

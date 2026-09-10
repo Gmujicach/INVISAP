@@ -122,8 +122,8 @@ class PublicacionModel(BaseModel):
         return self.__obtener_por_id_db(id_pub)
 
     def __obtener_publicaciones_db(self):
-        conexion = None
         cursor = None
+        conexión = None
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor(dictionary=True)
@@ -141,12 +141,10 @@ class PublicacionModel(BaseModel):
             if conexion: conexion.close()
 
     def __obtener_informes_db(self):
-        conexion = None
-        cursor = None
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor(dictionary=True)
-            sql = "SELECT id_informe, tipo_informe AS nombre_proyecto FROM informe_avance_obra WHERE estado_registro = 1"
+            sql = "SELECT id_informe, tipo_informe AS nombre_proyecto FROM informe_avance_obra"
             cursor.execute(sql)
             return cursor.fetchall()
         except Exception as e:
@@ -229,21 +227,18 @@ class PublicacionModel(BaseModel):
             if conexion: conexion.close()
 
     def __borrado_logico_db(self):
-        conexion = None
-        cursor = None
         try:
             conexion = connectionBD_invilara()
             cursor = conexion.cursor()
-            sql = """UPDATE publicacion SET estado = 0 WHERE id_publicacion = %s"""
+            sql = "UPDATE publicacion SET estado = 0 WHERE id_publicacion = %s"
             cursor.execute(sql, (self.__id_publicacion,))
             conexion.commit()
             return cursor.rowcount > 0
         except Exception as e:
-            print(f"Error al eliminar publicación: {e}")
             return False
         finally:
-            if cursor: cursor.close()
-            if conexion: conexion.close()
+            if 'cursor' in locals(): cursor.close()
+            if 'conexion' in locals(): conexion.close()
 
     def __verificar_existencia_informe(self, id_informe):
         if id_informe is None or str(id_informe).strip() in ['', 'None', '0', 'null']:

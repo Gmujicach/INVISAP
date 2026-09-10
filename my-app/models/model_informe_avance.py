@@ -628,6 +628,74 @@ class InformeAvanceModel(BaseModel):
         except (ValueError, TypeError):
             return None
 
+    def obtener_informes_por_ids(self, ids):
+        if not ids:
+            return []
+
+        conn = None
+        cur = None
+        try:
+            conn = connectionBD_invilara()
+            if not conn:
+                return []
+            cur = conn.cursor(dictionary=True)
+
+            placeholders = ','.join(['%s'] * len(ids))
+            sql_informes = """SELECT i.id_informe, i.fecha, i.estado, i.poblacion_beneficiada,
+                                     i.tipo_informe, i.evidencia_antes, i.evidencia_durante,
+                                     i.evidencia_despues, i.avance_id_avance, a.porcentaje_avance,
+                                     a.descripcion as observaciones, a.gerente, e.nombre_empleado as gerente_nombre
+                              FROM informe_avance_obra i
+                              LEFT JOIN avance a ON i.avance_id_avance = a.id_avance
+                              LEFT JOIN empleados e ON a.gerente = e.id_empleados
+                              WHERE i.id_informe IN ({})""".format(placeholders)
+            cur.execute(sql_informes, tuple(ids))
+            informes = cur.fetchall()
+
+            informe_evidencias = {str(inf['id_informe']): [] for inf in informes}
+            evidencia_ids_todos = set()
+
+            for inf in informes:
+                for campo in ['evidencia_antes', 'evidencia_durante', 'evidencia_despues']:
+                    valor = inf.get(campo)
+                    if valor:
+                        for id_ev in str(valor).split(','):
+                            id_ev = id_ev.strip()
+                            if id_ev:
+                                evidencia_ids_todos.add(id_ev)
+
+            if evidencia_ids_todos:
+                placeholders_ev = ','.join(['%s'] * len(evidencia_ids_todos))
+                sql_ev = "SELECT * FROM evidencia WHERE id_evidencia IN ({}) AND estado = 1 ORDER BY etapa, fecha_registro".format(placeholders_ev)
+                cur.execute(sql_ev, tuple(evidencia_ids_todos))
+                evidencias = cur.fetchall()
+
+                for ev in evidencias:
+                    id_ev = str(ev['id_evidencia'])
+                    etapa = str(ev.get('etapa', 'antes')).lower()
+
+                    for inf in informes:
+                        inf_id = str(inf['id_informe'])
+                        for campo, etapa_match in [('evidencia_antes', 'antes'), ('evidencia_durante', 'durante'), ('evidencia_despues', 'despues')]:
+                            if etapa == etapa_match:
+                                ids_en_campo = [x.strip() for x in str(inf.get(campo, '')).split(',') if x.strip()]
+                                if id_ev in ids_en_campo:
+                                    informe_evidencias[inf_id].append(ev)
+                                    break
+
+            for inf in informes:
+                inf['evidencias'] = informe_evidencias.get(str(inf['id_informe']), [])
+
+            return informes
+        except Exception as e:
+            print(f"Error obtener_informes_por_ids: {e}")
+            return []
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+
     def obtener_gerentes_activos(self):
         return self.__obtener_gerentes_activos_db()
 

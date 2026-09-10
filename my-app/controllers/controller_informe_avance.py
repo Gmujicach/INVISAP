@@ -198,6 +198,27 @@ def api_detalle_informe(id_informe):
         return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
 
 
+@informe_avance_bp.route('/api/informes/detalles', methods=['POST'])
+def api_detalles_informes():
+    """Devuelve el detalle completo de múltiples informes en una sola consulta."""
+    if 'conectado' not in session:
+        return jsonify({'status': 'error', 'message': 'Sesión no válida'}), 401
+
+    try:
+        data = request.get_json(silent=True) or {}
+        ids = data.get('ids', [])
+
+        if not ids:
+            return jsonify({'status': 'success', 'data': []})
+
+        modelo = InformeAvanceModel()
+        informes = modelo.obtener_informes_por_ids(ids)
+        return jsonify({'status': 'success', 'data': informes})
+    except Exception as e:
+        print(f"Error api_detalles_informes: {e}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor'}), 500
+
+
 @informe_avance_bp.route('/editar-informe/<int:id_informe>', methods=['GET'])
 def editar_informe(id_informe):
     """
