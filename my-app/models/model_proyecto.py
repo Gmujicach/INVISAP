@@ -118,7 +118,7 @@ class ProyectoModel(BaseModel):
             valores = (
                 codigo_proy, 
                 fecha_plan,
-                datos.get('observaciones', '')[:200], 
+                datos.get('observaciones', '')[:512], 
                 self._serializar_computos_metricos(datos.get('computos_p', [])),
                 datos.get('estimacion_p', '')[:45],
                 id_proyectista
@@ -318,7 +318,7 @@ class ProyectoModel(BaseModel):
             valores = (
                 codigo_nuevo,
                 fecha_plan,
-                descripcion[:200],
+                descripcion[:512],
                 datos.get('computos_p', []) and self._serializar_computos_metricos(datos.get('computos_p', [])) or '',
                 datos.get('estimacion_p', '')[:45],
                 id_proyectista,
