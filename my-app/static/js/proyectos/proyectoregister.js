@@ -65,16 +65,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     
     if (observaciones) {
-        const countSpan = document.getElementById("count_observaciones");
         observaciones.addEventListener("input", function () {
-            if (countSpan) countSpan.textContent = observaciones.value.length;
             if (observaciones.value.trim().length >= 10) {
                 marcarValido(observaciones);
             } else {
                 marcarInvalido(observaciones, "La descripción técnica debe tener al menos 10 caracteres.");
             }
         });
-        if (countSpan) countSpan.textContent = observaciones.value.length;
     }
     if (codigoProyecto) {
         codigoProyecto.addEventListener("input", function () {
