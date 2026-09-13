@@ -93,7 +93,7 @@ class BitacoraModel(BaseModel):
                        fecha, hora_inicio_sesion, hora_cierre_sesion,
                        usuarios_id_usuarios
                 FROM bitacora
-                ORDER BY fecha DESC
+                ORDER BY id_bitacora DESC
                 LIMIT %s
             """
             cursor.execute(sql, (limit,))
@@ -122,7 +122,7 @@ class BitacoraModel(BaseModel):
                        fecha, hora_inicio_sesion, hora_cierre_sesion
                 FROM bitacora
                 WHERE usuario LIKE %s
-                ORDER BY fecha DESC
+                ORDER BY id_bitacora DESC
                 LIMIT 200
             """
             cursor.execute(sql, (f"%{usuario}%",))
@@ -151,7 +151,7 @@ class BitacoraModel(BaseModel):
                        fecha, hora_inicio_sesion, hora_cierre_sesion
                 FROM bitacora
                 WHERE modulo = %s
-                ORDER BY fecha DESC
+                ORDER BY id_bitacora DESC
                 LIMIT 200
             """
             cursor.execute(sql, (modulo,))
@@ -180,7 +180,7 @@ class BitacoraModel(BaseModel):
                        fecha, hora_inicio_sesion, hora_cierre_sesion
                 FROM bitacora
                 WHERE accion = %s
-                ORDER BY fecha DESC
+                ORDER BY id_bitacora DESC
                 LIMIT 200
             """
             cursor.execute(sql, (accion,))
@@ -232,7 +232,7 @@ class BitacoraModel(BaseModel):
                        usuarios_id_usuarios
                 FROM bitacora
                 WHERE {' AND '.join(condiciones)}
-                ORDER BY fecha DESC
+                ORDER BY id_bitacora DESC
                 LIMIT %s OFFSET %s
             """
             cursor.execute(sql, tuple(params))

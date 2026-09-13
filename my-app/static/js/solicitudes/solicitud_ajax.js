@@ -49,7 +49,7 @@ function renderizarSolicitudes(solicitudes) {
             <td>
               ${badgeEstatus}
             </td>
-            <td style="max-width:200px; white-space:normal;">${s.problematica}</td>
+            <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${s.problematica || '—'}</td>
             <td>${s.fecha_formateada || s.fecha}</td>
             <td width="10px" class="text-nowrap">
               <div class="d-flex gap-1">

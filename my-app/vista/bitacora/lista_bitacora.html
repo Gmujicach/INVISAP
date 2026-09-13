@@ -134,7 +134,7 @@
         {% if registros %}
           {% for r in registros %}
           <tr class="fila-registro" data-index="{{ loop.index }}">
-            <td class="text-muted" style="padding: 0.85rem 1.2rem; font-size:0.8rem;">{{ loop.index }}</td>
+            <td class="text-muted" style="padding: 0.85rem 1.2rem; font-size:0.8rem;">{{ r.id_bitacora }}</td>
             <td style="padding: 0.85rem 1.2rem;">
               <span class="usuario-chip">{{ r.usuario or ' ' }}</span>
             </td>

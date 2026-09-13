@@ -15,7 +15,7 @@ class SolicitudModel(BaseModel):
     _RE_TELEFONO = re.compile(r'^(0414|0424|0412|0416|0426|0251)-?\d{7}$')
     _RE_CORREO = re.compile(r'^[\w._%+\-]+@[\w.\-]+\.[a-zA-Z]{2,}$')
     _RE_TEXTO = re.compile(r'^[\w\s\.,\-áéíóúÁÉÍÓÚñÑ]{2,100}$', re.UNICODE)
-    _RE_PROBLEMATICA = re.compile(r'^[\w\s\.,\!\?\-áéíóúÁÉÍÓÚñÑ]{15,500}$', re.UNICODE)
+    _RE_PROBLEMATICA = re.compile(r'^[\w\s\.,\!\?\-áéíóúÁÉÍÓÚñÑ]{15,512}$', re.UNICODE)
 
     TIPOS_SOLICITANTE_VALIDOS = {'Comunidad', 'Institucion', 'Particular'}
     ESTATUS_VALIDOS = {'Pendiente', 'En Proceso', 'Completada', 'Procesada', 'PENDIENTE'}
@@ -63,7 +63,7 @@ class SolicitudModel(BaseModel):
         return self._problematica
 
     def set_problematica(self, valor, tipo_problematica=None):
-        problematica_libre = self._limpiar(valor, 500)
+        problematica_libre = self._limpiar(valor, 512)
         tipo_prob = self._limpiar(tipo_problematica, 50) if tipo_problematica else ""
 
         if tipo_prob and tipo_prob not in self.TIPOS_PROBLEMATICA_VALIDOS:
@@ -75,7 +75,7 @@ class SolicitudModel(BaseModel):
         elif tipo_prob:
             problematica_final = tipo_prob
 
-        if not self._RE_PROBLEMATICA.match(problematica_final) and len(problematica_final.strip()) < 15:
+        if not self._RE_PROBLEMATICA.match(problematica_libre) or len(problematica_final.strip()) < 15:
             raise ValueError("La problemática debe tener al menos 15 caracteres válidos y evitar inyecciones.")
         self._problematica = problematica_final
 

@@ -104,7 +104,7 @@
                       <span class="badge rounded-pill bg-secondary">{{ s.estatus_solicitud }}</span>
                     {% endif %}
                   </td>
-                  <td style="max-width:200px; white-space:normal;">{{ s.problematica }}</td>
+                  <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ s.problematica }}</td>
                   <td>{{ s.fecha_formateada or s.fecha }}</td>
                   <td width="10px" class="text-nowrap">
                     <div class="d-flex gap-1">
@@ -395,7 +395,7 @@
             <div class="row mb-3">
               <div class="col-md-12">
                 <label for="problematica" class="form-label fw-semibold">Descripción Detallada</label>
-                <textarea class="form-control bg-white" name="problematica" minlength="15" maxlength="255" rows="3" style="resize: none;" required placeholder="Describa la problemática de forma clara y concisa (Mínimo 15 caracteres)..."></textarea>
+                <textarea class="form-control bg-white" name="problematica" minlength="15" maxlength="512" rows="3" style="resize: none;" required placeholder="Describa la problemática de forma clara y concisa (Mínimo 15 caracteres)..."></textarea>
               </div>
             </div>
           </div>
@@ -437,7 +437,7 @@
 
           <div class="mb-4">
             <label for="edit_problematica" class="form-label fw-semibold">Problemática</label>
-            <textarea class="form-control" name="problematica" id="edit_problematica" rows="4" required></textarea>
+            <textarea class="form-control" name="problematica" id="edit_problematica" rows="4" minlength="15" maxlength="512" required></textarea>
           </div>
 
           <div class="text-center">

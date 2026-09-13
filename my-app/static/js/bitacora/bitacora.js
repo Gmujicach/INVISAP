@@ -163,7 +163,7 @@ function renderizarBitacoras(registros) {
     let html = '';
     paginaRegistros.forEach((r, idx) => {
         html += `<tr class="fila-registro">
-            <td class="text-muted" style="padding: 0.85rem 1.2rem; font-size:0.8rem;">${inicio + idx + 1}</td>
+            <td class="text-muted" style="padding: 0.85rem 1.2rem; font-size:0.8rem;">${r.id_bitacora || '-'}</td>
             <td style="padding: 0.85rem 1.2rem;">
               <span class="usuario-chip">${r.usuario || ' '}</span>
             </td>
