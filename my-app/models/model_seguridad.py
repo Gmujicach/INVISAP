@@ -313,6 +313,29 @@ class RolPermisoModel(BaseModel):
             if cursor: cursor.close()
             if con: con.close()
 
+    def obtener_nombres_modulos_por_rol(self, nombre_rol):
+        """Retorna una lista de nombres de módulos que el rol puede ver."""
+        con = cursor = None
+        try:
+            con = connectionBD_seguridad()
+            cursor = con.cursor(dictionary=True)
+            sql = """
+                SELECT DISTINCT m.nombre
+                FROM roles_permisos rp
+                JOIN modulos m ON rp.id_modulo = m.id_modulo
+                JOIN roles r ON rp.id_rol = r.id_rol
+                WHERE r.nombre = %s
+                  AND rp.puede_ver = 1
+                  AND rp.estado = 1
+                  AND m.estado = 1
+            """
+            cursor.execute(sql, (nombre_rol,))
+            rows = cursor.fetchall()
+            return [row['nombre'] for row in rows]
+        finally:
+            if cursor: cursor.close()
+            if con: con.close()
+
     def guardar_permisos(self, id_rol, permisos):
         """
         Reemplaza (borrado lógico + reinserción) los permisos de un rol.

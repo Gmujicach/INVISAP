@@ -220,3 +220,37 @@ body.dark-mode .icon-picker-dropdown .icon-grid-item.active i { color: #f1c40f; 
   .seguridad-table-card .table tbody td { padding: 0.6rem 0.8rem; font-size: 0.85rem; }
   .modal-dialog { margin: 0.5rem; }
 }
+
+/* ===================== SKELETON LOADING ===================== */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+.seguridad-skeleton {
+  animation: pulse 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+.seguridad-skeleton-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.seguridad-skeleton-bar {
+  height: 14px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  flex: 1;
+}
+.seguridad-skeleton-bar.sm { height: 12px; max-width: 60px; }
+.seguridad-skeleton-bar.md { height: 12px; max-width: 120px; }
+.seguridad-skeleton-bar.lg { height: 12px; max-width: 200px; }
+.seguridad-skeleton-circle {
+  width: 22px;
+  height: 22px;
+  background: #e2e8f0;
+  border-radius: 50%;
+  flex: 0 0 22px;
+}
+body.dark-mode .seguridad-skeleton-bar { background: #3a3b53; }
+body.dark-mode .seguridad-skeleton-circle { background: #3a3b53; }

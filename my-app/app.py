@@ -99,11 +99,19 @@ def inject_perfil_usuario():
 @app.context_processor
 def inject_permisos_usuario():
     from controllers.UserController import verificar_permiso, PERMISOS
+    from flask import g
     rol = session.get('rol', 'Usuario')
+    if not hasattr(g, '_permisos_cache'):
+        try:
+            from models.model_seguridad import RolPermisoModel
+            permisos_db = RolPermisoModel().obtener_nombres_modulos_por_rol(rol)
+            g._permisos_cache = set(permisos_db) if permisos_db else set(PERMISOS.get(rol, []))
+        except Exception:
+            g._permisos_cache = set(PERMISOS.get(rol, []))
     return {
         'tiene_permiso': verificar_permiso,
         'rol_usuario': rol,
-        'permisos_usuario': PERMISOS.get(rol, [])
+        'permisos_usuario': list(g._permisos_cache)
     }
 
 

@@ -1,4 +1,4 @@
-from flask import render_template, request, flash, redirect, url_for, session, Blueprint, jsonify
+from flask import render_template, request, flash, redirect, url_for, session, Blueprint, jsonify, g
 from models.model_usuarios import UsuarioModel
 from werkzeug.security import generate_password_hash, check_password_hash
 from services.bitacora_service import BitacoraService
@@ -29,7 +29,18 @@ PERMISOS = {
 def verificar_permiso(modulo):
     """Verifica si el rol del usuario tiene permiso para acceder al módulo."""
     rol_usuario = session.get('rol', 'Usuario')
-    return modulo in PERMISOS.get(rol_usuario, [])
+
+    if not hasattr(g, '_permisos_cache'):
+        from models.model_seguridad import RolPermisoModel
+        try:
+            permisos_db = RolPermisoModel().obtener_nombres_modulos_por_rol(rol_usuario)
+            g._permisos_cache = set(permisos_db) if permisos_db else set(PERMISOS.get(rol_usuario, []))
+        except Exception:
+            g._permisos_cache = set(PERMISOS.get(rol_usuario, []))
+
+    if rol_usuario == 'Super Usuario':
+        return True
+    return modulo in g._permisos_cache
 
 def requerir_permiso(modulo):
     """Decorador para requerir permiso de módulo."""
