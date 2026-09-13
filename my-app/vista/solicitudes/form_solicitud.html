@@ -16,7 +16,7 @@
 
   <div class="row justify-content-center mb-4">
     <div class="col-md-11 col-lg-10">
-      <form id="formRegistrarSolicitud" class="form-horizontal mx-auto" method="POST" action="/form-registrar-solicitud" autocomplete="off">
+      <form id="formRegistrarSolicitud" class="form-horizontal needs-validation mx-auto" method="POST" action="/form-registrar-solicitud" autocomplete="off" novalidate>
         
         <div class="card-body pt-0">
           
@@ -31,6 +31,8 @@
                 <option value="Institucion">Institución</option>
                 <option value="Particular">Particular</option>
               </select>
+              <span class="invalid-feedback"></span>
+              <span class="valid-feedback">Correcto</span>
             </div>
           </div>
 
@@ -41,6 +43,8 @@
               <div class="col-md-12">
                 <label class="form-label fw-semibold">Nombre de la Comunidad</label>
                 <input type="text" name="com_nombre" class="form-control bg-white" minlength="5" maxlength="100" required disabled />
+                <span class="invalid-feedback">Ingrese un nombre válido (mínimo 5 caracteres)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
             </div>
 
@@ -59,16 +63,22 @@
                   <option value="Andrés Eloy Blanco">Andrés Eloy Blanco</option>
                   <option value="Torres">Torres</option>
                 </select>
+                <span class="invalid-feedback">Seleccione un municipio</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Parroquia</label>
                 <select name="com_parroquia" id="com_parroquia" class="form-select bg-white" required disabled>
                   <option value="" selected disabled>Seleccione primero el municipio...</option>
                 </select>
+                <span class="invalid-feedback">Seleccione una parroquia</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Ámbito</label>
                 <input type="text" name="com_ambito" class="form-control bg-white" minlength="3" maxlength="45" required disabled />
+                <span class="invalid-feedback">Ingrese el ámbito (mínimo 3 caracteres)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
             </div>
 
@@ -76,14 +86,20 @@
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Sector</label>
                 <input type="text" name="com_sector" class="form-control bg-white" minlength="3" maxlength="45" required disabled />
+                <span class="invalid-feedback">Ingrese el sector (mínimo 3 caracteres)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Cédula del Representante</label>
                 <input type="text" name="com_cedula" class="form-control bg-white" required minlength="7" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" disabled />
+                <span class="invalid-feedback">Cédula inválida (7 a 10 dígitos)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Teléfono</label>
                 <input type="tel" name="com_telefono" class="form-control bg-white" required minlength="11" maxlength="12" pattern="^(0414|0424|0412|0416|0426|0251)-?[0-9]{7}$" title="Formato válido: 04121234567 o 0412-1234567" disabled />
+                <span class="invalid-feedback">Teléfono inválido (ej: 04121234567)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
             </div>
 
@@ -91,6 +107,8 @@
               <div class="col-md-12">
                 <label class="form-label fw-semibold">Correo Electrónico</label>
                 <input type="email" name="com_correo" class="form-control bg-white" maxlength="45" required disabled />
+                <span class="invalid-feedback">Correo electrónico inválido</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
             </div>
           </div>
@@ -102,10 +120,14 @@
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Razón Social (Nombre)</label>
                 <input type="text" name="inst_nombre" class="form-control bg-white" minlength="4" maxlength="120" required disabled />
+                <span class="invalid-feedback">Ingrese la razón social (mínimo 4 caracteres)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Dirección Institución</label>
                 <input type="text" name="inst_direccion" class="form-control bg-white" minlength="10" maxlength="200" required disabled />
+                <span class="invalid-feedback">Ingrese la dirección (mínimo 10 caracteres)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
             </div>
 
@@ -124,12 +146,16 @@
                   <option value="Andrés Eloy Blanco">Andrés Eloy Blanco</option>
                   <option value="Torres">Torres</option>
                 </select>
+                <span class="invalid-feedback">Seleccione un municipio</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Parroquia</label>
                 <select name="inst_parroquia" id="inst_parroquia" class="form-select bg-white" required disabled>
                   <option value="" selected disabled>Seleccione primero el municipio...</option>
                 </select>
+                <span class="invalid-feedback">Seleccione una parroquia</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
             </div>
 
@@ -137,10 +163,14 @@
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Correo Institución</label>
                 <input type="email" name="inst_correo" class="form-control bg-white" maxlength="45" required disabled />
+                <span class="invalid-feedback">Correo electrónico inválido</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Teléfono Institución</label>
                 <input type="text" name="inst_telefono" class="form-control bg-white" required minlength="11" maxlength="12" pattern="^(0414|0424|0412|0416|0426|0251)-?[0-9]{7}$" disabled />
+                <span class="invalid-feedback">Teléfono inválido (ej: 04121234567)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
             </div>
 
@@ -149,10 +179,14 @@
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Nombre del Representante</label>
                 <input type="text" name="inst_director_nombre" class="form-control bg-white" minlength="3" maxlength="45" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" required disabled />
+                <span class="invalid-feedback">Nombre de representante inválido (solo letras)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Cédula</label>
                 <input type="text" name="inst_director_cedula" class="form-control bg-white" required minlength="7" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" disabled />
+                <span class="invalid-feedback">Cédula inválida (7 a 10 dígitos)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
             </div>
           </div>
@@ -164,14 +198,20 @@
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Nombre(s)</label>
                 <input type="text" name="part_nombre" class="form-control bg-white" minlength="3" maxlength="45" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Ingrese solo letras y espacios" required disabled />
+                <span class="invalid-feedback">Ingrese el nombre (solo letras, mínimo 3 caracteres)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Apellido(s)</label>
                 <input type="text" name="part_apellido" class="form-control bg-white" minlength="3" maxlength="45" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" title="Ingrese solo letras y espacios" required disabled />
+                <span class="invalid-feedback">Ingrese el apellido (solo letras, mínimo 3 caracteres)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Cédula</label>
                 <input type="text" name="part_cedula" class="form-control bg-white" required minlength="7" maxlength="10" pattern="^[0-9]{7,10}$" oninput="this.value = this.value.replace(/[^0-9]/g, '')" disabled />
+                <span class="invalid-feedback">Cédula inválida (7 a 10 dígitos)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
             </div>
 
@@ -179,10 +219,14 @@
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Correo Electrónico</label>
                 <input type="email" name="part_correo" class="form-control bg-white" maxlength="45" required disabled />
+                <span class="invalid-feedback">Correo electrónico inválido</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-6">
                 <label class="form-label fw-semibold">Teléfono</label>
                 <input type="text" name="part_telefono" class="form-control bg-white" required minlength="11" maxlength="12" pattern="^(0414|0424|0412|0416|0426|0251)-?[0-9]{7}$" disabled />
+                <span class="invalid-feedback">Teléfono inválido (ej: 04121234567)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
             </div>
             
@@ -201,16 +245,22 @@
                     <option value="Andrés Eloy Blanco">Andrés Eloy Blanco</option>
                     <option value="Torres">Torres</option>
                   </select>
-              </div>
+                  <span class="invalid-feedback">Seleccione un municipio</span>
+                  <span class="valid-feedback">Correcto</span>
+                </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Parroquia</label>
                 <select name="part_parroquia" id="part_parroquia" class="form-select bg-white" required disabled>
                   <option value="" selected disabled>Seleccione primero el municipio...</option>
                 </select>
+                <span class="invalid-feedback">Seleccione una parroquia</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-4">
                 <label class="form-label fw-semibold">Dirección Detallada</label>
                 <textarea class="form-control bg-white" name="part_direccion" minlength="10" maxlength="200" rows="1" style="resize: none;" required disabled placeholder="Ej. Calle, sector, Nro casa"></textarea>
+                <span class="invalid-feedback">Ingrese la dirección (mínimo 10 caracteres)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
             </div>
           </div>
@@ -230,6 +280,8 @@
                   <option value="Vivienda">Vivienda</option>
                   <option value="Otros">Otros</option>
                 </select>
+                <span class="invalid-feedback">Seleccione una categoría</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
               <div class="col-md-6">
                 <label for="estatus" class="form-label fw-semibold">Estatus de la solicitud</label>
@@ -245,6 +297,8 @@
               <div class="col-md-12">
                 <label for="problematica" class="form-label fw-semibold">Descripción Detallada</label>
                 <textarea class="form-control bg-white" name="problematica" minlength="15" maxlength="255" rows="3" style="resize: none;" required placeholder="Describa la problemática de forma clara y concisa (Mínimo 15 caracteres)..."></textarea>
+                <span class="invalid-feedback">Describa la problemática (mínimo 15 caracteres)</span>
+                <span class="valid-feedback">Correcto</span>
               </div>
             </div>
           </div>
@@ -313,16 +367,23 @@ document.addEventListener('DOMContentLoaded', function() {
   const seccionInstitucion = document.getElementById('seccion_institucion');
   const seccionParticular = document.getElementById('seccion_particular');
 
-  var limpiarSeccion = function(seccion) {
-    if (!seccion) return;
-    seccion.style.display = 'none';
-    seccion.querySelectorAll('input, select, textarea').forEach(function(el) {
-      if (el.type !== 'hidden') {
-        el.value = '';
-        el.disabled = true;
-        el.classList.remove('is-valid', 'is-invalid');
-      }
-    });
+   var limpiarSeccion = function(seccion) {
+     if (!seccion) return;
+     seccion.style.display = 'none';
+     seccion.querySelectorAll('input, select, textarea').forEach(function(el) {
+       if (el.type !== 'hidden') {
+         el.value = '';
+         el.disabled = true;
+         el.classList.remove('is-valid', 'is-invalid');
+       }
+       var parent = el.closest('.col-md-12, .col-md-8, .col-md-6, .col-md-5, .col-md-4, .col-md-3');
+       if (!parent) parent = el.parentElement;
+       var feedbacks = parent ? parent.querySelectorAll('.invalid-feedback, .valid-feedback') : [];
+       feedbacks.forEach(function(fb) {
+         fb.classList.remove('d-block');
+         fb.style.display = 'none';
+       });
+     });
     seccion.querySelectorAll('select').forEach(function(sel) {
       var opts = sel.options;
       for (var i = 0; i < opts.length; i++) {
@@ -338,16 +399,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 
-  var habilitarSeccion = function(seccion) {
-    if (!seccion) return;
-    seccion.style.display = 'block';
-    seccion.querySelectorAll('input, select, textarea').forEach(function(el) {
-      if (el.type !== 'hidden') {
-        el.disabled = false;
-      }
-    });
-  };
-
+   var habilitarSeccion = function(seccion) {
+     if (!seccion) return;
+     seccion.style.display = 'block';
+     seccion.querySelectorAll('input, select, textarea').forEach(function(el) {
+       if (el.type !== 'hidden') {
+         el.disabled = false;
+       }
+     });
+   };
   if (tipoSolicitudSelect) {
     tipoSolicitudSelect.addEventListener('change', function() {
       var valor = this.value.trim();

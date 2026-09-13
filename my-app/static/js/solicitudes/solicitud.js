@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         section.style.display = 'none';
         section.querySelectorAll('input, select, textarea').forEach(el => {
           el.disabled = true;
-          removeError(el);
+          clearFeedback(el);
         });
       }
     }
@@ -26,52 +26,162 @@ document.addEventListener('DOMContentLoaded', () => {
 
   tipoSolicitudSelect.addEventListener('change', toggleSecciones);
 
-  const regexTexto = /^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/; 
-  const regexCedula = /^\d{7,10}$/; 
+  const regexTexto = /^[a-zA-ZÁÉÍÓÚáéíóúÑñ\s]+$/;
+  const regexCedula = /^\d{7,10}$/;
   const regexTelefono = /^(0414|0424|0412|0416|0426|0251|0212)-?\d{7}$/;
   const regexCorreo = /^[a-zA-Z0-9._%+-ñÑáéíóúÁÉÍÓÚ]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  const setError = (input, message) => {
-    input.classList.add('is-invalid');
-    let parent = input.closest('.col-md-12, .col-md-8, .col-md-6, .col-md-5, .col-md-4, .col-md-3');
-    if (!parent) parent = input.parentElement;
-
-    let feedback = parent.querySelector('.invalid-feedback');
-    if (!feedback) {
-      feedback = document.createElement('div');
-      feedback.className = 'invalid-feedback d-block';
-      parent.appendChild(feedback);
-    } else {
-      feedback.classList.add('d-block');
-      feedback.style.display = 'block';
-    }
-    feedback.textContent = message;
+  const getParent = (input) => {
+    return input.closest('.col-md-12, .col-md-8, .col-md-6, .col-md-5, .col-md-4, .col-md-3') || input.parentElement;
   };
 
-  const removeError = (input) => {
-    input.classList.remove('is-invalid');
-    let parent = input.closest('.col-md-12, .col-md-8, .col-md-6, .col-md-5, .col-md-4, .col-md-3');
-    if (!parent) parent = input.parentElement;
-    
-    const feedback = parent.querySelector('.invalid-feedback');
-    if (feedback) {
-      feedback.classList.remove('d-block');
-      feedback.style.display = 'none';
+  const showError = (input, message) => {
+    input.classList.add('is-invalid');
+    input.classList.remove('is-valid');
+    const parent = getParent(input);
+    if (parent) {
+      const feedback = parent.querySelector('.invalid-feedback');
+      if (feedback) {
+        feedback.textContent = message;
+        feedback.style.display = 'block';
+      }
+      const validFeedback = parent.querySelector('.valid-feedback');
+      if (validFeedback) {
+        validFeedback.style.display = 'none';
+      }
     }
+  };
+
+  const showSuccess = (input, message) => {
+    input.classList.add('is-valid');
+    input.classList.remove('is-invalid');
+    const parent = getParent(input);
+    if (parent) {
+      const feedback = parent.querySelector('.invalid-feedback');
+      if (feedback) {
+        feedback.style.display = 'none';
+      }
+      const validFeedback = parent.querySelector('.valid-feedback');
+      if (validFeedback) {
+        validFeedback.textContent = message || 'Correcto';
+        validFeedback.style.display = 'block';
+      }
+    }
+  };
+
+  const clearFeedback = (input) => {
+    input.classList.remove('is-invalid', 'is-valid');
+    const parent = getParent(input);
+    if (parent) {
+      const feedback = parent.querySelector('.invalid-feedback');
+      if (feedback) {
+        feedback.style.display = 'none';
+        feedback.textContent = '';
+      }
+      const validFeedback = parent.querySelector('.valid-feedback');
+      if (validFeedback) {
+        validFeedback.style.display = 'none';
+      }
+    }
+  };
+
+  const validateField = (input) => {
+    if (input.disabled) return true;
+
+    const name = input.name;
+    const value = input.value.trim();
+
+    if (input.tagName === 'SELECT') {
+      if (!value) {
+        showError(input, 'Debe seleccionar una opción');
+        return false;
+      }
+      showSuccess(input);
+      return true;
+    }
+
+    if (input.hasAttribute('required') && !value) {
+      showError(input, 'Este campo es obligatorio');
+      return false;
+    }
+
+    if (!value) {
+      showSuccess(input);
+      return true;
+    }
+
+    if (input.type === 'email') {
+      if (!regexCorreo.test(value)) {
+        showError(input, 'Correo electrónico inválido');
+        return false;
+      }
+      showSuccess(input);
+      return true;
+    }
+
+    if (name.includes('cedula')) {
+      if (!regexCedula.test(value)) {
+        showError(input, 'Cédula inválida (7 a 10 dígitos)');
+        return false;
+      }
+      showSuccess(input);
+      return true;
+    }
+
+    if (input.type === 'tel' || name.includes('telefono')) {
+      if (!regexTelefono.test(value)) {
+        showError(input, 'Teléfono inválido (ej: 04121234567)');
+        return false;
+      }
+      showSuccess(input);
+      return true;
+    }
+
+    if (input.hasAttribute('pattern')) {
+      const pattern = input.getAttribute('pattern');
+      if (!new RegExp(pattern).test(value)) {
+        showError(input, 'Formato inválido');
+        return false;
+      }
+    }
+
+    if (name.includes('problematica')) {
+      if (value.length < 15) {
+        showError(input, 'Describa la problemática (mínimo 15 caracteres)');
+        return false;
+      }
+    }
+
+    if (input.hasAttribute('minlength') && value.length < parseInt(input.getAttribute('minlength'))) {
+      showError(input, `Mínimo ${input.getAttribute('minlength')} caracteres`);
+      return false;
+    }
+
+    if (input.hasAttribute('maxlength') && value.length > parseInt(input.getAttribute('maxlength'))) {
+      showError(input, `Máximo ${input.getAttribute('maxlength')} caracteres`);
+      return false;
+    }
+
+    showSuccess(input);
+    return true;
   };
 
   form.querySelectorAll('input, select, textarea').forEach(input => {
-    input.addEventListener('input', () => removeError(input));
-    input.addEventListener('change', () => removeError(input));
+    input.addEventListener('input', () => validateField(input));
+    input.addEventListener('change', () => validateField(input));
   });
 
   form.addEventListener('submit', (e) => {
     let isValid = true;
     const tipo = tipoSolicitudSelect.value;
 
+    clearFeedback(tipoSolicitudSelect);
+
     if (!tipo) {
-      setError(tipoSolicitudSelect, 'Debe seleccionar un perfil.');
+      showError(tipoSolicitudSelect, 'Debe seleccionar un tipo de solicitante');
       isValid = false;
+    } else {
+      showSuccess(tipoSolicitudSelect);
     }
 
     if (tipo === 'Comunidad') {
@@ -82,12 +192,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const tel = document.querySelector('input[name="com_telefono"]');
       const correo = document.querySelector('input[name="com_correo"]');
 
-      if (nombre.value.trim().length < 5) { setError(nombre, 'Ingrese un nombre válido.'); isValid = false; }
-      if (!muni.value) { setError(muni, 'Seleccione un municipio.'); isValid = false; }
-      if (sector.value.trim().length < 3) { setError(sector, 'Ingrese el sector.'); isValid = false; }
-      if (!regexCedula.test(ced.value.trim())) { setError(ced, 'Cédula inválida (7 a 10 dígitos).'); isValid = false; }
-      if (!regexTelefono.test(tel.value.trim())) { setError(tel, 'Teléfono inválido.'); isValid = false; }
-      if (!regexCorreo.test(correo.value.trim())) { setError(correo, 'Correo electrónico inválido.'); isValid = false; }
+      if (!comprobarInput(nombre, v => v.trim().length >= 5, 'Ingrese un nombre válido (mínimo 5 caracteres)')) isValid = false;
+      if (!comprobarSelect(muni, 'Seleccione un municipio')) isValid = false;
+      if (!comprobarInput(sector, v => v.trim().length >= 3, 'Ingrese el sector (mínimo 3 caracteres)')) isValid = false;
+      if (!comprobarCedula(ced)) isValid = false;
+      if (!comprobarTelefono(tel)) isValid = false;
+      if (!comprobarCorreo(correo)) isValid = false;
     }
 
     if (tipo === 'Institucion') {
@@ -98,12 +208,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const dirNombre = document.querySelector('input[name="inst_director_nombre"]');
       const dirCed = document.querySelector('input[name="inst_director_cedula"]');
 
-      if (nombre.value.trim().length < 3) { setError(nombre, 'Ingrese la razón social.'); isValid = false; }
-      if (!muni.value) { setError(muni, 'Seleccione un municipio.'); isValid = false; }
-      if (!regexCorreo.test(correo.value.trim())) { setError(correo, 'Correo electrónico inválido.'); isValid = false; }
-      if (!regexTelefono.test(tel.value.trim())) { setError(tel, 'Teléfono inválido.'); isValid = false; }
-      if (!regexTexto.test(dirNombre.value.trim())) { setError(dirNombre, 'Nombre de representante inválido.'); isValid = false; }
-      if (!regexCedula.test(dirCed.value.trim())) { setError(dirCed, 'Cédula inválida.'); isValid = false; }
+      if (!comprobarInput(nombre, v => v.trim().length >= 3, 'Ingrese la razón social (mínimo 3 caracteres)')) isValid = false;
+      if (!comprobarSelect(muni, 'Seleccione un municipio')) isValid = false;
+      if (!comprobarCorreo(correo)) isValid = false;
+      if (!comprobarTelefono(tel)) isValid = false;
+      if (!comprobarInput(dirNombre, v => regexTexto.test(v.trim()), 'Nombre de representante inválido (solo letras)')) isValid = false;
+      if (!comprobarCedula(dirCed)) isValid = false;
     }
 
     if (tipo === 'Particular') {
@@ -113,19 +223,75 @@ document.addEventListener('DOMContentLoaded', () => {
       const correo = document.querySelector('input[name="part_correo"]');
       const tel = document.querySelector('input[name="part_telefono"]');
 
-      if (!regexTexto.test(nombre.value.trim())) { setError(nombre, 'Solo letras.'); isValid = false; }
-      if (!regexTexto.test(apellido.value.trim())) { setError(apellido, 'Solo letras.'); isValid = false; }
-      if (!regexCedula.test(ced.value.trim())) { setError(ced, 'Cédula inválida (7 a 10 dígitos).'); isValid = false; }
-      if (!regexCorreo.test(correo.value.trim())) { setError(correo, 'Correo electrónico inválido.'); isValid = false; }
-      if (!regexTelefono.test(tel.value.trim())) { setError(tel, 'Teléfono inválido.'); isValid = false; }
+      if (!comprobarInput(nombre, v => regexTexto.test(v.trim()), 'Ingrese el nombre (solo letras)')) isValid = false;
+      if (!comprobarInput(apellido, v => regexTexto.test(v.trim()), 'Ingrese el apellido (solo letras)')) isValid = false;
+      if (!comprobarCedula(ced)) isValid = false;
+      if (!comprobarCorreo(correo)) isValid = false;
+      if (!comprobarTelefono(tel)) isValid = false;
     }
 
     const problematica = document.querySelector('textarea[name="problematica"]');
-    if (problematica.value.trim().length < 15) {
-      setError(problematica, 'Describa la problemática (mínimo 15 caracteres).');
-      isValid = false;
+    if (problematica) {
+      if (!comprobarInput(problematica, v => v.trim().length >= 15, 'Describa la problemática (mínimo 15 caracteres)')) isValid = false;
     }
 
     if (!isValid) e.preventDefault();
   });
+
+  function comprobarInput(input, validar, mensajeError) {
+    if (!input) return true;
+    if (input.disabled) { clearFeedback(input); return true; }
+    const value = input.value.trim();
+    if (!validar(value)) {
+      showError(input, mensajeError);
+      return false;
+    }
+    showSuccess(input);
+    return true;
+  }
+
+  function comprobarSelect(select, mensajeError) {
+    if (!select) return true;
+    if (select.disabled) { clearFeedback(select); return true; }
+    const value = (select.value || '').trim();
+    if (!value || value === '0') {
+      showError(select, mensajeError);
+      return false;
+    }
+    showSuccess(select);
+    return true;
+  }
+
+  function comprobarCedula(input) {
+    if (!input) return true;
+    if (input.disabled) { clearFeedback(input); return true; }
+    if (!regexCedula.test(input.value.trim())) {
+      showError(input, 'Cédula inválida (7 a 10 dígitos)');
+      return false;
+    }
+    showSuccess(input);
+    return true;
+  }
+
+  function comprobarTelefono(input) {
+    if (!input) return true;
+    if (input.disabled) { clearFeedback(input); return true; }
+    if (!regexTelefono.test(input.value.trim())) {
+      showError(input, 'Teléfono inválido (ej: 04121234567)');
+      return false;
+    }
+    showSuccess(input);
+    return true;
+  }
+
+  function comprobarCorreo(input) {
+    if (!input) return true;
+    if (input.disabled) { clearFeedback(input); return true; }
+    if (!regexCorreo.test(input.value.trim())) {
+      showError(input, 'Correo electrónico inválido');
+      return false;
+    }
+    showSuccess(input);
+    return true;
+  }
 });
