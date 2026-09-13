@@ -25,6 +25,33 @@ function tipoBadge(tipo) {
   return `<span class="badge ${color}">${tipo}</span>`;
 }
 
+function generarSkeletonRow(celdas) {
+  let html = '<div class="seguridad-skeleton"><div class="seguridad-skeleton-row">';
+  for (let i = 0; i < celdas.length; i++) {
+    const cls = celdas[i];
+    if (cls === 'circle') {
+      html += '<span class="seguridad-skeleton-circle"></span>';
+    } else {
+      html += '<span class="seguridad-skeleton-bar ' + cls + '"></span>';
+    }
+  }
+  html += '</div></div>';
+  return html;
+}
+function showSkeleton(tbodyId, colSpan, rows) {
+  const tb = document.getElementById(tbodyId);
+  if (!tb) return;
+  let html = '';
+  rows.forEach(row => {
+    html += '<tr><td colspan="' + colSpan + '">' + generarSkeletonRow(row) + '</td></tr>';
+  });
+  tb.innerHTML = html;
+}
+function hideSkeleton(tbodyId) {
+  const tb = document.getElementById(tbodyId);
+  if (tb) tb.innerHTML = '';
+}
+
 const ICONOS_MODULO = [
   'bi-folder','bi-folder2','bi-person','bi-people','bi-people-fill',
   'bi-person-bounding-box','bi-house','bi-building','bi-gear','bi-tools',
@@ -69,6 +96,11 @@ function populateIconPicker() {
 // ROLES
 // ============================================================
 function cargarRoles() {
+  showSkeleton('cuerpoRoles', 5, [
+    ['circle','sm','lg','sm','sm'],
+    ['circle','sm','lg','sm','sm'],
+    ['circle','sm','lg','sm','sm']
+  ]);
   fetch('/api/seguridad/roles/listar')
     .then(r => r.json())
     .then(data => renderTablaRoles(data))
@@ -184,6 +216,11 @@ function enviarGuardadoRol(id, nombre) {
 // MÓDULOS
 // ============================================================
 function cargarModulos() {
+  showSkeleton('cuerpoModulos', 6, [
+    ['circle','sm','lg','sm','sm','sm'],
+    ['circle','sm','lg','sm','sm','sm'],
+    ['circle','sm','lg','sm','sm','sm']
+  ]);
   fetch('/api/seguridad/modulos/listar')
     .then(r => r.json())
     .then(data => renderTablaModulos(data))
@@ -359,7 +396,17 @@ function cargarSelectRol() {
 }
 function cargarPermisos() {
   const idRol = document.getElementById('selectRol').value;
-  if (!idRol) return;
+  if (!idRol) {
+    showSkeleton('cuerpoPermisos', 5, [
+      ['lg','sm','sm','sm','sm'],
+      ['lg','sm','sm','sm','sm']
+    ]);
+    return;
+  }
+  showSkeleton('cuerpoPermisos', 5, [
+    ['lg','sm','sm','sm','sm'],
+    ['lg','sm','sm','sm','sm']
+  ]);
   fetch(`/api/seguridad/permisos/obtener/${idRol}`)
     .then(r => r.json())
     .then(data => renderTablaPermisos(data))
@@ -403,7 +450,7 @@ function guardarPermisos() {
   })
   .then(r => r.json())
   .then(d => {
-    if (d.success) Swal.fire('Listo', d.message, 'success');
+    if (d.success) Swal.fire('Listo', d.message, 'success').then(() => location.reload());
     else Swal.fire('Error', d.message, 'error');
   })
   .catch(() => Swal.fire('Error', 'Error de conexión.', 'error'));
