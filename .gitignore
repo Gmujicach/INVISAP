@@ -139,3 +139,4 @@ cython_debug/
 !.vscode/launch.json
 !.vscode/extensions.json
 /my-app/conexion
+my-app/conexion/conexionBD.py
