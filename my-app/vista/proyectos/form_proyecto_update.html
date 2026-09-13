@@ -58,9 +58,10 @@
               </div>
             </div>
 
-            <div class="mb-4">
+<div class="mb-4">
               <label for="observaciones" class="form-label fw-bold text-secondary">Descripción Técnica</label>
-              <textarea class="form-control shadow-sm" name="observaciones" id="observaciones" rows="3" maxlength="200" required>{{ proyecto.descripcion_tecnica }}</textarea>
+              <textarea class="form-control shadow-sm" name="observaciones" id="observaciones" rows="4" maxlength="512" required>{{ proyecto descripcion_tecnica }}</textarea>
+              <small class="text-muted"><span id="count_observaciones">0</span>/512</small>
             </div>
 
             <div class="row mb-4">
@@ -237,6 +238,14 @@
       if (typeof ValidacionesComunes !== 'undefined' && ValidacionesComunes.initSelects && formEditarProyecto) {
         ValidacionesComunes.initSelects(formEditarProyecto);
       }
+    });
+  }
+const obsUpdate = document.getElementById('observaciones');
+  const countUpdate = document.getElementById('count_observaciones');
+  if (obsUpdate && countUpdate) {
+    countUpdate.textContent = obsUpdate.value.length;
+    obsUpdate.addEventListener('input', function () {
+      countUpdate.textContent = obsUpdate.value.length;
     });
   }
 </script>

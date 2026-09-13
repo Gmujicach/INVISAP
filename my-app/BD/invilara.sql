@@ -638,10 +638,10 @@ INSERT INTO `prioridad` (`id_gestion_prioridad`, `rango_prioridad`, `tipo_obra`,
 CREATE TABLE `proyecto` (
   `codigo_proyecto` varchar(15) NOT NULL,
   `fecha_planificacion` datetime NOT NULL,
-  `descripcion_tecnica` varchar(200) NOT NULL,
+  `descripcion_tecnica` varchar(512) NOT NULL,
   `computos_metricos` text NOT NULL,
   `estimacion_costo` varchar(45) NOT NULL,
-  `proyecto_has_empleado` int DEFAULT NULL,
+  `proyecto_has_emPLEADO` int DEFAULT NULL,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabla de gestion de proyectos';
 
