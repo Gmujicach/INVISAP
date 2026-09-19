@@ -149,6 +149,14 @@ function initInvilaraSidebar() {
   initMenuToggleItems();
   btnToggle.addEventListener('click', toggleMenu);
 
+  const navbarToggle = document.querySelector('.layout-menu-toggle.btnMovil');
+  if (navbarToggle && navbarToggle !== btnToggle) {
+    navbarToggle.addEventListener('click', function (e) {
+      e.preventDefault();
+      toggleMenu(e);
+    });
+  }
+
   syncIconState();
 
   const observer = new MutationObserver(function () {
