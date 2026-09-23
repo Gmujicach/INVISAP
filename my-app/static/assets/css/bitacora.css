@@ -187,8 +187,8 @@ body.dark-mode .text-muted {
 }
 
 /* ============================================
-   Botón Detalle Bitácora
-   ============================================ */
+    Botón Detalle Bitácora
+    ============================================ */
 .btn-detalle-bitacora {
   width: 34px;
   height: 34px;
@@ -210,6 +210,15 @@ body.dark-mode .text-muted {
 }
 .btn-detalle-bitacora i {
   font-size: 0.95rem;
+}
+
+/* Spinner para botón actualizar */
+.spin {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* ============================================

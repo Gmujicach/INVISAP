@@ -19,9 +19,9 @@
       </p>
     </div>
     <div class="d-flex gap-2">
-      <a href="{{ url_for('home_bp.viewBitacora') }}" class="btn btn-sm btn-outline-primary" style="border-radius:20px;">
+      <button type="button" id="btnActualizarBitacora" class="btn btn-sm btn-outline-primary" style="border-radius:20px;">
         <i class="bi bi-arrow-clockwise me-1"></i> Actualizar
-      </a>
+      </button>
     </div>
   </div>
 
@@ -288,6 +288,7 @@
 <script src="{{ url_for('static', filename='js/tour/bitacora/tour.js') }}"></script> 
 <!-- Importación del script JS externo -->
 <script src="{{ url_for('static', filename='js/bitacora/bitacora.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bitacora/bitacora-ajax.js') }}"></script>
 <script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script>
   (function () {

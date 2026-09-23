@@ -1497,6 +1497,43 @@ body.dark-mode .menu-inner > .menu-item .menu-sub > .menu-item {
 /* ============================================
     Footer Section Headings - White Bold Text
     ============================================ */
+
+/* ============================================
+    Tabla Solicitudes - Truncado de problemática responsive (3 líneas)
+    ============================================ */
+#tbl_solicitudes td:nth-child(5) {
+    max-width: 250px;
+    min-width: 150px;
+}
+#tbl_solicitudes .problematica-truncate {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+    line-height: 1.4;
+    max-height: 4.2em; /* 3 líneas * 1.4 line-height */
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    #tbl_solicitudes td:nth-child(5) {
+        max-width: 200px;
+        min-width: 120px;
+    }
+}
+
+@media (max-width: 576px) {
+    #tbl_solicitudes td:nth-child(5) {
+        max-width: 180px;
+        min-width: 100px;
+    }
+    #tbl_solicitudes .problematica-truncate {
+        -webkit-line-clamp: 2;
+        max-height: 2.8em; /* 2 líneas en móvil */
+    }
+}
 .cpanel-footer h4 {
   color: #fff !important;
   font-weight: bold !important;

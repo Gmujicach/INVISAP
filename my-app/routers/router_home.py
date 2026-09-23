@@ -1549,6 +1549,7 @@ def api_obtener_bitacora_json():
     else:
         return jsonify([]), 401
 
+
 @home_bp.route('/bitacora', methods=['GET'])
 def viewBitacora():
     if 'conectado' not in session:

@@ -3,6 +3,39 @@ let todasLasSolicitudes = [];
 let paginaActual = 1;
 let registrosPorPagina = 5;
 let busquedaActual = '';
+let lastActionTime = 0;
+const MIN_ACTION_INTERVAL = 1000; // 1 segundo entre acciones
+
+function mostrarErrorBoton(btn, mensaje) {
+    if (!btn) return;
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<i class="bi bi-exclamation-triangle me-1"></i> ${mensaje}`;
+    btn.classList.add('btn-danger');
+    btn.classList.remove('btn-info', 'btn-warning', 'btn-danger', 'btn-outline-info', 'btn-outline-warning', 'btn-outline-danger');
+    setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+        btn.classList.remove('btn-danger');
+    }, 3000);
+}
+
+function validarAccion(btn, accionNombre) {
+    // Rate limiting
+    const ahora = Date.now();
+    if (ahora - lastActionTime < MIN_ACTION_INTERVAL) {
+        mostrarErrorBoton(btn, 'Espere un momento...');
+        return false;
+    }
+    lastActionTime = ahora;
+    
+    // Prevenir doble click
+    if (btn.disabled) {
+        return false;
+    }
+    
+    return true;
+}
 
 function renderizarSolicitudes(solicitudes) {
     const tbody = document.querySelector('#tbody_solicitudes');
@@ -49,17 +82,19 @@ function renderizarSolicitudes(solicitudes) {
             <td>
               ${badgeEstatus}
             </td>
-            <td style="max-width:200px; white-space:normal;">${s.problematica}</td>
+            <td style="max-width:200px;">
+              <span class="problematica-truncate" title="${(s.problematica || '').replace(/"/g, '"')}">${s.problematica || ''}</span>
+            </td>
             <td>${s.fecha_formateada || s.fecha}</td>
             <td width="10px" class="text-nowrap">
               <div class="d-flex gap-1">
-                <a href="/detalles-solicitud/${s.id_solicitud}" class="btn btn-info btn-sm" title="Ver detalles">
+                <a href="javascript:void(0);" class="btn btn-info btn-sm" title="Ver detalles" onclick="verDetallesSolicitud(${s.id_solicitud}, this);">
                   <i class="bi bi-eye"></i>
                 </a>
-                <button type="button" class="btn btn-warning btn-sm" title="Editar solicitud" onclick="abrirModalEditar(${s.id_solicitud});">
+                <button type="button" class="btn btn-warning btn-sm" title="Editar solicitud" onclick="abrirModalEditar(${s.id_solicitud}, this);">
                   <i class="bi bi-pencil-square"></i>
                 </button>
-                <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Eliminar solicitud" onclick="eliminarSolicitudAjax(${s.id_solicitud});">
+                <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Eliminar solicitud" onclick="eliminarSolicitudAjax(${s.id_solicitud}, this);">
                   <i class="bi bi-trash"></i>
                 </a>
               </div>
@@ -128,7 +163,19 @@ function aplicarBusquedaYRenderizar() {
 
 function cargarSolicitudes() {
     fetch('/api/obtener-solicitudes-json')
-        .then(res => res.json())
+        .then(res => {
+            if (res.status === 401) {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire('Sesión expirada', 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.', 'warning')
+                        .then(() => window.location.href = '/login');
+                } else {
+                    alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+                    window.location.href = '/login';
+                }
+                throw new Error('Sesión expirada');
+            }
+            return res.json();
+        })
         .then(data => {
             todasLasSolicitudes = Array.isArray(data) ? data : [];
             paginaActual = 1;
@@ -139,11 +186,13 @@ function cargarSolicitudes() {
             renderizarSolicitudes(todasLasSolicitudes);
         })
         .catch(err => {
-            console.error('Error recargando tabla:', err);
-            if (!todasLasSolicitudes.length && window.__SOLICITUDES_INICIALES__) {
-                todasLasSolicitudes = window.__SOLICITUDES_INICIALES__;
-                actualizarEstadisticas(todasLasSolicitudes);
-                renderizarSolicitudes(todasLasSolicitudes);
+            if (err.message !== 'Sesión expirada') {
+                console.error('Error recargando tabla:', err);
+                if (!todasLasSolicitudes.length && window.__SOLICITUDES_INICIALES__) {
+                    todasLasSolicitudes = window.__SOLICITUDES_INICIALES__;
+                    actualizarEstadisticas(todasLasSolicitudes);
+                    renderizarSolicitudes(todasLasSolicitudes);
+                }
             }
         });
 }
@@ -253,6 +302,17 @@ async function procesarFormulario(form, url, method, modalId) {
             body: formData
         });
         
+        // Manejar sesión expirada (401)
+        if (response.status === 401) {
+            if (typeof Swal !== 'undefined') {
+                await Swal.fire('Sesión expirada', 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.', 'warning');
+            } else {
+                alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+            }
+            window.location.href = '/login';
+            return;
+        }
+        
         const result = await response.json();
         
         if (response.ok && result.status === 'success') {
@@ -297,7 +357,10 @@ async function procesarFormulario(form, url, method, modalId) {
 }
 
 // 3. Función para eliminar vía AJAX
-window.eliminarSolicitudAjax = async function(id_solicitud) {
+window.eliminarSolicitudAjax = async function(id_solicitud, btnElement = null) {
+    const btn = btnElement || event?.target?.closest('button, a');
+    if (!validarAccion(btn, 'eliminar')) return;
+    
     if (typeof Swal !== 'undefined') {
         const result = await Swal.fire({
             title: '¿Estás seguro?',
@@ -315,10 +378,27 @@ window.eliminarSolicitudAjax = async function(id_solicitud) {
         if (!confirm('¿Estás seguro de que deseas eliminar esta solicitud? Esta acción no se puede deshacer.')) return;
     }
 
+    const originalHtml = btn?.innerHTML;
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Eliminando...';
+    }
+
     try {
         const response = await fetch(`/api/solicitudes/eliminar/${id_solicitud}`, {
             method: 'DELETE'
         });
+        
+        // Manejar sesión expirada (401)
+        if (response.status === 401) {
+            if (typeof Swal !== 'undefined') {
+                await Swal.fire('Sesión expirada', 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.', 'warning');
+            } else {
+                alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+            }
+            window.location.href = '/login';
+            return;
+        }
         
         const result = await response.json();
         
@@ -339,13 +419,39 @@ window.eliminarSolicitudAjax = async function(id_solicitud) {
     } catch (error) {
         console.error("Error al eliminar:", error);
         alert("Ocurrió un error inesperado al intentar eliminar la solicitud.");
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
     }
 }
 
 // 4. Función para cargar datos al Modal de Editar
-window.abrirModalEditar = async function(id_solicitud) {
+window.abrirModalEditar = async function(id_solicitud, btnElement = null) {
+    const btn = btnElement || event?.target?.closest('button');
+    if (!validarAccion(btn, 'editar')) return;
+
+    const originalHtml = btn?.innerHTML;
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Cargando...';
+    }
+
     try {
         const response = await fetch(`/api/solicitudes/${id_solicitud}`);
+        
+        // Manejar sesión expirada (401)
+        if (response.status === 401) {
+            if (typeof Swal !== 'undefined') {
+                await Swal.fire('Sesión expirada', 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.', 'warning');
+            } else {
+                alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+            }
+            window.location.href = '/login';
+            return;
+        }
+        
         const result = await response.json();
         
         if (response.ok && result.status === 'success') {
@@ -358,10 +464,78 @@ window.abrirModalEditar = async function(id_solicitud) {
             var editModal = new bootstrap.Modal(document.getElementById('modalEditarSolicitud'));
             editModal.show();
         } else {
-            alert("No se pudo cargar la información de la solicitud.");
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Error', 'No se pudo cargar la información de la solicitud.', 'error');
+            } else {
+                alert("No se pudo cargar la información de la solicitud.");
+            }
         }
     } catch(err) {
         console.error(err);
-        alert("Error de conexión.");
+        if (typeof Swal !== 'undefined') {
+            Swal.fire('Error', 'Error de conexión al cargar la solicitud.', 'error');
+        } else {
+            alert("Error de conexión.");
+        }
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
+    }
+}
+
+// 5. Función para ver detalles
+window.verDetallesSolicitud = async function(id_solicitud, btnElement = null) {
+    const btn = btnElement || event?.target?.closest('a, button');
+    if (!validarAccion(btn, 'ver detalles')) return;
+
+    const originalHtml = btn?.innerHTML;
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Cargando...';
+    }
+
+    try {
+        // Verificar que la solicitud existe antes de navegar
+        const response = await fetch(`/api/solicitudes/${id_solicitud}`);
+        
+        // Manejar sesión expirada (401)
+        if (response.status === 401) {
+            if (typeof Swal !== 'undefined') {
+                await Swal.fire('Sesión expirada', 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.', 'warning');
+            } else {
+                alert('Su sesión ha expirado. Por favor, inicie sesión nuevamente.');
+            }
+            window.location.href = '/login';
+            return;
+        }
+        
+        const result = await response.json();
+        
+        if (response.ok && result.status === 'success') {
+            window.location.href = `/detalles-solicitud/${id_solicitud}`;
+        } else {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire('Error', 'La solicitud no existe o no se pudo cargar.', 'error');
+            } else {
+                alert("La solicitud no existe o no se pudo cargar.");
+            }
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = originalHtml;
+            }
+        }
+    } catch(err) {
+        console.error(err);
+        if (typeof Swal !== 'undefined') {
+            Swal.fire('Error', 'Error de conexión al verificar la solicitud.', 'error');
+        } else {
+            alert("Error de conexión.");
+        }
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml;
+        }
     }
 }

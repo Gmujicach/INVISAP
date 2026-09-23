@@ -104,24 +104,27 @@
                       <span class="badge rounded-pill bg-secondary">{{ s.estatus_solicitud }}</span>
                     {% endif %}
                   </td>
-                  <td style="max-width:200px; white-space:normal;">{{ s.problematica }}</td>
+                  <td style="max-width:200px;">
+                      <span class="problematica-truncate" title="{{ s.problematica }}">{{ s.problematica }}</span>
+                    </td>
                   <td>{{ s.fecha_formateada or s.fecha }}</td>
                   <td width="10px" class="text-nowrap">
                     <div class="d-flex gap-1">
                       <a
-                        href="/detalles-solicitud/{{ s.id_solicitud }}"
+                        href="javascript:void(0);"
                         class="btn btn-info btn-sm"
-                        title="Ver detalles">
+                        title="Ver detalles"
+                        onclick="verDetallesSolicitud({{ s.id_solicitud }}, this);">
                         <i class="bi bi-eye"></i>
                       </a>
-                      <button type="button" class="btn btn-warning btn-sm" title="Editar solicitud" onclick="abrirModalEditar({{ s.id_solicitud }});">
+                      <button type="button" class="btn btn-warning btn-sm" title="Editar solicitud" onclick="abrirModalEditar({{ s.id_solicitud }}, this);">
                         <i class="bi bi-pencil-square"></i>
                       </button>
                       <a
                         href="javascript:void(0);"
                         class="btn btn-danger btn-sm"
                         title="Eliminar solicitud"
-                        onclick="eliminarSolicitudAjax({{ s.id_solicitud }});">
+                        onclick="eliminarSolicitudAjax({{ s.id_solicitud }}, this);">
                         <i class="bi bi-trash"></i>
                       </a>
                     </div>

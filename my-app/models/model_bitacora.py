@@ -4,7 +4,15 @@ Principios SOLID/DRY: métodos privados con SQL, métodos públicos como fachada
 Toda entrada es validada con regex antes de ejecutar consultas parametrizadas.
 """
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+
+try:
+    from zoneinfo import ZoneInfo
+    TZ_VENEZUELA = ZoneInfo("America/Caracas")
+except Exception:
+    # Fallback para Windows sin tzdata: Venezuela está en UTC-4 (sin horario de verano desde 2016)
+    TZ_VENEZUELA = timezone(timedelta(hours=-4))
+
 from conexion.conexionBD import connectionBD_seguridad
 from models.base_model import BaseModel
 
@@ -15,9 +23,6 @@ class BitacoraModel(BaseModel):
     Métodos privados (_): contienen SQL directamente.
     Métodos públicos:     fachada con validación de entrada.
     """
-
-    # -----------------------------------------------------------------
-    # Constantes y utilidades de validación
     # -----------------------------------------------------------------
     _RE_TEXTO_SEGURO = re.compile(r"^[\w\s\.\,\-\#áéíóúÁÉÍÓÚñÑ]{1,100}$", re.UNICODE)
     _RE_USUARIO = re.compile(r"^[\w\s\-áéíóúÁÉÍÓÚñÑ]{1,15}$", re.UNICODE)
@@ -46,7 +51,7 @@ class BitacoraModel(BaseModel):
             if conn is None:
                 return False
             cursor = conn.cursor()
-            ahora = datetime.now()
+            ahora = datetime.now(TZ_VENEZUELA)
 
             sql = """
                 INSERT INTO bitacora
