@@ -278,32 +278,15 @@ class SolicitudModel(BaseModel):
                         cursor.connection.rollback()
             raise ValueError("No se pudo reservar un ID único para institucion tras 3 intentos")
 
-    def _sql_asegurar_prioridad(self, cursor) -> int:
-        cursor.execute("SELECT id_gestion_prioridad FROM prioridad LIMIT 1")
-        row = cursor.fetchone()
-        if row: return row['id_gestion_prioridad'] if isinstance(row, dict) else row[0]
-
-        for _ in range(3):
-            cursor.execute("SELECT COALESCE(MAX(id_gestion_prioridad), 0) + 1 AS siguiente_id FROM prioridad")
-            fila = cursor.fetchone()
-            siguiente_id = fila['siguiente_id'] if isinstance(fila, dict) else (fila[0] if fila else 1)
-
-            sql = """INSERT INTO prioridad (id_gestion_prioridad, rango_prioridad, fecha_asignacion, responsable_ajuste, justificacion_cambio)
-                     VALUES (%s, %s, %s, %s, %s)"""
-            try:
-                cursor.execute(sql, (siguiente_id, 1.0, datetime.now(), 'Sistema', 'Default'))
-                return siguiente_id
-            except Exception as e:
-                error_code = getattr(e, 'errno', None)
-                if error_code is None and e.args:
-                    error_code = e.args[0]
-                if error_code != 1062:
-                    raise
-                if hasattr(cursor, 'connection') and cursor.connection:
-                    cursor.connection.rollback()
-
-        raise ValueError("No se pudo reservar un ID único para prioridad tras 3 intentos")
-
+    def _sql_crear_prioridad_pendiente(self, cursor) -> int:
+        cursor.execute(
+            """INSERT INTO prioridad
+               (rango_prioridad, origen, fecha_asignacion, responsable_ajuste,
+                justificacion_cambio, estado)
+               VALUES (%s, %s, %s, %s, %s, %s)""",
+            (1.0, 'pendiente', self._fecha, 'Sistema', 'Pendiente de clasificación IA', 0),
+        )
+        return cursor.lastrowid
 
     # --- MÉTODOS PÚBLICOS (API del Modelo) ---
     def guardar(self) -> int | bool:
@@ -324,36 +307,21 @@ class SolicitudModel(BaseModel):
 
             if not persona_id: return False
 
-            prioridad_id = self._sql_asegurar_prioridad(cursor)
+            prioridad_id = self._sql_crear_prioridad_pendiente(cursor)
 
-            for _ in range(3):
-                cursor.execute("SELECT COALESCE(MAX(id_solicitudes), 0) + 1 AS siguiente_id FROM solicitudes")
-                fila_id = cursor.fetchone()
-                siguiente_id = fila_id['siguiente_id'] if isinstance(fila_id, dict) else (fila_id[0] if fila_id else 1)
+            sql_solicitud = """
+                INSERT INTO solicitudes (fecha, tipo_solicitud, estatus_solicitud, problematica,
+                                         persona_id_persona, prioridad_id_gestion_prioridad)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(sql_solicitud, (
+                self._fecha, self._tipo_solicitud, self._estatus_solicitud,
+                self._problematica, persona_id, prioridad_id
+            ))
 
-                sql_solicitud = """
-                    INSERT INTO solicitudes (id_solicitudes, fecha, tipo_solicitud, estatus_solicitud, problematica, 
-                                             persona_id_persona, prioridad_id_gestion_prioridad)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
-                """
-                try:
-                    cursor.execute(sql_solicitud, (
-                        siguiente_id, self._fecha, self._tipo_solicitud, self._estatus_solicitud, 
-                        self._problematica, persona_id, prioridad_id
-                    ))
-
-                    self._id_solicitudes = siguiente_id
-                    conn.commit()
-                    return self._id_solicitudes
-                except Exception as e:
-                    error_code = getattr(e, 'errno', None)
-                    if error_code is None and e.args:
-                        error_code = e.args[0]
-                    if error_code != 1062:
-                        raise
-                    conn.rollback()
-
-            raise ValueError("No se pudo reservar un ID único para solicitud tras 3 intentos")
+            self._id_solicitudes = cursor.lastrowid
+            conn.commit()
+            return self._id_solicitudes
         except Exception as e:
             print(f"Error guardar: {e}")
             if conn: conn.rollback()
@@ -550,6 +518,8 @@ class SolicitudModel(BaseModel):
                 JOIN persona p ON s.persona_id_persona = p.id_persona
                 JOIN prioridad pr ON s.prioridad_id_gestion_prioridad = pr.id_gestion_prioridad
                 WHERE s.estatus_solicitud IN ('Pendiente', 'En Proceso')
+                  AND s.estado = 1
+                  AND pr.estado = 1
                 ORDER BY pr.rango_prioridad ASC, s.fecha DESC
                 LIMIT %s
             """

@@ -4,6 +4,7 @@ Coordina entre router y modelo, manejando los ValueErrors.
 """
 from models.model_solicitudes import SolicitudModel
 from services.bitacora_service import BitacoraService
+from services.ia_prioridad_service import priorizar_solicitud_async
 from models.model_notificacion import notificar_a_roles
 from flask import session
 
@@ -51,13 +52,8 @@ def crear_solicitud(datos_formulario: dict, session: dict | None = None) -> dict
                 nuevo_id,
                 'Solicitud creada desde el sistema'
             )
-            try:
-                from models.model_prioridad import PrioridadModel
-                responsable = session.get('name_surname', 'Sistema') if session else 'Sistema'
-                PrioridadModel.clasificar_nueva_solicitud(nuevo_id, responsable)
-            except Exception as e:
-                print(f"[crear_solicitud] Error en clasificación automática: {e}")
-            return {'success': True, 'id': nuevo_id, 'message': 'Solicitud registrada y clasificada correctamente.'}
+            priorizar_solicitud_async(nuevo_id, datos_formulario.get('tipo_solicitud'))
+            return {'success': True, 'id': nuevo_id, 'message': 'Solicitud registrada. Priorización en proceso.'}
         return {'success': False, 'message': 'Error en la base de datos al guardar.'}
     except ValueError as e:
         return {'success': False, 'message': str(e)}

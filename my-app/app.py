@@ -219,15 +219,6 @@ except Exception as e:
     print(f"[app] No se pudieron generar notificaciones de vencimiento: {e}")
 
 # ============================================
-# Scheduler de Prioridad — Inicio en segundo plano
-# ============================================
-try:
-    from services.ia_prioridad_service import iniciar_scheduler
-    iniciar_scheduler()
-except Exception as e:
-    print(f"[app] No se pudo iniciar el scheduler de prioridad: {e}")
-
-# ============================================
 # datos del perfil del usuario
 # Inyecta el avatar y el nombre en TODAS las plantillas
 # ============================================

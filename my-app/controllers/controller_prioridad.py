@@ -1,8 +1,10 @@
-from models.model_prioridad import PrioridadModel
-from services.ia_prioridad_service import clasificar_solicitud_ia, calcular_prioridad_con_ia
-from services.bitacora_service import BitacoraService
+import re
+
 from flask import session
-from mysql.connector import Error
+
+from models.model_prioridad import PrioridadModel
+from services.bitacora_service import BitacoraService
+from services.ia_prioridad_service import clasificar_solicitud_ia
 
 
 def calcular_prioridad_controller(solicitud_id, gravedad_id=None):
@@ -149,11 +151,14 @@ def ver_detalle_prioridad_controller(id_prioridad):
         calculo = None
         if registro.get('solicitud_id'):
             tipo_solicitante = registro.get('tipo_solicitud')
-            gravedad_sugerida = registro.get('gravedad_sugerida')
+            gravedad_valor = {'Alta': 3, 'Baja': 1}.get(registro.get('gravedad_sugerida'), 1)
             tipo_obra = registro.get('tipo_obra')
-            if tipo_obra and gravedad_sugerida:
+            justificacion = registro.get('justificacion_cambio') or ''
+            zona_match = re.search(r'(?:es_)?zona_agricola=([31])', justificacion, re.IGNORECASE)
+            zona_valor = int(zona_match.group(1)) if zona_match else 1
+            if tipo_obra:
                 calculo = PrioridadModel._calcular_puntaje_ponderado(
-                    tipo_solicitante, gravedad_sugerida, tipo_obra
+                    tipo_solicitante, gravedad_valor, tipo_obra, zona_valor
                 )
         registro['calculo'] = calculo
 

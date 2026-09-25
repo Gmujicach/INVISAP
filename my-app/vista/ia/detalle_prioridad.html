@@ -214,7 +214,7 @@
         {% if detalle.calculo %}
           <p class="text-muted small mb-3">
             <i class="bi bi-calculator me-1"></i>
-            <strong>Fórmula:</strong> Puntaje = (Solicitante × 0.30) + (Gravedad × 0.40) + (Tipo Obra × 0.30)
+            <strong>Fórmula:</strong> Puntaje = (Solicitante × 0.20) + (Gravedad × 0.35) + (Tipo Obra × 0.30) + (Zona Agrícola × 0.15)
             <br>Rango = (3 − Puntaje) / 2  →  rango actual: <strong>{{ "%.3f"|format(detalle.calculo.rango_prioridad|float) }}</strong>
           </p>
           <div class="row g-3">
@@ -222,14 +222,14 @@
               <div class="p-3 rounded" style="background:#FEF7E0;">
                 <div class="text-muted small fw-semibold">Peso Solicitante</div>
                 <div style="font-size:1.5rem; font-weight:800; color:#B06000;">{{ detalle.calculo.peso_solicitante }}</div>
-                <div class="text-muted small">× 0.30 = {{ "%.2f"|format(detalle.calculo.peso_solicitante * 0.30) }}</div>
+                <div class="text-muted small">× 0.20 = {{ "%.2f"|format(detalle.calculo.peso_solicitante * 0.20) }}</div>
               </div>
             </div>
             <div class="col-md-4">
               <div class="p-3 rounded" style="background:#FCE8E6;">
                 <div class="text-muted small fw-semibold">Peso Gravedad</div>
                 <div style="font-size:1.5rem; font-weight:800; color:#C5221F;">{{ detalle.calculo.peso_gravedad }}</div>
-                <div class="text-muted small">× 0.40 = {{ "%.2f"|format(detalle.calculo.peso_gravedad * 0.40) }}</div>
+                <div class="text-muted small">× 0.35 = {{ "%.2f"|format(detalle.calculo.peso_gravedad * 0.35) }}</div>
               </div>
             </div>
             <div class="col-md-4">
@@ -237,6 +237,13 @@
                 <div class="text-muted small fw-semibold">Peso Tipo Obra</div>
                 <div style="font-size:1.5rem; font-weight:800; color:#137333;">{{ detalle.calculo.peso_tipo_obra }}</div>
                 <div class="text-muted small">× 0.30 = {{ "%.2f"|format(detalle.calculo.peso_tipo_obra * 0.30) }}</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="p-3 rounded" style="background:#E8F0FE;">
+                <div class="text-muted small fw-semibold">Peso Zona Agrícola</div>
+                <div style="font-size:1.5rem; font-weight:800; color:#1A56A0;">{{ detalle.calculo.peso_zona_agricola }}</div>
+                <div class="text-muted small">× 0.15 = {{ "%.2f"|format(detalle.calculo.peso_zona_agricola * 0.15) }}</div>
               </div>
             </div>
           </div>

@@ -603,7 +603,7 @@ CREATE TABLE `prioridad` (
   `rango_prioridad` float NOT NULL,
   `tipo_obra` varchar(20) DEFAULT NULL COMMENT 'Obra Mayor | Obra Menor',
   `gravedad_sugerida` varchar(10) DEFAULT NULL COMMENT 'Alta | Baja',
-  `origen` varchar(20) DEFAULT 'manual' COMMENT 'ia | heuristica | error | manual',
+  `origen` varchar(20) DEFAULT 'manual' COMMENT 'ia | heuristica | error | manual | pendiente',
   `fecha_asignacion` datetime NOT NULL,
   `responsable_ajuste` varchar(30) NOT NULL,
   `justificacion_cambio` varchar(150) NOT NULL,

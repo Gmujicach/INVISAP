@@ -599,7 +599,7 @@
             <strong>Solicitud #${idSolicitud}</strong><br>
             Prioridad: <strong>${parseFloat(d.rango || 0).toFixed(3)}</strong> · ${d.tipo_obra || 'N/A'} · ${d.gravedad_sugerida || 'N/A'}<br>
             <small class="text-muted">
-              Solicitante(${calc.peso_solicitante})×0.30 + Gravedad(${calc.peso_gravedad})×0.40 + Tipo(${calc.peso_tipo_obra})×0.30
+              Solicitante(${calc.peso_solicitante})×0.20 + Gravedad(${calc.peso_gravedad})×0.35 + Tipo(${calc.peso_tipo_obra})×0.30 + Zona agrícola(${calc.peso_zona_agricola})×0.15
               = Puntaje <strong>${calc.puntaje_ponderado}</strong>
             </small>
             ${d.justificacion ? '<br><em>' + d.justificacion + '</em>' : ''}

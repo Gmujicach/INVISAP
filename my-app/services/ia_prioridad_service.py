@@ -1,6 +1,7 @@
 import json
 import os
 import re
+import shutil
 import subprocess
 import threading
 import time
@@ -10,10 +11,13 @@ import requests
 
 from conexion.conexionBD import connectionBD
 
-OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "127.0.0.1:11434")
-OLLAMA_BIN = os.environ.get("OLLAMA_BIN", r"C:\Users\Eliot\ollama_portable\ollama.exe")
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "127.0.0.1:11434").rstrip("/")
+if not OLLAMA_HOST.startswith(("http://", "https://")):
+    OLLAMA_HOST = f"http://{OLLAMA_HOST}"
+OLLAMA_BIN = os.environ.get("OLLAMA_BIN")
 _REQUEST_TIMEOUT = 120
-_OLLAMA_MODEL = "llama3.2:1b"
+_OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "llama3.2:1b")
+_ollama_lock = threading.Lock()
 
 OBRA_VALOR_TEXTO = {3: "Obra Mayor", 1: "Obra Menor"}
 GRAVEDAD_VALOR_TEXTO = {3: "Alta", 1: "Baja"}
@@ -64,31 +68,76 @@ def _generar_prompt_usuario(descripcion, municipio=None, parroquia=None,
     return f"Descripción de la obra: \"{descripcion}\". {contexto_texto}"
 
 
+def _localizar_ollama():
+    candidatas = [
+        OLLAMA_BIN,
+        shutil.which("ollama"),
+    ]
+    local_app_data = os.environ.get("LOCALAPPDATA")
+    program_files = os.environ.get("ProgramFiles")
+    if local_app_data:
+        candidatas.append(os.path.join(local_app_data, "Programs", "Ollama", "ollama.exe"))
+    if program_files:
+        candidatas.append(os.path.join(program_files, "Ollama", "ollama.exe"))
+
+    for candidata in candidatas:
+        if candidata and os.path.isfile(candidata):
+            return candidata
+    return None
+
+
 def _servidor_disponible():
     try:
-        r = requests.get(f"http://{OLLAMA_HOST}/api/tags", timeout=3)
+        r = requests.get(f"{OLLAMA_HOST}/api/tags", timeout=3)
         return r.status_code == 200
     except Exception:
         return False
 
 
-def _arrancar_ollama():
-    if _servidor_disponible() or not os.path.exists(OLLAMA_BIN):
-        return
+def _modelo_disponible():
     try:
-        subprocess.Popen(
-            [OLLAMA_BIN, "serve"],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
-            | getattr(subprocess, "DETACHED_PROCESS", 0),
-        )
+        response = requests.get(f"{OLLAMA_HOST}/api/tags", timeout=3)
+        if response.status_code != 200:
+            return False
+        nombres = {
+            modelo.get('name')
+            for modelo in response.json().get('models', [])
+            if modelo.get('name')
+        }
+        if ':' in _OLLAMA_MODEL:
+            return _OLLAMA_MODEL in nombres
+        return _OLLAMA_MODEL in nombres or f'{_OLLAMA_MODEL}:latest' in nombres
     except Exception:
-        return
-    for _ in range(20):
-        time.sleep(1)
+        return False
+
+
+def _arrancar_ollama():
+    with _ollama_lock:
         if _servidor_disponible():
             return
+        ejecutable = _localizar_ollama()
+        if not ejecutable:
+            return
+
+        opciones = {
+            "stdout": subprocess.DEVNULL,
+            "stderr": subprocess.DEVNULL,
+        }
+        if os.name == "nt":
+            opciones["creationflags"] = (
+                subprocess.CREATE_NEW_PROCESS_GROUP
+                | getattr(subprocess, "DETACHED_PROCESS", 0)
+            )
+
+        try:
+            subprocess.Popen([ejecutable, "serve"], **opciones)
+        except Exception:
+            return
+
+        for _ in range(20):
+            time.sleep(1)
+            if _servidor_disponible():
+                return
 
 
 def _parsear_respuesta(data):
@@ -140,6 +189,10 @@ def _clasificar_con_ollama(descripcion, municipio=None, parroquia=None,
                            gravedad_nivel=None, color_semaforo=None,
                            tipo_solicitante=None):
     _arrancar_ollama()
+    if not _modelo_disponible():
+        print(f"[Ollama] Modelo no disponible: {_OLLAMA_MODEL}")
+        return None
+
     payload = {
         "model": _OLLAMA_MODEL,
         "system": SYSTEM_PROMPT,
@@ -153,18 +206,21 @@ def _clasificar_con_ollama(descripcion, municipio=None, parroquia=None,
     }
     try:
         response = requests.post(
-            f"http://{OLLAMA_HOST}/api/generate",
+            f"{OLLAMA_HOST}/api/generate",
             json=payload,
             headers={"Content-Type": "application/json"},
-            timeout=_REQUEST_TIMEOUT,
+            timeout=(5, _REQUEST_TIMEOUT),
         )
         response.raise_for_status()
         data = response.json()
-    except Exception:
+    except Exception as e:
+        print(f"[Ollama] Error al clasificar: {e}")
         return None
 
     resultado = _parsear_respuesta(data)
-    if not resultado:
+    campos_requeridos = {'tipo_obra_valor', 'gravedad_valor', 'es_zona_agricola'}
+    if not campos_requeridos.issubset(resultado):
+        print("[Ollama] Respuesta incompleta; se usará clasificación heurística.")
         return None
     return _validar_resultado(resultado)
 
@@ -317,7 +373,7 @@ _worker_active = False
 class PrioridadWorkerModel:
     """Modelo del worker — encapsulamiento POO con atributos privados y setters validados por regex."""
 
-    _RE_JUSTIFICACION = re.compile(r'^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,;:!?\'"\-]{3,255}$')
+    _RE_JUSTIFICACION = re.compile(r'^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,;:!?\'"\-]{3,150}$')
     _RE_RESPONSABLE = re.compile(r'^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s]{2,30}$')
     _RE_ID = re.compile(r'^\d+$')
 
@@ -331,7 +387,6 @@ class PrioridadWorkerModel:
         self.__tipo_obra = None
         self.__gravedad_sugerida = None
         self.__origen = "ia"
-        self.__semaforo_id = 1
 
     @property
     def id_prioridad(self):
@@ -374,7 +429,7 @@ class PrioridadWorkerModel:
     @justificacion.setter
     def justificacion(self, valor):
         if not self._RE_JUSTIFICACION.match(str(valor or '')):
-            raise ValueError("Justificación inválida (3-255 caracteres alfanuméricos).")
+            raise ValueError("Justificación inválida (3-150 caracteres alfanuméricos).")
         self.__justificacion = valor
 
     @property
@@ -421,19 +476,9 @@ class PrioridadWorkerModel:
 
     @origen.setter
     def origen(self, valor):
-        if valor not in ('ia', 'heuristica', 'error', 'manual', None):
+        if valor not in ('ia', 'heuristica', 'error', 'manual', 'pendiente', None):
             raise ValueError("Origen inválido.")
         self.__origen = valor
-
-    @property
-    def semaforo_id(self):
-        return self.__semaforo_id
-
-    @semaforo_id.setter
-    def semaforo_id(self, valor):
-        if not self._RE_ID.match(str(valor or '')):
-            raise ValueError("ID de semáforo debe ser entero válido.")
-        self.__semaforo_id = int(valor)
 
     def _obtener_siguiente_id(self, cursor):
         cursor.execute(
@@ -443,8 +488,7 @@ class PrioridadWorkerModel:
         return fila[0] if fila else 1
 
     def _insertar_prioridad(self, conexion, solicitud_id, rango, justificacion,
-                               tipo_obra, gravedad_sugerida, origen, responsable,
-                               semaforo_id):
+                               tipo_obra, gravedad_sugerida, origen, responsable):
         cursor = None
         try:
             cursor = conexion.cursor()
@@ -452,14 +496,13 @@ class PrioridadWorkerModel:
             sql = """INSERT INTO prioridad
                      (id_gestion_prioridad, rango_prioridad, tipo_obra, gravedad_sugerida,
                       origen, fecha_asignacion, responsable_ajuste, justificacion_cambio,
-                      estado, semaforo_id)
-                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+                      estado)
+                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
             cursor.execute(sql, (
                 siguiente_id, rango, tipo_obra, gravedad_sugerida,
                 origen, datetime.now(), responsable, justificacion,
-                self.__estado, semaforo_id,
+                self.__estado,
             ))
-            conexion.commit()
             return siguiente_id
         finally:
             if cursor:
@@ -474,7 +517,6 @@ class PrioridadWorkerModel:
             cursor = conexion.cursor()
             sql = "UPDATE solicitudes SET prioridad_id_gestion_prioridad=%s WHERE id_solicitudes=%s"
             cursor.execute(sql, (prioridad_id, solicitud_id))
-            conexion.commit()
         finally:
             if cursor:
                 try:
@@ -497,94 +539,39 @@ class PrioridadWorkerModel:
         try:
             prioridad_id = self._insertar_prioridad(
                 conexion, solicitud_id, rango, justificacion, tipo_obra,
-                gravedad_sugerida, origen, responsable, self.__semaforo_id,
+                gravedad_sugerida, origen, responsable,
             )
             self._actualizar_solicitud_prioridad(conexion, solicitud_id, prioridad_id)
+            conexion.commit()
             self.__id_prioridad = prioridad_id
             return prioridad_id
+        except Exception:
+            conexion.rollback()
+            raise
         finally:
             conexion.close()
 
 
-def _procesar_priorizacion(solicitud_id, tipo_solicitante):
-    """Flujo ETL completo para una solicitud (ejecutado en hilo secundario)."""
-    modelo = PrioridadWorkerModel()
-    conexion = None
-    cursor = None
+def _procesar_priorizacion(solicitud_id, tipo_solicitante=None):
+    from models.model_prioridad import PrioridadModel
+
     try:
-        conexion = connectionBD()
-        if not conexion or not conexion.is_connected():
-            raise Exception("No se pudo conectar a la base de datos.")
-        cursor = conexion.cursor(dictionary=True)
-
-        cursor.execute(
-            "SELECT s.id_solicitudes AS id, s.problematica AS descripcion, "
-            "s.tipo_solicitud, s.municipio, s.parroquia, s.sector, s.ambito, "
-            "s.color_semaforo, s.nivel_gravedad "
-            "FROM solicitudes s WHERE s.id_solicitudes = %s AND s.estado = 1",
-            (solicitud_id,),
+        resultado = PrioridadModel.clasificar_nueva_solicitud(
+            solicitud_id,
+            "IA-Batch",
         )
-        solicitud = cursor.fetchone()
-        if not solicitud:
-            raise Exception(f"Solicitud #{solicitud_id} no encontrada o ya inactiva.")
-
-        cursor.execute(
-            "SELECT id_gravedad, nivel_gravedad FROM gravedad_obra WHERE estado = 1 LIMIT 1"
+        if not resultado.get('success'):
+            raise RuntimeError(resultado.get('message', 'No se pudo clasificar la solicitud.'))
+        datos = resultado['data']
+        print(
+            f"[Worker Async] Solicitud #{solicitud_id} priorizada: "
+            f"rango={datos['rango']}, origen={datos['origen']}"
         )
-        cat_gravedad = cursor.fetchone()
-        gravedad_id = cat_gravedad.get('id_gravedad') if cat_gravedad else 1
-
-        resultado_ia = clasificar_solicitud_ia(
-            solicitud.get('descripcion'),
-            solicitud.get('municipio'),
-            solicitud.get('parroquia'),
-            solicitud.get('sector'),
-            solicitud.get('ambito'),
-            solicitud.get('nivel_gravedad'),
-            solicitud.get('color_semaforo'),
-            solicitud.get('tipo_solicitud'),
-        )
-
-        calculo = calcular_puntaje_prioridad(
-            solicitud.get('tipo_solicitud'),
-            resultado_ia.get('gravedad_valor'),
-            resultado_ia.get('tipo_obra'),
-            resultado_ia.get('es_zona_agricola'),
-        )
-        rango = calculo['rango_prioridad']
-
-        cursor.execute("SELECT id_semaforo FROM semaforo WHERE id_semaforo = 1")
-        semaforo = cursor.fetchone()
-        id_semaforo = semaforo.get('id_semaforo', 1) if semaforo else 1
-
-        modelo.guardar_prioridad(
-            solicitud_id=solicitud_id,
-            rango=rango,
-            justificacion=resultado_ia.get('justificacion', 'Clasificación automática por IA'),
-            tipo_obra=resultado_ia.get('tipo_obra'),
-            gravedad_sugerida=resultado_ia.get('gravedad_sugerida'),
-            origen=resultado_ia.get('origen', 'ia'),
-            responsable="IA-Batch",
-        )
-        print(f"[Worker Async] Solicitud #{solicitud_id} priorizada: rango={rango}")
-
     except Exception as e:
         print(f"[Worker Async] Error priorizando solicitud {solicitud_id}: {e}")
-    finally:
-        if cursor:
-            try:
-                cursor.close()
-            except Exception:
-                pass
-        if conexion:
-            try:
-                conexion.close()
-            except Exception:
-                pass
 
 
-def priorizar_solicitud_async(id_solicitud, tipo_solicitante):
-    """Dispara la priorización en un hilo secundario (no bloquea Flask)."""
+def priorizar_solicitud_async(id_solicitud, tipo_solicitante=None):
     thread = threading.Thread(
         target=_procesar_priorizacion,
         args=(id_solicitud, tipo_solicitante),
@@ -596,55 +583,18 @@ def priorizar_solicitud_async(id_solicitud, tipo_solicitante):
 
 
 def _worker_batch_ejecutar():
-    """Worker batch: extrae solicitudes no priorizadas y las procesa cada 5 min."""
+    from models.model_prioridad import PrioridadModel
+
     print("[Worker Batch] Iniciando ciclo de procesamiento batch...")
-    conexion = None
-    cursor = None
     try:
-        conexion = connectionBD()
-        if not conexion or not conexion.is_connected():
-            print("[Worker Batch] No se pudo conectar a BD.")
-            return
-        cursor = conexion.cursor(dictionary=True)
-
-        cursor.execute("""
-            SELECT s.id_solicitud, s.tipo_solicitante
-            FROM solicitud s
-            LEFT JOIN prioridad p ON s.id_solicitud = p.id_prioridad
-            WHERE p.id_prioridad IS NULL AND s.estado = 1
-        """)
-        pendientes = cursor.fetchall()
-
-        if not pendientes:
-            print("[Worker Batch] No hay solicitudes pendientes.")
-            return
-
-        print(f"[Worker Batch] {len(pendientes)} solicitudes pendientes encontradas.")
-
-        for solicitud in pendientes:
-            sid = solicitud.get('id_solicitud')
-            t_sol = solicitud.get('tipo_solicitante')
-            print(f"[Worker Batch] Disparando priorización async para solicitud #{sid}...")
-            try:
-                priorizar_solicitud_async(sid, t_sol)
-            except Exception as e:
-                print(f"[Worker Batch] Error disparando async para {sid}: {e}")
-            time.sleep(2)
-
+        resultado = PrioridadModel.procesar_solicitudes_pendientes_batch("IA-Batch")
+        print(
+            "[Worker Batch] Ciclo completado: "
+            f"{resultado.get('procesadas', 0)} procesadas, "
+            f"{resultado.get('errores', 0)} errores."
+        )
     except Exception as e:
         print(f"[Worker Batch] Error: {e}")
-    finally:
-        if cursor:
-            try:
-                cursor.close()
-            except Exception:
-                pass
-        if conexion:
-            try:
-                conexion.close()
-            except Exception:
-                pass
-        print("[Worker Batch] Ciclo completado.")
 
 
 class _TimerFallback:
@@ -652,18 +602,23 @@ class _TimerFallback:
 
     def __init__(self):
         self._timer = None
+        self._stopped = False
 
     def add_job(self, func, trigger, **kwargs):
+        self._stopped = False
         interval = kwargs.get('minutes', 5) * 60
         self._schedule(interval, func)
 
     def _schedule(self, interval, func):
         def _run():
+            if self._stopped:
+                return
             try:
                 func()
             except Exception as e:
                 print(f"[Timer Fallback] Error: {e}")
-            self._schedule(interval, func)
+            if not self._stopped:
+                self._schedule(interval, func)
         self._timer = threading.Timer(interval, _run)
         self._timer.daemon = True
         self._timer.start()
@@ -672,6 +627,7 @@ class _TimerFallback:
         pass
 
     def shutdown(self):
+        self._stopped = True
         if self._timer:
             self._timer.cancel()
 
@@ -690,27 +646,44 @@ def obtener_scheduler():
                         minutes=5,
                         id='worker_prioridad_batch',
                         replace_existing=True,
+                        coalesce=True,
+                        max_instances=1,
                     )
                     print("[Scheduler] APScheduler configurado (intervalo: 5 min).")
                 except ImportError:
                     print("[Scheduler] APScheduler no disponible. Usando Timer fallback.")
                     _scheduler = _TimerFallback()
+                    _scheduler.add_job(
+                        _worker_batch_ejecutar,
+                        'interval',
+                        minutes=5,
+                        id='worker_prioridad_batch',
+                        replace_existing=True,
+                    )
+                except Exception as e:
+                    _scheduler = None
+                    print(f"[Scheduler] Error al configurar APScheduler: {e}")
     return _scheduler
 
 
 def iniciar_scheduler():
     global _worker_active
-    scheduler = obtener_scheduler()
+    if _worker_active:
+        return False
+
     try:
+        scheduler = obtener_scheduler()
         scheduler.start()
         _worker_active = True
         print("[Scheduler] Scheduler de prioridad iniciado.")
+        return True
     except Exception as e:
         print(f"[Scheduler] Error al iniciar: {e}")
+        return False
 
 
 def detener_scheduler():
-    global _worker_active
+    global _scheduler, _worker_active
     _worker_active = False
     if _scheduler:
         try:
@@ -718,3 +691,5 @@ def detener_scheduler():
             print("[Scheduler] Scheduler detenido.")
         except Exception as e:
             print(f"[Scheduler] Error al detener: {e}")
+        finally:
+            _scheduler = None
