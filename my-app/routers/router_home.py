@@ -919,6 +919,20 @@ def eliminar_empresa(rif):
     else:
         return jsonify({'exito': False, 'mensaje': 'Debes iniciar sesión.', 'categoria': 'error'})
 
+@app.route('/api/empresas/<string:rif>', methods=['GET'])
+def api_detalle_empresa(rif):
+    """Detalle de una empresa para el boton Ver (sin recargar la pagina)."""
+    if 'conectado' not in session:
+        return jsonify({'exito': False, 'mensaje': 'Debes iniciar sesión.'}), 401
+
+    from controllers.controller_empresa import obtener_empresa_por_rif
+
+    empresa = obtener_empresa_por_rif(rif)
+    if not empresa:
+        return jsonify({'exito': False, 'mensaje': 'La empresa no existe.'}), 404
+
+    return jsonify({'exito': True, 'empresa': empresa})
+
 @app.route('/marcar-cumple-requisitos/<string:rif>', methods=['POST'])
 def marcar_cumple_requisitos(rif):
     if 'conectado' in session:
@@ -1060,9 +1074,25 @@ def api_eliminar_publicacion(id_pub):
     if 'conectado' in session:
         modelo = PublicacionModel(id_publicacion=id_pub)
         if modelo.eliminar():
-            return jsonify({'status': 'success', 'message': 'Registro desactivado correctamente'})
-        return jsonify({'status': 'error', 'message': 'No se pudo eliminar'}), 500
-    return jsonify({'status': 'error', 'message': 'No autorizado'}), 403
+            try:
+                from services.bitacora_service import BitacoraService
+                from flask import g
+                BitacoraService.registrar_accion(
+                    session, 'Publicaciones', 'ELIMINAR',
+                    f'Desactivó la publicación ID: {id_pub}'
+                )
+                g.bitacora_logged = True
+            except Exception:
+                pass
+            return jsonify({
+                'ok': True,
+                'mensaje': 'La publicación se eliminó correctamente.'
+            })
+        return jsonify({
+            'ok': False,
+            'mensaje': 'No se pudo eliminar la publicación.'
+        }), 500
+    return jsonify({'ok': False, 'mensaje': 'No autorizado'}), 403
 
 @home_bp.route('/form-registrar-publicacion', methods=['POST'])
 def formRegistrarPublicacion():

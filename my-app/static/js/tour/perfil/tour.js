@@ -22,7 +22,7 @@
           side: 'top'
         },
         {
-          element: '.perfil-input, input[name="nombre"], input[name="email"]',
+          element: '.perfil-input, input[name="name_surname"], input[name="email_user"]',
           popover: {
             title: 'Campos Editables',
             description: 'Modifique sus datos personales. Recuerde guardar los cambios al finalizar.'
@@ -30,7 +30,7 @@
           side: 'left'
         },
         {
-          element: '.perfil-footer, .btn-guardar-perfil, button[type="submit"]',
+          element: '.perfil-footer, #btn-guardar, #btn-cancelar',
           popover: {
             title: 'Guardar Cambios',
             description: 'Haga clic aqui para actualizar su informacion en la base de datos del sistema.'

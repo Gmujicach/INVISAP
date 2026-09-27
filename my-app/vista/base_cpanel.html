@@ -19,6 +19,8 @@
       <!-- Estilos globales de Modo Oscuro (debe cargarse al final para prevalecer) -->
       <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dark-mode.css') }}">
       <link rel="stylesheet" href="{{ url_for('static', filename='js/driver/driver.css') }}">
+      <!-- Estándar global de botones de acción y modales -->
+      <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/estandar-acciones.css') }}">
       <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/cpanel-utility.css') }}">
     <style>
       /* Utilidades compartidas de la plantilla */
@@ -658,9 +660,7 @@
               </a>
             </div>
           </div>
-          <button type="button" class="modal-close-float" data-bs-dismiss="modal" aria-label="Close">
-            <i class="bi bi-x-lg"></i>
-          </button>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
         </div>
       </div>
     </div>
@@ -713,9 +713,7 @@
               </div>
             </div>
           </div>
-          <button type="button" class="modal-close-float" data-bs-dismiss="modal" aria-label="Close">
-            <i class="bi bi-x-lg"></i>
-          </button>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
         </div>
       </div>
     </div>
@@ -778,18 +776,19 @@
 
             <!-- NOTA: La versión del sistema se muestra al final del modal de Acerca de -->
           </div>
-          <button type="button" class="modal-close-float" data-bs-dismiss="modal" aria-label="Close">
-            <i class="bi bi-x-lg"></i>
-          </button>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
         </div>
       </div>
     </div>
 
     {% include 'home/js.html' %}
+      <script src="{{ url_for('static', filename='js/ui/estandar-ui.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/ui/ajax-refresh.js') }}"></script>
       <script src="{{ url_for('static', filename='js/usuarios/usuarios.js') }}"></script>
       <script src="{{ url_for('static', filename='js/login/login.js') }}"></script>
-      <script src="{{ url_for('static', filename='assets/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
-      <script src="{{ url_for('static', filename='assets/vendor/datatables/js/dataTables.bootstrap5.min.js') }}"></script>
+      {# DataTables (~87 KB) solo se usa en el modulo de Contrataciones, que lo
+         carga en su propio template. Cargarlo aqui descargaba 87 KB y analyses
+         dos librerias en cada pagina del sistema sin usarlas. #}
       <script>
         (function () {
           var currentPath = window.location.pathname;

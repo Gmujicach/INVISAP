@@ -154,6 +154,58 @@ def api_actualizar_empleado():
         }), 500
 
 
+@empleado_bp.route('/api/listar-json', methods=['GET'])
+def api_listar_empleados_json():
+    """
+    API para obtener el listado de empleados en JSON.
+    Permite repintar la tabla del dashboard sin recargar la pagina.
+    """
+    if 'conectado' not in session:
+        return jsonify({'status': 'error', 'message': 'No autorizado'}), 401
+
+    try:
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 0, type=int) or 0
+        if per_page <= 0:
+            per_page = 10
+
+        modelo = EmpleadoModel()
+        empleados = modelo.obtener_empleados_paginados(page=page, per_page=per_page)
+        total_empleados = modelo.contar_empleados()
+        total_pages = (total_empleados + per_page - 1) // per_page
+
+        return jsonify({
+            'status': 'success',
+            'empleados': empleados,
+            'page': page,
+            'per_page': per_page,
+            'total_empleados': total_empleados,
+            'total_pages': total_pages
+        })
+    except Exception as e:
+        print(f"Error en api_listar_empleados_json: {e}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor.'}), 500
+
+
+@empleado_bp.route('/api/<int:id_empleado>', methods=['GET'])
+def api_detalle_empleado(id_empleado):
+    """
+    API para consultar el detalle de un empleado (botón Ver).
+    """
+    if 'conectado' not in session:
+        return jsonify({'status': 'error', 'message': 'No autorizado'}), 401
+
+    try:
+        modelo = EmpleadoModel()
+        empleado = modelo.obtener_empleado_por_id(id_empleado)
+        if not empleado:
+            return jsonify({'status': 'error', 'message': 'El empleado no existe.'}), 404
+        return jsonify({'status': 'success', 'empleado': empleado})
+    except Exception as e:
+        print(f"Error en api_detalle_empleado: {e}")
+        return jsonify({'status': 'error', 'message': 'Error interno del servidor.'}), 500
+
+
 @empleado_bp.route('/api/validar/<int:id_empleado>', methods=['GET'])
 def api_validar_empleado(id_empleado):
     """

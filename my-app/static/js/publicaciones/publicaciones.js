@@ -853,8 +853,8 @@ async function handlePublicacionSubmit(event) {
                     const collapse = bootstrap.Collapse.getOrCreateInstance(document.getElementById('contenedorFormulario'));
                     collapse.hide();
                 }
-                location.reload();
-            }, 1500);
+                refrescarListadoPublicaciones();
+            }, 800);
         } else {
             throw new Error(result.message || 'Error al guardar la publicación.');
         }
@@ -863,6 +863,15 @@ async function handlePublicacionSubmit(event) {
         mostrarError(error.message || 'Error de conexión con el servidor.');
         btnSubmit.disabled = false;
         btnSubmit.innerHTML = btnSubmit.innerHTML.replace(/<span class="spinner-border[^>]*>.*?<\/span>/, '');
+    }
+}
+
+/** Refresca la tabla de publicaciones sin recargar la página. */
+function refrescarListadoPublicaciones() {
+    if (window.INVISAP_AJAX) {
+        window.INVISAP_AJAX.refrescarListadoActual('tbl_publicaciones', { origen: 'publicaciones' });
+    } else {
+        location.reload();
     }
 }
 
@@ -920,9 +929,15 @@ async function eliminarPublicacionAjax(id_publicacion) {
 
         if (response.ok || result.status === 'success') {
             mostrarExito('Publicación desactivada exitosamente.');
-            const row = document.querySelector(`tr[data-id="${id_publicacion}"]`);
-            if (row) row.remove();
-            else location.reload();
+            const row = document.querySelector(
+                `tr[data-id="${id_publicacion}"], tr[data-id-publicacion="${id_publicacion}"]`
+            );
+            if (row) {
+                row.style.transition = 'opacity 0.4s';
+                row.style.opacity = '0';
+                setTimeout(function () { row.remove(); }, 400);
+            }
+            refrescarListadoPublicaciones();
         } else {
             throw new Error(result.message || 'Error al desactivar la publicación.');
         }

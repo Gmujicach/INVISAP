@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manual del Sistema | INVILARA</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}">
+  <!-- Librería local de guías interactivas (Driver.js) -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='js/driver/driver.css') }}">
+  <!-- Estándar global de botones de acción y modales -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/estandar-acciones.css') }}">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
@@ -94,6 +98,39 @@
     body.dark-mode .manual-fallback a {
       color: #4ade80 !important;
     }
+
+    /* --- Botón flotante de la guía interactiva (mismo estándar del sistema) --- */
+    .tour-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.55);
+      background: linear-gradient(135deg, #08b324 0%, #059b1f 100%);
+      color: #fff;
+      font-size: 1.45rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(8, 179, 36, 0.5);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+    .tour-fab:hover {
+      transform: translateY(-1px) scale(1.06);
+      box-shadow: 0 10px 28px rgba(8, 179, 36, 0.65);
+      filter: brightness(1.05);
+    }
+    .tour-fab.tour-active {
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      box-shadow: 0 8px 24px rgba(220, 53, 69, 0.5);
+    }
+    @media (max-width: 767.98px) {
+      .tour-fab { bottom: 18px; right: 18px; width: 54px; height: 54px; }
+    }
   </style>
 </head>
 <body>
@@ -149,6 +186,25 @@
       });
     }
   </script>
+  <!-- Botón flotante de la guía interactiva del módulo -->
+  <button type="button" class="tour-fab" id="btnTourInvilara" title="Guía del Sistema" aria-label="Iniciar tour del sistema" aria-pressed="false">
+    <i class="bi bi-question-lg"></i>
+  </button>
+
+  <script src="{{ url_for('static', filename='js/driver/driver.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/tour/tour-manager.js') }}"></script>
   <script src="{{ url_for('static', filename='js/tour/manual/tour.js') }}"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var fab = document.getElementById('btnTourInvilara');
+      if (fab) {
+        fab.addEventListener('click', function () {
+          if (window.INVISAP_TOUR_MANAGER) {
+            window.INVISAP_TOUR_MANAGER.toggleTour('manual');
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>

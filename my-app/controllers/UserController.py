@@ -308,3 +308,61 @@ def delete_user(user_id):
     else:
         flash('Error al eliminar el usuario.', 'error')
     return redirect(url_for('user_bp.list_users'))
+
+
+# ============================================
+# API AJAX — Módulo de Usuarios
+# Evita la recarga completa de la página al
+# eliminar, ver o filtrar usuarios.
+# ============================================
+
+@user_bp.route('/api/users/<int:user_id>', methods=['GET'])
+def api_detalle_usuario(user_id):
+    """Devuelve el detalle de un usuario en JSON para el modal de verificación."""
+    if 'conectado' not in session:
+        return jsonify({'ok': False, 'mensaje': 'Sesión expirada. Inicie sesión nuevamente.'}), 401
+    if not verificar_permiso('usuarios'):
+        return jsonify({'ok': False, 'mensaje': 'No tiene permiso para consultar usuarios.'}), 403
+
+    usuario = user_model.buscar_por_id(user_id)
+    if not usuario:
+        return jsonify({'ok': False, 'mensaje': 'El usuario no existe.'}), 404
+
+    try:
+        from models.model_seguridad import RolPermisoModel
+        modulos = RolPermisoModel().obtener_nombres_modulos_por_rol(usuario.get('rol', 'Usuario'))
+    except Exception:
+        modulos = []
+
+    datos = dict(usuario)
+    datos['modulos_asignados'] = sorted(modulos)
+    return jsonify({'ok': True, 'usuario': datos})
+
+
+@user_bp.route('/api/users/<int:user_id>', methods=['DELETE'])
+def api_eliminar_usuario(user_id):
+    """Elimina un usuario por AJAX y registra la acción en la bitácora."""
+    if 'conectado' not in session:
+        return jsonify({'ok': False, 'mensaje': 'Sesión expirada. Inicie sesión nuevamente.'}), 401
+    if not verificar_permiso('usuarios'):
+        return jsonify({'ok': False, 'mensaje': 'No tiene permiso para eliminar usuarios.'}), 403
+    if not verificar_permiso_accion('usuarios', 'eliminar'):
+        return jsonify({'ok': False, 'mensaje': 'No tiene permiso para eliminar usuarios.'}), 403
+
+    usuario_a_eliminar = user_model.buscar_por_id(user_id)
+    if not usuario_a_eliminar:
+        return jsonify({'ok': False, 'mensaje': 'El usuario no existe.'}), 404
+    if usuario_a_eliminar['rol'] == 'Super Usuario':
+        return jsonify({
+            'ok': False,
+            'mensaje': 'El Super Usuario no puede ser eliminado por razones de seguridad.'
+        }), 403
+
+    if user_model.eliminar(user_id):
+        BitacoraService.registrar_accion(
+            session, 'Usuarios', 'ELIMINAR',
+            f'Eliminó el usuario ID: {user_id}'
+        )
+        return jsonify({'ok': True, 'mensaje': 'Usuario eliminado correctamente.'})
+
+    return jsonify({'ok': False, 'mensaje': 'Error al eliminar el usuario.'}), 500

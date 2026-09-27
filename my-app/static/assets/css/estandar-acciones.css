@@ -1,0 +1,413 @@
+/* =========================================================================
+   ESTÁNDAR GLOBAL DE UI — INVISAP
+   -------------------------------------------------------------------------
+   Objetivo: que TODOS los módulos del sistema compartan exactamente el
+   mismo lenguaje visual en:
+     1. Botones de acción de tabla (Ver / Editar / Eliminar / Detalle)
+     2. Botón de cierre (equis) de todos los modales
+     3. Celdas de acciones de todas las tablas
+
+   Módulo de referencia (patrón oficial):
+     vista/solicitudes/lista_solicitudes.html
+
+   Este archivo se carga en `vista/base_cpanel.html` y en `base_login.html`
+   para que el estándar rija todo el sistema, sin importar el módulo.
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   1. CONTENEDOR DE ACCIONES
+   Toda columna "Acción" de las tablas debe usar esta clase para que los
+   botones queden alineados, con el mismo espaciado y sin saltos de línea.
+   ------------------------------------------------------------------------- */
+.btn-acciones {
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.25rem;
+  flex-wrap: nowrap;
+  margin: 0;
+  padding: 0;
+}
+
+td.acciones,
+th.acciones {
+  width: 1%;
+  white-space: nowrap;
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* -------------------------------------------------------------------------
+   2. BOTÓN DE ACCIÓN — BASE
+   Tamaño, forma, tipografía y comportamiento idénticos en todos los módulos.
+   ------------------------------------------------------------------------- */
+.btn-accion {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 31px;
+  height: 31px;
+  min-width: 31px;
+  padding: 0 !important;
+  margin: 0;
+  border: 1px solid transparent !important;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: inherit;
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  cursor: pointer;
+  box-shadow: none !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.btn-accion > i,
+.btn-accion > .bi {
+  font-size: 0.9rem;
+  line-height: 1;
+  margin: 0;
+  pointer-events: none;
+}
+
+.btn-accion:hover,
+.btn-accion:focus {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  color: #fff;
+  text-decoration: none;
+}
+
+.btn-accion:active {
+  transform: scale(0.94);
+}
+
+.btn-accion:focus-visible {
+  outline: 2px solid #696cff;
+  outline-offset: 2px;
+  box-shadow: none !important;
+}
+
+/* -------------------------------------------------------------------------
+   3. VARIANTES DE COLOR (idénticas a btn-info / btn-warning / btn-danger
+   del Módulo de Listar Solicitudes)
+   ------------------------------------------------------------------------- */
+
+/* VER  —  bi-eye            (cian / información) */
+.btn-accion-ver {
+  background-color: #0dcaf0 !important;
+  border-color: #0dcaf0 !important;
+  color: #fff !important;
+}
+
+/* EDITAR — bi-pencil-square (ámbar / edición) */
+.btn-accion-editar {
+  background-color: #ffc107 !important;
+  border-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.btn-accion-editar:hover,
+.btn-accion-editar:focus {
+  color: #212529 !important;
+}
+
+/* ELIMINAR — bi-trash        (rojo / eliminación) */
+.btn-accion-eliminar {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+/* DETALLE / VER COMPLETO — bi-search / bi-arrow-up-right  (verde sistema) */
+.btn-accion-detalle {
+  background-color: #08b324 !important;
+  border-color: #059b1f !important;
+  color: #fff !important;
+}
+
+/* DESCARGAR / EXPORTAR — bi-download (verde secundario) */
+.btn-accion-descargar {
+  background-color: #20c997 !important;
+  border-color: #17a2b8 !important;
+  color: #fff !important;
+}
+
+/* APROBAR / HABILITAR — bi-check2 (verdevalidación) */
+.btn-accion-aprobar {
+  background-color: #198754 !important;
+  border-color: #198754 !important;
+  color: #fff !important;
+}
+
+/* ACCIÓN NEUTRA / AUXILIAR — gris (restore, refrescar, marcar leída) */
+.btn-accion-neutro {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: #fff !important;
+}
+
+/* -------------------------------------------------------------------------
+   4. ALIAS DE COMPATIBILIDAD
+   Si algún módulo todavía usa las clases históricas, se alinean aquí para
+   que se vean exactamente igual que las estándar.
+   ------------------------------------------------------------------------- */
+.btn-ver,
+.btn-ver-detalle,
+.btn-detalle {
+  background-color: #0dcaf0 !important;
+  border-color: #0dcaf0 !important;
+  color: #fff !important;
+}
+
+.btn-editar {
+  background-color: #ffc107 !important;
+  border-color: #ffc107 !important;
+  color: #212529 !important;
+}
+
+.btn-eliminar {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+/* -------------------------------------------------------------------------
+   5. ESTÁNDAR DE MODALES — BOTÓN DE CIERRE (EQUIS)
+   Todas las "equis" del sistema usan `bi-x-lg` sobre fondo de color sólido,
+   idénticas al Módulo de Listar Solicitudes.
+   ------------------------------------------------------------------------- */
+
+/* Clase canónica */
+.btn-close-custom {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px;
+  padding: 0 !important;
+  margin-left: auto;
+  border: none !important;
+  border-radius: 8px;
+  background: transparent !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-close-custom > i,
+.btn-close-custom > .bi {
+  color: #fff !important;
+  font-size: 1.15rem;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.btn-close-custom:hover,
+.btn-close-custom:focus-visible {
+  background-color: #dc3545 !important;
+  transform: rotate(90deg);
+}
+
+.btn-close-custom:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Si el modal no tiene encabezado de color, la equis se dibuja oscura */
+.btn-close-custom.btn-close-dark,
+.btn-close-custom.btn-close-dark > i {
+  color: #2b2c40 !important;
+}
+
+.btn-close-custom.btn-close-dark:hover {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+/* Neutralización de las variantes históricas: todas se igualan a la canónica */
+.modal .btn-close,
+.modal .btn-close-white,
+.modal .btn-close-round,
+.modal .modal-close-btn,
+.modal .publication-modal-close,
+.modal .btn-close-detalle,
+.modal .btn-outline-light.rounded-circle[data-bs-dismiss="modal"],
+.modal .btn-outline-dark.rounded-circle[data-bs-dismiss="modal"] {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 8px;
+  background: transparent !important;
+  background-image: none !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  font-size: 1.15rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.modal .btn-close::before,
+.modal .btn-close::after,
+.modal .btn-close-white::before,
+.modal .btn-close-white::after,
+.modal .btn-close-round::before,
+.modal .btn-close-round::after {
+  display: none !important;
+}
+
+.modal .btn-close:hover,
+.modal .btn-close-white:hover,
+.modal .btn-close-round:hover,
+.modal .modal-close-btn:hover,
+.modal .publication-modal-close:hover,
+.modal .btn-close-detalle:hover,
+.modal .btn-outline-light.rounded-circle[data-bs-dismiss="modal"]:hover,
+.modal .btn-outline-dark.rounded-circle[data-bs-dismiss="modal"]:hover {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  transform: rotate(90deg);
+}
+
+/* Encabezados de modal sin fondo de color: la equis debe verse oscura */
+.modal-header:not([class*="bg-"]):not([style*="background"]) .btn-close,
+.modal-header:not([class*="bg-"]):not([style*="background"]) .btn-close-white,
+.modal-header:not([class*="bg-"]):not([style*="background"]) .modal-close-btn,
+.modal-header:not([class*="bg-"]):not([style*="background"]) .publication-modal-close,
+.modal-header:not([class*="bg-"]):not([style*="background"]) .btn-close-detalle,
+.modal-header:not([class*="bg-"]):not([style*="background"]) .btn-outline-dark.rounded-circle[data-bs-dismiss="modal"] {
+  color: #2b2c40 !important;
+}
+
+.modal-header:not([class*="bg-"]):not([style*="background"]) .btn-close:hover,
+.modal-header:not([class*="bg-"]):not([style*="background"]) .btn-close-white:hover,
+.modal-header:not([class*="bg-"]):not([style*="background"]) .modal-close-btn:hover,
+.modal-header:not([class*="bg-"]):not([style*="background"]) .publication-modal-close:hover,
+.modal-header:not([class*="bg-"]):not([style*="background"]) .btn-close-detalle:hover,
+.modal-header:not([class*="bg-"]):not([style*="background"]) .btn-outline-dark.rounded-circle[data-bs-dismiss="modal"]:hover {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+/* -------------------------------------------------------------------------
+   6. MODO OSCURO
+   Los botones de acción mantienen el mismo tamaño y la misma forma; solo se
+   ajusta el color para conservar el contraste exigido por WCAG.
+   ------------------------------------------------------------------------- */
+body.dark-mode .btn-accion-editar {
+  background-color: #e0a800 !important;
+  border-color: #e0a800 !important;
+  color: #1e1e2d !important;
+}
+
+body.dark-mode .btn-accion-ver {
+  background-color: #0aa8c8 !important;
+  border-color: #0aa8c8 !important;
+}
+
+body.dark-mode .btn-accion-eliminar {
+  background-color: #c82333 !important;
+  border-color: #c82333 !important;
+}
+
+body.dark-mode .btn-accion-detalle {
+  background-color: #059b1f !important;
+  border-color: #059b1f !important;
+}
+
+body.dark-mode .btn-accion-neutro {
+  background-color: #4a4a5e !important;
+  border-color: #4a4a5e !important;
+}
+
+body.dark-mode .btn-ver,
+body.dark-mode .btn-ver-detalle,
+body.dark-mode .btn-detalle {
+  background-color: #0aa8c8 !important;
+  border-color: #0aa8c8 !important;
+  color: #fff !important;
+}
+
+body.dark-mode .btn-editar {
+  background-color: #e0a800 !important;
+  border-color: #e0a800 !important;
+  color: #1e1e2d !important;
+}
+
+body.dark-mode .btn-eliminar {
+  background-color: #c82333 !important;
+  border-color: #c82333 !important;
+  color: #fff !important;
+}
+
+body.dark-mode .btn-close-custom > i,
+body.dark-mode .btn-close-custom {
+  color: #cfcde9 !important;
+}
+
+body.dark-mode .modal-header .btn-close,
+body.dark-mode .modal-header .btn-close-white,
+body.dark-mode .modal-header .modal-close-btn,
+body.dark-mode .modal-header .publication-modal-close,
+body.dark-mode .modal-header .btn-close-detalle {
+  color: #cfcde9 !important;
+}
+
+body.dark-mode .modal-header .btn-close:hover,
+body.dark-mode .modal-header .btn-close-white:hover,
+body.dark-mode .modal-header .modal-close-btn:hover,
+body.dark-mode .modal-header .publication-modal-close:hover,
+body.dark-mode .modal-header .btn-close-detalle:hover {
+  background-color: #c82333 !important;
+  color: #fff !important;
+}
+
+/* -------------------------------------------------------------------------
+   7. RESPONSIVE
+   En pantallas pequeñas el estándar se mantiene: sólo se ajusta el margen.
+   ------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .btn-accion {
+    width: 29px;
+    height: 29px;
+    min-width: 29px;
+    font-size: 0.8rem;
+  }
+
+  .btn-accion > i,
+  .btn-accion > .bi {
+    font-size: 0.82rem;
+  }
+
+  .btn-acciones {
+    gap: 0.2rem;
+  }
+}
+
+/* -------------------------------------------------------------------------
+   8. ACCESIBILIDAD — MODO ALTO CONTRASTE
+   ------------------------------------------------------------------------- */
+body.high-contrast .btn-accion {
+  border: 2px solid #000 !important;
+}
+
+body.high-contrast .btn-accion > i {
+  color: #000 !important;
+}
+
+body.high-contrast .btn-accion-editar > i {
+  color: #000 !important;
+}

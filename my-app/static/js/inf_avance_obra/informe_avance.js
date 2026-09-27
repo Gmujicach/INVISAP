@@ -462,7 +462,13 @@ async function recargarTablaInformes() {
         // 2. Obtener tbody de la tabla
         const tbody = document.querySelector('#tablaInformes tbody');
         if (!tbody) {
-            // Si no existe la tabla, recargar página completa
+            // Si la vista no tiene la tabla, se actualiza el listado desde el
+            // servidor antes de recurrir a una recarga completa.
+            if (window.INVISAP_AJAX) {
+                window.INVISAP_AJAX.refrescarListadoActual('tablaInformes', { origen: 'inf_avance_obra' })
+                    .then(function (ok) { if (!ok) window.location.reload(); });
+                return;
+            }
             window.location.reload();
             return;
         }
@@ -498,7 +504,12 @@ async function recargarTablaInformes() {
         
     } catch (error) {
         console.error('Error recargando tabla:', error);
-        // Si falla, recargar página completa como fallback
+        // Se intenta un refresco por AJAX antes de la recarga completa.
+        if (window.INVISAP_AJAX) {
+            window.INVISAP_AJAX.refrescarListadoActual('tablaInformes', { origen: 'inf_avance_obra' })
+                .then(function (ok) { if (!ok) window.location.reload(); });
+            return;
+        }
         window.location.reload();
     }
 }
@@ -528,16 +539,18 @@ function crearFilaInforme(informe) {
         </td>
         <td>${informe.gerente_nombre || 'No asignado'}</td>
         <td>${formatearFecha(informe.fecha)}</td>
-        <td class="text-center">
-            <button type="button" class="btn btn-outline-info btn-sm btn-ver-informe" data-id="${informe.id_informe}" data-bs-toggle="modal" data-bs-target="#modalDetalleInforme" title="Ver detalle">
-                <i class="bx bx-show"></i>
-            </button>
-            <a href="/editar-informe/${informe.id_informe}" class="btn btn-outline-warning btn-sm" title="Editar">
-                <i class="bx bx-edit"></i>
-            </a>
-            <button class="btn btn-outline-danger btn-sm btn-eliminar-informe" data-id="${informe.id_informe}" title="Eliminar">
-                <i class="bx bx-trash"></i>
-            </button>
+        <td class="acciones">
+            <div class="btn-acciones" style="justify-content:center;">
+                <button type="button" class="btn btn-sm btn-accion btn-accion-ver btn-ver-informe" data-id="${informe.id_informe}" data-bs-toggle="modal" data-bs-target="#modalDetalleInforme" title="Ver detalle" aria-label="Ver detalle completo del informe">
+                    <i class="bi bi-eye"></i>
+                </button>
+                <a href="/editar-informe/${informe.id_informe}" class="btn btn-sm btn-accion btn-accion-editar btn-editar-informe" title="Editar" aria-label="Editar informe">
+                    <i class="bi bi-pencil-square"></i>
+                </a>
+                <button class="btn btn-sm btn-accion btn-accion-eliminar btn-eliminar-informe" data-id="${informe.id_informe}" title="Eliminar" aria-label="Eliminar informe">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
         </td>
     `;
     

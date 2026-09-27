@@ -127,7 +127,7 @@
           <th style="padding: 1rem 1.2rem;">Acción</th>
           <th style="padding: 1rem 1.2rem;">Fecha y Hora</th>
           <th style="padding: 1rem 1.2rem;">Inicio Sesión</th>
-          <th style="padding: 1rem 1.2rem; text-align:center;">Detalle</th>
+                <th style="padding: 1rem 1.2rem; text-align:center;" class="acciones">Detalle</th>
         </tr>
       </thead>
       <tbody id="tbody_bitacora">
@@ -164,9 +164,10 @@
             <td style="padding: 0.85rem 1.2rem; font-size:0.83rem; color:#475569;">
               {{ r.hora_inicio_sesion if r.hora_inicio_sesion else ' ' }}
             </td>
-            <td style="padding: 0.85rem 1.2rem; text-align:center;">
-              <button type="button"
-                class="btn btn-sm btn-outline-primary btn-detalle-bitacora"
+            <td class="acciones" style="padding: 0.85rem 1.2rem;">
+              <div class="btn-acciones" style="justify-content:center;">
+                <button type="button"
+                class="btn btn-sm btn-accion btn-accion-ver btn-detalle-bitacora"
                 data-id="{{ r.id_bitacora }}"
                 data-usuario="{{ r.usuario }}"
                 data-modulo="{{ r.modulo }}"
@@ -174,9 +175,11 @@
                 data-fecha="{{ r.fecha_raw if r.fecha_raw else (r.fecha if r.fecha else '') }}"
                 data-hora-inicio="{{ r.hora_inicio_raw if r.hora_inicio_raw else (r.hora_inicio_sesion if r.hora_inicio_sesion else '') }}"
                 data-hora-cierre="{{ r.hora_cierre_raw if r.hora_cierre_raw else (r.hora_cierre_sesion if r.hora_cierre_sesion else '') }}"
-                title="Ver detalle del registro">
+                title="Ver detalle del registro"
+                aria-label="Ver detalle del registro">
                 <i class="bi bi-eye"></i>
-              </button>
+                </button>
+              </div>
             </td>
           </tr>
           {% endfor %}
@@ -229,9 +232,7 @@
               <p class="mb-0 small opacity-75 mt-1" id="modalDetalleBitacoraSubtitle">Información completa del registro</p>
             </div>
           </div>
-          <button type="button" class="btn-close-detalle" data-bs-dismiss="modal" aria-label="Cerrar">
-            <i class="bi bi-x-lg" aria-hidden="true"></i>
-          </button>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
         </div>
        <div class="modal-body p-4">
          <div class="d-flex flex-column gap-3">

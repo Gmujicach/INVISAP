@@ -258,10 +258,23 @@ def generarReporteEstadistico():
         tipo_reporte = request.form.get('tipo_reporte', 'solicitudes').strip().lower()
         agrupacion = request.form.get('agrupacion', 'dia').strip().lower()
         filtros = _colectar_filtros_form()
-        tipo_reporte_label = TIPO_REPORTE_LABELS.get(tipo_reporte, 'SOLICITUDES')
+    else:
+        tipo_reporte = request.args.get('tipo_reporte', 'solicitudes').strip().lower()
+        agrupacion = request.args.get('agrupacion', 'dia').strip().lower()
+
+    # La etiqueta se resuelve siempre: el reporte puede pedirse por GET
+    # (descarga directa) o por POST (formulario de la vista).
+    tipo_reporte_label = TIPO_REPORTE_LABELS.get(tipo_reporte, 'SOLICITUDES')
 
     stats = _obtener_stats_por_tipo(tipo_reporte, filtros, agrupacion)
     paginas = list(generar_pagina_pdf(tipo_reporte_label, stats, agrupacion))
+
+    if not paginas:
+        return Response(
+            'No hay datos para generar el reporte estadístico.',
+            mimetype='text/plain; charset=utf-8',
+            status=204
+        )
 
     pdf_buffer = BytesIO()
     paginas[0].save(pdf_buffer, format='PDF', resolution=150.0, save_all=True, append_images=paginas[1:])

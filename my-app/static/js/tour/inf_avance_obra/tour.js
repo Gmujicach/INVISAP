@@ -141,7 +141,7 @@
           side: 'bottom'
         },
         {
-          element: '#tablaInformes tbody tr:first-child .btn-ver-informe',
+          element: '#tablaInformes tbody tr:first-child .btn-accion-ver, .btn-ver-informe',
           popover: {
             title: 'Botón Ver (Ojo)',
             description: 'Abre un modal con el detalle completo del informe: avance, observaciones, evidencias fotográficas y responsable.'
@@ -149,7 +149,7 @@
           side: 'left'
         },
         {
-          element: '#tablaInformes tbody tr:first-child .btn-editar-informe',
+          element: '#tablaInformes tbody tr:first-child .btn-accion-editar, .btn-editar-informe',
           popover: {
             title: 'Botón Editar',
             description: 'Te permite modificar los datos del informe: tipo, estado, avance, observaciones, responsable y evidencias.'
@@ -157,7 +157,7 @@
           side: 'left'
         },
         {
-          element: '#tablaInformes tbody tr:first-child .btn-eliminar-informe',
+          element: '#tablaInformes tbody tr:first-child .btn-accion-eliminar, .btn-eliminar-informe',
           popover: {
             title: 'Botón Eliminar (Borrado Lógico)',
             description: 'Desactiva el informe (borrado lógico). No se borra permanentemente para preservar el historial y auditoría.'

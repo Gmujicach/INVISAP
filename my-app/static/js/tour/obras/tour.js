@@ -108,7 +108,7 @@
           side: 'bottom'
         }),
         baseStep({
-          element: 'table.table tbody tr:first-child .btn-outline-info',
+          element: 'table.table tbody tr:first-child .btn-accion-ver',
           popover: {
             title: 'Ver Detalle',
             description: 'Abre una página con toda la información de la obra. Solo consulta, no modifica nada.'
@@ -116,7 +116,7 @@
           side: 'left'
         }),
         baseStep({
-          element: 'table.table tbody tr:first-child .btn-outline-warning',
+          element: 'table.table tbody tr:first-child .btn-accion-editar',
           popover: {
             title: 'Modificar Obra',
             description: 'Abre el formulario para cambiar los datos de la obra. La contratación y el proyecto no se pueden cambiar.'
@@ -124,7 +124,7 @@
           side: 'left'
         }),
         baseStep({
-          element: 'table.table tbody tr:first-child .btn-outline-danger',
+          element: 'table.table tbody tr:first-child .btn-accion-eliminar',
           popover: {
             title: 'Desactivar Obra',
             description: 'Cambia el estado de la obra a inactiva. No la borra, solo la desactiva para conservar el historial.'
@@ -379,7 +379,7 @@
           side: 'right'
         }),
         baseStep({
-          element: '.detail-actions .btn-outline-danger',
+          element: '.detail-actions .btn-accion-eliminar, .btn-outline-danger',
           popover: {
             title: 'Desactivar',
             description: 'Cambia la obra a estado inactivo sin borrarla.'

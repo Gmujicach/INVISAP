@@ -49,9 +49,17 @@
           element: '#tabla-bitacora, table.table',
           popover: {
             title: 'Registro de Acciones del Sistema',
-            description: 'Tabla detallada con cada operacion: usuario responsable, modulo afectado, tipo de accion, fecha y hora exacta.'
+            description: 'Tabla detallada con cada operación: usuario responsable, módulo afectado, tipo de acción, fecha y hora exacta.'
           },
           side: 'top'
+        },
+        {
+          element: '#tabla-bitacora tbody tr:first-child .btn-accion-ver',
+          popover: {
+            title: 'Botón Ver (Detalle del registro)',
+            description: 'Abre el modal con el detalle completo del evento: usuario, módulo, acción, fecha, hora de inicio y hora de cierre de la sesión.'
+          },
+          side: 'left'
         }
       ]
     });

@@ -583,6 +583,8 @@ function eliminarInspeccionJS(id_inspeccion) {
                                 row.style.transition = 'opacity 0.4s';
                                 row.style.opacity = '0';
                                 setTimeout(function() { row.remove(); }, 400);
+                            } else if (window.INVISAP_AJAX) {
+                                window.INVISAP_AJAX.refrescarListadoActual('tablaInspecciones', { origen: 'inspecciones' });
                             } else {
                                 setTimeout(function() { location.reload(); }, 1200);
                             }
@@ -615,6 +617,8 @@ function eliminarInspeccionJS(id_inspeccion) {
                             row.style.transition = 'opacity 0.4s';
                             row.style.opacity = '0';
                             setTimeout(function() { row.remove(); }, 400);
+                        } else if (window.INVISAP_AJAX) {
+                            window.INVISAP_AJAX.refrescarListadoActual('tablaInspecciones', { origen: 'inspecciones' });
                         } else {
                             setTimeout(function() { location.reload(); }, 800);
                         }

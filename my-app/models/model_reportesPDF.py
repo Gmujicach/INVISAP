@@ -282,7 +282,8 @@ class ReportePDFModel(BaseModel):
                 titulo_publicacion, 
                 nombre_responsable AS autor_publicacion, 
                 DATE_FORMAT(fecha_publicacion, '%d/%m/%Y') AS fecha_formateada,
-                tipo_publicacion
+                tipo_publicacion,
+                cuerpo_publicacion AS resumen_publicacion
             FROM publicacion
             WHERE estado = 1
         """

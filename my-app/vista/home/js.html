@@ -1,8 +1,11 @@
-<script src="{{ url_for('static', filename ='assets/vendor/libs/jquery/jquery.js') }}"></script>
-<script src="{{ url_for('static', filename ='assets/vendor/libs/popper/popper.js') }}"></script>
-<script src="{{ url_for('static', filename ='assets/vendor/js/bootstrap.js') }}"></script>
-<script src="{{ url_for('static', filename ='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js') }}"></script>
-<script src="{{ url_for('static', filename ='assets/vendor/js/menu.js') }}"></script>
+{# Librerias base del panel. Se usan las versiones .min generadas por
+   generar_vendor_min.py: quitan el sourcemap base64 y minifican el codigo,
+   reduciendo ~1.1 MB de descarga y de tiempo de analisis en cada pagina. #}
+<script src="{{ url_for('static', filename ='assets/vendor/libs/jquery/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename ='assets/vendor/libs/popper/popper.min.js') }}"></script>
+<script src="{{ url_for('static', filename ='assets/vendor/js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename ='assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+<script src="{{ url_for('static', filename ='assets/vendor/js/menu.min.js') }}"></script>
 <script src="{{ url_for('static', filename ='js/home/sidebar.js') }}"></script>
 <script src="{{ url_for('static', filename ='js/main.js') }}"></script>
 

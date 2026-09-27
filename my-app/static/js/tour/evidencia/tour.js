@@ -77,7 +77,7 @@
           side: 'bottom'
         },
         {
-          element: '#tablaEvidencias tbody tr:first-child .btn-outline-info, .table-evidencias-modern tbody tr:first-child .btn-outline-info',
+          element: '#tablaEvidencias tbody tr:first-child .btn-accion-ver, .table-evidencias-modern tbody tr:first-child .btn-accion-ver',
           popover: {
             title: 'Botón Ver Detalle',
             description: 'Haz clic para ver la imagen en tamaño completo junto con toda la información de la evidencia.'
@@ -85,7 +85,7 @@
           side: 'left'
         },
         {
-          element: '#tablaEvidencias tbody tr:first-child .btn-outline-warning, .table-evidencias-modern tbody tr:first-child .btn-outline-warning',
+          element: '#tablaEvidencias tbody tr:first-child .btn-accion-editar, .table-evidencias-modern tbody tr:first-child .btn-accion-editar',
           popover: {
             title: 'Botón Modificar',
             description: 'Haz clic para editar la descripción, etapa o reemplazar la imagen de la evidencia.'
@@ -93,7 +93,7 @@
           side: 'left'
         },
         {
-          element: '#tablaEvidencias tbody tr:first-child .btn-outline-danger, .table-evidencias-modern tbody tr:first-child .btn-outline-danger',
+          element: '#tablaEvidencias tbody tr:first-child .btn-accion-eliminar, .table-evidencias-modern tbody tr:first-child .btn-accion-eliminar',
           popover: {
             title: 'Botón Desactivar',
             description: 'Elimina la evidencia del listado activo. Ten cuidado porque esta acción no se puede deshacer.'
@@ -278,7 +278,7 @@
           side: 'left'
         },
         {
-          element: '.detail-actions .btn-outline-danger',
+          element: '.detail-actions .btn-accion-eliminar, .btn-outline-danger',
           popover: {
             title: 'Botón Desactivar',
             description: 'Elimina esta evidencia del listado activo. Esta acción no se puede deshacer.'

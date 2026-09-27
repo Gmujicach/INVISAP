@@ -212,6 +212,8 @@ function eliminarEmpleadoJS(id_empleado) {
                                 row.style.transition = 'opacity 0.4s';
                                 row.style.opacity = '0';
                                 setTimeout(function() { row.remove(); }, 400);
+                            } else if (window.INVISAP_AJAX) {
+                                window.INVISAP_AJAX.refrescarListadoActual('tablaEmpleados', { origen: 'empleados' });
                             } else {
                                 setTimeout(function() { location.reload(); }, 1200);
                             }
@@ -244,6 +246,8 @@ function eliminarEmpleadoJS(id_empleado) {
                             row.style.transition = 'opacity 0.4s';
                             row.style.opacity = '0';
                             setTimeout(function() { row.remove(); }, 400);
+                        } else if (window.INVISAP_AJAX) {
+                            window.INVISAP_AJAX.refrescarListadoActual('tablaEmpleados', { origen: 'empleados' });
                         } else {
                             setTimeout(function() { location.reload(); }, 800);
                         }

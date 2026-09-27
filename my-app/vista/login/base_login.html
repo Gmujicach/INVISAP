@@ -57,6 +57,8 @@
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='assets/css/dark-mode.css') }}" />
+    <!-- Estándar global de botones de acción y modales -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/estandar-acciones.css') }}">
 
     <script src="{{ url_for('static', filename='assets/vendor/js/helpers.js') }}"></script>
     <script src="{{ url_for('static', filename='js/config.js') }}"></script>
@@ -91,8 +93,10 @@
     {% endblock %}
 
     <!-- Scripts al final del body para mejor rendimiento -->
+    <script src="{{ url_for('static', filename='js/ui/estandar-ui.js') }}"></script>
     <script src="{{ url_for('static', filename='js/home/home.js') }}"></script>
     <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tour/login/tour.js') }}"></script>
     <script>
       if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark-mode');

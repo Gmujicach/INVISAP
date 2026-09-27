@@ -10,6 +10,40 @@ document.addEventListener('DOMContentLoaded', function () {
     const MIN_IMAGENES = 3;
     const MAX_IMAGENES = 50;
 
+    /**
+     * Refresca la tabla de evidencias sin recargar la pagina.
+     * En la vista de registro no existe tabla, por lo que se vuelve al
+     * listado; en la vista de edicion basta con actualizar el fragmento.
+     */
+    function refrescarListadoEvidencias() {
+        const hayTabla = !!document.getElementById('tablaEvidencias');
+        if (hayTabla && window.INVISAP_AJAX) {
+            window.INVISAP_AJAX.refrescarListadoActual('tablaEvidencias', { origen: 'evidencias' });
+            return;
+        }
+        if (!hayTabla && window.INVISAP_AJAX) {
+            window.INVISAP_AJAX.refrescarListadoDesde('/evidencias/listar', 'tablaEvidencias', { origen: 'evidencias' })
+                .then(function (ok) {
+                    if (ok) window.location.href = '/evidencias/listar';
+                });
+            return;
+        }
+        window.location.href = '/evidencias/listar';
+    }
+
+    /** Limpia el formulario de carga para permitir registrar otra evidencia. */
+    function limpiarFormularioEvidencia() {
+        if (formEvidencias) formEvidencias.reset();
+        selectedFiles = [];
+        if (imagePreviewContainer) imagePreviewContainer.innerHTML = '';
+        if (fileInput) fileInput.value = '';
+        if (dropZone) dropZone.classList.remove('dragover');
+        if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = '<i class="bi bi-upload me-1"></i>Subir Evidencias';
+        }
+    }
+
     // Validación inicial para modo edición
     if (isEditMode && window.evidenciaData) {
         const existingUrls = window.evidenciaData.url_archivos ? window.evidenciaData.url_archivos.split(',') : [];
@@ -240,7 +274,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const result = await response.json();
             if (result.status === 'success') {
                 mostrarExito(result.message);
-                setTimeout(() => { window.location.href = '/evidencias/listar'; }, 1500);
+                limpiarFormularioEvidencia();
+                refrescarListadoEvidencias();
             } else {
                 mostrarError(result.message);
                 btnSubmit.disabled = false;
@@ -280,7 +315,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const result = await response.json();
             if (result.status === 'success') {
                 mostrarExito(result.message);
-                setTimeout(() => { window.location.href = '/evidencias/listar'; }, 1500);
+                refrescarListadoEvidencias();
             } else {
                 mostrarError(result.message);
                 btnSubmit.disabled = false;
@@ -321,6 +356,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                 row.style.transition = 'opacity 0.4s';
                                 row.style.opacity = '0';
                                 setTimeout(function() { row.remove(); }, 400);
+                            } else if (window.INVISAP_AJAX) {
+                                window.INVISAP_AJAX.refrescarListadoActual('tablaEvidencias', { origen: 'evidencias' });
                             } else {
                                 setTimeout(function() { location.reload(); }, 1200);
                             }

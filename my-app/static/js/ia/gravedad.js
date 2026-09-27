@@ -82,9 +82,13 @@
     }
 
     function actions(record) {
-      const wrapper = node('div', 'gravedad-actions');
-      [['details', 'Ver detalles', 'bi-eye'], ['edit', 'Editar', 'bi-pencil'], ['deactivate', 'Desactivar', 'bi-power']].forEach(([action, title, symbol]) => {
-        const button = node('button', 'btn gravedad-action');
+      const wrapper = node('div', 'gravedad-actions btn-acciones');
+      [
+        ['details', 'Ver detalles', 'bi-eye', 'btn-accion-ver'],
+        ['edit', 'Editar', 'bi-pencil-square', 'btn-accion-editar'],
+        ['deactivate', 'Desactivar', 'bi-power', 'btn-accion-neutro']
+      ].forEach(([action, title, symbol, variante]) => {
+        const button = node('button', 'btn btn-sm btn-accion gravedad-action ' + variante);
         button.type = 'button';
         button.dataset.action = action;
         button.dataset.id = String(record.id_gravedad);

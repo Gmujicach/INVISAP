@@ -5,19 +5,17 @@
  */
 
 /**
- * Función principal que renderiza el Dashboard de Empleados (SPA-style)
- * Se dispara desde empleados.html al cargar la página
+ * Genera las filas de la tabla de empleados.
+ * Se reutiliza tanto en el render inicial como en el refresco por AJAX,
+ * de modo que los botones mantienen siempre el mismo estándar.
  */
-function triggerEmpleadosDashboard() {
-    const empleados = window.resp_empleadosBD || [];
-    
-    // Generar filas de la tabla con validación de datos y acciones
-    let rowsHtml = empleados.length > 0 
+function renderFilasEmpleados(empleados) {
+    return empleados.length > 0
         ? empleados.map(e => {
-            const estadoBadge = e.estado == 1 
-                ? '<span class="badge bg-success">Activo</span>' 
+            const estadoBadge = e.estado == 1
+                ? '<span class="badge bg-success">Activo</span>'
                 : '<span class="badge bg-secondary">Inactivo</span>';
-            
+
             return `
               <tr data-empleado-id="${e.id_empleados}">
                 <td><span class="fw-bold">#${e.id_empleados}</span></td>
@@ -25,7 +23,7 @@ function triggerEmpleadosDashboard() {
                     <div class="d-flex align-items-center">
                         <div class="avatar avatar-sm me-2">
                             <span class="avatar-initial rounded-circle bg-label-primary">
-                                ${e.nombre_empleado.charAt(0).toUpperCase()}
+                                ${String(e.nombre_empleado || '').charAt(0).toUpperCase()}
                             </span>
                         </div>
                         <div>
@@ -38,23 +36,98 @@ function triggerEmpleadosDashboard() {
                 <td><small class="text-muted">${e.gerencia_asignada || 'No asignada'}</small></td>
                 <td>${formatearFecha(e.fecha_ingreso)}</td>
                 <td>${estadoBadge}</td>
-                <td class="text-center">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-sm btn-warning" 
-                                onclick="editarEmpleadoModal(${e.id_empleados})" 
-                                title="Editar">
+                <td class="acciones">
+                    <div class="btn-acciones" style="justify-content:center;">
+                        <button type="button" class="btn btn-sm btn-accion btn-accion-ver"
+                                onclick="verEmpleadoDetalle(${e.id_empleados})"
+                                title="Ver"
+                                aria-label="Ver empleado">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-accion btn-accion-editar"
+                                onclick="editarEmpleadoModal(${e.id_empleados})"
+                                title="Editar"
+                                aria-label="Editar empleado">
                             <i class="bi bi-pencil-square"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-danger" 
-                                onclick="eliminarEmpleadoJS(${e.id_empleados})" 
-                                title="Desactivar">
-                            <i class="bi bi-trash3-fill"></i>
+                        <button type="button" class="btn btn-sm btn-accion btn-accion-eliminar"
+                                onclick="eliminarEmpleadoJS(${e.id_empleados})"
+                                title="Desactivar"
+                                aria-label="Desactivar empleado">
+                            <i class="bi bi-trash"></i>
                         </button>
                     </div>
                 </td>
               </tr>`;
         }).join('')
         : '<tr><td colspan="7" class="text-center py-5 text-muted"><i class="bi bi-inbox fs-1 d-block mb-2"></i>No se encontraron empleados registrados.</td></tr>';
+}
+
+/**
+ * Recupera la fila de un empleado dentro de la tabla del dashboard.
+ * La fila se marca con data-empleado-id.
+ */
+function obtenerFilaEmpleado(id_empleado) {
+    return document.querySelector(
+        `tr[data-empleado-id="${id_empleado}"], tr[data-id-empleado="${id_empleado}"]`
+    );
+}
+
+/**
+ * Refresca el listado de empleados por AJAX, sin recargar la pagina.
+ * Se invoca tras crear, editar o desactivar un empleado.
+ */
+async function refrescarListadoEmpleados() {
+    const cuerpo = document.getElementById('tbodyEmpleadosDashboard');
+    if (!cuerpo) {
+        window.location.reload();
+        return;
+    }
+
+    try {
+        const response = await fetch('/empleados/api/listar-json?per_page=100', {
+            credentials: 'same-origin',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        });
+        const data = await response.json();
+        if (!data || data.status !== 'success') {
+            throw new Error((data && data.message) || 'Respuesta inválida');
+        }
+
+        const empleados = data.empleados || [];
+        cuerpo.innerHTML = renderFilasEmpleados(empleados);
+        window.resp_empleadosBD = empleados;
+
+        actualizarEstadisticasEmpleados(empleados);
+
+        if (window.INVISAP_ESTANDAR_UI) {
+            window.INVISAP_ESTANDAR_UI.aplicar(cuerpo);
+        }
+        filtrarEmpleados();
+    } catch (error) {
+        console.error('[Empleados] Error al refrescar el listado:', error);
+        window.location.reload();
+    }
+}
+
+/** Actualiza los contadores de total y activos del panel de estadísticas. */
+function actualizarEstadisticasEmpleados(empleados) {
+    const valores = document.querySelectorAll('#empleadosTotal, #empleadosActivos');
+    if (valores.length < 2) return;
+
+    const total = document.getElementById('empleadosTotal');
+    const activos = document.getElementById('empleadosActivos');
+    if (total) total.textContent = empleados.length;
+    if (activos) activos.textContent = empleados.filter(e => e.estado == 1).length;
+}
+
+/**
+ * Función principal que renderiza el Dashboard de Empleados (SPA-style)
+ * Se dispara desde empleados.html al cargar la página
+ */
+function triggerEmpleadosDashboard() {
+    const empleados = window.resp_empleadosBD || [];
+    const rowsHtml = renderFilasEmpleados(empleados);
 
     // Contenido del Dashboard con formulario integrado
     const content = `
@@ -144,12 +217,12 @@ function triggerEmpleadosDashboard() {
               <div class="row text-center">
                 <div class="col-6">
                   <div class="border-end">
-                    <h3 class="text-primary mb-0">${empleados.length}</h3>
+                    <h3 class="text-primary mb-0" id="empleadosTotal">${empleados.length}</h3>
                     <small class="text-muted">Total Empleados</small>
                   </div>
                 </div>
                 <div class="col-6">
-                  <h3 class="text-success mb-0">${empleados.filter(e => e.estado == 1).length}</h3>
+                  <h3 class="text-success mb-0" id="empleadosActivos">${empleados.filter(e => e.estado == 1).length}</h3>
                   <small class="text-muted">Activos</small>
                 </div>
               </div>
@@ -284,11 +357,10 @@ async function registrarEmpleadoFetchDashboard(event) {
 
         if (result.status === 'success') {
             mostrarNotificacion(result.message, 'success');
-            
-            // Recargar página después de 1.5 segundos
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
+            form.reset();
+            btnGuardar.disabled = false;
+            btnGuardar.innerHTML = '<i class="bi bi-check-circle me-1"></i>Registrar Empleado';
+            refrescarListadoEmpleados();
         } else {
             mostrarNotificacion('Error: ' + result.message, 'error');
             btnGuardar.disabled = false;
@@ -303,10 +375,11 @@ async function registrarEmpleadoFetchDashboard(event) {
 }
 
 /**
- * Función para editar empleado (abre modal o redirige)
+ * Función para editar empleado.
+ * Se valida la existencia en tiempo real y se abre el formulario de
+ * edición dedicado, que ya incluye la validación del lado del servidor.
  */
 function editarEmpleadoModal(id_empleado) {
-    // Validar existencia en tiempo real antes de editar
     fetch(`/empleados/api/validar/${id_empleado}`)
         .then(response => response.json())
         .then(data => {
@@ -320,6 +393,23 @@ function editarEmpleadoModal(id_empleado) {
             console.error('Error al validar empleado:', error);
             mostrarNotificacion('Error de conexión.', 'error');
         });
+}
+
+/**
+ * Muestra el detalle del empleado en el modal de la vista.
+ * Reutiliza el renderizado definido en empleados.html para que el
+ * botón Ver del listado y el del dashboard se comporten igual.
+ */
+function verEmpleadoDetalle(id_empleado) {
+    if (typeof window.mostrarDetalleEmpleado === 'function') {
+        const empleados = window.resp_empleadosBD || [];
+        const empleado = empleados.find(e => Number(e.id_empleados) === Number(id_empleado));
+        if (empleado) {
+            window.mostrarDetalleEmpleado(empleado);
+            return;
+        }
+    }
+    mostrarNotificacion('No se pudo obtener el detalle del empleado.', 'error');
 }
 
 /**
@@ -350,14 +440,13 @@ function eliminarEmpleadoJS(id_empleado) {
                                 timer: 1500,
                                 showConfirmButton: false
                             });
-                            var row = document.querySelector(`tr[data-id-empleado="${id_empleado}"]`);
+                            var row = obtenerFilaEmpleado(id_empleado);
                             if (row) {
                                 row.style.transition = 'opacity 0.4s';
                                 row.style.opacity = '0';
                                 setTimeout(function() { row.remove(); }, 400);
-                            } else {
-                                setTimeout(function() { location.reload(); }, 1200);
                             }
+                            refrescarListadoEmpleados();
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -382,14 +471,13 @@ function eliminarEmpleadoJS(id_empleado) {
                 .then(function(data) {
                     if (data && data.status === 'success') {
                         alert('Empleado desactivado correctamente.');
-                        var row = document.querySelector(`tr[data-id-empleado="${id_empleado}"]`);
+                        var row = obtenerFilaEmpleado(id_empleado);
                         if (row) {
                             row.style.transition = 'opacity 0.4s';
                             row.style.opacity = '0';
                             setTimeout(function() { row.remove(); }, 400);
-                        } else {
-                            setTimeout(function() { location.reload(); }, 800);
                         }
+                        refrescarListadoEmpleados();
                     } else {
                         alert((data && data.message) || 'No se pudo desactivar el empleado.');
                     }

@@ -1,3 +1,12 @@
+/** Refresca la tabla de obras sin recargar la pagina. */
+function refrescarListadoObras() {
+    if (window.INVISAP_AJAX) {
+        window.INVISAP_AJAX.refrescarListadoActual('tablaObras', { origen: 'obras' });
+    } else {
+        window.location.reload();
+    }
+}
+
 function validarFormularioObra(form) {
     const titulo = form.querySelector('[name="titulo_obra"]').value.trim();
     const ubicacion = form.querySelector('[name="ubicacion_obra"]').value.trim();
@@ -182,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         text: data.message,
                         confirmButtonText: 'Entendido'
                     }).then(() => {
-                        window.location.reload();
+                        refrescarListadoObras();
                     });
                     formObra.reset();
                     var modalEl = document.getElementById('modalNuevaObra');
@@ -303,6 +312,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             row.style.transition = 'opacity 0.4s';
                             row.style.opacity = '0';
                             setTimeout(function() { row.remove(); }, 400);
+                        } else if (window.INVISAP_AJAX) {
+                            window.INVISAP_AJAX.refrescarListadoActual('tablaObras', { origen: 'obras' });
                         } else {
                             location.reload();
                         }

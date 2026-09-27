@@ -237,7 +237,19 @@ document.addEventListener('DOMContentLoaded', function() {
                         timer: 2000,
                         showConfirmButton: false
                     }).then(() => {
-                        window.location.href = '/lista-empresas'; 
+                        // Si ya estamos en el listado, se repinta la tabla por
+                        // AJAX; si veníamos de otra vista, se navega a ella.
+                        if (window.INVISAP_AJAX && document.getElementById('tablaEmpresas')) {
+                            const form = document.getElementById('formRegistroEmpresa');
+                            if (form) form.reset();
+                            const modalEl = document.getElementById('modalEmpresa');
+                            if (modalEl && window.bootstrap) {
+                                window.bootstrap.Modal.getOrCreateInstance(modalEl).hide();
+                            }
+                            window.INVISAP_AJAX.refrescarListadoActual('tablaEmpresas', { origen: 'empresas' });
+                        } else {
+                            window.location.href = '/lista-empresas';
+                        }
                     });
                 } else {
                     Swal.fire({

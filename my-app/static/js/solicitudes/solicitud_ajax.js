@@ -13,10 +13,11 @@ function mostrarErrorBoton(btn, mensaje) {
     btn.innerHTML = `<i class="bi bi-exclamation-triangle me-1"></i> ${mensaje}`;
     btn.classList.add('btn-danger');
     btn.classList.remove('btn-info', 'btn-warning', 'btn-danger', 'btn-outline-info', 'btn-outline-warning', 'btn-outline-danger');
+    btn.classList.add('btn-accion-eliminar');
     setTimeout(() => {
         btn.disabled = false;
         btn.innerHTML = originalHtml;
-        btn.classList.remove('btn-danger');
+        btn.classList.remove('btn-danger', 'btn-accion-eliminar');
     }, 3000);
 }
 
@@ -86,15 +87,15 @@ function renderizarSolicitudes(solicitudes) {
               <span class="problematica-truncate" title="${(s.problematica || '').replace(/"/g, '"')}">${s.problematica || ''}</span>
             </td>
             <td>${s.fecha_formateada || s.fecha}</td>
-            <td width="10px" class="text-nowrap">
-              <div class="d-flex gap-1">
-                <a href="javascript:void(0);" class="btn btn-info btn-sm" title="Ver detalles" onclick="verDetallesSolicitud(${s.id_solicitud}, this);">
+            <td class="acciones">
+              <div class="btn-acciones">
+                <a href="javascript:void(0);" class="btn btn-sm btn-accion btn-accion-ver" title="Ver detalles" aria-label="Ver detalles de la solicitud" onclick="verDetallesSolicitud(${s.id_solicitud}, this);">
                   <i class="bi bi-eye"></i>
                 </a>
-                <button type="button" class="btn btn-warning btn-sm" title="Editar solicitud" onclick="abrirModalEditar(${s.id_solicitud}, this);">
+                <button type="button" class="btn btn-sm btn-accion btn-accion-editar" title="Editar solicitud" aria-label="Editar solicitud" onclick="abrirModalEditar(${s.id_solicitud}, this);">
                   <i class="bi bi-pencil-square"></i>
                 </button>
-                <a href="javascript:void(0);" class="btn btn-danger btn-sm" title="Eliminar solicitud" onclick="eliminarSolicitudAjax(${s.id_solicitud}, this);">
+                <a href="javascript:void(0);" class="btn btn-sm btn-accion btn-accion-eliminar" title="Eliminar solicitud" aria-label="Eliminar solicitud" onclick="eliminarSolicitudAjax(${s.id_solicitud}, this);">
                   <i class="bi bi-trash"></i>
                 </a>
               </div>
