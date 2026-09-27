@@ -478,10 +478,18 @@ def validar_gerente(id_empleado):
     Verifica que el empleado exista, esté activo y sea Gerente/Inspector
     Usado por eventos 'change' en el frontend
     """
+    if 'conectado' not in session:
+        return jsonify({
+            'existe': False,
+            'activo': False,
+            'es_gerente_o_inspector': False,
+            'message': 'Sesión no válida.'
+        }), 401
+
     try:
         modelo_empleado = EmpleadoModel()
         empleado = modelo_empleado.obtener_empleado_por_id(id_empleado)
-        
+
         if empleado and empleado.get('estado') == 1:
             es_valido = empleado.get('cargo') in ['Gerente', 'Inspector']
             
@@ -505,7 +513,7 @@ def validar_gerente(id_empleado):
             'existe': False, 
             'activo': False,
             'es_gerente_o_inspector': False
-        })
+        }), 503
 
 
 @informe_avance_bp.route('/api/informes/validar/<int:id_informe>', methods=['GET'])

@@ -101,6 +101,7 @@ async function actualizarInformeConFetch(form) {
     btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
 
     try {
+        if (!await verificarGerenteAntesDeEnviar(formData.get('gerente_responsable_id'))) return;
         const response = await fetch('/api/informes/actualizar', {
             method: 'POST',
             body: formData
@@ -155,6 +156,7 @@ async function registrarInformeConFetch(form) {
     btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
     
     try {
+        if (!await verificarGerenteAntesDeEnviar(data.gerente_responsable_id)) return;
         // 3. Enviar datos al servidor con Fetch
         const response = await fetch('/api/informes/crear', {
             method: 'POST',
@@ -212,13 +214,21 @@ async function registrarInformeConFetch(form) {
 async function validarGerenteEnTiempoReal(event) {
     const selectGerente = event.target;
     const idEmpleado = selectGerente.value;
-    
-    if (!idEmpleado) return; // Si no hay selección, salir
+
+    const feedbackContainer = selectGerente.parentElement;
+    if (!idEmpleado) {
+        selectGerente.dataset.validacionGerente = '';
+        feedbackContainer.querySelector('.validating-indicator')?.remove();
+        feedbackContainer.querySelector('.validation-feedback')?.remove();
+        return;
+    }
+
+    const solicitud = `${Date.now()}-${Math.random()}`;
+    selectGerente.dataset.validacionGerente = solicitud;
     
     console.log(`Validando gerente ID: ${idEmpleado}...`);
     
     // 1. Mostrar indicador de "Validando..."
-    const feedbackContainer = selectGerente.parentElement;
     let loadingIndicator = feedbackContainer.querySelector('.validating-indicator');
     
     if (!loadingIndicator) {
@@ -230,9 +240,11 @@ async function validarGerenteEnTiempoReal(event) {
     
     try {
         // 2. Consultar al servidor si el empleado existe y es válido
-        const response = await fetch(`/api/informes/validar-gerente/${idEmpleado}`);
+        const response = await fetch(`/api/informes/validar-gerente/${encodeURIComponent(idEmpleado)}`);
         const data = await response.json();
         console.log('Resultado validación:', data);
+
+        if (selectGerente.value !== idEmpleado || selectGerente.dataset.validacionGerente !== solicitud) return;
         
         // 3. Remover indicador de carga
         if (loadingIndicator) loadingIndicator.remove();
@@ -242,7 +254,7 @@ async function validarGerenteEnTiempoReal(event) {
         if (existingFeedback) existingFeedback.remove();
         
         // 5. Validar existencia y estado activo
-        if (!data.existe || !data.activo) {
+        if (!response.ok || !data.existe || !data.activo) {
             mostrarAlerta('warning', 'Este empleado ya no está disponible en el sistema');
             selectGerente.value = ''; // Limpiar selección
             return;
@@ -258,7 +270,7 @@ async function validarGerenteEnTiempoReal(event) {
         // 7. Todo OK: Mostrar confirmación visual
         const feedback = document.createElement('small');
         feedback.className = 'validation-feedback text-success d-block mt-1';
-        feedback.innerHTML = `<i class="bx bx-check-circle"></i> ${data.nombre} - ${data.cargo}`;
+        feedback.textContent = `Empleado disponible: ${data.nombre} - ${data.cargo}`;
         feedbackContainer.appendChild(feedback);
         console.log('✓ Validación exitosa');
         
@@ -267,6 +279,25 @@ async function validarGerenteEnTiempoReal(event) {
         if (loadingIndicator) loadingIndicator.remove();
         mostrarAlerta('error', 'Error al validar el empleado. Intente nuevamente.');
     }
+}
+
+async function verificarGerenteAntesDeEnviar(idEmpleado) {
+    if (!idEmpleado) {
+        mostrarAlerta('warning', 'Debe seleccionar un gerente o inspector activo.');
+        return false;
+    }
+
+    try {
+        const response = await fetch(`/api/informes/validar-gerente/${encodeURIComponent(idEmpleado)}`);
+        const data = await response.json();
+        if (response.ok && data.existe && data.activo && data.es_gerente_o_inspector) {
+            return true;
+        }
+        mostrarAlerta('warning', data.message || 'El gerente/inspector ya no está disponible. Seleccione otra persona.');
+    } catch (error) {
+        mostrarAlerta('error', 'No se pudo verificar el gerente/inspector. Intente nuevamente.');
+    }
+    return false;
 }
 
 // ============================================================================

@@ -38,6 +38,8 @@ def verificar_recaptcha(token):
     """Valida el token g-recaptcha-response. Retorna (bool, mensaje)."""
     if not token:
         return False, 'Debes completar el desafío reCAPTCHA (marca "No soy un robot").'
+    if not RECAPTCHA_SECRET_KEY:
+        return False, 'La verificación reCAPTCHA no está configurada.'
 
     data = urllib.parse.urlencode({
         'secret': RECAPTCHA_SECRET_KEY,
@@ -55,10 +57,8 @@ def verificar_recaptcha(token):
         with urllib.request.urlopen(req, timeout=5) as resp:
             resultado = json.loads(resp.read().decode('utf-8'))
     except Exception as e:
-        # Modo degradado: si no hay internet, Google no puede verificar.
-        # Se permite el acceso pero se registra para auditoría.
         print(f"reCAPTCHA: no se pudo contactar a Google (sin conexión). {e}")
-        return True, 'OK_SIN_CONEXION'
+        return False, 'No se pudo validar reCAPTCHA. Inténtalo de nuevo más tarde.'
 
     if resultado.get('success'):
         return True, 'OK'

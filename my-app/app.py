@@ -23,6 +23,11 @@ import claveApi
 
 app = Flask(__name__, template_folder='vista', instance_path=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'instance'))
 application = app
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE='Lax',
+    SESSION_COOKIE_SECURE=os.getenv('SESSION_COOKIE_SECURE', '').lower() in {'1', 'true', 'yes'},
+)
 
 # Rutas protegidas incluso cuando el catálogo de módulos todavía no está
 # disponible. Los prefijos cubren las vistas y sus endpoints del mismo módulo.
@@ -165,8 +170,7 @@ def proteger_modulos_por_url():
             return redirect(url_for('login_bp.inicio'))
     return None
 
-# Clave secreta de la aplicación (protección de sesiones / CSRF).
-# Generada y almacenada localmente en claveApi.py (práctica de producción).
+# Clave de sesión de la aplicación.
 app.secret_key = claveApi.SECRET_KEY
 
 # ============================================

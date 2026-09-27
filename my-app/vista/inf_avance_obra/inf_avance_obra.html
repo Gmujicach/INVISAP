@@ -744,7 +744,9 @@ async function cargarInspectores() {
 }
 
 function seleccionarInspector(id, nombre, gerencia, event) {
-  document.getElementById('gerente_responsable_id').value = id;
+  const inspectorInput = document.getElementById('gerente_responsable_id');
+  inspectorInput.value = id;
+  inspectorInput.dispatchEvent(new Event('change', { bubbles: true }));
   document.getElementById('inspector_nombre_display').value = `${nombre} - ${gerencia}`;
   
   document.querySelectorAll('.inspector-card').forEach(card => {

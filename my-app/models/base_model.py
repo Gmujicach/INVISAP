@@ -3,10 +3,10 @@ BaseModel — Funcionalidades comunes reutilizables para todos los modelos.
 Centraliza limpieza de texto y ejecución de SQL con manejo automático de conexiones.
 """
 import re
-from conexion.conexionBD import connectionBD_invilara
+from conexion.base_conexion import BaseConexionBD
 
 
-class BaseModel:
+class BaseModel(BaseConexionBD):
     """Clase base con utilidades compartidas para modelos del sistema."""
 
     @staticmethod
@@ -15,12 +15,12 @@ class BaseModel:
             texto = str(texto or '')
         return re.sub(r'[<>\'";\\]', '', texto).strip()[:max_len]
 
-    @staticmethod
-    def _ejecutar_sql(sql, params=None):
+    @classmethod
+    def _ejecutar_sql(cls, sql, params=None):
         conn = None
         cur = None
         try:
-            conn = connectionBD_invilara()
+            conn = cls.obtener_conexion()
             if not conn:
                 return None, None, None
             cur = conn.cursor()

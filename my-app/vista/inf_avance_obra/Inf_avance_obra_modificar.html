@@ -537,6 +537,7 @@ const inspectorNombre = '{{ informe.gerente_nombre|default("") }}';
 
   function setInspectorSeleccionado(id, nombre, gerencia, event) {
     inspectorInput.value = id;
+    inspectorInput.dispatchEvent(new Event('change', { bubbles: true }));
     if (inspectorDisplay) {
       inspectorDisplay.textContent = [nombre, gerencia].filter(Boolean).join(' - ');
       inspectorDisplay.classList.remove('text-muted');

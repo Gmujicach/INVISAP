@@ -533,6 +533,31 @@ class InformeAvanceModel(BaseModel):
             if conn:
                 conn.close()
 
+    def __validar_gerente_activo_db(self, id_empleado):
+        conn = None
+        cur = None
+        try:
+            empleado_id = int(id_empleado)
+            conn = connectionBD_invilara()
+            if not conn:
+                return False
+            cur = conn.cursor()
+            cur.execute(
+                "SELECT id_empleados FROM empleados "
+                "WHERE id_empleados = %s AND estado = 1 AND cargo IN (%s, %s)",
+                (empleado_id, 'Gerente', 'Inspector')
+            )
+            return cur.fetchone() is not None
+        except (TypeError, ValueError):
+            return False
+        except Exception:
+            return False
+        finally:
+            if cur:
+                cur.close()
+            if conn:
+                conn.close()
+
     # ========== MÉTODOS PÚBLICOS ==========
     
     def registrar_informe(self, data):
@@ -541,6 +566,9 @@ class InformeAvanceModel(BaseModel):
                 raise ValueError('Datos del informe inválidos.')
 
             payload = {k: (v if v is not None else '') for k, v in data.items()}
+            gerente_id = payload.get('gerente_responsable_id')
+            if not gerente_id or not self.__validar_gerente_activo_db(gerente_id):
+                raise ValueError('El gerente/inspector seleccionado no existe, está inactivo o no tiene un cargo permitido.')
 
             self.set_estado(payload.get('estado'))
             self.set_poblacion_beneficiada(payload.get('poblacion_beneficiada'))
@@ -551,7 +579,6 @@ class InformeAvanceModel(BaseModel):
             self.set_gerente(payload.get('gerente_responsable_id'))
 
             avance_id = payload.get('avance_id_avance')
-            gerente_id = payload.get('gerente_responsable_id')
             if not avance_id:
                 avance_id = self.__crear_avance_db(gerente_id, payload.get('porcentaje_avance', 0), payload.get('observaciones', '') or 'Sin descripcion')
             
@@ -605,6 +632,9 @@ class InformeAvanceModel(BaseModel):
             id_informe = int(data.get('id_informe'))
             if not self.__validar_informe_activo_db(id_informe):
                 raise ValueError("El informe no existe o fue eliminado.")
+            gerente_id = data.get('gerente_responsable_id')
+            if not gerente_id or not self.__validar_gerente_activo_db(gerente_id):
+                raise ValueError('El gerente/inspector seleccionado no existe, está inactivo o no tiene un cargo permitido.')
 
             self.set_id_informe(id_informe)
             self.set_estado(data.get('estado'))
@@ -737,6 +767,9 @@ class InformeAvanceModel(BaseModel):
             return self.__validar_informe_activo_db(id_val)
         except (ValueError, TypeError):
             return False
+
+    def validar_gerente_activo(self, id_empleado):
+        return self.__validar_gerente_activo_db(id_empleado)
 
     @staticmethod
     def comprimir_imagen(ruta_original, calidad=85):
