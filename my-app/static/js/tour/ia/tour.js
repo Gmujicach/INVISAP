@@ -22,7 +22,7 @@
           side: 'bottom'
         },
         {
-          element: 'button[onclick="cargarPrioridades()"], .btn-primary',
+          element: 'button[onclick="actualizarPendientes()"], #btnActualizarPendientes, .btn-primary',
           popover: {
             title: 'Actualizar Prioridades',
             description: 'Recarga las filas de prioridad desde el servidor para ver los resultados mas recientes de la clasificacion.'
@@ -54,10 +54,34 @@
           side: 'bottom'
         },
         {
-          element: '#tablaPrioridades tbody tr:first-child .btn-outline-primary, .btn-editar',
+          element: '#tablaPrioridades tbody tr:first-child .btn-accion-ver',
+          popover: {
+            title: 'Ver Detalle de la Prioridad',
+            description: 'Consulte la ficha completa de la prioridad: solicitud de origen, rango asignado y justificación de la IA.'
+          },
+          side: 'left'
+        },
+        {
+          element: '#tablaPrioridades tbody tr:first-child .btn-accion-editar',
           popover: {
             title: 'Ajustar Prioridad Manualmente',
-            description: 'Edite manualmente el rango y la justificacion de la prioridad si considera que la clasificacion de la IA debe ajustarse.'
+            description: 'Edite manualmente el rango y la justificación de la prioridad si considera que la clasificación de la IA debe ajustarse.'
+          },
+          side: 'left'
+        },
+        {
+          element: '#tablaPrioridades tbody tr:first-child .btn-accion-detalle',
+          popover: {
+            title: 'Re-clasificar con IA',
+            description: 'Vuelve a enviar la solicitud al modelo de inteligencia artificial para obtener una nueva prioridad. Solo disponible si la solicitud tiene relación registrada.'
+          },
+          side: 'left'
+        },
+        {
+          element: '#tablaPrioridades tbody tr:first-child .btn-accion-eliminar',
+          popover: {
+            title: 'Eliminar Prioridad',
+            description: 'Pide confirmación y elimina el registro de prioridad. La acción queda registrada en la bitácora.'
           },
           side: 'left'
         }

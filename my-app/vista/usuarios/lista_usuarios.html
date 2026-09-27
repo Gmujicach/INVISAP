@@ -5,64 +5,165 @@
 {% block body %}
 {% if resp_usuariosBD %}
 
-<div class="card">
-  <section id="respuestaFiltroMes">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
-      <h2 class="text-center mt-0 mb-0" style="background-color: #08b324; color: #ffffff; padding: 10px 15px; border-radius: 8px;">
-        Lista de Usuarios Creados
-      </h2>
-      <a href="{{ url_for('user_bp.show_register_form') }}" class="btn btn-primary btn-sm">
-        <i class="bi bi-person-plus me-1"></i> Registrar Usuario
-      </a>
+<div class="container-fluid pt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold mb-1"><i class="bi bi-people-fill text-primary me-2"></i>Gestión de Usuarios</h3>
+      <p class="text-muted mb-0">Visualice y administre los usuarios del sistema</p>
     </div>
-    <div class="table-responsive text-nowrap">
-      <table class="table table-hover" id="tablaUsuarios">
-        <thead>
-          <tr style="background-color: #ddd">
-            <th>Avatar</th>
-            <th>Nombre y Apellido</th>
-            <th>Cédula</th>
-            <th>Correo Electrónico</th>
-            <th>Rol</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for usuario in resp_usuariosBD %}
-          <tr>
-            <td>
-               <img src="{{ url_for('static', filename=usuario.avatar) }}"
-                    class="rounded-circle"
-                    style="width: 40px; height: 40px; object-fit: cover;"
-                    alt="Avatar"
-                    onerror="this.src='/static/assets/img/avatars/1.png'">
-            </td>
-            <td>{{ usuario.nombre }}</td>
-            <td>{{ usuario.cedula_usuario }}</td>
-            <td>{{ usuario.correo }}</td>
-            <td>{{ usuario.rol }}</td>
-            <td>
-              <button type="button"
-                      class="btn rounded-pill btn-warning me-2"
-                      onclick="editarUsuario('{{ usuario.id_usuarios }}');">
-                <i class="bi bi-pencil"></i>
-                <span class="visually-hidden">Editar</span>
-              </button>
-              {% if usuario.rol|lower|replace(' ', '') != 'superusuario' %}
-              <button type="button"
-                      class="btn rounded-pill btn-danger"
-                      onclick="eliminarUsuarioConfirm('{{ usuario.id_usuarios }}');">
-                <i class="bi bi-trash3"></i>
-                <span class="visually-hidden">Eliminar</span>
-              </button>
-              {% endif %}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+    <a href="{{ url_for('user_bp.show_register_form') }}" class="btn btn-primary shadow-sm" style="border-radius: 30px;">
+      <i class="bi bi-person-plus me-1"></i> Registrar Usuario
+    </a>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-4" style="border-left: 4px solid #696cff;">
+        <div class="card-body">
+          <h6 class="text-muted text-uppercase mb-1" style="font-size: 0.8rem;">Usuarios totales</h6>
+          <h3 class="mb-0 fw-bold" id="widget-total">{{ resp_usuariosBD|length }}</h3>
+        </div>
+      </div>
     </div>
-  </section>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-4" style="border-left: 4px solid #0dcaf0;">
+        <div class="card-body">
+          <h6 class="text-muted text-uppercase mb-1" style="font-size: 0.8rem;">Coincidencias</h6>
+          <h3 class="mb-0 fw-bold" id="widget-coincidencias">{{ resp_usuariosBD|length }}</h3>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-4 bg-primary text-white">
+        <div class="card-body">
+          <h6 class="text-uppercase text-white-50 mb-1" style="font-size: 0.8rem;">Roles activos</h6>
+          <h3 class="mb-0 fw-bold text-white" id="widget-roles">{{ resp_usuariosBD|map(attribute='rol')|unique|list|length }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card border-0 shadow-sm mx-2 mx-md-4 mb-4" style="border-radius: 12px !important">
+    <div class="card-header bg-white border-bottom py-3 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+      <h6 class="mb-0 fw-bold text-secondary">Registro Completo</h6>
+      <div class="w-100 w-md-auto" style="max-width: 300px;">
+        <input
+          type="search"
+          id="searchUsuarios"
+          class="form-control form-control-sm bg-light border-0"
+          placeholder="Buscar usuario..."
+          aria-label="Buscar usuario por nombre, cédula, correo o rol"
+          oninput="buscarUsuarios(this.value)" />
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive table-hover">
+        <table class="table table-striped table-bordered" cellspacing="0" id="tablaUsuarios">
+          <thead>
+            <tr>
+              <th>Avatar</th>
+              <th>Nombre y Apellido</th>
+              <th>Cédula</th>
+              <th>Correo Electrónico</th>
+              <th>Rol</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyUsuarios">
+            {% for usuario in resp_usuariosBD %}
+            <tr id="usuario_{{ usuario.id_usuarios }}"
+                data-buscar="{{ usuario.nombre }} {{ usuario.cedula_usuario }} {{ usuario.correo }} {{ usuario.rol }}">
+              <td>
+                <img src="{{ url_for('static', filename=usuario.avatar) }}"
+                     class="rounded-circle"
+                     style="width: 40px; height: 40px; object-fit: cover;"
+                     alt="Avatar de {{ usuario.nombre }}"
+                     onerror="this.src='{{ url_for('static', filename='assets/img/avatars/1.png') }}'">
+              </td>
+              <td><span class="fw-semibold">{{ usuario.nombre }}</span></td>
+              <td>{{ usuario.cedula_usuario }}</td>
+              <td>{{ usuario.correo }}</td>
+              <td>
+                <span class="badge bg-light text-dark border"><i class="bi bi-shield-lock me-1"></i>{{ usuario.rol }}</span>
+              </td>
+              <td class="acciones">
+                <div class="btn-acciones">
+                  <button type="button"
+                          class="btn btn-sm btn-accion btn-accion-ver"
+                          title="Ver detalle del usuario"
+                          aria-label="Ver detalle del usuario"
+                          data-id="{{ usuario.id_usuarios }}"
+                          onclick="verDetalleUsuario(this)">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button type="button"
+                          class="btn btn-sm btn-accion btn-accion-editar"
+                          title="Editar usuario"
+                          aria-label="Editar usuario"
+                          onclick="editarUsuario('{{ usuario.id_usuarios }}');">
+                    <i class="bi bi-pencil-square"></i>
+                  </button>
+                  {% if usuario.rol|lower|replace(' ', '') != 'superusuario' %}
+                  <button type="button"
+                          class="btn btn-sm btn-accion btn-accion-eliminar"
+                          title="Eliminar usuario"
+                          aria-label="Eliminar usuario"
+                          data-id="{{ usuario.id_usuarios }}"
+                          data-nombre="{{ usuario.nombre }}"
+                          onclick="eliminarUsuarioConfirm(this)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center px-3 pb-3 gap-2" id="pagination_container">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <label for="registros_por_pagina" class="mb-0 text-muted small">Mostrar</label>
+        <select id="registros_por_pagina" class="form-select form-select-sm w-auto">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span class="text-muted small" id="info_registros"></span>
+      </div>
+      <nav>
+        <ul class="pagination pagination-sm mb-0 flex-wrap" id="pagination_controls"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Detalle del usuario -->
+<div class="modal fade" id="modalDetalleUsuario" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title"><i class="bi bi-person-vcard me-2"></i> Detalle del Usuario</h5>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="modal-body" id="cuerpoDetalleUsuario">
+        <div class="text-center py-4">
+          <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando...</span></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary" id="btnEditarDesdeDetalle">
+          <i class="bi bi-pencil-square me-1"></i> Editar usuario
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 {% else %}
@@ -81,17 +182,280 @@
 
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/usuarios/tour.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script>
-  function editarUsuario(id) {
-    if (id) {
-      window.location.href = '/users/edit/' + id;
-    }
-  }
+  (function () {
+    const CONTENEDOR = '#tbodyUsuarios';
+    let paginaActual = 1;
+    let registrosPorPagina = 10;
+    let busquedaActual = '';
+    let usuarioEnDetalle = null;
+    let lastActionTime = 0;
+    const MIN_ACTION_INTERVAL = 800;
 
-  function eliminarUsuarioConfirm(id) {
-    if (id && confirm('⚠️ ¿Estás seguro que deseas eliminar el Usuario?\n\nSe borrarán todos sus datos permanentemente.')) {
-      window.location.href = '/users/delete/' + id + '?confirm=yes';
+    function filas() {
+      return Array.from(document.querySelectorAll(CONTENEDOR + ' tr[data-buscar]'));
     }
-  }
+
+    function filtradas() {
+      const term = busquedaActual.trim().toLowerCase();
+      if (!term) return filas();
+      return filas().filter(function (fila) {
+        return (fila.dataset.buscar || '').toLowerCase().indexOf(term) !== -1;
+      });
+    }
+
+    window.buscarUsuarios = function (texto) {
+      busquedaActual = texto || '';
+      paginaActual = 1;
+      paginar();
+    };
+
+    function renderizar() {
+      const lista = filtradas();
+      const total = lista.length;
+
+      document.getElementById('widget-total').textContent = {{ resp_usuariosBD|length }};
+      document.getElementById('widget-coincidencias').textContent = total;
+
+      if (total === 0) {
+        document.querySelectorAll(CONTENEDOR + ' tr[data-buscar]').forEach(function (f) { f.hidden = true; });
+        document.getElementById('info_registros').textContent = 'Sin coincidencias';
+        document.getElementById('pagination_controls').innerHTML = '';
+        return;
+      }
+
+      const inicio = (paginaActual - 1) * registrosPorPagina;
+      const fin = Math.min(inicio + registrosPorPagina, total);
+
+      document.querySelectorAll(CONTENEDOR + ' tr[data-buscar]').forEach(function (f) { f.hidden = true; });
+      lista.slice(inicio, fin).forEach(function (f) { f.hidden = false; });
+
+      document.getElementById('info_registros').textContent =
+        'Mostrando ' + (inicio + 1) + ' a ' + fin + ' de ' + total + ' registros';
+    }
+
+    function renderizarPaginacion(totalPaginas) {
+      const controls = document.getElementById('pagination_controls');
+      controls.innerHTML = '';
+      if (totalPaginas <= 1) return;
+
+      function crear(etiqueta, pagina, activa, deshabilitada) {
+        const li = document.createElement('li');
+        li.className = 'page-item' + (activa ? ' active' : '') + (deshabilitada ? ' disabled' : '');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'page-link';
+        btn.innerHTML = etiqueta;
+        if (deshabilitada) {
+          btn.disabled = true;
+        } else {
+          btn.addEventListener('click', function () {
+            paginaActual = pagina;
+            paginar();
+          });
+        }
+        li.appendChild(btn);
+        controls.appendChild(li);
+      }
+
+      crear('&laquo;', 1, false, paginaActual === 1);
+      crear('Anterior', paginaActual - 1, false, paginaActual === 1);
+
+      for (let i = 1; i <= totalPaginas; i++) {
+        if (i === 1 || i === totalPaginas || Math.abs(i - paginaActual) <= 1) {
+          crear(String(i), i, i === paginaActual, false);
+        } else if (Math.abs(i - paginaActual) === 2) {
+          const li = document.createElement('li');
+          li.className = 'page-item disabled';
+          li.innerHTML = '<span class="page-link">…</span>';
+          controls.appendChild(li);
+        }
+      }
+
+      crear('Siguiente', paginaActual + 1, false, paginaActual === totalPaginas);
+      crear('&raquo;', totalPaginas, false, paginaActual === totalPaginas);
+    }
+
+    function paginar() {
+      const total = filtradas().length;
+      const totalPaginas = Math.max(1, Math.ceil(total / registrosPorPagina));
+      if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+      renderizar();
+      renderizarPaginacion(totalPaginas);
+    }
+
+    window.editarUsuario = function (id) {
+      if (id) window.location.href = '/users/edit/' + id;
+    };
+
+    window.verDetalleUsuario = function (boton) {
+      const id = boton.getAttribute('data-id');
+      const cuerpo = document.getElementById('cuerpoDetalleUsuario');
+      usuarioEnDetalle = id;
+      cuerpo.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando...</span></div></div>';
+
+      fetch('/api/users/' + encodeURIComponent(id), {
+        method: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+        .then(function (r) { return r.json().then(function (d) { return { status: r.status, datos: d }; }); })
+        .then(function (respuesta) {
+          if (!respuesta.datos.ok) {
+            cuerpo.innerHTML = '<div class="alert alert-danger mb-0"><i class="bi bi-exclamation-triangle me-1"></i> ' +
+              (respuesta.datos.mensaje || 'No se pudo cargar la información del usuario.') + '</div>';
+            return;
+          }
+          const u = respuesta.datos.usuario;
+          const modulos = (u.modulos_asignados || []);
+          cuerpo.innerHTML =
+            '<div class="text-center mb-3">' +
+              '<img src="/static/' + (u.avatar || 'assets/img/avatars/1.png') + '" class="rounded-circle mb-2" ' +
+              'style="width:80px;height:80px;object-fit:cover;" alt="Avatar de ' + (u.nombre || '') + '" ' +
+              'onerror="this.src=\'/static/assets/img/avatars/1.png\'">' +
+              '<h5 class="mb-0">' + (u.nombre || '—') + '</h5>' +
+              '<span class="badge bg-light text-dark border mt-1"><i class="bi bi-shield-lock me-1"></i>' + (u.rol || '—') + '</span>' +
+            '</div>' +
+            '<div class="list-group list-group-flush">' +
+              '<div class="list-group-item d-flex justify-content-between"><span class="text-muted">Cédula</span><strong>' + (u.cedula_usuario || '—') + '</strong></div>' +
+              '<div class="list-group-item d-flex justify-content-between"><span class="text-muted">Correo</span><strong>' + (u.correo || '—') + '</strong></div>' +
+              '<div class="list-group-item d-flex justify-content-between"><span class="text-muted">Identificador</span><strong>#' + (u.id_usuarios || '—') + '</strong></div>' +
+            '</div>' +
+            '<h6 class="text-secondary border-bottom pb-2 mt-3 mb-2"><i class="bi bi-diagram-3 me-1"></i> Módulos asignados por rol</h6>' +
+            (modulos.length
+              ? '<div class="d-flex flex-wrap gap-1">' + modulos.map(function (m) {
+                  return '<span class="badge bg-label-primary">' + m + '</span>';
+                }).join('') + '</div>'
+              : '<p class="text-muted small mb-0">Este rol aún no tiene módulos asignados.</p>');
+
+          if (window.INVISAP_ESTANDAR_UI && window.INVISAP_ESTANDAR_UI.aplicar) {
+            window.INVISAP_ESTANDAR_UI.aplicar(document.getElementById('modalDetalleUsuario'));
+          }
+        })
+        .catch(function () {
+          cuerpo.innerHTML = '<div class="alert alert-danger mb-0"><i class="bi bi-cloud-slash me-1"></i> ' +
+            'No se pudo conectar con el servidor. Intente nuevamente.</div>';
+        });
+
+      const modal = new bootstrap.Modal(document.getElementById('modalDetalleUsuario'));
+      modal.show();
+    };
+
+    window.eliminarUsuarioConfirm = function (boton) {
+      const ahora = Date.now();
+      if (ahora - lastActionTime < MIN_ACTION_INTERVAL) {
+        if (typeof Swal !== 'undefined') {
+          Swal.fire({ icon: 'warning', title: 'Espere un momento', text: 'Espere antes de repetir la acción.', timer: 1800 });
+        }
+        return;
+      }
+      lastActionTime = ahora;
+
+      const id = boton.getAttribute('data-id');
+      const nombre = boton.getAttribute('data-nombre') || 'este usuario';
+
+      if (typeof Swal === 'undefined') {
+        if (!confirm('¿Eliminar a ' + nombre + '? Se borrarán sus datos.')) return;
+        ejecutarEliminacion(id, boton);
+        return;
+      }
+
+      Swal.fire({
+        title: '¿Eliminar usuario?',
+        html: 'Se eliminará a <strong>' + nombre + '</strong> de forma permanente.<br><small>Esta acción queda registrada en la bitácora.</small>',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        focusCancel: true
+      }).then(function (resultado) {
+        if (resultado.isConfirmed) ejecutarEliminacion(id, boton);
+      });
+    };
+
+    function ejecutarEliminacion(id, boton) {
+      const iconoOriginal = boton.innerHTML;
+      boton.disabled = true;
+      boton.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
+
+      fetch('/api/users/' + encodeURIComponent(id), {
+        method: 'DELETE',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+        .then(function (r) { return r.json().then(function (d) { return { status: r.status, datos: d }; }); })
+        .then(function (respuesta) {
+          if (respuesta.datos.ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Usuario eliminado',
+              text: respuesta.datos.mensaje,
+              timer: 2200,
+              showConfirmButton: false
+            });
+            const fila = document.getElementById('usuario_' + id);
+            if (fila) {
+              fila.style.transition = 'opacity .3s ease';
+              fila.style.opacity = '0';
+              setTimeout(function () {
+                fila.remove();
+                document.getElementById('widget-coincidencias').textContent =
+                  Math.max(0, document.querySelectorAll(CONTENEDOR + ' tr[data-buscar]').length);
+                paginar();
+              }, 300);
+            }
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'No se pudo eliminar',
+              text: respuesta.datos.mensaje || 'Ocurrió un error inesperado.',
+              confirmButtonColor: '#dc3545'
+            });
+            boton.disabled = false;
+            boton.innerHTML = iconoOriginal;
+          }
+        })
+        .catch(function () {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: 'No se pudo comunicar con el servidor.',
+            confirmButtonColor: '#dc3545'
+          });
+          boton.disabled = false;
+          boton.innerHTML = iconoOriginal;
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const selector = document.getElementById('registros_por_pagina');
+      if (selector) {
+        selector.addEventListener('change', function () {
+          registrosPorPagina = parseInt(this.value, 10) || 10;
+          paginaActual = 1;
+          paginar();
+        });
+      }
+
+      const btnEditar = document.getElementById('btnEditarDesdeDetalle');
+      if (btnEditar) {
+        btnEditar.addEventListener('click', function () {
+          if (!usuarioEnDetalle) return;
+          bootstrap.Modal.getInstance(document.getElementById('modalDetalleUsuario')).hide();
+          window.editarUsuario(usuarioEnDetalle);
+        });
+      }
+
+      const roles = new Set();
+      document.querySelectorAll(CONTENEDOR + ' tr[data-buscar]').forEach(function (f) {
+        const celdas = f.children;
+        if (celdas.length > 4) roles.add((celdas[4].textContent || '').trim());
+      });
+      document.getElementById('widget-roles').textContent = roles.size || 0;
+
+      paginar();
+    });
+  })();
 </script>
 {% endblock %}

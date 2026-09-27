@@ -38,20 +38,28 @@
           side: 'top'
         },
         {
-          element: '.btn-warning, .btn-editar',
+          element: '#tablaRoles tbody tr:first-child .btn-accion-editar',
           popover: {
-            title: 'Editar Rol',
-            description: 'Modifique los permisos asociados a un rol. Los cambios se aplican inmediatamente a todos los usuarios con ese rol.'
+            title: 'Botón Editar Rol',
+            description: 'Modifique el nombre, la descripción y el estado de un rol. Después podrá asignarle o quitarle permisos desde la pestaña de permisos.'
           },
           side: 'left'
         },
         {
-          element: '.btn-danger, .btn-eliminar',
+          element: '#tablaRoles tbody tr:first-child .btn-accion-eliminar',
           popover: {
-            title: 'Eliminar Rol',
-            description: 'Elimina el rol del sistema. Se solicita confirmacion antes de proceder.'
+            title: 'Botón Eliminar Rol',
+            description: 'Elimina el rol del sistema. Se solicita confirmación antes de proceder y la acción queda registrada en la bitácora.'
           },
           side: 'left'
+        },
+        {
+          element: 'button[data-bs-target*="modal"]',
+          popover: {
+            title: 'Gestionar el módulo de seguridad',
+            description: 'Desde aquí se registran los módulos del sistema, los roles y los permisos por rol: así es como el sistema controla quién entra a cada módulo y qué puede hacer (Roles, permisos y perfiles de usuario).'
+          },
+          side: 'bottom'
         }
       ]
     });

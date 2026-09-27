@@ -1,5 +1,5 @@
-{% extends 'base_cpanel.html' %}
-{% block title %}Invilara | Gestión de Proyectos{% endblock %}
+﻿{% extends 'base_cpanel.html' %}
+{% block title %}Invilara | GestiÃ³n de Proyectos{% endblock %}
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
 {% endblock %}
@@ -27,7 +27,7 @@
   <div class="card-header bg-white border-bottom py-3">
     <div class="row align-items-center">
       <div class="col-md-6 text-start">
-        <h5 class="mb-0 text-primary fw-bold">GESTIÓN DE PROYECTOS</h5>
+        <h5 class="mb-0 text-primary fw-bold">GESTIÃ“N DE PROYECTOS</h5>
       </div>
       <div class="col-md-6 text-end">
         <button class="btn btn-primary btn-sm px-3" type="button" data-bs-toggle="modal" data-bs-target="#modalRegistrarProyecto">
@@ -39,20 +39,20 @@
   
   <div class="card-body">
     <div class="table-responsive">
-      <table class="table table-bordered table-striped table-hover align-middle">
+        <table id="tablaProyectos" class="table table-bordered table-striped table-hover align-middle">
         <thead class="table-light">
           <tr>
             <th>#</th>
-            <th>Código</th>
+            <th>CÃ³digo</th>
             <th>Fecha Planif.</th>
             <th>Solicitante</th>
-            <th>Descripción Técnica</th>
+            <th>DescripciÃ³n TÃ©cnica</th>
             <th>Computos Metricos</th>
-            <th>Problemática</th>
+            <th>ProblemÃ¡tica</th>
             <th>Maquinaria</th>
             <th>Proyectista</th>
             <th>Est. Costo</th>
-            <th class="text-center">Acciones</th>
+            <th class="acciones text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -61,17 +61,18 @@
             <td>{{ loop.index }}</td> 
             <td class="fw-bold text-secondary">{{ proyecto.codigo_proyecto }}</td>
             <td>{{ proyecto.fecha_planificacion }}</td>
-            <td class="text-uppercase" style="font-size: 0.85rem;">{{ proyecto.nombre_solicitante or '—' }}</td>
-            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ proyecto.descripcion_tecnica or '—' }}</td>
-            <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.computos_metricos_texto or '—' }}</td>
-            <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.problematica or '—' }}</td>
+            <td class="text-uppercase" style="font-size: 0.85rem;">{{ proyecto.nombre_solicitante or 'â€”' }}</td>
+            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ proyecto.descripcion_tecnica or 'â€”' }}</td>
+            <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.computos_metricos_texto or 'â€”' }}</td>
+            <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.problematica or 'â€”' }}</td>
             <td><span class="badge bg-dark">{{ proyecto.nombre_maquinaria or 'Sin asignar' }}</span></td>
             <td><span class="badge bg-info">{{ proyecto.nombre_proyectista or 'Sin asignar' }}</span></td>
             <td class="text-success fw-bold">{{ proyecto.estimacion_costo or '0.00' }}</td>
-<td class="text-center">
-              <div class="d-flex gap-1 justify-content-center">
-                <button type="button" class="btn btn-outline-info btn-sm" title="Ver detalle"
-                        data-bs-toggle="modal" 
+            <td class="acciones">
+              <div class="btn-acciones" style="justify-content:center;">
+                <button type="button" class="btn btn-sm btn-accion btn-accion-ver" title="Ver detalle"
+                        aria-label="Ver detalle del proyecto"
+                        data-bs-toggle="modal"
                         data-bs-target="#modalDetalleProyecto"
                         data-codigo="{{ proyecto.codigo_proyecto }}"
                         data-fecha="{{ proyecto.fecha_planificacion }}"
@@ -83,15 +84,16 @@
                         data-costo="{{ proyecto.estimacion_costo or '0.00' }}"
                         data-maquinaria="{{ proyecto.nombre_maquinaria or 'Sin asignar' }}"
                         data-proyectista="{{ proyecto.nombre_proyectista or 'Sin asignar' }}">
-                  <i class="bx bx-show"></i>
+                  <i class="bi bi-eye"></i>
                 </button>
-                <a href="{{ url_for('home_bp.viewEditarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}" class="btn btn-outline-warning btn-sm" title="Editar"><i class="bx bx-edit"></i></a>
-                <a href="#" 
-                   class="btn btn-outline-danger btn-sm" 
+                <a href="{{ url_for('home_bp.viewEditarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}" class="btn btn-sm btn-accion btn-accion-editar" title="Editar" aria-label="Editar proyecto"><i class="bi bi-pencil-square"></i></a>
+                <a href="javascript:void(0);"
+                   class="btn btn-sm btn-accion btn-accion-eliminar"
                    title="Eliminar"
+                   aria-label="Eliminar proyecto"
                    data-delete-url="{{ url_for('home_bp.eliminarProyecto', codigo_proyecto=proyecto.codigo_proyecto) }}"
                    onclick="confirmarEliminacion(this)">
-                  <i class="bx bx-trash"></i>
+                  <i class="bi bi-trash"></i>
                 </a>
               </div>
             </td>
@@ -114,7 +116,7 @@
         <h5 class="modal-title fw-bold text-secondary" id="modalRegistrarProyectoLabel">
           <i class="bx bx-folder-plus me-1 text-primary"></i> Generar un nuevo Proyecto
         </h5>
-<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+<button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
     <i class="bx bx-x" style="font-size: 24px;"></i>
 </button>
       </div>
@@ -123,8 +125,8 @@
         <div class="modal-body">
           <div class="d-flex justify-content-between align-items-center p-3 mb-4 rounded" style="background-color: #f8f9fa; border-left: 4px solid #F9A800;">
             <div>
-              <span class="fw-bold d-block text-dark" style="font-size: 0.9rem;">¿Necesitas asociar una solicitud pendiente?</span>
-              <small class="text-muted">Las solicitudes se actualizarán automáticamente a "En Proceso" al seleccionarlas</small>
+              <span class="fw-bold d-block text-dark" style="font-size: 0.9rem;">Â¿Necesitas asociar una solicitud pendiente?</span>
+              <small class="text-muted">Las solicitudes se actualizarÃ¡n automÃ¡ticamente a "En Proceso" al seleccionarlas</small>
               <div id="solicitud_error_message" class="text-danger fw-bold mt-2 d-none">
                 Debe seleccionar una solicitud para registrar un proyecto.
               </div>
@@ -160,14 +162,14 @@
 
           <div class="row mb-3">
             <div class="col-md-12">
-              <label for="problematica_p" class="form-label fw-semibold text-secondary">Problemática de la Solicitud</label>
+              <label for="problematica_p" class="form-label fw-semibold text-secondary">ProblemÃ¡tica de la Solicitud</label>
               <textarea class="form-control bg-light shadow-sm" name="problematica_p" id="problematica_p" rows="2" readonly placeholder="No seleccionado"></textarea>
             </div>
           </div>
 
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="fecha_p" class="form-label fw-semibold text-secondary">Fecha de Planificación</label>
+              <label for="fecha_p" class="form-label fw-semibold text-secondary">Fecha de PlanificaciÃ³n</label>
               <div class="input-group input-group-merge shadow-sm">
                 <span class="input-group-text bg-white border-end-0 text-muted">
                   <i class="bx bx-calendar fs-5"></i>
@@ -176,19 +178,19 @@
               </div>
             </div>
             <div class="col-md-12">
-              <label for="observaciones" class="form-label fw-semibold text-secondary">Descripción Técnica</label>
-              <textarea class="form-control shadow-sm" name="observaciones" id="observaciones" rows="4" maxlength="2500" placeholder="Descripción técnica del proyecto..." required></textarea>
+              <label for="observaciones" class="form-label fw-semibold text-secondary">DescripciÃ³n TÃ©cnica</label>
+              <textarea class="form-control shadow-sm" name="observaciones" id="observaciones" rows="4" maxlength="2500" placeholder="DescripciÃ³n tÃ©cnica del proyecto..." required></textarea>
               <small class="text-muted"><span id="count_observaciones">0</span>/2500</small>
             </div>
           </div>
       
           <div class="row mb-3">
             <div class="col-md-12">
-              <label class="form-label fw-semibold text-secondary">Cómputos Métricos</label>
+              <label class="form-label fw-semibold text-secondary">CÃ³mputos MÃ©tricos</label>
               <div id="computos_metricos_container">
                 <div class="computos_metrico_item input-group shadow-sm mb-2" data-index="0">
                   <select class="form-select computos_metrica" name="computos_metrica_0" style="max-width: 120px;" required>
-                    <option value="" selected disabled>Métrica</option>
+                    <option value="" selected disabled>MÃ©trica</option>
                     <option value="m2">m2</option>
                     <option value="m3">m3</option>
                     <option value="ml">ml</option>
@@ -205,16 +207,16 @@
               </div>
               <datalist id="opciones_computos_list"></datalist>
               <input type="hidden" name="computos_p" id="computos_p" />
-              <small class="text-muted">Puede escribir una opción nueva directamente en el campo.</small>
+              <small class="text-muted">Puede escribir una opciÃ³n nueva directamente en el campo.</small>
               <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="btnAgregarComputo">
-                <i class="bx bx-plus me-1"></i> Añadir
+                <i class="bx bx-plus me-1"></i> AÃ±adir
               </button>
             </div>
           </div>
 
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="estimacion_p" class="form-label fw-semibold text-secondary">Estimación de Costo</label>
+              <label for="estimacion_p" class="form-label fw-semibold text-secondary">EstimaciÃ³n de Costo</label>
               <div class="input-group shadow-sm">
                 <select class="form-select" name="moneda_p" id="moneda_p" style="max-width: 85px;" required>
                   <option value="BS" selected>BS</option>
@@ -239,7 +241,7 @@
                 </div>
               </div>
               <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="btnAgregarMaquinaria">
-                <i class="bx bx-plus me-1"></i> Añadir Maquinaria
+                <i class="bx bx-plus me-1"></i> AÃ±adir Maquinaria
               </button>
             </div>
           </div>
@@ -250,10 +252,10 @@
                 <select class="form-select shadow-sm" name="proyectista_p" id="proyectista_p">
                   <option value="" selected disabled>Cargando proyectistas...</option>
                 </select>
-                <small class="text-muted">Empleados con cargo "Proyectista" del módulo de personal.</small>
+                <small class="text-muted">Empleados con cargo "Proyectista" del mÃ³dulo de personal.</small>
               </div>
               <div class="col-md-6">
-                <label for="Codigo_p" class="form-label fw-semibold text-secondary">Código del Proyecto</label>
+                <label for="Codigo_p" class="form-label fw-semibold text-secondary">CÃ³digo del Proyecto</label>
                 <input type="text" class="form-control shadow-sm" name="Codigo_p" id="Codigo_p" maxlength="15" placeholder="Ej: PRY-001" required />
               </div>
             </div>
@@ -282,7 +284,7 @@
           </h5>
           <small class="text-light-50">Solicitudes con estado 'Pendiente' disponibles para asociar a proyecto</small>
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
     <i class="bx bx-x" style="font-size: 24px;"></i>
 </button>
       </div>
@@ -295,14 +297,14 @@
                 <th>Solicitante</th>
                 <th>Tipo Solicitud</th>
                 <th>Estatus</th>
-                <th>Problemática</th>
+                <th>ProblemÃ¡tica</th>
                 <th>Fecha</th>
-                <th>Acción</th>
+                <th>AcciÃ³n</th>
               </tr>
             </thead>
             <tbody id="tablaSolicitudesCuerpo">
               <tr>
-                <td colspan="7" class="text-center text-muted py-4">Presione el botón para consultar datos...</td>
+                <td colspan="7" class="text-center text-muted py-4">Presione el botÃ³n para consultar datos...</td>
               </tr>
             </tbody>
           </table>
@@ -324,7 +326,7 @@
         <h5 class="modal-title fw-bold" id="modalDetalleProyectoLabel">
           <i class="bx bx-info-circle me-1"></i> RESUMEN DEL PROYECTO: <span id="det_codigo_title"></span>
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
       </div>
       <div class="modal-body">
         <div class="row mb-3">
@@ -333,27 +335,27 @@
             <p class="mb-1"><strong>Tipo de Solicitud:</strong> <span id="det_tipo"></span></p>
           </div>
             <div class="col-md-6">
-              <p class="mb-1"><strong>Fecha Planificación:</strong> <span id="det_fecha"></span></p>
+              <p class="mb-1"><strong>Fecha PlanificaciÃ³n:</strong> <span id="det_fecha"></span></p>
               <p class="mb-1"><strong>Maquinaria:</strong> <span id="det_maquinaria"></span></p>
               <p class="mb-1"><strong>Proyectista:</strong> <span id="det_proyectista"></span></p>
             </div>
         </div>
         <hr class="my-3">
         <div class="mb-3">
-          <p class="mb-1 fw-bold text-secondary">Problemática de la Solicitud:</p>
+          <p class="mb-1 fw-bold text-secondary">ProblemÃ¡tica de la Solicitud:</p>
           <div class="p-2 bg-light border rounded"><span id="det_problematica"></span></div>
         </div>
         <div class="mb-3">
-          <p class="mb-1 fw-bold text-secondary">Descripción Técnica:</p>
+          <p class="mb-1 fw-bold text-secondary">DescripciÃ³n TÃ©cnica:</p>
           <div class="p-2 bg-light border rounded"><span id="det_descripcion"></span></div>
         </div>
           <div class="row mb-3">
             <div class="col-md-6">
-              <p class="mb-1"><strong>Cómputos Métricos:</strong></p>
+              <p class="mb-1"><strong>CÃ³mputos MÃ©tricos:</strong></p>
               <div id="det_computos_list" style="max-height: 150px; overflow-y: auto;"></div>
             </div>
             <div class="col-md-6">
-              <p class="mb-1"><strong>Estimación de Costo:</strong> <span class="text-success fw-bold" id="det_costo"></span></p>
+              <p class="mb-1"><strong>EstimaciÃ³n de Costo:</strong> <span class="text-success fw-bold" id="det_costo"></span></p>
             </div>
           </div>
       </div>
@@ -402,7 +404,7 @@
       div.setAttribute('data-index', index);
       div.innerHTML = `
         <select class="form-select computos_metrica" name="computos_metrica_${index}" style="max-width: 120px;" required>
-          <option value="" selected disabled>Métrica</option>
+          <option value="" selected disabled>MÃ©trica</option>
           <option value="m2">m2</option>
           <option value="m3">m3</option>
           <option value="ml">ml</option>
@@ -511,7 +513,7 @@
   if (document.getElementById('maquinaria_container')) {
     initMaquinaria('maquinaria_container');
   }
-  // Hacer disponible globalmente para re-inicializar después de reset
+  // Hacer disponible globalmente para re-inicializar despuÃ©s de reset
   window.initMaquinaria = initMaquinaria;
 </script>
 
@@ -524,7 +526,7 @@
 </script>
 
 <script>
-// 2. Control de la carga de Solicitudes Activas vía AJAX (Fetch)
+// 2. Control de la carga de Solicitudes Activas vÃ­a AJAX (Fetch)
 const tablaSolicitudes = document.getElementById('tablaSolicitudesCuerpo');
 tablaSolicitudes.addEventListener('click', function(event) {
   const boton = event.target.closest('button[data-solicitud-id]');
@@ -549,7 +551,7 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
             </td>
         </tr>`;
 
-    // Realizamos la petición a tu endpoint de Flask
+    // Realizamos la peticiÃ³n a tu endpoint de Flask
     fetch("{{ url_for('home_bp.api_obtener_solicitudes_pendientes_json') }}")
         .then(response => {
             if (!response.ok) throw new Error('Error en la respuesta del servidor');
@@ -584,10 +586,10 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
 
                
                 const idSolicitud = escaparHTML(s.id_solicitud || '');
-                const nombreSolicitante = escaparHTML(s.nombre_solicitante || s.solicitante || '—');
-                const tipoSolicitud = escaparHTML(s.tipo_solicitud || s.tipo || '—');
-                const problematica = escaparHTML(s.problematica || s.problematica_solicitud || '—');
-                const fechaSolicitud = escaparHTML(s.fecha || s.fecha_solicitud || s.fecha_registro || '—');
+                const nombreSolicitante = escaparHTML(s.nombre_solicitante || s.solicitante || 'â€”');
+                const tipoSolicitud = escaparHTML(s.tipo_solicitud || s.tipo || 'â€”');
+                const problematica = escaparHTML(s.problematica || s.problematica_solicitud || 'â€”');
+                const fechaSolicitud = escaparHTML(s.fecha || s.fecha_solicitud || s.fecha_registro || 'â€”');
 
                 contenidoHTML += `
                     <tr>
@@ -623,7 +625,7 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
         });
 });
 
-// 3. Función limpia para alternar modales sin romper el DOM ni congelar los inputs
+// 3. FunciÃ³n limpia para alternar modales sin romper el DOM ni congelar los inputs
 function seleccionarSolicitud(id, solicitante, tipo, problematica) {
     document.getElementById('solicitud_id_p').value = id;
     document.getElementById('solicitante_p').value = solicitante;
@@ -643,7 +645,7 @@ function seleccionarSolicitud(id, solicitante, tipo, problematica) {
     });
 }
 
-// 5. Cargar empleados con cargo "Proyectista" desde el módulo de empleados
+// 5. Cargar empleados con cargo "Proyectista" desde el mÃ³dulo de empleados
 const modalRegistrarProyecto = document.getElementById('modalRegistrarProyecto');
 if (modalRegistrarProyecto && typeof cargarEmpleadosPorCargo === 'function') {
     modalRegistrarProyecto.addEventListener('shown.bs.modal', function () {

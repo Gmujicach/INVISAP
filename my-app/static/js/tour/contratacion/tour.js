@@ -33,23 +33,31 @@
           element: '#tablaContrataciones, table.table',
           popover: {
             title: 'Contrataciones Registradas',
-            description: 'Listado completo: descripcion, empresa, numero de contrato, monto, clasificacion, fechas de inicio y fin.'
+            description: 'Listado completo: descripción, empresa, número de contrato, monto, clasificación y fechas del proceso. Cada fila incluye tres acciones: ver, editar y eliminar.'
           },
           side: 'top'
         },
         {
-          element: '#tablaContrataciones tbody tr:first-child .btn-outline-warning, .btn-warning, .btn-editar',
+          element: '#tablaContrataciones tbody tr:first-child .btn-accion-ver',
           popover: {
-            title: 'Editar Contratacion',
-            description: 'Actualice datos del contrato: fecha de inicio, fin, monto o empresa asociada.'
+            title: 'Ver Detalle',
+            description: 'Abre el modal con la ficha completa de la contratación, sin salir de la lista ni recargar la página.'
           },
           side: 'left'
         },
         {
-          element: '#tablaContrataciones tbody tr:first-child .btn-eliminar, .btn-danger, .btn-eliminar',
+          element: '#tablaContrataciones tbody tr:first-child .btn-accion-editar',
           popover: {
-            title: 'Eliminar Contratacion',
-            description: 'Elimina la contratacion tras confirmar la accion. Use con precaucion, esta accion no se puede deshacer.'
+            title: 'Editar Contratación',
+            description: 'Actualice los datos del contrato: fecha de inicio, fin, monto o empresa asociada.'
+          },
+          side: 'left'
+        },
+        {
+          element: '#tablaContrataciones tbody tr:first-child .btn-accion-eliminar, .btn-eliminar',
+          popover: {
+            title: 'Eliminar Contratación',
+            description: 'Elimina la contratación tras confirmar la acción. Use con precaución, esta acción no se puede deshacer.'
           },
           side: 'left'
         }

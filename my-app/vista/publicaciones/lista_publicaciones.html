@@ -86,25 +86,30 @@
                 
                 <td>{{ p.fecha_publicacion }}</td>
                 
-                <td width="10px" class="text-nowrap">
-                  <div class="d-flex gap-1">
+                <td class="acciones">
+                  <div class="btn-acciones">
                     <a
                       href="/detalles-publicacion/{{ p.id_publicacion }}"
-                      class="btn btn-info btn-sm"
-                      title="Ver detalles">
+                      class="btn btn-sm btn-accion btn-accion-ver"
+                      title="Ver detalles"
+                      aria-label="Ver detalles de la publicación">
                       <i class="bi bi-eye"></i>
                     </a>
                     <a
                       href="/editar-publicacion/{{ p.id_publicacion }}"
-                      class="btn btn-warning btn-sm"
-                      title="Editar publicación">
+                      class="btn btn-sm btn-accion btn-accion-editar"
+                      title="Editar publicación"
+                      aria-label="Editar publicación">
                       <i class="bi bi-pencil-square"></i>
                     </a>
                     <a
-                      href="/eliminar-publicacion/{{ p.id_publicacion }}"
-                      class="btn btn-danger btn-sm"
+                      href="javascript:void(0);"
+                      class="btn btn-sm btn-accion btn-accion-eliminar"
                       title="Eliminar publicación"
-                      onclick="return confirm('¿Estás seguro de que deseas eliminar esta publicación? Esta acción no se puede deshacer.');">
+                      aria-label="Eliminar publicación"
+                      data-url="{{ url_for('home_bp.api_eliminar_publicacion', id_pub=p.id_publicacion) }}"
+                      data-titulo="{{ p.titulo_publicacion }}"
+                      onclick="eliminarPublicacionAjax(this)">
                       <i class="bi bi-trash"></i>
                     </a>
                   </div>
@@ -122,4 +127,77 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block customJS %}
+<script src="{{ url_for('static', filename='js/tour/publicaciones/tour.js') }}"></script>
+<script>
+  function eliminarPublicacionAjax(boton) {
+    const url = boton.getAttribute('data-url');
+    const titulo = boton.getAttribute('data-titulo') || 'esta publicación';
+    const iconoOriginal = boton.innerHTML;
+
+    if (typeof Swal === 'undefined') {
+      if (!confirm('¿Eliminar "' + titulo + '"? Esta acción no se puede deshacer.')) return;
+      ejecutarEliminacionPublicacion(url, boton, iconoOriginal, null);
+      return;
+    }
+
+    Swal.fire({
+      title: '¿Eliminar publicación?',
+      html: 'Se eliminará <strong>' + titulo + '</strong> de forma permanente.<br><small>Esta acción no se puede deshacer.</small>',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      focusCancel: true
+    }).then(function (resultado) {
+      if (resultado.isConfirmed) ejecutarEliminacionPublicacion(url, boton, iconoOriginal, Swal);
+    });
+  }
+
+  function ejecutarEliminacionPublicacion(url, boton, iconoOriginal, SwalRef) {
+    boton.disabled = true;
+    boton.innerHTML = '<i class="bi bi-arrow-repeat"></i>';
+
+    fetch(url, {
+      method: 'DELETE',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    })
+      .then(function (r) {
+        if (r.status === 405 || r.redirected) throw new Error('fallback');
+        return r.json().then(function (d) { return d; });
+      })
+      .then(function (datos) {
+        if (datos && datos.ok) {
+          if (SwalRef) {
+            SwalRef.fire({ icon: 'success', title: 'Publicación eliminada', text: datos.mensaje || 'La publicación se eliminó correctamente.', timer: 2000, showConfirmButton: false });
+          }
+          const fila = boton.closest('tr');
+          if (fila) {
+            fila.style.transition = 'opacity .3s ease';
+            fila.style.opacity = '0';
+            setTimeout(function () { fila.remove(); }, 300);
+          }
+          return;
+        }
+        throw new Error((datos && datos.mensaje) || 'No se pudo eliminar la publicación.');
+      })
+      .catch(function (error) {
+        if (error.message === 'fallback') {
+          window.location.href = url;
+          return;
+        }
+        if (SwalRef) {
+          SwalRef.fire({ icon: 'error', title: 'No se pudo eliminar', text: error.message, confirmButtonColor: '#dc3545' });
+        } else {
+          alert(error.message);
+        }
+        boton.disabled = false;
+        boton.innerHTML = iconoOriginal;
+      });
+  }
+</script>
 {% endblock %}

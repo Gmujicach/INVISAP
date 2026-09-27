@@ -424,7 +424,14 @@
                 <td class="fw-bold">{{ pub.titulo_publicacion }}</td>
                 <td>{{ pub.autor_publicacion }}</td>
                 <td>{{ pub.fecha_formateada }}</td>
-                <td><small class="text-muted">{{ pub.resumen_publicacion[:120] }}...</small></td>
+                <td>
+                  {% set resumen = pub.resumen_publicacion or '' %}
+                  {% if resumen|length > 120 %}
+                    <small class="text-muted">{{ resumen[:120] }}...</small>
+                  {% else %}
+                    <small class="text-muted">{{ resumen if resumen else '—' }}</small>
+                  {% endif %}
+                </td>
               </tr>
               {% endfor %}
             </tbody>
@@ -438,6 +445,7 @@
 {% endblock %}
 
 {% block customJS %}
+<script src="{{ url_for('static', filename='js/tour/reportes/tour.js') }}"></script>
 <script>
 (function() {
   var moduloSelect = document.getElementById('moduloPDF');

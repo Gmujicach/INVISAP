@@ -22,26 +22,42 @@
           side: 'left'
         },
         {
-          element: '#lista-publicaciones, #tablaPublicaciones, table.table',
+          element: '#tbl_publicaciones, table.table',
           popover: {
             title: 'Listado de Publicaciones',
-            description: 'Lista completa con titulo, autor, fecha de publicacion, estatus y acciones disponibles.'
+            description: 'Lista completa con título, responsable, tipo, estado, fecha y las tres acciones: ver, editar y eliminar.'
           },
           side: 'top'
         },
         {
-          element: '.btn-warning, .btn-editar',
+          element: '#search',
           popover: {
-            title: 'Editar Publicacion',
-            description: 'Modifique el contenido, imagen o estatus de la publicacion. Los cambios se reflejan inmediatamente en el sitio.'
+            title: 'Buscar publicación',
+            description: 'Escriba para filtrar la tabla en tiempo real por título, responsable o tipo.'
+          },
+          side: 'bottom'
+        },
+        {
+          element: '#tbl_publicaciones tbody tr:first-child .btn-accion-ver',
+          popover: {
+            title: 'Botón Ver',
+            description: 'Abre la ficha de la publicación con su contenido completo, imagen y datos del responsable.'
           },
           side: 'left'
         },
         {
-          element: '.btn-danger, .btn-eliminar',
+          element: '#tbl_publicaciones tbody tr:first-child .btn-accion-editar',
           popover: {
-            title: 'Eliminar Publicacion',
-            description: 'Elimina la publicacion previa confirmacion. Use con precaucion.'
+            title: 'Botón Editar',
+            description: 'Modifique el contenido, imagen o estatus de la publicación. Los cambios se reflejan inmediatamente.'
+          },
+          side: 'left'
+        },
+        {
+          element: '#tbl_publicaciones tbody tr:first-child .btn-accion-eliminar',
+          popover: {
+            title: 'Botón Eliminar',
+            description: 'Pide confirmación y elimina la publicación por AJAX, sin recargar la página. Use con precaución. Queda registrado en la bitácora.'
           },
           side: 'left'
         }

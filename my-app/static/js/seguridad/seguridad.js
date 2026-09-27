@@ -121,9 +121,12 @@ function renderTablaRoles(roles) {
       <td><strong>${r.nombre}</strong></td>
       <td>${r.descripcion || '—'}</td>
       <td>${estadoBadge(r.estado)}</td>
-      <td>
-        <button class="btn btn-sm btn-outline-primary me-1" onclick="editarRol(${r.id_rol})"><i class="bi bi-pencil"></i></button>
-        <button class="btn btn-sm btn-outline-danger" onclick="eliminarRol(${r.id_rol})"><i class="bi bi-trash"></i></button>
+     <td class="acciones">
+     <div class="btn-acciones" style="justify-content:center;">
+     <button class="btn btn-sm btn-accion btn-accion-ver" onclick="verRol(${r.id_rol})" title="Ver rol" aria-label="Ver rol"><i class="bi bi-eye"></i></button>
+     <button class="btn btn-sm btn-accion btn-accion-editar" onclick="editarRol(${r.id_rol})" title="Editar rol" aria-label="Editar rol"><i class="bi bi-pencil-square"></i></button>
+          <button class="btn btn-sm btn-accion btn-accion-eliminar" onclick="eliminarRol(${r.id_rol})" title="Eliminar rol" aria-label="Eliminar rol"><i class="bi bi-trash"></i></button>
+        </div>
       </td>`;
     tb.appendChild(tr);
   });
@@ -136,18 +139,54 @@ function resetFormRol() {
   document.getElementById('estado_rol').checked = true;
   document.getElementById('formRol').classList.remove('was-validated');
   ocultarAlertaSeguridad('mensajeRol');
+  restaurarCamposModal('rol', ['id_rol', 'nombre_rol', 'descripcion_rol', 'estado_rol'], 'btnGuardarRol');
 }
-function editarRol(id) {
+
+/**
+ * Devuelve un modal al modo editable tras haberlo mostrado en solo lectura.
+ */
+function restaurarCamposModal(clave, campos, idBoton) {
+  campos.forEach(function (campo) {
+    const el = document.getElementById(campo);
+    if (el) el.disabled = false;
+  });
+  const btn = document.getElementById(idBoton);
+  if (btn) btn.style.display = '';
+  return clave;
+}
+/**
+ * Boton Ver: carga el registro en su modal y deja el formulario en solo
+ * lectura, de modo que el usuario puede consultarlo sin arriesgar cambios.
+ */
+function verRol(id) {
   fetch(`/api/seguridad/roles/obtener/${id}`)
     .then(r => r.json())
     .then(d => {
       if (!d) return Swal.fire('Aviso', 'Rol no encontrado.', 'warning');
-      document.getElementById('modalRolTitle').textContent = 'Editar Rol';
+      editarRol(id, true);
+    })
+    .catch(() => Swal.fire('Error', 'No se pudo cargar el rol.', 'error'));
+}
+
+function editarRol(id, soloLectura) {
+  fetch(`/api/seguridad/roles/obtener/${id}`)
+    .then(r => r.json())
+    .then(d => {
+      if (!d) return Swal.fire('Aviso', 'Rol no encontrado.', 'warning');
+      document.getElementById('modalRolTitle').textContent = soloLectura ? 'Detalle del Rol' : 'Editar Rol';
       document.getElementById('id_rol').value = d.id_rol;
       document.getElementById('nombre_rol').value = d.nombre;
       document.getElementById('descripcion_rol').value = d.descripcion || '';
       document.getElementById('estado_rol').checked = d.estado == 1;
       ocultarAlertaSeguridad('mensajeRol');
+
+      ['id_rol', 'nombre_rol', 'descripcion_rol', 'estado_rol'].forEach(campo => {
+        const el = document.getElementById(campo);
+        if (el) el.disabled = !!soloLectura;
+      });
+      const btn = document.getElementById('btnGuardarRol');
+      if (btn) btn.style.display = soloLectura ? 'none' : '';
+
       new bootstrap.Modal(document.getElementById('modalRol')).show();
     })
     .catch(() => Swal.fire('Error', 'No se pudo cargar el rol.', 'error'));
@@ -242,9 +281,12 @@ function renderTablaModulos(modulos) {
       <td><code>${m.url}</code></td>
       <td>${tipoBadge(m.tipo)}</td>
       <td>${estadoBadge(m.estado)}</td>
-      <td>
-        <button class="btn btn-sm btn-outline-primary me-1" onclick="editarModulo(${m.id_modulo})"><i class="bi bi-pencil"></i></button>
-        <button class="btn btn-sm btn-outline-danger" onclick="eliminarModulo(${m.id_modulo})"><i class="bi bi-trash"></i></button>
+     <td class="acciones">
+     <div class="btn-acciones" style="justify-content:center;">
+     <button class="btn btn-sm btn-accion btn-accion-ver" onclick="verModulo(${m.id_modulo})" title="Ver módulo" aria-label="Ver módulo"><i class="bi bi-eye"></i></button>
+     <button class="btn btn-sm btn-accion btn-accion-editar" onclick="editarModulo(${m.id_modulo})" title="Editar módulo" aria-label="Editar módulo"><i class="bi bi-pencil-square"></i></button>
+          <button class="btn btn-sm btn-accion btn-accion-eliminar" onclick="eliminarModulo(${m.id_modulo})" title="Eliminar módulo" aria-label="Eliminar módulo"><i class="bi bi-trash"></i></button>
+        </div>
       </td>`;
     tb.appendChild(tr);
   });
@@ -265,13 +307,24 @@ function resetFormModulo() {
   document.getElementById('estado_modulo').checked = true;
   document.getElementById('formModulo').classList.remove('was-validated');
   ocultarAlertaSeguridad('mensajeModulo');
+  restaurarCamposModal('modulo',
+    ['id_modulo', 'nombre_modulo', 'descripcion_modulo', 'tipo_modulo', 'orden_modulo', 'estado_modulo'],
+    'btnGuardarModulo');
+  document.querySelectorAll('.icon-grid-item, #icono_dropdown_toggle').forEach(function (el) {
+    el.disabled = false;
+  });
 }
-function editarModulo(id) {
+/** Boton Ver del módulo: mismo modal en modo solo lectura. */
+function verModulo(id) {
+  editarModulo(id, true);
+}
+
+function editarModulo(id, soloLectura) {
   fetch(`/api/seguridad/modulos/obtener/${id}`)
     .then(r => r.json())
     .then(d => {
       if (!d) return Swal.fire('Aviso', 'Módulo no encontrado.', 'warning');
-      document.getElementById('modalModuloTitle').textContent = 'Editar Módulo';
+      document.getElementById('modalModuloTitle').textContent = soloLectura ? 'Detalle del Módulo' : 'Editar Módulo';
       document.getElementById('id_modulo').value = d.id_modulo;
       document.getElementById('nombre_modulo').value = d.nombre;
       document.getElementById('url_modulo').value = d.url;
@@ -295,6 +348,20 @@ function editarModulo(id) {
         if (match) match.classList.add('active');
       }
       ocultarAlertaSeguridad('mensajeModulo');
+
+      if (soloLectura) {
+        ['id_modulo', 'nombre_modulo', 'descripcion_modulo', 'tipo_modulo', 'orden_modulo', 'estado_modulo']
+          .forEach(campo => {
+            const el = document.getElementById(campo);
+            if (el) el.disabled = true;
+          });
+        document.querySelectorAll('.icon-grid-item, #icono_dropdown_toggle').forEach(function (el) {
+          el.disabled = true;
+        });
+        const btn = document.getElementById('btnGuardarModulo');
+        if (btn) btn.style.display = 'none';
+      }
+
       new bootstrap.Modal(document.getElementById('modalModulo')).show();
     })
     .catch(() => Swal.fire('Error', 'No se pudo cargar el módulo.', 'error'));
@@ -460,7 +527,18 @@ function guardarPermisos() {
     return data;
   })
   .then(d => {
-    if (d.success) Swal.fire('Listo', d.message, 'success').then(() => location.reload());
+    if (d.success) {
+      Swal.fire('Listo', d.message, 'success').then(() => {
+        // El módulo ya sabe reconstruir sus tablas por AJAX: recargamos
+        // los listados afectados en vez de recargar la página completa.
+        if (typeof cargarRoles === 'function') cargarRoles();
+        if (typeof cargarModulos === 'function') cargarModulos();
+        const selRol = document.getElementById('selectRol');
+        if (selRol && selRol.value && typeof cargarPermisos === 'function') {
+          cargarPermisos(selRol.value);
+        }
+      });
+    }
     else Swal.fire('Error', d.message, 'error');
   })
   .catch(error => Swal.fire('Error', error.message || 'Error de conexión.', 'error'));

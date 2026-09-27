@@ -62,16 +62,28 @@
                                 <span class="badge bg-secondary">Inactivo</span>
                                 {% endif %}
                             </td>
-                            <td class="text-center">
-                                <div class="d-flex justify-content-center gap-2">
-                                    <a href="{{ url_for('empleado_bp.viewEditarEmpleado', id_empleado=empleado.id_empleados) }}" 
-                                       class="btn btn-warning btn-sm" title="Editar Empleado">
-                                        <i class="bi bi-pencil-square text-white"></i>
+                            <td class="acciones">
+                                <div class="btn-acciones">
+                                    <button type="button"
+                                            class="btn btn-sm btn-accion btn-accion-ver"
+                                            title="Ver detalle del empleado"
+                                            aria-label="Ver detalle del empleado"
+                                            data-empleado='{{ empleado | tojson | safe }}'
+                                            onclick="verDetalleEmpleado(this)">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <a href="{{ url_for('empleado_bp.viewEditarEmpleado', id_empleado=empleado.id_empleados) }}"
+                                       class="btn btn-sm btn-accion btn-accion-editar"
+                                       title="Editar Empleado"
+                                       aria-label="Editar empleado">
+                                        <i class="bi bi-pencil-square"></i>
                                     </a>
-                                    <a href="javascript:void(0);" 
-                                       onclick="eliminarEmpleadoJS({{ empleado.id_empleados }})" 
-                                       class="btn btn-danger btn-sm" title="Eliminar (Borrado Lógico)">
-                                        <i class="bi bi-trash3-fill text-white"></i>
+                                    <a href="javascript:void(0);"
+                                       onclick="eliminarEmpleadoJS({{ empleado.id_empleados }})"
+                                       class="btn btn-sm btn-accion btn-accion-eliminar"
+                                       title="Eliminar (Borrado Lógico)"
+                                       aria-label="Eliminar empleado">
+                                        <i class="bi bi-trash"></i>
                                     </a>
                                 </div>
                             </td>
@@ -130,6 +142,25 @@
         {% endif %}
     </div>
 </div>
+
+<!-- Modal: Detalle del empleado -->
+<div class="modal fade" id="modalDetalleEmpleado" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="bi bi-person-badge me-2"></i> Detalle del Empleado</h5>
+                <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body" id="cuerpoDetalleEmpleado"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" id="btnEditarDesdeDetalleEmpleado">
+                    <i class="bi bi-pencil-square me-1"></i> Editar empleado
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block customJS %}
@@ -140,5 +171,57 @@
     if (typeof initPaginacionEmpleados === 'function') {
         initPaginacionEmpleados();
     }
+
+    let empleadoEnDetalle = null;
+
+    /** Renderiza el detalle de un empleado y abre el modal. */
+    window.mostrarDetalleEmpleado = function (empleado) {
+        empleado = empleado || {};
+        empleadoEnDetalle = empleado.id_empleados;
+
+        const estado = Number(empleado.estado) === 1;
+        const cuerpo = document.getElementById('cuerpoDetalleEmpleado');
+        if (!cuerpo) return;
+        cuerpo.innerHTML =
+            '<div class="text-center mb-3">' +
+              '<span class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" ' +
+                'style="width:72px;height:72px;background:#e7e7ff;color:#696cff;font-size:1.9rem;">' +
+                '<i class="bi bi-person-fill"></i></span>' +
+              '<h5 class="mb-0">' + (empleado.nombre_empleado || '—') + '</h5>' +
+              '<span class="badge bg-label-primary mt-1">' + (empleado.cargo || 'Sin cargo') + '</span>' +
+            '</div>' +
+            '<div class="list-group list-group-flush">' +
+              '<div class="list-group-item d-flex justify-content-between"><span class="text-muted">Identificador</span><strong>#' + (empleado.id_empleados || '—') + '</strong></div>' +
+              '<div class="list-group-item d-flex justify-content-between"><span class="text-muted">Cédula</span><strong>' + (empleado.cedula_persona || '—') + '</strong></div>' +
+              '<div class="list-group-item d-flex justify-content-between"><span class="text-muted">Gerencia</span><strong>' + (empleado.gerencia_asignada || '—') + '</strong></div>' +
+              '<div class="list-group-item d-flex justify-content-between"><span class="text-muted">Fecha de ingreso</span><strong>' + (empleado.fecha_ingreso || '—') + '</strong></div>' +
+              '<div class="list-group-item d-flex justify-content-between"><span class="text-muted">Estado</span>' +
+                '<span class="badge ' + (estado ? 'bg-success' : 'bg-secondary') + '">' + (estado ? 'Activo' : 'Inactivo') + '</span>' +
+              '</div>' +
+            '</div>';
+
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalleEmpleado')).show();
+    };
+
+    window.verDetalleEmpleado = function (boton) {
+        let empleado = {};
+        try {
+            empleado = JSON.parse(boton.getAttribute('data-empleado') || '{}');
+        } catch (e) {
+            empleado = {};
+        }
+        window.mostrarDetalleEmpleado(empleado);
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnEditar = document.getElementById('btnEditarDesdeDetalleEmpleado');
+        if (btnEditar) {
+            btnEditar.addEventListener('click', function () {
+                if (!empleadoEnDetalle) return;
+                bootstrap.Modal.getInstance(document.getElementById('modalDetalleEmpleado')).hide();
+                window.location.href = '/empleados/edit/' + empleadoEnDetalle;
+            });
+        }
+    });
 </script>
 {% endblock %}

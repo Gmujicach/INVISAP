@@ -46,10 +46,26 @@
           side: 'bottom'
         },
         {
-          element: 'table.table tbody tr:first-child .btn-outline-info, .btn-info, .btn-ver',
+          element: 'table.table tbody tr:first-child .btn-accion-ver',
           popover: {
             title: 'Ver Detalle del Proyecto',
-            description: 'Consulte el resumen completo: fechas de inicio y fin, maquinaria asignada, proyectista responsable y observaciones.'
+            description: 'Abre el modal con el resumen completo del proyecto: código, fechas, solicitante, descripción técnica, problemática, maquinaria y proyectista. No recarga la página.'
+          },
+          side: 'left'
+        },
+        {
+          element: 'table.table tbody tr:first-child .btn-accion-editar',
+          popover: {
+            title: 'Editar Proyecto',
+            description: 'Abre el formulario de edición del proyecto seleccionado para modificar su información.'
+          },
+          side: 'left'
+        },
+        {
+          element: 'table.table tbody tr:first-child .btn-accion-eliminar',
+          popover: {
+            title: 'Eliminar Proyecto',
+            description: 'Pide confirmación y elimina el proyecto. La acción queda registrada en la bitácora del sistema.'
           },
           side: 'left'
         }

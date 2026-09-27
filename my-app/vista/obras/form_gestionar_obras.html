@@ -40,7 +40,7 @@
   
   <div class="card-body">     
     <div class="table-responsive">       
-      <table class="table table-bordered table-striped table-hover align-middle">         
+        <table id="tablaObras" class="table table-bordered table-striped table-hover align-middle">
         <thead class="table-light">           
             <tr>             
             <th>ID</th>             
@@ -49,7 +49,7 @@
             <th>Inicio</th>             
             <th>Avance (%)</th>         
             <th>ESTADO</th>
-            <th class="text-center">Acciones</th>           
+            <th class="acciones text-center">Acciones</th>           
           </tr>   
         </thead>         
         <tbody>           
@@ -71,14 +71,14 @@
                 <span class="badge bg-secondary">-</span>
               {% endif %}
             </td>
-            <td class="text-center">
-              <div class="d-inline-flex gap-1 align-items-center">
-                <button class="btn btn-outline-info btn-sm btn-accion-obra" title="Ver detalle" onclick="verObra({{ obra.id_obra }})"><i class="bx bx-show"></i></button>
+            <td class="acciones">           
+              <div class="btn-acciones" style="justify-content:center;">
+                <button class="btn btn-sm btn-accion btn-accion-ver btn-accion-obra" title="Ver detalle" aria-label="Ver detalle de la obra" onclick="verObra({{ obra.id_obra }})"><i class="bi bi-eye"></i></button>
                 {% if puede_editar %}
-                <a href="{{ url_for('obra_bp.vista_editar_obra', id_obra=obra.id_obra) }}" class="btn btn-outline-warning btn-sm btn-accion-obra" title="Editar"><i class="bx bx-edit"></i></a>
+                <a href="{{ url_for('obra_bp.vista_editar_obra', id_obra=obra.id_obra) }}" class="btn btn-sm btn-accion btn-accion-editar btn-accion-obra" title="Editar" aria-label="Editar obra"><i class="bi bi-pencil-square"></i></a>
                 {% endif %}
                 {% if puede_eliminar %}
-                <button class="btn btn-outline-danger btn-sm btn-accion-obra btn-eliminar-obra" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminarObra" data-id="{{ obra.id_obra }}" data-nombre="{{ obra.titulo_obra }}"><i class="bx bx-trash"></i></button>
+                <button class="btn btn-sm btn-accion btn-accion-eliminar btn-accion-obra btn-eliminar-obra" title="Eliminar" aria-label="Eliminar obra" data-bs-toggle="modal" data-bs-target="#modalEliminarObra" data-id="{{ obra.id_obra }}" data-nombre="{{ obra.titulo_obra }}"><i class="bi bi-trash"></i></button>
                 {% endif %}
               </div>
             </td>           
@@ -101,10 +101,7 @@
         <h5 class="modal-title text-white fw-bold">
           <i class="bx bx-plus-circle me-2"></i>Registrar Nueva Obra
         </h5>
-        <button type="button" data-bs-dismiss="modal" aria-label="Cerrar"
-          style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);border:2px solid #fff;color:#fff;font-size:1.4rem;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;"
-          onmouseover="this.style.background='#dc3545';this.style.borderColor='#dc3545';this.style.color='#fff';"
-          onmouseout="this.style.background='rgba(255,255,255,0.15)';this.style.borderColor='#fff';this.style.color='#fff';">×</button>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
       </div>
 
       <form id="formNuevaObra" action="{{ url_for('obra_bp.registrar_obra') }}" method="POST">
@@ -200,10 +197,7 @@
     <div class="modal-content">
       <div class="modal-header bg-info text-white">
         <h5 class="modal-title text-white fw-bold">Detalle de Obra</h5>
-        <button type="button" data-bs-dismiss="modal" aria-label="Cerrar"
-          style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);border:2px solid #fff;color:#fff;font-size:1.4rem;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;"
-          onmouseover="this.style.background='#dc3545';this.style.borderColor='#dc3545';this.style.color='#fff';"
-          onmouseout="this.style.background='rgba(255,255,255,0.15)';this.style.borderColor='#fff';this.style.color='#fff';">×</button>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
       </div>
       <div class="modal-body">
         <form>
@@ -349,10 +343,7 @@
     <div class="modal-content">
       <div class="modal-header bg-danger text-white">
         <h5 class="modal-title text-white fw-bold">Confirmar Eliminación</h5>
-        <button type="button" data-bs-dismiss="modal" aria-label="Cerrar"
-          style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);border:2px solid #fff;color:#fff;font-size:1.4rem;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;"
-          onmouseover="this.style.background='#fff';this.style.borderColor='#fff';this.style.color='#dc3545';"
-          onmouseout="this.style.background='rgba(255,255,255,0.15)';this.style.borderColor='#fff';this.style.color='#fff';">×</button>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
       </div>
       <div class="modal-body">
         <p>¿Está seguro de que desea desactivar la obra <strong id="nombre_obra_eliminar"></strong>?</p>
@@ -371,10 +362,7 @@
     <div class="modal-content">
       <div class="modal-header bg-warning text-dark">
         <h5 class="modal-title text-dark fw-bold">Editar Obra</h5>
-        <button type="button" data-bs-dismiss="modal" aria-label="Cerrar"
-          style="width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.1);border:2px solid #000;color:#000;font-size:1.4rem;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s ease;"
-          onmouseover="this.style.background='#dc3545';this.style.borderColor='#dc3545';this.style.color='#fff';"
-          onmouseout="this.style.background='rgba(0,0,0,0.1)';this.style.borderColor='#000';this.style.color='#000';">×</button>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
       </div>
 
       <form id="formEditarObra" method="POST">

@@ -114,12 +114,36 @@
           side: 'top'
         },
         {
-          element: '#tbl_solicitudes tbody tr:first-child .btn-info, .btn-info, .btn-ver',
+          element: '#tbl_solicitudes tbody tr:first-child .btn-accion-ver',
           popover: {
             title: 'Ver detalle de la solicitud',
-            description: 'Consulte toda la información: datos del solicitante, descripción del problema y seguimiento.'
+            description: 'Consulte toda la información: datos del solicitante, descripción del problema y seguimiento. No recarga la página.'
           },
           side: 'left'
+        },
+        {
+          element: '#tbl_solicitudes tbody tr:first-child .btn-accion-editar',
+          popover: {
+            title: 'Editar solicitud',
+            description: 'Abre el modal de edición para cambiar el estatus y la problemática. Los cambios se guardan sin salir de la pantalla.'
+          },
+          side: 'left'
+        },
+        {
+          element: '#tbl_solicitudes tbody tr:first-child .btn-accion-eliminar',
+          popover: {
+            title: 'Eliminar solicitud',
+            description: 'Pide confirmación y elimina el registro por AJAX. La acción queda registrada en la bitácora.'
+          },
+          side: 'left'
+        },
+        {
+          element: '#pagination_controls, .pagination',
+          popover: {
+            title: 'Paginación',
+            description: 'Navegue entre páginas y elija cuántos registros mostrar, sin recargar la página.'
+          },
+          side: 'top'
         }
       );
     }

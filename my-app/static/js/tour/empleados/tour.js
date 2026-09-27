@@ -92,18 +92,26 @@
           side: 'bottom'
         },
         {
-          element: '#tablaEmpleados tbody tr:first-child .btn-warning',
+          element: '#tablaEmpleados tbody tr:first-child .btn-accion-ver',
           popover: {
-            title: 'Botón Editar',
-            description: 'Haz clic en este botón para modificar los datos del empleado: nombre, cargo, gerencia, teléfono, entre otros. Los cambios se guardan automáticamente al enviar el formulario.'
+            title: 'Botón Ver',
+            description: 'Abre el modal con el detalle del empleado: identificador, gerencia, fecha de ingreso y estado. No recarga la página.'
           },
           side: 'left'
         },
         {
-          element: '#tablaEmpleados tbody tr:first-child .btn-danger',
+          element: '#tablaEmpleados tbody tr:first-child .btn-accion-editar',
+          popover: {
+            title: 'Botón Editar',
+            description: 'Haz clic en este botón para modificar los datos del empleado: nombre, cargo, gerencia, teléfono, entre otros. Los cambios se guardan al enviar el formulario.'
+          },
+          side: 'left'
+        },
+        {
+          element: '#tablaEmpleados tbody tr:first-child .btn-accion-eliminar',
           popover: {
             title: 'Botón Eliminar (Borrado Lógico)',
-            description: 'Al hacer clic, el empleado será borrado su información de la lista.'
+            description: 'Al hacer clic se le pedirá confirmar. El empleado se marca como inactivo y deja de aparecer en el listado, sin borrar su historial.'
           },
           side: 'left'
         },

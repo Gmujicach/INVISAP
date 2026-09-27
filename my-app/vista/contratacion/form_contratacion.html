@@ -68,7 +68,7 @@
             <th class="border-top-0">Monto</th>
             <th class="border-top-0">Clasificación</th>
             <th class="border-top-0">Fechas del Proceso</th>
-            <th class="text-center border-top-0" style="width: 90px;">Acciones</th>
+            <th class="acciones text-center border-top-0" style="width: 90px;">Acciones</th>
         </tr>
         </thead>
         <tbody>
@@ -112,16 +112,26 @@
                 <span class="d-block"><strong class="text-success">Adj:</strong> {{ c.fecha_adjudicacion }}</span>
             </td>
 
-            <td class="text-center text-nowrap">
-             <a href="{{ url_for('contrataciones_bp.vista_editar', id=c.id_contratacion) }}" class="btn btn-outline-warning btn-sm" title="Editar">
-                <i class="bx bx-edit"></i>
-            </a>
-              <a href="#" 
-                class="btn btn-outline-danger btn-sm btn-eliminar" 
-                title="Eliminar"
-                data-url="{{ url_for('contrataciones_bp.eliminar_contratacion', id=c.id_contratacion) }}">
-                <i class="bx bx-trash"></i>
-              </a>
+            <td class="acciones">
+              <div class="btn-acciones" style="justify-content:center;">
+                <button type="button" class="btn btn-sm btn-accion btn-accion-ver btn-ver-contratacion"
+                        title="Ver detalle"
+                        aria-label="Ver detalle de la contratación"
+                        data-id="{{ c.id_contratacion }}"
+                        data-bs-toggle="modal" data-bs-target="#modalDetalleContratacion">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <a href="{{ url_for('contrataciones_bp.vista_editar', id=c.id_contratacion) }}" class="btn btn-sm btn-accion btn-accion-editar" title="Editar" aria-label="Editar contratación">
+                  <i class="bi bi-pencil-square"></i>
+                </a>
+                <a href="javascript:void(0);"
+                  class="btn btn-sm btn-accion btn-accion-eliminar btn-eliminar"
+                  title="Eliminar"
+                  aria-label="Eliminar contratación"
+                  data-url="{{ url_for('contrataciones_bp.eliminar_contratacion', id=c.id_contratacion) }}">
+                  <i class="bi bi-trash"></i>
+                </a>
+              </div>
             </td>
           </tr>
           {% endfor %}
@@ -138,9 +148,7 @@
         <h5 class="modal-title fw-bold text-secondary" id="modalLabel">
             <i class="bx bx-folder-plus me-1 text-primary"></i> Registrar Nueva Contratación
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-            <i class="bx bx-x" style="font-size: 24px;"></i>
-        </button>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
       </div>
       
       <form method="POST" action="{{ url_for('contrataciones_bp.procesar_registro') }}" id="formContratacion" autocomplete="off">
@@ -286,6 +294,28 @@
   </div>
 </div>
 
+<div class="modal fade" id="modalDetalleContratacion" tabindex="-1" aria-labelledby="modalDetalleContratacionLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold" id="modalDetalleContratacionLabel">
+          <i class="bi bi-file-earmark-text me-1"></i> Detalle de la Contratación
+        </h5>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
+      </div>
+      <div class="modal-body" id="cuerpoDetalleContratacion">
+        <div class="list-group list-group-flush" id="listaDetalleContratacion"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <a href="#" class="btn btn-primary" id="btnEditarDesdeDetalleContratacion">
+          <i class="bi bi-pencil-square me-1"></i> Editar contratación
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="modalEmpresas" tabindex="-1" aria-labelledby="modalEmpresasLabel" aria-hidden="true" style="background-color: rgba(0,0,0,0.4);">
   <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered"> 
     <div class="modal-content" style="border-radius: 0px !important; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
@@ -296,9 +326,7 @@
            </h5>
            <small class="text-light-50">Seleccione la empresa ganadora para esta contratación. Solo se listan empresas que cumplen con los requisitos legales.</small>
         </div>
-         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-             <i class="bx bx-x" style="font-size: 24px;"></i>
-         </button>
+         <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
       </div>
       <div class="modal-body">
         <div class="table-responsive">
@@ -330,6 +358,12 @@
 {% endblock %} 
 
 {% block customJS %}
+{# DataTables se carga solo en este modulo: es el unico que lo inicializa
+   (#tablaContrataciones). Antes se cargaba en base_cpanel para todas las
+   paginas del sistema. #}
+<script src="{{ url_for('static', filename='js/libs/sweetalert2.all.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/vendor/datatables/js/dataTables.bootstrap5.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/validaciones_comunes.js') }}"></script>
 <script src="{{ url_for('static', filename='js/tour/contratacion/tour.js') }}"></script>
 <script src="{{ url_for('static', filename ='js/contratacion/contratacion.js') }}"></script>
@@ -339,5 +373,37 @@
     ValidacionesComunes.initSelects(formContratacion);
     ValidacionesComunes.initBotonesSubmit(formContratacion, { textoGuardando: 'Registrando...' });
   }
+
+  /* --- Ver detalle de la contratación (estándar: botón "ver") --- */
+  document.addEventListener('click', function (evento) {
+    const boton = evento.target.closest('.btn-ver-contratacion');
+    if (!boton) return;
+
+    const fila = boton.closest('tr');
+    const celdas = fila ? fila.querySelectorAll('td') : [];
+    const texto = function (indice) {
+      return celdas[indice] ? (celdas[indice].textContent || '').trim() : '—';
+    };
+
+    const campos = [
+      ['Descripción y observaciones', texto(0)],
+      ['Empresa / RIF', texto(1)],
+      ['N° de contrato', texto(2)],
+      ['Monto', texto(3)],
+      ['Clasificación', texto(4)],
+      ['Fechas del proceso', texto(5)]
+    ];
+
+    const lista = document.getElementById('listaDetalleContratacion');
+    lista.innerHTML = campos.map(function (campo) {
+      return '<div class="list-group-item d-flex flex-column flex-md-row justify-content-between gap-1">' +
+        '<span class="text-muted">' + campo[0] + '</span>' +
+        '<strong class="text-end">' + (campo[1] || '—') + '</strong></div>';
+    }).join('');
+
+    document.getElementById('btnEditarDesdeDetalleContratacion').href = boton.nextElementSibling
+      ? boton.nextElementSibling.getAttribute('href') : '#';
+  });
+</script>
 </script>
 {% endblock %}

@@ -68,22 +68,33 @@
                 <span class="badge bg-secondary badge-cumple"><i class="bx bx-x-circle"></i> Pendiente</span>
               {% endif %}
             </td>
-            <td class="text-center">
-              <div class="d-inline-flex gap-1 justify-content-center">
-                <a href="{{ url_for('viewEditarEmpresa', rif=e.rif) }}" 
-                   class="btn rounded-pill btn-warning" 
-                   title="Editar">
-                   <i class="bi bi-pencil"></i>
+            <td class="acciones">
+              <div class="btn-acciones">
+                <button type="button"
+                        class="btn btn-sm btn-accion btn-accion-ver btn-ver-empresa"
+                        title="Ver"
+                        aria-label="Ver empresa"
+                        data-rif="{{ e.rif }}">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <a href="{{ url_for('viewEditarEmpresa', rif=e.rif) }}"
+                   class="btn btn-sm btn-accion btn-accion-editar"
+                   title="Editar"
+                   aria-label="Editar empresa">
+                   <i class="bi bi-pencil-square"></i>
                 </a>
-                <a href="#" 
-                  class="btn rounded-pill btn-danger btn-eliminar" 
+                <a href="javascript:void(0);"
+                  class="btn btn-sm btn-accion btn-accion-eliminar btn-eliminar"
+                  title="Eliminar"
+                  aria-label="Eliminar empresa"
                   data-url="{{ url_for('eliminar_empresa', rif=e.rif) }}"
                   data-nombre="{{ e.nombre_empresa }}">
-                  <i class="bi bi-trash3"></i>
+                  <i class="bi bi-trash"></i>
                 </a>
-                <button type="button" 
-                        class="btn rounded-pill btn-success btn-ver-requisitos" 
+                <button type="button"
+                        class="btn btn-sm btn-accion btn-accion-detalle btn-ver-requisitos"
                         title="Verificar requisitos legales"
+                        aria-label="Verificar requisitos legales"
                         data-rif="{{ e.rif }}"
                         data-nombre="{{ e.nombre_empresa }}"
                         data-cumple="{{ e.cumple_requisitos }}">
@@ -117,8 +128,8 @@
         <h5 class="modal-title fw-bold" id="modalRequisitosLabel">
           <i class="bi bi-shield-check me-1"></i> Verificación de Requisitos Legales
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-            <i class="bx bx-x" style="font-size: 24px;"></i>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar">
+            <i class="bi bi-x-lg"></i>
         </button>
       </div>
       <div class="modal-body p-4 text-center">
@@ -149,10 +160,135 @@
     </div>
   </div>
 </div>
+<!-- Modal: detalle de la empresa (boton Ver) -->
+<div class="modal fade" id="modalDetalleEmpresa" tabindex="-1" aria-labelledby="modalDetalleEmpresaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="border-radius: 0px !important">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title fw-bold" id="modalDetalleEmpresaLabel">
+          <i class="bi bi-building me-1"></i> Detalle de la Empresa
+        </h5>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar">
+            <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="modal-body p-4" id="cuerpoDetalleEmpresa">
+        <div class="text-center text-muted py-4">
+          <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+          Cargando informacion...
+        </div>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-primary px-4" id="btnEditarDesdeDetalleEmpresa">
+          <i class="bi bi-pencil-square me-1"></i> Editar empresa
+        </button>
+        <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %} 
 
 {% block customJS %}
 <script src="{{ url_for('static', filename='js/tour/empresas/tour.js') }}"></script>
 <script src="{{ url_for('static', filename ='js/file.js') }}"></script>
 <script src="{{ url_for('static', filename ='js/empresas/empresa.js') }}"></script>
+<script>
+    let empresaEnDetalle = null;
+
+    const ETIQUETAS_EMPRESA = {
+        rif: 'RIF',
+        nombre_empresa: 'Razon social',
+        tipo_empresa: 'Tipo de empresa',
+        numero_telefono: 'Telefono',
+        numero_contrato: 'Numero de contrato',
+        direccion: 'Direccion',
+        actividad_economica: 'Actividad economica',
+        cumple_requisitos: 'Requisitos legales'
+    };
+
+    function escapar(valor) {
+        const div = document.createElement('div');
+        div.textContent = valor === null || valor === undefined || valor === '' ? '—' : String(valor);
+        return div.innerHTML;
+    }
+
+    window.mostrarDetalleEmpresa = function (empresa) {
+        empresa = empresa || {};
+        empresaEnDetalle = empresa.rif;
+        const cuerpo = document.getElementById('cuerpoDetalleEmpresa');
+        if (!cuerpo) return;
+
+        let html = '<div class="text-center mb-3">' +
+            '<span class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" ' +
+              'style="width:72px;height:72px;background:#e7e7ff;color:#696cff;font-size:1.9rem;">' +
+              '<i class="bi bi-building"></i></span>' +
+            '<h5 class="mb-0">' + escapar(empresa.nombre_empresa) + '</h5>' +
+            '<span class="badge bg-label-primary mt-1">' + escapar(empresa.rif) + '</span>' +
+          '</div><div class="list-group list-group-flush">';
+
+        for (const clave in ETIQUETAS_EMPRESA) {
+            if (!Object.prototype.hasOwnProperty.call(ETIQUETAS_EMPRESA, clave)) continue;
+            let valor = escapar(empresa[clave]);
+            if (clave === 'cumple_requisitos') {
+                valor = (Number(empresa.cumple_requisitos) === 1)
+                    ? '<span class="badge bg-success">Cumple</span>'
+                    : '<span class="badge bg-secondary">Pendiente</span>';
+            }
+            html += '<div class="list-group-item d-flex justify-content-between">' +
+                      '<span class="text-muted">' + ETIQUETAS_EMPRESA[clave] + '</span>' +
+                      '<strong>' + valor + '</strong>' +
+                    '</div>';
+        }
+        html += '</div>';
+
+        cuerpo.innerHTML = html;
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalleEmpresa')).show();
+    };
+
+    window.verDetalleEmpresa = async function (rif) {
+        const cuerpo = document.getElementById('cuerpoDetalleEmpresa');
+        if (cuerpo) {
+            cuerpo.innerHTML = '<div class="text-center text-muted py-4">' +
+                '<div class="spinner-border spinner-border-sm me-2" role="status"></div>' +
+                'Cargando informacion...</div>';
+        }
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalleEmpresa')).show();
+
+        try {
+            const respuesta = await fetch('/api/empresas/' + encodeURIComponent(rif), {
+                credentials: 'same-origin',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const data = await respuesta.json();
+            if (!respuesta.ok || !data.exito) {
+                throw new Error(data.mensaje || 'No se pudo obtener la empresa.');
+            }
+            window.mostrarDetalleEmpresa(data.empresa);
+        } catch (error) {
+            if (cuerpo) {
+                cuerpo.innerHTML = '<div class="alert alert-danger mb-0">' +
+                    escapar(error.message) + '</div>';
+            }
+        }
+    };
+
+    document.addEventListener('click', function (evento) {
+        const boton = evento.target.closest('.btn-ver-empresa');
+        if (boton) {
+            window.verDetalleEmpresa(boton.getAttribute('data-rif'));
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const btnEditar = document.getElementById('btnEditarDesdeDetalleEmpresa');
+        if (btnEditar) {
+            btnEditar.addEventListener('click', function () {
+                if (!empresaEnDetalle) return;
+                bootstrap.Modal.getInstance(document.getElementById('modalDetalleEmpresa')).hide();
+                window.location.href = '/edi-empresas/' + encodeURIComponent(empresaEnDetalle);
+            });
+        }
+    });
+</script>
 {% endblock %}

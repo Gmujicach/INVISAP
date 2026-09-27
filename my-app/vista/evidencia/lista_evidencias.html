@@ -71,22 +71,25 @@
                                     <small class="text-muted-soft">{{ evidencia.fecha_registro.strftime('%H:%M') }}</small>
                                 </div>
                             </td>
-                            <td class="text-center">
-                                <div class="d-flex gap-1 justify-content-center">
-                                    <a href="{{ url_for('evidencia_bp.show_detalle_evidencia', id_evidencia=evidencia.id_evidencia) }}" 
-                                       class="btn btn-outline-info btn-sm"
-                                       title="Ver detalle">
-                                        <i class="bx bx-show"></i>
+                            <td class="acciones">
+                                <div class="btn-acciones" style="justify-content:center;">
+                                    <a href="{{ url_for('evidencia_bp.show_detalle_evidencia', id_evidencia=evidencia.id_evidencia) }}"
+                                       class="btn btn-sm btn-accion btn-accion-ver"
+                                       title="Ver detalle"
+                                       aria-label="Ver detalle de la evidencia">
+                                        <i class="bi bi-eye"></i>
                                     </a>
                                     <a href="{{ url_for('evidencia_bp.show_modificar_evidencia', id_evidencia=evidencia.id_evidencia) }}"
-                                       class="btn btn-outline-warning btn-sm"
-                                       title="Editar">
-                                        <i class="bx bx-edit"></i>
+                                       class="btn btn-sm btn-accion btn-accion-editar"
+                                       title="Editar"
+                                       aria-label="Editar evidencia">
+                                        <i class="bi bi-pencil-square"></i>
                                     </a>
                                     <button onclick="eliminarEvidenciaJS('{{ evidencia.id_evidencia }}')"
-                                            class="btn btn-outline-danger btn-sm"
-                                            title="Eliminar">
-                                        <i class="bx bx-trash"></i>
+                                            class="btn btn-sm btn-accion btn-accion-eliminar"
+                                            title="Eliminar"
+                                            aria-label="Eliminar evidencia">
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </td>

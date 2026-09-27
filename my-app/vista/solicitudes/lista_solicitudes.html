@@ -108,22 +108,24 @@
                       <span class="problematica-truncate" title="{{ s.problematica }}">{{ s.problematica }}</span>
                     </td>
                   <td>{{ s.fecha_formateada or s.fecha }}</td>
-                  <td width="10px" class="text-nowrap">
-                    <div class="d-flex gap-1">
+                  <td class="acciones">
+                    <div class="btn-acciones">
                       <a
                         href="javascript:void(0);"
-                        class="btn btn-info btn-sm"
+                        class="btn btn-sm btn-accion btn-accion-ver"
                         title="Ver detalles"
+                        aria-label="Ver detalles de la solicitud"
                         onclick="verDetallesSolicitud({{ s.id_solicitud }}, this);">
                         <i class="bi bi-eye"></i>
                       </a>
-                      <button type="button" class="btn btn-warning btn-sm" title="Editar solicitud" onclick="abrirModalEditar({{ s.id_solicitud }}, this);">
+                      <button type="button" class="btn btn-sm btn-accion btn-accion-editar" title="Editar solicitud" aria-label="Editar solicitud" onclick="abrirModalEditar({{ s.id_solicitud }}, this);">
                         <i class="bi bi-pencil-square"></i>
                       </button>
                       <a
                         href="javascript:void(0);"
-                        class="btn btn-danger btn-sm"
+                        class="btn btn-sm btn-accion btn-accion-eliminar"
                         title="Eliminar solicitud"
+                        aria-label="Eliminar solicitud"
                         onclick="eliminarSolicitudAjax({{ s.id_solicitud }}, this);">
                         <i class="bi bi-trash"></i>
                       </a>

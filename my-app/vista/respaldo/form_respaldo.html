@@ -46,9 +46,28 @@
                             <td>{{ respaldo.fecha_respaldo.strftime('%d/%m/%Y %H:%M:%S') if respaldo.fecha_respaldo else 'N/A' }}</td>
                             <td><span class="badge-tamano">{{ respaldo.tamano_formateado }}</span></td>
                             <td>{{ respaldo.descripcion or '-' }}</td>
-                            <td class="text-center">
-                                <a href="{{ url_for('respaldo_bp.descargar_respaldo', nombre_archivo=respaldo.nombre_archivo) }}" class="btn btn-outline-success btn-sm me-1" title="Descargar"><i class="bx bx-download"></i></a>
-                                <button class="btn btn-outline-danger btn-sm btn-eliminar-respaldo" data-id="{{ respaldo.id_respaldo }}" title="Eliminar"><i class="bx bx-trash"></i></button>
+                            <td class="acciones">
+                                <div class="btn-acciones justify-content-center">
+                                    <button type="button" class="btn btn-sm btn-accion btn-accion-ver btn-ver-respaldo"
+                                            data-id="{{ respaldo.id_respaldo }}"
+                                            data-archivo="{{ respaldo.nombre_archivo }}"
+                                            data-fecha="{{ respaldo.fecha_respaldo.strftime('%d/%m/%Y %H:%M:%S') if respaldo.fecha_respaldo else 'N/A' }}"
+                                            data-tamano="{{ respaldo.tamano_formateado }}"
+                                            data-descripcion="{{ respaldo.descripcion or '' }}"
+                                            title="Ver" aria-label="Ver respaldo">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <a href="{{ url_for('respaldo_bp.descargar_respaldo', nombre_archivo=respaldo.nombre_archivo) }}"
+                                       class="btn btn-sm btn-accion btn-accion-descargar"
+                                       title="Descargar" aria-label="Descargar respaldo">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-accion btn-accion-eliminar btn-eliminar-respaldo"
+                                            data-id="{{ respaldo.id_respaldo }}"
+                                            title="Eliminar" aria-label="Eliminar respaldo">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}
@@ -72,6 +91,24 @@
     </div>
 </div>
 
+<!-- Modal: detalle del respaldo (boton Ver) -->
+<div class="modal fade" id="modalDetalleRespaldo" tabindex="-1" aria-labelledby="modalDetalleRespaldoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalDetalleRespaldoLabel"><i class="bi bi-eye me-2"></i>Detalle del Respaldo</h5>
+                <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="list-group list-group-flush" id="cuerpoDetalleRespaldo"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Exportar -->
 <div class="modal fade" id="modalExportarRespaldo" tabindex="-1" aria-labelledby="modalExportarRespaldoLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -79,9 +116,7 @@
             <form id="formExportarRespaldo">
                 <div class="modal-header bg-success text-white">
                     <h5 class="modal-title" id="modalExportarRespaldoLabel"><i class="bx bx-save me-2"></i>Generar Respaldo</h5>
-                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-    <i class="bx bx-x" style="font-size: 24px;"></i>
-</button>
+                   <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
@@ -114,9 +149,7 @@
             <form id="formImportarRespaldo" enctype="multipart/form-data">
                 <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title" id="modalImportarRespaldoLabel"><i class="bx bx-import me-2"></i>Restaurar Respaldo</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-    <i class="bx bx-x" style="font-size: 24px;"></i>
-</button>
+                    <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
                 </div>
                 <div class="modal-body">
                     <div id="dropZoneImportar" class="drop-zone mb-3">
@@ -144,9 +177,7 @@
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="modalEliminarRespaldoLabel"><i class="bx bx-trash me-2"></i>Eliminar Respaldo</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-    <i class="bx bx-x" style="font-size: 24px;"></i>
-</button>
+                <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
             </div>
             <div class="modal-body">
                 <p class="mb-2">¿Está seguro de eliminar este respaldo?</p>
@@ -180,5 +211,35 @@
         ValidacionesComunes.initBotonesSubmit(formImportar, { textoGuardando: 'Procesando...' });
       }
     })();
+
+    /** Boton Ver: muestra el detalle del respaldo en un modal. */
+    document.addEventListener('click', function (evento) {
+      var boton = evento.target.closest('.btn-ver-respaldo');
+      if (!boton) return;
+
+      var cuerpo = document.getElementById('cuerpoDetalleRespaldo');
+      if (!cuerpo) return;
+
+      var descripcion = boton.getAttribute('data-descripcion') || '';
+      cuerpo.innerHTML =
+        '<div class="list-group-item d-flex justify-content-between">' +
+          '<span class="text-muted">Archivo</span>' +
+          '<strong>' + (boton.getAttribute('data-archivo') || '—') + '</strong>' +
+        '</div>' +
+        '<div class="list-group-item d-flex justify-content-between">' +
+          '<span class="text-muted">Fecha de creacion</span>' +
+          '<strong>' + (boton.getAttribute('data-fecha') || '—') + '</strong>' +
+        '</div>' +
+        '<div class="list-group-item d-flex justify-content-between">' +
+          '<span class="text-muted">Tamano</span>' +
+          '<strong>' + (boton.getAttribute('data-tamano') || '—') + '</strong>' +
+        '</div>' +
+        '<div class="list-group-item d-flex justify-content-between">' +
+          '<span class="text-muted">Descripcion</span>' +
+          '<strong>' + (descripcion || '—') + '</strong>' +
+        '</div>';
+
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalleRespaldo')).show();
+    });
   </script>
 {% endblock %}

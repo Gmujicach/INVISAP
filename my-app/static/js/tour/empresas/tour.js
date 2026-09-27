@@ -30,7 +30,7 @@
           side: 'top'
         },
         {
-          element: '#tablaEmpresas tbody tr:first-child .btn-warning, .btn-warning, .btn-editar',
+          element: '#tablaEmpresas tbody tr:first-child .btn-accion-editar',
           popover: {
             title: 'Editar Empresa',
             description: 'Actualice datos de la empresa seleccionada: telefono, direccion o informacion de contacto.'
@@ -38,18 +38,26 @@
           side: 'left'
         },
         {
-          element: '#tablaEmpresas tbody tr:first-child .btn-eliminar, .btn-danger, .btn-eliminar',
+          element: '#tablaEmpresas tbody tr:first-child .btn-accion-eliminar, .btn-eliminar',
           popover: {
             title: 'Eliminar Empresa',
-            description: 'Elimina la empresa del directorio. Se solicita confirmacion antes de proceder para evitar perdidas accidentales.'
+            description: 'Elimina la empresa del directorio. Se solicita confirmación antes de proceder para evitar pérdidas accidentales.'
+          },
+          side: 'left'
+        },
+        {
+          element: '#tablaEmpresas tbody tr:first-child .btn-accion-detalle, .btn-ver-requisitos',
+          popover: {
+            title: 'Verificar Requisitos Legales',
+            description: 'Abre el modal para marcar si la empresa cumple con los requisitos legales exigidos para poder participar en una contratación.'
           },
           side: 'left'
         },
         {
           element: '#paginacionContenedor, .pagination',
           popover: {
-            title: 'Paginacion',
-            description: 'Navegue entre las paginas del directorio y consulte la cantidad total de empresas registradas en el sistema.'
+            title: 'Paginación',
+            description: 'Navegue entre las páginas del directorio y consulte la cantidad total de empresas registradas en el sistema.'
           },
           side: 'top'
         }

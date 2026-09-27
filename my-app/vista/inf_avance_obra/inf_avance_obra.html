@@ -109,7 +109,7 @@
             <th>% Avance</th>
             <th>Gerente/Inspector</th>
             <th>Fecha</th>
-            <th class="text-center">Acciones</th>
+                <th class="acciones text-center">Acciones</th>
           </tr>
         </thead>
         <tbody id="tbodyInformes">
@@ -168,27 +168,30 @@
                 N/A
               {% endif %}
             </td>
-            <td class="text-center">
-              <div class="d-flex flex-column gap-1 justify-content-center align-items-center">
+            <td class="acciones">
+              <div class="btn-acciones" style="justify-content:center;">
                 <button type="button"
-                   class="btn btn-outline-info btn-sm btn-ver-informe"
+                   class="btn btn-sm btn-accion btn-accion-ver btn-ver-informe"
                    data-id="{{ informe.id_informe }}"
                    data-bs-toggle="modal"
                    data-bs-target="#modalDetalleInforme"
-                   title="Ver detalle completo">
-                  <i class="bx bx-show"></i>
+                   title="Ver detalle completo"
+                   aria-label="Ver detalle completo del informe">
+                  <i class="bi bi-eye"></i>
                 </button>
                 <a href="/editar-informe/{{ informe.id_informe }}"
-                   class="btn btn-outline-warning btn-sm btn-editar-informe"
+                   class="btn btn-sm btn-accion btn-accion-editar btn-editar-informe"
                    data-id="{{ informe.id_informe }}"
-                   title="Editar informe">
-                  <i class="bx bx-edit"></i>
+                   title="Editar informe"
+                   aria-label="Editar informe">
+                  <i class="bi bi-pencil-square"></i>
                 </a>
                 <button type="button"
-                        class="btn btn-outline-danger btn-sm btn-eliminar-informe"
+                        class="btn btn-sm btn-accion btn-accion-eliminar btn-eliminar-informe"
                         data-id="{{ informe.id_informe }}"
-                        title="Eliminar informe (borrado lógico)">
-                  <i class="bx bx-trash"></i>
+                        title="Eliminar informe (borrado lógico)"
+                        aria-label="Eliminar informe">
+                  <i class="bi bi-trash"></i>
                 </button>
               </div>
             </td>
@@ -224,9 +227,7 @@
           <h5 class="modal-title text-white" id="modalRegistrarInformeLabel">
             <i class="bx bx-file-blank me-2"></i>Registrar Informe de Avance de Obra
           </h5>
-          <button type="button" class="btn btn-sm btn-outline-light rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
-            <i class="bx bx-x" style="font-size: 1.2rem; line-height: 1;"></i>
-          </button>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
         </div>
         <div class="modal-body">
           <!-- ========== SECCIÓN 1: INFORMACIÓN BÁSICA ========== -->
@@ -428,9 +429,7 @@
           <h5 class="modal-title text-white" id="modalSeleccionarInspectorLabel">
             <i class="bx bx-user-check me-2"></i>Seleccionar Inspector Responsable
           </h5>
-          <button type="button" class="btn btn-sm btn-outline-light rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
-            <i class="bx bx-x" style="font-size: 1.2rem; line-height: 1;"></i>
-          </button>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
         </div>
       <div class="modal-body">
         <div class="row" id="listaInspectores">
@@ -457,9 +456,7 @@
           <h5 class="modal-title text-white" id="modalEvidenciasAntesLabel">
             <i class="bx bx-image me-2"></i>Seleccionar Evidencias ANTES (Máx. 5)
           </h5>
-          <button type="button" class="btn btn-sm btn-outline-light rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
-            <i class="bx bx-x" style="font-size: 1.2rem; line-height: 1;"></i>
-          </button>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
         </div>
       <div class="modal-body">
         <div class="row" id="listaEvidenciasAntes">
@@ -489,9 +486,7 @@
           <h5 class="modal-title text-dark" id="modalEvidenciasDuranteLabel">
             <i class="bx bx-image me-2"></i>Seleccionar Evidencias DURANTE (Máx. 5)
           </h5>
-          <button type="button" class="btn btn-sm btn-outline-dark rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
-            <i class="bx bx-x" style="font-size: 1.2rem; line-height: 1;"></i>
-          </button>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
         </div>
       <div class="modal-body">
         <div class="row" id="listaEvidenciasDurante">
@@ -521,9 +516,7 @@
           <h5 class="modal-title text-white" id="modalEvidenciasDespuesLabel">
             <i class="bx bx-image me-2"></i>Seleccionar Evidencias DESPUÉS (Máx. 5)
           </h5>
-          <button type="button" class="btn btn-sm btn-outline-light rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
-            <i class="bx bx-x" style="font-size: 1.2rem; line-height: 1;"></i>
-          </button>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
         </div>
       <div class="modal-body">
         <div class="row" id="listaEvidenciasDespues">
@@ -553,7 +546,7 @@
         <h5 class="modal-title" id="modalConfirmarEliminarInformeLabel">
           <i class="bx bx-trash me-2"></i>Eliminar informe
         </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
       </div>
       <div class="modal-body">
         <p class="mb-2">¿Está seguro que desea eliminar este informe?</p>
@@ -579,9 +572,7 @@
           <h5 class="modal-title text-white" id="modalDetalleInformeLabel">
             <i class="bx bx-file me-2"></i>Detalle del Informe de Avance
           </h5>
-          <button type="button" class="btn btn-sm btn-outline-light rounded-circle" data-bs-dismiss="modal" aria-label="Close" style="width: 32px; height: 32px; padding: 0; display: inline-flex; align-items: center; justify-content: center;">
-            <i class="bx bx-x" style="font-size: 1.2rem; line-height: 1;"></i>
-          </button>
+          <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
         </div>
       <div class="modal-body" id="detalleInformeBody">
         <div class="text-center py-4">

@@ -6,7 +6,7 @@
       showProgress: true,
       steps: [
         {
-          element: '.authentication-wrapper .auth-cover',
+          element: '.authentication-wrapper .authentication-inner, .authentication-wrapper .card',
           popover: {
             title: 'Bienvenido a INVILARA',
             description: 'Sistema de gestion integral para el control de solicitudes, proyectos, obras y reportes.'
@@ -14,7 +14,7 @@
           side: 'right'
         },
         {
-          element: 'input[name="username"], input[name="email"], #username, #email',
+          element: 'input[name="nombre"], #nombre, input[type="text"]',
           popover: {
             title: 'Correo Electronico',
             description: 'Ingrese su correo electronico registrado en el sistema para iniciar sesion.'
@@ -22,7 +22,7 @@
           side: 'bottom'
         },
         {
-          element: 'input[name="password"], input[name="clave"], #password, #clave',
+          element: 'input[name="pass_user"], #pass_user, input[type="password"]',
           popover: {
             title: 'Contrasena',
             description: 'Escriba su contrasena. Si la olvido, use el enlace de recuperacion para recibir un codigo OTP.'
@@ -41,7 +41,7 @@
           element: 'a[href*="recovery"], a[href*="clave"], .forgot-link',
           popover: {
             title: 'Recuperar Contrasena',
-            description: '¿Olvido su clave? Haga clic aqui para iniciar el proceso de recuperacion via correo electronico.'
+            description: 'ï¿½Olvido su clave? Haga clic aqui para iniciar el proceso de recuperacion via correo electronico.'
           },
           side: 'left'
         }

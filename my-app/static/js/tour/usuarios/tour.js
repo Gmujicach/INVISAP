@@ -5,17 +5,25 @@
     const path = window.location.pathname || '';
     const isRegisterPage = path.indexOf('/users/register') !== -1 || !!document.querySelector('#formRegisterUser');
     const isEditPage = path.indexOf('/users/edit/') !== -1 || !!document.querySelector('#formUpdateUser');
-    const isListPage = path.indexOf('/users') !== -1 && !isRegisterPage && !isEditPage || !!document.querySelector('#tablaUsuarios, #respuestaFiltroMes');
+    const isListPage = path.indexOf('/users') !== -1 && !isRegisterPage && !isEditPage || !!document.querySelector('#tablaUsuarios, #searchUsuarios, #widget-total');
 
     const steps = [];
 
     if (isListPage) {
       steps.push(
         {
-          element: '#respuestaFiltroMes h2',
+          element: '#respuestaFiltroMes h2, h3.fw-bold',
           popover: {
             title: 'Listado de Usuarios',
-            description: 'Aquí puedes ver todos los usuarios registrados en el sistema. Puedes buscarlos, editarlos o eliminarlos desde esta tabla.'
+            description: 'Aquí puedes ver todos los usuarios registrados en el sistema. Puedes buscarlos, ver su detalle, editarlos o eliminarlos desde esta tabla.'
+          },
+          side: 'bottom'
+        },
+        {
+          element: '#widget-total, #widget-coincidencias, #widget-roles',
+          popover: {
+            title: 'Resumen del módulo',
+            description: 'Tarjetas con el total de usuarios, las coincidencias de la búsqueda activa y la cantidad de roles en uso.'
           },
           side: 'bottom'
         },
@@ -76,7 +84,15 @@
           side: 'bottom'
         },
         {
-          element: '#tablaUsuarios tbody tr:first-child .btn-warning',
+          element: '#tablaUsuarios tbody tr:first-child .btn-accion-ver',
+          popover: {
+            title: 'Botón Ver',
+            description: 'Abre el modal con el detalle del usuario: avatar, cédula, correo, identificador y los módulos del sistema asignados a su rol.'
+          },
+          side: 'left'
+        },
+        {
+          element: '#tablaUsuarios tbody tr:first-child .btn-accion-editar',
           popover: {
             title: 'Botón Editar',
             description: 'Haz clic para modificar los datos del usuario: nombre, correo, rol y contraseña. Los cambios se guardan al enviar el formulario.'
@@ -84,15 +100,31 @@
           side: 'left'
         },
         {
-          element: '#tablaUsuarios tbody tr:first-child .btn-danger',
+          element: '#tablaUsuarios tbody tr:first-child .btn-accion-eliminar',
           popover: {
             title: 'Botón Eliminar',
-            description: 'Elimina al usuario de forma permanente tras confirmar. Ten cuidado porque esta acción no se puede deshacer.'
+            description: 'Pide confirmación y elimina la cuenta por AJAX, sin recargar la página. El Super Usuario no se puede eliminar por seguridad. Queda registrado en la bitácora.'
           },
           side: 'left'
         },
         {
-          element: '#respuestaFiltroMes .btn-primary',
+          element: '#searchUsuarios',
+          popover: {
+            title: 'Búsqueda de usuarios',
+            description: 'Escriba para filtrar en tiempo real por nombre, cédula, correo o rol. La tabla se actualiza sin recargar la página.'
+          },
+          side: 'bottom'
+        },
+        {
+          element: '#pagination_controls, #registros_por_pagina',
+          popover: {
+            title: 'Paginación',
+            description: 'Navegue entre páginas y elija cuántos registros mostrar. Todo se resuelve en el navegador, sin volver a cargar el sistema.'
+          },
+          side: 'top'
+        },
+        {
+          element: 'a[href*="show_register_form"], a.btn.btn-primary[href*="register"]',
           popover: {
             title: 'Registrar Nuevo Usuario',
             description: 'Haz clic aquí para abrir el formulario y agregar un nuevo usuario al sistema. Podrás ingresar su nombre, cédula, correo, rol y contraseña.'

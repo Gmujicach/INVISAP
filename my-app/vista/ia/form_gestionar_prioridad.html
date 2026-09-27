@@ -167,7 +167,7 @@
         <h5 class="modal-title fw-bold" id="modalConfirmarTitulo">
           <i class="bi bi-question-circle-fill me-2 text-warning"></i>Confirmar acción
         </h5>
-        <button type="button" class="btn-close btn-close-round" data-bs-dismiss="modal" id="modalConfirmarClose" aria-label="Cerrar"></button>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
       </div>
       <div class="modal-body">
         <p id="modalConfirmarMensaje" class="mb-0">¿Está seguro de realizar esta acción?</p>
@@ -193,7 +193,7 @@
         <h5 class="modal-title fw-bold" id="modalResultadoTitulo">
           <i class="bi bi-info-circle-fill me-2"></i>Resultado
         </h5>
-        <button type="button" class="btn-close btn-close-round" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <button type="button" class="btn-close-custom" data-bs-dismiss="modal" aria-label="Cerrar"><i class="bi bi-x-lg"></i></button>
       </div>
       <div class="modal-body">
         <p id="modalResultadoMensaje" class="mb-0"></p>
@@ -433,18 +433,18 @@
         </td>
         <td class="col-origen">${origen}</td>
         <td class="col-fecha">${fecha}</td>
-        <td class="col-acciones text-center">
-          <div class="d-flex flex-column gap-1 align-items-center">
-            <a class="btn btn-action-icon btn-outline-primary" href="/prioridad/editar/${r.id_gestion_prioridad}" title="Editar prioridad">
-              <i class="bi bi-pencil"></i>
-            </a>
-            <button class="btn btn-action-icon btn-outline-info" onclick="clasificarNueva(${r.solicitud_id})" ${r.solicitud_id ? '' : 'disabled'} title="Re-clasificar con IA">
-              <i class="bi bi-cpu"></i>
-            </button>
-            <a class="btn btn-action-icon btn-outline-secondary" href="/prioridad/detalle/${r.id_gestion_prioridad}" title="Ver detalles de la prioridad">
+        <td class="col-acciones acciones">
+          <div class="btn-acciones" style="justify-content:center;">
+            <a class="btn btn-sm btn-accion btn-accion-ver" href="/prioridad/detalle/${r.id_gestion_prioridad}" title="Ver detalles de la prioridad" aria-label="Ver detalles de la prioridad">
               <i class="bi bi-eye"></i>
             </a>
-            <button class="btn btn-action-icon btn-outline-danger" onclick="eliminarPrioridad(${r.id_gestion_prioridad})" title="Eliminar">
+            <a class="btn btn-sm btn-accion btn-accion-editar" href="/prioridad/editar/${r.id_gestion_prioridad}" title="Editar prioridad" aria-label="Editar prioridad">
+              <i class="bi bi-pencil-square"></i>
+            </a>
+            <button class="btn btn-sm btn-accion btn-accion-detalle" onclick="clasificarNueva(${r.solicitud_id})" ${r.solicitud_id ? '' : 'disabled'} title="Re-clasificar con IA" aria-label="Re-clasificar con IA">
+              <i class="bi bi-cpu"></i>
+            </button>
+            <button class="btn btn-sm btn-accion btn-accion-eliminar" onclick="eliminarPrioridad(${r.id_gestion_prioridad})" title="Eliminar" aria-label="Eliminar prioridad">
               <i class="bi bi-trash"></i>
             </button>
           </div>
