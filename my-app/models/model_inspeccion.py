@@ -5,7 +5,6 @@ Implementa encapsulamiento, validaciones Regex, borrado logico y relacion con ob
 
 import re
 from datetime import datetime
-from conexion.conexionBD import connectionBD_invilara, connectionBD_invilara_seguridad
 from models.base_model import BaseModel
 
 
@@ -30,13 +29,13 @@ class InspeccionModel(BaseModel):
 
     def _conectar(self):
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if conn:
                 return conn
         except Exception as e:
             print(f"[CONEXION] Falló conexión principal: {e}")
         try:
-            conn = connectionBD_invilara_seguridad()
+            conn = self.obtener_conexion_seguridad_segura()
             if conn:
                 return conn
         except Exception as e:

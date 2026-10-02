@@ -1,4 +1,3 @@
-from conexion.conexionBD import connectionBD_invilara as connectionBD
 from models.base_model import BaseModel
 import re
 
@@ -53,7 +52,7 @@ class ContratacionModel(BaseModel):
         if not es_valido:
             return False, mensaje
 
-        conexion = connectionBD()
+        conexion = self.obtener_conexion()
         if conexion is None: 
             return False, "Error de conexión a la base de datos."
             
@@ -101,7 +100,7 @@ class ContratacionModel(BaseModel):
             if conexion: conexion.close()
 
     def obtener_todas_las_contrataciones(self):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion()
         if conexion is None: return []
         try:
             cursor = conexion.cursor(dictionary=True)
@@ -120,7 +119,7 @@ class ContratacionModel(BaseModel):
             if conexion: conexion.close()
 
     def obtener_contratacion_por_id(self, id_contratacion):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion()
         if conexion is None: return None
         try:
             cursor = conexion.cursor(dictionary=True)
@@ -141,7 +140,7 @@ class ContratacionModel(BaseModel):
         if not datos.get('id_contratacion'):
             return False, "Falta el ID de la contratación para actualizar."
 
-        conexion = connectionBD()
+        conexion = self.obtener_conexion()
         if conexion is None: 
             return False, "Error de conexión a la base de datos."
         
@@ -174,7 +173,7 @@ class ContratacionModel(BaseModel):
             if conexion: conexion.close()
 
     def eliminar_contratacion(self, id_contratacion):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion()
         if conexion is None: return False
         try:
             cursor = conexion.cursor()
@@ -190,7 +189,7 @@ class ContratacionModel(BaseModel):
             if conexion: conexion.close()
 
     def obtener_empresas(self):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion()
         if conexion is None: return []
         try:
             cursor = conexion.cursor(dictionary=True)

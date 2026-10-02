@@ -9,7 +9,7 @@ from datetime import datetime
 
 import requests
 
-from conexion.conexionBD import connectionBD
+from conexion.base_conexion import BaseConexionBD
 
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "127.0.0.1:11434").rstrip("/")
 if not OLLAMA_HOST.startswith(("http://", "https://")):
@@ -370,7 +370,7 @@ _scheduler_lock = threading.Lock()
 _worker_active = False
 
 
-class PrioridadWorkerModel:
+class PrioridadWorkerModel(BaseConexionBD):
     """Modelo del worker — encapsulamiento POO con atributos privados y setters validados por regex."""
 
     _RE_JUSTIFICACION = re.compile(r'^[A-Za-z0-9ÁÉÍÓÚáéíóúÑñ\s.,;:!?\'"\-]{3,150}$')
@@ -535,7 +535,7 @@ class PrioridadWorkerModel:
         self.origen = origen
         self.responsable = responsable
 
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         try:
             prioridad_id = self._insertar_prioridad(
                 conexion, solicitud_id, rango, justificacion, tipo_obra,

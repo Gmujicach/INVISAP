@@ -9,9 +9,9 @@ from flask import render_template_string
 import random
 import string
 from datetime import datetime, timedelta
-from conexion.conexionBD import connectionBD_seguridad
+from conexion.base_conexion import BaseConexionBD
 
-class EmailService:
+class EmailService(BaseConexionBD):
     """
     Clase para gestionar el envío de correos electrónicos
     Implementa encapsulamiento y responsabilidad única (POO)
@@ -263,7 +263,7 @@ class EmailService:
         Aplicando validaciones según Prof. Escalona
         """
         try:
-            conexion = connectionBD_seguridad()
+            conexion = self.obtener_conexion_seguridad()
             cursor = conexion.cursor()
             
             expiry_time = datetime.now() + timedelta(minutes=self.__otp_expiry_minutes)
@@ -338,7 +338,7 @@ class EmailService:
         Retorna: (valid: bool, message: str)
         """
         try:
-            conexion = connectionBD_seguridad()
+            conexion = self.obtener_conexion_seguridad()
             cursor = conexion.cursor(dictionary=True)
             
             sql = """

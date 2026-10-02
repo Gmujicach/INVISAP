@@ -202,13 +202,13 @@ def formSolicitud():
         resultado = crear_solicitud(request.form, session) or {'success': False}
     except Exception as e:
         print(f"[Router] Error al crear solicitud: {e}")
-        resultado = {'success': False}
+        resultado = {'success': False, 'message': 'Error interno al registrar la solicitud.'}
 
     if resultado.get('success'):
         flash('Solicitud registrada exitosamente.', 'success')
         return redirect(url_for('lista_solicitudes'))
     else:
-        flash('La solicitud NO fue registrada. Verifique los datos ingresados.', 'error')
+        flash(resultado.get('message') or 'La solicitud NO fue registrada. Verifique los datos ingresados.', 'error')
         return redirect(url_for('home_bp.viewFormSolicitud'))
 
 @app.route('/lista-de-solicitudes', methods=['GET'])

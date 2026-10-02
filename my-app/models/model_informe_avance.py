@@ -6,7 +6,6 @@ import re
 import uuid
 import traceback
 from datetime import datetime
-from conexion.conexionBD import connectionBD_invilara
 from models.base_model import BaseModel
 from PIL import Image
 import os
@@ -179,7 +178,7 @@ class InformeAvanceModel(BaseModel):
     def __asegurar_tabla_informe(self):
         """Corrige el typo de columna y asegura DEFAULT sin intervención manual."""
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if conn:
                 cur = conn.cursor()
                 try:
@@ -218,7 +217,7 @@ class InformeAvanceModel(BaseModel):
     def __asegurar_tabla_avance(self):
         """Amplía la columna descripcion de avance y asegura columnas de obra."""
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if conn:
                 cur = conn.cursor()
                 try:
@@ -261,7 +260,7 @@ class InformeAvanceModel(BaseModel):
         cur = None
         id_avance = None
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return None
             cur = conn.cursor()
@@ -318,7 +317,7 @@ class InformeAvanceModel(BaseModel):
         conn = None
         cur = None
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return None
             cur = conn.cursor()
@@ -378,7 +377,7 @@ class InformeAvanceModel(BaseModel):
         conn = None
         cur = None
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return False
             cur = conn.cursor()
@@ -415,7 +414,7 @@ class InformeAvanceModel(BaseModel):
         conn = None
         cur = None
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return False
             cur = conn.cursor()
@@ -446,7 +445,7 @@ class InformeAvanceModel(BaseModel):
         conn = None
         cur = None
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return []
             cur = conn.cursor(dictionary=True)
@@ -466,7 +465,7 @@ class InformeAvanceModel(BaseModel):
         conn = None
         cur = None
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return None
             cur = conn.cursor(dictionary=True)
@@ -497,7 +496,7 @@ class InformeAvanceModel(BaseModel):
         conn = None
         cur = None
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return []
             cur = conn.cursor(dictionary=True)
@@ -516,7 +515,7 @@ class InformeAvanceModel(BaseModel):
         conn = None
         cur = None
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return False
             cur = conn.cursor()
@@ -538,7 +537,7 @@ class InformeAvanceModel(BaseModel):
         cur = None
         try:
             empleado_id = int(id_empleado)
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return False
             cur = conn.cursor()
@@ -583,7 +582,7 @@ class InformeAvanceModel(BaseModel):
                 avance_id = self.__crear_avance_db(gerente_id, payload.get('porcentaje_avance', 0), payload.get('observaciones', '') or 'Sin descripcion')
             
             if not avance_id:
-                conn_fallback = connectionBD_invilara()
+                conn_fallback = self.obtener_conexion()
                 if conn_fallback:
                     try:
                         cur_fallback = conn_fallback.cursor()
@@ -697,7 +696,7 @@ class InformeAvanceModel(BaseModel):
         conn = None
         cur = None
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return []
             cur = conn.cursor(dictionary=True)

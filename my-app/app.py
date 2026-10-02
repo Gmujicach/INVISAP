@@ -224,47 +224,38 @@ except Exception as e:
 
 # ============================================
 # datos del perfil del usuario
-# Inyecta el avatar y el nombre en TODAS las plantillas
+# Inyecta el avatar y el nombre en TODAS las plantillas (usa cache de sesión)
 # ============================================
 @app.context_processor
 def inject_perfil_usuario():
-    from controllers.funciones_login import info_perfil_session
     datos = {
         'perfil_avatar': 'assets/img/avatars/1.png',
         'perfil_nombre': session.get('name_surname', 'Usuario'),
         'perfil_correo': session.get('email_user', ''),
         'usuario_logueado_id': session.get('id') or session.get('id_usuarios')
     }
-    try:
-        perfiles = info_perfil_session()
-        if perfiles:
-            p = perfiles[0]
-            datos['perfil_avatar'] = p.get('avatar') or datos['perfil_avatar']
-            datos['perfil_nombre'] = p.get('nombre') or datos['perfil_nombre']
-            datos['perfil_correo'] = p.get('correo') or datos['perfil_correo']
-            datos['usuario_logueado_id'] = p.get('id_usuarios') or datos['usuario_logueado_id']
-    except Exception:
-        pass
+    perfil_cache = session.get('perfil_cache')
+    if perfil_cache:
+        datos['perfil_avatar'] = perfil_cache.get('avatar') or datos['perfil_avatar']
+        datos['perfil_nombre'] = perfil_cache.get('nombre') or datos['perfil_nombre']
+        datos['perfil_correo'] = perfil_cache.get('correo') or datos['perfil_correo']
+        datos['usuario_logueado_id'] = perfil_cache.get('id_usuarios') or datos['usuario_logueado_id']
     return dict(perfil=datos)
 
 
 # ============================================
 # Permisos por rol del usuario
 # Inyecta en TODAS las plantillas la función tiene_permiso(modulo)
-# y el rol/permisos del usuario autenticado (para filtrar el menú lateral)
+# y el rol/permisos del usuario autenticado (usa cache de sesión)
 # ============================================
 @app.context_processor
 def inject_permisos_usuario():
     from controllers.UserController import verificar_permiso
     from flask import g
     rol = session.get('rol', 'Usuario')
+    permisos_cache = session.get('permisos_cache', [])
     if not hasattr(g, '_permisos_cache'):
-        try:
-            from models.model_seguridad import RolPermisoModel
-            permisos_db = RolPermisoModel().obtener_nombres_modulos_por_rol(rol)
-            g._permisos_cache = set(permisos_db)
-        except Exception:
-            g._permisos_cache = set()
+        g._permisos_cache = set(permisos_cache)
     return {
         'tiene_permiso': verificar_permiso,
         'rol_usuario': rol,
@@ -274,14 +265,23 @@ def inject_permisos_usuario():
 
 # ============================================
 # Conteo de notificaciones no leídas (badge del campanita)
+# Usa cache simple en sesión (TTL 30s) para evitar query en cada request
 # ============================================
 @app.context_processor
 def inject_notificaciones():
     from models.model_notificacion import NotificacionModel
+    import time
     if 'conectado' in session:
+        now = time.time()
+        cache = session.get('notif_cache', {})
+        # Cache válido por 30 segundos
+        if cache.get('timestamp', 0) + 30 > now and 'count' in cache:
+            return {'notificaciones_no_leidas': cache['count']}
         try:
             uid = session.get('id')
-            return {'notificaciones_no_leidas': NotificacionModel().contar_no_leidas(uid)}
+            count = NotificacionModel().contar_no_leidas(uid)
+            session['notif_cache'] = {'count': count, 'timestamp': now}
+            return {'notificaciones_no_leidas': count}
         except Exception:
             return {'notificaciones_no_leidas': 0}
     return {'notificaciones_no_leidas': 0}

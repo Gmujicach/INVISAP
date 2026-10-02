@@ -1,4 +1,3 @@
-from conexion.conexionBD import connectionBD
 from models.base_model import BaseModel
 import re
 
@@ -7,7 +6,7 @@ class MaquinariaModel(BaseModel):
     _RE_NOMBRE = re.compile(r'^[\w\s\.\-áéíóúÁÉÍÓÚñÑ]{3,50}$', re.UNICODE)
     
     def obtener_maquinarias(self, page=1, per_page=10):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = None
         try:
             cursor = conexion.cursor(dictionary=True)
@@ -22,7 +21,7 @@ class MaquinariaModel(BaseModel):
             conexion.close()
 
     def contar_maquinarias(self):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = None
         try:
             cursor = conexion.cursor()
@@ -36,7 +35,7 @@ class MaquinariaModel(BaseModel):
             conexion.close()
 
     def obtener_maquinarias_eliminadas(self):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = None
         try:
             cursor = conexion.cursor(dictionary=True)
@@ -50,7 +49,7 @@ class MaquinariaModel(BaseModel):
             conexion.close()
 
     def restaurar_maquinaria(self, id_maquinaria):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = None
         try:
             cursor = conexion.cursor()
@@ -90,7 +89,7 @@ class MaquinariaModel(BaseModel):
         if not val_tipo['valido']:
             return {'success': False, 'message': val_tipo['mensaje']}
 
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = None
         try:
             cursor = conexion.cursor(dictionary=True)
@@ -132,7 +131,7 @@ class MaquinariaModel(BaseModel):
             conexion.close()
 
     def obtener_maquinaria_por_id(self, id_maquinaria):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = None
         try:
             cursor = conexion.cursor(dictionary=True)
@@ -154,7 +153,7 @@ class MaquinariaModel(BaseModel):
         if not val_tipo['valido']:
             return {'success': False, 'message': val_tipo['mensaje']}
 
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = None
         try:
             cursor = conexion.cursor()
@@ -170,7 +169,7 @@ class MaquinariaModel(BaseModel):
             conexion.close()
 
     def eliminar_maquinaria(self, id_maquinaria):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = None
         try:
             cursor = conexion.cursor()

@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash
 import os
-from conexion.conexionBD import connectionBD_seguridad
+from conexion.base_conexion import BaseConexionBD
 from models.base_model import BaseModel
 
 DEFAULT_AVATAR = 'assets/img/avatars/1.png'
@@ -32,7 +32,7 @@ class UsuarioModel(BaseModel):
     def set_contrasena(self, val): self.__contrasena = val
 
     def buscar_por_nombre(self, nombre):
-        conn = connectionBD_seguridad()
+        conn = self.obtener_conexion_seguridad()
         if not conn: return None
         try:
             cursor = conn.cursor(dictionary=True)
@@ -44,7 +44,7 @@ class UsuarioModel(BaseModel):
             conn.close()
 
     def buscar_por_email(self, email):
-        conn = connectionBD_seguridad()
+        conn = self.obtener_conexion_seguridad()
         if not conn: return None
         try:
             cursor = conn.cursor(dictionary=True)
@@ -56,7 +56,7 @@ class UsuarioModel(BaseModel):
             conn.close()
 
     def validar_duplicados(self, correo, cedula):
-        conn = connectionBD_seguridad()
+        conn = self.obtener_conexion_seguridad()
         if not conn: return False
         try:
             cursor = conn.cursor(dictionary=True)
@@ -69,7 +69,7 @@ class UsuarioModel(BaseModel):
             conn.close()
 
     def listar_todos(self):
-        conn = connectionBD_seguridad()
+        conn = self.obtener_conexion_seguridad()
         if not conn: return []
         try:
             cursor = conn.cursor(dictionary=True)
@@ -86,7 +86,7 @@ class UsuarioModel(BaseModel):
             conn.close()
 
     def buscar_por_id(self, id_usuario):
-        conn = connectionBD_seguridad()
+        conn = self.obtener_conexion_seguridad()
         if not conn: return None
         try:
             cursor = conn.cursor(dictionary=True)
@@ -102,7 +102,7 @@ class UsuarioModel(BaseModel):
             conn.close()
 
     def buscar_por_id_con_contrasena(self, id_usuario):
-        conn = connectionBD_seguridad()
+        conn = self.obtener_conexion_seguridad()
         if not conn: return None
         try:
             cursor = conn.cursor(dictionary=True)
@@ -137,7 +137,7 @@ class UsuarioModel(BaseModel):
 
     # --- MÉTODOS PRIVADOS DE BASE DE DATOS (Seguridad) ---
     def __registrar_db(self):
-        conn = connectionBD_seguridad()
+        conn = self.obtener_conexion_seguridad()
         if not conn: return False
         try:
             cursor = conn.cursor()
@@ -150,7 +150,7 @@ class UsuarioModel(BaseModel):
             conn.close()
 
     def __actualizar_db(self):
-        conn = connectionBD_seguridad()
+        conn = self.obtener_conexion_seguridad()
         if not conn: return False
         try:
             cursor = conn.cursor()
@@ -167,7 +167,7 @@ class UsuarioModel(BaseModel):
             conn.close()
 
     def __eliminar_fisico_db(self):
-        conn = connectionBD_seguridad()
+        conn = self.obtener_conexion_seguridad()
         if not conn: return False
         try:
             cursor = conn.cursor()
@@ -194,7 +194,7 @@ class UsuarioModel(BaseModel):
 
     @staticmethod
     def existe_y_activo(id_usuario):
-        conn = connectionBD_seguridad()
+        conn = BaseConexionBD.obtener_conexion_seguridad()
         cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT id_usuarios FROM usuarios WHERE id_usuarios = %s", (id_usuario,))
         result = cursor.fetchone()

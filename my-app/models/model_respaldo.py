@@ -10,7 +10,7 @@ import logging
 import traceback
 from datetime import datetime
 from decimal import Decimal
-from conexion.conexionBD import connectionBD_invilara_seguridad, get_db_config
+from conexion.base_conexion import BaseConexionBD
 from models.base_model import BaseModel
 
 logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ class RespaldoModel(BaseModel):
         de que exista y de que tenga las columnas que usa la interfaz
         (nombre_archivo, descripcion) y un tamaño adecuado para tamaño_respaldo.
         """
-        conn = connectionBD_invilara_seguridad()
+        conn = self.obtener_conexion_seguridad_segura()
         if not conn:
             return False
         cur = conn.cursor()
@@ -84,7 +84,7 @@ class RespaldoModel(BaseModel):
 
     def _siguiente_id(self):
         """Calcula el siguiente id_respaldo disponible en la BD de seguridad."""
-        conn = connectionBD_invilara_seguridad()
+        conn = self.obtener_conexion_seguridad_segura()
         if not conn:
             raise RuntimeError('No se pudo conectar a la base de datos de seguridad.')
         cur = conn.cursor()
@@ -105,7 +105,7 @@ class RespaldoModel(BaseModel):
         tamano_mb = min(tamano_mb, Decimal('99999999.99'))
         id_usuario = id_usuario or 1
 
-        conn = connectionBD_invilara_seguridad()
+        conn = self.obtener_conexion_seguridad_segura()
         if not conn:
             raise RuntimeError('No se pudo conectar a la base de datos de seguridad.')
         db_actual = conn.database
@@ -151,7 +151,7 @@ class RespaldoModel(BaseModel):
 
     @staticmethod
     def _obtener_config_bd():
-        cfg = get_db_config()
+        cfg = BaseConexionBD.configuracion_db()
         host = cfg['host']
         user = cfg['user']
         password = cfg['password']
@@ -309,7 +309,7 @@ class RespaldoModel(BaseModel):
 
     def listar_respaldos(self):
         self._asegurar_tabla_seguridad()
-        conn = connectionBD_invilara_seguridad()
+        conn = self.obtener_conexion_seguridad_segura()
         if not conn:
             return []
         cur = conn.cursor(dictionary=True)
@@ -329,7 +329,7 @@ class RespaldoModel(BaseModel):
 
     def obtener_por_id(self, id_respaldo):
         self._asegurar_tabla_seguridad()
-        conn = connectionBD_invilara_seguridad()
+        conn = self.obtener_conexion_seguridad_segura()
         if not conn:
             return None
         cur = conn.cursor(dictionary=True)
@@ -359,7 +359,7 @@ class RespaldoModel(BaseModel):
         except Exception:
             pass
 
-        conn = connectionBD_invilara_seguridad()
+        conn = self.obtener_conexion_seguridad_segura()
         if not conn:
             return False
         cur = conn.cursor()

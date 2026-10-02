@@ -11,4 +11,5 @@ if __name__ == '__main__':
             iniciar_scheduler()
         except Exception as e:
             print(f"[run] No se pudo iniciar el scheduler de prioridad: {e}")
-    app.run(host='0.0.0.0', debug=True, port=5600)
+    debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() in ('1', 'true', 'yes')
+    app.run(host='0.0.0.0', debug=debug_mode, port=5600)

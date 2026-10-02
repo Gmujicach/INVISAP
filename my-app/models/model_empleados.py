@@ -4,7 +4,6 @@ Implementa encapsulamiento, validaciones Regex, borrado lógico y relación con 
 """
 import re
 from datetime import datetime
-from conexion.conexionBD import connectionBD_invilara
 from models.base_model import BaseModel
 
 
@@ -195,7 +194,7 @@ class EmpleadoModel(BaseModel):
         cur = None
         
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return None
             
@@ -260,7 +259,7 @@ class EmpleadoModel(BaseModel):
         cur = None
         
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return False
             
@@ -303,7 +302,7 @@ class EmpleadoModel(BaseModel):
         cur = None
         
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return False
             
@@ -333,7 +332,7 @@ class EmpleadoModel(BaseModel):
         cur = None
         
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return []
             
@@ -372,7 +371,7 @@ class EmpleadoModel(BaseModel):
         cur = None
         
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return 0
             
@@ -397,7 +396,7 @@ class EmpleadoModel(BaseModel):
         cur = None
         
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return None
             
@@ -430,7 +429,7 @@ class EmpleadoModel(BaseModel):
         cur = None
         
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return []
             
@@ -463,7 +462,7 @@ class EmpleadoModel(BaseModel):
         cur = None
         
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 return False
             

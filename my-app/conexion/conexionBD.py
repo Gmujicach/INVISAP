@@ -21,7 +21,7 @@ def _get_env(key, default=''):
     return val if val else default
 
 def get_db_config():
-    """Retorna la configuración de conexión a la base de datos principal."""
+    """Retorna la configuración de conexión a la base de datos principal con pooling."""
     return {
         'host': os.getenv('DB_HOST', 'localhost'),
         'user': os.getenv('DB_USER', 'root'),
@@ -29,7 +29,10 @@ def get_db_config():
         'database': os.getenv('DB_NAME', 'invilara'),
         'charset': 'utf8mb4',
         'use_unicode': True,
-        'auth_plugin': _get_env('DB_AUTH_PLUGIN', 'mysql_native_password')
+        'auth_plugin': _get_env('DB_AUTH_PLUGIN', 'mysql_native_password'),
+        'pool_name': 'invilara_pool',
+        'pool_size': 10,
+        'pool_reset_session': True,
     }
 
 def connectionBD():
@@ -65,7 +68,10 @@ def connectionBD_seguridad():
         'database': os.getenv('DB_NAME_SEGURIDAD', 'invilara_seguridad'),
         'charset': 'utf8mb4',
         'use_unicode': True,
-        'auth_plugin': _get_env('DB_AUTH_PLUGIN', 'mysql_native_password')
+        'auth_plugin': _get_env('DB_AUTH_PLUGIN', 'mysql_native_password'),
+        'pool_name': 'invilara_seguridad_pool',
+        'pool_size': 10,
+        'pool_reset_session': True,
     }
 
     try:

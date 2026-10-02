@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-from conexion.conexionBD import connectionBD
+from conexion.base_conexion import BaseConexionBD
 from models.base_model import BaseModel
 
 
@@ -90,7 +90,7 @@ class PrioridadModel(BaseModel):
 
     def registrar(self):
         self._validar_para_persistencia()
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor()
             sql = """INSERT INTO prioridad (rango_prioridad, tipo_obra,
@@ -109,7 +109,7 @@ class PrioridadModel(BaseModel):
 
     def actualizar(self):
         self._validar_para_persistencia()
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor()
             sql = """UPDATE prioridad SET rango_prioridad=%s, justificacion_cambio=%s,
@@ -125,7 +125,7 @@ class PrioridadModel(BaseModel):
             conexion.close()
 
     def eliminar_logico(self):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor()
             cursor.execute(
@@ -147,7 +147,7 @@ class PrioridadModel(BaseModel):
 
     @staticmethod
     def obtener_detalle_completo(id_prioridad):
-        conexion = connectionBD()
+        conexion = BaseConexionBD.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor(dictionary=True, buffered=True)
             cursor.execute(
@@ -209,7 +209,7 @@ class PrioridadModel(BaseModel):
 
     @staticmethod
     def obtener_por_id(id_prioridad):
-        conexion = connectionBD()
+        conexion = BaseConexionBD.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor(dictionary=True)
             cursor.execute(
@@ -224,7 +224,7 @@ class PrioridadModel(BaseModel):
 
     @staticmethod
     def listar_priorizadas(page=1, per_page=10, q='', riesgo='ALL', orden='rango_asc'):
-        conexion = connectionBD()
+        conexion = BaseConexionBD.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor(dictionary=True, buffered=True)
 
@@ -340,7 +340,7 @@ class PrioridadModel(BaseModel):
 
     @staticmethod
     def obtener_datos_solicitud(id_solicitud):
-        conexion = connectionBD()
+        conexion = BaseConexionBD.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor(dictionary=True, buffered=True)
             cursor.execute(
@@ -376,7 +376,7 @@ class PrioridadModel(BaseModel):
 
     @staticmethod
     def obtener_gravedad_obra(gravedad_id):
-        conexion = connectionBD()
+        conexion = BaseConexionBD.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor(dictionary=True)
             cursor.execute(
@@ -391,7 +391,7 @@ class PrioridadModel(BaseModel):
 
     @staticmethod
     def obtener_solicitudes_sin_priorizar():
-        conexion = connectionBD()
+        conexion = BaseConexionBD.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor(dictionary=True, buffered=True)
             cursor.execute(
@@ -435,7 +435,7 @@ class PrioridadModel(BaseModel):
 
     @staticmethod
     def obtener_todas_solicitudes():
-        conexion = connectionBD()
+        conexion = BaseConexionBD.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor(dictionary=True, buffered=True)
             cursor.execute(
@@ -542,7 +542,7 @@ class PrioridadModel(BaseModel):
         rango = calculo['rango_prioridad']
         justificacion = resultado_ia.get('justificacion', 'Clasificación automática por IA')
 
-        conexion = connectionBD()
+        conexion = BaseConexionBD.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor(dictionary=True, buffered=True)
             cursor.execute(
@@ -721,7 +721,7 @@ class PrioridadModel(BaseModel):
         gravedad_sugerida = resultado.get('gravedad_sugerida')
         origen = resultado.get('origen', 'ia')
 
-        conexion = connectionBD()
+        conexion = BaseConexionBD.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor(dictionary=True, buffered=True)
             cursor.execute(
