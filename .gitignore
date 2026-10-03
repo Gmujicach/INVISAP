@@ -138,9 +138,6 @@ cython_debug/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-/my-app/conexion
-my-app/conexion/conexionBD.py
-my-app/conexion/conexionBD.py
 
 ### Node ###
 node_modules/
