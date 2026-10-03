@@ -148,3 +148,4 @@ package-lock.json
 
 ### temporales de la generacion de librerias minificadas ###
 .vendor_tmp/
+my-app/conexion/conexionBD.py
