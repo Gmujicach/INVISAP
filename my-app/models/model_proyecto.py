@@ -1,4 +1,3 @@
-from conexion.conexionBD import connectionBD
 from models.base_model import BaseModel
 import datetime
 import json
@@ -85,7 +84,7 @@ class ProyectoModel(BaseModel):
     def validar_codigo_proyecto(self, codigo_proyecto):
         conexion = None
         try:
-            conexion = connectionBD()
+            conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor(dictionary=True)
             cursor.execute("SELECT estado FROM proyecto WHERE codigo_proyecto = %s", (codigo_proyecto,))
             fila = cursor.fetchone()
@@ -112,7 +111,7 @@ class ProyectoModel(BaseModel):
             if val_result.get('existe_eliminado'):
                 raise Exception(f"El código {codigo_proy} fue usado en un proyecto eliminado anteriormente. No se pueden reutilizar códigos.")
             
-            conexion = connectionBD()
+            conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor(dictionary=True)
             self._asegurar_descripcion_tecnica(conexion)
             
@@ -186,7 +185,7 @@ class ProyectoModel(BaseModel):
     def obtener_proyectos(self):
         conexion = None
         try:
-            conexion = connectionBD()
+            conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor(dictionary=True)
             
             sql = """SELECT 
@@ -227,7 +226,7 @@ class ProyectoModel(BaseModel):
     def obtener_proyecto_por_id(self, codigo_proyecto):
         conexion = None
         try:
-            conexion = connectionBD()
+            conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor(dictionary=True)
             
             sql = """SELECT 
@@ -267,7 +266,7 @@ class ProyectoModel(BaseModel):
     def obtener_detalle_proyecto_por_codigo(self, codigo_proyecto):
         conexion = None
         try:
-            conexion = connectionBD()
+            conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor(dictionary=True)
             cursor.execute("""
                 SELECT p.codigo_proyecto, p.fecha_planificacion, p.descripcion_tecnica,
@@ -315,7 +314,7 @@ class ProyectoModel(BaseModel):
     def actualizar_proyecto(self, codigo_proyecto_actual, datos):
         conexion = None
         try:
-            conexion = connectionBD()
+            conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor(dictionary=True)
             self._asegurar_descripcion_tecnica(conexion)
             
@@ -397,7 +396,7 @@ class ProyectoModel(BaseModel):
     def eliminar_proyecto(self, codigo_proyecto):
         conexion = None
         try:
-            conexion = connectionBD()
+            conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor()
             
             sql = "UPDATE proyecto SET estado = 0 WHERE codigo_proyecto = %s"
@@ -415,7 +414,7 @@ class ProyectoModel(BaseModel):
     def obtener_contadores_proyectos(self):
         conexion = None
         try:
-            conexion = connectionBD()
+            conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor(dictionary=True)
             
             sql = """SELECT s.tipo_solicitud 

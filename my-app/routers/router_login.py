@@ -4,6 +4,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from controllers.funciones_login import *
 from controllers.strategies import AuthContext, DatabaseLoginStrategy
 from services.bitacora_service import BitacoraService
+from models.model_seguridad import RolPermisoModel
 import re
 from controllers.funciones_solicitud import obtener_dashboard_datos
 
@@ -161,6 +162,23 @@ def loginCliente():
                 session['name_surname'] = account['nombre']
                 session['email_user'] = account['correo']
                 session['rol'] = account.get('rol', 'Usuario')
+
+                # Cachear permisos y perfil en sesión para evitar queries en cada request
+                try:
+                    permisos = RolPermisoModel().obtener_nombres_modulos_por_rol(session['rol'])
+                    session['permisos_cache'] = list(permisos) if permisos else []
+                except Exception as e:
+                    print(f"[login] Error cacheando permisos: {e}")
+                    session['permisos_cache'] = []
+
+                try:
+                    perfil_data = info_perfil_session()
+                    if perfil_data:
+                        session['perfil_cache'] = perfil_data[0]
+                except Exception as e:
+                    print(f"[login] Error cacheando perfil: {e}")
+                    session['perfil_cache'] = {}
+
                 flash('¡Inicio de sesión exitoso!', 'success')
 
                 BitacoraService.registrar_accion(
@@ -351,19 +369,25 @@ def restablecerClave():
 def logout():
     if request.method == 'GET':
         if 'conectado' in session:
+            # Guardar info para bitácora antes de limpiar
+            nombre_usuario = session.get('name_surname', 'Usuario')
+            
             session.pop('conectado', None)
             session.pop('id', None)
             session.pop('name_surname', None)
             session.pop('email_user', None)
+            session.pop('rol', None)
+            session.pop('permisos_cache', None)
+            session.pop('perfil_cache', None)
             session.pop('recovery_email', None)
             session.pop('otp_verified', None)
             session.pop('otp_code_temp', None)
 
             BitacoraService.registrar_accion(
-                session=session,
+                session={'name_surname': nombre_usuario},
                 accion='LOGOUT',
                 modulo='Login',
-                descripcion='Usuario cerró la sesión.'
+                descripcion=f'Usuario {nombre_usuario} cerró la sesión.'
             )
             flash('Tu sesión fue cerrada correctamente.', 'success')
             return redirect(url_for('login_bp.inicio'))

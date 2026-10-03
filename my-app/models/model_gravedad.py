@@ -1,5 +1,4 @@
 import re
-from conexion.conexionBD import connectionBD
 from models.base_model import BaseModel
 
 
@@ -38,7 +37,7 @@ class GravedadObraModel(BaseModel):
 
     # ----- Métodos de persistencia (la conexión se abre y cierra por consulta) -----
     def registrar_gravedad(self):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor()
             for _ in range(3):
@@ -65,7 +64,7 @@ class GravedadObraModel(BaseModel):
             conexion.close()
 
     def consultar_activos(self):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor(dictionary=True)
             cursor.execute(
@@ -93,7 +92,7 @@ class GravedadObraModel(BaseModel):
             conexion.close()
 
     def obtener_gravedad_por_id(self, id_gravedad):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor(dictionary=True)
             cursor.execute(
@@ -121,7 +120,7 @@ class GravedadObraModel(BaseModel):
             conexion.close()
 
     def actualizar_gravedad(self):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor()
             sql = """UPDATE gravedad_obra
@@ -137,7 +136,7 @@ class GravedadObraModel(BaseModel):
 
     def eliminar_gravedad(self):
         """Borrado lógico exigido por el Prof. Escalona (estado = 0)."""
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor()
             cursor.execute(
@@ -152,7 +151,7 @@ class GravedadObraModel(BaseModel):
 
     def validar_nivel_existente(self, excluir_id=None):
         """Validación de existencia en tiempo real (change en el frontend)."""
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         try:
             cursor = conexion.cursor(dictionary=True)
             if excluir_id:

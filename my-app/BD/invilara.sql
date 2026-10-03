@@ -794,7 +794,7 @@ CREATE TABLE `solicitudes` (
   `fecha` datetime NOT NULL,
   `tipo_solicitud` varchar(45) NOT NULL,
   `estatus_solicitud` varchar(15) NOT NULL,
-  `problematica` varchar(255) NOT NULL,
+  `problematica` varchar(512) NOT NULL,
   `persona_id_persona` int NOT NULL,
   `prioridad_id_gestion_prioridad` int NOT NULL,
   `estado` tinyint NOT NULL DEFAULT '1'

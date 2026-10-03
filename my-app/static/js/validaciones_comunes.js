@@ -36,8 +36,8 @@
       const validarSelect = function (select) {
         if (!select || select.disabled) return true;
         const val = (select.value || '').trim();
-        const invalido = val === '' || val === '0' || select.options[0]?.text === 'Seleccione...';
-        const padre = select.closest('.col-md-6, .col-md-4, .col-md-3, .col-12, .mb-3, .row, [class*="col-"]');
+        const opcionActual = select.options[select.selectedIndex];
+        const invalido = val === '' || val === '0' || !opcionActual || opcionActual.value === '';
         if (invalido) {
           select.classList.add(config.claseError);
           select.classList.remove(config.claseOk);

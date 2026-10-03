@@ -1,4 +1,3 @@
-from conexion.conexionBD import connectionBD, connectionBD_seguridad
 from models.base_model import BaseModel
 
 
@@ -7,7 +6,7 @@ class ReportePDFModel(BaseModel):
         pass
 
     def _ejecutar_query(self, query, params=None, db_name=None):
-        conexion = connectionBD_seguridad() if db_name == 'seguridad' else connectionBD()
+        conexion = self.obtener_conexion_seguridad() if db_name == 'seguridad' else self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         try:
             cursor.execute(query, params or ())

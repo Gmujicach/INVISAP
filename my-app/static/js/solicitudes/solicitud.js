@@ -187,6 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tipo === 'Comunidad') {
       const nombre = document.querySelector('input[name="com_nombre"]');
       const muni = document.querySelector('select[name="com_municipio"]');
+      const parroquia = document.querySelector('select[name="com_parroquia"]');
+      const ambito = document.querySelector('input[name="com_ambito"]');
       const sector = document.querySelector('input[name="com_sector"]');
       const ced = document.querySelector('input[name="com_cedula"]');
       const tel = document.querySelector('input[name="com_telefono"]');
@@ -194,6 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!comprobarInput(nombre, v => v.trim().length >= 5, 'Ingrese un nombre válido (mínimo 5 caracteres)')) isValid = false;
       if (!comprobarSelect(muni, 'Seleccione un municipio')) isValid = false;
+      if (!comprobarSelect(parroquia, 'Seleccione una parroquia')) isValid = false;
+      if (!comprobarInput(ambito, v => v.trim().length >= 3, 'Ingrese el ámbito (mínimo 3 caracteres)')) isValid = false;
       if (!comprobarInput(sector, v => v.trim().length >= 3, 'Ingrese el sector (mínimo 3 caracteres)')) isValid = false;
       if (!comprobarCedula(ced)) isValid = false;
       if (!comprobarTelefono(tel)) isValid = false;
@@ -203,6 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tipo === 'Institucion') {
       const nombre = document.querySelector('input[name="inst_nombre"]');
       const muni = document.querySelector('select[name="inst_municipio"]');
+      const parroquia = document.querySelector('select[name="inst_parroquia"]');
+      const direccion = document.querySelector('input[name="inst_direccion"]');
       const correo = document.querySelector('input[name="inst_correo"]');
       const tel = document.querySelector('input[name="inst_telefono"]');
       const dirNombre = document.querySelector('input[name="inst_director_nombre"]');
@@ -210,6 +216,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (!comprobarInput(nombre, v => v.trim().length >= 3, 'Ingrese la razón social (mínimo 3 caracteres)')) isValid = false;
       if (!comprobarSelect(muni, 'Seleccione un municipio')) isValid = false;
+      if (!comprobarSelect(parroquia, 'Seleccione una parroquia')) isValid = false;
+      if (!comprobarInput(direccion, v => v.trim().length >= 10, 'Ingrese la dirección (mínimo 10 caracteres)')) isValid = false;
       if (!comprobarCorreo(correo)) isValid = false;
       if (!comprobarTelefono(tel)) isValid = false;
       if (!comprobarInput(dirNombre, v => regexTexto.test(v.trim()), 'Nombre de representante inválido (solo letras)')) isValid = false;
@@ -219,12 +227,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tipo === 'Particular') {
       const nombre = document.querySelector('input[name="part_nombre"]');
       const apellido = document.querySelector('input[name="part_apellido"]');
+      const muni = document.querySelector('select[name="part_municipio"]');
+      const parroquia = document.querySelector('select[name="part_parroquia"]');
+      const direccion = document.querySelector('textarea[name="part_direccion"]');
       const ced = document.querySelector('input[name="part_cedula"]');
       const correo = document.querySelector('input[name="part_correo"]');
       const tel = document.querySelector('input[name="part_telefono"]');
 
       if (!comprobarInput(nombre, v => regexTexto.test(v.trim()), 'Ingrese el nombre (solo letras)')) isValid = false;
       if (!comprobarInput(apellido, v => regexTexto.test(v.trim()), 'Ingrese el apellido (solo letras)')) isValid = false;
+      if (!comprobarSelect(muni, 'Seleccione un municipio')) isValid = false;
+      if (!comprobarSelect(parroquia, 'Seleccione una parroquia')) isValid = false;
+      if (!comprobarInput(direccion, v => v.trim().length >= 10, 'Ingrese la dirección (mínimo 10 caracteres)')) isValid = false;
       if (!comprobarCedula(ced)) isValid = false;
       if (!comprobarCorreo(correo)) isValid = false;
       if (!comprobarTelefono(tel)) isValid = false;

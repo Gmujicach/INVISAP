@@ -10,7 +10,6 @@ import io
 import unicodedata
 from datetime import datetime
 from PIL import Image
-from conexion.conexionBD import connectionBD_invilara
 from models.base_model import BaseModel
 
 
@@ -40,7 +39,7 @@ class EvidenciaModel(BaseModel):
     def __asegurar_tabla_evidencia(self):
         """Asegura que la tabla evidencia tenga las columnas necesarias."""
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if conn:
                 cur = conn.cursor()
                 try:
@@ -175,7 +174,7 @@ class EvidenciaModel(BaseModel):
         cur = None
         ids_insertados = []
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 raise Exception("Error de conexión a la base de datos. Verifique que MySQL esté activo y la base 'invilara' exista.")
             cur = conn.cursor()
@@ -226,7 +225,7 @@ class EvidenciaModel(BaseModel):
         conn = None
         cur = None
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if not conn:
                 raise Exception("Error de conexión a la base de datos.")
             cur = conn.cursor(dictionary=True)
@@ -261,7 +260,7 @@ class EvidenciaModel(BaseModel):
                 conn.close()
 
     def __eliminar_logico_db(self, id_evidencia):
-        conn = connectionBD_invilara()
+        conn = self.obtener_conexion()
         if not conn:
             raise Exception("Error de conexión a la base de datos.")
         cur = conn.cursor()
@@ -274,7 +273,7 @@ class EvidenciaModel(BaseModel):
             conn.close()
 
     def __obtener_evidencia_por_id_db(self, id_evidencia):
-        conn = connectionBD_invilara()
+        conn = self.obtener_conexion()
         if not conn:
             raise Exception("Error de conexión a la base de datos.")
         cur = conn.cursor(dictionary=True)
@@ -286,7 +285,7 @@ class EvidenciaModel(BaseModel):
             conn.close()
 
     def __obtener_todas_evidencias_db(self, page=None, per_page=None):
-        conn = connectionBD_invilara()
+        conn = self.obtener_conexion()
         if not conn:
             raise Exception("Error de conexión a la base de datos.")
         cur = conn.cursor(dictionary=True)
@@ -304,7 +303,7 @@ class EvidenciaModel(BaseModel):
             conn.close()
 
     def __contar_evidencias_db(self):
-        conn = connectionBD_invilara()
+        conn = self.obtener_conexion()
         if not conn:
             raise Exception("Error de conexión a la base de datos.")
         cur = conn.cursor()
@@ -316,7 +315,7 @@ class EvidenciaModel(BaseModel):
             conn.close()
 
     def __validar_evidencia_activa_db(self, id_evidencia):
-        conn = connectionBD_invilara()
+        conn = self.obtener_conexion()
         if not conn:
             raise Exception("Error de conexión a la base de datos.")
         cur = conn.cursor()

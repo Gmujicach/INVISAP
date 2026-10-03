@@ -1,4 +1,3 @@
-from conexion.conexionBD import connectionBD_invilara
 from models.base_model import BaseModel
 
 
@@ -8,7 +7,7 @@ class GerenciaModel(BaseModel):
 
     def _asegurar_tabla_gerencias(self):
         try:
-            conn = connectionBD_invilara()
+            conn = self.obtener_conexion()
             if conn:
                 cur = conn.cursor()
                 try:
@@ -31,7 +30,7 @@ class GerenciaModel(BaseModel):
     def obtener_todas_las_gerencias(self):
         conexion = None
         try:
-            conexion = connectionBD_invilara()
+            conexion = self.obtener_conexion()
             cursor = conexion.cursor(dictionary=True)
             sql = """
                 SELECT g.*, i.tipo_obras 
@@ -50,7 +49,7 @@ class GerenciaModel(BaseModel):
     def registrar_gerencias(self, datos):
         conexion = None
         try:
-            conexion = connectionBD_invilara()
+            conexion = self.obtener_conexion()
             cursor = conexion.cursor()
             sql = "INSERT INTO gerencias (nombre_gerencia, direccion_gerencia, informe_avance_obra_id_informe) VALUES (%s, %s, %s)"
             valores = (
@@ -70,7 +69,7 @@ class GerenciaModel(BaseModel):
     def obtener_informes_disponibles(self):
         conexion = None
         try:
-            conexion = connectionBD_invilara()
+            conexion = self.obtener_conexion()
             cursor = conexion.cursor(dictionary=True)
             cursor.execute("SELECT id_informe, tipo_informe FROM informe_avance_obra")
             return cursor.fetchall()
@@ -84,7 +83,7 @@ class GerenciaModel(BaseModel):
     def update_gerencia(self, datos):
         conexion = None  # <-- Esto faltaba para evitar errores si falla la conexión
         try:
-            conexion = connectionBD_invilara()
+            conexion = self.obtener_conexion()
             cursor = conexion.cursor()
             sql = """UPDATE gerencias 
                      SET nombre_gerencia = %s, 
@@ -109,7 +108,7 @@ class GerenciaModel(BaseModel):
         # La siguiente línea debe tener 8 espacios de sangría
         conexion = None
         try:
-            conexion = connectionBD_invilara()
+            conexion = self.obtener_conexion()
             cursor = conexion.cursor()
             sql = "DELETE FROM gerencias WHERE id_gerencias = %s"
             cursor.execute(sql, (id_gerencia,))

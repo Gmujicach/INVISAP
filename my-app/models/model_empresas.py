@@ -1,4 +1,3 @@
-from conexion.conexionBD import connectionBD_invilara
 from models.base_model import BaseModel
 
 
@@ -9,7 +8,7 @@ class EmpresaModel(BaseModel):
     def _ejecutar_consulta(self, sql, valores=None, un_solo_registro=False):
         conexion = None
         try:
-            conexion = connectionBD_invilara()
+            conexion = self.obtener_conexion()
             cursor = conexion.cursor(dictionary=True)
             
             if valores:
@@ -28,7 +27,7 @@ class EmpresaModel(BaseModel):
     def _ejecutar_modificacion(self, sql, valores, retornar_rowcount=False):
         conexion = None
         try:
-            conexion = connectionBD_invilara()
+            conexion = self.obtener_conexion()
             cursor = conexion.cursor()
             cursor.execute(sql, valores)
             conexion.commit()

@@ -1,4 +1,3 @@
-from conexion.conexionBD import connectionBD
 from models.base_model import BaseModel
 
 
@@ -7,7 +6,7 @@ class ReporteEstadisticoModel(BaseModel):
         pass
 
     def _ejecutar_query(self, query, params=None):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         try:
             cursor.execute(query, params or ())
@@ -59,7 +58,7 @@ class ReporteEstadisticoModel(BaseModel):
                 params.append(f"%{val}%")
 
     def obtener_estadisticas_solicitudes(self, filtros=None, agrupacion='dia'):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         params = []
         where = ["s.estado = 1", "p.estado = 1"]
@@ -190,7 +189,7 @@ class ReporteEstadisticoModel(BaseModel):
             conexion.close()
 
     def obtener_estadisticas_obras(self, filtros=None, agrupacion='dia'):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         params = []
         where = ["o.activo = 1"]
@@ -322,7 +321,7 @@ class ReporteEstadisticoModel(BaseModel):
             conexion.close()
 
     def obtener_estadisticas_empleados(self, filtros=None, agrupacion='dia'):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         params = []
         where = ["e.estado = 1"]
@@ -401,7 +400,7 @@ class ReporteEstadisticoModel(BaseModel):
             conexion.close()
 
     def obtener_estadisticas_contrataciones(self, filtros=None, agrupacion='dia'):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         params = []
         where = ["c.estado = 1"]
@@ -495,7 +494,7 @@ class ReporteEstadisticoModel(BaseModel):
             conexion.close()
 
     def obtener_estadisticas_publicaciones(self, filtros=None, agrupacion='dia'):
-        conexion = connectionBD()
+        conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         params = []
         where = ["estado = 1"]

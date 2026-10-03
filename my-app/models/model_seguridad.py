@@ -4,10 +4,10 @@ Roles y Permisos en la base de datos `invilara_seguridad`.
 
 Tablas: modulos, roles, roles_permisos.
 Patrón: igual que model_gravedad (encapsulamiento + conexión que se abre/cierra por consulta).
-Conexión: connectionBD_seguridad() (BD de seguridad).
+Conexión: BaseConexionBD.obtener_conexion_seguridad() (BD de seguridad).
 """
 import re
-from conexion.conexionBD import connectionBD_seguridad
+from conexion.base_conexion import BaseConexionBD
 from models.base_model import BaseModel
 
 
@@ -15,7 +15,7 @@ def asegurar_tabla_permisos_usuario():
     """Crea la tabla de excepciones al actualizar una instalación existente."""
     con = cursor = None
     try:
-        con = connectionBD_seguridad()
+        con = BaseConexionBD.obtener_conexion_seguridad()
         cursor = con.cursor()
         cursor.execute("""CREATE TABLE IF NOT EXISTS usuarios_permisos (
             id_usuario_permiso INT NOT NULL AUTO_INCREMENT,
@@ -84,7 +84,7 @@ class ModuloModel(BaseModel):
         self._validar()
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor()
             sql = """INSERT INTO modulos (nombre, descripcion, url, tipo, icono, orden, estado)
                      VALUES (%s, %s, %s, %s, %s, %s, %s)"""
@@ -99,7 +99,7 @@ class ModuloModel(BaseModel):
     def consultar_activos(self):
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             cursor.execute(
                 "SELECT id_modulo, nombre, descripcion, url, tipo, icono, orden, estado "
@@ -112,7 +112,7 @@ class ModuloModel(BaseModel):
     def obtener_por_id(self, id_modulo):
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             cursor.execute(
                 "SELECT id_modulo, nombre, descripcion, url, tipo, icono, orden, estado "
@@ -126,7 +126,7 @@ class ModuloModel(BaseModel):
         self._validar()
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor()
             sql = """UPDATE modulos
                      SET nombre = %s, descripcion = %s, url = %s, tipo = %s,
@@ -145,7 +145,7 @@ class ModuloModel(BaseModel):
         """Borrado lógico (estado = 0)."""
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor()
             cursor.execute("UPDATE modulos SET estado = 0 WHERE id_modulo = %s", (self.__id_modulo,))
             con.commit()
@@ -157,7 +157,7 @@ class ModuloModel(BaseModel):
     def validar_nombre_existente(self, excluir_id=None):
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             if excluir_id:
                 cursor.execute(
@@ -192,7 +192,7 @@ class RolModel(BaseModel):
         self._validar()
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor()
             cursor.execute(
                 "INSERT INTO roles (nombre, descripcion, estado) VALUES (%s, %s, %s)",
@@ -206,7 +206,7 @@ class RolModel(BaseModel):
     def consultar_activos(self):
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             cursor.execute(
                 "SELECT id_rol, nombre, descripcion, estado FROM roles "
@@ -219,7 +219,7 @@ class RolModel(BaseModel):
     def obtener_por_id(self, id_rol):
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             cursor.execute(
                 "SELECT id_rol, nombre, descripcion, estado FROM roles WHERE id_rol = %s",
@@ -233,7 +233,7 @@ class RolModel(BaseModel):
         self._validar()
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor()
             cursor.execute(
                 "UPDATE roles SET nombre = %s, descripcion = %s, estado = %s WHERE id_rol = %s",
@@ -247,7 +247,7 @@ class RolModel(BaseModel):
     def eliminar(self):
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor()
             cursor.execute("UPDATE roles SET estado = 0 WHERE id_rol = %s", (self.__id_rol,))
             con.commit()
@@ -259,7 +259,7 @@ class RolModel(BaseModel):
     def validar_nombre_existente(self, excluir_id=None):
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             if excluir_id:
                 cursor.execute(
@@ -277,7 +277,7 @@ class RolModel(BaseModel):
     def existe_super_usuario_activo(self, excluir_id=None):
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             if excluir_id:
                 cursor.execute(
@@ -295,7 +295,7 @@ class RolModel(BaseModel):
     def obtener_super_usuario_id(self):
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             cursor.execute(
                 "SELECT id_rol FROM roles WHERE nombre = %s AND estado = 1 LIMIT 1",
@@ -309,7 +309,7 @@ class RolModel(BaseModel):
     def obtener_usuarios_por_rol(self):
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             sql = """
                 SELECT id_usuarios, nombre, correo, cedula_usuario, rol, avatar, estado
@@ -332,7 +332,7 @@ class RolPermisoModel(BaseModel):
         puede_ver, puede_crear, puede_editar, puede_eliminar}."""
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             sql = """
                 SELECT m.id_modulo, m.nombre, m.url, m.tipo, m.icono,
@@ -356,7 +356,7 @@ class RolPermisoModel(BaseModel):
         """Retorna una lista de nombres de módulos que el rol puede ver."""
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             sql = """
                 SELECT DISTINCT m.nombre
@@ -379,7 +379,7 @@ class RolPermisoModel(BaseModel):
         """Obtiene el permiso efectivo de un usuario sobre un módulo."""
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             cursor.execute(
                 """SELECT rp.puede_ver, rp.puede_crear, rp.puede_editar, rp.puede_eliminar,
@@ -406,7 +406,7 @@ class RolPermisoModel(BaseModel):
         """Retorna las excepciones de permisos asignadas directamente a un usuario."""
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor(dictionary=True)
             cursor.execute(
                 """SELECT m.nombre, up.id_modulo, up.puede_ver,
@@ -425,7 +425,7 @@ class RolPermisoModel(BaseModel):
         """Reemplaza las excepciones directas de un usuario en una transacción."""
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor()
             cursor.execute(
                 "UPDATE usuarios_permisos SET estado = 0 WHERE id_usuario = %s",
@@ -464,7 +464,7 @@ class RolPermisoModel(BaseModel):
         """
         con = cursor = None
         try:
-            con = connectionBD_seguridad()
+            con = self.obtener_conexion_seguridad()
             cursor = con.cursor()
             cursor.execute(
                 "UPDATE roles_permisos SET estado = 0 WHERE id_rol = %s", (id_rol,))

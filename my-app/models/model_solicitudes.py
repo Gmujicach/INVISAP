@@ -4,7 +4,7 @@ Refactorizado con encapsulamiento, getters/setters y validaciones Regex.
 """
 import re
 from datetime import datetime
-from conexion.conexionBD import connectionBD_invilara
+from conexion.base_conexion import BaseConexionBD
 from models.base_model import BaseModel
 
 
@@ -28,6 +28,11 @@ class SolicitudModel(BaseModel):
         'Salud y Asistencia Médica', 'Educación y Deporte',
         'Seguridad Ciudadana', 'Vivienda', 'Otros'
     }
+
+    # Límite de caracteres de la columna `solicitudes.problematica`, contando
+    # el prefijo "[Categoría] " que se antepone al texto del solicitante.
+    LIMITE_PROBLEMATICA = 512
+    _columna_problematica_verificada = False
 
     def __init__(self, id_solicitudes=None):
         self._id_solicitudes = id_solicitudes
@@ -63,21 +68,25 @@ class SolicitudModel(BaseModel):
         return self._problematica
 
     def set_problematica(self, valor, tipo_problematica=None):
-        problematica_libre = self._limpiar(valor, 500)
         tipo_prob = self._limpiar(tipo_problematica, 50) if tipo_problematica else ""
 
         if tipo_prob and tipo_prob not in self.TIPOS_PROBLEMATICA_VALIDOS:
             raise ValueError(f"Categoría de problemática '{tipo_prob}' inválida.")
 
-        problematica_final = problematica_libre
-        if tipo_prob and problematica_libre:
-            problematica_final = f"[{tipo_prob}] {problematica_libre}"
-        elif tipo_prob:
-            problematica_final = tipo_prob
+        prefijo = f"[{tipo_prob}] " if tipo_prob else ""
+        # El texto libre se recorta para que prefijo + descripción nunca
+        # superen el tamaño real de la columna en la base de datos.
+        limite_texto = max(15, self.LIMITE_PROBLEMATICA - len(prefijo))
+        problematica_libre = self._limpiar(valor, limite_texto)
+
+        if not problematica_libre and not tipo_prob:
+            raise ValueError("Debe describir la problemática de la solicitud.")
+
+        problematica_final = f"{prefijo}{problematica_libre}".strip()
 
         if not self._RE_PROBLEMATICA.match(problematica_final) and len(problematica_final.strip()) < 15:
             raise ValueError("La problemática debe tener al menos 15 caracteres válidos y evitar inyecciones.")
-        self._problematica = problematica_final
+        self._problematica = problematica_final[:self.LIMITE_PROBLEMATICA]
 
     def get_fecha(self):
         return self._fecha
@@ -160,7 +169,7 @@ class SolicitudModel(BaseModel):
     # --- MÉTODOS PRIVADOS (Base de Datos) ---
     @staticmethod
     def _con():
-        return connectionBD_invilara()
+        return BaseConexionBD.obtener_conexion()
 
     @staticmethod
     def _cerrar(conn, cursor):
@@ -288,6 +297,43 @@ class SolicitudModel(BaseModel):
         )
         return cursor.lastrowid
 
+    @staticmethod
+    def _asegurar_columna_problematica(conn):
+        """Amplía `solicitudes.problematica` si el esquema es menor que el límite del modelo.
+
+        Evita el error MySQL 1406 (Data too long) cuando el prefijo de categoría
+        y la descripción supera el VARCHAR definido en instalaciones antiguas.
+        """
+        if SolicitudModel._columna_problematica_verificada:
+            return
+        cursor = None
+        try:
+            cursor = conn.cursor()
+            cursor.execute("SHOW COLUMNS FROM solicitudes LIKE 'problematica'")
+            columna = cursor.fetchone()
+            if isinstance(columna, dict):
+                tipo = str(columna.get('Type') or columna.get('type') or '').lower()
+            elif columna:
+                tipo = str(columna[1]).lower()
+            else:
+                tipo = ''
+            if tipo:
+                match = re.search(r'\((\d+)\)', tipo)
+                longitud = int(match.group(1)) if match else 0
+                if not tipo.startswith('text') and longitud < SolicitudModel.LIMITE_PROBLEMATICA:
+                    cursor.execute(
+                        f"ALTER TABLE solicitudes MODIFY COLUMN problematica "
+                        f"VARCHAR({SolicitudModel.LIMITE_PROBLEMATICA}) NOT NULL"
+                    )
+                    conn.commit()
+                    print(f"[SolicitudModel] Columna solicitudes.problematica ampliada a VARCHAR({SolicitudModel.LIMITE_PROBLEMATICA}).")
+            SolicitudModel._columna_problematica_verificada = True
+        except Exception as e:
+            print(f"[SolicitudModel] No se pudo verificar solicitudes.problematica: {e}")
+        finally:
+            if cursor:
+                cursor.close()
+
     # --- MÉTODOS PÚBLICOS (API del Modelo) ---
     def guardar(self) -> int | bool:
         """Guarda la nueva solicitud usando los atributos instanciados."""
@@ -298,6 +344,7 @@ class SolicitudModel(BaseModel):
         try:
             conn = self._con()
             if not conn: return False
+            self._asegurar_columna_problematica(conn)
             cursor = conn.cursor(dictionary=True)
 
             persona_id = self._sql_buscar_persona(cursor, self._solicitante_data['cedula_persona'])
@@ -338,12 +385,14 @@ class SolicitudModel(BaseModel):
         try:
             conn = self._con()
             if not conn: return False
+            self._asegurar_columna_problematica(conn)
             cursor = conn.cursor()
             sql = "UPDATE solicitudes SET estatus_solicitud = %s, problematica = %s WHERE id_solicitudes = %s"
             cursor.execute(sql, (self._estatus_solicitud, self._problematica, self._id_solicitudes))
             conn.commit()
             return cursor.rowcount > 0
-        except Exception:
+        except Exception as e:
+            print(f"Error actualizar: {e}")
             if conn: conn.rollback()
             return False
         finally:
