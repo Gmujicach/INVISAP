@@ -126,6 +126,7 @@ SESSION_COOKIE_SECURE=false
 ```
 
 Genera valores propios para las claves y completa `MAIL_USERNAME` y `MAIL_PASSWORD` si vas a utilizar el envío de correos. No publiques credenciales reales ni secretos en el repositorio.
+Si modificas `my-app/.env` mientras la aplicación está ejecutándose, detén y vuelve a iniciar `python run.py` para que Flask cargue los nuevos valores.
 
 ### 6. Iniciar la aplicación
 

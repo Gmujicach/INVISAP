@@ -1,5 +1,5 @@
 ﻿{% extends 'base_cpanel.html' %}
-{% block title %}Invilara | GestiÃ³n de Proyectos{% endblock %}
+{% block title %}Invilara | Gestión de Proyectos{% endblock %}
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename ='assets/css/file.css') }}" />
 {% endblock %}
@@ -27,7 +27,7 @@
   <div class="card-header bg-white border-bottom py-3">
     <div class="row align-items-center">
       <div class="col-md-6 text-start">
-        <h5 class="mb-0 text-primary fw-bold">GESTIÃ“N DE PROYECTOS</h5>
+        <h5 class="mb-0 text-primary fw-bold">GESTIÓN DE PROYECTOS</h5>
       </div>
       <div class="col-md-6 text-end">
         <button class="btn btn-primary btn-sm px-3" type="button" data-bs-toggle="modal" data-bs-target="#modalRegistrarProyecto">
@@ -43,12 +43,12 @@
         <thead class="table-light">
           <tr>
             <th>#</th>
-            <th>CÃ³digo</th>
+            <th>Código</th>
             <th>Fecha Planif.</th>
             <th>Solicitante</th>
-            <th>DescripciÃ³n TÃ©cnica</th>
-            <th>Computos Metricos</th>
-            <th>ProblemÃ¡tica</th>
+            <th>Descripción Técnica</th>
+            <th>Computos Métricos</th>
+            <th>Problemática</th>
             <th>Maquinaria</th>
             <th>Proyectista</th>
             <th>Est. Costo</th>
@@ -190,7 +190,7 @@
               <div id="computos_metricos_container">
                 <div class="computos_metrico_item input-group shadow-sm mb-2" data-index="0">
                   <select class="form-select computos_metrica" name="computos_metrica_0" style="max-width: 120px;" required>
-                    <option value="" selected disabled>MÃ©trica</option>
+                    <option value="" selected disabled>Métrica</option>
                     <option value="m2">m2</option>
                     <option value="m3">m3</option>
                     <option value="ml">ml</option>
@@ -207,16 +207,16 @@
               </div>
               <datalist id="opciones_computos_list"></datalist>
               <input type="hidden" name="computos_p" id="computos_p" />
-              <small class="text-muted">Puede escribir una opciÃ³n nueva directamente en el campo.</small>
+              <small class="text-muted">Puede escribir una opción nueva directamente en el campo.</small>
               <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="btnAgregarComputo">
-                <i class="bx bx-plus me-1"></i> AÃ±adir
+                <i class="bx bx-plus me-1"></i> Añadir
               </button>
             </div>
           </div>
 
           <div class="row mb-3">
             <div class="col-md-6">
-              <label for="estimacion_p" class="form-label fw-semibold text-secondary">EstimaciÃ³n de Costo</label>
+              <label for="estimacion_p" class="form-label fw-semibold text-secondary">Estimación de Costo</label>
               <div class="input-group shadow-sm">
                 <select class="form-select" name="moneda_p" id="moneda_p" style="max-width: 85px;" required>
                   <option value="BS" selected>BS</option>
@@ -241,7 +241,7 @@
                 </div>
               </div>
               <button type="button" class="btn btn-outline-primary btn-sm mt-2" id="btnAgregarMaquinaria">
-                <i class="bx bx-plus me-1"></i> AÃ±adir Maquinaria
+                <i class="bx bx-plus me-1"></i> Añadir Maquinaria
               </button>
             </div>
           </div>
@@ -252,10 +252,10 @@
                 <select class="form-select shadow-sm" name="proyectista_p" id="proyectista_p">
                   <option value="" selected disabled>Cargando proyectistas...</option>
                 </select>
-                <small class="text-muted">Empleados con cargo "Proyectista" del mÃ³dulo de personal.</small>
+                <small class="text-muted">Empleados con cargo "Proyectista" del módulo de personal.</small>
               </div>
               <div class="col-md-6">
-                <label for="Codigo_p" class="form-label fw-semibold text-secondary">CÃ³digo del Proyecto</label>
+                <label for="Codigo_p" class="form-label fw-semibold text-secondary">Código del Proyecto</label>
                 <input type="text" class="form-control shadow-sm" name="Codigo_p" id="Codigo_p" maxlength="15" placeholder="Ej: PRY-001" required />
               </div>
             </div>
@@ -297,14 +297,14 @@
                 <th>Solicitante</th>
                 <th>Tipo Solicitud</th>
                 <th>Estatus</th>
-                <th>ProblemÃ¡tica</th>
+                <th>Problemática</th>
                 <th>Fecha</th>
-                <th>AcciÃ³n</th>
+                <th>Acción</th>
               </tr>
             </thead>
             <tbody id="tablaSolicitudesCuerpo">
               <tr>
-                <td colspan="7" class="text-center text-muted py-4">Presione el botÃ³n para consultar datos...</td>
+                <td colspan="7" class="text-center text-muted py-4">Presione el botón para consultar datos...</td>
               </tr>
             </tbody>
           </table>
@@ -335,27 +335,27 @@
             <p class="mb-1"><strong>Tipo de Solicitud:</strong> <span id="det_tipo"></span></p>
           </div>
             <div class="col-md-6">
-              <p class="mb-1"><strong>Fecha PlanificaciÃ³n:</strong> <span id="det_fecha"></span></p>
+              <p class="mb-1"><strong>Fecha Planificación:</strong> <span id="det_fecha"></span></p>
               <p class="mb-1"><strong>Maquinaria:</strong> <span id="det_maquinaria"></span></p>
               <p class="mb-1"><strong>Proyectista:</strong> <span id="det_proyectista"></span></p>
             </div>
         </div>
         <hr class="my-3">
         <div class="mb-3">
-          <p class="mb-1 fw-bold text-secondary">ProblemÃ¡tica de la Solicitud:</p>
+          <p class="mb-1 fw-bold text-secondary">Problemática de la Solicitud:</p>
           <div class="p-2 bg-light border rounded"><span id="det_problematica"></span></div>
         </div>
         <div class="mb-3">
-          <p class="mb-1 fw-bold text-secondary">DescripciÃ³n TÃ©cnica:</p>
+          <p class="mb-1 fw-bold text-secondary">Descripción Técnica:</p>
           <div class="p-2 bg-light border rounded"><span id="det_descripcion"></span></div>
         </div>
           <div class="row mb-3">
             <div class="col-md-6">
-              <p class="mb-1"><strong>CÃ³mputos MÃ©tricos:</strong></p>
+              <p class="mb-1"><strong>Cómputos Métricos:</strong></p>
               <div id="det_computos_list" style="max-height: 150px; overflow-y: auto;"></div>
             </div>
             <div class="col-md-6">
-              <p class="mb-1"><strong>EstimaciÃ³n de Costo:</strong> <span class="text-success fw-bold" id="det_costo"></span></p>
+              <p class="mb-1"><strong>Estimación de Costo:</strong> <span class="text-success fw-bold" id="det_costo"></span></p>
             </div>
           </div>
       </div>
@@ -404,7 +404,7 @@
       div.setAttribute('data-index', index);
       div.innerHTML = `
         <select class="form-select computos_metrica" name="computos_metrica_${index}" style="max-width: 120px;" required>
-          <option value="" selected disabled>MÃ©trica</option>
+          <option value="" selected disabled>Métrica</option>
           <option value="m2">m2</option>
           <option value="m3">m3</option>
           <option value="ml">ml</option>
@@ -551,7 +551,7 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
             </td>
         </tr>`;
 
-    // Realizamos la peticiÃ³n a tu endpoint de Flask
+    // Realizamos la petición a tu endpoint de Flask
     fetch("{{ url_for('home_bp.api_obtener_solicitudes_pendientes_json') }}")
         .then(response => {
             if (!response.ok) throw new Error('Error en la respuesta del servidor');
@@ -625,7 +625,7 @@ document.getElementById('btnCargarSolicitudes').addEventListener('click', functi
         });
 });
 
-// 3. FunciÃ³n limpia para alternar modales sin romper el DOM ni congelar los inputs
+// 3. Función limpia para alternar modales sin romper el DOM ni congelar los inputs
 function seleccionarSolicitud(id, solicitante, tipo, problematica) {
     document.getElementById('solicitud_id_p').value = id;
     document.getElementById('solicitante_p').value = solicitante;
@@ -645,7 +645,7 @@ function seleccionarSolicitud(id, solicitante, tipo, problematica) {
     });
 }
 
-// 5. Cargar empleados con cargo "Proyectista" desde el mÃ³dulo de empleados
+// 5. Cargar empleados con cargo "Proyectista" desde el módulo de empleados
 const modalRegistrarProyecto = document.getElementById('modalRegistrarProyecto');
 if (modalRegistrarProyecto && typeof cargarEmpleadosPorCargo === 'function') {
     modalRegistrarProyecto.addEventListener('shown.bs.modal', function () {
