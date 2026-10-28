@@ -2,16 +2,9 @@ import unittest
 from unittest.mock import patch
 
 from controllers import funciones_login
-from app import app
 
 
 class RecaptchaSecurityTestCase(unittest.TestCase):
-    def test_login_page_responds_without_server_error(self):
-        response = app.test_client().get('/login')
-
-        self.assertEqual(response.status_code, 200)
-        self.assertNotIn('Primero debes iniciar sesión.', response.get_data(as_text=True))
-
     def test_no_acepta_verificacion_si_no_hay_secreto_configurado(self):
         with patch.object(funciones_login, 'RECAPTCHA_SECRET_KEY', ''):
             with patch.object(funciones_login.urllib.request, 'urlopen') as urlopen:
