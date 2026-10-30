@@ -17,8 +17,9 @@ python -m pytest
 - `smoke`: comprobaciones rápidas de que una parte esencial de la aplicación
   responde.
 - `ui`: pruebas del navegador con Playwright.
-- `performance`: reservado para pruebas de carga con Locust. Locust es una
-  herramienta aparte y estas pruebas no se ejecutan con pytest.
+- `performance`: escenarios de carga con Locust por módulo; se ejecutan con
+  su ejecutor, no con pytest, y registran resultados en el complemento del
+  Capítulo IV.
 - `acceptance`: reservado para recorridos completos según criterios de
   aceptación definidos por el negocio.
 
@@ -31,6 +32,15 @@ python -m pytest tests\api
 python -m pytest tests\smoke
 python -m pytest tests\ui
 ```
+
+Las pruebas de rendimiento se ejecutan con Locust, no con pytest:
+
+```powershell
+python tests\performance\run_performance.py --all --profile quick
+```
+
+Consulta [tests/performance/README.md](performance/README.md) para comandos por
+módulo, configuración de sesión y perfiles de carga.
 
 ## Pruebas de backend/API
 
@@ -161,9 +171,10 @@ Comando individual de cada módulo:
 | Administración de Respaldos | `python -m pytest tests\smoke\test_humo_administracion_respaldos.py` |
 | Bitácora | `python -m pytest tests\smoke\test_humo_bitacora.py` |
 
-`tests\performance` y `tests\acceptance` documentan categorías que todavía
-necesitan escenarios ejecutables. No son pruebas aprobadas mientras no haya
-casos implementados en esas carpetas.
+`tests\acceptance` todavía requiere recorridos ejecutables con criterios
+definidos por el negocio. Las pruebas de `tests\performance` se ejecutan con
+Locust; sus resultados solo se consideran evidencia cuando se ejecutan contra
+el servidor de pruebas y se revisa la bitácora.
 
 ## Prueba de interfaz con Playwright
 

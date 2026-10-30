@@ -9,3 +9,4 @@ __pycache__/
 instance/
 .playwright/
 node_modules/
+tests/performance/results/
