@@ -59,6 +59,54 @@ INTEGRATION_MODULES = {
     'test_integracion_bitacora.py': 'Bitácora',
 }
 
+SMOKE_MODULES = {
+    'test_humo_solicitudes.py': 'Solicitudes',
+    'test_humo_gravedad_obra.py': 'Gravedad de Obra',
+    'test_humo_prioridad.py': 'Prioridad',
+    'test_humo_proyectos.py': 'Proyectos',
+    'test_humo_maquinaria.py': 'Maquinaria',
+    'test_humo_contratacion.py': 'Contratación',
+    'test_humo_empresa.py': 'Empresa',
+    'test_humo_obras.py': 'Obras',
+    'test_humo_empleados.py': 'Empleados',
+    'test_humo_inspecciones.py': 'Inspecciones',
+    'test_humo_evidencias.py': 'Evidencias',
+    'test_humo_informe_avance.py': 'Informe de Avance de Obra',
+    'test_humo_publicaciones.py': 'Publicaciones',
+    'test_humo_reportes_pdf.py': 'Reportes PDF',
+    'test_humo_reportes_excel.py': 'Reportes Excel',
+    'test_humo_reportes_estadisticos.py': 'Reportes Estadísticos',
+    'test_humo_usuarios.py': 'Usuarios',
+    'test_humo_permisos_por_rol.py': 'Permisos por Rol',
+    'test_humo_administracion_respaldos.py': 'Administración de Respaldos',
+    'test_humo_bitacora.py': 'Bitácora',
+    'test_login_smoke.py': 'Acceso de INVISAP',
+}
+
+API_MODULES = {
+    'test_api_solicitudes.py': ('Solicitudes', 'JSON autenticado y control de sesión'),
+    'test_api_gravedad_obra.py': ('Gravedad de Obra', 'JSON autenticado y listado'),
+    'test_api_prioridad.py': ('Prioridad', 'paginación y propagación de filtros'),
+    'test_api_proyectos.py': ('Proyectos', 'validación de código y parámetro consultado'),
+    'test_api_maquinaria.py': ('Maquinaria', 'paginación y respuesta JSON'),
+    'test_api_contratacion.py': ('Contratación', 'listado JSON de empresas y sesión'),
+    'test_api_empresa.py': ('Empresa', 'consulta por RIF y respuestas 401/404/200'),
+    'test_api_obras.py': ('Obras', 'listado JSON de estados y sesión'),
+    'test_api_empleados.py': ('Empleados', 'paginación, conteo y respuesta JSON'),
+    'test_api_inspecciones.py': ('Inspecciones', 'listado JSON de inspectores y sesión'),
+    'test_api_evidencias.py': ('Evidencias', 'validación JSON de existencia por ID'),
+    'test_api_informe_avance.py': ('Informe de Avance de Obra', 'listado JSON y control de sesión'),
+    'test_api_publicaciones.py': ('Publicaciones', 'validación JSON del informe asociado'),
+    'test_api_reportes_pdf.py': ('Reportes PDF', 'autenticación y módulo no válido'),
+    'test_api_reportes_excel.py': ('Reportes Excel', 'autenticación y módulo no válido'),
+    'test_api_reportes_estadisticos.py': ('Reportes Estadísticos', 'filtros y agrupación JSON'),
+    'test_api_usuarios.py': ('Usuarios', 'autenticación, permiso y usuario inexistente'),
+    'test_api_permisos_por_rol.py': ('Permisos por Rol', 'autenticación, autorización y consulta por rol'),
+    'test_api_administracion_respaldos.py': ('Administración de Respaldos', 'autenticación y listado JSON'),
+    'test_api_bitacora.py': ('Bitácora', 'autenticación, filtros y paginación JSON'),
+    'test_parametrizacion_reportes.py': ('Reportes PDF y Excel', 'propagación de filtros de formularios'),
+}
+
 TEST_DESCRIPTIONS = {
     'test_limpia_nombre_de_archivo_de_respaldo': 'limpieza segura del nombre del archivo de respaldo',
     'test_formatea_tamano_de_respaldo': 'conversión del tamaño del respaldo a unidades legibles',
@@ -132,6 +180,8 @@ def _describe_test(item):
 
 _unit_results = defaultdict(list)
 _integration_results = defaultdict(list)
+_smoke_results = defaultdict(list)
+_api_results = defaultdict(list)
 
 
 def _integration_module(item):
@@ -140,6 +190,22 @@ def _integration_module(item):
         return None
     filename = normalized_nodeid.split('/')[-1].split('::')[0]
     return INTEGRATION_MODULES.get(filename)
+
+
+def _smoke_module(item):
+    normalized_nodeid = item.nodeid.replace('\\', '/')
+    if 'tests/smoke/' not in normalized_nodeid:
+        return None
+    filename = normalized_nodeid.split('/')[-1].split('::')[0]
+    return SMOKE_MODULES.get(filename)
+
+
+def _api_module(item):
+    normalized_nodeid = item.nodeid.replace('\\', '/')
+    if 'tests/api/' not in normalized_nodeid:
+        return None
+    filename = normalized_nodeid.split('/')[-1].split('::')[0]
+    return API_MODULES.get(filename)
 
 
 @pytest.hookimpl(tryfirst=True)
@@ -159,6 +225,42 @@ def pytest_runtest_setup(item):
             'comprobando la ruta Flask, el endpoint, el método HTTP '
             'y la generación de URL.'
         )
+        return
+
+    module = _smoke_module(item)
+    if module:
+        filename = item.nodeid.replace('\\', '/').split('/')[-1].split('::')[0]
+        if filename == 'test_login_smoke.py':
+            print(
+                f'\n[PRUEBA DE HUMO] {module}: '
+                'solicitando GET /login y comprobando HTTP 200 '
+                'y ausencia de aviso de sesión incorrecto.'
+            )
+        else:
+            from tests.smoke.smoke_routes import SMOKE_ROUTES
+
+            case = next(
+                (
+                    route for route in SMOKE_ROUTES.values()
+                    if route['name'] == module
+                ),
+                None,
+            )
+            if case:
+                print(
+                    f"\n[PRUEBA DE HUMO] {module}: "
+                    f"solicitando GET {case['path']} y comprobando "
+                    'que no responda HTTP 404 ni 500.'
+                )
+        return
+
+    api_case = _api_module(item)
+    if api_case:
+        module, description = api_case
+        print(
+            f'\n[PRUEBA DE BACKEND/API] {module}: '
+            f'comprobando {description}.'
+        )
 
 
 def pytest_runtest_logreport(report):
@@ -171,7 +273,7 @@ def pytest_runtest_logreport(report):
             'failed': 'FALLIDA',
             'skipped': 'OMITIDA',
         }.get(report.outcome, report.outcome.upper())
-        if '/tests/unit/' in nodeid:
+        if 'tests/unit/' in nodeid:
             filename = nodeid.split('/')[-1].split('::')[0]
             module = UNIT_MODULES.get(filename)
             if module:
@@ -189,6 +291,25 @@ def pytest_runtest_logreport(report):
                     f'\nConcluyó prueba de {module} — '
                     f'Tipo: Prueba de integración — Resultado: {outcome}.'
                 )
+        elif 'tests/smoke/' in nodeid:
+            filename = nodeid.split('/')[-1].split('::')[0]
+            module = SMOKE_MODULES.get(filename)
+            if module:
+                _smoke_results[module].append(report.outcome)
+                print(
+                    f'\nConcluyó prueba de {module} — '
+                    f'Tipo: Prueba de humo (smoke) — Resultado: {outcome}.'
+                )
+        elif 'tests/api/' in nodeid:
+            filename = nodeid.split('/')[-1].split('::')[0]
+            api_case = API_MODULES.get(filename)
+            if api_case:
+                module, _ = api_case
+                _api_results[module].append(report.outcome)
+                print(
+                    f'\nConcluyó prueba de {module} — '
+                    f'Tipo: Prueba de backend (API) — Resultado: {outcome}.'
+                )
 
 
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
@@ -198,6 +319,16 @@ def pytest_terminal_summary(terminalreporter, exitstatus, config):
             _integration_results,
             'RESUMEN DE PRUEBAS DE INTEGRACIÓN POR MÓDULO',
             'Prueba de integración',
+        ),
+        (
+            _smoke_results,
+            'RESUMEN DE PRUEBAS DE HUMO POR MÓDULO',
+            'Prueba de humo (smoke)',
+        ),
+        (
+            _api_results,
+            'RESUMEN DE PRUEBAS DE BACKEND/API POR MÓDULO',
+            'Prueba de backend (API)',
         ),
     ):
         if not results:
@@ -223,6 +354,15 @@ def app():
 @pytest.fixture
 def client(app):
     return app.test_client()
+
+
+@pytest.fixture
+def api_client(app, authenticated_permissions):
+    test_client = app.test_client()
+    with test_client.session_transaction() as session:
+        session['conectado'] = True
+        session['name_surname'] = 'Usuario de pruebas API'
+    return test_client
 
 
 @pytest.fixture
