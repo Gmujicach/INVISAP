@@ -11,8 +11,8 @@ python -m pytest
 ## Carpetas
 
 - `unit`: validaciones y lógica de un módulo aislado.
-- `integration`: colaboración entre componentes, como rutas, controladores,
-  modelos y bitácora.
+- `integration`: contratos de rutas Flask por módulo; también contiene una
+  prueba de flujo de contratación y bitácora.
 - `api`: pruebas de endpoints HTTP del backend.
 - `smoke`: comprobaciones rápidas de que una parte esencial de la aplicación
   responde.
@@ -39,6 +39,31 @@ python -m pytest tests\unit\test_gravedad_obra.py
 python -m pytest tests\unit\test_prioridad.py
 python -m pytest tests\unit\test_proyectos.py
 ```
+
+## Pruebas de integración
+
+Cada uno de los 20 módulos tiene un archivo en `tests\integration`. Estos
+casos comprueban la integración de enrutamiento Flask: la regla, el endpoint,
+el método HTTP permitido y la generación de la URL. No ejecutan una petición
+ni sustituyen pruebas que integren el controlador, el modelo y una base de
+datos real.
+
+Ejecuta un módulo:
+
+```powershell
+python -m pytest tests\integration\test_integracion_gravedad_obra.py
+python -m pytest tests\integration\test_integracion_prioridad.py
+python -m pytest tests\integration\test_integracion_solicitudes.py
+```
+
+Para escanear los 20 módulos de integración en una sola ejecución:
+
+```powershell
+python tests\integration\run_all_integration.py
+```
+
+El resumen de consola identifica cada módulo y muestra cuántas pruebas de
+integración pasaron o fallaron.
 
 `tests\performance` y `tests\acceptance` documentan categorías que todavía
 necesitan escenarios ejecutables. No son pruebas aprobadas mientras no haya

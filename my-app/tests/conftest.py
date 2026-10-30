@@ -36,6 +36,29 @@ UNIT_MODULES = {
     'test_sql_filter_allowlists.py': 'Filtros SQL de Reportes',
 }
 
+INTEGRATION_MODULES = {
+    'test_integracion_solicitudes.py': 'Solicitudes',
+    'test_integracion_gravedad_obra.py': 'Gravedad de Obra',
+    'test_integracion_prioridad.py': 'Prioridad',
+    'test_integracion_proyectos.py': 'Proyectos',
+    'test_integracion_maquinaria.py': 'Maquinaria',
+    'test_integracion_contratacion.py': 'Contratación',
+    'test_integracion_empresa.py': 'Empresa',
+    'test_integracion_obras.py': 'Obras',
+    'test_integracion_empleados.py': 'Empleados',
+    'test_integracion_inspecciones.py': 'Inspecciones',
+    'test_integracion_evidencias.py': 'Evidencias',
+    'test_integracion_informe_avance.py': 'Informe de Avance de Obra',
+    'test_integracion_publicaciones.py': 'Publicaciones',
+    'test_integracion_reportes_pdf.py': 'Reportes PDF',
+    'test_integracion_reportes_excel.py': 'Reportes Excel',
+    'test_integracion_reportes_estadisticos.py': 'Reportes Estadísticos',
+    'test_integracion_usuarios.py': 'Usuarios',
+    'test_integracion_permisos_por_rol.py': 'Permisos por Rol',
+    'test_integracion_administracion_respaldos.py': 'Administración de Respaldos',
+    'test_integracion_bitacora.py': 'Bitácora',
+}
+
 TEST_DESCRIPTIONS = {
     'test_limpia_nombre_de_archivo_de_respaldo': 'limpieza segura del nombre del archivo de respaldo',
     'test_formatea_tamano_de_respaldo': 'conversión del tamaño del respaldo a unidades legibles',
@@ -107,6 +130,18 @@ def _describe_test(item):
     return readable
 
 
+_unit_results = defaultdict(list)
+_integration_results = defaultdict(list)
+
+
+def _integration_module(item):
+    normalized_nodeid = item.nodeid.replace('\\', '/')
+    if 'tests/integration/' not in normalized_nodeid:
+        return None
+    filename = normalized_nodeid.split('/')[-1].split('::')[0]
+    return INTEGRATION_MODULES.get(filename)
+
+
 @pytest.hookimpl(tryfirst=True)
 def pytest_runtest_setup(item):
     module = _unit_module(item)
@@ -115,49 +150,68 @@ def pytest_runtest_setup(item):
             f'\n[PRUEBA UNITARIA] {module}: '
             f'{_describe_test(item)}.'
         )
+        return
 
-
-_unit_results = defaultdict(list)
+    module = _integration_module(item)
+    if module:
+        print(
+            f'\n[PRUEBA DE INTEGRACIÓN] {module}: '
+            'comprobando la ruta Flask, el endpoint, el método HTTP '
+            'y la generación de URL.'
+        )
 
 
 def pytest_runtest_logreport(report):
     nodeid = report.nodeid.replace('\\', '/')
-    if 'tests/unit/' not in nodeid:
-        return
-    filename = nodeid.split('/')[-1].split('::')[0]
-    module = UNIT_MODULES.get(filename)
-    if not module:
-        return
-
     if report.when == 'call' or (
         report.when == 'setup' and (report.failed or report.skipped)
     ):
-        _unit_results[module].append(report.outcome)
         outcome = {
             'passed': 'APROBADA',
             'failed': 'FALLIDA',
             'skipped': 'OMITIDA',
         }.get(report.outcome, report.outcome.upper())
-        print(
-            f'\nConcluyó prueba de {module} — '
-            f'Tipo: Prueba unitaria — Resultado: {outcome}.'
-        )
+        if '/tests/unit/' in nodeid:
+            filename = nodeid.split('/')[-1].split('::')[0]
+            module = UNIT_MODULES.get(filename)
+            if module:
+                _unit_results[module].append(report.outcome)
+                print(
+                    f'\nConcluyó prueba de {module} — '
+                    f'Tipo: Prueba unitaria — Resultado: {outcome}.'
+                )
+        elif 'tests/integration/' in nodeid:
+            filename = nodeid.split('/')[-1].split('::')[0]
+            module = INTEGRATION_MODULES.get(filename)
+            if module:
+                _integration_results[module].append(report.outcome)
+                print(
+                    f'\nConcluyó prueba de {module} — '
+                    f'Tipo: Prueba de integración — Resultado: {outcome}.'
+                )
 
 
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
-    if not _unit_results:
-        return
-
-    terminalreporter.write_sep('=', 'RESUMEN DE PRUEBAS UNITARIAS POR MÓDULO')
-    for module, outcomes in _unit_results.items():
-        failed = outcomes.count('failed')
-        skipped = outcomes.count('skipped')
-        passed = outcomes.count('passed')
-        result = 'APROBADA' if not failed and not skipped else 'REVISAR'
-        terminalreporter.write_line(
-            f'Concluyó prueba de {module} — Tipo: Prueba unitaria — '
-            f'{result}: {passed} aprobadas, {failed} fallidas, {skipped} omitidas.'
-        )
+    for results, title, test_type in (
+        (_unit_results, 'RESUMEN DE PRUEBAS UNITARIAS POR MÓDULO', 'Prueba unitaria'),
+        (
+            _integration_results,
+            'RESUMEN DE PRUEBAS DE INTEGRACIÓN POR MÓDULO',
+            'Prueba de integración',
+        ),
+    ):
+        if not results:
+            continue
+        terminalreporter.write_sep('=', title)
+        for module, outcomes in results.items():
+            failed = outcomes.count('failed')
+            skipped = outcomes.count('skipped')
+            passed = outcomes.count('passed')
+            result = 'APROBADA' if not failed and not skipped else 'REVISAR'
+            terminalreporter.write_line(
+                f'Concluyó prueba de {module} — Tipo: {test_type} — '
+                f'{result}: {passed} aprobadas, {failed} fallidas, {skipped} omitidas.'
+            )
 
 
 @pytest.fixture
