@@ -104,7 +104,7 @@ módulo. No se debe ejecutar `pytest` para estas pruebas.
 
 Cada ejecución agrega métricas a `results\bitacora_rendimiento.csv` y actualiza
 la tabla de resultados en
-[`Capitulo_IV_Rendimiento.md`](Capitulo_IV_Rendimiento.md). Los CSV originales
+[`CAPITULO_IV_INVISAP.md`](../../CAPITULO_IV_INVISAP.md). Los CSV originales
 de Locust también se guardan en `results`. Se registran cantidad de solicitudes,
 fallos HTTP, solicitudes por segundo y tiempos de respuesta promedio, mediano y
 percentil 95.

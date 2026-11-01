@@ -289,7 +289,7 @@ def main():
     if not results_dir.is_absolute():
         results_dir = project_dir / results_dir
     results_path = results_dir / 'bitacora_rendimiento.csv'
-    report_path = performance_dir / 'Capitulo_IV_Rendimiento.md'
+    report_path = project_dir / 'CAPITULO_IV_INVISAP.md'
     module_keys = list(MODULES) if args.all else [args.module]
 
     failures = []
