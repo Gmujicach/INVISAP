@@ -1,0 +1,13 @@
+$kind: collection
+scripts:
+  - type: http:beforeRequest
+    code: |-
+      // Inyecta la cookie de sesión en cada request de la colección
+      var sessionCookie = pm.environment.get('session_cookie');
+      if (sessionCookie) {
+          pm.request.headers.upsert({
+              key: 'Cookie',
+              value: 'session=' + sessionCookie
+          });
+      }
+    language: text/javascript

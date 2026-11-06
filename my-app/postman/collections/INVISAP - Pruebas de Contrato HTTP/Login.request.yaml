@@ -1,0 +1,62 @@
+$kind: http-request
+description: "Generated from cURL: curl -X POST '{{baseUrl}}/login' --form 'nombre=admin' --form 'pass_user=admin123.' --form 'g-recaptcha-response='"
+url: "{{baseUrl}}/login"
+method: POST
+body:
+  type: formdata
+  content:
+    - type: text
+      key: nombre
+      value: admin
+      disabled: false
+    - type: text
+      key: pass_user
+      value: admin123.
+      disabled: false
+    - type: text
+      key: g-recaptcha-response
+      value: 6LdbmUktAAAAALzTEslJCQaLp3O0Hl4Kz5okNVgq
+      disabled: false
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Login responde con éxito (200 OK)", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("El tiempo de respuesta es menor a 500ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(500);
+      });
+
+      pm.test("El tipo de contenido es HTML", function () {
+          pm.response.to.have.header("Content-Type");
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("text/html");
+      });
+
+      // --- Captura automática de cookie de sesión ---
+      var sessionCookie = pm.cookies.get('session');
+
+      if (!sessionCookie || sessionCookie === 'undefined') {
+          sessionCookie = null;
+          var setCookieHeader = pm.response.headers.get('Set-Cookie');
+          if (setCookieHeader) {
+              var match = setCookieHeader.match(/(?:^|;\s*)session=([^;]+)/);
+              if (match && match[1] !== 'undefined') {
+                  sessionCookie = match[1];
+              }
+          }
+      }
+
+      if (sessionCookie && sessionCookie !== 'undefined') {
+          pm.environment.set('session_cookie', sessionCookie);
+          console.log('✅ Cookie de sesión capturada y guardada en {{session_cookie}}:', sessionCookie);
+      } else {
+          console.warn('⚠️ No se encontró la cookie "session". Se requiere CAPTCHA resuelto para obtener sesión válida.');
+      }
+
+      pm.test("Cookie de sesión capturada en {{session_cookie}}", function () {
+          var saved = pm.environment.get('session_cookie');
+          pm.expect(saved).to.be.a('string').and.not.equal('undefined').and.to.have.length.above(0);
+      });
+    language: text/javascript
+order: 21000

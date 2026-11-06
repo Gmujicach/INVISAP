@@ -20,6 +20,11 @@ import urllib.request
 # Claves de seguridad locales (reCAPTCHA) almacenadas en archivo propio
 from claveApi import RECAPTCHA_SECRET_KEY, RECAPTCHA_VERIFY_URL
 
+# Permite omitir reCAPTCHA en entornos de desarrollo/pruebas locales.
+# Actívalo añadiendo SKIP_RECAPTCHA=true en el archivo .env.
+# NUNCA establecer en producción.
+SKIP_RECAPTCHA = os.getenv('SKIP_RECAPTCHA', 'false').lower() == 'true'
+
 from services.bitacora_service import BitacoraService
 
 # Regex de correo
@@ -41,6 +46,9 @@ class _LoginDatabase(ConexionBD):
 # ============================================
 def verificar_recaptcha(token):
     """Valida el token g-recaptcha-response. Retorna (bool, mensaje)."""
+    # Bypass para desarrollo local — activar con SKIP_RECAPTCHA=true en .env
+    if SKIP_RECAPTCHA:
+        return True, 'OK'
     if not token:
         return False, 'Debes completar el desafío reCAPTCHA (marca "No soy un robot").'
     if not RECAPTCHA_SECRET_KEY:

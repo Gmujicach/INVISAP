@@ -1,0 +1,9 @@
+workspace:
+  id: 43e1ce80-316b-4a35-8d85-c0c47127b0db
+cloudResources:
+  globals:
+    ../postman/globals/workspace.globals.yaml: 5a93723b-5f10-4443-8362-6d22ac264997
+  collections:
+    ../postman/collections/INVISAP - Pruebas de Contrato HTTP: 58832640-b2c7128e-b720-44e9-b5b4-712e63d9e254
+  environments:
+    ../postman/environments/INVISAP pruebas.environment.yaml: 58832640-92b857b6-e471-4653-b7c1-2f39b1ffe016
