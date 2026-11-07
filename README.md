@@ -13,7 +13,7 @@
 <p align="center">
   <img alt="Python 3.11" src="https://img.shields.io/badge/Python-3.11-3776AB?style=flat-square&logo=python&logoColor=white">
   <img alt="Flask 2.3" src="https://img.shields.io/badge/Flask-2.3-000000?style=flat-square&logo=flask&logoColor=white">
-  <img alt="MySQL 8" src="https://img.shields.io/badge/MySQL-8.0-4479A1?style=flat-square&logo=mysql&logoColor=white">
+  <img alt="MySQL 9.7.X LTS" src="https://img.shields.io/badge/MySQL-9.7.X-4479A1?style=flat-square&logo=mysql&logoColor=white">
   <img alt="Interfaz en español" src="https://img.shields.io/badge/Idioma-Espa%C3%B1ol-087A24?style=flat-square">
 </p>
 
