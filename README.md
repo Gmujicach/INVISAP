@@ -54,14 +54,14 @@ La siguiente demostración recorre la página de INVILARA. También puedes [abri
 | --- | --- |
 | Backend | Python 3.11 y Flask |
 | Vistas | HTML, Jinja2, CSS, Bootstrap y JavaScript |
-| Base de datos | MySQL 8 |
+| Base de datos | MySQL 9.7.X LTS |
 | Reportes | ReportLab y openpyxl |
 | Servidor de desarrollo | Flask, puerto `5600` |
 
 ## Requisitos
 
 - Python 3.11.
-- MySQL 8.0.
+- MySQL 9.7.X LTS.
 - Git.
 - Un navegador web actualizado.
 
