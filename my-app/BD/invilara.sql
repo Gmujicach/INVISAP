@@ -198,6 +198,20 @@ CREATE TABLE `empresa` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
+-- Table structure for table `empresa_requisito`
+--
+
+CREATE TABLE `empresa_requisito` (
+  `rif` varchar(12) NOT NULL,
+  `requisito` varchar(50) NOT NULL,
+  `verificado` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`rif`, `requisito`),
+  CONSTRAINT `fk_empresa_requisito_empresa`
+    FOREIGN KEY (`rif`) REFERENCES `empresa` (`rif`)
+    ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
 -- Dumping data for table `empresa`
 --
 

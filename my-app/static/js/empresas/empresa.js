@@ -289,7 +289,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalRequisitosEl = document.getElementById('modalRequisitos');
     if (modalRequisitosEl) {
         const modalRequisitos = new bootstrap.Modal(modalRequisitosEl);
-        const checkboxRequisito = document.getElementById('checkboxCumpleRequisitos');
+        const requisitosInputs = Array.from(
+            modalRequisitosEl.querySelectorAll('#listaRequisitos input[type="checkbox"]')
+        );
+        const listaRequisitos = document.getElementById('listaRequisitos');
+        const requisitoCarga = document.getElementById('requisitoCarga');
         const btnGuardarRequisito = document.getElementById('btnGuardarRequisito');
         const requisitoRifInput = document.getElementById('requisitoRifEmpresa');
         const requisitoNombreEl = document.getElementById('requisitoNombreEmpresa');
@@ -300,73 +304,104 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.preventDefault();
                 const rif = this.getAttribute('data-rif');
                 const nombre = this.getAttribute('data-nombre');
-                const cumple = this.getAttribute('data-cumple') === '1';
 
                 requisitoRifInput.value = rif;
                 requisitoNombreEl.textContent = nombre;
-                checkboxRequisito.checked = cumple;
+                listaRequisitos.classList.add('d-none');
+                requisitoCarga.classList.remove('d-none');
+                requisitosInputs.forEach(input => {
+                    input.disabled = true;
+                });
+                btnGuardarRequisito.disabled = true;
                 requisitoFeedback.classList.add('d-none');
-
                 modalRequisitos.show();
+
+                fetch(`/api/empresas/${encodeURIComponent(rif)}/requisitos`, {
+                    credentials: 'same-origin',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.json().then(data => {
+                    if (!response.ok || !data.exito) {
+                        throw new Error(data.mensaje || 'No se pudieron cargar los requisitos.');
+                    }
+                    return data;
+                }))
+                .then(data => {
+                    if (requisitoRifInput.value !== rif) return;
+                    requisitosInputs.forEach(input => {
+                        input.checked = data.requisitos[input.id] === true;
+                        input.disabled = false;
+                    });
+                    requisitoCarga.classList.add('d-none');
+                    listaRequisitos.classList.remove('d-none');
+                    btnGuardarRequisito.disabled = false;
+                })
+                .catch(error => {
+                    if (requisitoRifInput.value !== rif) return;
+                    modalRequisitos.hide();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al cargar requisitos',
+                        text: error.message,
+                        target: modalRequisitosEl
+                    });
+                });
             });
         });
 
         btnGuardarRequisito.addEventListener('click', function() {
             const rif = requisitoRifInput.value;
-            const valor = checkboxRequisito.checked ? 1 : 0;
+            const requisitos = Object.fromEntries(
+                requisitosInputs.map(input => [input.id, input.checked])
+            );
 
+            requisitosInputs.forEach(input => {
+                input.disabled = true;
+            });
             btnGuardarRequisito.disabled = true;
             btnGuardarRequisito.innerHTML = '<i class="bx bx-loader-alt bx-spin"></i> Guardando...';
 
-            const formData = new FormData();
-            formData.append('valor', valor);
-
             fetch(`/marcar-cumple-requisitos/${encodeURIComponent(rif)}`, {
                 method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                body: formData
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ requisitos })
             })
             .then(response => {
-                let body;
-                try { body = response.json(); } catch (e) { body = {}; }
-                if (!response.ok) {
-                    throw new Error(body.mensaje || 'Error en el servidor');
-                }
-                return body;
+                return response.json().then(data => {
+                    if (!response.ok || !data.exito) {
+                        throw new Error(data.mensaje || 'Error en el servidor');
+                    }
+                    return data;
+                });
             })
             .then(data => {
-                if (data.exito) {
-                    const fila = document.querySelector(`tr[data-rif="${CSS.escape(rif)}"]`);
-                    if (fila) {
-                        const badgeCell = fila.cells[4];
-                        if (badgeCell) {
-                            badgeCell.innerHTML = valor === 1
-                                ? '<span class="badge bg-success badge-cumple"><i class="bx bx-check-circle"></i> Verificado</span>'
-                                : '<span class="badge bg-secondary badge-cumple"><i class="bx bx-x-circle"></i> Pendiente</span>';
-                        }
-                        const btn = fila.querySelector('.btn-ver-requisitos');
-                        if (btn) btn.setAttribute('data-cumple', String(valor));
+                const fila = document.querySelector(`tr[data-rif="${CSS.escape(rif)}"]`);
+                if (fila) {
+                    const badgeCell = fila.cells[4];
+                    if (badgeCell) {
+                        badgeCell.innerHTML = data.valor === 1
+                            ? '<span class="badge bg-success badge-cumple"><i class="bx bx-check-circle"></i> Verificado</span>'
+                            : '<span class="badge bg-secondary badge-cumple"><i class="bx bx-x-circle"></i> Pendiente</span>';
                     }
-
-                    requisitoFeedback.classList.remove('d-none');
-                    setTimeout(() => {
-                        requisitoFeedback.classList.add('d-none');
-                        modalRequisitos.hide();
-                    }, 2000);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: data.mensaje || 'No se pudo actualizar el estado.',
-                        target: modalRequisitosEl
-                    });
                 }
+
+                requisitoFeedback.classList.remove('d-none');
+                setTimeout(() => {
+                    requisitoFeedback.classList.add('d-none');
+                    modalRequisitos.hide();
+                }, 2000);
             })
             .catch(error => {
+                requisitosInputs.forEach(input => {
+                    input.disabled = false;
+                });
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error de conexión',
-                    text: 'No se pudo comunicar con el servidor.',
+                    title: 'No se pudieron guardar los requisitos',
+                    text: error.message || 'No se pudo comunicar con el servidor.',
                     target: modalRequisitosEl
                 });
             })

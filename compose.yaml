@@ -3,7 +3,7 @@ version: "3.9"
 services:
   # ── Base de datos MySQL ────────────────────────────────────────────────────
   db:
-    image: docker.io/library/mysql:8.0
+    image: docker.io/library/mysql:latest
     container_name: invisap_db
     restart: unless-stopped
     environment:
