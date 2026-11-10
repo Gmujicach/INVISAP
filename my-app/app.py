@@ -27,6 +27,10 @@ app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE='Lax',
     SESSION_COOKIE_SECURE=os.getenv('SESSION_COOKIE_SECURE', '').lower() in {'1', 'true', 'yes'},
+    # Las plantillas se releen cuando cambian en disco. Sin esto, al correr con
+    # debug desactivado (`python run.py`) Jinja cachea el HTML y los cambios en
+    # `vista/` no se reflejan hasta reiniciar el servidor.
+    TEMPLATES_AUTO_RELOAD=True,
 )
 
 # Rutas protegidas incluso cuando el catálogo de módulos todavía no está

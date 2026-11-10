@@ -91,6 +91,7 @@
       }
 
       driverInstance.drive();
+      manager.markModuleTourStarted(module);
       return driverInstance;
     } catch (error) {
       console.error('[Tour] Error al iniciar:', error);
@@ -100,7 +101,7 @@
     }
   };
 
-  manager.stopTour = function(markSeen) {
+  manager.stopTour = function() {
     if (manager.activeInstance && typeof manager.activeInstance.destroy === 'function') {
       try {
         manager.activeInstance.destroy();
@@ -110,28 +111,35 @@
     }
     manager.activeInstance = null;
     manager.setActive(false);
-    if (markSeen) manager.markTourSeen();
   };
 
   manager.toggleTour = function(moduleName) {
-    if (manager.isActive()) manager.stopTour(true);
+    if (manager.isActive()) manager.stopTour();
     else manager.startTour(moduleName);
   };
 
   manager.setActive = function(active) {
     manager._active = active;
+
+    const menu = document.getElementById('tourFabMenu');
+    if (menu) menu.classList.toggle('is-touring', active);
+
     const fab = document.getElementById('btnTourInvilara');
     if (!fab) return;
+
     if (active) {
-      fab.setAttribute('aria-label', 'Detener tour del sistema');
-      fab.setAttribute('aria-pressed', 'true');
-      fab.title = 'Detener recorrido guiado';
+      fab.setAttribute('aria-label', 'Guía del sistema, tour en curso');
+      fab.title = 'Guía del Sistema · tour en curso';
       fab.classList.add('tour-active');
+      // El panel se cierra al arrancar el recorrido
+      if (window.INVISAP_TOUR_FAB) window.INVISAP_TOUR_FAB.close();
     } else {
-      fab.setAttribute('aria-label', 'Iniciar tour del sistema');
-      fab.setAttribute('aria-pressed', 'false');
+      fab.setAttribute('aria-label', 'Guía del sistema');
       fab.title = 'Guía del Sistema';
       fab.classList.remove('tour-active');
+      // Driver.js elimina aria-expanded del elemento resaltado al destruirse;
+      // el panel está cerrado, así que se restituye el estado del menú.
+      fab.setAttribute('aria-expanded', 'false');
     }
   };
 
@@ -139,28 +147,45 @@
     return manager._active === true;
   };
 
-  manager.TOUR_STORAGE_KEY = 'invisap_tour_visto';
-  manager.TOUR_RESET_KEY = 'invisap_tour_reset';
+  manager.ONBOARDING_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
+  manager.ONBOARDING_STORAGE_PREFIX = 'invisap_tour_onboarding';
 
-  manager.validateHash = function(moduleName) {
-    return true;
+  manager.getOnboardingState = function() {
+    const menu = document.getElementById('tourFabMenu');
+    const userId = menu && menu.dataset.tourUserId;
+    if (!userId) return null;
+
+    const key = manager.ONBOARDING_STORAGE_PREFIX + ':' + encodeURIComponent(userId);
+    try {
+      let startedAt = Number(localStorage.getItem(key));
+      if (!Number.isFinite(startedAt) || startedAt <= 0) {
+        startedAt = Date.now();
+        localStorage.setItem(key, String(startedAt));
+      }
+
+      const elapsed = Date.now() - startedAt;
+      return {
+        userId: userId,
+        key: key,
+        isActive: elapsed >= 0 && elapsed < manager.ONBOARDING_DURATION_MS
+      };
+    } catch (error) {
+      console.warn('[Tour] No se pudo consultar el período de bienvenida; el inicio automático queda desactivado.', error);
+      return null;
+    }
   };
 
-  manager.hasSeenTour = function() {
-    try { return localStorage.getItem(manager.TOUR_STORAGE_KEY) === 'true'; }
-    catch (e) { return false; }
-  };
-
-  manager.markTourSeen = function() {
-    try { localStorage.setItem(manager.TOUR_STORAGE_KEY, 'true'); } catch (e) {}
-  };
-
-  manager.resetTourSeen = function() {
-    try { localStorage.removeItem(manager.TOUR_STORAGE_KEY); } catch (e) {}
+  manager.markModuleTourStarted = function(moduleName) {
+    const onboarding = manager.getOnboardingState();
+    if (!onboarding || !onboarding.isActive || !moduleName) return;
+    try {
+      localStorage.setItem(onboarding.key + ':modulo:' + encodeURIComponent(moduleName), 'true');
+    } catch (error) {
+      console.warn('[Tour] No se pudo guardar el módulo visitado durante la bienvenida.', error);
+    }
   };
 
   manager.autoStart = function() {
-    if (manager.hasSeenTour()) return;
     const pageTourButton = document.getElementById('btnTourInvilara');
     if (!pageTourButton) return;
 
@@ -171,9 +196,21 @@
     const currentModule = manager.getCurrentModule();
     if (!currentModule || currentModule === 'default' || currentModule === 'login') return;
 
+    const onboarding = manager.getOnboardingState();
+    if (!onboarding || !onboarding.isActive) return;
+    try {
+      if (localStorage.getItem(onboarding.key + ':modulo:' + encodeURIComponent(currentModule)) === 'true') return;
+    } catch (error) {
+      console.warn('[Tour] No se pudo consultar el módulo visitado; se omite el inicio automático.', error);
+      return;
+    }
+
     const factory = (window.INVISAP_TOURS || {})[currentModule] || (window.INVISAP_TOURS || {})['default'];
     if (typeof factory !== 'function') return;
-    setTimeout(function() { manager.startTour(); }, 700);
+    setTimeout(function() {
+      if (manager.isActive() || manager.getCurrentModule() !== currentModule) return;
+      manager.startTour(currentModule);
+    }, 700);
   };
 
   manager.DRIVER_DEFAULTS = {
@@ -242,6 +279,16 @@
         return null;
       }
 
+      // Cualquier cierre del recorrido (botón del popover, Escape o clic en el
+      // overlay) debe devolver el FAB y el panel a su estado inactivo.
+      const onDestroyed = merged.onDestroyed;
+      merged.onDestroyed = function() {
+        manager._active = false;
+        manager.activeInstance = null;
+        manager.setActive(false);
+        if (typeof onDestroyed === 'function') return onDestroyed.apply(this, arguments);
+      };
+
       return original(merged);
     };
   };
@@ -255,21 +302,24 @@
     if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
     manager.applyDriverDefaults();
     window.startModuleTour = function() { manager.startTour(); };
-    window.stopModuleTour = function() { manager.stopTour(true); };
+    window.stopModuleTour = function() { manager.stopTour(); };
     window.toggleModuleTour = function() { manager.toggleTour(); };
 
-    document.body.addEventListener('click', function(event) {
-      const fab = event.target.closest('#btnTourInvilara');
-      if (!fab) return;
-      event.preventDefault();
-      event.stopPropagation();
-      manager.toggleTour();
-    });
-
+    // El FAB de la guía abre su panel de acciones (ver tour-fab-menu.js);
+    // el recorrido se inicia desde la celda «Iniciar guía».
     const fab = document.getElementById('btnTourInvilara');
     if (fab) {
-      fab.setAttribute('aria-pressed', 'false');
-      fab.setAttribute('aria-label', 'Iniciar tour del sistema');
+      fab.setAttribute('aria-label', 'Guía del sistema');
+
+      // Compatibilidad: si el HTML servido todavía no trae el panel (caché de
+      // plantillas), el FAB conserva el comportamiento de iniciar/detener.
+      if (!document.getElementById('tourFabMenu')) {
+        fab.addEventListener('click', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          manager.toggleTour();
+        });
+      }
     }
 
     const inst = manager.activeInstance;

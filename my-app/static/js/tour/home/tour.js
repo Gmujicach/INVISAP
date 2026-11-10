@@ -11,7 +11,7 @@
           element: '#btnTourInvilara',
           popover: {
             title: 'Guía del Sistema',
-            description: 'Este botón flotante, ubicado en la esquina inferior derecha, inicia el recorrido guiado del sistema.'
+            description: 'Este botón flotante, ubicado en la esquina inferior derecha, despliega las acciones de la Guía del Sistema: desde ahí se inicia el recorrido guiado.'
           },
           side: 'left'
         },
