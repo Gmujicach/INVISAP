@@ -7,26 +7,9 @@
     const body = document.body;
     if (body && body.dataset.module) return body.dataset.module;
 
-    const hash = window.location.hash.replace('#', '');
-    if (hash) {
-      const hashMap = {
-        'proyectos': 'proyectos', 'solicitudes': 'solicitudes', 'empleados': 'empleados',
-        'empresas': 'empresas', 'obras': 'obras', 'bitacora': 'bitacora',
-        'contratacion': 'contratacion', 'contrataciones': 'contratacion',
-        'evidencia': 'evidencia', 'evidencias': 'evidencia',
-        'inspeccion': 'inspeccion', 'inspecciones': 'inspeccion',
-        'inf_avance_obra': 'inf_avance_obra', 'publicaciones': 'publicaciones',
-        'perfil': 'perfil', 'reportes': 'reportes', 'respaldo': 'respaldo',
-        'seguridad': 'seguridad', 'usuarios': 'usuarios', 'ia': 'ia',
-        'login': 'login', 'manual': 'manual', 'home': 'home', 'dashboard': 'home'
-      };
-      if (hashMap[hash]) return hashMap[hash];
-    }
-
     const path = window.location.pathname.replace(/\/+$/, '');
-    if (!path || path === '') return 'home';
-
     const moduleRules = [
+      { pattern: /bitacora/i, module: 'bitacora' },
       { pattern: /solicitud|solicitudes/i, module: 'solicitudes' },
       { pattern: /proyecto|proyectos/i, module: 'proyectos' },
       { pattern: /empleado|empleados/i, module: 'empleados' },
@@ -51,6 +34,22 @@
     for (const rule of moduleRules) {
       if (rule.pattern.test(path)) return rule.module;
     }
+
+    if (!path) return 'home';
+
+    const hash = window.location.hash.replace('#', '');
+    const hashMap = {
+      'proyectos': 'proyectos', 'solicitudes': 'solicitudes', 'empleados': 'empleados',
+      'empresas': 'empresas', 'obras': 'obras', 'bitacora': 'bitacora',
+      'contratacion': 'contratacion', 'contrataciones': 'contratacion',
+      'evidencia': 'evidencia', 'evidencias': 'evidencia',
+      'inspeccion': 'inspeccion', 'inspecciones': 'inspeccion',
+      'inf_avance_obra': 'inf_avance_obra', 'publicaciones': 'publicaciones',
+      'perfil': 'perfil', 'reportes': 'reportes', 'respaldo': 'respaldo',
+      'seguridad': 'seguridad', 'usuarios': 'usuarios', 'ia': 'ia',
+      'login': 'login', 'manual': 'manual', 'home': 'home', 'dashboard': 'home'
+    };
+    if (hashMap[hash]) return hashMap[hash];
 
     return 'default';
   };
