@@ -23,7 +23,7 @@
       { pattern: /perfil/i, module: 'perfil' },
       { pattern: /reporte|reportes/i, module: 'reportes' },
       { pattern: /respaldo/i, module: 'respaldo' },
-      { pattern: /seguridad/i, module: 'seguridad' },
+      { pattern: /seguridad|gestionar-permisos/i, module: 'seguridad' },
       { pattern: /users|usuario|usuarios/i, module: 'usuarios' },
       { pattern: /ia|prioridad|gravedad/i, module: 'ia' },
       { pattern: /manual/i, module: 'manual' },
