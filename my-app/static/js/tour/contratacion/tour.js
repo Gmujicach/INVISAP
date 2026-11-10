@@ -4,6 +4,8 @@
   window.INVISAP_TOURS['contratacion'] = function() {
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: [
         {
           element: '#columnaBusqueda, select[name="columna"]',

@@ -4,6 +4,8 @@
   window.INVISAP_TOURS['login'] = function() {
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: [
         {
           element: '.authentication-wrapper .authentication-inner, .authentication-wrapper .card',

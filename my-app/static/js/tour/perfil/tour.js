@@ -4,6 +4,8 @@
   window.INVISAP_TOURS['perfil'] = function() {
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: [
         {
           element: '.perfil-header, .card-header-custom, h1, h2',

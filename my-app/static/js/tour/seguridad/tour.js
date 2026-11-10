@@ -4,6 +4,8 @@
   window.INVISAP_TOURS['seguridad'] = function() {
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: [
         {
           element: '.seguridad-header, h1, h2',

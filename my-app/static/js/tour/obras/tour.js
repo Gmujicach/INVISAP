@@ -31,10 +31,11 @@
         if (scrollContainer && scrollContainer.scrollHeight > scrollContainer.clientHeight) {
           const rect = element.getBoundingClientRect();
           const containerRect = scrollContainer.getBoundingClientRect();
+          if (rect.top >= containerRect.top && rect.bottom <= containerRect.bottom) return;
           const desiredCenter = containerRect.top + (scrollContainer.clientHeight / 2);
           const elementCenter = rect.top + (rect.height / 2);
           const delta = elementCenter - desiredCenter;
-          scrollContainer.scrollBy({ top: delta, behavior: 'smooth' });
+          scrollContainer.scrollBy({ top: delta, behavior: 'auto' });
         }
       } catch (e) { /* noop */ }
     };
@@ -399,21 +400,13 @@
 
     return window.driver.js.driver({
       showProgress: true,
-      smoothScroll: true,
+      animate: true,
+      smoothScroll: false,
       nextBtnText: 'Siguiente',
       prevBtnText: 'Anterior',
       doneBtnText: 'Entendido',
       onHighlighted: onHighlighted,
-      steps: steps.length ? steps : [
-        baseStep({
-          element: '#btnTourInvilara, .tour-fab',
-          popover: {
-            title: 'Guía del módulo de Obras',
-            description: 'Navega por el módulo para ver el recorrido guiado.'
-          },
-          side: 'left'
-        })
-      ]
+      steps: steps
     });
   };
 })();

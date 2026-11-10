@@ -4,6 +4,8 @@
   window.INVISAP_TOURS['respaldo'] = function() {
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: [
         {
           element: 'h1, h2, .card-header-custom',

@@ -162,7 +162,7 @@
 @keyframes driver-scale-in {
   0% {
     opacity: 0;
-    transform: scale(0.92) translateY(8px);
+    transform: scale(0.98) translateY(2px);
   }
   100% {
     opacity: 1;
@@ -184,7 +184,7 @@
 }
 
 .driver-fade .driver-popover {
-  animation: driver-scale-in 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: driver-scale-in 0.16s ease-out;
 }
 
 /* ---------- Overlay ---------- */
@@ -411,8 +411,6 @@ html[data-bs-theme="dark"] body .driver-popover-arrow-inner {
     0 20px 60px rgba(0, 0, 0, 0.12),
     0 0 0 1px rgba(0, 0, 0, 0.04),
     0 0 0 8px rgba(8, 179, 36, 0.08) !important;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
 }
 
 .driver-popover-title {

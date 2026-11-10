@@ -375,19 +375,12 @@
 
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       nextBtnText: 'Siguiente',
       prevBtnText: 'Anterior',
       doneBtnText: 'Entendido',
-      steps: steps.length ? steps : [
-        {
-          element: '#btnTourInvilara, .tour-fab',
-          popover: {
-            title: 'Guía del módulo de Informes de Avance',
-            description: 'Navega por las opciones del módulo para ver el recorrido guiado de listado, registro o edición.'
-          },
-          side: 'left'
-        }
-      ]
+      steps: steps
     });
   };
 })();

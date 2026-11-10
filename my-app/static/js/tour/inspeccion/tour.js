@@ -56,14 +56,6 @@
             description: 'Elimina la inspección tras confirmar la acción. Ideal para corregir registros duplicados o erróneos.'
           },
           side: 'left'
-        },
-        {
-          element: '#btnTourInvilara, .tour-fab',
-          popover: {
-            title: 'Guía interactiva del sistema',
-            description: 'Este botón verde está disponible en todos los módulos y le muestra, paso a paso, cómo registrar, modificar y ver las listas.'
-          },
-          side: 'top'
         }
       ];
     } else if (esFormulario) {
@@ -126,20 +118,13 @@
         }
       ];
     } else {
-      pasos = [
-        {
-          element: '#btnTourInvilara, .tour-fab',
-          popover: {
-            title: 'Módulo de Inspecciones',
-            description: 'Abra el listado o el formulario de inspecciones para iniciar este recorrido guiado.'
-          },
-          side: 'left'
-        }
-      ];
+      pasos = [];
     }
 
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: pasos
     });
   };

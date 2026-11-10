@@ -4,6 +4,8 @@
   window.INVISAP_TOURS['manual'] = function() {
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: [
         {
           element: '.manual-toolbar .brand',
@@ -36,14 +38,6 @@
             description: 'Use "Imprimir" para generar una copia en papel del manual y "Cerrar" para salir de esta ventana y volver al sistema.'
           },
           side: 'left'
-        },
-        {
-          element: '#btnTourInvilara',
-          popover: {
-            title: 'Guía interactiva',
-            description: 'En cualquier módulo del sistema, este botón verde abre el recorrido guiado que le enseña a registrar, modificar y ver las listas.'
-          },
-          side: 'top'
         }
       ]
     });

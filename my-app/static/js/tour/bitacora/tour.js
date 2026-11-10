@@ -4,6 +4,8 @@
   window.INVISAP_TOURS['bitacora'] = function() {
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: [
         {
           element: '.stat-card',

@@ -72,7 +72,8 @@
       }
 
       const driverInstance = factory();
-      if (!driverInstance || typeof driverInstance.drive !== 'function') {
+      if (!driverInstance) return null;
+      if (typeof driverInstance.drive !== 'function') {
         console.error('[Tour] La factory no devolvió una instancia válida.');
         return null;
       }
@@ -183,7 +184,8 @@
     doneBtnText: 'Terminar',
     overlayColor: '#000000',
     overlayOpacity: 0.65,
-    smoothScroll: true,
+    // Evita competir con la animación del resaltado al desplazar la página.
+    smoothScroll: false,
     stagePadding: 16,
     stageRadius: 10,
     popoverOffset: 24,
@@ -194,25 +196,34 @@
 
   manager.filterAvailableSteps = function(steps) {
     if (!Array.isArray(steps)) return [];
-    return steps.filter(function(step) {
-      if (!step || !step.element || typeof step.element !== 'string') return false;
+    const availableSteps = [];
+
+    steps.forEach(function(step) {
+      if (!step || !step.element || typeof step.element !== 'string') return;
       const selectorList = step.element.split(',').map(function(item) {
         return item.trim();
       }).filter(Boolean);
 
       for (const selector of selectorList) {
         try {
-          const element = document.querySelector(selector);
-          if (!element) continue;
-          const rect = element.getBoundingClientRect();
-          if (rect.width === 0 && rect.height === 0) continue;
-          return true;
+          const candidates = document.querySelectorAll(selector);
+          for (const element of candidates) {
+            const rect = element.getBoundingClientRect();
+            const style = window.getComputedStyle(element);
+            if (!element.getClientRects().length || rect.width === 0 || rect.height === 0 ||
+                style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
+              continue;
+            }
+            availableSteps.push(Object.assign({}, step, { element: element }));
+            return;
+          }
         } catch (e) {
           continue;
         }
       }
-      return false;
     });
+
+    return availableSteps;
   };
 
   manager.applyDriverDefaults = function() {
@@ -229,11 +240,7 @@
 
       if (!Array.isArray(merged.steps) || merged.steps.length === 0) {
         console.warn('[Tour] No hay pasos válidos para el módulo actual. Se omite la ejecución del recorrido.');
-        return {
-          drive: function() {},
-          destroy: function() {},
-          hasNextStep: function() { return false; }
-        };
+        return null;
       }
 
       return original(merged);

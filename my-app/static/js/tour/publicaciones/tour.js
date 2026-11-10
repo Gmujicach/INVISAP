@@ -4,6 +4,8 @@
   window.INVISAP_TOURS['publicaciones'] = function() {
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: [
         {
           element: '.card-header-custom, h1, h2',
