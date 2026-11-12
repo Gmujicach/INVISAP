@@ -4,6 +4,12 @@ values:
     value: 'http://127.0.0.1:5600'
   - key: session_cookie
     value: ''
+  - key: login_username
+    value: ''
+  - key: login_password
+    value: ''
+  - key: recaptcha_token
+    value: ''
   - key: codigo_proyecto
     value: ''
   - key: rif_empresa

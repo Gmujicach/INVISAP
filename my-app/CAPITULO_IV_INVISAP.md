@@ -38,13 +38,22 @@ La planificación sigue tres niveles:
 
 | Tipo | Objetivo y metodología | Herramientas y datos | Evidencia y límites |
 |---|---|---|---|
-| Unidad | Caja blanca sobre ramas y reglas; caja negra sobre entradas/salidas. Se aplican particiones de equivalencia, límites, casos válidos/inválidos parametrizados y Preparar-Actuar-Verificar con fixtures/mocks. | Pytest, `pytest.mark.parametrize`, fixtures y mocks. | `tests/unit`: 20 suites por módulo y 3 suites transversales. Comprueba componentes aislados; no acredita persistencia ni despliegue. |
+| Unidad | Caja negra con particiones de equivalencia y valores límite; caja blanca para reglas y ramas seleccionadas; Preparar-Actuar-Verificar con fixtures/mocks. No se midió cobertura de ramas ni caminos independientes. | Pytest, `pytest.mark.parametrize`, fixtures y mocks. | `tests/unit`: 20 suites de módulo con 376 casos, más 51 casos transversales (427 en total). Se amplió la prueba de métodos y sus interacciones SQL simuladas; no se midió cobertura de ramas ni persistencia real. |
 | Integración | Integración incremental: 20 contratos Flask y dos flujos Contratación→Bitácora. Se verifica colaboración y auditoría; una colisión de ID inyectada comprueba el reintento. Los dobles aíslan dependencias. | Pytest, cliente Flask, mocks y fallo controlado. | `tests/integration`: 22 casos aprobados. No equivale a transacciones reales contra MySQL. |
-| Backend/API | Contratos HTTP positivos y negativos: estado, JSON, autenticación/autorización, filtros, paginación y parámetros propagados al servicio/modelo. PDF/Excel verifican formularios GET; no generan archivos. | Pytest y cliente Flask con modelos simulados. Postman no estaba instalado ni se utilizó en las ejecuciones documentadas; Guzzle corresponde a PHP y no aplica a este backend Python. | `tests/api`: 20 suites por módulo y casos parametrizados de reportes. No sustituye una prueba desplegada con datos reales autorizados. |
+| Backend/API | Contratos HTTP positivos y negativos: estado, JSON, autenticación/autorización, filtros, paginación y parámetros propagados al servicio/modelo. PDF/Excel verifican formularios GET; no generan archivos. | Pytest/cliente Flask con modelos simulados; Postman Desktop para solicitudes HTTP del entorno configurado. No se instaló Guzzle porque el backend es Python. | `tests/api`: 20 suites por módulo y parametrización de reportes. `postman/collections`: contratos HTTP y caso sin sesión; los contratos positivos requieren cookie e IDs de prueba. |
 | Humo | Una ruta esencial por módulo; comprobación rápida de respuesta HTTP sin error 404/500. Un 401/302 de autenticación confirma que se alcanzó una ruta protegida, no que la función autenticada opere correctamente. | Pytest y cliente Flask; HTTP real o navegador complementan cuando hay servidor activo. | `tests/smoke`: 20 módulos y acceso. Distinguir la suite local de las verificaciones HTTP en vivo documentadas por separado. |
 | Interfaz | Extremo a extremo desde navegador: abrir pantalla, comprobar respuesta y controles visibles, descartar mensajes incorrectos y guardar captura. No se intenta una navegación autenticada en el caso existente. | Playwright + Chromium; Selenium estaba instalado en la ejecución histórica, pero no se utilizó. | `tests/ui`: un caso de acceso. La ejecución actual se omitió por falta de `INVISAP_TEST_URL`; existe una ejecución histórica aprobada solo para `/login`. |
 | Rendimiento | Solicitudes GET de solo lectura por módulo con perfiles `quick`, `baseline`, `stress` y `spike`; se registran solicitudes, fallos y percentiles. Antes de interpretar tiempos se requiere acceso autenticado y carga/datos controlados. | Locust, cookie de sesión de prueba e identificadores existentes cuando la ruta los requiere. | Se ejecutaron dos series `quick` para los 20 módulos y una `baseline` para Solicitudes. En la serie más reciente, 18 módulos devolvieron 401/302 y dos 200; no es una medición autenticada aprobada. |
 | Aceptación | Caja negra basada en requisito e historia: Dado/Cuando/Entonces, flujo completo, resultado observable y evaluación del validador. Registrar errores, correcciones, retest y firma. | Pytest con Playwright/Selenium puede apoyar el recorrido; la decisión final requiere el formato de especificación y acta firmados por usuarios. | Pendiente: no hay criterios firmados, validador designado ni acta de aceptación; no se ejecutó una suite de aceptación. |
+
+La revisión estática identificó **480 métodos** sin contar constructores:
+477 en los módulos `model_*.py` y 3 en `BaseModel`. Las suites unitarias
+ampliadas suman 427 casos: 376 distribuidos entre los veinte módulos y 51
+transversales. Los casos ejercitan reglas, métodos públicos/privados
+seleccionados y colaboración con la capa de datos mediante dobles. No se midió
+cobertura ni se certificó una correspondencia 1:1 entre cada método inventariado
+y un caso; por ello, los resultados no representan cobertura total de métodos,
+ramas, vistas o persistencia real.
 
 ### Organización de las suites por módulo
 
@@ -58,26 +67,26 @@ automatizados de aceptación por módulo.
 
 | Módulo | Unidad: archivo y técnica principal | Integración | Backend/API | Humo | Rendimiento |
 |---|---|---|---|---|---|
-| Solicitudes | `tests/unit/test_solicitudes.py`: categorías y catálogos válidos/inválidos. | `tests/integration/test_integracion_solicitudes.py` | `tests/api/test_api_solicitudes.py` | `tests/smoke/test_humo_solicitudes.py` | `tests/performance/locust_solicitudes.py` |
-| Gravedad de Obra | `tests/unit/test_gravedad_obra.py`: límites 0, 50, 51 y 100, tipo y rango inválidos. | `tests/integration/test_integracion_gravedad_obra.py` | `tests/api/test_api_gravedad_obra.py` | `tests/smoke/test_humo_gravedad_obra.py` | `tests/performance/locust_gravedad_obra.py` |
-| Prioridad | `tests/unit/test_prioridad.py`: redondeo, límites inválidos y origen permitido. | `tests/integration/test_integracion_prioridad.py` | `tests/api/test_api_prioridad.py` | `tests/smoke/test_humo_prioridad.py` | `tests/performance/locust_prioridad.py` |
-| Proyectos | `tests/unit/test_proyectos.py`: serialización, compatibilidad heredada y formato de métricas. | `tests/integration/test_integracion_proyectos.py` | `tests/api/test_api_proyectos.py` | `tests/smoke/test_humo_proyectos.py` | `tests/performance/locust_proyectos.py` |
-| Maquinaria | `tests/unit/test_maquinaria.py`: nombre y tipo aceptados/rechazados. | `tests/integration/test_integracion_maquinaria.py` | `tests/api/test_api_maquinaria.py` | `tests/smoke/test_humo_maquinaria.py` | `tests/performance/locust_maquinaria.py` |
-| Contratación | `tests/unit/test_contratacion.py`: obligatoriedad de datos, catálogos y fechas. | `tests/integration/test_integracion_contratacion.py` | `tests/api/test_api_contratacion.py` | `tests/smoke/test_humo_contratacion.py` | `tests/performance/locust_contratacion.py` |
-| Empresa | `tests/unit/test_empresa.py`: duplicidad activa y RIF con entradas parametrizadas. | `tests/integration/test_integracion_empresa.py` | `tests/api/test_api_empresa.py` | `tests/smoke/test_humo_empresa.py` | `tests/performance/locust_empresa.py` |
-| Obras | `tests/unit/test_obras.py`: texto, número, caracteres y orden cronológico. | `tests/integration/test_integracion_obras.py` | `tests/api/test_api_obras.py` | `tests/smoke/test_humo_obras.py` | `tests/performance/locust_obras.py` |
-| Empleados | `tests/unit/test_empleados.py`: limpieza de campos y entradas inválidas parametrizadas. | `tests/integration/test_integracion_empleados.py` | `tests/api/test_api_empleados.py` | `tests/smoke/test_humo_empleados.py` | `tests/performance/locust_empleados.py` |
-| Inspecciones | `tests/unit/test_inspecciones.py`: datos aceptados/rechazados y catálogo. | `tests/integration/test_integracion_inspecciones.py` | `tests/api/test_api_inspecciones.py` | `tests/smoke/test_humo_inspecciones.py` | `tests/performance/locust_inspecciones.py` |
-| Evidencias | `tests/unit/test_evidencias.py`: archivo/URL válidos y rechazo de traversal. | `tests/integration/test_integracion_evidencias.py` | `tests/api/test_api_evidencias.py` | `tests/smoke/test_humo_evidencias.py` | `tests/performance/locust_evidencias.py` |
-| Informe de Avance de Obra | `tests/unit/test_informe_avance.py`: límites, normalización y rechazo de estado. | `tests/integration/test_integracion_informe_avance.py` | `tests/api/test_api_informe_avance.py` | `tests/smoke/test_humo_informe_avance.py` | `tests/performance/locust_informe_avance.py` |
-| Publicaciones | `tests/unit/test_publicaciones.py`: consulta por identificador y parámetro SQL. | `tests/integration/test_integracion_publicaciones.py` | `tests/api/test_api_publicaciones.py` | `tests/smoke/test_humo_publicaciones.py` | `tests/performance/locust_publicaciones.py` |
-| Reportes PDF | `tests/unit/test_reportes_pdf.py`: filtros, lista permitida y parámetros. | `tests/integration/test_integracion_reportes_pdf.py` | `tests/api/test_api_reportes_pdf.py` | `tests/smoke/test_humo_reportes_pdf.py` | `tests/performance/locust_reportes_pdf.py` |
-| Reportes Excel | `tests/unit/test_reportes_excel.py`: columnas permitidas y rechazo de columnas no mapeadas. | `tests/integration/test_integracion_reportes_excel.py` | `tests/api/test_api_reportes_excel.py` | `tests/smoke/test_humo_reportes_excel.py` | `tests/performance/locust_reportes_excel.py` |
-| Reportes Estadísticos | `tests/unit/test_reportes_estadisticos.py`: lista permitida de columnas agrupables. | `tests/integration/test_integracion_reportes_estadisticos.py` | `tests/api/test_api_reportes_estadisticos.py` | `tests/smoke/test_humo_reportes_estadisticos.py` | `tests/performance/locust_reportes_estadisticos.py` |
-| Usuarios | `tests/unit/test_usuarios.py`: avatar predeterminado. | `tests/integration/test_integracion_usuarios.py` | `tests/api/test_api_usuarios.py` | `tests/smoke/test_humo_usuarios.py` | `tests/performance/locust_usuarios.py` |
-| Permisos por Rol | `tests/unit/test_permisos_por_rol.py`: URL y nombre de rol permitidos. | `tests/integration/test_integracion_permisos_por_rol.py` | `tests/api/test_api_permisos_por_rol.py` | `tests/smoke/test_humo_permisos_por_rol.py` | `tests/performance/locust_permisos_por_rol.py` |
-| Administración de Respaldos | `tests/unit/test_administracion_respaldos.py`: limpieza de nombre y formato de tamaño. | `tests/integration/test_integracion_administracion_respaldos.py` | `tests/api/test_api_administracion_respaldos.py` | `tests/smoke/test_humo_administracion_respaldos.py` | `tests/performance/locust_administracion_respaldos.py` |
-| Bitácora | `tests/unit/test_bitacora.py`: texto/usuario válidos y rechazo de caracteres. | `tests/integration/test_integracion_bitacora.py` | `tests/api/test_api_bitacora.py` | `tests/smoke/test_humo_bitacora.py` | `tests/performance/locust_bitacora.py` |
+| Solicitudes | `tests/unit/test_solicitudes.py`: 43 casos; métodos, límites, validaciones y SQL simulado. | `tests/integration/test_integracion_solicitudes.py` | `tests/api/test_api_solicitudes.py` | `tests/smoke/test_humo_solicitudes.py` | `tests/performance/locust_solicitudes.py` |
+| Gravedad de Obra | `tests/unit/test_gravedad_obra.py`: 11 casos; límites, tipos, rangos y persistencia simulada. | `tests/integration/test_integracion_gravedad_obra.py` | `tests/api/test_api_gravedad_obra.py` | `tests/smoke/test_humo_gravedad_obra.py` | `tests/performance/locust_gravedad_obra.py` |
+| Prioridad | `tests/unit/test_prioridad.py`: 31 casos; cálculos, validación, SQL y fallos. | `tests/integration/test_integracion_prioridad.py` | `tests/api/test_api_prioridad.py` | `tests/smoke/test_humo_prioridad.py` | `tests/performance/locust_prioridad.py` |
+| Proyectos | `tests/unit/test_proyectos.py`: 22 casos; serialización, métricas, SQL y errores. | `tests/integration/test_integracion_proyectos.py` | `tests/api/test_api_proyectos.py` | `tests/smoke/test_humo_proyectos.py` | `tests/performance/locust_proyectos.py` |
+| Maquinaria | `tests/unit/test_maquinaria.py`: 20 casos; validación y operaciones de datos simuladas. | `tests/integration/test_integracion_maquinaria.py` | `tests/api/test_api_maquinaria.py` | `tests/smoke/test_humo_maquinaria.py` | `tests/performance/locust_maquinaria.py` |
+| Contratación | `tests/unit/test_contratacion.py`: 9 casos; validación, catálogos y operaciones SQL. | `tests/integration/test_integracion_contratacion.py` | `tests/api/test_api_contratacion.py` | `tests/smoke/test_humo_contratacion.py` | `tests/performance/locust_contratacion.py` |
+| Empresa | `tests/unit/test_empresa.py`: 9 casos; RIF, duplicidad y acceso a datos simulado. | `tests/integration/test_integracion_empresa.py` | `tests/api/test_api_empresa.py` | `tests/smoke/test_humo_empresa.py` | `tests/performance/locust_empresa.py` |
+| Obras | `tests/unit/test_obras.py`: 14 casos; entradas, fechas y operaciones de datos. | `tests/integration/test_integracion_obras.py` | `tests/api/test_api_obras.py` | `tests/smoke/test_humo_obras.py` | `tests/performance/locust_obras.py` |
+| Empleados | `tests/unit/test_empleados.py`: 14 casos; limpieza, validación y acceso a datos. | `tests/integration/test_integracion_empleados.py` | `tests/api/test_api_empleados.py` | `tests/smoke/test_humo_empleados.py` | `tests/performance/locust_empleados.py` |
+| Inspecciones | `tests/unit/test_inspecciones.py`: 18 casos; validación, consultas, errores y recursos. | `tests/integration/test_integracion_inspecciones.py` | `tests/api/test_api_inspecciones.py` | `tests/smoke/test_humo_inspecciones.py` | `tests/performance/locust_inspecciones.py` |
+| Evidencias | `tests/unit/test_evidencias.py`: 13 casos; archivos/URL, traversal y operaciones simuladas. | `tests/integration/test_integracion_evidencias.py` | `tests/api/test_api_evidencias.py` | `tests/smoke/test_humo_evidencias.py` | `tests/performance/locust_evidencias.py` |
+| Informe de Avance de Obra | `tests/unit/test_informe_avance.py`: 21 casos; límites, normalización y SQL. | `tests/integration/test_integracion_informe_avance.py` | `tests/api/test_api_informe_avance.py` | `tests/smoke/test_humo_informe_avance.py` | `tests/performance/locust_informe_avance.py` |
+| Publicaciones | `tests/unit/test_publicaciones.py`: 14 casos; consultas, persistencia y errores. | `tests/integration/test_integracion_publicaciones.py` | `tests/api/test_api_publicaciones.py` | `tests/smoke/test_humo_publicaciones.py` | `tests/performance/locust_publicaciones.py` |
+| Reportes PDF | `tests/unit/test_reportes_pdf.py`: 11 casos; consultas, filtros y recursos. | `tests/integration/test_integracion_reportes_pdf.py` | `tests/api/test_api_reportes_pdf.py` | `tests/smoke/test_humo_reportes_pdf.py` | `tests/performance/locust_reportes_pdf.py` |
+| Reportes Excel | `tests/unit/test_reportes_excel.py`: 16 casos; columnas permitidas, filtros y SQL. | `tests/integration/test_integracion_reportes_excel.py` | `tests/api/test_api_reportes_excel.py` | `tests/smoke/test_humo_reportes_excel.py` | `tests/performance/locust_reportes_excel.py` |
+| Reportes Estadísticos | `tests/unit/test_reportes_estadisticos.py`: 19 casos; filtros, consultas y cierre de recursos. | `tests/integration/test_integracion_reportes_estadisticos.py` | `tests/api/test_api_reportes_estadisticos.py` | `tests/smoke/test_humo_reportes_estadisticos.py` | `tests/performance/locust_reportes_estadisticos.py` |
+| Usuarios | `tests/unit/test_usuarios.py`: 19 casos; validación, operaciones CRUD y recursos. | `tests/integration/test_integracion_usuarios.py` | `tests/api/test_api_usuarios.py` | `tests/smoke/test_humo_usuarios.py` | `tests/performance/locust_usuarios.py` |
+| Permisos por Rol | `tests/unit/test_permisos_por_rol.py`: 35 casos; permisos, listas permitidas y errores SQL. | `tests/integration/test_integracion_permisos_por_rol.py` | `tests/api/test_api_permisos_por_rol.py` | `tests/smoke/test_humo_permisos_por_rol.py` | `tests/performance/locust_permisos_por_rol.py` |
+| Administración de Respaldos | `tests/unit/test_administracion_respaldos.py`: 26 casos; validaciones, flujos y errores de respaldo. | `tests/integration/test_integracion_administracion_respaldos.py` | `tests/api/test_api_administracion_respaldos.py` | `tests/smoke/test_humo_administracion_respaldos.py` | `tests/performance/locust_administracion_respaldos.py` |
+| Bitácora | `tests/unit/test_bitacora.py`: 11 casos; registro de auditoría y asignación del usuario actor. | `tests/integration/test_integracion_bitacora.py` | `tests/api/test_api_bitacora.py` | `tests/smoke/test_humo_bitacora.py` | `tests/performance/locust_bitacora.py` |
 
 Además de los archivos por módulo, hay tres suites unitarias transversales:
 `test_informe_validacion.py` (3 casos), `test_security_controls.py` (2) y
@@ -118,10 +127,16 @@ el endpoint enumerado aquí:
 | Bitácora | `/api/obtener-bitacora-json` |
 
 El proyecto probado es Python: no se ejecutaron PHPUnit, Guzzle, Codeception ni
-JMeter; Guzzle/PHPUnit/Codeception pertenecen al stack PHP. Postman no se usó
-en las ejecuciones documentadas, y Selenium estaba disponible pero no fue el
-automatizador de la corrida de interfaz. Los resultados informados corresponden
-a Pytest, Playwright y Locust según el tipo de prueba.
+JMeter; corresponden al stack PHP. La carpeta Postman contiene 20 contratos
+GET de módulos, un request de inicio de sesión y un request negativo de acceso
+sin sesión. En la auditoría actual se verificó la instalación de Postman
+Desktop, pero no se ejecutó esa colección: el entorno no tiene cookie de sesión
+ni valores de IDs de prueba y no hay Newman/Postman CLI para una corrida
+automatizada desde terminal. Las 33 pruebas API reportadas abajo son de pytest,
+no resultados de Postman. Los requests actuales verifican principalmente
+código HTTP y tipo/formato de respuesta; no cubren todos los esquemas ni
+resultados funcionales. Selenium estaba disponible anteriormente, pero no fue
+el automatizador de la corrida de interfaz.
 
 ### Planificación de Unidad, Integración y Sistema
 
@@ -131,9 +146,9 @@ tutor y los usuarios de la institución antes de una validación formal.
 
 | Nivel | Objetivo específico | Actividades | Lugar / fecha | Responsables | Evidencia / estado |
 |---|---|---|---|---|---|
-| Unidad | Evaluar reglas y validadores aislados en las 20 suites. | Particiones válidas/inválidas, límites, parametrización, mocks y contraste esperado/observado. | Ejecución local automatizada, 2026-11-05 20:43:33 (UTC−04:00). | Equipo de desarrollo ejecutó; validador funcional por designar. | 62/62 aprobadas; sin aserciones fallidas. |
-| Integración | Comprobar contratos Flask y colaboración entre componentes. | 20 contratos de ruta; 2 flujos Contratación/Bitácora, incluido error de duplicado inyectado y reintento. | Ejecución local automatizada, 2026-11-05. | Equipo de desarrollo ejecutó; DBA/tutor deberá validar transacciones reales. | 22/22 aprobadas; no certifica escrituras/transacciones reales de MySQL. |
-| Sistema | Verificar el sistema ensamblado y reportar límites de HTTP, UI, carga y aceptación. | Ejecutar API/humo local; UI omitida por falta de URL; revisar los registros Locust del 2026-10-29 y la carga histórica de `/` y `/login` del 2026-10-23; aceptación con usuarios pendiente. | Pytest local el 2026-11-05; Locust contra `127.0.0.1:5600` el 2026-10-29; carga general documentada el 2026-10-23. | Equipo de desarrollo ejecutó; responsables funcionales pendientes. | API 33/33 y humo 21/21; UI 1 omitida; Locust por módulo: 2/20 escenarios HTTP aprobados; 18 no recibieron una respuesta HTTP 200 autenticada; aceptación pendiente. |
+| Unidad | Evaluar reglas y validadores aislados en las 20 suites. | Particiones válidas/inválidas, límites, parametrización, mocks y contraste esperado/observado. | Ejecución local automatizada, 2026-11-12. | Equipo de desarrollo ejecutó; validador funcional por designar. | 427/427 aprobadas; 376 casos en las 20 suites y 51 transversales. Cobertura de métodos/ramas no medida. |
+| Integración | Comprobar contratos Flask y colaboración entre componentes. | 20 contratos de ruta; 2 flujos Contratación/Bitácora, incluido error de duplicado inyectado y reintento. | Ejecución local automatizada, 2026-11-12. | Equipo de desarrollo ejecutó; DBA/tutor deberá validar transacciones reales. | 22/22 aprobadas; no certifica escrituras/transacciones reales de MySQL. |
+| Sistema | Verificar el sistema ensamblado y reportar límites de HTTP, UI, carga y aceptación. | Ejecutar API/humo local; UI omitida por falta de URL; revisar los registros Locust del 2026-10-29 y la carga histórica de `/` y `/login` del 2026-10-23; aceptación con usuarios pendiente. | Pytest local el 2026-11-12; Locust contra `127.0.0.1:5600` el 2026-10-29; carga general documentada el 2026-10-23. | Equipo de desarrollo ejecutó; responsables funcionales pendientes. | API 33/33 y humo 21/21; UI 1 omitida; Locust por módulo: 2/20 escenarios HTTP aprobados; 18 no recibieron una respuesta HTTP 200 autenticada; aceptación pendiente. |
 
 ### Criterios de entrada, salida y gestión de defectos
 
@@ -153,14 +168,18 @@ tutor y los usuarios de la institución antes de una validación formal.
   tutor/comunidad debe acordarlo antes de interpretar una carga como aprobada.
 
 Las plantillas editables para completar el plan y cada caso funcional están en
-[`tests/documentation`](tests/documentation/).
+[`tests/documentation`](tests/documentation/). La matriz con los campos del
+formato institucional está en
+[`Matriz_Trazabilidad_Pruebas_INVISAP.docx`](tests/documentation/Matriz_Trazabilidad_Pruebas_INVISAP.docx);
+sus IDs CP son provisionales y las filas marcadas pendientes no representan
+pruebas ejecutadas.
 
 ## 4.7.1 Bitácora de Pruebas
 
 ### Datos de ejecución
 
-- **Fecha y hora de la suite completa:** 2026-11-05 20:43:33 (UTC−04:00).
-- **Ambiente:** ejecución local automatizada en Windows, Python 3.14.7 y
+- **Fecha de la suite completa:** 2026-11-12.
+- **Ambiente:** ejecución local automatizada en Windows, Python 3.14.3 y
   pytest 9.1.1.
 - **Responsable técnico:** equipo de desarrollo (ejecución automatizada).
 - **Validador funcional:** pendiente de designación y firma del tutor/usuarios
@@ -168,25 +187,26 @@ Las plantillas editables para completar el plan y cada caso funcional están en
 - **Alcance de datos:** los casos de unidad, API y flujos integrados usan
   fixtures/dobles para aislar dependencias; esta ejecución no certifica
   persistencia contra una base real.
-- **Comando:** `python -m pytest` con salida JUnit temporal para el desglose por
-  categoría; se ejecutó la misma suite que descubre pytest.
-- **Duración:** 4.63 s informados por pytest; 7.59 s de duración total del
-  proceso de ejecución y recolección de resultados.
+- **Comando:** `python -m pytest tests\unit tests\integration tests\api tests\smoke tests\ui -q`
+  con salida JUnit temporal para verificar el desglose por categoría.
+- **Duración:** 7.45 s en la última corrida; no se usa el tiempo de ejecución
+  de pytest como criterio de rendimiento funcional.
 
 ### Resultados observados
 
 | Nivel / categoría | Comando ejecutado | Resultado | Duración | Observaciones |
 |---|---|---:|---:|---|
-| Unidad | `python -m pytest` (grupo `tests\unit`) | 62 aprobadas, 0 fallidas, 0 omitidas | Incluida en 4.63 s | 20 módulos y 13 pruebas transversales (validación, controles de seguridad y filtros). |
-| Integración | Mismo comando (grupo `tests\integration`) | 22 aprobadas, 0 fallidas, 0 omitidas | Incluida en 4.63 s | 20 contratos de ruta y 2 flujos Contratación/Bitácora; no valida transacciones reales de MySQL. |
-| Backend/API | Mismo comando (grupo `tests\api`) | 33 aprobadas, 0 fallidas, 0 omitidas | Incluida en 4.63 s | 20 suites por módulo y 13 casos parametrizados de reportes. |
-| Humo | Mismo comando (grupo `tests\smoke`) | 21 aprobadas, 0 fallidas, 0 omitidas | Incluida en 4.63 s | 20 módulos y un caso de acceso; no es un recorrido integral. |
-| Interfaz | Mismo comando (grupo `tests\ui`) | 0 aprobadas, 0 fallidas, 1 omitida | Incluida en 4.63 s | Omitida por falta de `INVISAP_TEST_URL`; esta corrida no abrió navegador. |
+| Unidad | `python -m pytest tests\unit` | 427 aprobadas, 0 fallidas, 0 omitidas | Incluida en la corrida completa | 20 suites de módulo con 376 casos, más 51 casos transversales; los accesos SQL se simulan y no se prueba persistencia real. |
+| Integración | `python -m pytest tests\integration` | 22 aprobadas, 0 fallidas, 0 omitidas | Incluida en la corrida completa | 20 contratos de ruta y 2 flujos Contratación/Bitácora; no valida transacciones reales de MySQL. |
+| Backend/API (Pytest) | `python -m pytest tests\api` | 33 aprobadas, 0 fallidas, 0 omitidas | Incluida en la corrida completa | Cliente Flask y dobles de modelos; 20 suites por módulo y 13 casos parametrizados de reportes. |
+| Backend/API (Postman) | Colección `postman/collections/INVISAP - Pruebas de Contrato HTTP` | No ejecutada en esta auditoría | — | 20 contratos GET, login y comprobación negativa sin sesión. Para la ejecución positiva faltan cookie de sesión e IDs válidos; los valores de acceso permanecen en variables locales. |
+| Humo | `python -m pytest tests\smoke` | 21 aprobadas, 0 fallidas, 0 omitidas | Incluida en la corrida completa | 20 módulos y un caso de acceso; no es un recorrido integral. |
+| Interfaz | `python -m pytest tests\ui` | 0 aprobadas, 0 fallidas, 1 omitida | Incluida en la corrida completa | Omitida por falta de `INVISAP_TEST_URL`; esta corrida no abrió navegador. |
 | Rendimiento | `python tests\performance\run_performance.py --all --profile quick` (corridas históricas del 2026-10-29) | Última serie: 2 módulos con HTTP 200 y 18 para revisar por HTTP 401/302 | 2 series de 5 s por módulo | La bitácora no permite confirmar una sesión autorizada; las latencias de respuestas rechazadas no constituyen línea base de rendimiento aprobada. |
 | Aceptación | Recorrido de usuario según requisito aprobado | Pendiente | — | Sin criterios validados ni aprobación/evidencia de usuario. |
 
-La ejecución completa recogió **138 aprobadas, 0 fallidas y 1 omitida** en
-4.63 s (pytest; 7.59 s de proceso total), con **14 advertencias**. Las
+La ejecución completa recogió **503 aprobadas, 0 fallidas y 1 omitida**
+(504 casos recopilados), con **14 advertencias**. Las
 advertencias son `DeprecationWarning` de `openpyxl` por usar
 `datetime.datetime.utcnow()` al generar Excel; no son fallos de aserción. La
 omisión de interfaz se debe a la falta de URL. Rendimiento y aceptación se
@@ -202,31 +222,33 @@ caso de ruta por módulo; hay un caso adicional para la pantalla de acceso.
 
 | Módulo | Unidad | Contrato integración | API | Humo |
 |---|---:|---:|---:|---:|
-| Solicitudes | 3/3 | 1/1 | 1/1 | 1/1 |
-| Gravedad de Obra | 6/6 | 1/1 | 1/1 | 1/1 |
-| Prioridad | 5/5 | 1/1 | 1/1 | 1/1 |
-| Proyectos | 3/3 | 1/1 | 1/1 | 1/1 |
-| Maquinaria | 2/2 | 1/1 | 1/1 | 1/1 |
-| Contratación | 2/2 | 1/1 | 1/1 | 1/1 |
-| Empresa | 2/2 | 1/1 | 1/1 | 1/1 |
-| Obras | 3/3 | 1/1 | 1/1 | 1/1 |
-| Empleados | 4/4 | 1/1 | 1/1 | 1/1 |
-| Inspecciones | 3/3 | 1/1 | 1/1 | 1/1 |
-| Evidencias | 2/2 | 1/1 | 1/1 | 1/1 |
-| Informe de Avance de Obra | 3/3 | 1/1 | 1/1 | 1/1 |
-| Publicaciones | 1/1 | 1/1 | 1/1 | 1/1 |
-| Reportes PDF | 1/1 | 1/1 | 7/7 | 1/1 |
-| Reportes Excel | 1/1 | 1/1 | 8/8 | 1/1 |
-| Reportes Estadísticos | 1/1 | 1/1 | 1/1 | 1/1 |
-| Usuarios | 1/1 | 1/1 | 1/1 | 1/1 |
-| Permisos por Rol | 2/2 | 1/1 | 1/1 | 1/1 |
-| Administración de Respaldos | 2/2 | 1/1 | 1/1 | 1/1 |
-| Bitácora | 2/2 | 1/1 | 1/1 | 1/1 |
+| Solicitudes | 43/43 | 1/1 | 1/1 | 1/1 |
+| Gravedad de Obra | 11/11 | 1/1 | 1/1 | 1/1 |
+| Prioridad | 31/31 | 1/1 | 1/1 | 1/1 |
+| Proyectos | 22/22 | 1/1 | 1/1 | 1/1 |
+| Maquinaria | 20/20 | 1/1 | 1/1 | 1/1 |
+| Contratación | 9/9 | 1/1 | 1/1 | 1/1 |
+| Empresa | 9/9 | 1/1 | 1/1 | 1/1 |
+| Obras | 14/14 | 1/1 | 1/1 | 1/1 |
+| Empleados | 14/14 | 1/1 | 1/1 | 1/1 |
+| Inspecciones | 18/18 | 1/1 | 1/1 | 1/1 |
+| Evidencias | 13/13 | 1/1 | 1/1 | 1/1 |
+| Informe de Avance de Obra | 21/21 | 1/1 | 1/1 | 1/1 |
+| Publicaciones | 14/14 | 1/1 | 1/1 | 1/1 |
+| Reportes PDF | 11/11 | 1/1 | 7/7 | 1/1 |
+| Reportes Excel | 16/16 | 1/1 | 8/8 | 1/1 |
+| Reportes Estadísticos | 19/19 | 1/1 | 1/1 | 1/1 |
+| Usuarios | 19/19 | 1/1 | 1/1 | 1/1 |
+| Permisos por Rol | 35/35 | 1/1 | 1/1 | 1/1 |
+| Administración de Respaldos | 26/26 | 1/1 | 1/1 | 1/1 |
+| Bitácora | 11/11 | 1/1 | 1/1 | 1/1 |
 
-Las 13 pruebas unitarias transversales corresponden a validación de informes,
-controles de reCAPTCHA y listas permitidas de filtros SQL. Los 2 casos extra
-de integración cubren auditoría y recuperación ante colisión de ID. La suite
-de humo suma un caso para acceso de INVISAP.
+Las suites unitarias de los veinte módulos suman 376 casos. Los 51 casos
+transversales corresponden a `BaseModel` (5), formatos/logos de reportes (2),
+validación de informes (3), controles de reCAPTCHA (2) y listas permitidas de
+filtros SQL (39). Los 2 casos extra de integración cubren auditoría y
+recuperación ante colisión de ID. La suite de humo suma un caso para acceso de
+INVISAP.
 
 ### Resultados exactos de rendimiento por módulo
 
@@ -294,19 +316,26 @@ documentado para esas dos rutas solamente; no representa los 20 módulos.
 
 ### Experiencia de ejecución, errores y acciones
 
-Durante la corrida del 2026-11-05 no se detectaron fallos de aserción en
-Unidad, Integración, API ni Humo. Los fixtures y dobles permiten reproducir
-validaciones, contratos HTTP y colaboración entre componentes, pero no
-certifican persistencia real. Para completar esa evidencia se requiere una
-fase de integración con MySQL de pruebas y rollback/limpieza de datos.
+Durante la corrida del 2026-11-12 no se detectaron fallos de aserción en
+Unidad, Integración, API ni Humo. La ampliación de Usuarios detectó que
+`existe_y_activo` referenciaba `self` dentro de un método estático; se convirtió
+en método de instancia y se añadió una prueba de resultados positivo/negativo
+y cierre de recursos. Los fixtures y dobles permiten reproducir validaciones,
+contratos HTTP y colaboración entre componentes, pero no certifican
+persistencia real. Para completar esa evidencia se requiere una fase de
+integración con MySQL de pruebas y rollback/limpieza de datos. Las
+pruebas de reCAPTCHA se aislaron del bypass configurado localmente; la
+ejecución comprueba los casos de secreto ausente y error de red, no una
+verificación real contra Google.
 
-No se atribuye una corrección de código a los resultados de pytest del
-2026-11-05. Las correcciones siguientes constan en ejecuciones anteriores del
-informe completo y no deben confundirse con hallazgos de esta corrida: se
-ajustó la verificación estricta de reCAPTCHA, se corrigió el aviso falso de
-sesión al abrir `/login`, se implementó el reintento tras colisión de ID, se
-restringieron permisos de directorios de carga y se parametrizaron consultas
-y listas permitidas de identificadores SQL. El mensaje `Duplicate entry '5'`
+La corrección de `existe_y_activo` quedó cubierta por la prueba unitaria de
+Usuarios; debe confirmarse también en un entorno con base de datos. Las
+correcciones siguientes constan en ejecuciones anteriores del informe
+completo y no deben confundirse con hallazgos de esta corrida: se ajustó la
+verificación estricta de reCAPTCHA, se corrigió el aviso falso de sesión al
+abrir `/login`, se implementó el reintento tras colisión de ID, se restringieron
+permisos de directorios de carga y se parametrizaron consultas y listas
+permitidas de identificadores SQL. El mensaje `Duplicate entry '5'`
 que aparece en
 `test_registrar_contratacion_reintenta_si_hay_id_duplicado` es el error
 inyectado por el caso para comprobar que el modelo reintenta con otro ID; el
@@ -341,7 +370,7 @@ El informe integral y la Agenda JAD registran una actividad de instalación
 local en la institución el **2026-09-07**, a cargo del equipo de proyecto con
 participación de la tutora Ing. Jhoanly Hernandez. Ese registro documenta una
 actividad realizada, pero no certifica que el servicio siga disponible ni que
-se hayan repetido todos los pasos en la versión examinada el 2026-11-05. La
+se hayan repetido todos los pasos en la versión examinada el 2026-11-12. La
 conexión MySQL comprobada en el informe llegó a ejecutar `SELECT 1`; no se
 registraron escrituras, restauración de respaldo ni pruebas CRUD completas.
 
@@ -363,6 +392,14 @@ pero no se encontraron `Containerfile`, `Dockerfile` ni directorio `wheels/`.
 Por tanto, una instalación offline en contenedor no está demostrada y debe
 resolverse o descartarse formalmente antes de presentarla como procedimiento
 reproducible.
+
+| Registro de instalación | Dato por completar |
+|---|---|
+| Fecha, hora, lugar y versión/commit instalada | Pendiente de nueva ejecución institucional |
+| Responsable técnico y administrador de base de datos | Por designar |
+| Resultado de verificación funcional y conexión | `SELECT 1` está documentado históricamente; CRUD completo pendiente |
+| Ubicación de evidencia y respaldo restaurable | Por registrar en ambiente autorizado |
+| Aprobación y observaciones | Firma del responsable y tutor pendientes |
 
 ## 4.9 Plan de Capacitación
 
@@ -412,6 +449,14 @@ asistencia, resultados esperados y observaciones. Adjuntar la evidencia y
 separar claramente una asistencia planificada de una capacitación efectivamente
 impartida.
 
+| Registro de capacitación | Dato por completar |
+|---|---|
+| Fecha, horario, lugar y duración efectiva | Pendiente de coordinación |
+| Facilitadores, participantes y rol | Por confirmar y registrar |
+| Asistencia y ejercicios completados | Pendiente de ejecución |
+| Resultado de evaluación, observaciones y acuerdos | Pendiente de ejecución |
+| Firmas de participantes y responsable | Pendientes |
+
 ## 6. Recomendaciones y Evolución Previsible del Sistema
 
 1. Vincular cada requisito funcional aprobado con un ID estable y con al menos
@@ -441,6 +486,13 @@ impartida.
   EAFIT*. Universidad EAFIT. Documento suministrado para esta planificación;
   se adaptan sus niveles de prueba (pp. 44–60) y técnicas de caja negra, caja
   blanca, interfaz y desempeño (pp. 60–75).
+- *Metodologias Testing de Software.pdf* (documento suministrado). Referencia
+  para niveles, clases de equivalencia, análisis de valores límite, tablas de
+  decisión y cobertura estructural; solo se atribuyen a la ejecución las
+  técnicas efectivamente aplicadas y descritas en este capítulo.
+- *Matriz de Trazabilidad de Pruebas.docx* (formato suministrado). Se conserva
+  su estructura de seis columnas en la matriz de INVISAP; los IDs de caso son
+  provisionales y requieren validación contra requisitos aprobados.
 - *Manual Informe de Proyecto III*, documento suministrado. Estructura usada:
   p. 3: Plan de Pruebas, Bitácora, Plan de Instalación, Plan de Capacitación y
   recomendaciones/evolución.
@@ -453,7 +505,7 @@ impartida.
   <https://www.calameo.com/accounts/6325204>. Se adaptan sus campos de
   objetivos, actividades, responsables, entradas, resultados, errores,
   correcciones y evaluación.
-- *Formato del Plan de Capacitación* (PDF suministrado). Se utiliza como guía
+- *Formato del Plan de Capacitación (1).docx* (documento suministrado). Se utiliza como guía
   para organizar objetivos, metodología, temas, logística, facilitadores y
   evaluación; no se reporta una sesión impartida sin asistencia/evidencia.
 - Gómez Rodríguez, N. (s. f.). PFC suministrado, sección 2.2.1, “Pruebas de

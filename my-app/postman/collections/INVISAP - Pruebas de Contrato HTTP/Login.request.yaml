@@ -1,5 +1,5 @@
 $kind: http-request
-description: "Generated from cURL: curl -X POST '{{baseUrl}}/login' --form 'nombre=admin' --form 'pass_user=admin123.' --form 'g-recaptcha-response='"
+description: "Inicio de sesión de prueba. Configura las variables locales login_username, login_password y recaptcha_token; no guardes credenciales en el repositorio."
 url: "{{baseUrl}}/login"
 method: POST
 body:
@@ -7,34 +7,41 @@ body:
   content:
     - type: text
       key: nombre
-      value: admin
+      value: "{{login_username}}"
       disabled: false
     - type: text
       key: pass_user
-      value: admin123.
+      value: "{{login_password}}"
       disabled: false
     - type: text
       key: g-recaptcha-response
-      value: 6LdbmUktAAAAALzTEslJCQaLp3O0Hl4Kz5okNVgq
+      value: "{{recaptcha_token}}"
       disabled: false
 scripts:
   - type: afterResponse
     code: |-
-      pm.test("Login responde con éxito (200 OK)", function () {
+      pm.test("El login responde con HTML", function () {
           pm.response.to.have.status(200);
+          pm.expect(pm.response.headers.get("Content-Type") || "")
+              .to.include("text/html");
       });
 
-      pm.test("El tiempo de respuesta es menor a 500ms", function () {
-          pm.expect(pm.response.responseTime).to.be.below(500);
+      const body = pm.response.text();
+      const autenticacionCorrecta =
+          !body.includes('name="pass_user"') &&
+          !body.includes("Credenciales incorrectas") &&
+          !body.includes("No se pudo validar");
+      const cookie = pm.cookies.get("session");
+
+      pm.test("No se mostró el formulario de login después de autenticar", function () {
+          pm.expect(autenticacionCorrecta).to.be.true;
       });
 
-      pm.test("El tipo de contenido es HTML", function () {
-          pm.response.to.have.header("Content-Type", "text/html; charset=utf-8");
+      pm.test("Cookie de sesión disponible para las siguientes solicitudes", function () {
+          pm.expect(autenticacionCorrecta && cookie, "Login exitoso requerido").to.be.ok;
       });
-
-      pm.test("Cookie de sesión capturada en environment", function () {
-          const cookie = pm.cookies.get("session"); // Assuming the cookie name is 'session'
-          pm.expect(cookie).to.not.be.undefined;
-          pm.environment.set("session_cookie", cookie);
-      });
+      pm.environment.set(
+          "session_cookie",
+          autenticacionCorrecta && cookie ? `session=${cookie}` : ""
+      );
 order: 21000

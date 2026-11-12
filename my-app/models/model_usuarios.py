@@ -191,12 +191,19 @@ class UsuarioModel(BaseModel):
             return self.__eliminar_fisico_db()
         return False
 
-    @staticmethod
-    def existe_y_activo(id_usuario):
+    def existe_y_activo(self, id_usuario):
         conn = self.obtener_conexion_seguridad()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT id_usuarios FROM usuarios WHERE id_usuarios = %s", (id_usuario,))
-        result = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        return result is not None
+        if conn is None:
+            return False
+        cursor = None
+        try:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute(
+                "SELECT id_usuarios FROM usuarios WHERE id_usuarios = %s",
+                (id_usuario,),
+            )
+            return cursor.fetchone() is not None
+        finally:
+            if cursor is not None:
+                cursor.close()
+            conn.close()
