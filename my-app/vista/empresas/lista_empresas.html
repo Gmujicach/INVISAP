@@ -12,6 +12,27 @@
     background-color: #2e7d32;
     border-color: #2e7d32;
   }
+  #modalRequisitos .requisito-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+    padding-left: 0;
+  }
+  #modalRequisitos .requisito-item .form-check-input {
+    flex: 0 0 1.15rem;
+    width: 1.15rem !important;
+    height: 1.15rem !important;
+    margin: 0.2rem 0 0;
+  }
+  #modalRequisitos .requisito-item .form-check-label {
+    flex: 1;
+    line-height: 1.5;
+    cursor: pointer;
+  }
+  #modalRequisitos .requisito-grupo + .requisito-grupo {
+    margin-top: 1.25rem;
+  }
 </style>
 {% endblock %}
 
@@ -96,8 +117,7 @@
                         title="Verificar requisitos legales"
                         aria-label="Verificar requisitos legales"
                         data-rif="{{ e.rif }}"
-                        data-nombre="{{ e.nombre_empresa }}"
-                        data-cumple="{{ e.cumple_requisitos }}">
+                        data-nombre="{{ e.nombre_empresa }}">
                   <i class="bi bi-shield-check"></i>
                 </button>
               </div>
@@ -122,7 +142,7 @@
 </div>
 
 <div class="modal fade" id="modalRequisitos" tabindex="-1" aria-labelledby="modalRequisitosLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
     <div class="modal-content" style="border-radius: 0px !important">
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title fw-bold" id="modalRequisitosLabel">
@@ -132,18 +152,38 @@
             <i class="bi bi-x-lg"></i>
         </button>
       </div>
-      <div class="modal-body p-4 text-center">
+      <div class="modal-body p-4">
         <input type="hidden" id="requisitoRifEmpresa">
         <div class="mb-3">
           <span class="fw-bold text-dark" id="requisitoNombreEmpresa"></span>
         </div>
-        <div class="mb-4">
-          <div class="form-check form-switch d-flex justify-content-center align-items-center">
-            <input type="checkbox" id="checkboxCumpleRequisitos">
-            <label class="form-check-label mb-0 ms-2 text-center" for="checkboxCumpleRequisitos">
-              <span class="d-block">Esta empresa cumple con todos los requisitos legales</span>
-            </label>
-          </div>
+        <div id="requisitoCarga" class="alert alert-info d-none" role="status">
+          <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+          Cargando requisitos guardados...
+        </div>
+        <div id="listaRequisitos" class="mb-4">
+          <section class="requisito-grupo" aria-labelledby="requisitosLegalesTitulo">
+            <h6 class="fw-bold mb-3" id="requisitosLegalesTitulo">Requisitos legales (Documentos legales)</h6>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_acta_constitutiva"><label class="form-check-label" for="req_acta_constitutiva">Acta constitutiva y estatutos — Debidamente registrados ante el Registro Mercantil correspondiente</label></div>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_acta_asamblea"><label class="form-check-label" for="req_acta_asamblea">Última acta de asamblea — Donde conste la junta directiva vigente</label></div>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_rif"><label class="form-check-label" for="req_rif">RIF de la empresa — Vigente y actualizado</label></div>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_cedula_representante"><label class="form-check-label" for="req_cedula_representante">Cédula de identidad del representante legal — Original y copia</label></div>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_poder_representante"><label class="form-check-label" for="req_poder_representante">Poder del representante legal — Si no es el designado en los estatutos</label></div>
+          </section>
+          <section class="requisito-grupo" aria-labelledby="documentosFinancierosTitulo">
+            <h6 class="fw-bold mb-3" id="documentosFinancierosTitulo">Documentos financieros</h6>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_estados_financieros"><label class="form-check-label" for="req_estados_financieros">Estados financieros auditados — Del último ejercicio fiscal, firmados por contador público colegiado</label></div>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_declaracion_islr"><label class="form-check-label" for="req_declaracion_islr">Declaración del ISLR — Del último ejercicio fiscal</label></div>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_solvencia_seniat"><label class="form-check-label" for="req_solvencia_seniat">Solvencia del SENIAT — Certificado de cumplimiento de obligaciones tributarias</label></div>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_solvencia_ivss"><label class="form-check-label" for="req_solvencia_ivss">Solvencia del IVSS — Certificado de cumplimiento de obligaciones de seguridad social</label></div>
+          </section>
+          <section class="requisito-grupo" aria-labelledby="documentosTecnicosTitulo">
+            <h6 class="fw-bold mb-3" id="documentosTecnicosTitulo">Documentos técnicos</h6>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_relacion_experiencia"><label class="form-check-label" for="req_relacion_experiencia">Relación de experiencia — Contratos ejecutados con descripción, monto y plazo</label></div>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_nomina_personal"><label class="form-check-label" for="req_nomina_personal">Nómina de personal técnico — Con títulos profesionales y experiencia</label></div>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_relacion_equipos"><label class="form-check-label" for="req_relacion_equipos">Relación de equipos — Propios o arrendados, disponibles para la ejecución</label></div>
+            <div class="form-check requisito-item"><input class="form-check-input" type="checkbox" id="req_clasificacion"><label class="form-check-label" for="req_clasificacion">Clasificación solicitada — Según la naturaleza de los bienes, servicios u obras</label></div>
+          </section>
         </div>
         <div id="requisitoFeedback" class="alert alert-success py-2 mb-0 d-none">
           <i class="bi bi-check-circle me-1"></i> Estado actualizado correctamente.

@@ -27,11 +27,11 @@ document.getElementById('btnCargarEmpresas').addEventListener('click', function(
                      <tr>
                          <td class="fw-bold">${empresa.rif || '—'}</td>
                          <td class="text-uppercase">${empresa.nombre_empresa || '—'}</td>
-                         <td class="text-center">
-                             <span class="badge bg-success bg-opacity-10 text-success">
-                                 <i class="bx bx-check-circle"></i> Cumple requisitos legales
-                             </span>
-                         </td>
+<td class="text-center">
+                              <span class="badge bg-success bg-opacity-10 text-dark fw-semibold">
+                                  <i class="bx bx-check-circle"></i> Cumple requisitos legales
+                              </span>
+                          </td>
                          <td class="text-center">
                              <button type="button" class="btn btn-outline-primary btn-sm" 
                                      onclick="seleccionarEmpresa('${(empresa.rif || '').replace(/'/g, "\\'")}', '${(empresa.nombre_empresa || '').replace(/'/g, "\\'")}')">

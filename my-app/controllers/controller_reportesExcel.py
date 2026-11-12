@@ -15,6 +15,8 @@ modelo_reporte = ReporteExcelModel()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOGO_GOBERNACION = os.path.join(BASE_DIR, 'static', 'assets', 'img', 'NUEVO LOGO GOBERNACION DE LARA JUNIO 2025.png')
 LOGO_INVILARA = os.path.join(BASE_DIR, 'static', 'assets', 'img', 'INVILARA LOGO OFICIAL HORIZONTAL.png')
+LOGO_GOBERNACION_BOUNDS = (80, 104)
+LOGO_INVILARA_BOUNDS = (187, 73)
 
 header_fill = PatternFill(start_color='DC3545', end_color='DC3545', fill_type='solid')
 header_font = Font(color='FFFFFF', bold=True, size=11)
@@ -26,6 +28,17 @@ border = Border(
 )
 header_alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
 cell_alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
+
+
+def _crear_imagen_logo(ruta, dimensiones_maximas):
+    imagen = XLImage(ruta)
+    escala = min(
+        dimensiones_maximas[0] / imagen.width,
+        dimensiones_maximas[1] / imagen.height
+    )
+    imagen.width = max(1, round(imagen.width * escala))
+    imagen.height = max(1, round(imagen.height * escala))
+    return imagen
 
 
 def construir_modulos_config_excel():
@@ -242,27 +255,19 @@ def generarReporteExcel():
             ws = wb.create_sheet(title=sheet_title)
             ws.sheet_view.showGridLines = True
 
-            if os.path.exists(LOGO_GOBERNACION):
-                try:
-                    img_izq = XLImage(LOGO_GOBERNACION)
-                    img_izq.width = 140
-                    img_izq.height = 42
-                    ws.add_image(img_izq, 'A2')
-                except Exception:
-                    pass
-            if os.path.exists(LOGO_INVILARA):
-                try:
-                    img_der = XLImage(LOGO_INVILARA)
-                    img_der.width = 130
-                    img_der.height = 40
-                    total_cols = len(mod_config['headers'])
-                    right_col_letter = get_column_letter(total_cols)
-                    ws.add_image(img_der, f'{right_col_letter}2')
-                except Exception:
-                    pass
+            ws.add_image(
+                _crear_imagen_logo(LOGO_GOBERNACION, LOGO_GOBERNACION_BOUNDS),
+                'A2'
+            )
+            total_cols = len(mod_config['headers'])
+            right_col_letter = get_column_letter(total_cols)
+            ws.add_image(
+                _crear_imagen_logo(LOGO_INVILARA, LOGO_INVILARA_BOUNDS),
+                f'{right_col_letter}2'
+            )
 
             ws.row_dimensions[1].height = 18
-            ws.row_dimensions[2].height = 48
+            ws.row_dimensions[2].height = 82
             ws.row_dimensions[3].height = 20
             ws.row_dimensions[4].height = 16
             ws.row_dimensions[5].height = 20

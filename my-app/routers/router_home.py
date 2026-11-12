@@ -938,16 +938,46 @@ def api_detalle_empresa(rif):
 
     return jsonify({'exito': True, 'empresa': empresa})
 
+@app.route('/api/empresas/<string:rif>/requisitos', methods=['GET'])
+def api_requisitos_empresa(rif):
+    if 'conectado' not in session:
+        return jsonify({'exito': False, 'mensaje': 'Debes iniciar sesión.'}), 401
+
+    from models.model_empresas import EmpresaModel
+
+    try:
+        requisitos = EmpresaModel().obtener_requisitos(rif)
+    except RuntimeError as error:
+        return jsonify({'exito': False, 'mensaje': str(error)}), 500
+    if requisitos is None:
+        return jsonify({'exito': False, 'mensaje': 'La empresa no existe o está inactiva.'}), 404
+    return jsonify({'exito': True, 'requisitos': requisitos})
+
+
 @app.route('/marcar-cumple-requisitos/<string:rif>', methods=['POST'])
 def marcar_cumple_requisitos(rif):
-    if 'conectado' in session:
-        from controllers.controller_empresa import marcar_cumple_requisitos
-        valor = request.form.get('valor', '1')
-        valor_int = 1 if valor in ('1', 'true', 'True', True) else 0
-        if marcar_cumple_requisitos(rif, valor_int):
-            return jsonify({'exito': True, 'mensaje': 'Cumplimiento de requisitos legales actualizado.', 'valor': valor_int})
-        return jsonify({'exito': False, 'mensaje': 'Error al actualizar el estado de la empresa.'})
-    return jsonify({'exito': False, 'mensaje': 'Debes iniciar sesión.', 'categoria': 'error'})
+    if 'conectado' not in session:
+        return jsonify({'exito': False, 'mensaje': 'Debes iniciar sesión.', 'categoria': 'error'}), 401
+
+    from models.model_empresas import REQUISITOS_EMPRESA
+    from controllers.controller_empresa import guardar_requisitos_empresa
+
+    data = request.get_json(silent=True)
+    requisitos = data.get('requisitos') if isinstance(data, dict) else None
+    if (not isinstance(requisitos, dict)
+            or set(requisitos) != set(REQUISITOS_EMPRESA)
+            or any(type(valor) is not bool for valor in requisitos.values())):
+        return jsonify({'exito': False, 'mensaje': 'La lista de requisitos enviada no es válida.'}), 400
+
+    if not guardar_requisitos_empresa(rif, requisitos):
+        return jsonify({'exito': False, 'mensaje': 'Error al actualizar los requisitos de la empresa.'}), 500
+
+    cumple = int(all(requisitos.values()))
+    return jsonify({
+        'exito': True,
+        'mensaje': 'Requisitos legales actualizados.',
+        'valor': cumple
+    })
 
 """Modulo de Empresas - Fin"""
 

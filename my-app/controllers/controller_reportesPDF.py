@@ -30,39 +30,44 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 LOGO_GOBERNACION = os.path.join(BASE_DIR, 'static', 'assets', 'img', 'NUEVO LOGO GOBERNACION DE LARA JUNIO 2025.png')
 LOGO_INVILARA = os.path.join(BASE_DIR, 'static', 'assets', 'img', 'INVILARA LOGO OFICIAL HORIZONTAL.png')
 
-LOGO_W = 120
-LOGO_H = 40
+LOGO_GOBERNACION_BOUNDS = (60, 78)
+LOGO_INVILARA_BOUNDS = (140, 55)
 
 
 def header_footer(canvas, doc):
     canvas.saveState()
-    page_w, page_h = doc.pagesize
+    page_w, _ = doc.pagesize
     top_y = doc.height + doc.topMargin - 8
 
     canvas.setFont('Helvetica-Oblique', 8)
     canvas.drawRightString(page_w - doc.rightMargin - 5, top_y + 8, f'Fecha de Emisión: {datetime.now().strftime("%d/%m/%Y %I:%M:%S %p")}')
 
-    if os.path.exists(LOGO_GOBERNACION):
-        try:
-            canvas.drawImage(LOGO_GOBERNACION, doc.leftMargin, top_y - LOGO_H,
-                             width=LOGO_W, height=LOGO_H,
-                             preserveAspectRatio=True, mask='auto')
-        except Exception:
-            pass
+    canvas.drawImage(
+        LOGO_GOBERNACION,
+        doc.leftMargin,
+        top_y - LOGO_GOBERNACION_BOUNDS[1],
+        width=LOGO_GOBERNACION_BOUNDS[0],
+        height=LOGO_GOBERNACION_BOUNDS[1],
+        preserveAspectRatio=True,
+        anchor='sw',
+        mask='auto'
+    )
+    canvas.drawImage(
+        LOGO_INVILARA,
+        page_w - doc.rightMargin - LOGO_INVILARA_BOUNDS[0],
+        top_y - LOGO_INVILARA_BOUNDS[1],
+        width=LOGO_INVILARA_BOUNDS[0],
+        height=LOGO_INVILARA_BOUNDS[1],
+        preserveAspectRatio=True,
+        anchor='sw',
+        mask='auto'
+    )
 
-    if os.path.exists(LOGO_INVILARA):
-        try:
-            canvas.drawImage(LOGO_INVILARA, page_w - doc.rightMargin - LOGO_W, top_y - LOGO_H,
-                             width=LOGO_W, height=LOGO_H,
-                             preserveAspectRatio=True, mask='auto')
-        except Exception:
-            pass
-
-    text_y = top_y - LOGO_H - 8
-    canvas.setFont('Helvetica-Bold', 12)
+    text_y = top_y - 26
+    canvas.setFont('Helvetica-Bold', 9)
     canvas.drawCentredString(page_w / 2, text_y, 'GOBERNACIÓN DEL ESTADO LARA - INVILARA')
-    canvas.setFont('Helvetica-Bold', 10)
-    canvas.drawCentredString(page_w / 2, text_y - 15, 'REPORTE DETALLADO DE GESTIÓN')
+    canvas.setFont('Helvetica-Bold', 8)
+    canvas.drawCentredString(page_w / 2, text_y - 14, 'REPORTE DETALLADO DE GESTIÓN')
     canvas.setFont('Helvetica-Oblique', 8)
     canvas.drawCentredString(page_w / 2, doc.bottomMargin - 20, f'Página {canvas.getPageNumber()}')
     canvas.restoreState()
@@ -341,7 +346,7 @@ def generarReportePDF():
             pagesize=tamanio_pagina,
             rightMargin=72,
             leftMargin=72,
-            topMargin=125,
+            topMargin=140,
             bottomMargin=40
         )
         doc.build(elementos, onFirstPage=header_footer, onLaterPages=header_footer)
