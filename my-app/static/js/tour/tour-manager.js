@@ -7,26 +7,9 @@
     const body = document.body;
     if (body && body.dataset.module) return body.dataset.module;
 
-    const hash = window.location.hash.replace('#', '');
-    if (hash) {
-      const hashMap = {
-        'proyectos': 'proyectos', 'solicitudes': 'solicitudes', 'empleados': 'empleados',
-        'empresas': 'empresas', 'obras': 'obras', 'bitacora': 'bitacora',
-        'contratacion': 'contratacion', 'contrataciones': 'contratacion',
-        'evidencia': 'evidencia', 'evidencias': 'evidencia',
-        'inspeccion': 'inspeccion', 'inspecciones': 'inspeccion',
-        'inf_avance_obra': 'inf_avance_obra', 'publicaciones': 'publicaciones',
-        'perfil': 'perfil', 'reportes': 'reportes', 'respaldo': 'respaldo',
-        'seguridad': 'seguridad', 'usuarios': 'usuarios', 'ia': 'ia',
-        'login': 'login', 'manual': 'manual', 'home': 'home', 'dashboard': 'home'
-      };
-      if (hashMap[hash]) return hashMap[hash];
-    }
-
     const path = window.location.pathname.replace(/\/+$/, '');
-    if (!path || path === '') return 'home';
-
     const moduleRules = [
+      { pattern: /bitacora/i, module: 'bitacora' },
       { pattern: /solicitud|solicitudes/i, module: 'solicitudes' },
       { pattern: /proyecto|proyectos/i, module: 'proyectos' },
       { pattern: /empleado|empleados/i, module: 'empleados' },
@@ -40,7 +23,7 @@
       { pattern: /perfil/i, module: 'perfil' },
       { pattern: /reporte|reportes/i, module: 'reportes' },
       { pattern: /respaldo/i, module: 'respaldo' },
-      { pattern: /seguridad/i, module: 'seguridad' },
+      { pattern: /seguridad|gestionar-permisos/i, module: 'seguridad' },
       { pattern: /users|usuario|usuarios/i, module: 'usuarios' },
       { pattern: /ia|prioridad|gravedad/i, module: 'ia' },
       { pattern: /manual/i, module: 'manual' },
@@ -51,6 +34,22 @@
     for (const rule of moduleRules) {
       if (rule.pattern.test(path)) return rule.module;
     }
+
+    if (!path) return 'home';
+
+    const hash = window.location.hash.replace('#', '');
+    const hashMap = {
+      'proyectos': 'proyectos', 'solicitudes': 'solicitudes', 'empleados': 'empleados',
+      'empresas': 'empresas', 'obras': 'obras', 'bitacora': 'bitacora',
+      'contratacion': 'contratacion', 'contrataciones': 'contratacion',
+      'evidencia': 'evidencia', 'evidencias': 'evidencia',
+      'inspeccion': 'inspeccion', 'inspecciones': 'inspeccion',
+      'inf_avance_obra': 'inf_avance_obra', 'publicaciones': 'publicaciones',
+      'perfil': 'perfil', 'reportes': 'reportes', 'respaldo': 'respaldo',
+      'seguridad': 'seguridad', 'usuarios': 'usuarios', 'ia': 'ia',
+      'login': 'login', 'manual': 'manual', 'home': 'home', 'dashboard': 'home'
+    };
+    if (hashMap[hash]) return hashMap[hash];
 
     return 'default';
   };
@@ -72,7 +71,8 @@
       }
 
       const driverInstance = factory();
-      if (!driverInstance || typeof driverInstance.drive !== 'function') {
+      if (!driverInstance) return null;
+      if (typeof driverInstance.drive !== 'function') {
         console.error('[Tour] La factory no devolvió una instancia válida.');
         return null;
       }
@@ -91,6 +91,7 @@
       }
 
       driverInstance.drive();
+      manager.markModuleTourStarted(module);
       return driverInstance;
     } catch (error) {
       console.error('[Tour] Error al iniciar:', error);
@@ -100,7 +101,7 @@
     }
   };
 
-  manager.stopTour = function(markSeen) {
+  manager.stopTour = function() {
     if (manager.activeInstance && typeof manager.activeInstance.destroy === 'function') {
       try {
         manager.activeInstance.destroy();
@@ -110,28 +111,35 @@
     }
     manager.activeInstance = null;
     manager.setActive(false);
-    if (markSeen) manager.markTourSeen();
   };
 
   manager.toggleTour = function(moduleName) {
-    if (manager.isActive()) manager.stopTour(true);
+    if (manager.isActive()) manager.stopTour();
     else manager.startTour(moduleName);
   };
 
   manager.setActive = function(active) {
     manager._active = active;
+
+    const menu = document.getElementById('tourFabMenu');
+    if (menu) menu.classList.toggle('is-touring', active);
+
     const fab = document.getElementById('btnTourInvilara');
     if (!fab) return;
+
     if (active) {
-      fab.setAttribute('aria-label', 'Detener tour del sistema');
-      fab.setAttribute('aria-pressed', 'true');
-      fab.title = 'Detener recorrido guiado';
+      fab.setAttribute('aria-label', 'Guía del sistema, tour en curso');
+      fab.title = 'Guía del Sistema · tour en curso';
       fab.classList.add('tour-active');
+      // El panel se cierra al arrancar el recorrido
+      if (window.INVISAP_TOUR_FAB) window.INVISAP_TOUR_FAB.close();
     } else {
-      fab.setAttribute('aria-label', 'Iniciar tour del sistema');
-      fab.setAttribute('aria-pressed', 'false');
+      fab.setAttribute('aria-label', 'Guía del sistema');
       fab.title = 'Guía del Sistema';
       fab.classList.remove('tour-active');
+      // Driver.js elimina aria-expanded del elemento resaltado al destruirse;
+      // el panel está cerrado, así que se restituye el estado del menú.
+      fab.setAttribute('aria-expanded', 'false');
     }
   };
 
@@ -139,28 +147,45 @@
     return manager._active === true;
   };
 
-  manager.TOUR_STORAGE_KEY = 'invisap_tour_visto';
-  manager.TOUR_RESET_KEY = 'invisap_tour_reset';
+  manager.ONBOARDING_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
+  manager.ONBOARDING_STORAGE_PREFIX = 'invisap_tour_onboarding';
 
-  manager.validateHash = function(moduleName) {
-    return true;
+  manager.getOnboardingState = function() {
+    const menu = document.getElementById('tourFabMenu');
+    const userId = menu && menu.dataset.tourUserId;
+    if (!userId) return null;
+
+    const key = manager.ONBOARDING_STORAGE_PREFIX + ':' + encodeURIComponent(userId);
+    try {
+      let startedAt = Number(localStorage.getItem(key));
+      if (!Number.isFinite(startedAt) || startedAt <= 0) {
+        startedAt = Date.now();
+        localStorage.setItem(key, String(startedAt));
+      }
+
+      const elapsed = Date.now() - startedAt;
+      return {
+        userId: userId,
+        key: key,
+        isActive: elapsed >= 0 && elapsed < manager.ONBOARDING_DURATION_MS
+      };
+    } catch (error) {
+      console.warn('[Tour] No se pudo consultar el período de bienvenida; el inicio automático queda desactivado.', error);
+      return null;
+    }
   };
 
-  manager.hasSeenTour = function() {
-    try { return localStorage.getItem(manager.TOUR_STORAGE_KEY) === 'true'; }
-    catch (e) { return false; }
-  };
-
-  manager.markTourSeen = function() {
-    try { localStorage.setItem(manager.TOUR_STORAGE_KEY, 'true'); } catch (e) {}
-  };
-
-  manager.resetTourSeen = function() {
-    try { localStorage.removeItem(manager.TOUR_STORAGE_KEY); } catch (e) {}
+  manager.markModuleTourStarted = function(moduleName) {
+    const onboarding = manager.getOnboardingState();
+    if (!onboarding || !onboarding.isActive || !moduleName) return;
+    try {
+      localStorage.setItem(onboarding.key + ':modulo:' + encodeURIComponent(moduleName), 'true');
+    } catch (error) {
+      console.warn('[Tour] No se pudo guardar el módulo visitado durante la bienvenida.', error);
+    }
   };
 
   manager.autoStart = function() {
-    if (manager.hasSeenTour()) return;
     const pageTourButton = document.getElementById('btnTourInvilara');
     if (!pageTourButton) return;
 
@@ -171,9 +196,21 @@
     const currentModule = manager.getCurrentModule();
     if (!currentModule || currentModule === 'default' || currentModule === 'login') return;
 
+    const onboarding = manager.getOnboardingState();
+    if (!onboarding || !onboarding.isActive) return;
+    try {
+      if (localStorage.getItem(onboarding.key + ':modulo:' + encodeURIComponent(currentModule)) === 'true') return;
+    } catch (error) {
+      console.warn('[Tour] No se pudo consultar el módulo visitado; se omite el inicio automático.', error);
+      return;
+    }
+
     const factory = (window.INVISAP_TOURS || {})[currentModule] || (window.INVISAP_TOURS || {})['default'];
     if (typeof factory !== 'function') return;
-    setTimeout(function() { manager.startTour(); }, 700);
+    setTimeout(function() {
+      if (manager.isActive() || manager.getCurrentModule() !== currentModule) return;
+      manager.startTour(currentModule);
+    }, 700);
   };
 
   manager.DRIVER_DEFAULTS = {
@@ -183,7 +220,8 @@
     doneBtnText: 'Terminar',
     overlayColor: '#000000',
     overlayOpacity: 0.65,
-    smoothScroll: true,
+    // Evita competir con la animación del resaltado al desplazar la página.
+    smoothScroll: false,
     stagePadding: 16,
     stageRadius: 10,
     popoverOffset: 24,
@@ -194,25 +232,34 @@
 
   manager.filterAvailableSteps = function(steps) {
     if (!Array.isArray(steps)) return [];
-    return steps.filter(function(step) {
-      if (!step || !step.element || typeof step.element !== 'string') return false;
+    const availableSteps = [];
+
+    steps.forEach(function(step) {
+      if (!step || !step.element || typeof step.element !== 'string') return;
       const selectorList = step.element.split(',').map(function(item) {
         return item.trim();
       }).filter(Boolean);
 
       for (const selector of selectorList) {
         try {
-          const element = document.querySelector(selector);
-          if (!element) continue;
-          const rect = element.getBoundingClientRect();
-          if (rect.width === 0 && rect.height === 0) continue;
-          return true;
+          const candidates = document.querySelectorAll(selector);
+          for (const element of candidates) {
+            const rect = element.getBoundingClientRect();
+            const style = window.getComputedStyle(element);
+            if (!element.getClientRects().length || rect.width === 0 || rect.height === 0 ||
+                style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') {
+              continue;
+            }
+            availableSteps.push(Object.assign({}, step, { element: element }));
+            return;
+          }
         } catch (e) {
           continue;
         }
       }
-      return false;
     });
+
+    return availableSteps;
   };
 
   manager.applyDriverDefaults = function() {
@@ -229,12 +276,18 @@
 
       if (!Array.isArray(merged.steps) || merged.steps.length === 0) {
         console.warn('[Tour] No hay pasos válidos para el módulo actual. Se omite la ejecución del recorrido.');
-        return {
-          drive: function() {},
-          destroy: function() {},
-          hasNextStep: function() { return false; }
-        };
+        return null;
       }
+
+      // Cualquier cierre del recorrido (botón del popover, Escape o clic en el
+      // overlay) debe devolver el FAB y el panel a su estado inactivo.
+      const onDestroyed = merged.onDestroyed;
+      merged.onDestroyed = function() {
+        manager._active = false;
+        manager.activeInstance = null;
+        manager.setActive(false);
+        if (typeof onDestroyed === 'function') return onDestroyed.apply(this, arguments);
+      };
 
       return original(merged);
     };
@@ -249,21 +302,24 @@
     if (!window.INVISAP_TOURS) window.INVISAP_TOURS = {};
     manager.applyDriverDefaults();
     window.startModuleTour = function() { manager.startTour(); };
-    window.stopModuleTour = function() { manager.stopTour(true); };
+    window.stopModuleTour = function() { manager.stopTour(); };
     window.toggleModuleTour = function() { manager.toggleTour(); };
 
-    document.body.addEventListener('click', function(event) {
-      const fab = event.target.closest('#btnTourInvilara');
-      if (!fab) return;
-      event.preventDefault();
-      event.stopPropagation();
-      manager.toggleTour();
-    });
-
+    // El FAB de la guía abre su panel de acciones (ver tour-fab-menu.js);
+    // el recorrido se inicia desde la celda «Iniciar guía».
     const fab = document.getElementById('btnTourInvilara');
     if (fab) {
-      fab.setAttribute('aria-pressed', 'false');
-      fab.setAttribute('aria-label', 'Iniciar tour del sistema');
+      fab.setAttribute('aria-label', 'Guía del sistema');
+
+      // Compatibilidad: si el HTML servido todavía no trae el panel (caché de
+      // plantillas), el FAB conserva el comportamiento de iniciar/detener.
+      if (!document.getElementById('tourFabMenu')) {
+        fab.addEventListener('click', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          manager.toggleTour();
+        });
+      }
     }
 
     const inst = manager.activeInstance;

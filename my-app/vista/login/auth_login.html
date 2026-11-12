@@ -12,14 +12,12 @@
       <div class="card">
         <div class="card-body">
           <div class="app-brand justify-content-center">
-            <div class="welcome-header">
-              <div class="welcome-icon mb-3">
-                <img src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL VERTICAL.png') }}" alt="INVILARA" style="width: 72px; height: 72px; object-fit: cover; border-radius: 50%; border: 2px solid rgba(21, 128, 61, 0.2); box-shadow: 0 4px 20px rgba(21, 128, 61, 0.15);" />
-              </div>
-              <h1 class="welcome-title fw-bold mb-1">Bienvenido a</h1>
-              <h2 class="welcome-brand fw-bold mb-0" style="background: linear-gradient(135deg, #15803d 0%, #14532d 50%, #0f3d1e 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">INVISAP</h2>
-              <p class="welcome-subtitle text-muted small mt-2">Sistema de Gestión y Control</p>
-            </div>
+            <span class="app-brand-logo">
+              <img
+                src="{{ url_for('static', filename='assets/img/INVILARA LOGO OFICIAL VERTICAL.png') }}"
+                alt="Logo" 
+                style="max-height: 140px; max-width: 220px; object-fit: contain; width: auto; height: auto;" />
+            </span>
           </div> 
 
           <form
@@ -43,9 +41,6 @@
             <div class="mb-3 molecule-password-field position-relative">
               <div class="d-flex justify-content-between align-items-center mb-1">
                 <label for="pass_user" class="form-label text-heading fw-semibold mb-0">Clave de Acceso</label>
-                <a href="{{ url_for('login_bp.cpanelRecoveryPassUser') }}" class="small text-primary fw-medium">
-                  ¿Olvidó su Clave?
-                </a>
               </div>
               
               <div class="input-group input-group-merge">
@@ -100,11 +95,17 @@
             </div>
           </form>
 
-          <p class="text-center">
-            <a href="{{ url_for('login_bp.cpanelRegisterUser') }}">
-              <span>Crear mi cuenta</span>
+<p class="text-center">
+            <a href="{{ url_for('login_bp.cpanelRegisterUser') }}" class="link-as-btn">
+              <span> Crear mi cuenta</span>
             </a>
           </p>
+
+          <div class="text-center mt-2">
+            <a href="{{ url_for('login_bp.cpanelRecoveryPassUser') }}" class="link-as-btn small">
+              <i class="bi bi-key me-1"></i>¿Olvidó su Clave?
+            </a>
+          </div>
         </div>
       </div>
     </div>

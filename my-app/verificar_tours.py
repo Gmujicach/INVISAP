@@ -16,7 +16,7 @@ TOURS = RAIZ / "static" / "js" / "tour"
 
 # Vistas candidatas por módulo (se busca el selector en la unión de todas).
 # `base_cpanel.html` se incluye siempre porque aporta el menú lateral, la
-# barra superior, el botón flotante del tour y los modales globales.
+# barra superior y otros elementos globales compartidos.
 VISTAS_POR_MODULO = {
     "bitacora": ["bitacora/*.html", "base_cpanel.html"],
     "contratacion": ["contratacion/*.html", "base_cpanel.html"],

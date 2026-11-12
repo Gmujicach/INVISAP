@@ -270,19 +270,12 @@
 
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       nextBtnText: 'Siguiente',
       prevBtnText: 'Anterior',
       doneBtnText: 'Entendido',
-      steps: steps.length ? steps : [
-        {
-          element: '#btnTourInvilara, .tour-fab, .btn-primary',
-          popover: {
-            title: 'Guía del módulo de Usuarios',
-            description: 'Usa esta guía para aprender a registrar, listar y modificar usuarios en el sistema.'
-          },
-          side: 'left'
-        }
-      ]
+      steps: steps
     });
   };
 })();

@@ -4,6 +4,8 @@
   window.INVISAP_TOURS['default'] = function() {
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: [
         {
           element: '.layout-menu',
@@ -34,14 +36,6 @@
           popover: {
             title: 'Menu de Usuario',
             description: 'Acceda a Editar Perfil, Configuracion, alternar Modo Oscuro/Claro y la opcion de Cerrar Sesion.'
-          },
-          side: 'left'
-        },
-        {
-          element: '#btnTourInvilara, .tour-fab',
-          popover: {
-            title: 'Guia del Sistema (Tour)',
-            description: 'Boton flotante de ayuda. En cualquier momento puede iniciar el recorrido guiado del modulo actual para aprender a navegar.'
           },
           side: 'left'
         }

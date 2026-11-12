@@ -4,7 +4,17 @@
   window.INVISAP_TOURS['home'] = function() {
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: [
+        {
+          element: '#btnTourInvilara',
+          popover: {
+            title: 'Guía del Sistema',
+            description: 'Este botón flotante, ubicado en la esquina inferior derecha, despliega las acciones de la Guía del Sistema: desde ahí se inicia el recorrido guiado.'
+          },
+          side: 'left'
+        },
         {
           element: '.dashboard-card',
           popover: {

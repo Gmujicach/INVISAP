@@ -150,16 +150,9 @@
 
     return window.driver.js.driver({
       showProgress: true,
-      steps: steps.length ? steps : [
-        {
-          element: '#btnTourInvilara, .tour-fab',
-          popover: {
-            title: 'Guía del módulo de solicitudes',
-            description: 'Abra la vista de lista o el formulario para continuar con el recorrido de registro y edición.'
-          },
-          side: 'left'
-        }
-      ]
+      animate: true,
+      smoothScroll: false,
+      steps: steps
     });
   };
 })();

@@ -4,6 +4,8 @@
   window.INVISAP_TOURS['proyectos'] = function() {
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: [
         {
           element: '#contador-total, .badge, .counter',

@@ -70,7 +70,7 @@
           side: 'bottom'
         },
         {
-          element: 'input, select',
+          element: '#moduloPDF',
           popover: {
             title: 'Filtros del reporte',
             description: 'Elija el módulo y el rango de fechas que se incluirán en el documento. El sistema valida los campos antes de exportar.'
@@ -97,7 +97,7 @@
           side: 'bottom'
         },
         {
-          element: 'input, select',
+          element: '#moduloExcel',
           popover: {
             title: 'Filtros de la exportación',
             description: 'Elija el módulo y el rango de fechas. El sistema valida que las fechas sean correctas antes de exportar.'
@@ -113,30 +113,12 @@
           side: 'left'
         }
       ];
-    } else {
-      steps = [
-        {
-          element: '#btnTourInvilara, .tour-fab',
-          popover: {
-            title: 'Centro de Reportes',
-            description: 'Desde el menú lateral puede generar reportes en Excel, PDF y estadísticos. Abra cualquiera de ellos para iniciar este recorrido guiado.'
-          },
-          side: 'left'
-        }
-      ];
     }
-
-    steps.push({
-      element: '#btnTourInvilara, .tour-fab',
-      popover: {
-        title: 'Guía interactiva del sistema',
-        description: 'Este botón verde está disponible en todos los módulos y le muestra, paso a paso, cómo registrar, modificar y ver las listas.'
-      },
-      side: 'top'
-    });
 
     return window.driver.js.driver({
       showProgress: true,
+      animate: true,
+      smoothScroll: false,
       steps: steps
     });
   };
