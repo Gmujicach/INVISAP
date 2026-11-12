@@ -1,19 +1,19 @@
 name: INVISAP pruebas
 values:
   - key: baseUrl
-    value: http://127.0.0.1:5600
+    value: 'http://127.0.0.1:5600'
   - key: session_cookie
-    value: ""
+    value: ''
   - key: codigo_proyecto
-    value: ""
+    value: ''
   - key: rif_empresa
-    value: ""
+    value: ''
   - key: id_evidencia
-    value: ""
+    value: ''
   - key: id_informe
-    value: ""
+    value: ''
   - key: id_usuario
-    value: ""
+    value: ''
   - key: id_rol
-    value: ""
+    value: ''
 color: 120
