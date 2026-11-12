@@ -89,7 +89,7 @@ REM Inicia la aplicacion Flask; la salida sin buffer permite ver los logs inmedi
 echo Iniciando el servidor Flask desde:
 echo %CD%
 echo.
-python -u run.py
+set "FLASK_DEBUG=1" && python -u run.py
 
 REM Conserva el codigo de salida del servidor para informar si termino con error.
 set "exit_code=%ERRORLEVEL%"
