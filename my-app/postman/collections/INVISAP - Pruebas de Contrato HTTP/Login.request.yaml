@@ -42,6 +42,6 @@ scripts:
       });
       pm.environment.set(
           "session_cookie",
-          autenticacionCorrecta && cookie ? `session=${cookie}` : ""
+          autenticacionCorrecta && cookie ? cookie : ""
       );
 order: 21000

@@ -1,0 +1,7 @@
+pytest>=9.0,<10
+pytest-cov>=6.0,<8
+-r performance/requirements.txt
+playwright>=1.50,<2
+selenium>=4.0,<5
+bandit==1.9.4
+pip-audit>=2.8,<3
