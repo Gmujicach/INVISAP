@@ -196,6 +196,53 @@
   </div>
 </div>
 
+<!-- ============ PROTECCIÓN SUPER USUARIO (ROL) ============ -->
+<div class="modal fade" id="modalConfirmarSuperRol" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar edición</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Estás a punto de editar el rol <strong>Super Usuario</strong>. Esta acción requiere autenticación adicional.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-warning" id="btnConfirmarEditarSuperRol">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalAutenticarSuperRol" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Autenticación requerida</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Ingresa tu contraseña actual para autorizar el cambio.</p>
+        <div class="mb-3">
+          <label for="passwordSuperRol" class="form-label">Contraseña actual</label>
+          <div class="input-group">
+            <input type="password" class="form-control" id="passwordSuperRol" placeholder="Ingresa la contraseña actual" autocomplete="current-password">
+            <button type="button" class="input-group-text border-start-0 px-3 toggle-password-super-rol" style="background-color:#fff; cursor:pointer;">
+              <i class="bi bi-eye-slash toggle-icon"></i>
+            </button>
+          </div>
+          <div class="invalid-feedback" id="passwordErrorSuperRol">Contraseña incorrecta.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-info" id="btnAutenticarSuperRol">Modificar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ============ MODAL MÓDULO ============ -->
 <div class="modal fade" id="modalModulo" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">

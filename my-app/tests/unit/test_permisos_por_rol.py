@@ -228,6 +228,23 @@ def test_rol_actualizar_y_eliminar_reportan_si_hubo_cambios(monkeypatch, rowcoun
     assert cursor.execute.call_args.args == ('UPDATE roles SET estado = 0 WHERE id_rol = %s', (7,))
 
 
+def test_rol_eliminar_rechaza_super_usuario(monkeypatch):
+    connection, cursor = _mock_database()
+    cursor.fetchone.return_value = {'nombre': 'Super Usuario'}
+    model = RolModel(id_rol=1)
+    _connect(monkeypatch, model, connection)
+
+    assert model.eliminar() is False
+
+    assert cursor.execute.call_count == 1
+    assert cursor.execute.call_args.args == (
+        'SELECT nombre FROM roles WHERE id_rol = %s', (1,),
+    )
+    connection.commit.assert_not_called()
+    cursor.close.assert_called_once_with()
+    connection.close.assert_called_once_with()
+
+
 @pytest.mark.parametrize(
     ('method', 'exclude_id', 'row', 'expected', 'params'),
     [

@@ -127,11 +127,34 @@ def obtener_rol_controller(id_rol):
 def actualizar_rol_controller(id_rol, datos):
     try:
         nombre = (datos.get('nombre') or '').strip()
+        rol_actual = RolModel(id_rol=id_rol).obtener_por_id(id_rol)
+        if not rol_actual:
+            return {"success": False, "message": "Rol no encontrado."}
+        es_super = (rol_actual.get('nombre') or '').strip().lower() == 'super usuario'
+        if es_super:
+            nombre = rol_actual.get('nombre')
+            estado = int(rol_actual.get('estado', 1))
+            if session.get('rol', '').strip().lower() != 'super usuario':
+                return {"success": False, "message": "Solo el Super Usuario puede modificar este rol."}
+            password_actual = datos.get('password_actual') or ''
+            if not password_actual:
+                return {"success": False, "message": "Debe ingresar su contraseña actual para modificar el Super Usuario."}
+            try:
+                from models.model_usuarios import UsuarioModel
+                from werkzeug.security import check_password_hash
+                user = UsuarioModel().buscar_por_id_con_contrasena(session.get('id'))
+                if not user or not check_password_hash(user.get('contrasena', ''), password_actual):
+                    return {"success": False, "message": "Contraseña incorrecta."}
+            except Exception:
+                return {"success": False, "message": "No se pudo verificar la contraseña."}
+        else:
+            estado = int(datos.get('estado', 1))
+
         modelo = RolModel(
             id_rol=id_rol,
             nombre=nombre,
             descripcion=datos.get('descripcion'),
-            estado=int(datos.get('estado', 1))
+            estado=estado
         )
         if modelo.validar_nombre_existente(excluir_id=id_rol):
             return {"success": False, "message": "Ya existe otro rol con ese nombre."}
@@ -150,6 +173,9 @@ def actualizar_rol_controller(id_rol, datos):
 
 def eliminar_rol_controller(id_rol):
     try:
+        rol = RolModel(id_rol=id_rol).obtener_por_id(id_rol)
+        if rol and (rol.get('nombre') or '').strip().lower() == 'super usuario':
+            return {"success": False, "message": "El rol Super Usuario no puede ser eliminado por razones de seguridad."}
         resultado = RolModel(id_rol=id_rol).eliminar()
         if resultado:
             BitacoraService.registrar_accion(

@@ -116,6 +116,7 @@ function renderTablaRoles(roles) {
   }
   roles.forEach(r => {
     const tr = document.createElement('tr');
+    const esSuperUsuario = (r.nombre || '').trim().toLowerCase() === 'super usuario';
     tr.innerHTML = `
       <td>${r.id_rol}</td>
       <td><strong>${r.nombre}</strong></td>
@@ -125,7 +126,7 @@ function renderTablaRoles(roles) {
      <div class="btn-acciones" style="justify-content:center;">
      <button class="btn btn-sm btn-accion btn-accion-ver" onclick="verRol(${r.id_rol})" title="Ver rol" aria-label="Ver rol"><i class="bi bi-eye"></i></button>
      <button class="btn btn-sm btn-accion btn-accion-editar" onclick="editarRol(${r.id_rol})" title="Editar rol" aria-label="Editar rol"><i class="bi bi-pencil-square"></i></button>
-          <button class="btn btn-sm btn-accion btn-accion-eliminar" onclick="eliminarRol(${r.id_rol})" title="Eliminar rol" aria-label="Eliminar rol"><i class="bi bi-trash"></i></button>
+          ${esSuperUsuario ? '' : `<button class="btn btn-sm btn-accion btn-accion-eliminar" onclick="eliminarRol(${r.id_rol})" title="Eliminar rol" aria-label="Eliminar rol"><i class="bi bi-trash"></i></button>`}
         </div>
       </td>`;
     tb.appendChild(tr);
@@ -133,6 +134,7 @@ function renderTablaRoles(roles) {
 }
 function resetFormRol() {
   document.getElementById('modalRolTitle').textContent = 'Nuevo Rol';
+  document.getElementById('modalRol').dataset.superusuario = '0';
   document.getElementById('id_rol').value = '';
   document.getElementById('nombre_rol').value = '';
   document.getElementById('descripcion_rol').value = '';
@@ -180,14 +182,20 @@ function editarRol(id, soloLectura) {
       document.getElementById('estado_rol').checked = d.estado == 1;
       ocultarAlertaSeguridad('mensajeRol');
 
-      ['id_rol', 'nombre_rol', 'descripcion_rol', 'estado_rol'].forEach(campo => {
-        const el = document.getElementById(campo);
-        if (el) el.disabled = !!soloLectura;
-      });
+      const esSuperUsuario = (d.nombre || '').trim().toLowerCase() === 'super usuario';
+      const nombreInput = document.getElementById('nombre_rol');
+      const estadoInput = document.getElementById('estado_rol');
+      if (nombreInput) nombreInput.disabled = !!soloLectura || esSuperUsuario;
+      if (estadoInput) estadoInput.disabled = !!soloLectura || esSuperUsuario;
+      const descInput = document.getElementById('descripcion_rol');
+      if (descInput) descInput.disabled = !!soloLectura;
+
       const btn = document.getElementById('btnGuardarRol');
       if (btn) btn.style.display = soloLectura ? 'none' : '';
 
-      new bootstrap.Modal(document.getElementById('modalRol')).show();
+      const modalEl = document.getElementById('modalRol');
+      modalEl.dataset.superusuario = esSuperUsuario ? '1' : '0';
+      obtenerModalSeguridad('modalRol').show();
     })
     .catch(() => Swal.fire('Error', 'No se pudo cargar el rol.', 'error'));
 }
@@ -207,11 +215,23 @@ function eliminarRol(id) {
       });
   });
 }
-function guardarRol() {
+function guardarRol(passwordActual) {
   const form = document.getElementById('formRol');
   if (!form.checkValidity()) { form.classList.add('was-validated'); return; }
   const id = document.getElementById('id_rol').value;
   const nombre = document.getElementById('nombre_rol').value.trim();
+  const modalRol = document.getElementById('modalRol');
+  const esSuperUsuario = modalRol && modalRol.dataset.superusuario === '1';
+
+  if (id && esSuperUsuario && !passwordActual) {
+    if (typeof iniciarConfirmacionEdicionSuperRol === 'function') {
+      iniciarConfirmacionEdicionSuperRol();
+    } else {
+      Swal.fire('Error', 'No se pudo iniciar la verificación de seguridad.', 'error');
+    }
+    return;
+  }
+
   if (nombre.toLowerCase() === 'super usuario') {
     fetch('/api/seguridad/roles/listar')
       .then(r => r.json())
@@ -221,19 +241,20 @@ function guardarRol() {
           Swal.fire('Restricción', 'Ya existe un Super Usuario activo. No se permite crear ni asignar este rol a otro usuario.', 'warning');
           return;
         }
-        enviarGuardadoRol(id, nombre);
+        enviarGuardadoRol(id, nombre, passwordActual);
       })
       .catch(() => Swal.fire('Error', 'No se pudo validar el rol.', 'error'));
     return;
   }
-  enviarGuardadoRol(id, nombre);
+  enviarGuardadoRol(id, nombre, passwordActual);
 }
-function enviarGuardadoRol(id, nombre) {
+function enviarGuardadoRol(id, nombre, passwordActual) {
   const payload = {
     nombre: nombre,
     descripcion: document.getElementById('descripcion_rol').value.trim(),
     estado: document.getElementById('estado_rol').checked ? 1 : 0
   };
+  if (passwordActual) payload.password_actual = passwordActual;
   const url = id ? `/api/seguridad/roles/actualizar/${id}` : '/api/seguridad/roles/registrar';
   fetch(url, {
     method: id ? 'PUT' : 'POST',
@@ -243,12 +264,98 @@ function enviarGuardadoRol(id, nombre) {
   .then(r => r.json())
   .then(d => {
     if (d.success) {
+      superRolFlujoActivo = false;
       Swal.fire('Listo', d.message, 'success');
       bootstrap.Modal.getInstance(document.getElementById('modalRol')).hide();
+      const modalAutenticar = bootstrap.Modal.getInstance(document.getElementById('modalAutenticarSuperRol'));
+      if (modalAutenticar) modalAutenticar.hide();
       cargarRoles(); cargarSelectRol(); localStorage.setItem('invisap_roles_updated', Date.now());
+    } else if (passwordActual) {
+      mostrarErrorAutenticacionSuperRol(d.message || 'No se pudo autorizar la modificación.');
     } else alertaSeguridad(d.message, 'danger', 'mensajeRol');
   })
-  .catch(() => alertaSeguridad('Error de conexión.', 'danger', 'mensajeRol'));
+  .catch(() => {
+    if (passwordActual) mostrarErrorAutenticacionSuperRol('Error de conexión. Intenta nuevamente.');
+    else alertaSeguridad('Error de conexión.', 'danger', 'mensajeRol');
+  });
+}
+
+let superRolFlujoActivo = false;
+
+function obtenerModalSeguridad(id) {
+  const elemento = document.getElementById(id);
+  return bootstrap.Modal.getInstance(elemento) || new bootstrap.Modal(elemento);
+}
+
+function iniciarConfirmacionEdicionSuperRol() {
+  const modalRol = document.getElementById('modalRol');
+  const instanciaRol = obtenerModalSeguridad('modalRol');
+  superRolFlujoActivo = true;
+  modalRol.addEventListener('hidden.bs.modal', function mostrarAdvertencia() {
+    obtenerModalSeguridad('modalConfirmarSuperRol').show();
+  }, { once: true });
+  instanciaRol.hide();
+}
+
+function mostrarErrorAutenticacionSuperRol(mensaje) {
+  const passwordInput = document.getElementById('passwordSuperRol');
+  const error = document.getElementById('passwordErrorSuperRol');
+  if (passwordInput) passwordInput.classList.add('is-invalid');
+  if (error) {
+    error.textContent = mensaje;
+    error.classList.add('d-block');
+  }
+}
+
+function configurarAutenticacionSuperRol() {
+  const modalRol = document.getElementById('modalRol');
+  const modalAdvertencia = document.getElementById('modalConfirmarSuperRol');
+  const modalAutenticar = document.getElementById('modalAutenticarSuperRol');
+  const passwordInput = document.getElementById('passwordSuperRol');
+  const error = document.getElementById('passwordErrorSuperRol');
+
+  modalAdvertencia.addEventListener('hidden.bs.modal', function() {
+    if (modalAdvertencia.dataset.continuar === '1') {
+      modalAdvertencia.dataset.continuar = '0';
+      obtenerModalSeguridad('modalAutenticarSuperRol').show();
+    } else if (superRolFlujoActivo) {
+      obtenerModalSeguridad('modalRol').show();
+    }
+  });
+  modalAutenticar.addEventListener('hidden.bs.modal', function() {
+    if (superRolFlujoActivo) {
+      passwordInput.value = '';
+      passwordInput.classList.remove('is-invalid');
+      error.classList.remove('d-block');
+      obtenerModalSeguridad('modalRol').show();
+    }
+  });
+
+  document.getElementById('btnConfirmarEditarSuperRol').addEventListener('click', function() {
+    modalAdvertencia.dataset.continuar = '1';
+    obtenerModalSeguridad('modalConfirmarSuperRol').hide();
+  });
+  document.getElementById('btnAutenticarSuperRol').addEventListener('click', function() {
+    passwordInput.classList.remove('is-invalid');
+    error.classList.remove('d-block');
+    if (!passwordInput.value) {
+      mostrarErrorAutenticacionSuperRol('Ingresa tu contraseña actual.');
+      return;
+    }
+    guardarRol(passwordInput.value);
+  });
+  passwordInput.addEventListener('input', function() {
+    passwordInput.classList.remove('is-invalid');
+    error.classList.remove('d-block');
+  });
+  document.querySelectorAll('.toggle-password-super-rol').forEach(function(button) {
+    button.addEventListener('click', function() {
+      const mostrar = passwordInput.type === 'password';
+      passwordInput.type = mostrar ? 'text' : 'password';
+      button.querySelector('.toggle-icon').classList.toggle('bi-eye', mostrar);
+      button.querySelector('.toggle-icon').classList.toggle('bi-eye-slash', !mostrar);
+    });
+  });
 }
 
 // ============================================================
@@ -560,7 +667,8 @@ document.addEventListener('DOMContentLoaded', function () {
   cargarSelectRol();
   populateIconPicker();
 
-  document.getElementById('btnGuardarRol').addEventListener('click', guardarRol);
+  document.getElementById('btnGuardarRol').addEventListener('click', () => guardarRol());
+  configurarAutenticacionSuperRol();
   document.getElementById('btnGuardarModulo').addEventListener('click', guardarModulo);
   document.getElementById('btnGuardarPermisos').addEventListener('click', guardarPermisos);
   document.getElementById('selectRol').addEventListener('change', cargarPermisos);
