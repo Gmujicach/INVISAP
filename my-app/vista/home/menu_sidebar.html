@@ -85,7 +85,7 @@
     {% endif %}
 
     {% if tiene_permiso('contrataciones') %}
-    <li class="menu-item {% if request.path == '/contratacion' %} active {% endif %}">
+    <li class="menu-item {% if request.path in ['/contrataciones', '/form-contratacion', '/editar-contratacion'] or '/editar-contratacion' in request.path %} active {% endif %}">
       <a href="{{ url_for('contrataciones_bp.gestionar_contrataciones') }}" class="menu-link" data-tooltip="Contratación">
         <i class="menu-icon bi bi-briefcase"></i>
         <div data-i18n="Contracts">Contratación</div>

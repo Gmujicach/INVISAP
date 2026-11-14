@@ -100,9 +100,19 @@
   <div class="card-body">
     <div class="table-responsive table-informe-avance-wrapper">
       <table class="table table-bordered table-striped table-hover align-middle table-informe-avance" id="tablaInformes">
+        <colgroup>
+          <col style="width: 4%;" />
+          <col style="width: 16%;" />
+          <col style="width: 13%;" />
+          <col style="width: 15%;" />
+          <col style="width: 13%;" />
+          <col style="width: 15%;" />
+          <col style="width: 13%;" />
+          <col style="width: 11%;" />
+        </colgroup>
         <thead>
           <tr>
-            <th>#</th>
+            <th class="text-center">#</th>
             <th>Tipo de Informe</th>
             <th>Estado</th>
             <th>Población Beneficiada</th>
@@ -116,9 +126,8 @@
           {% for informe in informes %}
           <tr class="fila-informe fade-in">
             <td class="fw-bold">{{ informe.id_informe }}</td>
-            <td>
-              <i class="bx bx-file-blank me-1 text-primary"></i>
-              {{ informe.tipo_informe }}
+            <td title="{{ informe.tipo_informe }}">
+              <span class="texto-corto"><i class="bx bx-file-blank me-1 text-primary align-middle"></i>{{ informe.tipo_informe }}</span>
             </td>
             <td>
               {% if informe.estado == 'Aprobado' %}
@@ -141,26 +150,24 @@
                 <span class="badge bg-secondary">{{ informe.estado }}</span>
               {% endif %}
             </td>
-            <td>
-              <i class="bx bx-group me-1 text-muted"></i>
-              {{ informe.poblacion_beneficiada or 'No especificado' }}
+            <td title="{{ informe.poblacion_beneficiada or 'No especificado' }}">
+              <span class="texto-corto"><i class="bx bx-group me-1 text-muted align-middle"></i>{{ informe.poblacion_beneficiada or 'No especificado' }}</span>
             </td>
-            <td>
-              <div class="progress" style="height: 25px;">
+            <td title="{{ informe.porcentaje_avance or 0 }}% de avance">
+              <div class="progress">
                 <div class="progress-bar bg-success" role="progressbar"
                      data-progress="{{ informe.porcentaje_avance or 0 }}"
                      style="width: 0%;"
                      aria-valuenow="{{ informe.porcentaje_avance or 0 }}"
                      aria-valuemin="0" aria-valuemax="100">
-                  {{ informe.porcentaje_avance or 0 }}%
+                   {{ informe.porcentaje_avance or 0 }}%
                 </div>
               </div>
             </td>
-            <td>
-              <i class="bx bx-user me-1 text-muted"></i>
-              {{ informe.gerente_nombre or 'No asignado' }}
+            <td title="{{ informe.gerente_nombre or 'No asignado' }}">
+              <span class="texto-corto"><i class="bx bx-user me-1 text-muted align-middle"></i>{{ informe.gerente_nombre or 'No asignado' }}</span>
             </td>
-            <td>
+            <td class="text-nowrap">
               <i class="bx bx-calendar me-1 text-muted"></i>
               {% if informe.fecha %}
                 {{ informe.fecha.strftime('%d/%m/%Y') }}
@@ -169,7 +176,7 @@
               {% endif %}
             </td>
             <td class="acciones">
-              <div class="btn-acciones" style="justify-content:center;">
+              <div class="btn-acciones">
                 <button type="button"
                    class="btn btn-sm btn-accion btn-accion-ver btn-ver-informe"
                    data-id="{{ informe.id_informe }}"

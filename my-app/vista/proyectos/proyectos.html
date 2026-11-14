@@ -37,17 +37,30 @@
     </div>
   </div>
   
-  <div class="card-body">
+  <div class="card-body p-2">
     <div class="table-responsive">
         <table id="tablaProyectos" class="table table-bordered table-striped table-hover align-middle">
+        <colgroup>
+          <col style="width: 3%;" />
+          <col style="width: 8%;" />
+          <col style="width: 8%;" />
+          <col style="width: 9%;" />
+          <col style="width: 12%;" />
+          <col style="width: 11%;" />
+          <col style="width: 11%;" />
+          <col style="width: 10%;" />
+          <col style="width: 9%;" />
+          <col style="width: 8%;" />
+          <col style="width: 11%;" />
+        </colgroup>
         <thead class="table-light">
           <tr>
-            <th>#</th>
+            <th class="text-center">#</th>
             <th>Código</th>
             <th>Fecha Planif.</th>
             <th>Solicitante</th>
             <th>Descripción Técnica</th>
-            <th>Computos Métricos</th>
+            <th>Cómputos Métricos</th>
             <th>Problemática</th>
             <th>Maquinaria</th>
             <th>Proyectista</th>
@@ -59,17 +72,17 @@
           {% for proyecto in proyectos %}
           <tr>
             <td>{{ loop.index }}</td> 
-            <td class="fw-bold text-secondary">{{ proyecto.codigo_proyecto }}</td>
-            <td>{{ proyecto.fecha_planificacion }}</td>
-            <td class="text-uppercase" style="font-size: 0.85rem;">{{ proyecto.nombre_solicitante or 'â€”' }}</td>
-            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ proyecto.descripcion_tecnica or 'â€”' }}</td>
-            <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.computos_metricos_texto or 'â€”' }}</td>
-            <td style="max-width: 200px; white-space: normal; font-size: 0.85rem;">{{ proyecto.problematica or 'â€”' }}</td>
-            <td><span class="badge bg-dark">{{ proyecto.nombre_maquinaria or 'Sin asignar' }}</span></td>
-            <td><span class="badge bg-info">{{ proyecto.nombre_proyectista or 'Sin asignar' }}</span></td>
-            <td class="text-success fw-bold">{{ proyecto.estimacion_costo or '0.00' }}</td>
+            <td class="fw-bold text-secondary" title="{{ proyecto.codigo_proyecto }}">{{ proyecto.codigo_proyecto }}</td>
+            <td class="text-nowrap" style="font-size: 0.72rem;">{{ proyecto.fecha_planificacion }}</td>
+            <td title="{{ proyecto.nombre_solicitante or 'N/A' }}"><span class="texto-corto text-uppercase">{{ proyecto.nombre_solicitante or '—' }}</span></td>
+            <td title="{{ proyecto.descripcion_tecnica or 'N/A' }}"><span class="texto-corto">{{ proyecto.descripcion_tecnica or '—' }}</span></td>
+            <td title="{{ proyecto.computos_metricos_texto or 'N/A' }}"><span class="texto-corto">{{ proyecto.computos_metricos_texto or '—' }}</span></td>
+            <td title="{{ proyecto.problematica or 'N/A' }}"><span class="texto-corto">{{ proyecto.problematica or '—' }}</span></td>
+            <td title="{{ proyecto.nombre_maquinaria or 'Sin asignar' }}"><span class="badge bg-dark">{{ proyecto.nombre_maquinaria or 'Sin asignar' }}</span></td>
+            <td title="{{ proyecto.nombre_proyectista or 'Sin asignar' }}"><span class="badge bg-info">{{ proyecto.nombre_proyectista or 'Sin asignar' }}</span></td>
+            <td class="text-success fw-bold text-nowrap" title="{{ proyecto.estimacion_costo or '0.00' }}">{{ proyecto.estimacion_costo or '0.00' }}</td>
             <td class="acciones">
-              <div class="btn-acciones" style="justify-content:center;">
+              <div class="btn-acciones">
                 <button type="button" class="btn btn-sm btn-accion btn-accion-ver" title="Ver detalle"
                         aria-label="Ver detalle del proyecto"
                         data-bs-toggle="modal"

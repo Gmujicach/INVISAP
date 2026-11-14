@@ -267,6 +267,7 @@ function inicializarTablaContrataciones() {
         info: false,
         lengthChange: false,
         pageLength: 8,
+        autoWidth: false,
         columnDefs: [
             { "orderable": false, "targets": 6 }
         ],

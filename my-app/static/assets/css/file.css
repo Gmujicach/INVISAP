@@ -110,3 +110,119 @@ body.dark-mode .form-select {
 body.dark-mode .text-dark {
   color: #cfcde9 !important;
 }
+
+/* ============================================
+   Tabla de proyectos (vista/proyectos/proyectos.html)
+   Layout fijo: las columnas se definen solo en
+   porcentajes (colgroup) para que la tabla nunca
+   sea más ancha que su contenedor. Cada celda
+   recorta su contenido (nada se sale de la celda)
+   y el texto completo se ve con el atributo title.
+   ============================================ */
+#tablaProyectos {
+  width: 100%;
+  max-width: 100%;
+  table-layout: fixed;
+  margin-bottom: 0;
+  border-color: #e2e8f0;
+}
+
+#tablaProyectos th,
+#tablaProyectos td {
+  overflow: hidden;
+  vertical-align: middle;
+  text-overflow: ellipsis;
+}
+
+#tablaProyectos thead th {
+  padding: 0.45rem 0.3rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #475569;
+  background-color: #f8f9fa;
+  white-space: normal;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+#tablaProyectos tbody td {
+  padding: 0.4rem 0.3rem;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+#tablaProyectos tbody td:first-child {
+  text-align: center;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+/* Texto largo: máximo dos líneas, recortado dentro de la celda */
+#tablaProyectos .texto-corto {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  max-height: 2.5em;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+/* Etiquetas compactas: se recortan dentro de la celda */
+#tablaProyectos .badge {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.25em 0.4em;
+  font-size: 0.64rem;
+  font-weight: 600;
+  line-height: 1.15;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  vertical-align: middle;
+}
+
+/* Columna de acciones: una sola fila de botones pequeños */
+#tablaProyectos th.acciones,
+#tablaProyectos td.acciones {
+  padding-left: 0.15rem;
+  padding-right: 0.15rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+#tablaProyectos .btn-acciones {
+  justify-content: center !important;
+  gap: 0.15rem !important;
+  flex-wrap: nowrap;
+}
+
+#tablaProyectos .btn-accion {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  font-size: 0.7rem;
+  border-radius: 5px;
+}
+
+#tablaProyectos .btn-accion > i,
+#tablaProyectos .btn-accion > .bi {
+  font-size: 0.75rem;
+}
+
+/* En pantallas muy pequeñas la tabla se desplaza, pero las
+   celdas siguen recortando su contenido. */
+@media (max-width: 768px) {
+  #tablaProyectos {
+    min-width: 820px;
+  }
+
+  #tablaProyectos .btn-accion {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+  }
+}
