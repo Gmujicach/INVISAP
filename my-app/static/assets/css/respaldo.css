@@ -186,6 +186,13 @@ body.dark-mode .modal-content {
     color: #cfcde9;
 }
 
+#modalExportarRespaldo .modal-title,
+#modalImportarRespaldo .modal-title,
+#modalExportarRespaldo .modal-title .bx,
+#modalImportarRespaldo .modal-title .bx {
+    color: #fff !important;
+}
+
 body.dark-mode .modal-header {
     border-bottom-color: #444564;
 }
