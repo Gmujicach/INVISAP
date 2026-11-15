@@ -4,6 +4,10 @@ Desde PowerShell, ejecuta los comandos en `my-app`. Pytest muestra cada caso
 con su nombre y el porcentaje de avance; el resumen final indica cuántos
 pasaron, fallaron o fueron omitidos.
 
+Consulta [GUIA_EJECUCION_PRUEBAS.md](GUIA_EJECUCION_PRUEBAS.md) para el listado
+de comandos individuales por módulo, los pasos de Postman y Locust, las
+pruebas de aceptación/usabilidad y el alcance de seguridad.
+
 ```powershell
 python -m pytest
 ```

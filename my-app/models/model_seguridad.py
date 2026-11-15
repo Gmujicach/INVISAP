@@ -251,6 +251,12 @@ class RolModel(BaseModel):
         con = cursor = None
         try:
             con = self.obtener_conexion_seguridad()
+            cursor = con.cursor(dictionary=True)
+            cursor.execute("SELECT nombre FROM roles WHERE id_rol = %s", (self.__id_rol,))
+            rol = cursor.fetchone()
+            if rol and (rol.get('nombre') or '').strip().lower() == 'super usuario':
+                return False
+            cursor.close()
             cursor = con.cursor()
             cursor.execute("UPDATE roles SET estado = 0 WHERE id_rol = %s", (self.__id_rol,))
             con.commit()

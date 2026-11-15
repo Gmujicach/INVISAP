@@ -1,0 +1,17 @@
+$kind: http-request
+description: "Verifica con Postman que el endpoint protegido deniegue una solicitud anónima."
+url: "{{baseUrl}}/api/obtener-solicitudes-json"
+method: GET
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Una petición sin sesión recibe HTTP 401", function () {
+          pm.response.to.have.status(401);
+      });
+
+      pm.test("La respuesta no divulga solicitudes", function () {
+          pm.expect(pm.response.json()).to.eql([]);
+      });
+    language: text/javascript
+settings: {}
+order: 100

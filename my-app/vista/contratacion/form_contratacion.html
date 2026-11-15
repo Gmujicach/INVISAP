@@ -24,6 +24,80 @@
       margin-top: 15px !important;
       padding-right: 15px !important;
   }
+
+  /* Tabla de contrataciones: layout fijo, compacta y sin desbordes.
+     Las columnas se definen en porcentajes (colgroup), por lo que la
+     tabla nunca supera el ancho de la pantalla y cada celda recorta
+     su contenido en lugar de salirse. */
+  #tablaContrataciones {
+      width: 100%;
+      max-width: 100%;
+      table-layout: fixed;
+      font-size: 0.78rem;
+  }
+  #tablaContrataciones th,
+  #tablaContrataciones td {
+      overflow: hidden;
+      vertical-align: middle;
+      text-overflow: ellipsis;
+      overflow-wrap: anywhere;
+  }
+  #tablaContrataciones thead th {
+      padding: 0.45rem 0.3rem;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #475569;
+      white-space: normal;
+      line-height: 1.15;
+  }
+  #tablaContrataciones tbody td {
+      padding: 0.4rem 0.3rem;
+      font-size: 0.76rem;
+      line-height: 1.2;
+  }
+  #tablaContrataciones .texto-corto {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      max-height: 2.5em;
+      overflow: hidden;
+  }
+  #tablaContrataciones .badge {
+      display: inline-block;
+      max-width: 100%;
+      padding: 0.25em 0.4em;
+      font-size: 0.64rem;
+      font-weight: 600;
+      line-height: 1.15;
+      white-space: normal;
+      vertical-align: middle;
+  }
+  #tablaContrataciones th.acciones,
+  #tablaContrataciones td.acciones {
+      padding-left: 0.15rem;
+      padding-right: 0.15rem;
+      text-align: center;
+      white-space: nowrap;
+  }
+  #tablaContrataciones .btn-acciones {
+      justify-content: center !important;
+      gap: 0.15rem !important;
+      flex-wrap: nowrap;
+  }
+  #tablaContrataciones .btn-accion {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      font-size: 0.7rem;
+      border-radius: 5px;
+  }
+  #tablaContrataciones .btn-accion > i,
+  #tablaContrataciones .btn-accion > .bi {
+      font-size: 0.75rem;
+  }
 </style>
 {% endblock %}
 
@@ -59,7 +133,16 @@
   
   <div class="card-body p-0"> 
     <div class="table-responsive" id="tablaContratacionesContenedor">
-      <table id="tablaContrataciones" class="table table-bordered table-striped table-hover align-middle mb-0" style="font-size: 0.85rem; border-top: none;">
+      <table id="tablaContrataciones" class="table table-bordered table-striped table-hover align-middle mb-0" style="border-top: none;">
+        <colgroup>
+          <col style="width: 21%;" />
+          <col style="width: 15%;" />
+          <col style="width: 11%;" />
+          <col style="width: 9%;" />
+          <col style="width: 17%;" />
+          <col style="width: 15%;" />
+          <col style="width: 12%;" />
+        </colgroup>
         <thead class="table-light">
         <tr>
             <th class="border-top-0">Descripción y Observaciones</th>
@@ -68,52 +151,52 @@
             <th class="border-top-0">Monto</th>
             <th class="border-top-0">Clasificación</th>
             <th class="border-top-0">Fechas del Proceso</th>
-            <th class="acciones text-center border-top-0" style="width: 90px;">Acciones</th>
+            <th class="acciones text-center border-top-0">Acciones</th>
         </tr>
         </thead>
         <tbody>
           {% for c in contrataciones %}
           <tr>
-            <td style="max-width: 250px; white-space: normal;">
-                <div class="fw-semibold text-dark mb-1">{{ c.descripcion }}</div>
-                <div class="text-muted" style="font-size: 0.78rem; line-height: 1.2;">
+            <td title="{{ c.descripcion }} — {{ c.observacion }}">
+                <div class="fw-semibold text-dark texto-corto">{{ c.descripcion }}</div>
+                <div class="text-muted text-truncate" style="font-size: 0.74rem; line-height: 1.2;">
                     <i class="bx bx-info-circle align-middle"></i> {{ c.observacion }}
                 </div>
             </td>
 
-            <td>
-                <div class="fw-bold text-secondary text-uppercase">{{ c.empresa_ganadora }}</div>
-                <div class="text-muted mt-1"><small><strong>RIF:</strong> {{ c.empresa_rif }}</small></div>
+            <td title="{{ c.empresa_ganadora }} — RIF: {{ c.empresa_rif }}">
+                <div class="fw-bold text-secondary text-uppercase text-truncate">{{ c.empresa_ganadora }}</div>
+                <div class="text-muted mt-1 text-truncate"><small><strong>RIF:</strong> {{ c.empresa_rif }}</small></div>
             </td>
 
-            <td class="text-nowrap">
+            <td class="text-nowrap" title="N° {{ c.numero_contrato }}">
                 <span class="badge bg-dark">N° {{ c.numero_contrato }}</span>
             </td>
 
-            <td class="text-nowrap">
+            <td class="text-nowrap" title="{{ c.monto }}">
                 <span class="text-success fw-bold">{{ c.monto }}</span>
             </td>
 
-            <td style="font-size: 0.8rem; line-height: 1.5;">
-                <span class="d-block text-truncate" style="max-width: 160px;" title="{{ c.tipo_contrato }}">
+            <td style="font-size: 0.76rem; line-height: 1.45;">
+                <span class="d-block text-truncate" title="{{ c.tipo_contrato }}">
                     <strong class="text-secondary">Tipo:</strong> {{ c.tipo_contrato }}
                 </span>
-                <span class="d-block text-truncate" style="max-width: 160px;" title="{{ c.modalidad }}">
+                <span class="d-block text-truncate" title="{{ c.modalidad }}">
                     <strong class="text-secondary">Mod:</strong> {{ c.modalidad }}
                 </span>
-                <span class="d-block text-truncate" style="max-width: 160px;" title="{{ c.objeto }}">
+                <span class="d-block text-truncate" title="{{ c.objeto }}">
                     <strong class="text-secondary">Obj:</strong> {{ c.objeto }}
                 </span>
             </td>
 
-            <td style="font-size: 0.8rem; line-height: 1.5; white-space: nowrap;">
+            <td style="font-size: 0.76rem; line-height: 1.45; white-space: nowrap;">
                 <span class="d-block"><strong class="text-primary">Reg:</strong> {{ c.fecha_registro }}</span>
                 <span class="d-block"><strong class="text-secondary">Ini:</strong> {{ c.fecha_inicio_procedimiento }}</span>
                 <span class="d-block"><strong class="text-success">Adj:</strong> {{ c.fecha_adjudicacion }}</span>
             </td>
 
             <td class="acciones">
-              <div class="btn-acciones" style="justify-content:center;">
+              <div class="btn-acciones">
                 <button type="button" class="btn btn-sm btn-accion btn-accion-ver btn-ver-contratacion"
                         title="Ver detalle"
                         aria-label="Ver detalle de la contratación"
@@ -404,6 +487,5 @@
     document.getElementById('btnEditarDesdeDetalleContratacion').href = boton.nextElementSibling
       ? boton.nextElementSibling.getAttribute('href') : '#';
   });
-</script>
 </script>
 {% endblock %}

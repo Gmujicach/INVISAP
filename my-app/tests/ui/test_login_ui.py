@@ -33,3 +33,37 @@ def test_formulario_de_acceso_se_muestra_en_el_navegador(tmp_path):
             page.screenshot(path=str(tmp_path / "playwright_login.png"), full_page=True)
         finally:
             browser.close()
+
+
+def test_formulario_de_acceso_tiene_etiquetas_y_acciones_comprensibles():
+    base_url = os.getenv("INVISAP_TEST_URL")
+    if not base_url:
+        pytest.skip("Define INVISAP_TEST_URL para probar la interfaz con Playwright.")
+
+    playwright_api = pytest.importorskip(
+        "playwright.sync_api",
+        reason="Instala Playwright y Chromium para ejecutar la prueba visual.",
+    )
+
+    with playwright_api.sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=True)
+        try:
+            page = browser.new_page()
+            response = page.goto(
+                f"{base_url.rstrip('/')}/login",
+                wait_until="domcontentloaded",
+            )
+            assert response is not None and response.status == 200
+
+            username = page.get_by_label("Usuario")
+            password = page.get_by_label("Clave de Acceso")
+            submit = page.get_by_role("button", name="Iniciar Sesión")
+
+            assert username.is_visible()
+            assert username.get_attribute("required") is not None
+            assert password.is_visible()
+            assert password.get_attribute("type") == "password"
+            assert password.get_attribute("required") is not None
+            assert submit.is_visible()
+        finally:
+            browser.close()
