@@ -1,0 +1,263 @@
+REPORTE DE DATOS DE LOS REPORTES DEL SISTEMA INVISAP
+================================================================
+
+OBJETIVO
+--------
+Describir los datos que actualmente se exportan en los reportes PDF y Excel
+del sistema, y proponer información adicional para completar los reportes de
+gestión. La descripción se basa en los módulos de generación de reportes y en
+las consultas y tablas disponibles en el proyecto.
+
+1. RESUMEN DE LOS FORMATOS ACTUALES
+-----------------------------------
+
+PDF
+---
+El sistema genera dos clases de PDF:
+
+1) Reporte detallado de gestión: presenta tablas por módulo y permite generar
+   uno o varios módulos en el mismo documento.
+2) Reporte estadístico: presenta gráficos de cantidades agrupadas por
+   categorías o fechas. Está disponible para solicitudes, obras, empleados,
+   contrataciones y publicaciones.
+
+Los PDF detallados usan orientación horizontal, encabezado institucional,
+fecha y hora de emisión, tablas y numeración de página. Los valores extensos
+de las celdas se limitan a 120 caracteres en el PDF detallado.
+
+EXCEL
+-----
+El reporte Excel genera un libro con una hoja por cada módulo que tenga
+registros. Puede generar un módulo específico o el reporte general. Las hojas
+incluyen encabezado institucional, logos, fecha y hora de emisión, títulos y
+columnas con formato.
+
+Actualmente el Excel ofrece reportes detallados, pero no exporta los gráficos
+del reporte estadístico. La fecha de emisión y el formato de las hojas son
+datos de presentación; no son campos de cada registro.
+
+2. DATOS QUE SE EXPORTAN ACTUALMENTE EN LOS REPORTES DETALLADOS
+----------------------------------------------------------------
+
+SOLICITUDES
+PDF y Excel:
+- ID de la solicitud.
+- Fecha y hora.
+- Tipo de solicitud.
+- Estatus.
+- Problemática o descripción.
+- Cédula del solicitante.
+- Prioridad.
+
+Cuando el reporte se genera con filtros de solicitante, ambos formatos
+reemplazan la vista de columnas por:
+- Cédula, nombre del solicitante, correo y teléfono.
+- Descripción de la solicitud, fecha y estatus.
+- Municipio/parroquia.
+
+SOLICITANTES
+PDF:
+- Nombre, apellido y cédula.
+
+La consulta también obtiene correo y teléfono, pero estos campos no aparecen
+en las columnas del PDF. El Excel no tiene actualmente una hoja/módulo
+independiente de solicitantes.
+
+PERSONAL / EMPLEADOS
+PDF y Excel:
+- Nombre, profesión/cargo, gerencia asignada y fecha de ingreso.
+- Email, teléfono y estado.
+
+La consulta de exportación obtiene empleados activos y presenta el estado
+como “Activo”. Aunque hay filtros de persona y ubicación, cédula, dirección,
+parroquia y municipio no se muestran como columnas en la tabla actual.
+
+USUARIOS DEL SISTEMA
+PDF y Excel:
+- Nombre, cédula, correo y rol.
+
+La consulta actual considera usuarios activos. No se exportan contraseñas,
+códigos de autenticación ni otros datos de acceso.
+
+CONTRATACIONES
+PDF y Excel:
+- Empresa adjudicada y RIF.
+- Número de contrato y monto.
+- Descripción y observación.
+- Tipo de contrato, modalidad y objeto.
+- Fechas de registro, inicio del procedimiento y adjudicación.
+
+OBRAS
+PDF y Excel:
+- Nombre de la obra, ubicación y porcentaje de avance.
+- Estado del semáforo y color.
+- Contratista.
+
+Cuando se aplican filtros de obra, la vista de columnas cambia a:
+- ID de obra, nivel de criticidad y gerencia responsable.
+- Estatus, avance porcentual y fecha de inicio/registro.
+
+La consulta de obras también obtiene criticidad, nivel de gravedad, gerente y
+fecha de inicio, pero no todas esas columnas se muestran en la vista normal.
+
+PUBLICACIONES
+PDF y Excel:
+- Título, autor/responsable, fecha y tipo de publicación.
+
+La consulta del PDF obtiene además el cuerpo de la publicación, pero no lo
+presenta como columna.
+
+3. DATOS QUE SE PRESENTAN EN EL PDF ESTADÍSTICO
+------------------------------------------------
+Los gráficos presentan cantidades (conteos), no un detalle individual de
+cada registro. La tendencia de fechas se puede agrupar por día, semana o mes.
+
+SOLICITUDES
+- Cantidad por fecha, tipo y estatus.
+- Con filtros geográficos o de contacto: distribución por municipio,
+  parroquia y sector.
+
+OBRAS
+- Cantidad por fecha, estado, contratista, ubicación y color del semáforo.
+- Distribución por rangos de avance: 0-25 %, 25-50 %, 50-75 % y 75-100 %.
+
+EMPLEADOS
+- Cantidad por cargo, gerencia, estado y fecha de ingreso.
+
+CONTRATACIONES
+- Cantidad por tipo, modalidad, objeto, estado, empresa y fecha de registro.
+
+PUBLICACIONES
+- Cantidad por tipo de publicación, autor/responsable y fecha.
+
+Los gráficos de categorías se presentan como barras o como gráfico circular,
+según el número de categorías. El PDF estadístico no muestra actualmente
+montos, porcentajes de participación calculados en tabla, promedios ni
+indicadores de cumplimiento.
+
+4. DATOS ADICIONALES RECOMENDADOS
+---------------------------------
+Las siguientes propuestas no forman parte de las columnas actuales. Algunas
+pueden construirse con datos que ya están guardados en la base de datos; otras
+requieren registrar información adicional o confirmar su calidad y relación.
+
+SOLICITUDES Y SOLICITANTES
+- Nombre completo o razón social, tipo de solicitante (persona, comunidad o
+  institución), municipio, parroquia, sector, ámbito y dirección.
+- Fecha de recepción, fecha de asignación, responsable, fecha de cierre y
+  tiempo total de atención.
+- Historial de cambios de estatus, observaciones de gestión, respuesta o
+  solución entregada y evidencia de cierre.
+- Indicador de solicitudes pendientes, vencidas, atendidas y reabiertas.
+- Tiempo promedio de atención y solicitudes acumuladas por prioridad,
+  categoría, municipio y parroquia.
+- Vinculación de la solicitud con el proyecto, obra o informe que la atiende.
+
+PERSONAL / EMPLEADOS
+- Cédula, dirección, municipio, parroquia y datos de contacto disponibles en
+  el registro de persona.
+- Estado real del empleado (activo/inactivo), en lugar de presentar siempre
+  “Activo” en el resultado.
+- Distribución de personal por cargo, gerencia, ubicación y antigüedad.
+- Fecha de actualización del registro y responsable de la actualización, si
+  esos datos se incorporan al sistema.
+
+USUARIOS Y SEGURIDAD
+- Estado de la cuenta y permisos/rol asignados.
+- Fecha del último acceso y actividad por periodo, si se habilita esa
+  captura o consulta.
+- Conteos de cuentas activas/inactivas, roles y accesos por módulo.
+- Reporte de actividad administrativa y acciones relevantes, usando la
+  bitácora.
+- No incluir contraseñas, códigos OTP, hashes, tokens ni secretos en ningún
+  reporte.
+
+CONTRATACIONES Y EMPRESAS
+- Datos de contacto y domicilio fiscal de la empresa, junto con su estado.
+- Resultado de verificación de requisitos y requisitos pendientes.
+- Estatus del procedimiento y del contrato, hitos y fechas planificadas.
+- Monto ejecutado, monto pendiente, modificaciones, pagos y saldo, cuando
+  existan datos confiables para calcularlos.
+- Comparación por empresa, modalidad, tipo de contrato y periodo.
+- Duración entre registro, inicio del procedimiento y adjudicación.
+
+OBRAS Y PROYECTOS
+- Fechas de inicio y fin planificadas y reales, duración y retraso respecto
+  al cronograma.
+- Código/nombre del proyecto vinculado, gerente responsable y contratista.
+- Mediciones, valuaciones, modificaciones contractuales y certificaciones
+  ejecutadas.
+- Historial de avances con porcentaje, descripción, fecha y responsable;
+  variación del avance entre periodos.
+- Informes de avance: tipo, estado, fecha, población beneficiada y evidencias
+  antes/durante/después.
+- Inspecciones: fecha, tipo, inspector, observaciones y evidencias asociadas.
+- Riesgos: nivel de gravedad, criticidad, fecha de evaluación y acciones
+  correctivas.
+- Materiales/recursos utilizados, cantidades y unidades, si se registran por
+  informe.
+- Indicadores: obras paralizadas, en progreso y culminadas; avance promedio;
+  obras con retraso; población beneficiada; y distribución por municipio o
+  zona.
+
+EVIDENCIAS E INSPECCIONES
+- Tipo y etapa de evidencia (antes, durante o después), fecha de registro,
+  nombre/ruta del archivo y obra/informe asociado.
+- En PDF, incluir miniaturas o referencias/enlaces a evidencias, en lugar de
+  intentar insertar archivos grandes sin control.
+- Conteos de inspecciones por obra, tipo, inspector y periodo.
+- Observaciones pendientes de atención y seguimiento a las recomendaciones.
+
+MAQUINARIA Y RECURSOS
+- Reporte por nombre, tipo y estado de maquinaria.
+- Asignación a obra, fechas de uso, disponibilidad, horas de operación y
+  mantenimiento, si se registra esa información.
+- Materiales consumidos por obra/informe y comparativo planificado frente a
+  utilizado.
+
+PUBLICACIONES
+- Cuerpo o resumen de la publicación, estado de publicación y fecha de
+  aprobación.
+- Vínculo a la obra o informe relacionado y audiencia/canal de publicación,
+  si se registra.
+- Cantidad por tipo, autor y periodo; publicaciones asociadas a obras
+  culminadas o hitos.
+
+INDICADORES GENERALES PARA LOS REPORTES
+- Periodo consultado, filtros utilizados, fecha de corte y total de registros.
+- Totales y subtotales, porcentajes, promedios, máximos y mínimos pertinentes.
+- Comparación con el periodo anterior y variación absoluta/porcentual.
+- Listado de registros que componen cada indicador para permitir auditoría.
+- Resumen ejecutivo con alertas, pendientes y principales cambios.
+
+5. MÓDULOS CON CONSULTAS EXISTENTES QUE NO SE EXPORTAN ACTUALMENTE
+-------------------------------------------------------------------
+El modelo Excel contiene consultas para avances, inspecciones, evidencias y
+gravedades de obras. Sin embargo, esos módulos no están incluidos en la
+configuración de hojas que se procesa actualmente. Tampoco forman parte de
+los módulos detallados configurados para el PDF.
+
+Esto permite considerar su incorporación como nuevos reportes detallados,
+reutilizando los datos consultados actualmente:
+- Avances: ID, porcentaje, descripción, fecha, obra y gerente.
+- Inspecciones: ID, fecha, tipo, observaciones, obra e inspector.
+- Evidencias: ID, archivos/fotos, fecha, etapa y obra.
+- Gravedades: ID, nivel de gravedad, criticidad y obra.
+
+6. OBSERVACIONES Y PRIORIDAD SUGERIDA
+-------------------------------------
+- A corto plazo: agregar al detalle de obras fechas de fin, criticidad,
+  gerente y nivel de gravedad; al detalle de solicitantes correo/teléfono;
+  y al detalle de publicaciones un resumen.
+- A corto plazo: habilitar hojas y tablas para avances, inspecciones,
+  evidencias y gravedades, que ya cuentan con consultas en el modelo Excel.
+- A mediano plazo: incorporar tiempos de atención de solicitudes, evolución
+  histórica de avances, retrasos de obras y cumplimiento de contratos.
+- A mediano plazo: ofrecer los mismos indicadores estadísticos en Excel,
+  incluyendo una hoja resumen con filtros, totales y tablas de datos.
+- Validar permisos y privacidad antes de exportar cédulas, contactos,
+  actividad de usuarios o información contractual.
+- Mostrar claramente si un campo no está registrado; evitar completar datos
+  faltantes con valores supuestos.
+
+FIN DEL REPORTE

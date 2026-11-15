@@ -283,7 +283,7 @@ def generarReportePDF():
         elementos = []
 
         es_contrataciones = any(mod['id'] == 'contrataciones' for mod in modulos_a_procesar)
-        tamanio_pagina = landscape(letter) if es_contrataciones else letter
+        tamanio_pagina = landscape(letter)
 
         for mod in modulos_a_procesar:
             mod_filtros = _limpiar_filtros_por_modulo(filtros, mod['id'])
@@ -344,8 +344,8 @@ def generarReportePDF():
         doc = SimpleDocTemplate(
             buffer,
             pagesize=tamanio_pagina,
-            rightMargin=72,
-            leftMargin=72,
+            rightMargin=36,
+            leftMargin=36,
             topMargin=140,
             bottomMargin=40
         )

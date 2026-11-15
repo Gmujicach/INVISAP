@@ -254,6 +254,9 @@ def generarReporteExcel():
             sheet_title = re.sub(r'[\\\/\?\*\[\]]', ' ', mod_config['label'])
             ws = wb.create_sheet(title=sheet_title)
             ws.sheet_view.showGridLines = True
+            ws.page_setup.paperSize = 1
+            ws.page_setup.orientation = 'landscape'
+            ws.page_setup.horizontalCentered = True
 
             ws.add_image(
                 _crear_imagen_logo(LOGO_GOBERNACION, LOGO_GOBERNACION_BOUNDS),

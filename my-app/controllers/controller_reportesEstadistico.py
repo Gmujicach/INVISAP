@@ -13,8 +13,8 @@ from services.bitacora_service import BitacoraService
 reporte_estadistico_bp = Blueprint('reporte_estadistico_bp', __name__, template_folder='../vista')
 modelo_estadistico = ReporteEstadisticoModel()
 
-PAGE_W, PAGE_H = 612, 792
-MARGIN = 72
+PAGE_W, PAGE_H = 792, 612
+MARGIN = 36
 
 STAT_TITLES = {
     'por_tipo': 'Distribución por Tipo',
@@ -145,7 +145,7 @@ def generar_pagina_pdf(tipo_reporte, stats, agrupacion='dia'):
     draw.line((MARGIN, 115, PAGE_W - MARGIN, 115), fill='black', width=1)
 
     y = 130
-    draw.text((MARGIN, y), f'ANÁLISIS ESTADÍSTICO DE {tipo_reporte}', fill='black', font=font_subtitulo)
+    draw.text((PAGE_W / 2, y), f'ANÁLISIS ESTADÍSTICO DE {tipo_reporte}', fill='black', font=font_subtitulo, anchor='mt')
     y += 28
 
     agrupacion_texto = {'mes': 'por Mes', 'semana': 'por Semana'}.get(agrupacion, 'por Día')
