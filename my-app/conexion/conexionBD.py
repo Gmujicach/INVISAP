@@ -23,10 +23,10 @@ def _get_env(key, default=''):
 def get_db_config():
     """Retorna la configuración de conexión a la base de datos principal con pooling."""
     return {
-        'host': os.getenv('DB_HOST'),
-        'user': os.getenv('DB_USER'),
-        'password': os.getenv('DB_PASSWORD'),
-        'database': os.getenv('DB_NAME'),
+        'host': os.getenv('DB_HOST', 'localhost'),
+        'user': os.getenv('DB_USER', 'root'),
+        'password': os.getenv('DB_PASSWORD', ''),
+        'database': os.getenv('DB_NAME', 'invilara'),
         'charset': 'utf8mb4',
         'use_unicode': True,
         'auth_plugin': _get_env('DB_AUTH_PLUGIN', 'mysql_native_password'),
@@ -60,12 +60,12 @@ def connectionBD_invilara():
         return None
     
 def connectionBD_seguridad():
-    """Return a new MySQL connection. Reads configuration from env vars."""
+    """Return a new MySQL connection. Reads configuration from env vars with sane defaults."""
     db_config = {
-        'host': os.getenv('DB_HOST'),
-        'user': os.getenv('DB_USER'),
-        'password': os.getenv('DB_PASSWORD'),
-        'database': os.getenv('DB_NAME_SEGURIDAD'),
+        'host': os.getenv('DB_HOST', 'localhost'),
+        'user': os.getenv('DB_USER', 'root'),
+        'password': os.getenv('DB_PASSWORD', ''),
+        'database': os.getenv('DB_NAME_SEGURIDAD', 'invilara_seguridad'),
         'charset': 'utf8mb4',
         'use_unicode': True,
         'auth_plugin': _get_env('DB_AUTH_PLUGIN', 'mysql_native_password'),
