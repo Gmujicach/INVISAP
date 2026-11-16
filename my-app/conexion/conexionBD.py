@@ -7,9 +7,9 @@ from mysql.connector import Error
 
 
 def _load_env():
-    """Load local configuration without overriding explicitly set environment variables."""
+    """Load local configuration; .env values take precedence over system env."""
     env_path = Path(__file__).resolve().parent.parent / '.env'
-    load_dotenv(env_path, override=False)
+    load_dotenv(env_path, override=True)
 
 _load_env()
 

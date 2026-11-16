@@ -276,19 +276,24 @@ textarea.form-control::placeholder {
 }
 
 .table-informe-avance {
-    font-size: 0.9rem;
+    width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+    font-size: 0.78rem;
     border-collapse: separate;
     border-spacing: 0;
-    min-width: 860px;
 }
 
 .table-informe-avance thead th {
     border: none;
-    padding: 1rem 0.75rem;
-    font-weight: 600;
+    padding: 0.45rem 0.3rem;
+    font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
+    font-size: 0.64rem;
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 .table-informe-avance tbody tr {
@@ -297,7 +302,50 @@ textarea.form-control::placeholder {
 
 .table-informe-avance tbody td {
     vertical-align: middle;
-    padding: 0.75rem;
+    padding: 0.4rem 0.3rem;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
+}
+
+/* Texto largo: máximo dos líneas, recortado dentro de la celda */
+.table-informe-avance .texto-corto {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    max-height: 2.5em;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+/* Etiquetas de estado compactas */
+.table-informe-avance td .badge {
+    display: inline-block;
+    max-width: 100%;
+    padding: 0.25em 0.4em;
+    font-size: 0.62rem;
+    font-weight: 600;
+    line-height: 1.15;
+    white-space: normal;
+    vertical-align: middle;
+}
+
+/* Columna de acciones: botones pequeños en una sola fila */
+.table-informe-avance th.acciones,
+.table-informe-avance td.acciones {
+    padding-left: 0.15rem;
+    padding-right: 0.15rem;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.table-informe-avance .btn-acciones {
+    justify-content: center !important;
+    gap: 0.15rem !important;
+    flex-wrap: nowrap;
 }
 
 /* ========== PAGINACIÓN Y COMPORTAMIENTO RESPONSIVE ========== */
@@ -323,16 +371,17 @@ textarea.form-control::placeholder {
 .table-informe-avance .btn-ver-informe,
 .table-informe-avance .btn-editar-informe,
 .table-informe-avance .btn-eliminar-informe {
-    width: 72px !important;
-    height: 36px !important;
-    min-width: 72px !important;
-    max-width: 72px !important;
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+    max-width: 26px !important;
     padding: 0 !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 1.1rem !important;
+    font-size: 0.75rem !important;
     line-height: 1 !important;
+    border-radius: 5px;
     box-sizing: border-box !important;
     text-decoration: none !important;
 }
@@ -404,8 +453,8 @@ textarea.form-control::placeholder {
 
 /* ========== PROGRESS BAR (Porcentaje de Avance) ========== */
 .progress {
-    height: 25px;
-    border-radius: 10px;
+    height: 16px;
+    border-radius: 6px;
     background-color: var(--invilara-gris-claro);
     overflow: hidden;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -413,7 +462,7 @@ textarea.form-control::placeholder {
 
 .progress-bar {
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.6rem;
     display: flex;
     align-items: center;
     justify-content: center;
