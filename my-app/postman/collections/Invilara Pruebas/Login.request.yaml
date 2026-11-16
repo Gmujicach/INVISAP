@@ -1,0 +1,58 @@
+$kind: http-request
+url: "{{base_url}}/login"
+method: GET
+body:
+  type: formdata
+  content:
+    - type: text
+      key: nombre
+      value: admin
+    - type: text
+      key: pass_user
+      value: admin123.
+    - type: text
+      key: g-recaptcha-response
+      value: ""
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("La página de Login responde con éxito (200 OK)", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("El tiempo de respuesta es menor a 500ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(500);
+      });
+
+      pm.test("El tipo de contenido es HTML", function () {
+          pm.response.to.have.header("Content-Type");
+          pm.expect(pm.response.headers.get("Content-Type")).to.include("text/html");
+      });
+
+      // --- Captura automática de cookie de sesión ---
+      var sessionCookie = pm.cookies.get('session');
+
+      if (!sessionCookie) {
+          // Fallback: intentar leer desde el header Set-Cookie
+          var setCookieHeader = pm.response.headers.get('Set-Cookie');
+          if (setCookieHeader) {
+              var match = setCookieHeader.match(/(?:^|;\s*)session=([^;]+)/);
+              if (match) {
+                  sessionCookie = match[1];
+              }
+          }
+      }
+
+      if (sessionCookie) {
+          pm.environment.set('session_cookie', sessionCookie);
+          console.log('✅ Cookie de sesión capturada y guardada en {{session_cookie}}:', sessionCookie);
+      } else {
+          console.warn('⚠️ No se encontró la cookie "session" en la respuesta. Asegúrate de iniciar sesión con credenciales válidas y CAPTCHA resuelto.');
+      }
+
+      pm.test("Cookie de sesión capturada en {{session_cookie}}", function () {
+          var saved = pm.environment.get('session_cookie');
+          pm.expect(saved).to.be.a('string').and.to.have.length.above(0);
+      });
+    language: text/javascript
+order: 1000

@@ -17,5 +17,4 @@ scripts:
           pm.expect(pm.response.text()).to.include("<");
       });
     language: text/javascript
-settings: {}
-order: 15000
+order: 16000

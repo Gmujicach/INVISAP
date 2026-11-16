@@ -1,0 +1,6 @@
+name: Local (Development)
+values:
+  - key: base_url
+    value: ""
+  - key: session_cookie
+    value: ""

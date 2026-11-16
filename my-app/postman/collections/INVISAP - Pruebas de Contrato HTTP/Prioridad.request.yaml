@@ -9,18 +9,44 @@ queryParams:
 scripts:
   - type: afterResponse
     code: |-
-      pm.test("HTTP 200", function () {
-          pm.response.to.have.status(200);
+      // EAFIT - Caja Negra: Partición Equivalente + Análisis de Valor Límite
+      // Catálogo de Prioridad: valores numéricos (límite inferior=1, superior=5)
+      pm.test("El endpoint responde con éxito (200 OK)", function () {
+          pm.expect(pm.response.code).to.equal(200);
       });
 
-      pm.test("Content-Type JSON", function () {
+      pm.test("El tiempo de respuesta del servidor Flask es menor a 1000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(1000);
+      });
+
+      pm.test("Content-Type es application/json", function () {
           pm.expect(pm.response.headers.get("Content-Type") || "")
               .to.include("application/json");
       });
 
-      pm.test("El cuerpo se puede interpretar como JSON", function () {
-          pm.response.json();
+      pm.test("La respuesta contiene estructura JSON válida con datos de prioridad", function () {
+          const json = pm.response.json();
+          pm.expect(json).to.be.an('object').or.to.be.an('array');
+      });
+
+      pm.test("Análisis Valor Límite: si hay nivel de prioridad, está en rango válido (1-5)", function () {
+          const json = pm.response.json();
+          const lista = Array.isArray(json) ? json : (json.data || json.prioridades || []);
+          lista.forEach(function(p) {
+              if (p.nivel !== undefined) {
+                  pm.expect(p.nivel).to.be.within(1, 5);
+              }
+              if (p.id_gestion_prioridad !== undefined) {
+                  pm.expect(p.id_gestion_prioridad).to.be.at.least(1);
+              }
+          });
+      });
+
+      pm.test("Análisis Valor Límite: paginación válida (page >= 1, per_page >= 1)", function () {
+          const json = pm.response.json();
+          if (json.page !== undefined) pm.expect(json.page).to.be.at.least(1);
+          if (json.per_page !== undefined) pm.expect(json.per_page).to.be.at.least(1);
+          if (json.total !== undefined) pm.expect(json.total).to.be.at.least(0);
       });
     language: text/javascript
-settings: {}
-order: 3000
+order: 4000

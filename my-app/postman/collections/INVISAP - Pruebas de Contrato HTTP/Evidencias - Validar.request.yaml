@@ -17,5 +17,4 @@ scripts:
           pm.response.json();
       });
     language: text/javascript
-settings: {}
-order: 11000
+order: 12000

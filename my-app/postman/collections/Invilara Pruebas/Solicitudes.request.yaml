@@ -1,0 +1,33 @@
+$kind: http-request
+url: "{{base_url}}/api/obtener-solicitudes-json"
+method: GET
+headers:
+  Cookie: "{{session_cookie}}"
+  Content-Type: application/json
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"La API responde con estado 200 o 201\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"La respuesta es un JSON válido y contiene el ID de solicitud\", function () {\r
+
+      \    // Validamos que el cuerpo de la respuesta sea un arreglo (array)\r
+
+      \    var jsonData = pm.response.json();\r
+
+      \    pm.expect(jsonData).to.be.an('array');\r
+
+      \    \r
+
+      \    // Verificamos que el primer elemento del arreglo contenga la propiedad 'id_solicitud'\r
+
+      \    pm.expect(jsonData[0]).to.have.property('id_solicitud');\r
+
+      });"
+    language: text/javascript
+order: 2000

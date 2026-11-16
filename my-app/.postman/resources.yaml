@@ -5,5 +5,8 @@ cloudResources:
     ../postman/globals/workspace.globals.yaml: 5a93723b-5f10-4443-8362-6d22ac264997
   collections:
     ../postman/collections/INVISAP - Pruebas de Contrato HTTP: 58832640-b2c7128e-b720-44e9-b5b4-712e63d9e254
+    ../postman/collections/Invilara Pruebas: 58832640-1c3f43d1-5a06-4c4f-ab5b-501e7f4fcb26
+    ../postman/collections/My Collection: 58832640-ef3e40b9-2f62-4b7a-bd40-ef75fa4d31bd
   environments:
     ../postman/environments/INVISAP pruebas.environment.yaml: 58832640-92b857b6-e471-4653-b7c1-2f39b1ffe016
+    ../postman/environments/Local (Development).environment.yaml: 58832640-856e8200-6e56-4298-a89e-f8f85905a8db

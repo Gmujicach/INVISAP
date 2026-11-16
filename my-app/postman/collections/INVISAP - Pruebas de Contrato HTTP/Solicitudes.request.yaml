@@ -7,18 +7,31 @@ headers:
 scripts:
   - type: afterResponse
     code: |-
-      pm.test("HTTP 200", function () {
-          pm.response.to.have.status(200);
+      // EAFIT - Caja Negra: Prueba de Listar (GET) - Módulo Transaccional Solicitudes
+      pm.test("El endpoint responde con éxito (200 OK)", function () {
+          pm.expect(pm.response.code).to.equal(200);
       });
 
-      pm.test("Content-Type JSON", function () {
+      pm.test("El tiempo de respuesta del servidor Flask es menor a 1000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(1000);
+      });
+
+      pm.test("Content-Type es application/json", function () {
           pm.expect(pm.response.headers.get("Content-Type") || "")
               .to.include("application/json");
       });
 
-      pm.test("El cuerpo se puede interpretar como JSON", function () {
-          pm.response.json();
+      pm.test("La respuesta contiene estructura JSON válida", function () {
+          const json = pm.response.json();
+          pm.expect(json).to.be.an('object').or.to.be.an('array');
+      });
+
+      pm.test("Partición Equivalente: si hay solicitudes, tienen campos requeridos", function () {
+          const json = pm.response.json();
+          const lista = Array.isArray(json) ? json : (json.data || json.solicitudes || []);
+          if (lista.length > 0) {
+              pm.expect(lista[0]).to.have.any.keys('id_solicitudes', 'id', 'estado', 'descripcion');
+          }
       });
     language: text/javascript
-settings: {}
-order: 1000
+order: 2000
