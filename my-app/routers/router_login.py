@@ -1,5 +1,6 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, session, jsonify
+from flask import Blueprint, current_app, render_template, request, flash, redirect, url_for, session, jsonify
 from conexion.conexionBD import ConexionBD
+from mysql.connector import Error as MySQLConnectorError
 from werkzeug.security import check_password_hash, generate_password_hash
 from controllers.funciones_login import *
 from controllers.strategies import AuthContext, DatabaseLoginStrategy
@@ -159,7 +160,21 @@ def loginCliente():
                 flash(mensaje_recaptcha, 'danger')
                 return render_template(f'{PATH_URL_LOGIN}/base_login.html')
 
-            account = auth_context.login(nombre_usuario, pass_user)
+            try:
+                account = auth_context.login(nombre_usuario, pass_user)
+            except MySQLConnectorError as error:
+                current_app.logger.error(
+                    "No se pudo autenticar por un error de base de datos "
+                    "(errno=%s, sqlstate=%s).",
+                    error.errno,
+                    error.sqlstate,
+                )
+                flash(
+                    'No se pudo conectar con la base de datos. '
+                    'Verifica la configuración local de MySQL e inténtalo de nuevo.',
+                    'danger',
+                )
+                return render_template(f'{PATH_URL_LOGIN}/base_login.html'), 503
 
             if account:
                 session['conectado'] = True

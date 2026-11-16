@@ -1,45 +1,48 @@
 import os
+from pathlib import Path
+
 import mysql.connector
+from dotenv import load_dotenv
 from mysql.connector import Error
 
+
 def _load_env():
-    """Simple .env loader without external dependencies."""
-    env_path = os.path.join(os.path.dirname(__file__), '..', '.env')
-    if os.path.exists(env_path):
-        with open(env_path, 'r') as f:
-            for line in f:
-                line = line.strip()
-                if '=' in line and not line.startswith('#'):
-                    key, value = line.split('=', 1)
-                    os.environ[key.strip()] = value.strip()
+    """Load local configuration without overriding explicitly set environment variables."""
+    env_path = Path(__file__).resolve().parent.parent / '.env'
+    load_dotenv(env_path, override=False)
 
 _load_env()
+
 
 def _get_env(key, default=''):
     """Obtener variable de entorno o valor por defecto."""
     val = os.getenv(key, '')
     return val if val else default
 
+
 def get_db_config():
     """Retorna la configuración de conexión a la base de datos principal con pooling."""
-    return {
+    db_config = {
         'host': os.getenv('DB_HOST', 'localhost'),
         'user': os.getenv('DB_USER', 'root'),
-        'password': os.getenv('DB_PASSWORD', 'balto04*'),
+        'password': os.getenv('DB_PASSWORD', ''),
         'database': os.getenv('DB_NAME', 'invilara'),
+        'port': int(_get_env('DB_PORT', '3306')),
+        'connection_timeout': int(_get_env('DB_CONNECT_TIMEOUT', '5')),
         'charset': 'utf8mb4',
         'use_unicode': True,
-        'auth_plugin': _get_env('DB_AUTH_PLUGIN', 'mysql_native_password'),
         'pool_name': 'invilara_pool',
         'pool_size': 10,
         'pool_reset_session': True,
     }
+    auth_plugin = _get_env('DB_AUTH_PLUGIN', '')
+    if auth_plugin:
+        db_config['auth_plugin'] = auth_plugin
+    return db_config
 
 def connectionBD():
     """Return a new MySQL connection. Reads configuration from env vars with sane defaults."""
     db_config = get_db_config()
-    
-    print(f"[DEBUG] Conectando a MySQL: host={db_config['host']}, user={db_config['user']}, db={db_config['database']}")
 
     try:
         connection = mysql.connector.connect(**db_config)
@@ -64,15 +67,19 @@ def connectionBD_seguridad():
     db_config = {
         'host': os.getenv('DB_HOST', 'localhost'),
         'user': os.getenv('DB_USER', 'root'),
-        'password': os.getenv('DB_PASSWORD', 'balto04*'),
+        'password': os.getenv('DB_PASSWORD', ''),
         'database': os.getenv('DB_NAME_SEGURIDAD', 'invilara_seguridad'),
+        'port': int(_get_env('DB_PORT', '3306')),
+        'connection_timeout': int(_get_env('DB_CONNECT_TIMEOUT', '5')),
         'charset': 'utf8mb4',
         'use_unicode': True,
-        'auth_plugin': _get_env('DB_AUTH_PLUGIN', 'mysql_native_password'),
         'pool_name': 'invilara_seguridad_pool',
         'pool_size': 10,
         'pool_reset_session': True,
     }
+    auth_plugin = _get_env('DB_AUTH_PLUGIN', '')
+    if auth_plugin:
+        db_config['auth_plugin'] = auth_plugin
 
     try:
         connection = mysql.connector.connect(**db_config)

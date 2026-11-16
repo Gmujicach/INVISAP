@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "C:\laragon\www\INVISAP\my-app\_get_proyecto.py", line 8, in <module>
+    cur.execute('SELECT codigo_proyecto, nombre_proyecto FROM proyectos LIMIT 5')
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\laragon\www\INVISAP\my-app\.venv\Lib\site-packages\mysql\connector\cursor.py", line 617, in execute
+    self._handle_result(self._connection.cmd_query(stmt))
+                        ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\laragon\www\INVISAP\my-app\.venv\Lib\site-packages\mysql\connector\opentelemetry\context_propagation.py", line 77, in wrapper
+    return method(cnx, *args, **kwargs)
+  File "C:\laragon\www\INVISAP\my-app\.venv\Lib\site-packages\mysql\connector\connection.py", line 1069, in cmd_query
+    result = self._handle_result(self._send_cmd(ServerCmd.QUERY, query))
+  File "C:\laragon\www\INVISAP\my-app\.venv\Lib\site-packages\mysql\connector\connection.py", line 846, in _handle_result
+    raise get_exception(packet)
+mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'invilara.proyectos' doesn't exist
+DB ERROR: 1146 (42S02): Table 'invilara.proyectos' doesn't exist

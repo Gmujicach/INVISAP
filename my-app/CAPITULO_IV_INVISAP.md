@@ -38,13 +38,13 @@ La planificación sigue tres niveles:
 
 | Tipo | Objetivo y metodología | Herramientas y datos | Evidencia y límites |
 |---|---|---|---|
-| Unidad | Caja blanca sobre ramas y reglas; caja negra sobre entradas/salidas. Se aplican particiones de equivalencia, límites, casos válidos/inválidos parametrizados y Preparar-Actuar-Verificar con fixtures/mocks. | Pytest, `pytest.mark.parametrize`, fixtures y mocks. | `tests/unit`: 20 suites por módulo y 3 suites transversales. Comprueba componentes aislados; no acredita persistencia ni despliegue. |
+| Unidad | Caja blanca sobre ramas y reglas; caja negra sobre entradas/salidas. Se aplican particiones de equivalencia, límites, casos válidos/inválidos parametrizados y Preparar-Actuar-Verificar con fixtures/mocks. Los métodos de modelo deben probarse aislando SQL/servicios; la comunicación con la vista se verifica en API/UI/integración, no como prueba unitaria del modelo. | Pytest, `pytest.mark.parametrize`, fixtures, mocks y `pytest-cov`. | `tests/unit`: pruebas por módulo y cuatro suites agrupadas para los métodos activos, además de suites transversales. El auditor verificó la entrada a 472/472 métodos/funciones activos en alcance; cobertura combinada de instrucciones y ramas: 87%. No significa que se hayan ejecutado todas las ramas posibles. |
 | Integración | Integración incremental: 20 contratos Flask y dos flujos Contratación→Bitácora. Se verifica colaboración y auditoría; una colisión de ID inyectada comprueba el reintento. Los dobles aíslan dependencias. | Pytest, cliente Flask, mocks y fallo controlado. | `tests/integration`: 22 casos aprobados. No equivale a transacciones reales contra MySQL. |
-| Backend/API | Contratos HTTP positivos y negativos: estado, JSON, autenticación/autorización, filtros, paginación y parámetros propagados al servicio/modelo. PDF/Excel verifican formularios GET; no generan archivos. | Pytest y cliente Flask con modelos simulados. Postman no estaba instalado ni se utilizó en las ejecuciones documentadas; Guzzle corresponde a PHP y no aplica a este backend Python. | `tests/api`: 20 suites por módulo y casos parametrizados de reportes. No sustituye una prueba desplegada con datos reales autorizados. |
+| Backend/API | Contratos HTTP positivos y negativos: estado, JSON, autenticación/autorización, filtros, paginación y parámetros propagados al servicio/modelo. PDF/Excel verifican formularios GET; no generan archivos. | Pytest y cliente Flask con modelos simulados; Postman para solicitudes HTTP al servidor. Guzzle corresponde a PHP y no aplica a este backend Python. | `tests/api`: 20 suites por módulo y casos parametrizados. La colección Postman contiene solicitudes por endpoint, pero no se registra una ejecución real en este informe. |
 | Humo | Una ruta esencial por módulo; comprobación rápida de respuesta HTTP sin error 404/500. Un 401/302 de autenticación confirma que se alcanzó una ruta protegida, no que la función autenticada opere correctamente. | Pytest y cliente Flask; HTTP real o navegador complementan cuando hay servidor activo. | `tests/smoke`: 20 módulos y acceso. Distinguir la suite local de las verificaciones HTTP en vivo documentadas por separado. |
-| Interfaz | Extremo a extremo desde navegador: abrir pantalla, comprobar respuesta y controles visibles, descartar mensajes incorrectos y guardar captura. No se intenta una navegación autenticada en el caso existente. | Playwright + Chromium; Selenium estaba instalado en la ejecución histórica, pero no se utilizó. | `tests/ui`: un caso de acceso. La ejecución actual se omitió por falta de `INVISAP_TEST_URL`; existe una ejecución histórica aprobada solo para `/login`. |
+| Interfaz | Extremo a extremo desde navegador: abrir pantalla, comprobar respuesta y controles visibles, verificar etiquetas/obligatoriedad y descartar mensajes incorrectos. No se intenta una navegación autenticada en los casos de acceso actuales. | Playwright + Chromium; Selenium puede usarse en recorridos adicionales. | `tests/ui`: dos comprobaciones del formulario de acceso y usabilidad. La ejecución de navegador requiere servidor activo y `INVISAP_TEST_URL`; sin ellos se registra como omitida. |
 | Rendimiento | Solicitudes GET de solo lectura por módulo con perfiles `quick`, `baseline`, `stress` y `spike`; se registran solicitudes, fallos y percentiles. Antes de interpretar tiempos se requiere acceso autenticado y carga/datos controlados. | Locust, cookie de sesión de prueba e identificadores existentes cuando la ruta los requiere. | Se ejecutaron dos series `quick` para los 20 módulos y una `baseline` para Solicitudes. En la serie más reciente, 18 módulos devolvieron 401/302 y dos 200; no es una medición autenticada aprobada. |
-| Aceptación | Caja negra basada en requisito e historia: Dado/Cuando/Entonces, flujo completo, resultado observable y evaluación del validador. Registrar errores, correcciones, retest y firma. | Pytest con Playwright/Selenium puede apoyar el recorrido; la decisión final requiere el formato de especificación y acta firmados por usuarios. | Pendiente: no hay criterios firmados, validador designado ni acta de aceptación; no se ejecutó una suite de aceptación. |
+| Aceptación | Caja negra basada en requisito e historia: Dado/Cuando/Entonces, flujo completo, resultado observable y evaluación del validador. Registrar errores, correcciones, retest y firma. | Pytest con cliente Flask y dobles puede automatizar el flujo; Playwright/Selenium puede validar el recorrido visual. La decisión formal requiere el formato de especificación y acta firmados por usuarios. | `tests/acceptance/test_login_acceptance.py` automatiza login→consulta API con autenticación y datos simulados. No equivale a aceptación de usuarios ni acredita base de datos real; criterios y firmas siguen pendientes. |
 
 ### Organización de las suites por módulo
 
@@ -79,9 +79,10 @@ automatizados de aceptación por módulo.
 | Administración de Respaldos | `tests/unit/test_administracion_respaldos.py`: limpieza de nombre y formato de tamaño. | `tests/integration/test_integracion_administracion_respaldos.py` | `tests/api/test_api_administracion_respaldos.py` | `tests/smoke/test_humo_administracion_respaldos.py` | `tests/performance/locust_administracion_respaldos.py` |
 | Bitácora | `tests/unit/test_bitacora.py`: texto/usuario válidos y rechazo de caracteres. | `tests/integration/test_integracion_bitacora.py` | `tests/api/test_api_bitacora.py` | `tests/smoke/test_humo_bitacora.py` | `tests/performance/locust_bitacora.py` |
 
-Además de los archivos por módulo, hay tres suites unitarias transversales:
-`test_informe_validacion.py` (3 casos), `test_security_controls.py` (2) y
-`test_sql_filter_allowlists.py` (8). `test_contrataciones_bitacora.py`
+Además de los archivos por módulo, hay cuatro suites unitarias transversales:
+`test_formatos_logos_reportes.py`, `test_informe_validacion.py`,
+`test_security_controls.py` y `test_sql_filter_allowlists.py`.
+`test_contrataciones_bitacora.py`
 contiene dos casos de flujo integrador; `test_parametrizacion_reportes.py`
 aporta 13 casos API; `test_login_smoke.py` añade un caso de humo del acceso.
 
@@ -118,10 +119,14 @@ el endpoint enumerado aquí:
 | Bitácora | `/api/obtener-bitacora-json` |
 
 El proyecto probado es Python: no se ejecutaron PHPUnit, Guzzle, Codeception ni
-JMeter; Guzzle/PHPUnit/Codeception pertenecen al stack PHP. Postman no se usó
-en las ejecuciones documentadas, y Selenium estaba disponible pero no fue el
-automatizador de la corrida de interfaz. Los resultados informados corresponden
-a Pytest, Playwright y Locust según el tipo de prueba.
+JMeter; Guzzle/PHPUnit/Codeception pertenecen al stack PHP. Postman está
+instalado y la colección contiene contratos HTTP parametrizados, pero no se
+reporta una ejecución de Postman en esta bitácora. Sus aserciones existentes
+verifican mayormente estado, tipo de contenido y parseo JSON; no son cobertura
+de esquema funcional completa. La solicitud de login fue saneada para retirar
+credenciales/token embebidos y se agregó un caso de acceso anónimo; su
+validación automatizada contra el servidor sigue pendiente. Los resultados
+ejecutados corresponden a Pytest, Playwright y Locust según el tipo de prueba.
 
 ### Planificación de Unidad, Integración y Sistema
 
@@ -159,6 +164,80 @@ Las plantillas editables para completar el plan y cada caso funcional están en
 
 ### Datos de ejecución
 
+### Ampliación de cobertura de métodos y revisión de contratos Postman (2026-11-15)
+
+- **Inventario:** `tests/unit` contiene 30 archivos `test_*.py`, incluidos
+  los módulos de negocio, las suites transversales y los nuevos grupos
+  exhaustivos. El alcance comprende 470 métodos de clase activos de los 20
+  módulos y de `BaseModel`, más dos funciones auxiliares de módulo: 472
+  métodos/funciones activos en total. Se incluyen constructores, accesores,
+  métodos públicos y privados, propiedades getter/setter y rutas de SQL
+  simuladas.
+- **Métodos inaccesibles:** dos implementaciones privadas duplicadas en
+  `InspeccionModel` estaban sobrescritas por definiciones posteriores y no
+  podían invocarse en Python. Se eliminaron esas definiciones muertas sin
+  alterar el comportamiento activo; las versiones restantes sí se prueban.
+- **Ejecución reproducible:** `python -m pytest tests\unit --confcutdir=tests\unit
+  --cov=models --cov-branch --cov-report=term`, seguida de
+  `python tests\unit\check_model_method_coverage.py`.
+- **Resultado observado:** 440 aprobadas, 0 fallidas, 0 omitidas; el auditor
+  confirmó 472/472 métodos y funciones activas ejecutados. Python 3.14.3,
+  pytest 9.2.0; 8.40 s de pytest, 2026-11-15.
+- **Cobertura:** 87% de cobertura combinada de instrucciones y ramas en los
+  archivos de modelo incluidos en el alcance. La métrica de entrada a método
+  no significa cobertura total de todas las ramas, límites ni caminos
+  independientes; el informe todavía muestra rutas pendientes en módulos
+  como Informe de Avance, Solicitudes y Maquinaria.
+- **Aislamiento:** `--confcutdir=tests\unit` evita cargar el `conftest.py`
+  raíz, que intenta inicializar la aplicación y conectar con MySQL. Las
+  pruebas de modelo usan mocks/dobles y temporales; no certifican persistencia
+  ni integración contra una base MySQL real.
+- **Corrección detectada:** `UsuarioModel.existe_y_activo` estaba declarado
+  estático pero refería `self`, causando `NameError`. Ahora usa la conexión
+  estática de `UsuarioModel`, cierra los recursos y cuenta con pruebas para
+  coincidencia, ausencia y consulta parametrizada.
+- **Postman:** se revisó la colección HTTP. El login incluía valores de
+  credenciales y token en el archivo; fueron reemplazados por variables de
+  entorno (`login_username`, `login_password`, `recaptcha_token`). Se retiró
+  el umbral arbitrario de 500 ms y se añadió una solicitud sin sesión. Los
+  YAML se validaron sintácticamente, pero no se ejecutaron desde Postman; la
+  colección no comprueba todavía esquemas/campos de respuesta específicos
+  para todos los endpoints.
+- **Corrección de test:** `test_security_controls.py` ahora neutraliza
+  explícitamente el bypass `SKIP_RECAPTCHA` en los casos que comprueban
+  configuración ausente y error de red. Sin ese aislamiento, el `.env` local
+  podía hacer que los tests devolvieran éxito antes de alcanzar las ramas
+  verificadas.
+
+La técnica sigue el documento de metodologías suministrado: caja negra para
+particiones equivalentes y límites de entradas/salidas, y caja blanca para
+decisiones, bucles, limpieza y rutas de error. Las aserciones revisan resultados
+observables, parámetros SQL, transacciones y liberación de recursos. La
+comunicación con la vista continúa correspondiendo a API, integración y UI,
+no a la prueba unitaria del modelo.
+- **Postman:** se revisó la colección HTTP. El login incluía valores de
+  credenciales y token en el archivo; fueron reemplazados por variables de
+  entorno (`login_username`, `login_password`, `recaptcha_token`). Se retiró
+  el umbral arbitrario de 500 ms y se añadió una solicitud sin sesión. Los
+  YAML se validaron sintácticamente, pero no se ejecutaron desde Postman; la
+  colección no comprueba todavía esquemas/campos de respuesta específicos
+  para todos los endpoints.
+- **Corrección de test:** `test_security_controls.py` ahora neutraliza
+  explícitamente el bypass `SKIP_RECAPTCHA` en los casos que comprueban
+  configuración ausente y error de red. Sin ese aislamiento, el `.env` local
+  podía hacer que los tests devolvieran éxito antes de alcanzar las ramas
+  verificadas.
+
+La ampliación agrega una ruta de consulta/delegación representativa por cada
+módulo; no equivale a un test por cada método. La brecha debe cerrarse con
+casos de comportamiento por función: entradas/límites para validadores,
+retornos/errores para métodos públicos y SQL/commit/rollback/limpieza
+simulados para métodos privados. Las pruebas de modelos no deben llamar
+vistas ni acceder a una base productiva.
+
+Los resultados de la tabla siguiente corresponden a una corrida general
+anterior (2026-11-05) y se conservan como registro histórico; no deben
+confundirse con la corrida unitaria más reciente indicada arriba.
 - **Fecha y hora de la suite completa:** 2026-11-05 20:43:33 (UTC−04:00).
 - **Ambiente:** ejecución local automatizada en Windows, Python 3.14.7 y
   pytest 9.1.1.
@@ -351,7 +430,7 @@ registraron escrituras, restauración de respaldo ni pruebas CRUD completas.
 |---|---|---|
 | Preparación | Identificar versión/commit, equipo y sistema operativo; confirmar disponibilidad, autorización, puertos y acceso a MySQL. | Administrador de infraestructura y equipo del proyecto. |
 | Respaldo | Crear respaldo de la base existente y comprobar que pueda restaurarse en un entorno aislado antes de importar o migrar datos. | Administrador de base de datos. |
-| Dependencias | Instalar la versión de Python documentada para el proyecto (Python 3.14), crear el entorno virtual e instalar `requirements.txt`; instalar por separado `tests/performance/requirements.txt` para Locust. Instalar Playwright/Chromium solo si se ejecutará UI. | Soporte técnico. |
+| Dependencias | Instalar la versión de Python documentada para el proyecto (Python 3.14), crear el entorno virtual e instalar `requirements.txt`; instalar `tests/requirements-test.txt` para Pytest, cobertura, Locust, Playwright, Selenium, Bandit y pip-audit. Instalar Chromium con `python -m playwright install chromium` si se ejecutará UI. | Soporte técnico. |
 | Configuración | Configurar conexión a MySQL, URL, secretos, cuentas y datos ficticios de prueba; importar `BD/invilara.sql` solo en una base aprobada. No copiar credenciales, cookies ni datos productivos sin autorización. | Administrador/DBA. |
 | Verificación | Iniciar la aplicación y comprobar primero el acceso; después ejecutar unidad, integración, API y humo. Ejecutar UI con URL disponible y carga solo en ambiente autorizado, con sesión de prueba e identificadores válidos. | Equipo técnico y validadores. |
 | Cierre/reversión | Registrar versión, fecha, responsables, errores, evidencia y resultado; documentar cómo restaurar el respaldo o revertir la versión. | Responsable de instalación. |
@@ -399,10 +478,13 @@ rol en un ambiente de prueba, preguntas y ejercicio de cierre.
 
 Se requiere un servidor aislado de capacitación, navegador actualizado,
 cuentas separadas por rol, datos completamente ficticios, proyector, guía de
-usuario y acceso a los recorridos guiados disponibles. Facilitarían el equipo
-del proyecto y el responsable institucional del sistema; los nombres,
-participantes, fecha, lugar y disponibilidad deben confirmarse con la
-institución. La evaluación propuesta combina observación de la práctica,
+usuario y acceso a los recorridos guiados disponibles. Para el personal técnico
+se propone una práctica adicional de ejecución de Pytest, revisión del informe
+de cobertura, ejecución de contratos Postman y lectura de métricas Locust; las
+cookies y credenciales se configuran localmente y no se incluyen en capturas.
+Facilitarían el equipo del proyecto y el responsable institucional del sistema;
+los nombres, participantes, fecha, lugar y disponibilidad deben confirmarse con
+la institución. La evaluación propuesta combina observación de la práctica,
 verificación del resultado esperado y registro de preguntas; no existe aún un
 resultado de capacitación ni una calificación que pueda reportarse.
 

@@ -9,17 +9,17 @@ values:
   - key: login_password
     value: admin123.
   - key: recaptcha_token
-    value: ""
+    value: ''
   - key: codigo_proyecto
     value: FRE-001
   - key: rif_empresa
     value: J-295412360
   - key: id_evidencia
-    value: "12"
+    value: '12'
   - key: id_informe
-    value: "1"
+    value: '1'
   - key: id_usuario
-    value: "1"
+    value: '1'
   - key: id_rol
-    value: "1"
+    value: '1'
 color: 120

@@ -1,0 +1,12 @@
+EMPRESA (rif): [('J-295412360', 'Asfaltos y Construcciones de Occidente, C.A.'), ('J-296107165', 'Autocarga Lara, C.A.'), ('J-304521897', 'Distribuidora Edil de Occidente, C.A')]
+INFORME cols: ['id_informe', 'fecha', 'estado', 'poblacion_beneficiada', 'tipo_informe', 'evidencia_antes', 'evidencia_durante', 'evidencia_despues', 'avance_id_avance', 'estado_registro']
+Traceback (most recent call last):
+  File "C:\laragon\www\INVISAP\my-app\_get_final_ids.py", line 15, in <module>
+    cur2.execute('SELECT * FROM informe_avance_obra LIMIT 3')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\laragon\www\INVISAP\my-app\.venv\Lib\site-packages\mysql\connector\cursor.py", line 582, in execute
+    self._connection.handle_unread_result()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\laragon\www\INVISAP\my-app\.venv\Lib\site-packages\mysql\connector\connection.py", line 1741, in handle_unread_result
+    raise InternalError("Unread result found")
+mysql.connector.errors.InternalError: Unread result found

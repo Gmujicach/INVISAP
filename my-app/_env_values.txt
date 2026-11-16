@@ -1,0 +1,18 @@
+ERROR PROYECTOS: 1054 (42S22): Unknown column 'nombre_proyecto' in 'field list'
+ERROR EMPRESAS: 1054 (42S22): Unknown column 'rif_empresa' in 'field list'
+=== EVIDENCIAS ===
+(12,)
+(13,)
+(14,)
+(15,)
+(16,)
+ERROR INFORMES: 1054 (42S22): Unknown column 'id_informe_avance_obra' in 'field list'
+=== USUARIOS ===
+(1, 'admin', 'Super Usuario')
+(2, 'David Peña', 'Asistente')
+(3, 'prueba1', 'Administrador')
+(4, 'Lenny Reyes', 'Recepcionista')
+(5, 'Frangher Pereira', 'Gerente')
+(6, 'prueba2', 'Presidente')
+(7, 'prueba3', 'Usuario')
+ERROR ROLES: 1054 (42S22): Unknown column 'nombre_rol' in 'field list'

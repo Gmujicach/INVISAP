@@ -20,18 +20,87 @@ python -m pytest
 - `performance`: escenarios de carga con Locust por módulo; se ejecutan con
   su ejecutor, no con pytest, y registran resultados en el complemento del
   Capítulo IV.
-- `acceptance`: reservado para recorridos completos según criterios de
-  aceptación definidos por el negocio.
+- `acceptance`: recorridos automatizados de aceptación técnica; los criterios
+  funcionales y la aprobación formal aún requieren validación de usuarios.
 
 ## Ejecutar una categoría
 
 ```powershell
-python -m pytest tests\unit
+python -m pytest tests\unit --confcutdir=tests\unit
 python -m pytest tests\integration
 python -m pytest tests\api
 python -m pytest tests\smoke
 python -m pytest tests\ui
+python -m pytest tests\acceptance
 ```
+
+Las pruebas unitarias complementarias de consultas/delegación de los 20
+módulos se ejecutan individualmente con:
+
+```powershell
+python -m pytest tests\unit\test_model_query_methods.py
+```
+
+Los casos exhaustivos de métodos están agrupados por área. Cada grupo cubre
+constructores, accesores, métodos públicos y privados activos, con dobles para
+SQL y pruebas de límites/rutas de error:
+
+```powershell
+python -m pytest tests\unit\test_all_methods_core_models.py --confcutdir=tests\unit
+python -m pytest tests\unit\test_all_methods_entity_audit.py --confcutdir=tests\unit
+python -m pytest tests\unit\test_all_methods_inspection_evidence.py --confcutdir=tests\unit
+python -m pytest tests\unit\test_all_methods_reports_security.py --confcutdir=tests\unit
+python -m pytest tests\unit\test_base_model.py --confcutdir=tests\unit
+```
+
+Las dependencias para las herramientas automatizadas están listadas en
+`tests\requirements-test.txt`. Instálalas dentro del entorno virtual del
+proyecto con `python -m pip install -r tests\requirements-test.txt`. Para
+cobertura de líneas, añade `--cov=models --cov-report=term-missing` al comando
+de pytest; una cobertura de líneas no equivale a que cada método/ramificación
+esté probado.
+
+### Preparar las herramientas en `.venv` (CMD)
+
+Desde la carpeta `my-app`, activa el entorno virtual e instala las dependencias
+de pruebas:
+
+```bat
+.venv\Scripts\activate.bat
+python -m pip install -r tests\requirements-test.txt
+python -m playwright install chromium
+```
+
+El archivo de requisitos incluye Pytest, pytest-cov, Selenium, Playwright,
+Locust y herramientas de análisis estático. Selenium 4 usa Selenium Manager
+para resolver el controlador del navegador; Edge o Chrome debe estar instalado.
+Playwright necesita Chromium instalado una vez dentro del entorno.
+
+Postman es una aplicación de escritorio, no un paquete instalable en `.venv`.
+Se ejecuta por separado contra el servidor local de pruebas; los archivos
+`.request.yaml` del repositorio describen solicitudes y, si la versión de
+Postman no los importa directamente, deben recrearse en la colección. Para
+automatización HTTP desde Python, las suites API usan el cliente Flask de
+Pytest y las dependencias HTTP del proyecto.
+
+Las suites formales de aceptación con participantes/acta son distintas de las
+pruebas automatizadas: comprueba que `tests\acceptance` tenga casos ejecutables
+antes de invocar Pytest en esa carpeta.
+
+Para comprobar que las pruebas entran en cada método activo de los modelos
+listados, ejecuta la cobertura de ramas y después el auditor de métodos:
+
+```powershell
+python -m pytest tests\unit --confcutdir=tests\unit --cov=models --cov-branch --cov-report=term-missing
+python tests\unit\check_model_method_coverage.py
+```
+
+El auditor comprueba que se ejecutó el cuerpo de cada método activo, incluidos
+los pares getter/setter de propiedades y las funciones auxiliares incluidas;
+también imprime la cobertura de ramas filtrada a esos modelos. No sustituye
+las aserciones de comportamiento de cada prueba. `--confcutdir` evita cargar
+el `conftest.py` raíz, cuya inicialización intenta conectarse a MySQL; las
+pruebas unitarias usan dobles y no validan persistencia real.
 
 Las pruebas de rendimiento se ejecutan con Locust, no con pytest:
 
@@ -41,6 +110,12 @@ python tests\performance\run_performance.py --all --profile quick
 
 Consulta [tests/performance/README.md](performance/README.md) para comandos por
 módulo, configuración de sesión y perfiles de carga.
+
+La carpeta `postman\collections\INVISAP - Pruebas de Contrato HTTP` contiene
+solicitudes Postman por endpoint. Configura las credenciales solo en las
+variables locales del entorno y ejecuta la colección contra un servidor de
+pruebas autorizado; la presencia de archivos `.request.yaml` no es evidencia
+de que se haya ejecutado una prueba HTTP real.
 
 ## Pruebas de backend/API
 
@@ -171,10 +246,10 @@ Comando individual de cada módulo:
 | Administración de Respaldos | `python -m pytest tests\smoke\test_humo_administracion_respaldos.py` |
 | Bitácora | `python -m pytest tests\smoke\test_humo_bitacora.py` |
 
-`tests\acceptance` todavía requiere recorridos ejecutables con criterios
-definidos por el negocio. Las pruebas de `tests\performance` se ejecutan con
-Locust; sus resultados solo se consideran evidencia cuando se ejecutan contra
-el servidor de pruebas y se revisa la bitácora.
+El recorrido técnico de `tests\acceptance` no sustituye los criterios acordados
+ni el acta de aprobación de negocio. Las pruebas de `tests\performance` se
+ejecutan con Locust; sus resultados solo se consideran evidencia cuando se
+ejecutan contra el servidor de pruebas y se revisa la bitácora.
 
 ## Prueba de interfaz con Playwright
 
