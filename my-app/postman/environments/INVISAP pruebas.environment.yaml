@@ -4,16 +4,22 @@ values:
     value: 'http://127.0.0.1:5600'
   - key: session_cookie
     value: ''
+  - key: login_username
+    value: 'admin'
+  - key: login_password
+    value: 'admin123.'
+  - key: recaptcha_token
+    value: ''
   - key: codigo_proyecto
-    value: ''
+    value: 'FRE-001'
   - key: rif_empresa
-    value: ''
+    value: 'J-295412360'
   - key: id_evidencia
-    value: ''
+    value: '12'
   - key: id_informe
-    value: ''
+    value: '1'
   - key: id_usuario
-    value: ''
+    value: '1'
   - key: id_rol
-    value: ''
+    value: '1'
 color: 120

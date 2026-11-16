@@ -1,0 +1,106 @@
+=== USERS ===
+(1, 'admin', 'Super Usuario', 1)
+(2, 'David Peña', 'Asistente', 1)
+(3, 'prueba1', 'Administrador', 1)
+(4, 'Lenny Reyes', 'Recepcionista', 1)
+(5, 'Frangher Pereira', 'Gerente', 1)
+(6, 'prueba2', 'Presidente', 1)
+(7, 'prueba3', 'Usuario', 1)
+
+=== LOGIN RESPONSE ===
+STATUS: 200
+BODY: <!DOCTYPE html>
+<html
+  lang="es"
+  class="light-style customizer-hide"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="../assets/"
+  data-template="vertical-menu-template-free">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <title>Sistema Invilara</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="/static/assets/img/NUEVO-LOGO-GOBERNACION-DE-LARA-JUNIO-2025.ico" />
+
+    <link rel="preconnect" href="/static/assets/vendor/fonts/open-sans-local.css" />
+    <link rel="preconnect" href="/static/assets/vendor/fonts/public-sans-local.css" />
+    <link rel="preconnect" href="/static/assets/vendor/fonts/encode-sans-local.css" />
+    <link rel="preconnect" href="/static/assets/vendor/fonts/hind-local.css" />
+
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" />
+
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/fonts/boxicons.css" />
+
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/css/core.css"
+      class="template-customizer-core-css" />
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/css/theme-default.css"
+      class="template-customizer-theme-css" />
+
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+    <link
+      rel="stylesheet"
+      href="/static/assets/vendor/css/pages/page-auth.css" />
+
+    <link
+      rel="stylesheet"
+      href="/static/assets/css/my_style.css" />
+    <link
+      rel="stylesheet"
+      href="/static/assets/css/notifications.css" />
+    <!-- Estilos globales de Modo Oscuro (carga al final para prevalecer) -->
+    <link
+      rel="stylesheet"
+      href="/static/assets/css/dark-mode.css" />
+    <!-- Estándar global de botones de acción y modales -->
+    <link rel="stylesheet" href="/static/assets/css/estandar-acciones.css">
+
+    <script src="/static/assets/vendor/js/helpers.js"></script>
+    <script src="/static/js/config.js"></script>
+  </head>
+
+   <body class="dark-mode-available">
+    <div id="loader-out">
+      <div id="loader-container">
+        <p id="loading-text">Cargando</p>
+      </div>
+    </div>
+
+    <script>
+      if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+      }
+    </script>
+
+    
+
+  
+    <div class="notification-container" id="flashToastContainer">
+      
+        
+        
+        
+        <div class="toast-custom error" role="alert">
+          <div class="toast-content">
+            <div class="toast-icon" style="color: #ff3e1d;">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <span class="toast-message">Credenciales incorrectas o usuario inactivo.</span>
+            <button class="toast-cl

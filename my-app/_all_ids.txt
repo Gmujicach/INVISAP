@@ -1,0 +1,12 @@
+PROYECTOS: [('FRE-001',), ('WEY-001',), ('PRO-034',)]
+EMPRESA cols: ['rif', 'nombre_empresa', 'telefono', 'domicilio_fiscal', 'cumple_requisitos', 'estado']
+Traceback (most recent call last):
+  File "C:\laragon\www\INVISAP\my-app\_get_all_ids.py", line 14, in <module>
+    cur.execute('SELECT * FROM empresa LIMIT 3')
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\laragon\www\INVISAP\my-app\.venv\Lib\site-packages\mysql\connector\cursor.py", line 582, in execute
+    self._connection.handle_unread_result()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\laragon\www\INVISAP\my-app\.venv\Lib\site-packages\mysql\connector\connection.py", line 1741, in handle_unread_result
+    raise InternalError("Unread result found")
+mysql.connector.errors.InternalError: Unread result found

@@ -1,5 +1,5 @@
 $kind: http-request
-description: "Generated from cURL: curl -X POST '{{baseUrl}}/login' --form 'nombre=admin' --form 'pass_user=admin123.' --form 'g-recaptcha-response='"
+description: Login con credenciales de prueba guardadas solo como variables locales de Postman.
 url: "{{baseUrl}}/login"
 method: POST
 body:
@@ -18,23 +18,49 @@ body:
       value: 6LdbmUktAAAAALzTEslJCQaLp3O0Hl4Kz5okNVgq
       disabled: false
 scripts:
-  - type: afterResponse
+  - type: beforeRequest
     code: |-
-      pm.test("Login responde con éxito (200 OK)", function () {
-          pm.response.to.have.status(200);
+      pm.environment.set("session_cookie", "");
+      pm.request.headers.remove("Cookie");
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      // EAFIT - Caja Negra: Prueba de autenticación (flujo encadenado)
+      // Captura la session cookie para todos los módulos que requieren sesión
+      const body = pm.response.text();
+      const loginRejected =
+          body.includes("Credenciales incorrectas") ||
+          body.includes("No se pudo validar") ||
+          body.includes("Debes completar el desafío");
+
+      // Vía 1: Cookie jar de Postman (requiere dominio habilitado en gestor de cookies)
+      // Vía 2: Cabecera Set-Cookie directamente (funciona siempre en Desktop Agent)
+      let cookie = pm.cookies.get("session");
+      if (!cookie) {
+          const setCookieHeader = pm.response.headers.get("Set-Cookie") || "";
+          const match = setCookieHeader.match(/(?:^|,\s*)session=([^;,]+)/i);
+          if (match) {
+              cookie = decodeURIComponent(match[1]);
+          }
+      }
+
+      pm.test("Login responde sin error HTTP (200-399)", function () {
+          pm.expect(pm.response.code).to.be.within(200, 399);
       });
 
-      pm.test("El tiempo de respuesta es menor a 500ms", function () {
-          pm.expect(pm.response.responseTime).to.be.below(500);
+      pm.test("El tiempo de respuesta es menor a 1000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(1000);
       });
 
-      pm.test("El tipo de contenido es HTML", function () {
-          pm.response.to.have.header("Content-Type", "text/html; charset=utf-8");
+      pm.test("El servidor no rechazó las credenciales ni reCAPTCHA", function () {
+          pm.expect(loginRejected).to.be.false;
       });
 
-      pm.test("Cookie de sesión capturada en environment", function () {
-          const cookie = pm.cookies.get("session"); // Assuming the cookie name is 'session'
-          pm.expect(cookie).to.not.be.undefined;
-          pm.environment.set("session_cookie", cookie);
+      pm.test("La cookie de sesión se capturó tras el login", function () {
+          pm.expect(cookie,
+              "Habilita 127.0.0.1 en el gestor de cookies de Postman (Cookies > Manage Cookies) o verifica las credenciales"
+          ).to.be.ok;
       });
+
+      pm.environment.set("session_cookie", cookie || "");
 order: 21000

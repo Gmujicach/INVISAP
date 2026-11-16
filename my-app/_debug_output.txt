@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "C:\laragon\www\INVISAP\my-app\_debug_login.py", line 4, in <module>
+    OUT = open('_debug_output.txt', 'w', encoding='utf-8')
+PermissionError: [Errno 13] Permission denied: '_debug_output.txt'

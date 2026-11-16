@@ -419,36 +419,6 @@ class InspeccionModel(BaseModel):
             if conn:
                 conn.close()
 
-    def __eliminar_logico_db(self):
-        conn = self._conectar()
-        if not conn:
-            raise Exception("Error de conexion a la base de datos.")
-        cur = conn.cursor()
-        try:
-            cur.execute("UPDATE inspeccion SET estado = 0 WHERE id_inspeccion = %s", (self.__id_inspeccion,))
-            conn.commit()
-            return cur.rowcount > 0
-        finally:
-            cur.close()
-            conn.close()
-
-    def __obtener_inspeccion_por_id_db(self):
-        conn = self._conectar()
-        if not conn:
-            return None
-        cur = conn.cursor(dictionary=True)
-        try:
-            cur.execute("""
-                SELECT i.*, e.nombre_empleado AS inspector_nombre
-                FROM inspeccion i
-                LEFT JOIN empleados e ON e.id_empleados = i.inspector
-                WHERE i.id_inspeccion = %s AND i.estado = 1
-            """, (self.__id_inspeccion,))
-            return cur.fetchone()
-        finally:
-            cur.close()
-            conn.close()
-
     def __columna_existe(self, tabla, columna):
         if tabla not in {'inspeccion', 'obra'}:
             raise ValueError("Tabla no permitida para consultar columnas.")

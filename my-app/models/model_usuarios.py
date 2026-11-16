@@ -193,10 +193,17 @@ class UsuarioModel(BaseModel):
 
     @staticmethod
     def existe_y_activo(id_usuario):
-        conn = self.obtener_conexion_seguridad()
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT id_usuarios FROM usuarios WHERE id_usuarios = %s", (id_usuario,))
-        result = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        return result is not None
+        conn = UsuarioModel.obtener_conexion_seguridad()
+        cursor = None
+        try:
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute(
+                "SELECT id_usuarios FROM usuarios WHERE id_usuarios = %s",
+                (id_usuario,),
+            )
+            return cursor.fetchone() is not None
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
