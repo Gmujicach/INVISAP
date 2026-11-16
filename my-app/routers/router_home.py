@@ -29,7 +29,6 @@ def _set_cached_chart(key, data):
 from controllers.funciones_home import *
 from controllers.controller_informe_avance import informe_avance_bp
 from models.model_contratacion import ContratacionModel
-from controllers.controller_contratacion import contrataciones_bp
 from controllers.UserController import user_bp
 from controllers.funciones_solicitud import (
     obtener_solicitudes, crear_solicitud, obtener_solicitud_por_id,
@@ -83,12 +82,10 @@ from controllers.UserController import verificar_permiso
 app.register_blueprint(empresa_bp)
 app.register_blueprint(inspeccion_bp)
 app.register_blueprint(notificacion_bp)
-empresa_bp = Blueprint('empresa_bp', __name__)
 
 # Contrataciones
 home_bp = Blueprint('home_bp', __name__, template_folder='../vista')
 contrataciones_bp = Blueprint('contrataciones_bp', __name__)
-##app.register_blueprint(contrataciones_bp)
 
 # Rutas de carpetas (Paths)
 PATH_URL = "solicitudes"

@@ -11,7 +11,7 @@ REM requirements-actualizado.txt y donde se creara o ya existe .venv.
 REM Ejemplo: set "project_dir=C:\mis-proyectos\INVISAP\my-app"
 REM Este archivo .bat puede estar en otra carpeta, como el Escritorio.
 REM ============================================================
-set "project_dir=D:\laragon\www\INVISAP\my-app"
+set "project_dir=C:\laragon\www\INVISAP\my-app"
 
 REM Comprueba que la ruta configurada sea correcta antes de continuar.
 if not exist "%project_dir%\run.py" (
