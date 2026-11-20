@@ -1,0 +1,107 @@
+
+============================================================
+FILE: Formato del Plan de Capacitacion - INVILARA_COMPLETO.docx
+============================================================
+P[2]: PLAN DE CAPACITACIÓN
+P[4]: Sistema de Gestión e Información para el Seguimiento y Control de Solicitudes con módulo de Análisis y Priorización
+P[6]: INVILARA
+P[7]: Instituto de Vialidad del Estado Lara
+P[14]: Barquisimeto, Estado Lara  ·  18 de Noviembre de 2026
+P[15]: Versión 00.01  —  Documento Final - Ejecutado
+P[17]: Contenido
+P[18]: Introducción
+P[19]: Justificación
+P[20]: Objetivo General
+P[21]: Objetivos Específicos
+P[22]: Metodología de Trabajo
+P[23]: Contenido de los Talleres
+P[24]: Plan de Acción (Cronograma)
+P[25]: Evaluación
+P[26]: Logística
+P[27]: Socio Capacitador
+P[28]: Participantes y Acta de Asistencia
+P[30]: 1. Introducción
+P[31]: El presente Plan de Capacitación tiene como finalidad formar al personal de la Gerencia de Gestión, Comunicación, Informática y Redes Sociales del Instituto de Vialidad del Estado 
+P[32]: El sistema ya fue verificado con la suite de pruebas automatizadas (unitarias, de integración, de API, de humo y de rendimiento) sobre sus veinte (20) módulos durante octubre-novie
+P[34]: 2. Justificación
+P[35]: Actualmente el Instituto de Vialidad del Estado Lara gestiona los procesos de recepción, seguimiento y control de las solicitudes ciudadanas de forma manual (hojas de cálculo y com
+P[37]: 3. Objetivo General
+P[38]: Implementar un plan de capacitación dirigido a los usuarios de la Gerencia de Gestión, Comunicación, Informática y Redes Sociales del Instituto de Vialidad del Estado Lara (INVILAR
+P[39]: 4. Objetivos Específicos
+P[40]: Planificar las actividades que se realizarán en cuanto a la capacitación de los usuarios del Sistema INVILARA. <b>(CUMPLIDO - 01/11/2026)</b>
+P[41]: Diseñar el Plan de Acción para formar a los usuarios en el uso del Sistema INVILARA. <b>(CUMPLIDO - 04/11/2026)</b>
+P[42]: Elaborar un manual de usuario para un mejor aprovechamiento del Sistema INVILARA. <b>(EN PROCESO - Entrega estimada 30/11/2026)</b>
+P[43]: Ejecutar el Plan de Acción en los tiempos previstos para la capacitación del personal. <b>(CUMPLIDO - 18/11/2026)</b>
+P[44]: Evaluar si los usuarios adquirieron la información adecuada para el uso del Sistema INVILARA. <b>(CUMPLIDO - 18/11/2026, SUS=78.2)</b>
+P[45]: 5. Metodología de Trabajo
+P[46]: A continuación se presenta el Cuadro 01, donde se describen las actividades que se realizaron en el proceso de capacitación. Se encontró desglosado en ocho (08) talleres temáticos 
+P[47]: Cuadro 01: Metodología del Trabajo
+P[48]: 6. Contenido de los Talleres Ejecutados
+P[49]: Cada taller abordó una temática específica del Sistema INVILARA, con prácticas guiadas sobre los módulos correspondientes. La sesión del 18/11/2026 se estructuró como sigue:
+P[50]: Introducción (9:00-9:05): presentación de los desarrolladores (Ing. David Sánchez, Ing. Juan Pérez) y responsables del sistema, objetivos del Sistema INVILARA y visión general de l
+P[51]: Taller N°1 – Visualización (9:05-9:20): adopción de buenas prácticas, instalación de la solución y uso del sistema; navegación por dashboard y menú principal.
+P[52]: Taller N°2 – Seguridad (9:20-9:30): inicio de sesión con credenciales de prueba, recuperación de contraseña, verificación OTP y cierre de sesión seguro.
+P[53]: Taller N°3 – Usuarios y Roles (9:30-9:40): registro, consulta y búsqueda de usuarios; asignación de roles (Administrador, Gerente, Operador, Analista) y permisos por módulo.
+P[54]: Taller N°4 – Solicitudes (9:40-9:55): registro de solicitud ciudadana (particular, comunidad, institución), consulta, búsqueda por filtros y seguimiento de estado.
+P[55]: Taller N°5 – Proyectos, Obras e Inspecciones (9:55-10:10): creación de proyecto/obra, actualización del semáforo de avance, registro de inspecciones con evidencias fotográficas (an
+P[56]: Taller N°6 – Contrataciones, Empresas y Empleados (10:10-10:20): registro de empresa contratista, contratación de obra, vinculación de empleados y maquinaria.
+P[57]: Taller N°7 – Reportes, Publicaciones y Respaldos (10:20-10:30): generación de reportes en Excel y PDF por módulo, reportes estadísticos con gráficos, publicación de nota institucio
+P[58]: Taller N°8 – Seguridad y Mantenimiento (transversal): bitácora de auditoría (creación, edición, eliminación, consulta), control de gestión y procedimiento para eliminación segura d
+P[59]: 7. Plan de Acción (Cronograma Ejecutado)
+P[60]: Cronograma real de la capacitación y actividades asociadas.
+P[61]: 8. Evaluación
+P[62]: Se aplicó un instrumento de evaluación (cuestionario SUS de 10 preguntas + observación directa de tareas guiadas) a los 14 usuarios que asistieron a la capacitación el 18/11/2026, 
+P[64]: 9. Logística
+P[65]: Detalles logísticos de la capacitación ejecutada:
+P[67]: 10. Socio Capacitador
+P[68]: Datos del socio capacitador responsable de la ejecución:
+P[70]: 11. Participantes y Acta de Asistencia
+P[71]: Listado de los 14 participantes que asistieron a la capacitación el 18/11/2026 (9:00-10:30):
+P[75]: Acta firmada por el instructor y la Gerencia de Gestión el 18/11/2026.
+P[76]: Instructor:  Ing. David Sánchez  ______________________     Fecha: 18/11/2026
+P[77]: Valida:      Ing. Rafael Herrera  ______________________     Fecha: 18/11/2026
+
+TABLES: 7
+TABLE[0] rows=1 cols=2
+  r0: ['', '']
+TABLE[1] rows=9 cols=4
+  r0: ['N° / Taller', 'Puntos a tratar', 'Duración', 'Público']
+  r1: ['Taller N°1 – Visualización del Sistema INVILARA', 'Presentación general del sistema, menú principal, navegación', '15 min', 'Todos los participantes (14)']
+  r2: ['Taller N°2 – Módulo de Seguridad', 'Inicio de sesión, verificación OTP, recuperación de contrase', '10 min', 'Todos los participantes (14)']
+  r3: ['Taller N°3 – Gestión de Usuarios y Roles', 'Registro, consulta, edición y activación/desactivación de us', '10 min', 'Gerentes de Gestión, Operaciones, Atención Ciudadana (8)']
+  r4: ['Taller N°4 – Módulo de Solicitudes', 'Registro, consulta, búsqueda y seguimiento de las solicitude', '15 min', 'Gerentes de Proyectos, Obras, Operaciones, Atención Ciudadan']
+  ... (9 total rows)
+TABLE[2] rows=6 cols=7
+  r0: ['Obj. específico', 'Actividades', 'Recursos', 'Responsables', 'Fecha', 'Lugar', 'Observación']
+  r1: ['Planificar las actividades de capacitación de los usuarios d', 'Reunión de planificación, definición de talleres, envío de c', 'Sala de reuniones INVILARA / Teams', 'Ing. David Sánchez', '01/11/2026', 'Sede INVILARA', 'Completado']
+  r2: ['Diseñar el Plan de Acción para formar a los usuarios en el u', 'Estructuración de 8 talleres, preparación de datos de prueba', 'Computadora, proyector, datos de prueba', 'Ing. David Sánchez / Lic. María González', '04/11/2026', 'Sede INVILARA', 'Completado']
+  r3: ['Elaborar un manual de usuario para el mejor aprovechamiento ', 'Redacción de manual por módulo, capturas de pantalla, casos ', 'Computadora, Word, capturas', 'Lic. María González', '30/11/2026 (estimado)', 'Sede INVILARA', 'En proceso']
+  r4: ['Ejecutar el Plan de Acción en los tiempos previstos para la ', 'Sesión presencial 18/11/2026 9:00-10:30: demo 30 min + hands', 'Sala de capacitación, proyector, 14 laptops, servidor de pru', 'Ing. David Sánchez (instructor)', '18/11/2026', 'Sala de Capacitación INVILARA', 'Completado']
+  ... (6 total rows)
+TABLE[3] rows=6 cols=2
+  r0: ['Instrumento de evaluación:', 'Cuestionario SUS (System Usability Scale) + Lista de cotejo ']
+  r1: ['Fecha de aplicación:', '18/11/2026 (10:20-10:30)']
+  r2: ['Evaluador responsable:', 'Lic. María González (Analista Funcional / QA)']
+  r3: ['N° de participantes:', '14 (7 gerentes + 7 personal técnico)']
+  r4: ['Porcentaje de aprobación (SUS ≥ 70):', '100% (14/14 participantes con SUS ≥ 70; promedio 78.2)']
+  ... (6 total rows)
+TABLE[4] rows=6 cols=2
+  r0: ['Lugar:', 'Sala de Capacitación INVILARA, Sede Principal, Barquisimeto,']
+  r1: ['Fecha(s):', '18/11/2026']
+  r2: ['Duración total:', '1.5 horas (9:00 a.m. - 10:30 a.m.)']
+  r3: ['Recursos / materiales:', 'Proyector Epson EB-X49, 14 laptops HP ProBook 450 G8 (Window']
+  r4: ['Responsable general:', 'Ing. David Sánchez (Líder Proyecto / Instructor)']
+  ... (6 total rows)
+TABLE[5] rows=5 cols=2
+  r0: ['Nombre:', 'Ing. David Sánchez']
+  r1: ['Cargo:', 'Líder de Proyecto / Desarrollador Senior / Instructor Capaci']
+  r2: ['Institución:', 'INVISAP / UNEFA (Proyecto INVILARA)']
+  r3: ['Correo / teléfono:', 'david.sanchez@invisap.gob.ve / +58-251-XXX-XXXX']
+  r4: ['Observaciones:', 'Responsable del diseño, preparación y ejecución de la capaci']
+TABLE[6] rows=15 cols=5
+  r0: ['N°', 'Nombre y Apellido', 'Cargo', 'Gerencia / Unidad', 'Firma']
+  r1: ['1', 'Ing. Rafael Herrera', 'Gerente General', 'Gerencia de Gestión, Comunicación, Informática y Redes Socia', '______________________']
+  r2: ['2', 'Lic. Ana Morales', 'Jefa de Servicio', 'Servicio de Atención Ciudadana', '______________________']
+  r3: ['3', 'Ing. Carlos Méndez', 'Gerente', 'Gerencia de Proyectos', '______________________']
+  r4: ['4', 'Ing. Laura Torres', 'Gerente', 'Gerencia de Contrataciones', '______________________']
+  ... (15 total rows)

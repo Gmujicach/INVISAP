@@ -30,7 +30,8 @@ def _formatear_fecha(valor):
     try:
         dt = datetime.strptime(limpio, '%Y-%m-%d %H:%M:%S')
         return dt.strftime('%d/%m/%Y · %I:%M:%S %p')
-    except Exception:
+    except Exception as e:
+        print(f"[FuncionesBitacora] Error formateando fecha: {e}")
         return limpio
 
 
@@ -41,7 +42,8 @@ def _formatear_hora(valor):
     try:
         dt = datetime.strptime(limpio, '%Y-%m-%d %H:%M:%S')
         return dt.strftime('%I:%M:%S %p')
-    except Exception:
+    except Exception as e:
+        print(f"[FuncionesBitacora] Error formateando hora: {e}")
         return limpio
 
 

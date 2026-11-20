@@ -35,7 +35,8 @@ def verificar_permiso(modulo):
         try:
             permisos_db = RolPermisoModel().obtener_nombres_modulos_por_rol(rol_usuario)
             g._permisos_cache = set(permisos_db)
-        except Exception:
+        except Exception as e:
+            print(f"[UserController] Error obteniendo permisos de BD: {e}")
             g._permisos_cache = set()
 
     if rol_usuario == 'Super Usuario':
@@ -48,7 +49,8 @@ def verificar_permiso(modulo):
             permiso = next((p for p in excepciones if p.get('nombre') == modulo), None)
             if permiso is not None:
                 return bool(permiso.get('puede_ver'))
-        except Exception:
+        except Exception as e:
+            print(f"[UserController] Error obteniendo excepciones de usuario: {e}")
             return False
     return modulo in g._permisos_cache
 
@@ -62,7 +64,8 @@ def verificar_permiso_accion(modulo, accion):
         permiso = RolPermisoModel().obtener_permiso(
             session.get('rol', 'Usuario'), session.get('id') or session.get('id_usuarios'), modulo)
         return bool(permiso and permiso.get(f'puede_{accion}'))
-    except Exception:
+    except Exception as e:
+        print(f"[UserController] Error verificando permiso de acción: {e}")
         return False
 
 def requerir_permiso(modulo):
@@ -203,8 +206,8 @@ def verify_password():
         try:
             if check_password_hash(contrasena_hash, password):
                 return jsonify({'success': True})
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[UserController] Error verificando contraseña: {e}")
 
         return jsonify({'success': False, 'message': 'Contraseña incorrecta.'}), 401
     except Exception as e:

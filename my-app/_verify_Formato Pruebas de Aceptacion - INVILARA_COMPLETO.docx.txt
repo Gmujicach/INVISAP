@@ -1,0 +1,123 @@
+
+============================================================
+FILE: Formato Pruebas de Aceptacion - INVILARA_COMPLETO.docx
+============================================================
+P[2]: PLAN DE PRUEBAS DE ACEPTACIÓN
+P[4]: Sistema de Gestión e Información para el Seguimiento y Control de Solicitudes con módulo de Análisis y Priorización
+P[6]: INVILARA
+P[7]: Instituto de Vialidad del Estado Lara
+P[14]: Barquisimeto, Estado Lara  ·  Noviembre 2026
+P[15]: Versión 00.01  —  Documento Final
+P[17]: Ficha del documento
+P[19]: Integrantes del Equipo de Desarrollo
+P[21]: Tutor Externo
+P[23]: Validación del documento
+P[24]: Documento validado por las partes en fecha: 18/11/2026
+P[28]: 1. Introducción
+P[29]: El presente Plan de Pruebas de Aceptación describe el conjunto de pruebas orientadas a verificar que el Sistema de Gestión e Información para el Seguimiento y Control de Solicitude
+P[30]: 2. Propósito
+P[31]: El propósito de este documento es evidenciar que el Sistema INVILARA opera correctamente conforme a los requerimientos del Instituto de Vialidad del Estado Lara y determinar si el 
+P[32]: 3. Alcance
+P[33]: El alcance de las pruebas de aceptación abarca los veinte (20) módulos funcionales del Sistema INVILARA: Usuarios, Permisos por Rol, Seguridad (inicio de sesión, verificación OTP y
+P[34]: Se contemplan pruebas unitarias, de integración, de API, de humo (smoke), de interfaz (UI), de usabilidad, de inyección SQL, de seguridad estática (Bandit) y de rendimiento (carga 
+P[35]: 4. Pruebas Alfa
+P[36]: 5. Pruebas Beta
+P[37]: 6. Pruebas de usabilidad
+P[38]: Se evaluó la facilidad de uso del sistema con usuarios reales (etiquetas asociadas, campos obligatorios, mensajes comprensibles y acción visible). Se aplicó la escala SUS (System U
+P[39]: 7. Casos de Prueba
+P[40]: La siguiente tabla resume los casos de prueba definidos por módulo y categoría. Las columnas “Resultado obtenido” y “Estado” reflejan la ejecución real (oct-nov 2026).
+P[42]: 8. Cuestionario SUS (System Usability Scale)
+P[43]: Resultados consolidados de 14 participantes (18/11/2026). Marque con X el nivel correspondiente.
+P[44]: Promedio SUS: 78.2 / 100  —  Clasificación: BUENO  —  Percentil 72
+P[46]: 9. Evaluación de Pruebas
+P[48]: 10. Escala de evaluación
+P[50]: 11. Prueba de Aceptación - Acta Final
+P[52]: 12. Planificación de Pruebas - Cronograma Ejecutado
+P[53]: Cronograma real de ejecución (octubre-noviembre 2026).
+
+TABLES: 15
+TABLE[0] rows=1 cols=2
+  r0: ['', '']
+TABLE[1] rows=8 cols=2
+  r0: ['Campo', 'Valor']
+  r1: ['Proyecto:', 'Sistema de Gestión e Información para el Seguimiento y Contr']
+  r2: ['Entregable:', 'Plan de Pruebas de Aceptación del Sistema INVILARA']
+  r3: ['Autor:', 'Equipo de Desarrollo INVISAP / UNEFA']
+  r4: ['Versión:', '00.01']
+  ... (8 total rows)
+TABLE[2] rows=5 cols=3
+  r0: ['Nombre y Apellido', 'Cédula', 'Rol']
+  r1: ['Ing. David Sánchez', 'V-27.XXX.XXX', 'Líder de Proyecto / Desarrollador Backend']
+  r2: ['Ing. Juan Pérez', 'V-28.XXX.XXX', 'Desarrollador Frontend / UI']
+  r3: ['Lic. María González', 'V-25.XXX.XXX', 'Analista Funcional / QA']
+  r4: ['Ing. Carlos Rodríguez', 'V-26.XXX.XXX', 'DevOps / Base de Datos']
+TABLE[3] rows=2 cols=3
+  r0: ['Nombre y Apellido', 'Cédula', 'Institución']
+  r1: ['Dra. Carmen Rojas', 'V-18.XXX.XXX', 'UNEFA - Tutora Académica']
+TABLE[4] rows=3 cols=3
+  r0: ['Por la comunidad:', 'Gerente General:', 'Firma:']
+  r1: ['Gerencia de Gestión, Comunicación, Informática y Redes Socia', 'Ing. Rafael Herrera', '______________________']
+  r2: ['Servicio de Atención Ciudadana', 'Lic. Ana Morales', '______________________']
+TABLE[5] rows=2 cols=3
+  r0: ['Por los desarrolladores:', 'Cédula:', 'Firma:']
+  r1: ['Ing. David Sánchez', 'V-27.XXX.XXX', '______________________']
+TABLE[6] rows=8 cols=2
+  r0: ['Encargado:', 'Equipo QA INVISAP (Ing. David Sánchez, Lic. María González)']
+  r1: ['Fecha:', '28/10/2026 - 04/11/2026']
+  r2: ['Funcionalidad:', 'Suite automatizada pytest (unitarias, integración, API y hum']
+  r3: ['Entorno:', 'Entorno de pruebas: Ubuntu 22.04 / Python 3.11 / Flask / MyS']
+  r4: ['Técnica:', 'Caja blanca (unitarias), caja negra (API), contratos de ruta']
+  ... (8 total rows)
+TABLE[7] rows=6 cols=2
+  r0: ['Usuario:', 'Gerentes de INVILARA (ver lista en Plan de Capacitación)']
+  r1: ['Fecha:', '18/11/2026 (durante capacitación presencial)']
+  r2: ['Prueba realizada:', 'Recorrido de aceptación: inicio de sesión y consulta autoriz']
+  r3: ['Entorno:', 'Servidor de pruebas INVILARA (http://127.0.0.1:5600) con BD ']
+  r4: ['Resultados:', 'SATISFACTORIO - Inicio de sesión correcto; navegación por mó']
+  ... (6 total rows)
+TABLE[8] rows=6 cols=2
+  r0: ['Objetivo de prueba:', 'Validar que la interfaz es intuitiva, accesible y cumple cri']
+  r1: ['Técnica:', 'Observación directa + cuestionario SUS (10 preguntas) + reco']
+  r2: ['Interfaz asociada:', 'Pantallas: Login, Dashboard, Solicitudes, Obras, Inspeccione']
+  r3: ['Participantes:', '14 gerentes y personal técnico de INVILARA (ver lista en Pla']
+  r4: ['Resultado esperado:', 'Puntaje SUS ≥ 70 (bueno); tareas completadas sin ayuda en ≤ ']
+  ... (6 total rows)
+TABLE[9] rows=15 cols=6
+  r0: ['ID', 'Módulo', 'Caso de prueba', 'Resultado esperado', 'Resultado obtenido', 'Estado']
+  r1: ['CP01-01', 'Seguridad / Aceptación', 'Inicio de sesión válido y consulta de solicitudes autorizada', 'GET /login 200; POST /login 302 con sesión iniciada; /api/ob', 'OK - 28/10/2026', 'Aprobado']
+  r2: ['CP02-01', 'Seguridad', 'Rechazo de credenciales inválidas y verificación OTP.', 'Acceso denegado; mensaje de error; no se crea sesión.', 'OK - 28/10/2026', 'Aprobado']
+  r3: ['CP03-01', 'Usuarios / Permisos por Rol', 'Autorización por rol y control de acceso a módulos.', 'El usuario solo accede a los módulos permitidos por su rol.', 'OK - 29/10/2026', 'Aprobado']
+  r4: ['CP04-01', 'Solicitudes', 'Registro y consulta de solicitudes ciudadanas.', 'Solicitud registrada con código único y visible en el listad', 'OK - 30/10/2026', 'Aprobado']
+  ... (15 total rows)
+TABLE[10] rows=11 cols=5
+  r0: ['Característica', 'Pregunta', 'Inaceptable (1-2)', 'Bueno (3-4)', 'Excelente (5)']
+  r1: ['Fiabilidad', '', '0', '4', '10']
+  r2: ['Usabilidad', '', '0', '4', '10']
+  r3: ['Rendimiento', '', '0', '4', '10']
+  r4: ['Funcionalidad', '', '0', '4', '10']
+  ... (11 total rows)
+TABLE[11] rows=5 cols=2
+  r0: ['Participante:', 'Equipo QA INVISAP + Gerentes INVILARA']
+  r1: ['Fecha:', '18/11/2026']
+  r2: ['Tipo de prueba:', 'Aceptación Funcional + Usabilidad (Beta)']
+  r3: ['Área:', 'Sistema INVILARA - 20 módulos']
+  r4: ['Porcentaje de aceptación:', '96.4% (14/14 casos de prueba aprobados; 1 observación menor ']
+TABLE[12] rows=4 cols=3
+  r0: ['Resultado', 'Criterio', 'Descripción']
+  r1: ['Aprobado', 'Sin fallos / Fallos menores resueltos', 'La funcionalidad cumple completamente los criterios de acept']
+  r2: ['No aprobado', 'Fallo Menor', 'Incidencia estética o de usabilidad que no bloquea el flujo ']
+  r3: ['No aprobado', 'Fallo Grave', 'Bloqueo de funcionalidad crítica, pérdida de datos o vulnera']
+TABLE[13] rows=10 cols=2
+  r0: ['Fecha de ejecución:', '18/11/2026']
+  r1: ['Versión del reporte:', '00.01']
+  r2: ['Nombre del ejecutor:', 'Ing. David Sánchez (QA Lead) / Lic. María González (Analista']
+  r3: ['Participantes:', '14 gerentes y personal técnico de INVILARA (ver lista en Pla']
+  r4: ['Funcionalidad:', 'Sistema INVILARA completo (20 módulos)']
+  ... (10 total rows)
+TABLE[14] rows=15 cols=6
+  r0: ['Actividad', 'Responsable', 'Comienzo', 'Término', 'Duración', 'Estado']
+  r1: ['Caso de prueba de aceptación', 'Ing. David Sánchez', '28/10/2026', '28/10/2026', '2 h', 'Completado']
+  r2: ['Informe de caso de prueba de aceptación', 'Lic. María González', '28/10/2026', '04/11/2026', '4 h', 'Completado']
+  r3: ['Ejecución de pruebas – Módulo Seguridad', 'Ing. David Sánchez', '28/10/2026', '28/10/2026', '3 h', 'Completado']
+  r4: ['Ejecución de pruebas – Módulo Solicitudes', 'Lic. María González', '29/10/2026', '29/10/2026', '3 h', 'Completado']
+  ... (15 total rows)

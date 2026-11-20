@@ -62,7 +62,8 @@ STAT_COLORS = {
 def obtener_fuente(tamano):
     try:
         return ImageFont.truetype("arial.ttf", tamano)
-    except Exception:
+    except Exception as e:
+        print(f"[ControllerEstadistico] Error cargando fuente: {e}")
         return ImageFont.load_default()
 
 
@@ -88,7 +89,8 @@ def generar_grafico_lineas(labels, valores, titulo, color_hex):
     for lbl in labels:
         try:
             fechas.append(datetime.strptime(lbl, '%d/%m/%Y'))
-        except Exception:
+        except Exception as e:
+            print(f"[ControllerEstadistico] Error parseando fecha '{lbl}': {e}")
             fechas.append(lbl)
 
     ax.plot(fechas, valores, color=color_hex, marker='o')

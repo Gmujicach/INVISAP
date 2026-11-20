@@ -90,7 +90,8 @@ def _servidor_disponible():
     try:
         r = requests.get(f"{OLLAMA_HOST}/api/tags", timeout=3)
         return r.status_code == 200
-    except Exception:
+    except Exception as e:
+        print(f"[IAPrioridad] Error verificando servidor: {e}")
         return False
 
 
@@ -107,7 +108,8 @@ def _modelo_disponible():
         if ':' in _OLLAMA_MODEL:
             return _OLLAMA_MODEL in nombres
         return _OLLAMA_MODEL in nombres or f'{_OLLAMA_MODEL}:latest' in nombres
-    except Exception:
+    except Exception as e:
+        print(f"[IAPrioridad] Error verificando modelo: {e}")
         return False
 
 
@@ -131,7 +133,8 @@ def _arrancar_ollama():
 
         try:
             subprocess.Popen([ejecutable, "serve"], **opciones)
-        except Exception:
+        except Exception as e:
+            print(f"[IAPrioridad] Error arrancando Ollama: {e}")
             return
 
         for _ in range(20):
@@ -146,8 +149,8 @@ def _parsear_respuesta(data):
     if match:
         try:
             return json.loads(match.group(0))
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[IAPrioridad] Error parseando respuesta: {e}")
     return {}
 
 
@@ -508,8 +511,8 @@ class PrioridadWorkerModel(ConexionBD):
             if cursor:
                 try:
                     cursor.close()
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"[PrioridadModel] Error cerrando cursor: {e}")
 
     def _actualizar_solicitud_prioridad(self, conexion, solicitud_id, prioridad_id):
         cursor = None
@@ -521,8 +524,8 @@ class PrioridadWorkerModel(ConexionBD):
             if cursor:
                 try:
                     cursor.close()
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"[PrioridadModel] Error cerrando cursor: {e}")
 
     def guardar_prioridad(self, solicitud_id, rango, justificacion, tipo_obra,
                           gravedad_sugerida, origen, responsable):

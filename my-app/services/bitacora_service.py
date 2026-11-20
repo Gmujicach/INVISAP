@@ -183,8 +183,8 @@ class BitacoraService:
             try:
                 from flask import g
                 g.bitacora_logged = True
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[BitacoraService] Error marcando bitacora_logged: {e}")
 
             return resultado
 

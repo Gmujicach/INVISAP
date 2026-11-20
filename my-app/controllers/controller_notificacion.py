@@ -47,8 +47,8 @@ def lista():
                 usuario = UsuarioModel().buscar_por_id(n['creado_por_id'])
                 if usuario:
                     avatar = usuario.get('avatar') or DEFAULT_AVATAR
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[NotificacionController] Error obteniendo avatar: {e}")
         if avatar and not avatar.startswith('/'):
             avatar = '/static/' + avatar
         datos.append({

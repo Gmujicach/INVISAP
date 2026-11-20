@@ -151,6 +151,7 @@ def eliminar_evidencia(id_evidencia):
             flash('No se pudo desactivar', 'error')
     except ValueError as ve:
         flash(str(ve), 'error')
-    except Exception:
+    except Exception as e:
+        print(f"[ControllerEvidencia] Error desactivando evidencia: {e}")
         flash('Error interno', 'error')
     return redirect(url_for('evidencia_bp.show_listar_evidencias'))

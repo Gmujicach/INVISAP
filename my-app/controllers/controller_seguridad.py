@@ -145,7 +145,8 @@ def actualizar_rol_controller(id_rol, datos):
                 user = UsuarioModel().buscar_por_id_con_contrasena(session.get('id'))
                 if not user or not check_password_hash(user.get('contrasena', ''), password_actual):
                     return {"success": False, "message": "Contraseña incorrecta."}
-            except Exception:
+            except Exception as e:
+                print(f"[ControllerSeguridad] Error verificando contraseña: {e}")
                 return {"success": False, "message": "No se pudo verificar la contraseña."}
         else:
             estado = int(datos.get('estado', 1))

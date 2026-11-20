@@ -16,6 +16,7 @@ import uuid
 import json
 import urllib.parse
 import urllib.request
+from urllib.parse import urlparse
 
 # Claves de seguridad locales (reCAPTCHA) almacenadas en archivo propio
 from claveApi import RECAPTCHA_SECRET_KEY, RECAPTCHA_VERIFY_URL
@@ -44,6 +45,15 @@ class _LoginDatabase(ConexionBD):
 # El token lo genera el widget en el frontend; aquí se valida
 # contra los servidores de Google usando la clave secreta.
 # ============================================
+def _validar_url_recaptcha(url):
+    """Valida que la URL use solo esquemas permitidos (http/https)."""
+    try:
+        parsed = urlparse(url)
+        return parsed.scheme in ('http', 'https')
+    except Exception:
+        return False
+
+
 def verificar_recaptcha(token):
     """Valida el token g-recaptcha-response. Retorna (bool, mensaje)."""
     # Bypass para desarrollo local — activar con SKIP_RECAPTCHA=true en .env
@@ -53,6 +63,8 @@ def verificar_recaptcha(token):
         return False, 'Debes completar el desafío reCAPTCHA (marca "No soy un robot").'
     if not RECAPTCHA_SECRET_KEY:
         return False, 'La verificación reCAPTCHA no está configurada.'
+    if not _validar_url_recaptcha(RECAPTCHA_VERIFY_URL):
+        return False, 'URL de verificación reCAPTCHA inválida.'
 
     data = urllib.parse.urlencode({
         'secret': RECAPTCHA_SECRET_KEY,
@@ -321,13 +333,18 @@ def procesar_update_perfil_ajax(request):
     if not cambios:
         raise ValueError('No se enviaron cambios válidos.')
 
+    # Validate that all fields are allowed columns
+    for campo in cambios:
+        if campo not in _PROFILE_COLUMNS:
+            raise ValueError(f'Campo no permitido: {campo}')
+
     conexion = _LoginDatabase.obtener_conexion_seguridad()
     cursor = conexion.cursor()
     try:
         campos_sql = ', '.join(
             f"{_PROFILE_COLUMNS[campo]} = %s" for campo in cambios
         )
-        sql = f"UPDATE usuarios SET {campos_sql} WHERE id_usuarios = %s"
+        sql = "UPDATE usuarios SET " + campos_sql + " WHERE id_usuarios = %s"
         params = list(cambios.values()) + [id_user]
         cursor.execute(sql, params)
         conexion.commit()

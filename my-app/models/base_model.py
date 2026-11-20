@@ -38,13 +38,13 @@ class BaseModel(ConexionBD):
 
     @staticmethod
     def _cerrar_recursos(cur, conn):
-        try:
-            if cur:
+        if cur:
+            try:
                 cur.close()
-        except Exception:
-            pass
-        try:
-            if conn:
+            except Exception as e:
+                print(f"[BaseModel] Error cerrando cursor: {e}")
+        if conn:
+            try:
                 conn.close()
-        except Exception:
-            pass
+            except Exception as e:
+                print(f"[BaseModel] Error cerrando conexión: {e}")

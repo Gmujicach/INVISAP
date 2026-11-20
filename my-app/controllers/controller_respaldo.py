@@ -115,8 +115,8 @@ def importar_respaldo():
         if os.path.exists(ruta_temporal):
             try:
                 os.remove(ruta_temporal)
-            except Exception:
-                pass
+            except Exception as ex:
+                print(f"[ControllerRespaldo] Error eliminando archivo temporal: {ex}")
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
 
