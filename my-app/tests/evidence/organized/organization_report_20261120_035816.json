@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-11-20T03:58:16.441738",
+  "dry_run": false,
+  "organized": {
+    "acceptance": {},
+    "api": {},
+    "assets": {},
+    "integration": {},
+    "performance": {},
+    "smoke": {},
+    "ui": {},
+    "unit": {}
+  },
+  "unmatched": [],
+  "errors": []
+}

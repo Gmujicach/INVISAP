@@ -2,6 +2,9 @@ import os
 import re
 import sys
 from collections import defaultdict
+from pathlib import Path
+from datetime import datetime
+import json
 
 import pytest
 
@@ -162,6 +165,175 @@ TEST_DESCRIPTIONS = {
 }
 
 
+# ============================================================
+# EVIDENCE / SCREENSHOT CONFIGURATION
+# ============================================================
+EVIDENCE_BASE_DIR = Path(__file__).parent / "evidence"
+EVIDENCE_BASE_DIR.mkdir(parents=True, exist_ok=True)
+
+# Subdirectories per test type
+EVIDENCE_DIRS = {
+    "unit": EVIDENCE_BASE_DIR / "unit",
+    "integration": EVIDENCE_BASE_DIR / "integration",
+    "api": EVIDENCE_BASE_DIR / "api",
+    "smoke": EVIDENCE_BASE_DIR / "smoke",
+    "ui": EVIDENCE_BASE_DIR / "ui",
+    "performance": EVIDENCE_BASE_DIR / "performance",
+    "acceptance": EVIDENCE_BASE_DIR / "acceptance",
+}
+
+for d in EVIDENCE_DIRS.values():
+    d.mkdir(parents=True, exist_ok=True)
+
+# Traceability matrix mapping for screenshot naming
+# Format: test_name -> (test_type, module, case_id)
+TRACEABILITY_MAP = {
+    # Unit tests
+    "test_solicitudes": ("unit", "Solicitudes", "CP-UNI-RF01"),
+    "test_gravedad_obra": ("unit", "Gravedad de Obra", "CP-UNI-RF02"),
+    "test_prioridad": ("unit", "Prioridad", "CP-UNI-RF03"),
+    "test_usuarios": ("unit", "Usuarios", "CP-UNI-RF04"),
+    "test_empleados": ("unit", "Empleados", "CP-UNI-RF05"),
+    "test_empresa": ("unit", "Empresa", "CP-UNI-RF06"),
+    "test_maquinaria": ("unit", "Maquinaria", "CP-UNI-RF07"),
+    "test_proyectos": ("unit", "Proyectos", "CP-UNI-RF08"),
+    "test_contratacion": ("unit", "Contratación", "CP-UNI-RF09"),
+    "test_obras": ("unit", "Obras", "CP-UNI-RF10"),
+    "test_inspecciones": ("unit", "Inspecciones", "CP-UNI-RF11"),
+    "test_evidencias": ("unit", "Evidencias", "CP-UNI-RF12"),
+    "test_informe_avance": ("unit", "Informe de Avance de Obra", "CP-UNI-RF13"),
+    "test_publicaciones": ("unit", "Publicaciones", "CP-UNI-RF14"),
+    "test_reportes_pdf": ("unit", "Reportes PDF", "CP-UNI-RF15"),
+    "test_reportes_excel": ("unit", "Reportes Excel", "CP-UNI-RF15"),
+    "test_reportes_estadisticos": ("unit", "Reportes Estadísticos", "CP-UNI-RF15"),
+    "test_administracion_respaldos": ("unit", "Administración de Respaldos", "CP-UNI-RF16"),
+    "test_bitacora": ("unit", "Bitácora", "CP-UNI-RNF06"),
+    "test_permisos_por_rol": ("unit", "Permisos por Rol", "CP-UNI-RNF03"),
+    "test_security_controls": ("unit", "Seguridad", "CP-UNI-RNF01"),
+    "test_sql_filter_allowlists": ("unit", "Validación Entradas", "CP-UNI-RNF05"),
+    "test_informe_validacion": ("unit", "Validación Informes", "CP-UNI-RF13"),
+    # Integration tests
+    "test_integracion_solicitudes": ("integration", "Solicitudes", "CP-INT-RF01"),
+    "test_integracion_gravedad_obra": ("integration", "Gravedad de Obra", "CP-INT-RF02"),
+    "test_integracion_prioridad": ("integration", "Prioridad", "CP-INT-RF03"),
+    "test_integracion_proyectos": ("integration", "Proyectos", "CP-INT-RF08"),
+    "test_integracion_maquinaria": ("integration", "Maquinaria", "CP-INT-RF07"),
+    "test_integracion_contratacion": ("integration", "Contratación", "CP-INT-RF09"),
+    "test_integracion_empresa": ("integration", "Empresa", "CP-INT-RF06"),
+    "test_integracion_obras": ("integration", "Obras", "CP-INT-RF10"),
+    "test_integracion_empleados": ("integration", "Empleados", "CP-INT-RF05"),
+    "test_integracion_inspecciones": ("integration", "Inspecciones", "CP-INT-RF11"),
+    "test_integracion_evidencias": ("integration", "Evidencias", "CP-INT-RF12"),
+    "test_integracion_informe_avance": ("integration", "Informe de Avance", "CP-INT-RF13"),
+    "test_integracion_publicaciones": ("integration", "Publicaciones", "CP-INT-RF14"),
+    "test_integracion_reportes_pdf": ("integration", "Reportes PDF", "CP-INT-RF15"),
+    "test_integracion_reportes_excel": ("integration", "Reportes Excel", "CP-INT-RF15"),
+    "test_integracion_reportes_estadisticos": ("integration", "Reportes Estadísticos", "CP-INT-RF15"),
+    "test_integracion_usuarios": ("integration", "Usuarios", "CP-INT-RF04"),
+    "test_integracion_permisos_por_rol": ("integration", "Permisos por Rol", "CP-INT-RNF03"),
+    "test_integracion_administracion_respaldos": ("integration", "Respaldos", "CP-INT-RF16"),
+    "test_integracion_bitacora": ("integration", "Bitácora", "CP-INT-RNF06"),
+    "test_contrataciones_bitacora": ("integration", "Contratación-Bitácora", "CP-INT-RF09"),
+    # API tests
+    "test_api_solicitudes": ("api", "Solicitudes", "CP-API-RF01"),
+    "test_api_gravedad_obra": ("api", "Gravedad de Obra", "CP-API-RF02"),
+    "test_api_prioridad": ("api", "Prioridad", "CP-API-RF03"),
+    "test_api_proyectos": ("api", "Proyectos", "CP-API-RF08"),
+    "test_api_maquinaria": ("api", "Maquinaria", "CP-API-RF07"),
+    "test_api_contratacion": ("api", "Contratación", "CP-API-RF09"),
+    "test_api_empresa": ("api", "Empresa", "CP-API-RF06"),
+    "test_api_obras": ("api", "Obras", "CP-API-RF10"),
+    "test_api_empleados": ("api", "Empleados", "CP-API-RF05"),
+    "test_api_inspecciones": ("api", "Inspecciones", "CP-API-RF11"),
+    "test_api_evidencias": ("api", "Evidencias", "CP-API-RF12"),
+    "test_api_informe_avance": ("api", "Informe de Avance", "CP-API-RF13"),
+    "test_api_publicaciones": ("api", "Publicaciones", "CP-API-RF14"),
+    "test_api_reportes_pdf": ("api", "Reportes PDF", "CP-API-RF15"),
+    "test_api_reportes_excel": ("api", "Reportes Excel", "CP-API-RF15"),
+    "test_api_reportes_estadisticos": ("api", "Reportes Estadísticos", "CP-API-RF15"),
+    "test_api_usuarios": ("api", "Usuarios", "CP-API-RF04"),
+    "test_api_permisos_por_rol": ("api", "Permisos por Rol", "CP-API-RNF03"),
+    "test_api_administracion_respaldos": ("api", "Respaldos", "CP-API-RF16"),
+    "test_api_bitacora": ("api", "Bitácora", "CP-API-RNF06"),
+    "test_parametrizacion_reportes": ("api", "Reportes Parametrización", "CP-API-RF15"),
+    # Smoke tests
+    "test_humo_solicitudes": ("smoke", "Solicitudes", "CP-HUM-RF01"),
+    "test_humo_gravedad_obra": ("smoke", "Gravedad de Obra", "CP-HUM-RF02"),
+    "test_humo_prioridad": ("smoke", "Prioridad", "CP-HUM-RF03"),
+    "test_humo_proyectos": ("smoke", "Proyectos", "CP-HUM-RF08"),
+    "test_humo_maquinaria": ("smoke", "Maquinaria", "CP-HUM-RF07"),
+    "test_humo_contratacion": ("smoke", "Contratación", "CP-HUM-RF09"),
+    "test_humo_empresa": ("smoke", "Empresa", "CP-HUM-RF06"),
+    "test_humo_obras": ("smoke", "Obras", "CP-HUM-RF10"),
+    "test_humo_empleados": ("smoke", "Empleados", "CP-HUM-RF05"),
+    "test_humo_inspecciones": ("smoke", "Inspecciones", "CP-HUM-RF11"),
+    "test_humo_evidencias": ("smoke", "Evidencias", "CP-HUM-RF12"),
+    "test_humo_informe_avance": ("smoke", "Informe de Avance", "CP-HUM-RF13"),
+    "test_humo_publicaciones": ("smoke", "Publicaciones", "CP-HUM-RF14"),
+    "test_humo_reportes_pdf": ("smoke", "Reportes PDF", "CP-HUM-RF15"),
+    "test_humo_reportes_excel": ("smoke", "Reportes Excel", "CP-HUM-RF15"),
+    "test_humo_reportes_estadisticos": ("smoke", "Reportes Estadísticos", "CP-HUM-RF15"),
+    "test_humo_usuarios": ("smoke", "Usuarios", "CP-HUM-RF04"),
+    "test_humo_permisos_por_rol": ("smoke", "Permisos por Rol", "CP-HUM-RNF03"),
+    "test_humo_administracion_respaldos": ("smoke", "Respaldos", "CP-HUM-RF16"),
+    "test_humo_bitacora": ("smoke", "Bitácora", "CP-HUM-RNF06"),
+    "test_login_smoke": ("smoke", "Acceso INVISAP", "CP-HUM-RNF01"),
+    # UI tests
+    "test_formulario_de_acceso_se_muestra_en_el_navegador": ("ui", "Login", "CP-UI-RNF01"),
+    "test_formulario_de_acceso_tiene_etiquetas_y_acciones_comprensibles": ("ui", "Login", "CP-UI-RNF08"),
+    # Performance tests
+    "locust_": ("performance", "", "CP-LOC-RNF10"),
+}
+
+def _get_traceability_info(item):
+    """Extract traceability info from test item for screenshot naming."""
+    nodeid = item.nodeid.replace('\\', '/')
+    
+    # Get test file name without extension
+    test_file = nodeid.split('/')[-1].split('::')[0].replace('.py', '')
+    
+    # Get test function name
+    test_function = item.originalname or item.name.split('[', 1)[0]
+    
+    # Try exact match first
+    for key, (test_type, module, case_id) in TRACEABILITY_MAP.items():
+        if key in test_file or key in test_function:
+            return test_type, module, case_id, test_function
+    
+    # Fallback: infer from path
+    if 'tests/unit/' in nodeid:
+        module = UNIT_MODULES.get(test_file + '.py', test_file.replace('test_', '').replace('_', ' ').title())
+        return "unit", module, f"CP-UNI-{test_file.upper()}", test_function
+    elif 'tests/integration/' in nodeid:
+        module = INTEGRATION_MODULES.get(test_file + '.py', test_file.replace('test_integracion_', '').replace('_', ' ').title())
+        return "integration", module, f"CP-INT-{test_file.replace('test_integracion_', '').upper()}", test_function
+    elif 'tests/api/' in nodeid:
+        api_case = API_MODULES.get(test_file + '.py')
+        module = api_case[0] if api_case else test_file.replace('test_api_', '').replace('_', ' ').title()
+        return "api", module, f"CP-API-{test_file.replace('test_api_', '').upper()}", test_function
+    elif 'tests/smoke/' in nodeid:
+        module = SMOKE_MODULES.get(test_file + '.py', test_file.replace('test_humo_', '').replace('test_login_', '').replace('_', ' ').title())
+        return "smoke", module, f"CP-HUM-{test_file.replace('test_humo_', '').replace('test_login_', '').upper()}", test_function
+    elif 'tests/ui/' in nodeid:
+        return "ui", "Login", f"CP-UI-{test_function.upper()}", test_function
+    elif 'tests/performance/' in nodeid:
+        module = test_file.replace('locust_', '').replace('_', ' ').title()
+        return "performance", module, f"CP-LOC-RNF10-{test_file.replace('locust_', '').upper()}", test_function
+    
+    return "unknown", "Unknown", "CP-UNKNOWN", test_function
+
+
+def _generate_screenshot_name(test_type, module, case_id, test_function, outcome="passed"):
+    """Generate structured screenshot filename: tipoPrueba_modulo_IDcaso_resultado_timestamp.png"""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    # Clean module name for filename
+    clean_module = re.sub(r'[^\w\s-]', '', module).strip().replace(' ', '_')
+    clean_case_id = case_id.replace('/', '-').replace('..', '_')
+    clean_function = re.sub(r'[^\w]', '_', test_function)
+    filename = f"{test_type}_{clean_module}_{clean_case_id}_{clean_function}_{outcome}_{timestamp}.png"
+    return filename
+
+
 def _unit_module(item):
     if 'tests/unit/' not in item.nodeid.replace('\\', '/'):
         return None
@@ -312,6 +484,87 @@ def pytest_runtest_logreport(report):
                 )
 
 
+# ============================================================
+# SCREENSHOT CAPTURE HOOKS
+# ============================================================
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """Hook to capture screenshots on test failure for UI tests."""
+    outcome = yield
+    rep = outcome.get_result()
+    
+    # Only capture screenshots for UI tests (Playwright/Selenium)
+    if rep.when == "call" and "tests/ui/" in item.nodeid.replace('\\', '/'):
+        test_type, module, case_id, test_function = _get_traceability_info(item)
+        
+        # Capture on failure
+        if rep.failed:
+            page = item.funcargs.get("page")
+            driver = item.funcargs.get("driver")
+            
+            screenshot_name = _generate_screenshot_name(test_type, module, case_id, test_function, "FAILED")
+            screenshot_path = EVIDENCE_DIRS["ui"] / screenshot_name
+            
+            if page:  # Playwright
+                try:
+                    page.screenshot(path=str(screenshot_path), full_page=True)
+                    print(f"\n[EVIDENCIA UI] Captura de fallo guardada: {screenshot_path}")
+                except Exception as e:
+                    print(f"\n[EVIDENCIA UI] Error capturando screenshot Playwright: {e}")
+            elif driver:  # Selenium
+                try:
+                    driver.save_screenshot(str(screenshot_path))
+                    print(f"\n[EVIDENCIA UI] Captura de fallo guardada: {screenshot_path}")
+                except Exception as e:
+                    print(f"\n[EVIDENCIA UI] Error capturando screenshot Selenium: {e}")
+        
+        # Also capture on pass for evidence
+        elif rep.passed:
+            page = item.funcargs.get("page")
+            driver = item.funcargs.get("driver")
+            
+            screenshot_name = _generate_screenshot_name(test_type, module, case_id, test_function, "PASSED")
+            screenshot_path = EVIDENCE_DIRS["ui"] / screenshot_name
+            
+            if page:  # Playwright
+                try:
+                    page.screenshot(path=str(screenshot_path), full_page=True)
+                    print(f"\n[EVIDENCIA UI] Captura de éxito guardada: {screenshot_path}")
+                except Exception as e:
+                    print(f"\n[EVIDENCIA UI] Error capturando screenshot Playwright: {e}")
+            elif driver:  # Selenium
+                try:
+                    driver.save_screenshot(str(screenshot_path))
+                    print(f"\n[EVIDENCIA UI] Captura de éxito guardada: {screenshot_path}")
+                except Exception as e:
+                    print(f"\n[EVIDENCIA UI] Error capturando screenshot Selenium: {e}")
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """Generate evidence summary report at end of test session."""
+    evidence_summary = {
+        "timestamp": datetime.now().isoformat(),
+        "exit_status": exitstatus,
+        "evidence_dirs": {k: str(v) for k, v in EVIDENCE_DIRS.items()},
+        "screenshots_captured": {}
+    }
+    
+    for test_type, dir_path in EVIDENCE_DIRS.items():
+        screenshots = list(dir_path.glob("*.png"))
+        evidence_summary["screenshots_captured"][test_type] = len(screenshots)
+        if screenshots:
+            evidence_summary["screenshots_captured"][f"{test_type}_files"] = [s.name for s in screenshots]
+    
+    summary_path = EVIDENCE_BASE_DIR / "evidence_summary.json"
+    with open(summary_path, 'w', encoding='utf-8') as f:
+        json.dump(evidence_summary, f, indent=2, ensure_ascii=False)
+    
+    print(f"\n[EVIDENCIA] Resumen de capturas guardado en: {summary_path}")
+    for test_type, count in evidence_summary["screenshots_captured"].items():
+        if isinstance(count, int):
+            print(f"  {test_type}: {count} capturas")
+
+
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
     for results, title, test_type in (
         (_unit_results, 'RESUMEN DE PRUEBAS UNITARIAS POR MÓDULO', 'Prueba unitaria'),
@@ -377,3 +630,74 @@ def authenticated_permissions(monkeypatch):
         'verificar_permiso_accion',
         lambda *args, **kwargs: True
     )
+
+
+# ============================================================
+# PLAYWRIGHT FIXTURES
+# ============================================================
+@pytest.fixture(scope="session")
+def playwright_browser():
+    """Session-scoped Playwright browser fixture."""
+    playwright = pytest.importorskip(
+        "playwright.sync_api",
+        reason="Instala Playwright: pip install playwright && playwright install chromium"
+    )
+    with playwright.sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        yield browser
+        browser.close()
+
+
+@pytest.fixture
+def page(playwright_browser, request):
+    """Page fixture with automatic screenshot capture on failure."""
+    base_url = os.getenv("INVISAP_TEST_URL", "http://127.0.0.1:5600")
+    page = playwright_browser.new_page()
+    page.set_default_timeout(30000)
+    
+    # Store test info for screenshot naming
+    page._test_info = {
+        "base_url": base_url,
+        "test_name": request.node.name,
+    }
+    
+    yield page
+    
+    # Cleanup
+    page.close()
+
+
+# ============================================================
+# SELENIUM FIXTURES
+# ============================================================
+@pytest.fixture(scope="session")
+def selenium_driver():
+    """Session-scoped Selenium WebDriver fixture."""
+    selenium = pytest.importorskip(
+        "selenium.webdriver",
+        reason="Instala Selenium: pip install selenium"
+    )
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.chrome.service import Service
+    
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--window-size=1920,1080")
+    
+    driver = selenium.webdriver.Chrome(options=options)
+    driver.implicitly_wait(10)
+    
+    yield driver
+    
+    driver.quit()
+
+
+@pytest.fixture
+def driver(selenium_driver, request):
+    """Driver fixture with test info for screenshot naming."""
+    selenium_driver._test_info = {
+        "test_name": request.node.name,
+    }
+    yield selenium_driver

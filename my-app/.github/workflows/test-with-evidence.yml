@@ -1,0 +1,595 @@
+name: INVISAP - Pruebas Automatizadas con Evidencia
+
+on:
+  push:
+    branches: [main, develop, release/*]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Tipo de prueba a ejecutar'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - unit
+          - integration
+          - api
+          - smoke
+          - ui
+          - performance
+          - acceptance
+      environment:
+        description: 'Entorno de ejecución'
+        required: false
+        default: 'test'
+        type: choice
+        options:
+          - test
+          - staging
+          - production
+
+env:
+  PYTHON_VERSION: '3.11'
+  INVISAP_TEST_URL: 'http://localhost:5600'
+  INVISAP_PERF_SESSION_COOKIE: ''
+
+jobs:
+  # ============================================================
+  # JOB 1: CONFIGURACIÓN Y PREPARACIÓN
+  # ============================================================
+  setup:
+    name: Configuración y Preparación
+    runs-on: ubuntu-latest
+    outputs:
+      python-version: ${{ steps.setup-python.outputs.python-version }}
+      cache-key: ${{ steps.cache-key.outputs.key }}
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Configurar Python
+        id: setup-python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Generar clave de caché
+        id: cache-key
+        run: |
+          echo "key=invisap-${{ runner.os }}-python${{ env.PYTHON_VERSION }}-${{ hashFiles('**/requirements*.txt', '**/tests/requirements*.txt') }}" >> $GITHUB_OUTPUT
+      
+      - name: Instalar dependencias del sistema
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            chromium-browser \
+            postgresql-client \
+            default-mysql-client \
+            nodejs \
+            npm
+      
+      - name: Instalar Playwright
+        run: |
+          pip install playwright
+          playwright install chromium
+          playwright install-deps chromium
+      
+      - name: Instalar Newman (Postman CLI)
+        run: |
+          npm install -g newman newman-reporter-htmlextra
+      
+      - name: Cache de dependencias Python
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ steps.cache-key.outputs.key }}
+          restore-keys: |
+            invisap-${{ runner.os }}-python${{ env.PYTHON_VERSION }}-
+
+  # ============================================================
+  # JOB 2: PRUEBAS UNITARIAS
+  # ============================================================
+  unit-tests:
+    name: Pruebas Unitarias
+    needs: setup
+    runs-on: ubuntu-latest
+    if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'unit'
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+      
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Instalar dependencias
+        run: |
+          pip install -r tests/requirements-test.txt
+          pip install pytest pytest-html pytest-json-report pytest-xdist
+      
+      - name: Ejecutar pruebas unitarias
+        run: |
+          mkdir -p tests/evidence/unit
+          python -m pytest tests/unit \
+            -v \
+            --tb=short \
+            --html=tests/evidence/unit/report_unit.html \
+            --self-contained-html \
+            --json-report --json-report-file=tests/evidence/unit/report_unit.json \
+            --junitxml=tests/evidence/unit/junit_unit.xml \
+            -o junit_suite_name="INVISAP Unit Tests" \
+            2>&1 | tee tests/evidence/unit/pytest_unit.log
+      
+      - name: Subir evidencia unitarias
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencia-unitarias
+          path: |
+            tests/evidence/unit/
+            tests/evidence/evidence_summary.json
+          retention-days: 30
+      
+      - name: Publicar reporte HTML
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reporte-html-unitarias
+          path: tests/evidence/unit/report_unit.html
+          retention-days: 30
+
+  # ============================================================
+  # JOB 3: PRUEBAS DE INTEGRACIÓN
+  # ============================================================
+  integration-tests:
+    name: Pruebas de Integración
+    needs: setup
+    runs-on: ubuntu-latest
+    if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'integration'
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: testpass
+          MYSQL_DATABASE: invilara_test
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpass
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+      
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Instalar dependencias
+        run: |
+          pip install -r tests/requirements-test.txt
+          pip install pytest pytest-html pytest-json-report pymysql
+      
+      - name: Configurar base de datos de prueba
+        run: |
+          # Esperar a que MySQL esté listo
+          sleep 10
+          mysql -h 127.0.0.1 -u testuser -ptestpass invilara_test < BD/invilara.sql 2>/dev/null || echo "BD no encontrada, usando mocks"
+      
+      - name: Ejecutar pruebas de integración
+        run: |
+          mkdir -p tests/evidence/integration
+          python -m pytest tests/integration \
+            -v \
+            --tb=short \
+            --html=tests/evidence/integration/report_integration.html \
+            --self-contained-html \
+            --json-report --json-report-file=tests/evidence/integration/report_integration.json \
+            --junitxml=tests/evidence/integration/junit_integration.xml \
+            -o junit_suite_name="INVISAP Integration Tests" \
+            2>&1 | tee tests/evidence/integration/pytest_integration.log
+      
+      - name: Subir evidencia integración
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencia-integracion
+          path: |
+            tests/evidence/integration/
+            tests/evidence/evidence_summary.json
+          retention-days: 30
+
+  # ============================================================
+  # JOB 4: PRUEBAS DE BACKEND/API
+  # ============================================================
+  api-tests:
+    name: Pruebas Backend/API
+    needs: setup
+    runs-on: ubuntu-latest
+    if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'api'
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+      
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Instalar dependencias
+        run: |
+          pip install -r tests/requirements-test.txt
+          pip install pytest pytest-html pytest-json-report
+      
+      - name: Ejecutar pruebas API
+        run: |
+          mkdir -p tests/evidence/api
+          python -m pytest tests/api \
+            -v \
+            --tb=short \
+            --html=tests/evidence/api/report_api.html \
+            --self-contained-html \
+            --json-report --json-report-file=tests/evidence/api/report_api.json \
+            --junitxml=tests/evidence/api/junit_api.xml \
+            -o junit_suite_name="INVISAP API Tests" \
+            2>&1 | tee tests/evidence/api/pytest_api.log
+      
+      - name: Ejecutar Postman/Newman con evidencia
+        if: false  # Habilitar cuando se tenga colección Postman
+        run: |
+          python tests/api/postman_evidence_capture.py \
+            --collection postman/collections/INVISAP\ -\ Pruebas\ de\ Contrato\ HTTP.postman_collection.json \
+            --environment postman/environments/INVISAP\ -\ Local.postman_environment.json \
+            --base-url ${{ env.INVISAP_TEST_URL }}
+      
+      - name: Subir evidencia API
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencia-api
+          path: |
+            tests/evidence/api/
+            tests/evidence/evidence_summary.json
+          retention-days: 30
+
+  # ============================================================
+  # JOB 5: PRUEBAS DE HUMO (SMOKE)
+  # ============================================================
+  smoke-tests:
+    name: Pruebas de Humo
+    needs: setup
+    runs-on: ubuntu-latest
+    if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'smoke'
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+      
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Instalar dependencias
+        run: |
+          pip install -r tests/requirements-test.txt
+          pip install pytest pytest-html pytest-json-report
+      
+      - name: Ejecutar pruebas de humo
+        run: |
+          mkdir -p tests/evidence/smoke
+          python -m pytest tests/smoke \
+            -v \
+            --tb=short \
+            --html=tests/evidence/smoke/report_smoke.html \
+            --self-contained-html \
+            --json-report --json-report-file=tests/evidence/smoke/report_smoke.json \
+            --junitxml=tests/evidence/smoke/junit_smoke.xml \
+            -o junit_suite_name="INVISAP Smoke Tests" \
+            2>&1 | tee tests/evidence/smoke/pytest_smoke.log
+      
+      - name: Subir evidencia humo
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencia-humo
+          path: |
+            tests/evidence/smoke/
+            tests/evidence/evidence_summary.json
+          retention-days: 30
+
+  # ============================================================
+  # JOB 6: PRUEBAS DE INTERFAZ (UI) - PLAYWRIGHT
+  # ============================================================
+  ui-tests:
+    name: Pruebas de Interfaz (Playwright)
+    needs: setup
+    runs-on: ubuntu-latest
+    if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'ui'
+    env:
+      INVISAP_TEST_URL: 'http://localhost:5600'
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+      
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Instalar dependencias
+        run: |
+          pip install -r tests/requirements-test.txt
+          pip install pytest pytest-html pytest-json-report playwright
+          playwright install chromium
+          playwright install-deps chromium
+      
+      - name: Iniciar servidor de aplicación
+        run: |
+          # Iniciar la aplicación Flask en background
+          cd /home/runner/work/INVISAP/INVISAP/my-app
+          python run.py &
+          SERVER_PID=$!
+          sleep 10
+          # Verificar que el servidor responde
+          curl -f http://localhost:5600/login || exit 1
+          echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
+      
+      - name: Ejecutar pruebas UI con Playwright
+        run: |
+          mkdir -p tests/evidence/ui
+          python -m pytest tests/ui \
+            -v \
+            --tb=short \
+            --html=tests/evidence/ui/report_ui.html \
+            --self-contained-html \
+            --json-report --json-report-file=tests/evidence/ui/report_ui.json \
+            --junitxml=tests/evidence/ui/junit_ui.xml \
+            -o junit_suite_name="INVISAP UI Tests" \
+            2>&1 | tee tests/evidence/ui/pytest_ui.log
+      
+      - name: Detener servidor
+        if: always()
+        run: |
+          if [ -n "$SERVER_PID" ]; then
+            kill $SERVER_PID 2>/dev/null || true
+          fi
+      
+      - name: Subir evidencia UI
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencia-ui
+          path: |
+            tests/evidence/ui/
+            tests/evidence/evidence_summary.json
+          retention-days: 30
+
+  # ============================================================
+  # JOB 7: PRUEBAS DE RENDIMIENTO (LOCUST)
+  # ============================================================
+  performance-tests:
+    name: Pruebas de Rendimiento (Locust)
+    needs: setup
+    runs-on: ubuntu-latest
+    if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'performance'
+    env:
+      INVISAP_TEST_URL: 'http://localhost:5600'
+      INVISAP_PERF_SESSION_COOKIE: ''
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+      
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Instalar dependencias
+        run: |
+          pip install -r tests/performance/requirements.txt
+          pip install locust
+      
+      - name: Iniciar servidor de aplicación
+        run: |
+          cd /home/runner/work/INVISAP/INVISAP/my-app
+          python run.py &
+          SERVER_PID=$!
+          sleep 10
+          curl -f http://localhost:5600/ || exit 1
+          echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
+      
+      - name: Ejecutar pruebas de rendimiento (perfil quick)
+        run: |
+          mkdir -p tests/evidence/performance
+          python tests/performance/run_performance.py \
+            --all \
+            --profile quick \
+            --host ${{ env.INVISAP_TEST_URL }} \
+            --output-dir tests/evidence/performance \
+            2>&1 | tee tests/evidence/performance/locust_performance.log
+      
+      - name: Generar reporte HTML de rendimiento
+        run: |
+          python -c "
+from tests.performance.locust_with_evidence import generate_html_report, generate_csv_report
+import locust
+# El reporte se genera automáticamente en test_stop event
+"
+      
+      - name: Detener servidor
+        if: always()
+        run: |
+          if [ -n "$SERVER_PID" ]; then
+            kill $SERVER_PID 2>/dev/null || true
+          fi
+      
+      - name: Subir evidencia rendimiento
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencia-rendimiento
+          path: |
+            tests/evidence/performance/
+            tests/evidence/evidence_summary.json
+          retention-days: 30
+
+  # ============================================================
+  # JOB 8: ORGANIZAR EVIDENCIA SEGÚN MATRIZ DE TRAZABILIDAD
+  # ============================================================
+  organize-evidence:
+    name: Organizar Evidencia por Trazabilidad
+    needs: [unit-tests, integration-tests, api-tests, smoke-tests, ui-tests, performance-tests]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+      
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Descargar todas las evidencias
+        uses: actions/download-artifact@v4
+        with:
+          path: tests/evidence
+          pattern: evidencia-*
+      
+      - name: Instalar python-docx
+        run: pip install python-docx
+      
+      - name: Organizar evidencia según matriz de trazabilidad
+        run: |
+          python tests/evidence_organizer.py \
+            --evidence-dir tests/evidence \
+            --matrix tests/documentation/Matriz_Trazabilidad_Pruebas_INVISAP.docx \
+            2>&1 | tee tests/evidence/organization.log
+      
+      - name: Generar reporte de cobertura de trazabilidad
+        run: |
+          python -c "
+from tests.evidence_organizer import EvidenceOrganizer
+organizer = EvidenceOrganizer('tests/evidence', 'tests/documentation/Matriz_Trazabilidad_Pruebas_INVISAP.docx')
+organizer.generate_traceability_report()
+"
+      
+      - name: Subir evidencia organizada
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evidencia-organizada-trazabilidad
+          path: |
+            tests/evidence/organized/
+            tests/evidence/*report*.json
+            tests/evidence/organization.log
+          retention-days: 90
+
+  # ============================================================
+  # JOB 9: GENERAR INFORME CONSOLIDADO
+  # ============================================================
+  generate-report:
+    name: Generar Informe Consolidado
+    needs: organize-evidence
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+      
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+      
+      - name: Descargar evidencia organizada
+        uses: actions/download-artifact@v4
+        with:
+          path: tests/evidence
+          pattern: evidencia-organizada-trazabilidad
+      
+      - name: Instalar dependencias para generación de informe
+        run: |
+          pip install python-docx pandas openpyxl jinja2
+      
+      - name: Generar informe consolidado (Chapter IV & V)
+        run: |
+          python tests/generate_consolidated_report.py \
+            --evidence-dir tests/evidence \
+            --matrix tests/documentation/Matriz_Trazabilidad_Pruebas_INVISAP.docx \
+            --output tests/evidence/Informe_Consolidado_Capitulo_IV_V.docx \
+            2>&1 | tee tests/evidence/generate_report.log
+      
+      - name: Subir informe consolidado
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: informe-consolidado-capitulo-iv-v
+          path: tests/evidence/Informe_Consolidado_Capitulo_IV_V.docx
+          retention-days: 90
+
+  # ============================================================
+  # JOB 10: PUBLICAR RESUMEN EN PR
+  # ============================================================
+  summary:
+    name: Resumen en Pull Request
+    needs: [unit-tests, integration-tests, api-tests, smoke-tests, ui-tests, performance-tests, organize-evidence]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Descargar reportes JSON
+        uses: actions/download-artifact@v4
+        with:
+          path: tests/evidence
+          pattern: evidencia-*
+      
+      - name: Generar resumen para PR
+        run: |
+          echo "## 📊 Resumen de Pruebas INVISAP" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Tipo de Prueba | Estado | Casos | Evidencia |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------------|--------|-------|-----------|" >> $GITHUB_STEP_SUMMARY
+          
+          for dir in tests/evidence/evidencia-*/; do
+            if [ -f "$dir/report_*.json" ]; then
+              test_type=$(basename "$dir" | sed 's/evidencia-//')
+              passed=$(jq -r '.passed // 0' "$dir/report_*.json" 2>/dev/null || echo "0")
+              failed=$(jq -r '.failed // 0' "$dir/report_*.json" 2>/dev/null || echo "0")
+              total=$((passed + failed))
+              status="✅"
+              [ $failed -gt 0 ] && status="❌"
+              echo "| $test_type | $status | $total ($passed✅/$failed❌) | [Ver](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📁 Evidencia organizada por Matriz de Trazabilidad" >> $GITHUB_STEP_SUMMARY
+          echo "Los archivos están disponibles en los artifacts del workflow." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Nomenclatura de evidencia" >> $GITHUB_STEP_SUMMARY
+          echo "\`tipoPrueba_modulo_IDcaso_resultado_timestamp.png\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Ejemplos:" >> $GITHUB_STEP_SUMMARY
+          echo "- \`unit_Solicitudes_CP-UNI-RF01-01_test_crear_solicitud_PASSED_20261120_103000.png\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`ui_Login_CP-UI-RNF01_test_formulario_acceso_FAILED_20261120_103005.png\`" >> $GITHUB_STEP_SUMMARY
+          echo "- \`performance_Solicitudes_CP-LOC-RF01_locust_solicitudes_PASSED_20261120_103010.html\`" >> $GITHUB_STEP_SUMMARY

@@ -1,0 +1,173 @@
+Comando: C:\laragon\www\INVISAP\my-app\.venv\Scripts\python.exe -m pytest tests/smoke -q -p no:cacheprovider
+Categoría: Pruebas de Humo
+Exit code: 0
+Fecha: 20/11/2026 05:03:30
+================================================================================
+
+[DEBUG] Conectando a MySQL: host=localhost, user=root, db=invilara
+[DEBUG] Conectando a MySQL: host=localhost, user=root, db=invilara
+============================= test session starts =============================
+platform win32 -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: C:\laragon\www\INVISAP\my-app
+configfile: pytest.ini
+plugins: locust-2.46.7, platformdirs-4.14.5, cov-7.1.0, html-4.2.0, json-report-1.5.0, metadata-3.1.1
+collected 21 items
+
+tests\smoke\test_humo_administracion_respaldos.py 
+[PRUEBA DE HUMO] Administración de Respaldos: solicitando GET /respaldo/ y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /respaldo/ -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_bitacora.py 
+[PRUEBA DE HUMO] Bitácora: solicitando GET /bitacora y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /bitacora -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_contratacion.py 
+[PRUEBA DE HUMO] Contratación: solicitando GET /contrataciones y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /contrataciones -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Contratación — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_empleados.py 
+[PRUEBA DE HUMO] Empleados: solicitando GET /empleados/ y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /empleados/ -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Empleados — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_empresa.py 
+[PRUEBA DE HUMO] Empresa: solicitando GET /lista-empresas y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /lista-empresas -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Empresa — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_evidencias.py 
+[PRUEBA DE HUMO] Evidencias: solicitando GET /evidencias/listar y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /evidencias/listar -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_gravedad_obra.py 
+[PRUEBA DE HUMO] Gravedad de Obra: solicitando GET /gestionar-gravedad y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /gestionar-gravedad -> HTTP 200; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_informe_avance.py 
+[PRUEBA DE HUMO] Informe de Avance de Obra: solicitando GET /inf_avance_obra y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /inf_avance_obra -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_inspecciones.py 
+[PRUEBA DE HUMO] Inspecciones: solicitando GET /inspecciones/ y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /inspecciones/ -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_maquinaria.py 
+[PRUEBA DE HUMO] Maquinaria: solicitando GET /maquinaria y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /maquinaria -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_obras.py 
+[PRUEBA DE HUMO] Obras: solicitando GET /gestionar-obras y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /gestionar-obras -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Obras — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_permisos_por_rol.py 
+[PRUEBA DE HUMO] Permisos por Rol: solicitando GET /gestionar-permisos y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /gestionar-permisos -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_prioridad.py 
+[PRUEBA DE HUMO] Prioridad: solicitando GET /gestionar-prioridad y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /gestionar-prioridad -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_proyectos.py 
+[PRUEBA DE HUMO] Proyectos: solicitando GET /gestionar-proyectos y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /gestionar-proyectos -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_publicaciones.py 
+[PRUEBA DE HUMO] Publicaciones: solicitando GET /lista-publicaciones y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /lista-publicaciones -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_reportes_estadisticos.py 
+[PRUEBA DE HUMO] Reportes Estadísticos: solicitando GET /reportes/reporte-estadistico y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /reportes/reporte-estadistico -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_reportes_excel.py 
+[PRUEBA DE HUMO] Reportes Excel: solicitando GET /reportes/reporte-excel y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /reportes/reporte-excel -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_reportes_pdf.py 
+[PRUEBA DE HUMO] Reportes PDF: solicitando GET /reportes/reporte-pdf y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /reportes/reporte-pdf -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_solicitudes.py 
+[PRUEBA DE HUMO] Solicitudes: solicitando GET /lista-de-solicitudes y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /lista-de-solicitudes -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_humo_usuarios.py 
+[PRUEBA DE HUMO] Usuarios: solicitando GET /users y comprobando que no responda HTTP 404 ni 500.
+Solicitud GET /users -> HTTP 302; Content-Type: text/html; charset=utf-8.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+tests\smoke\test_login_smoke.py 
+[PRUEBA DE HUMO] Acceso de INVISAP: solicitando GET /login y comprobando HTTP 200 y ausencia de aviso de sesión incorrecto.
+.
+Concluyó prueba de Acceso de INVISAP — Tipo: Prueba de humo (smoke) — Resultado: APROBADA.
+
+[EVIDENCIA] Resumen de capturas guardado en: C:\laragon\www\INVISAP\my-app\tests\evidence\evidence_summary.json
+  unit: 0 capturas
+  integration: 0 capturas
+  api: 0 capturas
+  smoke: 0 capturas
+  ui: 0 capturas
+  performance: 0 capturas
+  acceptance: 0 capturas
+
+
+==================== RESUMEN DE PRUEBAS DE HUMO POR MÓDULO ====================
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Bitácora — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Contratación — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Empleados — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Empresa — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Evidencias — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Inspecciones — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Maquinaria — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Obras — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Prioridad — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Proyectos — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Publicaciones — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Reportes Excel — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Reportes PDF — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Solicitudes — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Usuarios — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Acceso de INVISAP — Tipo: Prueba de humo (smoke) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+============================= 21 passed in 0.45s ==============================

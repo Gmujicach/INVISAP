@@ -1,0 +1,149 @@
+Comando: C:\laragon\www\INVISAP\my-app\.venv\Scripts\python.exe -m pytest tests/integration -q -p no:cacheprovider
+Categoría: Pruebas de Integración
+Exit code: 0
+Fecha: 20/11/2026 05:02:37
+================================================================================
+
+[DEBUG] Conectando a MySQL: host=localhost, user=root, db=invilara
+[DEBUG] Conectando a MySQL: host=localhost, user=root, db=invilara
+============================= test session starts =============================
+platform win32 -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: C:\laragon\www\INVISAP\my-app
+configfile: pytest.ini
+plugins: locust-2.46.7, platformdirs-4.14.5, cov-7.1.0, html-4.2.0, json-report-1.5.0, metadata-3.1.1
+collected 22 items
+
+tests\integration\test_contrataciones_bitacora.py .--- [MODELO] ERROR SQL INSERT: Duplicate entry '5' for key 'PRIMARY' ---
+.
+tests\integration\test_integracion_administracion_respaldos.py 
+[PRUEBA DE INTEGRACIÓN] Administración de Respaldos: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_bitacora.py 
+[PRUEBA DE INTEGRACIÓN] Bitácora: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_contratacion.py 
+[PRUEBA DE INTEGRACIÓN] Contratación: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Contratación — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_empleados.py 
+[PRUEBA DE INTEGRACIÓN] Empleados: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Empleados — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_empresa.py 
+[PRUEBA DE INTEGRACIÓN] Empresa: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Empresa — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_evidencias.py 
+[PRUEBA DE INTEGRACIÓN] Evidencias: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_gravedad_obra.py 
+[PRUEBA DE INTEGRACIÓN] Gravedad de Obra: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_informe_avance.py 
+[PRUEBA DE INTEGRACIÓN] Informe de Avance de Obra: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_inspecciones.py 
+[PRUEBA DE INTEGRACIÓN] Inspecciones: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_maquinaria.py 
+[PRUEBA DE INTEGRACIÓN] Maquinaria: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_obras.py 
+[PRUEBA DE INTEGRACIÓN] Obras: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Obras — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_permisos_por_rol.py 
+[PRUEBA DE INTEGRACIÓN] Permisos por Rol: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_prioridad.py 
+[PRUEBA DE INTEGRACIÓN] Prioridad: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_proyectos.py 
+[PRUEBA DE INTEGRACIÓN] Proyectos: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_publicaciones.py 
+[PRUEBA DE INTEGRACIÓN] Publicaciones: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_reportes_estadisticos.py 
+[PRUEBA DE INTEGRACIÓN] Reportes Estadísticos: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_reportes_excel.py 
+[PRUEBA DE INTEGRACIÓN] Reportes Excel: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_reportes_pdf.py 
+[PRUEBA DE INTEGRACIÓN] Reportes PDF: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_solicitudes.py 
+[PRUEBA DE INTEGRACIÓN] Solicitudes: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba de integración — Resultado: APROBADA.
+
+tests\integration\test_integracion_usuarios.py 
+[PRUEBA DE INTEGRACIÓN] Usuarios: comprobando la ruta Flask, el endpoint, el método HTTP y la generación de URL.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba de integración — Resultado: APROBADA.
+
+[EVIDENCIA] Resumen de capturas guardado en: C:\laragon\www\INVISAP\my-app\tests\evidence\evidence_summary.json
+  unit: 0 capturas
+  integration: 0 capturas
+  api: 0 capturas
+  smoke: 0 capturas
+  ui: 0 capturas
+  performance: 0 capturas
+  acceptance: 0 capturas
+
+
+================ RESUMEN DE PRUEBAS DE INTEGRACIÓN POR MÓDULO =================
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Bitácora — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Contratación — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Empleados — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Empresa — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Evidencias — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Inspecciones — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Maquinaria — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Obras — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Prioridad — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Proyectos — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Publicaciones — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Reportes Excel — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Reportes PDF — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Solicitudes — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Usuarios — Tipo: Prueba de integración — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+============================= 22 passed in 0.32s ==============================

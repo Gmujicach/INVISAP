@@ -1,0 +1,4732 @@
+{
+  "timestamp": "2026-11-20T03:58:16.447302",
+  "traceability_matrix": "Matriz_Trazabilidad_Pruebas_INVISAP.docx",
+  "evidence_base_dir": "tests\\evidence",
+  "coverage": {
+    "RF-01_CP-UNI-RF01-01": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-01",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-02": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-02",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-03": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-03",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-04": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-04",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-05": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-05",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-06": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-06",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-07": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-07",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-08": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-08",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-09": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-09",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-10": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-10",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-11": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-11",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-12": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-12",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-13": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-13",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-14": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-14",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-15": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-15",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-16": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-16",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-17": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-17",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-18": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-18",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-19": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-19",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-20": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-20",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-21": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-21",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-22": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-22",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-23": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-23",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-24": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-24",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-25": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-25",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-26": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-26",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-27": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-27",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-28": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-28",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-29": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-29",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-30": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-30",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-31": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-31",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-32": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-32",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-33": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-33",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-34": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-34",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-35": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-35",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-36": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-36",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-37": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-37",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-38": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-38",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-39": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-39",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-40": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-40",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-41": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-41",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-42": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-42",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-UNI-RF01-43": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-UNI-RF01-43",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-INT-RF01-01": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-INT-RF01-01",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-API-RF01-01": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-API-RF01-01",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-POST-RF01-01": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-POST-RF01-01",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-01_CP-HUM-RF01-01": {
+      "requirement_id": "RF-01",
+      "case_id": "CP-HUM-RF01-01",
+      "module": "Solicitudes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-UNI-RF02-01": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-UNI-RF02-01",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-UNI-RF02-02": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-UNI-RF02-02",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-UNI-RF02-03": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-UNI-RF02-03",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-UNI-RF02-04": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-UNI-RF02-04",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-UNI-RF02-05": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-UNI-RF02-05",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-UNI-RF02-06": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-UNI-RF02-06",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-UNI-RF02-07": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-UNI-RF02-07",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-UNI-RF02-08": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-UNI-RF02-08",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-UNI-RF02-09": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-UNI-RF02-09",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-UNI-RF02-10": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-UNI-RF02-10",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-UNI-RF02-11": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-UNI-RF02-11",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-INT-RF02-01": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-INT-RF02-01",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-API-RF02-01": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-API-RF02-01",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-POST-RF02-01": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-POST-RF02-01",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-02_CP-HUM-RF02-01": {
+      "requirement_id": "RF-02",
+      "case_id": "CP-HUM-RF02-01",
+      "module": "Gravedad de Obra",
+      "test_type": "Unidad (límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-01": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-01",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-02": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-02",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-03": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-03",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-04": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-04",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-05": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-05",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-06": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-06",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-07": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-07",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-08": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-08",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-09": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-09",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-10": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-10",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-11": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-11",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-12": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-12",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-13": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-13",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-14": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-14",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-15": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-15",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-16": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-16",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-17": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-17",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-18": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-18",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-19": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-19",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-20": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-20",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-21": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-21",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-22": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-22",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-23": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-23",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-24": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-24",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-25": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-25",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-26": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-26",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-27": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-27",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-28": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-28",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-29": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-29",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-30": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-30",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-UNI-RF03-31": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-UNI-RF03-31",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-INT-RF03-01": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-INT-RF03-01",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-API-RF03-01": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-API-RF03-01",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-POST-RF03-01": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-POST-RF03-01",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-03_CP-HUM-RF03-01": {
+      "requirement_id": "RF-03",
+      "case_id": "CP-HUM-RF03-01",
+      "module": "Prioridad",
+      "test_type": "Unidad (equivalencia/límites); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-01": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-01",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-02": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-02",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-03": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-03",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-04": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-04",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-05": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-05",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-06": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-06",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-07": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-07",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-08": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-08",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-09": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-09",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-10": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-10",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-11": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-11",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-12": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-12",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-13": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-13",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-14": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-14",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-15": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-15",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-16": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-16",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-17": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-17",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-18": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-18",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-UNI-RF04-19": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-UNI-RF04-19",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-INT-RF04-01": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-INT-RF04-01",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-API-RF04-01": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-API-RF04-01",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-POST-RF04-01": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-POST-RF04-01",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-04_CP-HUM-RF04-01": {
+      "requirement_id": "RF-04",
+      "case_id": "CP-HUM-RF04-01",
+      "module": "Usuarios",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-01": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-01",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-02": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-02",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-03": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-03",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-04": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-04",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-05": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-05",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-06": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-06",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-07": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-07",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-08": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-08",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-09": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-09",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-10": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-10",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-11": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-11",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-12": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-12",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-13": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-13",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-UNI-RF05-14": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-UNI-RF05-14",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-INT-RF05-01": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-INT-RF05-01",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-API-RF05-01": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-API-RF05-01",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-POST-RF05-01": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-POST-RF05-01",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-05_CP-HUM-RF05-01": {
+      "requirement_id": "RF-05",
+      "case_id": "CP-HUM-RF05-01",
+      "module": "Empleados",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-UNI-RF06-01": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-UNI-RF06-01",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-UNI-RF06-02": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-UNI-RF06-02",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-UNI-RF06-03": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-UNI-RF06-03",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-UNI-RF06-04": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-UNI-RF06-04",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-UNI-RF06-05": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-UNI-RF06-05",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-UNI-RF06-06": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-UNI-RF06-06",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-UNI-RF06-07": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-UNI-RF06-07",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-UNI-RF06-08": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-UNI-RF06-08",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-UNI-RF06-09": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-UNI-RF06-09",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-INT-RF06-01": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-INT-RF06-01",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-API-RF06-01": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-API-RF06-01",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-POST-RF06-01": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-POST-RF06-01",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-06_CP-HUM-RF06-01": {
+      "requirement_id": "RF-06",
+      "case_id": "CP-HUM-RF06-01",
+      "module": "Empresa",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-01": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-01",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-02": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-02",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-03": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-03",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-04": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-04",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-05": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-05",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-06": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-06",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-07": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-07",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-08": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-08",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-09": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-09",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-10": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-10",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-11": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-11",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-12": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-12",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-13": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-13",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-14": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-14",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-15": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-15",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-16": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-16",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-17": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-17",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-18": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-18",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-19": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-19",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-UNI-RF07-20": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-UNI-RF07-20",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-INT-RF07-01": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-INT-RF07-01",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-API-RF07-01": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-API-RF07-01",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-POST-RF07-01": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-POST-RF07-01",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-07_CP-HUM-RF07-01": {
+      "requirement_id": "RF-07",
+      "case_id": "CP-HUM-RF07-01",
+      "module": "Maquinaria",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-01": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-01",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-02": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-02",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-03": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-03",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-04": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-04",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-05": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-05",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-06": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-06",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-07": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-07",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-08": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-08",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-09": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-09",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-10": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-10",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-11": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-11",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-12": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-12",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-13": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-13",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-14": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-14",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-15": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-15",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-16": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-16",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-17": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-17",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-18": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-18",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-19": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-19",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-20": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-20",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-21": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-21",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-UNI-RF08-22": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-UNI-RF08-22",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-INT-RF08-01": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-INT-RF08-01",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-API-RF08-01": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-API-RF08-01",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-POST-RF08-01": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-POST-RF08-01",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-08_CP-HUM-RF08-01": {
+      "requirement_id": "RF-08",
+      "case_id": "CP-HUM-RF08-01",
+      "module": "Proyectos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-01": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-01",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-02": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-02",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-03": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-03",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-04": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-04",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-05": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-05",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-06": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-06",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-07": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-07",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-08": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-08",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-09": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-09",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-10": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-10",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-11": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-11",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-12": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-12",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-13": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-13",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-14": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-14",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-15": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-15",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-16": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-16",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-17": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-17",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-18": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-18",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-19": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-19",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-UNI-RF09-20": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-UNI-RF09-20",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-INT-RF09-01": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-INT-RF09-01",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-INT-RF09-02": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-INT-RF09-02",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-INT-RF09-03": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-INT-RF09-03",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-API-RF09-01": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-API-RF09-01",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-POST-RF09-01": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-POST-RF09-01",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-09_CP-HUM-RF09-01": {
+      "requirement_id": "RF-09",
+      "case_id": "CP-HUM-RF09-01",
+      "module": "Contratación",
+      "test_type": "Unidad; integración (incluye flujo Bitácora); backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-01": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-01",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-02": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-02",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-03": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-03",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-04": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-04",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-05": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-05",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-06": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-06",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-07": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-07",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-08": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-08",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-09": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-09",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-10": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-10",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-11": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-11",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-12": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-12",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-13": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-13",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-UNI-RF10-14": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-UNI-RF10-14",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-INT-RF10-01": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-INT-RF10-01",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-API-RF10-01": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-API-RF10-01",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-POST-RF10-01": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-POST-RF10-01",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-10_CP-HUM-RF10-01": {
+      "requirement_id": "RF-10",
+      "case_id": "CP-HUM-RF10-01",
+      "module": "Obras",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-01": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-01",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-02": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-02",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-03": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-03",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-04": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-04",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-05": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-05",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-06": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-06",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-07": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-07",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-08": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-08",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-09": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-09",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-10": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-10",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-11": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-11",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-12": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-12",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-13": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-13",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-14": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-14",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-15": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-15",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-16": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-16",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-17": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-17",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-UNI-RF11-18": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-UNI-RF11-18",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-INT-RF11-01": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-INT-RF11-01",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-API-RF11-01": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-API-RF11-01",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-POST-RF11-01": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-POST-RF11-01",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-11_CP-HUM-RF11-01": {
+      "requirement_id": "RF-11",
+      "case_id": "CP-HUM-RF11-01",
+      "module": "Inspecciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-01": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-01",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-02": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-02",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-03": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-03",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-04": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-04",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-05": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-05",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-06": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-06",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-07": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-07",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-08": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-08",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-09": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-09",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-10": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-10",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-11": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-11",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-12": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-12",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-UNI-RF12-13": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-UNI-RF12-13",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-INT-RF12-01": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-INT-RF12-01",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-API-RF12-01": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-API-RF12-01",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-POST-RF12-01": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-POST-RF12-01",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-12_CP-HUM-RF12-01": {
+      "requirement_id": "RF-12",
+      "case_id": "CP-HUM-RF12-01",
+      "module": "Evidencias",
+      "test_type": "Unidad (equivalencia/seguridad); integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-01": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-01",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-02": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-02",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-03": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-03",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-04": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-04",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-05": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-05",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-06": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-06",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-07": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-07",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-08": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-08",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-09": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-09",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-10": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-10",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-11": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-11",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-12": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-12",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-13": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-13",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-14": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-14",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-15": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-15",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-16": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-16",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-17": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-17",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-18": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-18",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-19": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-19",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-20": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-20",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-UNI-RF13-21": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-UNI-RF13-21",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-INT-RF13-01": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-INT-RF13-01",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-API-RF13-01": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-API-RF13-01",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-POST-RF13-01": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-POST-RF13-01",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-13_CP-HUM-RF13-01": {
+      "requirement_id": "RF-13",
+      "case_id": "CP-HUM-RF13-01",
+      "module": "Informe de Avance de Obra",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-01": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-01",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-02": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-02",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-03": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-03",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-04": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-04",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-05": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-05",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-06": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-06",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-07": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-07",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-08": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-08",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-09": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-09",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-10": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-10",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-11": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-11",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-12": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-12",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-13": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-13",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-UNI-RF14-14": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-UNI-RF14-14",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-INT-RF14-01": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-INT-RF14-01",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-API-RF14-01": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-API-RF14-01",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-POST-RF14-01": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-POST-RF14-01",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-14_CP-HUM-RF14-01": {
+      "requirement_id": "RF-14",
+      "case_id": "CP-HUM-RF14-01",
+      "module": "Publicaciones",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-01": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-01",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-02": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-02",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-03": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-03",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-04": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-04",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-05": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-05",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-06": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-06",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-07": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-07",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-08": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-08",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-09": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-09",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-10": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-10",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-11": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-11",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-12": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-12",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-13": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-13",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-14": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-14",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-15": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-15",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-16": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-16",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-17": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-17",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-18": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-18",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-19": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-19",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-20": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-20",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-21": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-21",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-22": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-22",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-23": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-23",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-24": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-24",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-25": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-25",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-26": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-26",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-27": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-27",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-28": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-28",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-29": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-29",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-30": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-30",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-31": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-31",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-32": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-32",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-33": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-33",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-34": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-34",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-35": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-35",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-36": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-36",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-37": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-37",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-38": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-38",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-39": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-39",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-40": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-40",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-41": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-41",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-42": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-42",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-43": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-43",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-44": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-44",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-45": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-45",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-UNI-RF15-46": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-UNI-RF15-46",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-INT-RF15-01": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-INT-RF15-01",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-INT-RF15-02": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-INT-RF15-02",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-INT-RF15-03": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-INT-RF15-03",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-01": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-01",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-02": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-02",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-03": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-03",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-04": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-04",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-05": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-05",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-06": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-06",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-07": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-07",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-08": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-08",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-09": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-09",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-10": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-10",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-11": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-11",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-12": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-12",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-13": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-13",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-14": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-14",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-15": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-15",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-API-RF15-16": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-API-RF15-16",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-POST-RF15-01": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-POST-RF15-01",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-POST-RF15-02": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-POST-RF15-02",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-POST-RF15-03": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-POST-RF15-03",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-HUM-RF15-01": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-HUM-RF15-01",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-HUM-RF15-02": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-HUM-RF15-02",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-15_CP-HUM-RF15-03": {
+      "requirement_id": "RF-15",
+      "case_id": "CP-HUM-RF15-03",
+      "module": "Reportes",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-01": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-01",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-02": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-02",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-03": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-03",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-04": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-04",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-05": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-05",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-06": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-06",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-07": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-07",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-08": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-08",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-09": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-09",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-10": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-10",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-11": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-11",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-12": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-12",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-13": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-13",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-14": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-14",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-15": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-15",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-16": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-16",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-17": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-17",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-18": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-18",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-19": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-19",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-20": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-20",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-21": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-21",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-22": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-22",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-23": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-23",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-24": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-24",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-25": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-25",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-UNI-RF16-26": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-UNI-RF16-26",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-INT-RF16-01": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-INT-RF16-01",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-API-RF16-01": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-API-RF16-01",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-POST-RF16-01": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-POST-RF16-01",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-16_CP-HUM-RF16-01": {
+      "requirement_id": "RF-16",
+      "case_id": "CP-HUM-RF16-01",
+      "module": "Administración de Respaldos",
+      "test_type": "Unidad; integración; backend/API; Postman (pendiente); humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-17_CP-PEND-RF17-01": {
+      "requirement_id": "RF-17",
+      "case_id": "CP-PEND-RF17-01",
+      "module": "Notificaciones",
+      "test_type": "Pendiente",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-18_CP-PEND-RF18-01": {
+      "requirement_id": "RF-18",
+      "case_id": "CP-PEND-RF18-01",
+      "module": "Panel Principal",
+      "test_type": "Pendiente",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-19_CP-PEND-RF19-01": {
+      "requirement_id": "RF-19",
+      "case_id": "CP-PEND-RF19-01",
+      "module": "Perfil de Usuario",
+      "test_type": "Pendiente",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RF-20_CP-PEND-RF20-01": {
+      "requirement_id": "RF-20",
+      "case_id": "CP-PEND-RF20-01",
+      "module": "Manual de Usuario",
+      "test_type": "Pendiente",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-01_CP-UNI-RNF01-01": {
+      "requirement_id": "RNF-01",
+      "case_id": "CP-UNI-RNF01-01",
+      "module": "Autenticación",
+      "test_type": "Unidad; humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-01_CP-UNI-RNF01-02": {
+      "requirement_id": "RNF-01",
+      "case_id": "CP-UNI-RNF01-02",
+      "module": "Autenticación",
+      "test_type": "Unidad; humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-01_CP-HUM-RNF01-01": {
+      "requirement_id": "RNF-01",
+      "case_id": "CP-HUM-RNF01-01",
+      "module": "Autenticación",
+      "test_type": "Unidad; humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-01_CP-UI-RNF01-01 (omitido)": {
+      "requirement_id": "RNF-01",
+      "case_id": "CP-UI-RNF01-01 (omitido)",
+      "module": "Autenticación",
+      "test_type": "Unidad; humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-02_CP-UNI-RNF02-01": {
+      "requirement_id": "RNF-02",
+      "case_id": "CP-UNI-RNF02-01",
+      "module": "Ciclo de Cuentas",
+      "test_type": "Unidad; backend/API (parcial)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-02_CP-API-RNF02-01": {
+      "requirement_id": "RNF-02",
+      "case_id": "CP-API-RNF02-01",
+      "module": "Ciclo de Cuentas",
+      "test_type": "Unidad; backend/API (parcial)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-03_CP-UNI-RNF03-01": {
+      "requirement_id": "RNF-03",
+      "case_id": "CP-UNI-RNF03-01",
+      "module": "Autorización",
+      "test_type": "Unidad; integración; backend/API; humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-03_CP-UNI-RNF03-02": {
+      "requirement_id": "RNF-03",
+      "case_id": "CP-UNI-RNF03-02",
+      "module": "Autorización",
+      "test_type": "Unidad; integración; backend/API; humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-03_CP-INT-RNF03-01": {
+      "requirement_id": "RNF-03",
+      "case_id": "CP-INT-RNF03-01",
+      "module": "Autorización",
+      "test_type": "Unidad; integración; backend/API; humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-03_CP-API-RNF03-01": {
+      "requirement_id": "RNF-03",
+      "case_id": "CP-API-RNF03-01",
+      "module": "Autorización",
+      "test_type": "Unidad; integración; backend/API; humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-03_CP-HUM-RNF03-01": {
+      "requirement_id": "RNF-03",
+      "case_id": "CP-HUM-RNF03-01",
+      "module": "Autorización",
+      "test_type": "Unidad; integración; backend/API; humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-04_CP-PEND-RNF04-01": {
+      "requirement_id": "RNF-04",
+      "case_id": "CP-PEND-RNF04-01",
+      "module": "Protección de Claves",
+      "test_type": "Pendiente",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-01": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-01",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-02": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-02",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-03": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-03",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-04": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-04",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-05": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-05",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-06": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-06",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-07": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-07",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-08": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-08",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-09": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-09",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-10": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-10",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-11": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-11",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-12": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-12",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-13": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-13",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-14": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-14",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-15": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-15",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-16": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-16",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-17": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-17",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-18": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-18",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-19": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-19",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-20": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-20",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-21": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-21",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-22": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-22",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-23": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-23",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-24": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-24",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-25": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-25",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-26": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-26",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-27": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-27",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-28": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-28",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-29": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-29",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-30": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-30",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-31": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-31",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-32": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-32",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-33": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-33",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-34": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-34",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-35": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-35",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-36": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-36",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-37": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-37",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-38": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-38",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-05_CP-UNI-RNF05-39": {
+      "requirement_id": "RNF-05",
+      "case_id": "CP-UNI-RNF05-39",
+      "module": "Validación Entradas",
+      "test_type": "Unidad (partición, límites y listas permitidas)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-06_CP-UNI-RNF06-01": {
+      "requirement_id": "RNF-06",
+      "case_id": "CP-UNI-RNF06-01",
+      "module": "Bitácora",
+      "test_type": "Unidad; integración; backend/API; humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-06_CP-UNI-RNF06-02": {
+      "requirement_id": "RNF-06",
+      "case_id": "CP-UNI-RNF06-02",
+      "module": "Bitácora",
+      "test_type": "Unidad; integración; backend/API; humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-06_CP-INT-RNF06-01": {
+      "requirement_id": "RNF-06",
+      "case_id": "CP-INT-RNF06-01",
+      "module": "Bitácora",
+      "test_type": "Unidad; integración; backend/API; humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-06_CP-INT-RNF06-02": {
+      "requirement_id": "RNF-06",
+      "case_id": "CP-INT-RNF06-02",
+      "module": "Bitácora",
+      "test_type": "Unidad; integración; backend/API; humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-06_CP-API-RNF06-01": {
+      "requirement_id": "RNF-06",
+      "case_id": "CP-API-RNF06-01",
+      "module": "Bitácora",
+      "test_type": "Unidad; integración; backend/API; humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-06_CP-HUM-RNF06-01": {
+      "requirement_id": "RNF-06",
+      "case_id": "CP-HUM-RNF06-01",
+      "module": "Bitácora",
+      "test_type": "Unidad; integración; backend/API; humo",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-01": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-01",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-02": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-02",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-03": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-03",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-04": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-04",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-05": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-05",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-06": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-06",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-07": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-07",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-08": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-08",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-09": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-09",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-10": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-10",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-11": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-11",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-12": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-12",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-13": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-13",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-14": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-14",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-15": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-15",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-16": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-16",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-17": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-17",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-18": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-18",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-19": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-19",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-HUM-RNF07-20": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-HUM-RNF07-20",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-07_CP-UI-RNF07-01 (omitido)": {
+      "requirement_id": "RNF-07",
+      "case_id": "CP-UI-RNF07-01 (omitido)",
+      "module": "Navegabilidad",
+      "test_type": "Humo; interfaz (omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-08_CP-UI-RNF08-01 (omitido)": {
+      "requirement_id": "RNF-08",
+      "case_id": "CP-UI-RNF08-01 (omitido)",
+      "module": "Usabilidad",
+      "test_type": "Interfaz (Playwright omitida)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-09_CP-PEND-RNF09-01": {
+      "requirement_id": "RNF-09",
+      "case_id": "CP-PEND-RNF09-01",
+      "module": "Adaptabilidad",
+      "test_type": "Pendiente",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-10_CP-LOC-RNF10-01 (no concluyente)": {
+      "requirement_id": "RNF-10",
+      "case_id": "CP-LOC-RNF10-01 (no concluyente)",
+      "module": "Rendimiento",
+      "test_type": "Rendimiento (Locust; repetir)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-11_CP-PEND-RNF11-01": {
+      "requirement_id": "RNF-11",
+      "case_id": "CP-PEND-RNF11-01",
+      "module": "Escalabilidad",
+      "test_type": "Rendimiento (pendiente)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-12_CP-INT-RNF12-01": {
+      "requirement_id": "RNF-12",
+      "case_id": "CP-INT-RNF12-01",
+      "module": "Fiabilidad",
+      "test_type": "Integración (fallo controlado)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-12_CP-INT-RNF12-02": {
+      "requirement_id": "RNF-12",
+      "case_id": "CP-INT-RNF12-02",
+      "module": "Fiabilidad",
+      "test_type": "Integración (fallo controlado)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-13_CP-PEND-RNF13-01": {
+      "requirement_id": "RNF-13",
+      "case_id": "CP-PEND-RNF13-01",
+      "module": "Disponibilidad",
+      "test_type": "Pendiente",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-14_CP-PEND-RNF14-01": {
+      "requirement_id": "RNF-14",
+      "case_id": "CP-PEND-RNF14-01",
+      "module": "Mantenibilidad",
+      "test_type": "Cobertura de código (pendiente)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-15_CP-PEND-RNF15-01": {
+      "requirement_id": "RNF-15",
+      "case_id": "CP-PEND-RNF15-01",
+      "module": "Integridad Respaldos",
+      "test_type": "Integración con MySQL (pendiente)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-16_CP-UNI-RNF16-01": {
+      "requirement_id": "RNF-16",
+      "case_id": "CP-UNI-RNF16-01",
+      "module": "Aislamiento Módulos",
+      "test_type": "Unidad; backend/API (parcial)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-16_CP-UNI-RNF16-02": {
+      "requirement_id": "RNF-16",
+      "case_id": "CP-UNI-RNF16-02",
+      "module": "Aislamiento Módulos",
+      "test_type": "Unidad; backend/API (parcial)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-16_CP-API-RNF16-01": {
+      "requirement_id": "RNF-16",
+      "case_id": "CP-API-RNF16-01",
+      "module": "Aislamiento Módulos",
+      "test_type": "Unidad; backend/API (parcial)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-17_CP-API-RNF17-01": {
+      "requirement_id": "RNF-17",
+      "case_id": "CP-API-RNF17-01",
+      "module": "Respuestas Error",
+      "test_type": "Backend/API; humo (parcial)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-17_CP-HUM-RNF17-01": {
+      "requirement_id": "RNF-17",
+      "case_id": "CP-HUM-RNF17-01",
+      "module": "Respuestas Error",
+      "test_type": "Backend/API; humo (parcial)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    },
+    "RNF-18_CP-PEND-RNF18-01": {
+      "requirement_id": "RNF-18",
+      "case_id": "CP-PEND-RNF18-01",
+      "module": "Portabilidad",
+      "test_type": "Instalación (pendiente)",
+      "evidence_count": 0,
+      "evidence_files": [],
+      "has_evidence": false
+    }
+  }
+}

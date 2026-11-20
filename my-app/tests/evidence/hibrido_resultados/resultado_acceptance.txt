@@ -1,0 +1,27 @@
+Comando: C:\laragon\www\INVISAP\my-app\.venv\Scripts\python.exe -m pytest tests/acceptance -q -p no:cacheprovider
+Categoría: Pruebas de Aceptación
+Exit code: 0
+Fecha: 20/11/2026 05:03:53
+================================================================================
+
+[DEBUG] Conectando a MySQL: host=localhost, user=root, db=invilara
+[DEBUG] Conectando a MySQL: host=localhost, user=root, db=invilara
+============================= test session starts =============================
+platform win32 -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: C:\laragon\www\INVISAP\my-app
+configfile: pytest.ini
+plugins: locust-2.46.7, platformdirs-4.14.5, cov-7.1.0, html-4.2.0, json-report-1.5.0, metadata-3.1.1
+collected 1 item
+
+tests\acceptance\test_login_acceptance.py .
+[EVIDENCIA] Resumen de capturas guardado en: C:\laragon\www\INVISAP\my-app\tests\evidence\evidence_summary.json
+  unit: 0 capturas
+  integration: 0 capturas
+  api: 0 capturas
+  smoke: 0 capturas
+  ui: 0 capturas
+  performance: 0 capturas
+  acceptance: 0 capturas
+
+
+============================== 1 passed in 0.15s ==============================

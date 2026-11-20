@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-11-20T05:03:52.651163",
+  "exit_status": 0,
+  "evidence_dirs": {
+    "unit": "C:\\laragon\\www\\INVISAP\\my-app\\tests\\evidence\\unit",
+    "integration": "C:\\laragon\\www\\INVISAP\\my-app\\tests\\evidence\\integration",
+    "api": "C:\\laragon\\www\\INVISAP\\my-app\\tests\\evidence\\api",
+    "smoke": "C:\\laragon\\www\\INVISAP\\my-app\\tests\\evidence\\smoke",
+    "ui": "C:\\laragon\\www\\INVISAP\\my-app\\tests\\evidence\\ui",
+    "performance": "C:\\laragon\\www\\INVISAP\\my-app\\tests\\evidence\\performance",
+    "acceptance": "C:\\laragon\\www\\INVISAP\\my-app\\tests\\evidence\\acceptance"
+  },
+  "screenshots_captured": {
+    "unit": 0,
+    "integration": 0,
+    "api": 0,
+    "smoke": 0,
+    "ui": 0,
+    "performance": 0,
+    "acceptance": 0
+  }
+}

@@ -1,0 +1,2124 @@
+Comando: C:\laragon\www\INVISAP\my-app\.venv\Scripts\python.exe -m pytest tests/unit -q -p no:cacheprovider
+Categoría: Pruebas Unitarias
+Exit code: 1
+Fecha: 20/11/2026 05:02:06
+================================================================================
+
+[DEBUG] Conectando a MySQL: host=localhost, user=root, db=invilara
+[DEBUG] Conectando a MySQL: host=localhost, user=root, db=invilara
+============================= test session starts =============================
+platform win32 -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: C:\laragon\www\INVISAP\my-app
+configfile: pytest.ini
+plugins: locust-2.46.7, platformdirs-4.14.5, cov-7.1.0, html-4.2.0, json-report-1.5.0, metadata-3.1.1
+collected 428 items
+
+tests\unit\test_administracion_respaldos.py 
+[PRUEBA UNITARIA] Administración de Respaldos: limpieza segura del nombre del archivo de respaldo.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: conversión del tamaño del respaldo a unidades legibles.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: constructor crea la carpeta si no existe.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: asegurar tabla agrega columnas faltantes y ensancha decimal.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: asegurar tabla no conecta y cierra en error.
+[DB] No se pudo asegurar tabla administracion_respaldos (seguridad): DDL rechazado
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: asegurar tabla no modifica columnas ya migradas.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: siguiente id usa maximo y cierra recursos.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: siguiente id falla sin conexion y usa uno si no hay fila.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: guardar en seguridad inserta datos normalizados y confirma.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: guardar en seguridad limita tamano y falla sin conexion.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: guardar en seguridad satura tamano y preserva usuario.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: limpia nombre y formatea limites y tamanos muy grandes.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: obtener config bd devuelve config y comandos por defecto.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: exportar dump y importar sql invocan clientes y reportan fallos.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: clientes mysql incluyen password y exportacion parcial es valida.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: crear respaldo limpia datos y devuelve metadatos.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: crear respaldo envuelve errores de exportacion y registro.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: crear respaldo genera nombre automatico e interpreta errores de id.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: normalizar fila convierte tamano y completa campos row0 2621440 2.5 MB.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: normalizar fila convierte tamano y completa campos row1 0 0.0 B.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: normalizar fila convierte tamano y completa campos row2 0 0.0 B.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: listar respaldos normaliza resultados y cierra conexion.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: listar respaldos conexion ausente o error devuelve lista vacia.
+[Respaldo] Error al listar respaldos: select failed
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: obtener por id normaliza no encontrado y error.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: eliminar respaldo actualiza estado y cubre sin registro o db.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Administración de Respaldos: importar respaldo registra con metadatos y devuelve advertencia si falla.
+[Respaldo] Error al registrar importación en BD seguridad: offline
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_base_model.py ..[BaseModel] Error ejecutando SQL: fallo controlado
+...
+tests\unit\test_bitacora.py 
+[PRUEBA UNITARIA] Bitácora: aceptación de texto y usuario válidos en bitácora.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Bitácora: rechazo de caracteres no permitidos en bitácora.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Bitácora: validadores aceptan limites y rechazan entrada vacia.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Bitácora: registrar normaliza entradas antes de insertar.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Bitácora: facadas de filtrado validan y sanitizan criterios.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Bitácora: filtro compuesto calcula offset y omite accion desconocida.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Bitácora: metodos sql consultan parametrizado y cierra recursos.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Bitácora: metodos sql criterios estadisticas y registro.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Bitácora: insertar confirma y reintenta id duplicado con limpieza.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Bitácora: bitacora sql degrada con seguridad si no hay conexion.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Bitácora: conexion estatica delega y criterios vacios reutilizan listado.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_contratacion.py 
+[PRUEBA UNITARIA] Contratación: rechazo de contratación incompleta sin conectar a la base de datos.
+.
+Concluyó prueba de Contratación — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Contratación: validación de campos, catálogos y fechas de contratación.
+.
+Concluyó prueba de Contratación — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Contratación: validacion rechaza campo obligatorio y catalogos y formatos.
+.
+Concluyó prueba de Contratación — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Contratación: registrar consulta e insercion parametrizada y cierra conexion.
+.
+Concluyó prueba de Contratación — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Contratación: registro y actualizacion manejan validacion conexion y duplicado.
+--- [MODELO] ERROR SQL UPDATE: db ---
+.
+Concluyó prueba de Contratación — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Contratación: listado detalle empresas y borrado logico.
+.
+Concluyó prueba de Contratación — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Contratación: consultas fallan con resultado vacio y recurso cerrado.
+--- [MODELO] ERROR AL CONSULTAR: db ---
+--- [MODELO] ERROR BUSCAR POR ID: db ---
+--- [MODELO] ERROR EMPRESAS: db ---
+--- [MODELO] ERROR AL BORRAR LÓGICAMENTE: db ---
+.
+Concluyó prueba de Contratación — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Contratación: actualizacion exitosa incluye id y estado en condicion.
+.
+Concluyó prueba de Contratación — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Contratación: registro reintenta colision de id y rechaza numero duplicado.
+--- [MODELO] ERROR SQL INSERT: 1062 Duplicate PRIMARY id_contratacion ---
+--- [MODELO] ERROR SQL INSERT: 1062 Duplicate entry for numero_contrato ---
+.
+Concluyó prueba de Contratación — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_empleados.py 
+[PRUEBA UNITARIA] Empleados: validación y limpieza del nombre y cargo del empleado.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empleados: rechazo de nombre, cargo y cédula inválidos.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empleados: rechazo de nombre, cargo y cédula inválidos.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empleados: rechazo de nombre, cargo y cédula inválidos.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empleados: getters setters validadores y normalizacion de empleado.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empleados: setters rechazan valores fuera de regla set id empleado 0.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+.
+[PRUEBA UNITARIA] Empleados: setters rechazan valores fuera de regla set gerencia asignada Ops.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empleados: setters rechazan valores fuera de regla set estado 3.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empleados: buscar o crear persona reutiliza o inserta fk parametrizado.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empleados: metodos db de empleados verifican sql parametros y cierre.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empleados: registrar validacion publica y paginacion y catalogo.
+Error de validación: Nombre inválido. Solo letras, mínimo 3, máximo 45 caracteres.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empleados: publicos de empleado validan ids y protegen transiciones.
+Error de validación: El empleado no existe o fue eliminado.
+Error de validación: El empleado no existe o ya fue eliminado.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empleados: guardar empleado db crea persona y empleado en una transaccion.
+.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_empresa.py 
+[PRUEBA UNITARIA] Empresa: prevención de duplicados para empresa activa.
+.
+Concluyó prueba de Empresa — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empresa: registro de empresa con RIF enviado como parámetro SQL.
+.
+Concluyó prueba de Empresa — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empresa: obtener requisitos conserva estados individuales.
+.
+Concluyó prueba de Empresa — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empresa: actualizar requisitos guarda estado parcial y actualiza cumplimiento.
+.
+Concluyó prueba de Empresa — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empresa: actualizar requisitos rechaza estado incompleto.
+.
+Concluyó prueba de Empresa — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empresa: helpers de consulta y modificacion devuelven y cierran conexion.
+.
+Concluyó prueba de Empresa — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empresa: empresa reactiva actualiza lista y usa consulta parametrizada.
+.
+Concluyó prueba de Empresa — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empresa: empresa update delete y requisitos sin empresa hacen respuestas correctas.
+.
+Concluyó prueba de Empresa — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Empresa: requisitos rechazan empresa inactiva y revierten.
+.
+Concluyó prueba de Empresa — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_evidencias.py 
+[PRUEBA UNITARIA] Evidencias: validación de nombre de archivo y URL de evidencia.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Evidencias: rechazo de rutas que intentan salir del directorio de evidencias.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Evidencias: accesores etapas y estado validan completamente.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Evidencias: constructor inicializa repositorio sin conectar bd.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Evidencias: extrae etapas por campo lista y fallback.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Evidencias: compresion de imagen convierte a jpeg y rechaza archivo vacio.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Evidencias: registrar evidencias valida limites y delega con etapas.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Evidencias: metodos db basicos evidencia parametrizan y cierra recursos.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Evidencias: publicas evidencia delegan y actualizacion valida antes de escribir.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Evidencias: guardar evidencias db inserta todas las fotos y confirma.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Evidencias: actualizar evidencias db consulta e actualiza la foto.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Evidencias: asegurar tabla agrega columnas sin usar db real.
+[DB] Columna 'estado' agregada a tabla evidencia
+[DB] Columna 'etapa' agregada a tabla evidencia
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Evidencias: guardar evidencias db reintenta id duplicado y confirma luego.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_formatos_logos_reportes.py ..
+tests\unit\test_gravedad_obra.py 
+[PRUEBA UNITARIA] Gravedad de Obra: clasificación del nivel según criticidad, incluidos los límites.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Gravedad de Obra: clasificación del nivel según criticidad, incluidos los límites.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Gravedad de Obra: clasificación del nivel según criticidad, incluidos los límites.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Gravedad de Obra: clasificación del nivel según criticidad, incluidos los límites.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Gravedad de Obra: rechazo de criticidad fuera del rango de 0 a 100.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Gravedad de Obra: normalización de criticidad numérica.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Gravedad de Obra: model gravedad getters setters y validaciones.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Gravedad de Obra: registrar gravedad reintenta id duplicado y confirma.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Gravedad de Obra: lecturas normalizan criticidad y nivel y cierra recursos.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Gravedad de Obra: actualizar eliminar y validar existencia usan sql y commit.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Gravedad de Obra: registrar gravedad aborta despues de tres colisiones y limpia.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_informe_avance.py 
+[PRUEBA UNITARIA] Informe de Avance de Obra: limitación del porcentaje de avance al rango de 0 a 100.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: normalización del estado válido del informe.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: rechazo de un estado de informe no catalogado.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: setters de informe cubren catalogos fechas textos y evidencias.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: constructor informe inicializa campos sin acceder a bd.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: helpers de schema migran columna y amplian evidencias.
+[DB] Columna 'poblacion_benefiada' renombrada a 'poblacion_beneficiada'
+[DB] Columna 'evidencia_antes' ampliada a VARCHAR(255)
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: crear avance usa claves de obra y cierra transaccion.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: registrar y actualizar informe db persisten evidencias parametrizadas.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: consultas validaciones y borrado logico de informe cubren recurso.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: interfaces publicas de informe validan y delegan.
+Error de validación en eliminar_informe_logico: El informe no existe o ya fue eliminado.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: comprimir imagen normaliza rgb y rechaza ruta invalida.
+Error al comprimir imagen: [Errno 2] No such file or directory: 'C:\\Users\\david_ssemz9t\\AppData\\Local\\Temp\\pytest-of-david\\pytest-53\\test_comprimir_imagen_normaliz0\\missing.jpg'
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: obtener informes por ids compone evidencias y parametriza consultas.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: validar gerente activo conexion fallida o identificador invalido.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: helper de evidencias y lectores de catalogo.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: migracion de poblacion cubre cuatro esquemas legacy rows0 DROP COLUMN poblacion benefiada.
+[DB] Datos migrados y columna typo 'poblacion_benefiada' eliminada (se conserva 'poblacion_beneficiada')
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: migracion de poblacion cubre cuatro esquemas legacy rows1 CHANGE COLUMN poblacion benefiada.
+[DB] Columna 'poblacion_benefiada' renombrada a 'poblacion_beneficiada'
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: migracion de poblacion cubre cuatro esquemas legacy rows2 ADD COLUMN poblacion beneficiada.
+[DB] Columna 'poblacion_beneficiada' agregada a tabla informe_avance_obra
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: migracion de poblacion cubre cuatro esquemas legacy rows3 MODIFY COLUMN poblacion beneficiada.
+[DB] Columna 'poblacion_beneficiada' ajustada con DEFAULT
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: asegurar tablas de informe y avance aplica migraciones con mock db.
+[DB] Columna 'estado_registro' agregada a tabla informe_avance_obra
+[DB] Columna 'evidencia_antes' ampliada a VARCHAR(255)
+[DB] Columna 'evidencia_despues' ampliada a VARCHAR(255)
+[DB] Columna 'avance.descripcion' ampliada a TEXT para observaciones largas
+[DB] Columna 'obra_estado' agregada a tabla avance
+[DB] Columna 'obra_contratacion_id_contratacion' agregada a tabla avance
+[DB] Columna 'obra_gestionar_proyectos_codigo_proyecto' agregada a tabla avance
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: registrar informe db reintenta colision y persiste el siguiente id.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Informe de Avance de Obra: borrado informe usa delete como fallback si estado no actualiza.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_informe_validacion.py 
+[PRUEBA UNITARIA] Validación de Informes: consulta de responsables activos con cargos permitidos.
+.
+Concluyó prueba de Validación de Informes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Validación de Informes: rechazo de gerente inactivo antes de crear avance.
+Error de validación en registrar_informe: El gerente/inspector seleccionado no existe, está inactivo o no tiene un cargo permitido.
+.
+Concluyó prueba de Validación de Informes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Validación de Informes: rechazo de identificador inválido antes de consultar la base de datos.
+.
+Concluyó prueba de Validación de Informes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_inspecciones.py 
+[PRUEBA UNITARIA] Inspecciones: aceptación de inspector, fecha y observaciones válidos.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: rechazo de inspector, fecha y observaciones inválidos.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: rechazo de tipo de inspección fuera del catálogo.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: inspeccion accesores validaciones y mapeo de etapas.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: helpers de configuracion y carga de evidencias adicionales.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: conectar prueba conexion secundaria y no disponible.
+[CONEXION] Falló conexión principal: down
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: interfaces publicas de inspeccion validan delegan y retorna catalogo.
+[DEBUG] Registrar inspeccion: obra=2, evidencia=6, adicionales=3,4
+[DEBUG] Error de validacion al registrar: Debe seleccionar un inspector valido.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: operaciones publicas de lectura y existencia delegan.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: helpers db inspeccion consultan ids columnas obras y evidencias.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: siguiente id y limpieza de cedula son deterministas.
+[DB] Trigger eliminado: safe_trigger
+[DB] Indice cedula_UNIQUE eliminado
+[DB] Columna cedula eliminada
+[DB] Commit de limpieza ejecutado
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: guardar inspeccion construye insert con relaciones y cierra.
+[DEBUG] Insert OK, id_inspeccion=33, lastrowid=33
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: db de listas y validaciones activos parametriza consultas.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: constructor y schema helpers de inspeccion quedan aislados.
+[DB] Columna 'obra_estado' agregada a tabla inspeccion
+[DB] Columna 'obra_contratacion_id_contratacion' agregada a tabla inspeccion
+[DB] Columna 'obra_gestionar_proyectos_codigo_proyecto' agregada a tabla inspeccion
+[DB] Columna 'obra_estado1' agregada a tabla inspeccion
+[DB] Columna 'obra_contratacion_id_contratacion1' agregada a tabla inspeccion
+[DB] Columna 'obra_gestionar_proyectos_codigo_proyecto1' agregada a tabla inspeccion
+[DB] Columna 'evidencias_adicionales' agregada a tabla inspeccion
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: asegurar tabla inspeccion aplica migraciones con falsa conexion.
+[DB] Columna 'estado' agregada a tabla inspeccion
+[DB] Columna 'obra_estado' agregada a tabla inspeccion
+[DB] Columna 'obra_contratacion_id_contratacion' agregada a tabla inspeccion
+[DB] Columna 'obra_gestionar_proyectos_codigo_proyecto' agregada a tabla inspeccion
+[DB] Columna 'obra_estado1' agregada a tabla inspeccion
+[DB] Columna 'obra_contratacion_id_contratacion1' agregada a tabla inspeccion
+[DB] Columna 'obra_gestionar_proyectos_codigo_proyecto1' agregada a tabla inspeccion
+[DB] Columna 'evidencias_adicionales' agregada a tabla inspeccion
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: selectores de listas de inspeccion devuelven filas y cierran.
+[LISTADO] Inspecciones encontradas: 1
+[LISTADO] Ultima inspeccion: id=4 fecha=None
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: consultas catalogo de inspeccion separan obras evidencias e inspectores.
+[EVIDENCIAS] Filas encontradas: 1
+[INSPECTORES] Filas encontradas: 1
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: actualizar inspeccion actualiza relaciones y etapa de evidencia.
+[DEBUG] Update OK, rowcount=1
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Inspecciones: borrado logico de inspeccion commit y cierra recursos.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_maquinaria.py 
+[PRUEBA UNITARIA] Maquinaria: validación de nombre y tipo de maquinaria.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: rechazo de nombre corto y tipo de maquinaria no permitido.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: listado paginado y conteo usan sql y limpian conexion.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: consulta maquinarias eliminadas y por id.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: restaurar maquinaria devuelve estado y confirma 1 expected0.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: restaurar maquinaria devuelve estado y confirma 0 expected1.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: registrar maquinaria rechaza datos antes de conectar.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: registrar maquinaria maneja registro existente existing0 expected0.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: registrar maquinaria maneja registro existente existing1 expected1.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: registrar maquinaria inserta y reintenta colision de id.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: actualizar maquinaria valida antes de sql y actualiza los valores.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: eliminar maquinaria respeta uso en proyectos 2 utilizada.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: eliminar maquinaria respeta uso en proyectos 0 eliminada.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: metodos de consulta y mutacion capturan fallos y cierran obtener maquinarias expected0.
+Error en obtener_maquinarias: fallo simulado
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: metodos de consulta y mutacion capturan fallos y cierran contar maquinarias 0.
+Error en contar_maquinarias: fallo simulado
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: metodos de consulta y mutacion capturan fallos y cierran obtener maquinarias eliminadas expected2.
+Error en obtener_maquinarias_eliminadas: fallo simulado
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: metodos de consulta y mutacion capturan fallos y cierran obtener maquinaria por id None.
+Error al obtener por ID: fallo simulado
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: metodos de consulta y mutacion capturan fallos y cierran restaurar maquinaria expected4.
+Error al restaurar: fallo simulado
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: metodos de consulta y mutacion capturan fallos y cierran actualizar maquinaria expected5.
+Error al actualizar: fallo simulado
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Maquinaria: metodos de consulta y mutacion capturan fallos y cierran eliminar maquinaria 0.
+Error al eliminar: fallo simulado
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_obras.py 
+[PRUEBA UNITARIA] Obras: validación de texto de obra y número de contrato.
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: rechazo de caracteres inválidos en obra y contrato.
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: validación del orden cronológico de fechas de obra.
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: validadores estaticos fechas y conexion controlada.
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: lecturas validaciones duplicados y listas cierran recursos.
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: numero contrato duplicado filtra edicion y no consulta placeholders.
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: insertar obra rechaza campos requeridos antes de conectar titulo obra El campo 'titulo obra' es obligatorio..
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: insertar obra rechaza campos requeridos antes de conectar numero contrato El campo 'numero contrato' es obligatorio..
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: insertar obra valida datos transacciona y deriva semaforo.
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: insertar obra rechaza validacion y revierte error sql.
+[ObraModel._sql_insertar] Error crítico: fallo de inserción
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: actualizar obra verifica existencia y guarda valores con transaccion.
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: eliminar obra solo actualiza registro activo.
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: metodos publicos de obra encaminan a sql helpers.
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Obras: asegurar tabla obra agrega columna solo si falta.
+[DB] Columna 'activo' agregada a tabla obra
+.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_permisos_por_rol.py 
+[PRUEBA UNITARIA] Permisos por Rol: validación de URL de módulo con barra inicial.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rechazo de nombre de rol con caracteres no permitidos.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: asegurar tabla permisos usuario confirma y limpia recursos.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: asegurar tabla permisos usuario tolera fallo de conexion.
+[seguridad] No se pudo asegurar usuarios_permisos: 'NoneType' object has no attribute 'cursor'
+[seguridad] No se pudo asegurar usuarios_permisos: DDL failed
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo rechaza datos invalidos kwargs0.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo rechaza datos invalidos kwargs1.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo rechaza datos invalidos kwargs2.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo rechaza datos invalidos kwargs3.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo rechaza datos invalidos kwargs4.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo registrar valida guarda y cierra.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo consultas retorna filas y parametriza id consultar activos args0 fetchall expected0.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo consultas retorna filas y parametriza id obtener por id args1 fetchone expected1.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo actualizar y eliminar devuelven estado de filas 1 True.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo actualizar y eliminar devuelven estado de filas 0 False.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo validar nombre existente condiciona exclusion None row0 True estado = 1 LIMIT 1 params0.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo validar nombre existente condiciona exclusion None None False estado = 1 LIMIT 1 params1.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: modulo validar nombre existente condiciona exclusion 8 row2 True id modulo <> %s AND estado = 1 LIMIT 1 params2.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol valida y registra nombre recortado.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol consultas retorna datos y usa rol actual consultar activos args0 fetchall expected0.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol consultas retorna datos y usa rol actual obtener por id args1 fetchone expected1.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol consultas retorna datos y usa rol actual obtener usuarios por rol args2 fetchall expected2.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol actualizar y eliminar reportan si hubo cambios 1 True.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol actualizar y eliminar reportan si hubo cambios 0 False.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol eliminar rechaza super usuario.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol existence checks handle exclusions validar nombre existente None row0 True params0.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol existence checks handle exclusions validar nombre existente 3 None False params1.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol existence checks handle exclusions existe super usuario activo None row2 True params2.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol existence checks handle exclusions existe super usuario activo 3 None False params3.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol obtener super usuario id row0 8.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol obtener super usuario id None None.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol permiso consultas retorna datos y aplica override usuario.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: rol permiso sin fila y permisos directos.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: guardar permisos reemplaza registros y confirma transaccion guardar permisos usuario.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: guardar permisos reemplaza registros y confirma transaccion guardar permisos.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: guardar permisos vacia lista y revierte si falla guardar permisos usuario.
+[RolPermisoModel.guardar_permisos_usuario] Error: write failed
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Permisos por Rol: guardar permisos vacia lista y revierte si falla guardar permisos.
+[RolPermisoModel.guardar_permisos] Error: write failed
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_prioridad.py 
+[PRUEBA UNITARIA] Prioridad: redondeo del rango de prioridad válido.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: rechazo de prioridad fuera del intervalo permitido.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: rechazo de prioridad fuera del intervalo permitido.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: rechazo de prioridad fuera del intervalo permitido.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: rechazo de origen de prioridad no permitido.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: prioridad constructor getters y setters validos.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: prioridad setters rechazan entrada fuera de reglas set justificacion x.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: prioridad setters rechazan entrada fuera de reglas set justificacion value1.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: prioridad setters rechazan entrada fuera de reglas set responsable A.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: prioridad setters rechazan entrada fuera de reglas set responsable RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+.
+[PRUEBA UNITARIA] Prioridad: prioridad setters rechazan entrada fuera de reglas set tipo obra Obra gigante.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: prioridad setters rechazan entrada fuera de reglas set gravedad sugerida Media.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: prioridad setters rechazan entrada fuera de reglas set origen humano.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: validar para persistencia requiere rango justificacion y limite.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: registrar actualizar y eliminar prioridad confirman y limpian.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: persistencia prioridad rechaza datos invalidos sin conectar.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: consultas individuales de prioridad devuelven filas y parametrizan obtener detalle completo args0 fila0.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: consultas individuales de prioridad devuelven filas y parametrizan obtener por id args1 fila1.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: consultas individuales de prioridad devuelven filas y parametrizan obtener datos solicitud args2 fila2.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: consultas individuales de prioridad devuelven filas y parametrizan obtener gravedad obra args3 fila3.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: listas de solicitudes prioridad consultan estado y devuelven filas obtener solicitudes sin priorizar fetched0 s.prioridad id gestion prioridad IS NULL.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: listas de solicitudes prioridad consultan estado y devuelven filas obtener todas solicitudes fetched1 WHERE s.estado = 1.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: listar priorizadas filtra ordena pagina y normaliza rango.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: puntaje ponderado usa pesos catalogados y fallbacks.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: clasificar nueva solicitud sin datos no invoca servicio ia.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: clasificar nueva solicitud actualiza prioridad existente.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: clasificar nueva solicitud inserta prioridad y vincula solicitud.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: batch de solicitudes pendientes retorna no hay trabajo y agrega resultados.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: batch todas solicitudes reclasifica y devuelve contadores.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Prioridad: clasificar solicitud con ia actualiza o inserta en funcion de vinculo.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_proyectos.py 
+[PRUEBA UNITARIA] Proyectos: serialización y recuperación de cómputos métricos.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: compatibilidad con cómputos métricos en formato anterior.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: formateo legible de cómputos métricos.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: parsear computos metricos maneja json legacy y tipos None expected0.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: parsear computos metricos maneja json legacy y tipos value1 expected1.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: parsear computos metricos maneja json legacy y tipos expected2.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: parsear computos metricos maneja json legacy y tipos    expected3.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+.
+[PRUEBA UNITARIA] Proyectos: parsear computos metricos maneja json legacy y tipos {"not":"a list"} expected5.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: parsear computos metricos maneja json legacy y tipos texto antiguo expected6.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: parsear computos metricos maneja json legacy y tipos 42 expected7.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: serializar computos metricos normaliza items y texto.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: asegurar descripcion tecnica solo modifica tipo no text.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: validar codigo proyecto distingue activo eliminado y disponible fila0 esperado0.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: validar codigo proyecto distingue activo eliminado y disponible fila1 esperado1.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: validar codigo proyecto distingue activo eliminado y disponible None esperado2.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: registrar proyecto serializa y registra maquinaria con transaccion.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: registrar proyecto rechaza codigo usado y revierte error de enlace.
+---------- ERROR CRÍTICO EN BD ----------
+Mensaje de MySQL: El código A ya existe en otro proyecto activo.
+-----------------------------------------
+---------- ERROR CRÍTICO EN BD ----------
+Mensaje de MySQL: No se encontraron los datos compuestos para la solicitud ID: 99
+-----------------------------------------
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: listado y busqueda de proyectos parsean computos metricos.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: detalle proyecto agrupa relaciones y devuelve none si no existe.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: actualizar proyecto usa fecha existente actualiza vinculos y confirma.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Proyectos: eliminar y contar proyectos retorna metricas de estado.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_publicaciones.py 
+[PRUEBA UNITARIA] Publicaciones: consulta de publicación por ID con parámetro SQL.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: listado publicaciones y listado informes devuelven filas y cierran.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: registrar publicacion construye datos confirma y reintenta id duplicado.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: actualizar y eliminar publicacion verifican sql transaccion y rowcount.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: validar informe activo distingue existe y ausente.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: metodos publicacion capturan error de bd y cierran recursos.
+Error en obtener_todas_las_publicaciones: fallo simulado
+Error en registrar_publicacion: fallo simulado
+Error en obtener_publicacion_por_id: fallo simulado
+Error en actualizar_publicacion: fallo simulado
+Error en eliminar_publicacion: fallo simulado
+Error en obtener_informes_para_publicaciones: fallo simulado
+Error en validar_informe_activo: fallo simulado
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: modelo entidad publicacion constructor y propiedades validan valores.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: modelo entidad asegura columna ausente y captura error.
+[DB] Columna 'cuerpo_publicacion' agregada a tabla publicacion
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: modelo entidad encamina metodos delegados y validacion.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: modelo entidad guarda y actualiza datos normalizados.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: metodos privados de modelo entidad forman sql y convierten id.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: metodos de consulta privados de modelo entidad devuelven filas.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: registrar db de entidad prioriza id y confirma insercion.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Publicaciones: modelo entidad verifica existencia de informe sin consultar ids invalidos.
+DEBUG: id_informe inválido recibido: None
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_reportes_estadisticos.py 
+[PRUEBA UNITARIA] Reportes Estadísticos: aplicación de filtro estadístico a columna permitida.
+.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: filtros estadisticos aplican condiciones especiales y ignoran no mapeadas.
+.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: ejecutar query retorna filas y cierra recursos tras error.
+.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas solicitudes cambian agrupacion y agregan filtros dia por fecha GROUP BY DATE(s.fecha).
+.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas solicitudes cambian agrupacion y agregan filtros mes por mes GROUP BY DATE FORMAT(s.fecha, '%Y %m').
+F
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: FALLIDA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas solicitudes cambian agrupacion y agregan filtros semana por semana GROUP BY DATE FORMAT(s.fecha, '%x W%v').
+F
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: FALLIDA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas solicitudes incluyen dimensiones geograficas si hay filtros.
+.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas obras agregan fechas estado avance y filtro dia GROUP BY DATE(COALESCE(o.fecha inicio, o.fecha fin)).
+.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas obras agregan fechas estado avance y filtro mes GROUP BY DATE FORMAT(COALESCE(o.fecha inicio, o.fecha fin), '%Y %m').
+F
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: FALLIDA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas obras agregan fechas estado avance y filtro semana GROUP BY DATE FORMAT(COALESCE(o.fecha inicio, o.fecha fin), '%x W%v').
+F
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: FALLIDA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas empleados incluyen dimensiones y fecha ingreso dia GROUP BY DATE(e.fecha ingreso).
+.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas empleados incluyen dimensiones y fecha ingreso mes GROUP BY DATE FORMAT(e.fecha ingreso, '%Y %m').
+F
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: FALLIDA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas empleados incluyen dimensiones y fecha ingreso semana GROUP BY DATE FORMAT(e.fecha ingreso, '%x W%v').
+F
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: FALLIDA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas contrataciones resumenes y agrupacion dia GROUP BY DATE(c.fecha registro).
+.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas contrataciones resumenes y agrupacion mes GROUP BY DATE FORMAT(c.fecha registro, '%Y %m').
+F
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: FALLIDA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas contrataciones resumenes y agrupacion semana GROUP BY DATE FORMAT(c.fecha registro, '%x W%v').
+F
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: FALLIDA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas publicaciones resumen por tipo autor y fecha dia GROUP BY DATE(fecha publicacion).
+.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas publicaciones resumen por tipo autor y fecha mes GROUP BY DATE FORMAT(fecha publicacion, '%Y %m').
+F
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: FALLIDA.
+
+[PRUEBA UNITARIA] Reportes Estadísticos: estadisticas publicaciones resumen por tipo autor y fecha semana GROUP BY DATE FORMAT(fecha publicacion, '%x W%v').
+F
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — Resultado: FALLIDA.
+
+tests\unit\test_reportes_excel.py 
+[PRUEBA UNITARIA] Reportes Excel: rechazo de columna no permitida en filtro Excel.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: generadores excel aplican filtros retorno y contexto bd obtener solicitudes reporte FROM solicitudes s filters0 s.tipo solicitud LIKE %s params0 False.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: generadores excel aplican filtros retorno y contexto bd obtener solicitantes reporte FROM particular pa filters1 pa.nombre LIKE %s params1 False.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: generadores excel aplican filtros retorno y contexto bd obtener empleados reporte FROM empleados e filters2 DATE(e.fecha ingreso) >= %s params2 False.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: generadores excel aplican filtros retorno y contexto bd obtener usuarios reporte FROM usuarios filters3 rol LIKE %s params3 True.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: generadores excel aplican filtros retorno y contexto bd obtener contrataciones reporte FROM contratacion c filters4 c.empresa ganadora LIKE %s params4 False.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: generadores excel aplican filtros retorno y contexto bd obtener obras reporte FROM obra o filters5 o.titulo obra LIKE %s params5 False.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: generadores excel aplican filtros retorno y contexto bd obtener publicaciones reporte FROM publicacion filters6 tipo publicacion LIKE %s params6 False.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: generadores excel aplican filtros retorno y contexto bd obtener avances reporte FROM avance a filters7 a.porcentaje avance >= %s params7 False.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: generadores excel aplican filtros retorno y contexto bd obtener inspecciones reporte FROM inspeccion i filters8 i.tipo inspeccion LIKE %s params8 False.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: generadores excel aplican filtros retorno y contexto bd obtener evidencias reporte FROM evidencia ev filters9 ev.etapa LIKE %s params9 False.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: generadores excel aplican filtros retorno y contexto bd obtener gravedades reporte FROM gravedad obra g filters10 g.criticidad LIKE %s params10 False.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: filtros excel cubre fechas limites estado y filtros especiales.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: ejecutar query elige conexion y limpia cursor y conexion.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: ejecutar query cierra recursos si execute falla.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes Excel: estadisticas generales compone tres valores y cierra recursos.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_reportes_pdf.py 
+[PRUEBA UNITARIA] Reportes PDF: parametrización de valor en filtro PDF.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes PDF: generadores pdf aplican filtros retorno y contexto bd obtener solicitudes FROM solicitudes s filters0 s.tipo solicitud LIKE %s params0 False.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes PDF: generadores pdf aplican filtros retorno y contexto bd obtener solicitantes FROM particular pa filters1 pa.nombre LIKE %s params1 False.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes PDF: generadores pdf aplican filtros retorno y contexto bd obtener empleados FROM empleados e filters2 DATE(e.fecha ingreso) <= %s params2 False.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes PDF: generadores pdf aplican filtros retorno y contexto bd obtener usuarios FROM usuarios filters3 rol LIKE %s params3 True.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes PDF: generadores pdf aplican filtros retorno y contexto bd obtener contrataciones FROM contratacion c filters4 c.empresa ganadora LIKE %s params4 False.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes PDF: generadores pdf aplican filtros retorno y contexto bd obtener obras FROM obra o filters5 o.titulo obra LIKE %s params5 False.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes PDF: generadores pdf aplican filtros retorno y contexto bd obtener publicaciones reporte FROM publicacion filters6 tipo publicacion LIKE %s params6 False.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes PDF: filtros pdf cubre casos especiales y descarta estado invalido.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes PDF: ejecutar query elige conexion y limpia recursos.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Reportes PDF: ejecutar query libera recursos si consulta falla.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_security_controls.py 
+[PRUEBA UNITARIA] Controles de Seguridad: manejo del fallo de respuesta del servicio de verificación.
+.
+Concluyó prueba de Controles de Seguridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Controles de Seguridad: rechazo de verificación externa si no existe secreto configurado.
+.
+Concluyó prueba de Controles de Seguridad — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_solicitudes.py 
+[PRUEBA UNITARIA] Solicitudes: validación de tipo y estado de solicitud.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: rechazo de tipo de solicitud no reconocido.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: asociación de categoría válida a la problemática.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: constructor getters y fecha por defecto.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: fecha acepta formato iso y reemplaza separador.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: fecha vacia genera fecha actual con formato sql.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: estatus desconocido se normaliza a pendiente.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: datos de solicitante validos por tipo Comunidad.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: datos de solicitante validos por tipo Institucion.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: datos de solicitante validos por tipo Particular.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: datos de solicitante requieren tipo previo.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: datos de solicitante rechazan cedula invalida.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: conexion delegada a conexion compartida.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: cerrar cierra cursor y conexion.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: limpia texto y respeta longitud maxima.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: formatea fecha segun tipo de entrada None.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: formatea fecha segun tipo de entrada fecha1 Thu 12 11 2026 10:30:00 AM.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: formatea fecha segun tipo de entrada 2026 11 12 10:30:00 Thu 12 11 2026 10:30:00 AM.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: formatea fecha segun tipo de entrada fecha no normalizada fecha no normalizada.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: formatea fecha segun tipo de entrada 123 123.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: busca persona admite filas diccionario y tupla fila0 17.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: busca persona admite filas diccionario y tupla fila1 18.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: busca persona admite filas diccionario y tupla None None.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: inserta persona y devuelve id siguiente.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: inserta subtipo segun categoria Particular particular.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: inserta subtipo segun categoria Comunidad comunidad.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: inserta subtipo segun categoria Institucion institucion.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: crea prioridad pendiente y devuelve id.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: asegura columna problematica ampliando esquema antiguo.
+[SolicitudModel] Columna solicitudes.problematica ampliada a VARCHAR(512).
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: guardar retorna false si faltan datos obligatorios.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: guardar registra solicitud y confirma transaccion.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: actualizar retorna false sin identificador.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: actualizar modifica campos y confirma.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: actualizar estatus ejecuta update.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: eliminar retorna false sin identificador.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: eliminar borra registro existente.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: obtener todas formatea fechas.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: buscar por id consulta y formatea fecha.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: obtiene estadisticas agrupadas obtener estadisticas fila0 esperado0.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: obtiene estadisticas agrupadas obtener estadisticas por tipo fila1 esperado1.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: obtener estadisticas por parroquia devuelve filas.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: obtener solicitudes priorizadas aplica limite y formatea fecha.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Solicitudes: obtener solicitudes pendientes filtra y formatea fecha.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_sql_filter_allowlists.py 
+[PRUEBA UNITARIA] Filtros SQL de Reportes: rechazo de identificadores SQL no mapeados.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: rechazo de identificadores SQL no mapeados.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: rechazo de identificadores SQL no mapeados.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: parametrización de valores en columnas permitidas.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: parametrización de valores en columnas permitidas.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: parametrización de valores en columnas permitidas.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: construcción segura de consultas y rechazo de identificadores no confiables.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: rechazo de operadores no admitidos y rangos BETWEEN inválidos.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder supported filter operators LIKE ana e.nombre LIKE %s params0.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder supported filter operators DATE GTE 2026 01 01 DATE(e.fecha) >= %s params1.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder supported filter operators DATE LTE 2026 12 31 DATE(e.fecha) <= %s params2.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder supported filter operators EQUALS 0 e.estado = %s params3.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder supported filter operators BETWEEN value4 e.id BETWEEN %s AND %s params4.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder ignores empty filter without emitting clause.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder ignores empty filter without emitting clause None.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder builds join group order and alias clauses.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder rejects bad table or alias usuarios; DELETE FROM usuarios.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder rejects bad table or alias usuarios u;DROP.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder rejects invalid group or order u.estado; DROP TABLE usuarios None.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder rejects invalid group or order None u.estado; DROP TABLE usuarios.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: query builder accepts valid join shapes and rejects non equality join.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteEstadisticoModel filters0 mapping0 expected where0 expected params0.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteEstadisticoModel filters1 mapping1 expected where1 expected params1.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteEstadisticoModel filters2 mapping2 expected where2 expected params2.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteEstadisticoModel filters3 mapping3 expected where3 expected params3.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteEstadisticoModel filters4 mapping4 expected where4 expected params4.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteEstadisticoModel filters5 mapping5 expected where5 expected params5.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteEstadisticoModel filters6 mapping6 expected where6 expected params6.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteEstadisticoModel filters7 mapping7 expected where7 expected params7.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteExcelModel filters8 mapping8 expected where8 expected params8.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteExcelModel filters9 mapping9 expected where9 expected params9.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteExcelModel filters10 mapping10 expected where10 expected params10.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteExcelModel filters11 mapping11 expected where11 expected params11.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReporteExcelModel filters12 mapping12 expected where12 expected params12.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReportePDFModel filters13 mapping13 expected where13 expected params13.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper maps only supported filters ReportePDFModel filters14 mapping14 expected where14 expected params14.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper ignores empty and unmapped filter values ReporteEstadisticoModel filters0 mapping0.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper ignores empty and unmapped filter values ReporteExcelModel filters1 mapping1.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Filtros SQL de Reportes: report filter helper ignores empty and unmapped filter values ReportePDFModel filters2 mapping2.
+.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+tests\unit\test_usuarios.py 
+[PRUEBA UNITARIA] Usuarios: asignación de avatar por defecto a usuarios sin avatar.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: constructor getters y setters.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: busquedas por nombre y correo consultan y cierran buscar por nombre SELECT * FROM usuarios WHERE nombre = %s Ana.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: busquedas por nombre y correo consultan y cierran buscar por email SELECT * FROM usuarios WHERE correo = %s ana@example.test.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: validar duplicados busca correo o cedula row0 True.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: validar duplicados busca correo o cedula None False.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+.
+[PRUEBA UNITARIA] Usuarios: buscar por id aplica avatar sin quitar campos buscar por id row1 custom.png.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+.
+[PRUEBA UNITARIA] Usuarios: busquedas de usuario devuelven none sin conexion y si no hay fila.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: incluir guarda datos con hash y usa rol por defecto.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: actualizar hashes password opcional y actualiza campos.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: db insert y update ejecutan sql commit y limpieza UsuarioModel registrar db INSERT INTO usuarios values0 1 True.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: db insert y update ejecutan sql commit y limpieza UsuarioModel actualizar db UPDATE usuarios SET values1 1 True.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: update sin password omite columna y devuelve false si no hay cambios.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: operaciones db devuelven false sin conexion.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: eliminar fisico db ejecuta delete y guardar selecciona accion.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: eliminar usa id suministrado y rechaza usuario sin id.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[PRUEBA UNITARIA] Usuarios: existe y activo consulta y cierra recursos.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — Resultado: APROBADA.
+
+[EVIDENCIA] Resumen de capturas guardado en: C:\laragon\www\INVISAP\my-app\tests\evidence\evidence_summary.json
+  unit: 0 capturas
+  integration: 0 capturas
+  api: 0 capturas
+  smoke: 0 capturas
+  ui: 0 capturas
+  performance: 0 capturas
+  acceptance: 0 capturas
+
+
+================================== FAILURES ===================================
+_ test_estadisticas_solicitudes_cambian_agrupacion_y_agregan_filtros[mes-por_mes-GROUP BY DATE_FORMAT(s.fecha, '%Y-%m')] _
+
+agrupacion = 'mes', campo = 'por_mes'
+sql_fragment = "GROUP BY DATE_FORMAT(s.fecha, '%Y-%m')"
+
+    @pytest.mark.parametrize(
+        ('agrupacion', 'campo', 'sql_fragment'),
+        [
+            ('dia', 'por_fecha', 'GROUP BY DATE(s.fecha)'),
+            ('mes', 'por_mes', "GROUP BY DATE_FORMAT(s.fecha, '%Y-%m')"),
+            ('semana', 'por_semana', "GROUP BY DATE_FORMAT(s.fecha, '%x-W%v')"),
+        ],
+    )
+    def test_estadisticas_solicitudes_cambian_agrupacion_y_agregan_filtros(
+        agrupacion, campo, sql_fragment
+    ):
+        modelo, conexion, cursor = _modelo_estadistico_con_cursor()
+        with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+            resultado = modelo.obtener_estadisticas_solicitudes(
+                {'tipo_solicitud': 'Obra'}, agrupacion
+            )
+        assert resultado[campo] == [{'label': 'muestra', 'valor': 2}]
+        assert resultado['por_tipo'] == [{'label': 'muestra', 'valor': 2}]
+        assert resultado['por_estatus'] == [{'label': 'muestra', 'valor': 2}]
+        assert len(cursor.execute.call_args_list) == 3
+>       assert sql_fragment in cursor.execute.call_args_list[0].args[0]
+E       assert "GROUP BY DATE_FORMAT(s.fecha, '%Y-%m')" in "SELECT DATE_FORMAT(s.fecha, '%%Y-%%m') as label, COUNT(*) as valor \n                FROM solicitudes s\n            ...s.estado = 1 AND p.estado = 1 AND s.tipo_solicitud LIKE %s GROUP BY DATE_FORMAT(s.fecha, '%%Y-%%m') ORDER BY label ASC"
+
+tests\unit\test_reportes_estadisticos.py:111: AssertionError
+_ test_estadisticas_solicitudes_cambian_agrupacion_y_agregan_filtros[semana-por_semana-GROUP BY DATE_FORMAT(s.fecha, '%x-W%v')] _
+
+agrupacion = 'semana', campo = 'por_semana'
+sql_fragment = "GROUP BY DATE_FORMAT(s.fecha, '%x-W%v')"
+
+    @pytest.mark.parametrize(
+        ('agrupacion', 'campo', 'sql_fragment'),
+        [
+            ('dia', 'por_fecha', 'GROUP BY DATE(s.fecha)'),
+            ('mes', 'por_mes', "GROUP BY DATE_FORMAT(s.fecha, '%Y-%m')"),
+            ('semana', 'por_semana', "GROUP BY DATE_FORMAT(s.fecha, '%x-W%v')"),
+        ],
+    )
+    def test_estadisticas_solicitudes_cambian_agrupacion_y_agregan_filtros(
+        agrupacion, campo, sql_fragment
+    ):
+        modelo, conexion, cursor = _modelo_estadistico_con_cursor()
+        with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+            resultado = modelo.obtener_estadisticas_solicitudes(
+                {'tipo_solicitud': 'Obra'}, agrupacion
+            )
+        assert resultado[campo] == [{'label': 'muestra', 'valor': 2}]
+        assert resultado['por_tipo'] == [{'label': 'muestra', 'valor': 2}]
+        assert resultado['por_estatus'] == [{'label': 'muestra', 'valor': 2}]
+        assert len(cursor.execute.call_args_list) == 3
+>       assert sql_fragment in cursor.execute.call_args_list[0].args[0]
+E       assert "GROUP BY DATE_FORMAT(s.fecha, '%x-W%v')" in "SELECT DATE_FORMAT(s.fecha, '%%x-W%%v') as label, COUNT(*) as valor \n                FROM solicitudes s\n           ....estado = 1 AND p.estado = 1 AND s.tipo_solicitud LIKE %s GROUP BY DATE_FORMAT(s.fecha, '%%x-W%%v') ORDER BY label ASC"
+
+tests\unit\test_reportes_estadisticos.py:111: AssertionError
+_ test_estadisticas_obras_agregan_fechas_estado_avance_y_filtro[mes-GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%Y-%m')] _
+
+agrupacion = 'mes'
+sql_fragment = "GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%Y-%m')"
+
+    @pytest.mark.parametrize(
+        ('agrupacion', 'sql_fragment'),
+        [
+            ('dia', 'GROUP BY DATE(COALESCE(o.fecha_inicio, o.fecha_fin))'),
+            ('mes', "GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%Y-%m')"),
+            ('semana', "GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%x-W%v')"),
+        ],
+    )
+    def test_estadisticas_obras_agregan_fechas_estado_avance_y_filtro(
+        agrupacion, sql_fragment
+    ):
+        modelo, conexion, cursor = _modelo_estadistico_con_cursor()
+        with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+            resultado = modelo.obtener_estadisticas_obras(
+                {'porcentaje_avance_min': 40}, agrupacion
+            )
+        assert set(resultado) == {
+            'por_fecha', 'por_estado', 'por_contratista', 'por_ubicacion',
+            'por_semaforo_color', 'por_avance'
+        }
+        assert len(cursor.execute.call_args_list) == 6
+>       assert sql_fragment in cursor.execute.call_args_list[0].args[0]
+E       assert "GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%Y-%m')" in "SELECT DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%%Y-%%m') as label, COUNT(*) as valor \n                FR...porcentaje_avance_obra >= %s GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%%Y-%%m') ORDER BY label ASC"
+
+tests\unit\test_reportes_estadisticos.py:153: AssertionError
+_ test_estadisticas_obras_agregan_fechas_estado_avance_y_filtro[semana-GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%x-W%v')] _
+
+agrupacion = 'semana'
+sql_fragment = "GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%x-W%v')"
+
+    @pytest.mark.parametrize(
+        ('agrupacion', 'sql_fragment'),
+        [
+            ('dia', 'GROUP BY DATE(COALESCE(o.fecha_inicio, o.fecha_fin))'),
+            ('mes', "GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%Y-%m')"),
+            ('semana', "GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%x-W%v')"),
+        ],
+    )
+    def test_estadisticas_obras_agregan_fechas_estado_avance_y_filtro(
+        agrupacion, sql_fragment
+    ):
+        modelo, conexion, cursor = _modelo_estadistico_con_cursor()
+        with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+            resultado = modelo.obtener_estadisticas_obras(
+                {'porcentaje_avance_min': 40}, agrupacion
+            )
+        assert set(resultado) == {
+            'por_fecha', 'por_estado', 'por_contratista', 'por_ubicacion',
+            'por_semaforo_color', 'por_avance'
+        }
+        assert len(cursor.execute.call_args_list) == 6
+>       assert sql_fragment in cursor.execute.call_args_list[0].args[0]
+E       assert "GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%x-W%v')" in "SELECT DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%%x-W%%v') as label, COUNT(*) as valor \n                F...orcentaje_avance_obra >= %s GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%%x-W%%v') ORDER BY label ASC"
+
+tests\unit\test_reportes_estadisticos.py:153: AssertionError
+_ test_estadisticas_empleados_incluyen_dimensiones_y_fecha_ingreso[mes-GROUP BY DATE_FORMAT(e.fecha_ingreso, '%Y-%m')] _
+
+agrupacion = 'mes'
+sql_fragment = "GROUP BY DATE_FORMAT(e.fecha_ingreso, '%Y-%m')"
+
+    @pytest.mark.parametrize(
+        ('agrupacion', 'sql_fragment'),
+        [
+            ('dia', 'GROUP BY DATE(e.fecha_ingreso)'),
+            ('mes', "GROUP BY DATE_FORMAT(e.fecha_ingreso, '%Y-%m')"),
+            ('semana', "GROUP BY DATE_FORMAT(e.fecha_ingreso, '%x-W%v')"),
+        ],
+    )
+    def test_estadisticas_empleados_incluyen_dimensiones_y_fecha_ingreso(
+        agrupacion, sql_fragment
+    ):
+        modelo, conexion, cursor = _modelo_estadistico_con_cursor()
+        with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+            resultado = modelo.obtener_estadisticas_empleados(
+                {'nombre_empleado': 'Ana'}, agrupacion
+            )
+        assert set(resultado) == {'por_cargo', 'por_gerencia', 'por_estado', 'por_fecha_ingreso'}
+        assert len(cursor.execute.call_args_list) == 4
+>       assert sql_fragment in cursor.execute.call_args_list[3].args[0]
+E       assert "GROUP BY DATE_FORMAT(e.fecha_ingreso, '%Y-%m')" in "SELECT DATE_FORMAT(e.fecha_ingreso, '%%Y-%%m') as label, COUNT(*) as valor FROM empleados e WHERE e.estado = 1 AND e.nombre_empleado LIKE %s GROUP BY DATE_FORMAT(e.fecha_ingreso, '%%Y-%%m') ORDER BY label ASC"
+
+tests\unit\test_reportes_estadisticos.py:176: AssertionError
+_ test_estadisticas_empleados_incluyen_dimensiones_y_fecha_ingreso[semana-GROUP BY DATE_FORMAT(e.fecha_ingreso, '%x-W%v')] _
+
+agrupacion = 'semana'
+sql_fragment = "GROUP BY DATE_FORMAT(e.fecha_ingreso, '%x-W%v')"
+
+    @pytest.mark.parametrize(
+        ('agrupacion', 'sql_fragment'),
+        [
+            ('dia', 'GROUP BY DATE(e.fecha_ingreso)'),
+            ('mes', "GROUP BY DATE_FORMAT(e.fecha_ingreso, '%Y-%m')"),
+            ('semana', "GROUP BY DATE_FORMAT(e.fecha_ingreso, '%x-W%v')"),
+        ],
+    )
+    def test_estadisticas_empleados_incluyen_dimensiones_y_fecha_ingreso(
+        agrupacion, sql_fragment
+    ):
+        modelo, conexion, cursor = _modelo_estadistico_con_cursor()
+        with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+            resultado = modelo.obtener_estadisticas_empleados(
+                {'nombre_empleado': 'Ana'}, agrupacion
+            )
+        assert set(resultado) == {'por_cargo', 'por_gerencia', 'por_estado', 'por_fecha_ingreso'}
+        assert len(cursor.execute.call_args_list) == 4
+>       assert sql_fragment in cursor.execute.call_args_list[3].args[0]
+E       assert "GROUP BY DATE_FORMAT(e.fecha_ingreso, '%x-W%v')" in "SELECT DATE_FORMAT(e.fecha_ingreso, '%%x-W%%v') as label, COUNT(*) as valor FROM empleados e WHERE e.estado = 1 AND e.nombre_empleado LIKE %s GROUP BY DATE_FORMAT(e.fecha_ingreso, '%%x-W%%v') ORDER BY label ASC"
+
+tests\unit\test_reportes_estadisticos.py:176: AssertionError
+_ test_estadisticas_contrataciones_resumenes_y_agrupacion[mes-GROUP BY DATE_FORMAT(c.fecha_registro, '%Y-%m')] _
+
+agrupacion = 'mes'
+sql_fragment = "GROUP BY DATE_FORMAT(c.fecha_registro, '%Y-%m')"
+
+    @pytest.mark.parametrize(
+        ('agrupacion', 'sql_fragment'),
+        [
+            ('dia', 'GROUP BY DATE(c.fecha_registro)'),
+            ('mes', "GROUP BY DATE_FORMAT(c.fecha_registro, '%Y-%m')"),
+            ('semana', "GROUP BY DATE_FORMAT(c.fecha_registro, '%x-W%v')"),
+        ],
+    )
+    def test_estadisticas_contrataciones_resumenes_y_agrupacion(
+        agrupacion, sql_fragment
+    ):
+        modelo, conexion, cursor = _modelo_estadistico_con_cursor()
+        with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+            resultado = modelo.obtener_estadisticas_contrataciones(
+                {'empresa_ganadora': 'Constructora'}, agrupacion
+            )
+        assert set(resultado) == {
+            'por_tipo', 'por_modalidad', 'por_objeto', 'por_estado', 'por_empresa', 'por_fecha'
+        }
+        assert len(cursor.execute.call_args_list) == 6
+>       assert sql_fragment in cursor.execute.call_args_list[-1].args[0]
+E       assert "GROUP BY DATE_FORMAT(c.fecha_registro, '%Y-%m')" in "SELECT DATE_FORMAT(c.fecha_registro, '%%Y-%%m') as label, COUNT(*) as valor FROM contratacion c WHERE c.estado = 1 AND c.empresa_ganadora LIKE %s GROUP BY DATE_FORMAT(c.fecha_registro, '%%Y-%%m') ORDER BY label ASC"
+
+tests\unit\test_reportes_estadisticos.py:200: AssertionError
+_ test_estadisticas_contrataciones_resumenes_y_agrupacion[semana-GROUP BY DATE_FORMAT(c.fecha_registro, '%x-W%v')] _
+
+agrupacion = 'semana'
+sql_fragment = "GROUP BY DATE_FORMAT(c.fecha_registro, '%x-W%v')"
+
+    @pytest.mark.parametrize(
+        ('agrupacion', 'sql_fragment'),
+        [
+            ('dia', 'GROUP BY DATE(c.fecha_registro)'),
+            ('mes', "GROUP BY DATE_FORMAT(c.fecha_registro, '%Y-%m')"),
+            ('semana', "GROUP BY DATE_FORMAT(c.fecha_registro, '%x-W%v')"),
+        ],
+    )
+    def test_estadisticas_contrataciones_resumenes_y_agrupacion(
+        agrupacion, sql_fragment
+    ):
+        modelo, conexion, cursor = _modelo_estadistico_con_cursor()
+        with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+            resultado = modelo.obtener_estadisticas_contrataciones(
+                {'empresa_ganadora': 'Constructora'}, agrupacion
+            )
+        assert set(resultado) == {
+            'por_tipo', 'por_modalidad', 'por_objeto', 'por_estado', 'por_empresa', 'por_fecha'
+        }
+        assert len(cursor.execute.call_args_list) == 6
+>       assert sql_fragment in cursor.execute.call_args_list[-1].args[0]
+E       assert "GROUP BY DATE_FORMAT(c.fecha_registro, '%x-W%v')" in "SELECT DATE_FORMAT(c.fecha_registro, '%%x-W%%v') as label, COUNT(*) as valor FROM contratacion c WHERE c.estado = 1 AND c.empresa_ganadora LIKE %s GROUP BY DATE_FORMAT(c.fecha_registro, '%%x-W%%v') ORDER BY label ASC"
+
+tests\unit\test_reportes_estadisticos.py:200: AssertionError
+_ test_estadisticas_publicaciones_resumen_por_tipo_autor_y_fecha[mes-GROUP BY DATE_FORMAT(fecha_publicacion, '%Y-%m')] _
+
+agrupacion = 'mes'
+sql_fragment = "GROUP BY DATE_FORMAT(fecha_publicacion, '%Y-%m')"
+
+    @pytest.mark.parametrize(
+        ('agrupacion', 'sql_fragment'),
+        [
+            ('dia', 'GROUP BY DATE(fecha_publicacion)'),
+            ('mes', "GROUP BY DATE_FORMAT(fecha_publicacion, '%Y-%m')"),
+            ('semana', "GROUP BY DATE_FORMAT(fecha_publicacion, '%x-W%v')"),
+        ],
+    )
+    def test_estadisticas_publicaciones_resumen_por_tipo_autor_y_fecha(
+        agrupacion, sql_fragment
+    ):
+        modelo, conexion, cursor = _modelo_estadistico_con_cursor()
+        with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+            resultado = modelo.obtener_estadisticas_publicaciones(
+                {'tipo_publicacion': 'Aviso'}, agrupacion
+            )
+        assert set(resultado) == {'por_tipo', 'por_autor', 'por_fecha'}
+        assert len(cursor.execute.call_args_list) == 3
+>       assert sql_fragment in cursor.execute.call_args_list[-1].args[0]
+E       assert "GROUP BY DATE_FORMAT(fecha_publicacion, '%Y-%m')" in "SELECT DATE_FORMAT(fecha_publicacion, '%%Y-%%m') as label, COUNT(*) as valor FROM publicacion WHERE estado = 1 AND tipo_publicacion LIKE %s GROUP BY DATE_FORMAT(fecha_publicacion, '%%Y-%%m') ORDER BY label ASC"
+
+tests\unit\test_reportes_estadisticos.py:222: AssertionError
+_ test_estadisticas_publicaciones_resumen_por_tipo_autor_y_fecha[semana-GROUP BY DATE_FORMAT(fecha_publicacion, '%x-W%v')] _
+
+agrupacion = 'semana'
+sql_fragment = "GROUP BY DATE_FORMAT(fecha_publicacion, '%x-W%v')"
+
+    @pytest.mark.parametrize(
+        ('agrupacion', 'sql_fragment'),
+        [
+            ('dia', 'GROUP BY DATE(fecha_publicacion)'),
+            ('mes', "GROUP BY DATE_FORMAT(fecha_publicacion, '%Y-%m')"),
+            ('semana', "GROUP BY DATE_FORMAT(fecha_publicacion, '%x-W%v')"),
+        ],
+    )
+    def test_estadisticas_publicaciones_resumen_por_tipo_autor_y_fecha(
+        agrupacion, sql_fragment
+    ):
+        modelo, conexion, cursor = _modelo_estadistico_con_cursor()
+        with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+            resultado = modelo.obtener_estadisticas_publicaciones(
+                {'tipo_publicacion': 'Aviso'}, agrupacion
+            )
+        assert set(resultado) == {'por_tipo', 'por_autor', 'por_fecha'}
+        assert len(cursor.execute.call_args_list) == 3
+>       assert sql_fragment in cursor.execute.call_args_list[-1].args[0]
+E       assert "GROUP BY DATE_FORMAT(fecha_publicacion, '%x-W%v')" in "SELECT DATE_FORMAT(fecha_publicacion, '%%x-W%%v') as label, COUNT(*) as valor FROM publicacion WHERE estado = 1 AND tipo_publicacion LIKE %s GROUP BY DATE_FORMAT(fecha_publicacion, '%%x-W%%v') ORDER BY label ASC"
+
+tests\unit\test_reportes_estadisticos.py:222: AssertionError
+=================== RESUMEN DE PRUEBAS UNITARIAS POR MÓDULO ===================
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba unitaria — APROBADA: 26 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Bitácora — Tipo: Prueba unitaria — APROBADA: 11 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Contratación — Tipo: Prueba unitaria — APROBADA: 9 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Empleados — Tipo: Prueba unitaria — APROBADA: 13 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Empresa — Tipo: Prueba unitaria — APROBADA: 9 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Evidencias — Tipo: Prueba unitaria — APROBADA: 13 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba unitaria — APROBADA: 11 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba unitaria — APROBADA: 21 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Validación de Informes — Tipo: Prueba unitaria — APROBADA: 3 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Inspecciones — Tipo: Prueba unitaria — APROBADA: 18 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Maquinaria — Tipo: Prueba unitaria — APROBADA: 20 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Obras — Tipo: Prueba unitaria — APROBADA: 14 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba unitaria — APROBADA: 36 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Prioridad — Tipo: Prueba unitaria — APROBADA: 30 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Proyectos — Tipo: Prueba unitaria — APROBADA: 21 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Publicaciones — Tipo: Prueba unitaria — APROBADA: 14 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba unitaria — REVISAR: 9 aprobadas, 10 fallidas, 0 omitidas.
+Concluyó prueba de Reportes Excel — Tipo: Prueba unitaria — APROBADA: 16 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Reportes PDF — Tipo: Prueba unitaria — APROBADA: 11 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Controles de Seguridad — Tipo: Prueba unitaria — APROBADA: 2 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Solicitudes — Tipo: Prueba unitaria — APROBADA: 43 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Filtros SQL de Reportes — Tipo: Prueba unitaria — APROBADA: 39 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Usuarios — Tipo: Prueba unitaria — APROBADA: 17 aprobadas, 0 fallidas, 0 omitidas.
+=========================== short test summary info ===========================
+FAILED tests/unit/test_reportes_estadisticos.py::test_estadisticas_solicitudes_cambian_agrupacion_y_agregan_filtros[mes-por_mes-GROUP BY DATE_FORMAT(s.fecha, '%Y-%m')]
+FAILED tests/unit/test_reportes_estadisticos.py::test_estadisticas_solicitudes_cambian_agrupacion_y_agregan_filtros[semana-por_semana-GROUP BY DATE_FORMAT(s.fecha, '%x-W%v')]
+FAILED tests/unit/test_reportes_estadisticos.py::test_estadisticas_obras_agregan_fechas_estado_avance_y_filtro[mes-GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%Y-%m')]
+FAILED tests/unit/test_reportes_estadisticos.py::test_estadisticas_obras_agregan_fechas_estado_avance_y_filtro[semana-GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%x-W%v')]
+FAILED tests/unit/test_reportes_estadisticos.py::test_estadisticas_empleados_incluyen_dimensiones_y_fecha_ingreso[mes-GROUP BY DATE_FORMAT(e.fecha_ingreso, '%Y-%m')]
+FAILED tests/unit/test_reportes_estadisticos.py::test_estadisticas_empleados_incluyen_dimensiones_y_fecha_ingreso[semana-GROUP BY DATE_FORMAT(e.fecha_ingreso, '%x-W%v')]
+FAILED tests/unit/test_reportes_estadisticos.py::test_estadisticas_contrataciones_resumenes_y_agrupacion[mes-GROUP BY DATE_FORMAT(c.fecha_registro, '%Y-%m')]
+FAILED tests/unit/test_reportes_estadisticos.py::test_estadisticas_contrataciones_resumenes_y_agrupacion[semana-GROUP BY DATE_FORMAT(c.fecha_registro, '%x-W%v')]
+FAILED tests/unit/test_reportes_estadisticos.py::test_estadisticas_publicaciones_resumen_por_tipo_autor_y_fecha[mes-GROUP BY DATE_FORMAT(fecha_publicacion, '%Y-%m')]
+FAILED tests/unit/test_reportes_estadisticos.py::test_estadisticas_publicaciones_resumen_por_tipo_autor_y_fecha[semana-GROUP BY DATE_FORMAT(fecha_publicacion, '%x-W%v')]
+======================= 10 failed, 418 passed in 1.95s ========================

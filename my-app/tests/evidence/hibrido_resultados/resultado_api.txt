@@ -1,0 +1,223 @@
+Comando: C:\laragon\www\INVISAP\my-app\.venv\Scripts\python.exe -m pytest tests/api -q -p no:cacheprovider
+Categoría: Pruebas de Backend (API)
+Exit code: 0
+Fecha: 20/11/2026 05:03:07
+================================================================================
+
+[DEBUG] Conectando a MySQL: host=localhost, user=root, db=invilara
+[DEBUG] Conectando a MySQL: host=localhost, user=root, db=invilara
+============================= test session starts =============================
+platform win32 -- Python 3.14.3, pytest-9.2.0, pluggy-1.7.0
+rootdir: C:\laragon\www\INVISAP\my-app
+configfile: pytest.ini
+plugins: locust-2.46.7, platformdirs-4.14.5, cov-7.1.0, html-4.2.0, json-report-1.5.0, metadata-3.1.1
+collected 33 items
+
+tests\api\test_api_administracion_respaldos.py 
+[PRUEBA DE BACKEND/API] Administración de Respaldos: comprobando autenticación y listado JSON.
+.
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_bitacora.py 
+[PRUEBA DE BACKEND/API] Bitácora: comprobando autenticación, filtros y paginación JSON.
+.
+Concluyó prueba de Bitácora — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_contratacion.py 
+[PRUEBA DE BACKEND/API] Contratación: comprobando listado JSON de empresas y sesión.
+.
+Concluyó prueba de Contratación — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_empleados.py 
+[PRUEBA DE BACKEND/API] Empleados: comprobando paginación, conteo y respuesta JSON.
+.
+Concluyó prueba de Empleados — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_empresa.py 
+[PRUEBA DE BACKEND/API] Empresa: comprobando consulta por RIF y respuestas 401/404/200.
+.
+Concluyó prueba de Empresa — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_evidencias.py 
+[PRUEBA DE BACKEND/API] Evidencias: comprobando validación JSON de existencia por ID.
+.
+Concluyó prueba de Evidencias — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_gravedad_obra.py 
+[PRUEBA DE BACKEND/API] Gravedad de Obra: comprobando JSON autenticado y listado.
+.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_informe_avance.py 
+[PRUEBA DE BACKEND/API] Informe de Avance de Obra: comprobando listado JSON y control de sesión.
+.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_inspecciones.py 
+[PRUEBA DE BACKEND/API] Inspecciones: comprobando listado JSON de inspectores y sesión.
+.
+Concluyó prueba de Inspecciones — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_maquinaria.py 
+[PRUEBA DE BACKEND/API] Maquinaria: comprobando paginación y respuesta JSON.
+.
+Concluyó prueba de Maquinaria — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_obras.py 
+[PRUEBA DE BACKEND/API] Obras: comprobando listado JSON de estados y sesión.
+.
+Concluyó prueba de Obras — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_permisos_por_rol.py 
+[PRUEBA DE BACKEND/API] Permisos por Rol: comprobando autenticación, autorización y consulta por rol.
+.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_prioridad.py 
+[PRUEBA DE BACKEND/API] Prioridad: comprobando paginación y propagación de filtros.
+.
+Concluyó prueba de Prioridad — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_proyectos.py 
+[PRUEBA DE BACKEND/API] Proyectos: comprobando validación de código y parámetro consultado.
+.
+Concluyó prueba de Proyectos — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_publicaciones.py 
+[PRUEBA DE BACKEND/API] Publicaciones: comprobando validación JSON del informe asociado.
+.
+Concluyó prueba de Publicaciones — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_reportes_estadisticos.py 
+[PRUEBA DE BACKEND/API] Reportes Estadísticos: comprobando filtros y agrupación JSON.
+.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_reportes_excel.py 
+[PRUEBA DE BACKEND/API] Reportes Excel: comprobando autenticación y módulo no válido.
+.
+Concluyó prueba de Reportes Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_reportes_pdf.py 
+[PRUEBA DE BACKEND/API] Reportes PDF: comprobando autenticación y módulo no válido.
+.
+Concluyó prueba de Reportes PDF — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_solicitudes.py 
+[PRUEBA DE BACKEND/API] Solicitudes: comprobando JSON autenticado y control de sesión.
+.
+Concluyó prueba de Solicitudes — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_api_usuarios.py 
+[PRUEBA DE BACKEND/API] Usuarios: comprobando autenticación, permiso y usuario inexistente.
+.
+Concluyó prueba de Usuarios — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+tests\api\test_parametrizacion_reportes.py 
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[PRUEBA DE BACKEND/API] Reportes PDF y Excel: comprobando propagación de filtros de formularios.
+.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — Resultado: APROBADA.
+
+[EVIDENCIA] Resumen de capturas guardado en: C:\laragon\www\INVISAP\my-app\tests\evidence\evidence_summary.json
+  unit: 0 capturas
+  integration: 0 capturas
+  api: 0 capturas
+  smoke: 0 capturas
+  ui: 0 capturas
+  performance: 0 capturas
+  acceptance: 0 capturas
+
+
+============================== warnings summary ===============================
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_contrataciones_con_filtros_multiples_fechas
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_empleados_con_filtro_cargo_y_fechas
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_obras_con_filtro_titulo
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_obras_ignora_filtros_comunes_no_aplicables
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_sin_filtros_genera_reporte_general
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_solicitudes_con_filtro_cedula
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_solicitudes_con_multiples_filtros
+  C:\laragon\www\INVISAP\my-app\.venv\Lib\site-packages\openpyxl\packaging\core.py:99: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = datetime.datetime.utcnow()
+
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_contrataciones_con_filtros_multiples_fechas
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_empleados_con_filtro_cargo_y_fechas
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_obras_con_filtro_titulo
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_obras_ignora_filtros_comunes_no_aplicables
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_sin_filtros_genera_reporte_general
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_solicitudes_con_filtro_cedula
+tests/api/test_parametrizacion_reportes.py::ReportesExcelTestCase::test_solicitudes_con_multiples_filtros
+  C:\laragon\www\INVISAP\my-app\.venv\Lib\site-packages\openpyxl\writer\excel.py:292: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    workbook.properties.modified = datetime.datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================ RESUMEN DE PRUEBAS DE BACKEND/API POR MÓDULO =================
+Concluyó prueba de Administración de Respaldos — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Bitácora — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Contratación — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Empleados — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Empresa — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Evidencias — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Gravedad de Obra — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Informe de Avance de Obra — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Inspecciones — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Maquinaria — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Obras — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Permisos por Rol — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Prioridad — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Proyectos — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Publicaciones — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Reportes Estadísticos — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Reportes Excel — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Reportes PDF — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Solicitudes — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Usuarios — Tipo: Prueba de backend (API) — APROBADA: 1 aprobadas, 0 fallidas, 0 omitidas.
+Concluyó prueba de Reportes PDF y Excel — Tipo: Prueba de backend (API) — APROBADA: 13 aprobadas, 0 fallidas, 0 omitidas.
+======================= 33 passed, 14 warnings in 7.13s =======================
