@@ -1,0 +1,3 @@
+http://127.0.0.1:5600/restablecer-clave (POST)  # c:/sqlmap/sqlmapproject-sqlmap-5b18053/sqlmap.py -u http://127.0.0.1:5600/restablecer-clave --method=POST --data=new_password=Test123%21&confirm_password=Test123%21 --batch --level=2 --risk=2 --output-dir=C:\laragon\www\INVISAP\my-app\tests\security\sqlmap_results --flush-session
+
+new_password=Test123!&confirm_password=Test123!

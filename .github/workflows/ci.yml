@@ -7,8 +7,19 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  security:
     runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install Bandit
+      run: pip install bandit
+    - name: Run Bandit
+      run: bandit -r my-app/controllers my-app/models my-app/app.py -f json -o my-app/tests/security/bandit_report.json || true
 
     steps:
     - name: Checkout repo
