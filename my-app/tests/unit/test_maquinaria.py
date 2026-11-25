@@ -8,15 +8,19 @@ from models.model_maquinaria import MaquinariaModel
 def test_valida_nombre_y_tipo_de_maquinaria():
     modelo = MaquinariaModel()
 
+    # INICIO DE ASERCIÓN: Verificar validación de nombre y tipo
     assert modelo.validar_nombre('Excavadora')['valido'] is True
     assert modelo.validar_tipo('Pesada')['valido'] is True
+    # FIN DE ASERCIÓN
 
 
 def test_rechaza_nombre_corto_y_tipo_ajeno_al_catalogo():
     modelo = MaquinariaModel()
 
+    # INICIO DE ASERCIÓN: Verificar rechazo de nombre corto y tipo inválido
     assert modelo.validar_nombre('AB')['valido'] is False
     assert modelo.validar_tipo('Aeronave')['valido'] is False
+    # FIN DE ASERCIÓN
 
 
 def _conexion_maquinaria():
@@ -31,10 +35,13 @@ def test_listado_paginado_y_conteo_usan_sql_y_limpian_conexion():
     cursor.fetchall.return_value = [{'id_maquinaria': 4}]
     cursor.fetchone.return_value = (3,)
 
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
     with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+        # INICIO DE MOCK: Llamar obtener_maquinarias y contar_maquinarias
         assert modelo.obtener_maquinarias(page=3, per_page=5) == [{'id_maquinaria': 4}]
         assert modelo.contar_maquinarias() == 3
 
+    # INICIO DE ASERCIÓN: Verificar consultas SQL y cierre de recursos
     cursor.execute.assert_any_call(
         'SELECT * FROM maquinaria WHERE estado = 1 ORDER BY id_maquinaria DESC LIMIT %s OFFSET %s',
         (5, 10),
@@ -42,6 +49,7 @@ def test_listado_paginado_y_conteo_usan_sql_y_limpian_conexion():
     cursor.execute.assert_any_call('SELECT COUNT(*) FROM maquinaria WHERE estado = 1')
     assert cursor.close.call_count == 2
     assert conexion.close.call_count == 2
+    # FIN DE ASERCIÓN
 
 
 def test_consulta_maquinarias_eliminadas_y_por_id():
@@ -50,15 +58,19 @@ def test_consulta_maquinarias_eliminadas_y_por_id():
     cursor.fetchall.return_value = [{'id_maquinaria': 2, 'estado': 0}]
     cursor.fetchone.return_value = {'id_maquinaria': 2}
 
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
     with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+        # INICIO DE MOCK: Llamar obtener_maquinarias_eliminadas y obtener_maquinaria_por_id
         assert modelo.obtener_maquinarias_eliminadas() == [{'id_maquinaria': 2, 'estado': 0}]
         assert modelo.obtener_maquinaria_por_id(2) == {'id_maquinaria': 2}
 
+    # INICIO DE ASERCIÓN: Verificar consultas y cierre
     cursor.execute.assert_any_call(
         'SELECT * FROM maquinaria WHERE estado = 0 ORDER BY id_maquinaria DESC'
     )
     cursor.execute.assert_any_call('SELECT * FROM maquinaria WHERE id_maquinaria = %s', (2,))
     assert conexion.close.call_count == 2
+    # FIN DE ASERCIÓN
 
 
 @pytest.mark.parametrize(
@@ -73,27 +85,35 @@ def test_restaurar_maquinaria_devuelve_estado_y_confirma(rowcount, expected):
     conexion, cursor = _conexion_maquinaria()
     cursor.rowcount = rowcount
 
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
     with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+        # INICIO DE MOCK: Llamar restaurar_maquinaria
         assert modelo.restaurar_maquinaria(6) == expected
 
+    # INICIO DE ASERCIÓN: Verificar UPDATE, commit y cierre
     cursor.execute.assert_called_once_with(
         'UPDATE maquinaria SET estado = 1 WHERE id_maquinaria = %s AND estado = 0', (6,)
     )
     conexion.commit.assert_called_once_with()
     cursor.close.assert_called_once_with()
     conexion.close.assert_called_once_with()
+    # FIN DE ASERCIÓN
 
 
 def test_registrar_maquinaria_rechaza_datos_antes_de_conectar():
     modelo = MaquinariaModel()
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
     with patch.object(modelo, 'obtener_conexion_estricta') as conectar:
+        # INICIO DE MOCK: Llamar registrar_maquinaria con datos inválidos
         assert modelo.registrar_maquinaria('AB', 'Pesada') == {
             'success': False, 'message': 'El nombre debe tener al menos 3 caracteres'
         }
         assert modelo.registrar_maquinaria('Grúa', 'Aeronave') == {
             'success': False, 'message': 'Debe seleccionar un tipo válido'
         }
+    # INICIO DE ASERCIÓN: Verificar que no se llama a la BD
     conectar.assert_not_called()
+    # FIN DE ASERCIÓN
 
 
 @pytest.mark.parametrize(
@@ -110,9 +130,12 @@ def test_registrar_maquinaria_maneja_registro_existente(existing, expected):
     conexion, cursor = _conexion_maquinaria()
     cursor.fetchone.return_value = existing
 
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
     with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+        # INICIO DE MOCK: Llamar registrar_maquinaria
         assert modelo.registrar_maquinaria('  Excavadora  ', 'Pesada') == expected
 
+    # INICIO DE ASERCIÓN: Verificar SELECT, cantidad de execute, commit y cierre
     cursor.execute.assert_any_call(
         'SELECT id_maquinaria, estado FROM maquinaria WHERE nombre_maquinaria = %s',
         ('Excavadora',),
@@ -121,6 +144,7 @@ def test_registrar_maquinaria_maneja_registro_existente(existing, expected):
     assert conexion.commit.call_count == (1 if existing['estado'] == 0 else 0)
     cursor.close.assert_called_once_with()
     conexion.close.assert_called_once_with()
+    # FIN DE ASERCIÓN
 
 
 def test_registrar_maquinaria_inserta_y_reintenta_colision_de_id():
@@ -132,9 +156,12 @@ def test_registrar_maquinaria_inserta_y_reintenta_colision_de_id():
     ]
     cursor.lastrowid = 12
 
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
     with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+        # INICIO DE MOCK: Llamar registrar_maquinaria
         resultado = modelo.registrar_maquinaria('Excavadora', 'Pesada')
 
+    # INICIO DE ASERCIÓN: Verificar resultado, reintentos, rollback/commit y cierre
     assert resultado == {
         'success': True, 'id': 12, 'message': 'Maquinaria registrada correctamente'
     }
@@ -146,24 +173,29 @@ def test_registrar_maquinaria_inserta_y_reintenta_colision_de_id():
     conexion.commit.assert_called_once_with()
     cursor.close.assert_called_once_with()
     conexion.close.assert_called_once_with()
+    # FIN DE ASERCIÓN
 
 
 def test_actualizar_maquinaria_valida_antes_de_sql_y_actualiza_los_valores():
     modelo = MaquinariaModel()
     conexion, cursor = _conexion_maquinaria()
 
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
     with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+        # INICIO DE MOCK: Llamar actualizar_maquinaria con datos inválidos y válidos
         assert modelo.actualizar_maquinaria(5, 'x', 'Pesada')['success'] is False
         assert modelo.actualizar_maquinaria(5, ' Excavadora ', 'Pesada') == {
             'success': True, 'message': 'Maquinaria actualizada correctamente'
         }
 
+    # INICIO DE ASERCIÓN: Verificar UPDATE, commit y cierre
     cursor.execute.assert_called_once_with(
         'UPDATE maquinaria SET nombre_maquinaria = %s, tipo_maquinaria = %s WHERE id_maquinaria = %s',
         ('Excavadora', 'Pesada', 5),
     )
     conexion.commit.assert_called_once_with()
     assert conexion.close.call_count == 1
+    # FIN DE ASERCIÓN
 
 
 @pytest.mark.parametrize(
@@ -175,9 +207,12 @@ def test_eliminar_maquinaria_respeta_uso_en_proyectos(used_count, expected):
     conexion, cursor = _conexion_maquinaria()
     cursor.fetchone.return_value = {'count': used_count}
 
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
     with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+        # INICIO DE MOCK: Llamar eliminar_maquinaria
         assert modelo.eliminar_maquinaria(9) == expected
 
+    # INICIO DE ASERCIÓN: Verificar consulta de uso, UPDATE/DELETE, commit y cierre
     cursor.execute.assert_any_call(
         'SELECT COUNT(*) as count FROM proyecto_has_maquinaria WHERE maquinaria_id_maquinaria = %s',
         (9,),
@@ -192,6 +227,7 @@ def test_eliminar_maquinaria_respeta_uso_en_proyectos(used_count, expected):
         conexion.commit.assert_called_once_with()
     cursor.close.assert_called_once_with()
     conexion.close.assert_called_once_with()
+    # FIN DE ASERCIÓN
 
 
 @pytest.mark.parametrize(
@@ -212,7 +248,9 @@ def test_metodos_de_consulta_y_mutacion_capturan_fallos_y_cierran(method, expect
     cursor.execute.side_effect = RuntimeError('fallo simulado')
     cursor.fetchone.side_effect = RuntimeError('fallo simulado')
 
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
     with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
+        # INICIO DE MOCK: Llamar método correspondiente
         if method == 'obtener_maquinarias':
             actual = modelo.obtener_maquinarias()
         elif method == 'contar_maquinarias':
@@ -227,5 +265,7 @@ def test_metodos_de_consulta_y_mutacion_capturan_fallos_y_cierran(method, expect
             actual = modelo.actualizar_maquinaria(1, 'Excavadora', 'Pesada')
         else:
             actual = modelo.eliminar_maquinaria(1)
+    # INICIO DE ASERCIÓN: Verificar resultado esperado y cierre
     assert actual == expected
     conexion.close.assert_called_once_with()
+    # FIN DE ASERCIÓN

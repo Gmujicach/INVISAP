@@ -6,18 +6,24 @@ from models.model_obra import ObraModel
 
 
 def test_valida_texto_y_numero_de_contrato():
+    # INICIO DE ASERCIÓN: Verificar validadores de texto y número de contrato
     assert ObraModel._es_texto_valido('Reparación de vía') is True
     assert ObraModel._es_numero_contrato_valido('CTR-001/2025') is True
+    # FIN DE ASERCIÓN
 
 
 def test_rechaza_texto_o_numero_de_contrato_con_caracteres_invalidos():
+    # INICIO DE ASERCIÓN: Verificar rechazo de caracteres inválidos
     assert ObraModel._es_texto_valido('<script>') is False
     assert ObraModel._es_numero_contrato_valido('CTR;DROP') is False
+    # FIN DE ASERCIÓN
 
 
 def test_fecha_fin_no_puede_ser_anterior_a_fecha_inicio():
+    # INICIO DE ASERCIÓN: Verificar validación de fechas
     assert ObraModel._validar_fechas('2025-02-01', '2025-01-31') is False
     assert ObraModel._validar_fechas('2025-01-01', '2025-02-01') is True
+    # FIN DE ASERCIÓN
 
 
 def _datos_obra():
@@ -45,6 +51,7 @@ def _obra_db():
 
 
 def test_validadores_estaticos_fechas_y_conexion_controlada(monkeypatch):
+    # INICIO DE ASERCIÓN: Verificar validadores estáticos
     assert ObraModel._es_texto_valido('  Reparación vial  ', 45) is True
     assert ObraModel._es_texto_valido('', 45) is False
     assert ObraModel._es_texto_valido('texto<script>', 100) is False
@@ -54,14 +61,19 @@ def test_validadores_estaticos_fechas_y_conexion_controlada(monkeypatch):
     assert ObraModel._validar_fechas(None, 'fecha invalida') is True
     assert ObraModel._validar_fechas('2025-02-01', '2025-02-01 10:00:00') is True
     assert ObraModel._validar_fechas('2025-03-01', '2025-02-28') is False
+    # FIN DE ASERCIÓN
 
     conexion, cursor = _obra_db()
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
     monkeypatch.setattr(ObraModel, 'obtener_conexion_estricta', staticmethod(lambda: conexion))
+    # INICIO DE MOCK: Llamar _con
     assert ObraModel._con() is conexion
     ObraModel._eliminar_trigger_semaforo()
+    # INICIO DE ASERCIÓN: Verificar ejecución de trigger y commit/close
     cursor.execute.assert_called_once_with('DROP TRIGGER IF EXISTS actualizar_semaforo_obra')
     conexion.commit.assert_called_once_with()
     conexion.close.assert_called_once_with()
+    # FIN DE ASERCIÓN
 
 
 def test_lecturas_validaciones_duplicados_y_listas_cierran_recursos():
@@ -71,7 +83,9 @@ def test_lecturas_validaciones_duplicados_y_listas_cierran_recursos():
     cursor.fetchone.side_effect = [
         {'id_obra': 4}, (1,), None, (1,), None, (1,),
     ]
+    # INICIO DE MOCK: Parchear _con
     with patch.object(modelo, '_con', return_value=conexion):
+        # INICIO DE MOCK: Llamar métodos SQL
         assert modelo._sql_obtener_todas() == [{'id_obra': 3}]
         assert modelo._sql_obtener_por_id(4) == {'id_obra': 4}
         assert modelo._sql_validar_estado(2) is True
@@ -82,25 +96,31 @@ def test_lecturas_validaciones_duplicados_y_listas_cierran_recursos():
         assert modelo._sql_listar_estados() == [{'id_obra': 3}]
         assert modelo._sql_listar_contrataciones() == [{'id_obra': 3}]
         assert modelo._sql_listar_proyectos() == [{'id_obra': 3}]
+    # INICIO DE ASERCIÓN: Verificar llamadas y cierre de recursos
     assert any(call.args[1] == (4,) for call in cursor.execute.call_args_list if len(call.args) > 1)
     assert any(call.args[1] == (2,) for call in cursor.execute.call_args_list if len(call.args) > 1)
     assert cursor.close.call_count == 9
     assert conexion.close.call_count == 9
+    # FIN DE ASERCIÓN
 
 
 def test_numero_contrato_duplicado_filtra_edicion_y_no_consulta_placeholders():
     modelo = ObraModel()
     conexion, cursor = _obra_db()
     cursor.fetchone.return_value = (1,)
+    # INICIO DE MOCK: Parchear _con
     with patch.object(modelo, '_con', return_value=conexion):
+        # INICIO DE MOCK: Llamar _sql_validar_numero_contrato_duplicado
         assert modelo._sql_validar_numero_contrato_duplicado('CTR-5', excluir_id_obra=10) is True
         assert modelo._sql_validar_numero_contrato_duplicado('S/N') is False
+    # INICIO DE ASERCIÓN: Verificar consulta y cierre de recursos
     cursor.execute.assert_called_once_with(
         'SELECT 1 FROM obra WHERE numero_contrato = %s AND id_obra != %s AND estado = 1 LIMIT 1',
         ('CTR-5', 10),
     )
     assert cursor.close.call_count == 1
     assert conexion.close.call_count == 1
+    # FIN DE ASERCIÓN
 
 
 @pytest.mark.parametrize(
@@ -114,9 +134,13 @@ def test_insertar_obra_rechaza_campos_requeridos_antes_de_conectar(field, expect
     modelo = ObraModel()
     datos = _datos_obra()
     datos.pop(field)
+    # INICIO DE MOCK: Parchear _con
     with patch.object(modelo, '_con') as conectar:
+        # INICIO DE MOCK: Llamar _sql_insertar
         assert modelo._sql_insertar(datos) == (False, expected)
+    # INICIO DE ASERCIÓN: Verificar que no se llama a la BD
     conectar.assert_not_called()
+    # FIN DE ASERCIÓN
 
 
 def test_insertar_obra_valida_datos_transacciona_y_deriva_semaforo():
@@ -124,12 +148,15 @@ def test_insertar_obra_valida_datos_transacciona_y_deriva_semaforo():
     datos = _datos_obra()
     conexion, cursor = _obra_db()
     cursor.lastrowid = 41
+    # INICIO DE MOCK: Parchear métodos de validación y conexión
     with patch.object(modelo, '_sql_validar_numero_contrato_duplicado', return_value=False), \
             patch.object(modelo, '_sql_validar_estado', return_value=True) as estado, \
             patch.object(modelo, '_sql_validar_contratacion', return_value=True), \
             patch.object(modelo, '_sql_validar_proyecto', return_value=True), \
             patch.object(modelo, '_con', return_value=conexion):
+        # INICIO DE MOCK: Llamar _sql_insertar
         assert modelo._sql_insertar(datos) == (True, 41)
+    # INICIO DE ASERCIÓN: Verificar validaciones, transacción, SQL y commit/close
     estado.assert_called_once_with(1)
     conexion.start_transaction.assert_called_once_with()
     sql, valores = cursor.execute.call_args.args
@@ -142,29 +169,36 @@ def test_insertar_obra_valida_datos_transacciona_y_deriva_semaforo():
     conexion.commit.assert_called_once_with()
     cursor.close.assert_called_once_with()
     conexion.close.assert_called_once_with()
+    # FIN DE ASERCIÓN
 
 
 def test_insertar_obra_rechaza_validacion_y_revierte_error_sql():
     modelo = ObraModel()
     datos = _datos_obra()
     datos['porcentaje_avance_obra'] = '101'
+    # INICIO DE ASERCIÓN: Verificar rechazo por porcentaje inválido
     assert modelo._sql_insertar(datos) == (
         False, 'Porcentaje de avance debe estar entre 0 y 100.'
     )
+    # FIN DE ASERCIÓN
 
     datos = _datos_obra()
     conexion, cursor = _obra_db()
     cursor.execute.side_effect = RuntimeError('fallo de inserción')
+    # INICIO DE MOCK: Parchear métodos de validación y conexión con error
     with patch.object(modelo, '_sql_validar_numero_contrato_duplicado', return_value=False), \
             patch.object(modelo, '_sql_validar_estado', return_value=True), \
             patch.object(modelo, '_sql_validar_contratacion', return_value=True), \
             patch.object(modelo, '_sql_validar_proyecto', return_value=True), \
             patch.object(modelo, '_con', return_value=conexion):
+        # INICIO DE MOCK: Llamar _sql_insertar con error SQL
         resultado = modelo._sql_insertar(datos)
+    # INICIO DE ASERCIÓN: Verificar rollback y cierre
     assert resultado == (False, 'Error al registrar obra: fallo de inserción')
     conexion.rollback.assert_called_once_with()
     cursor.close.assert_called_once_with()
     conexion.close.assert_called_once_with()
+    # FIN DE ASERCIÓN
 
 
 def test_actualizar_obra_verifica_existencia_y_guarda_valores_con_transaccion():
@@ -172,6 +206,7 @@ def test_actualizar_obra_verifica_existencia_y_guarda_valores_con_transaccion():
     datos = _datos_obra()
     conexion, cursor = _obra_db()
     cursor.rowcount = 1
+    # INICIO DE MOCK: Parchear métodos de validación, trigger y conexión
     with patch.object(modelo, '_sql_obtener_por_id', return_value={'id_obra': 9}), \
             patch.object(modelo, '_sql_validar_numero_contrato_duplicado', return_value=False), \
             patch.object(modelo, '_sql_validar_estado', return_value=True), \
@@ -179,13 +214,16 @@ def test_actualizar_obra_verifica_existencia_y_guarda_valores_con_transaccion():
             patch.object(modelo, '_sql_validar_proyecto', return_value=True), \
             patch.object(ObraModel, '_eliminar_trigger_semaforo'), \
             patch.object(modelo, '_con', return_value=conexion):
+        # INICIO DE MOCK: Llamar _sql_actualizar
         assert modelo._sql_actualizar(9, datos) == (True, 1)
+    # INICIO DE ASERCIÓN: Verificar transacción, SQL, commit y cierre
     conexion.start_transaction.assert_called_once_with()
     assert 'UPDATE obra SET' in cursor.execute.call_args.args[0]
     assert cursor.execute.call_args.args[1][-1] == 9
     conexion.commit.assert_called_once_with()
     cursor.close.assert_called_once_with()
     conexion.close.assert_called_once_with()
+    # FIN DE ASERCIÓN
 
 
 def test_eliminar_obra_solo_actualiza_registro_activo():
@@ -193,9 +231,12 @@ def test_eliminar_obra_solo_actualiza_registro_activo():
     conexion, cursor = _obra_db()
     cursor.fetchone.return_value = (9,)
     cursor.rowcount = 1
+    # INICIO DE MOCK: Parchear trigger y conexión
     with patch.object(ObraModel, '_eliminar_trigger_semaforo'), \
             patch.object(modelo, '_con', return_value=conexion):
+        # INICIO DE MOCK: Llamar _sql_eliminar
         assert modelo._sql_eliminar(9) == (True, 1)
+    # INICIO DE ASERCIÓN: Verificar SELECT y UPDATE, commit
     assert cursor.execute.call_args_list[0].args == (
         'SELECT id_obra FROM obra WHERE id_obra = %s AND estado = 1', (9,)
     )
@@ -203,6 +244,7 @@ def test_eliminar_obra_solo_actualiza_registro_activo():
         'UPDATE obra SET estado = 0 WHERE id_obra = %s AND estado = 1', (9,)
     )
     conexion.commit.assert_called_once_with()
+    # FIN DE ASERCIÓN
 
 
 def test_metodos_publicos_de_obra_encaminan_a_sql_helpers():
@@ -221,9 +263,13 @@ def test_metodos_publicos_de_obra_encaminan_a_sql_helpers():
         ('listar_proyectos', '_sql_listar_proyectos', (), []),
     ]
     for public_name, sql_name, args, expected in mapping:
+        # INICIO DE MOCK: Parchear método SQL
         with patch.object(modelo, sql_name, return_value=expected) as delegate:
+            # INICIO DE MOCK: Llamar método público
             assert getattr(modelo, public_name)(*args) == expected
+        # INICIO DE ASERCIÓN: Verificar delegación
         delegate.assert_called_once_with(*args)
+        # FIN DE ASERCIÓN
 
 
 def test_asegurar_tabla_obra_agrega_columna_solo_si_falta(monkeypatch):
@@ -232,9 +278,12 @@ def test_asegurar_tabla_obra_agrega_columna_solo_si_falta(monkeypatch):
     conexion, cursor = _obra_db()
     cursor.fetchone.return_value = None
     monkeypatch.setattr(ObraModel, 'obtener_conexion', staticmethod(lambda: conexion))
+    # INICIO DE MOCK: Llamar asegurar_tabla_obra
     model_obra.asegurar_tabla_obra()
+    # INICIO DE ASERCIÓN: Verificar SHOW COLUMNS y ALTER TABLE, commit/close
     cursor.execute.assert_any_call("SHOW COLUMNS FROM obra LIKE 'activo'")
     assert 'ALTER TABLE obra ADD COLUMN activo' in cursor.execute.call_args_list[1].args[0]
     conexion.commit.assert_called_once_with()
     cursor.close.assert_called_once_with()
     conexion.close.assert_called_once_with()
+    # FIN DE ASERCIÓN
