@@ -7,15 +7,19 @@ from services.filtros_service import FiltrosQueryBuilder
 
 
 @pytest.mark.parametrize(
-    'model',
-    [ReporteEstadisticoModel, ReporteExcelModel, ReportePDFModel],
+    'model, private_method',
+    [
+        (ReporteEstadisticoModel, '_ReporteEstadisticoModel__aplicar_filtros'),
+        (ReporteExcelModel, '_ReporteExcelModel__aplicar_filtros'),
+        (ReportePDFModel, '_ReportePDFModel__aplicar_filtros'),
+    ],
 )
-def test_report_filters_ignore_unmapped_sql_identifiers(model):
+def test_report_filters_ignore_unmapped_sql_identifiers(model, private_method):
     where = []
     params = []
     attack = "nombre) OR 1=1 --"
 
-    model()._aplicar_filtros(
+    getattr(model(), private_method)(
         where,
         params,
         {attack: 'valor'},
@@ -27,15 +31,19 @@ def test_report_filters_ignore_unmapped_sql_identifiers(model):
 
 
 @pytest.mark.parametrize(
-    'model',
-    [ReporteEstadisticoModel, ReporteExcelModel, ReportePDFModel],
+    'model, private_method',
+    [
+        (ReporteEstadisticoModel, '_ReporteEstadisticoModel__aplicar_filtros'),
+        (ReporteExcelModel, '_ReporteExcelModel__aplicar_filtros'),
+        (ReportePDFModel, '_ReportePDFModel__aplicar_filtros'),
+    ],
 )
-def test_report_filters_bind_values_for_mapped_columns(model):
+def test_report_filters_bind_values_for_mapped_columns(model, private_method):
     where = []
     params = []
     value = "' OR 1=1 --"
 
-    model()._aplicar_filtros(where, params, {'nombre': value}, {'nombre': 'e.nombre'})
+    getattr(model(), private_method)(where, params, {'nombre': value}, {'nombre': 'e.nombre'})
 
     assert where == ['e.nombre LIKE %s']
     assert params == [f'%{value}%']
@@ -157,57 +165,57 @@ def test_query_builder_accepts_valid_join_shapes_and_rejects_non_equality_join()
 
 
 @pytest.mark.parametrize(
-    ('model', 'filters', 'mapping', 'expected_where', 'expected_params'),
+    ('model', 'private_method', 'filters', 'mapping', 'expected_where', 'expected_params'),
     [
-        (ReporteEstadisticoModel, {}, {'nombre': 'e.nombre'}, [], []),
-        (ReporteEstadisticoModel, {'tipo_reporte': 'obras', 'agrupacion': 'mes'}, {}, [], []),
-        (ReporteEstadisticoModel, {'correo_dominio': 'x.test'}, {'correo_dominio': 'u.correo'}, ['u.correo LIKE %s'], ['%x.test%']),
-        (ReporteEstadisticoModel, {'fecha_creacion_desde': '2026-02-01', 'fecha_creacion_hasta': '2026-02-28'},
+        (ReporteEstadisticoModel, '_ReporteEstadisticoModel__aplicar_filtros', {}, {'nombre': 'e.nombre'}, [], []),
+        (ReporteEstadisticoModel, '_ReporteEstadisticoModel__aplicar_filtros', {'tipo_reporte': 'obras', 'agrupacion': 'mes'}, {}, [], []),
+        (ReporteEstadisticoModel, '_ReporteEstadisticoModel__aplicar_filtros', {'correo_dominio': 'x.test'}, {'correo_dominio': 'u.correo'}, ['u.correo LIKE %s'], ['%x.test%']),
+        (ReporteEstadisticoModel, '_ReporteEstadisticoModel__aplicar_filtros', {'fecha_creacion_desde': '2026-02-01', 'fecha_creacion_hasta': '2026-02-28'},
          {'fecha_creacion_desde': 'o.fecha', 'fecha_creacion_hasta': 'o.fecha'},
          ['DATE(o.fecha) >= %s', 'DATE(o.fecha) <= %s'], ['2026-02-01', '2026-02-28']),
-        (ReporteEstadisticoModel, {'porcentaje_avance_min': 0, 'porcentaje_avance_max': 85},
+        (ReporteEstadisticoModel, '_ReporteEstadisticoModel__aplicar_filtros', {'porcentaje_avance_min': 0, 'porcentaje_avance_max': 85},
          {}, ['o.porcentaje_avance_obra >= %s', 'o.porcentaje_avance_obra <= %s'], [0, 85]),
-        (ReporteEstadisticoModel, {'sector': 'norte', 'ambito': 'rural'},
+        (ReporteEstadisticoModel, '_ReporteEstadisticoModel__aplicar_filtros', {'sector': 'norte', 'ambito': 'rural'},
          {}, ['com.sector LIKE %s', 'com.ambito LIKE %s'], ['%norte%', '%rural%']),
-        (ReporteEstadisticoModel, {'estado': '1'}, {'estado': 'e.estado'}, ['e.estado = %s'], [1]),
-        (ReporteEstadisticoModel, {'estado': 'Activo'}, {'estado': 'e.estado'}, ['e.estado LIKE %s'], ['%Activo%']),
-        (ReporteExcelModel, {'nombre_solicitante': 'Ana'}, {},
+        (ReporteEstadisticoModel, '_ReporteEstadisticoModel__aplicar_filtros', {'estado': '1'}, {'estado': 'e.estado'}, ['e.estado = %s'], [1]),
+        (ReporteEstadisticoModel, '_ReporteEstadisticoModel__aplicar_filtros', {'estado': 'Activo'}, {'estado': 'e.estado'}, ['e.estado LIKE %s'], ['%Activo%']),
+        (ReporteExcelModel, '_ReporteExcelModel__aplicar_filtros', {'nombre_solicitante': 'Ana'}, {},
          ['(COALESCE(part.nombre, inst.razon_social, com.nombre_comunidad) LIKE %s)'], ['%Ana%']),
-        (ReporteExcelModel, {'titulo_obra': 'Puente'}, {},
+        (ReporteExcelModel, '_ReporteExcelModel__aplicar_filtros', {'titulo_obra': 'Puente'}, {},
          ['o.titulo_obra LIKE %s'], ['%Puente%']),
-        (ReporteExcelModel, {'porcentaje_avance_min': 30}, {'porcentaje_avance_min': 'o.porcentaje_avance_min'},
+        (ReporteExcelModel, '_ReporteExcelModel__aplicar_filtros', {'porcentaje_avance_min': 30}, {'porcentaje_avance_min': 'o.porcentaje_avance_min'},
          ['o.porcentaje_avance >= %s'], [30]),
-        (ReporteExcelModel, {'estado': '0'}, {'estado': 'e.estado'}, ['e.estado = %s'], [0]),
-        (ReporteExcelModel, {'estado': 'Activo'}, {'estado': 'e.estado'}, [], []),
-        (ReportePDFModel, {'ambito': 'urbano'}, {}, ['com.ambito LIKE %s'], ['%urbano%']),
-        (ReportePDFModel, {'correo_dominio': 'example'}, {'correo_dominio': 'p.correo'}, ['p.correo LIKE %s'], ['%example%']),
+        (ReporteExcelModel, '_ReporteExcelModel__aplicar_filtros', {'estado': '0'}, {'estado': 'e.estado'}, ['e.estado = %s'], [0]),
+        (ReporteExcelModel, '_ReporteExcelModel__aplicar_filtros', {'estado': 'Activo'}, {'estado': 'e.estado'}, [], []),
+        (ReportePDFModel, '_ReportePDFModel__aplicar_filtros', {'ambito': 'urbano'}, {}, ['com.ambito LIKE %s'], ['%urbano%']),
+        (ReportePDFModel, '_ReportePDFModel__aplicar_filtros', {'correo_dominio': 'example'}, {'correo_dominio': 'p.correo'}, ['p.correo LIKE %s'], ['%example%']),
     ],
 )
 def test_report_filter_helper_maps_only_supported_filters(
-    model, filters, mapping, expected_where, expected_params
+    model, private_method, filters, mapping, expected_where, expected_params
 ):
     where = []
     params = []
 
-    model()._aplicar_filtros(where, params, filters, mapping)
+    getattr(model(), private_method)(where, params, filters, mapping)
 
     assert where == expected_where
     assert params == expected_params
 
 
 @pytest.mark.parametrize(
-    ('model', 'filters', 'mapping'),
+    ('model', 'private_method', 'filters', 'mapping'),
     [
-        (ReporteEstadisticoModel, {'nombre': '', 'otra': 'x'}, {'nombre': 'e.nombre'}),
-        (ReporteExcelModel, {'nombre': '', 'sin_mapa': 'ignored'}, {'nombre': 'e.nombre'}),
-        (ReportePDFModel, {'sin_mapa': 'ignored'}, {}),
+        (ReporteEstadisticoModel, '_ReporteEstadisticoModel__aplicar_filtros', {'nombre': '', 'otra': 'x'}, {'nombre': 'e.nombre'}),
+        (ReporteExcelModel, '_ReporteExcelModel__aplicar_filtros', {'nombre': '', 'sin_mapa': 'ignored'}, {'nombre': 'e.nombre'}),
+        (ReportePDFModel, '_ReportePDFModel__aplicar_filtros', {'sin_mapa': 'ignored'}, {}),
     ],
 )
-def test_report_filter_helper_ignores_empty_and_unmapped_filter_values(model, filters, mapping):
+def test_report_filter_helper_ignores_empty_and_unmapped_filter_values(model, private_method, filters, mapping):
     where = []
     params = []
 
-    model()._aplicar_filtros(where, params, filters, mapping)
+    getattr(model(), private_method)(where, params, filters, mapping)
 
     assert where == []
     assert params == []

@@ -8,7 +8,7 @@ from models.model_reportesExcel import ReporteExcelModel
 def test_filtro_excel_ignora_columna_no_mapeada():
     where, params = [], []
 
-    ReporteExcelModel()._aplicar_filtros(
+    ReporteExcelModel()._ReporteExcelModel__aplicar_filtros(
         where, params, {'columna_arbitraria': 'valor'}, {'cedula': 'p.cedula_persona'}
     )
 
@@ -48,7 +48,7 @@ def test_generadores_excel_aplican_filtros_retorno_y_contexto_bd(
 ):
     modelo = ReporteExcelModel()
     rows = [{'id': 42}]
-    with patch.object(modelo, '_ejecutar_query', return_value=rows) as ejecutar:
+    with patch.object(modelo, '_ReporteExcelModel__ejecutar_query_db', return_value=rows) as ejecutar:
         assert getattr(modelo, method_name)(filters) is rows
 
     query = ejecutar.call_args.args[0]
@@ -60,7 +60,7 @@ def test_generadores_excel_aplican_filtros_retorno_y_contexto_bd(
 
 def test_filtros_excel_cubre_fechas_limites_estado_y_filtros_especiales():
     where, params = [], []
-    ReporteExcelModel()._aplicar_filtros(
+    ReporteExcelModel()._ReporteExcelModel__aplicar_filtros(
         where, params,
         {
             'fecha_desde': '2025-01-01',
@@ -103,7 +103,7 @@ def test_ejecutar_query_elige_conexion_y_limpia_cursor_y_conexion():
     cursor.fetchall.return_value = [{'nombre': 'Ana'}]
 
     with patch.object(modelo, 'obtener_conexion_seguridad', return_value=conexion) as seguridad:
-        assert modelo._ejecutar_query('SELECT nombre FROM usuarios', ['x'], 'seguridad') == [
+        assert modelo._ReporteExcelModel__ejecutar_query_db('SELECT nombre FROM usuarios', ['x'], 'seguridad') == [
             {'nombre': 'Ana'}
         ]
     seguridad.assert_called_once_with()
@@ -119,7 +119,7 @@ def test_ejecutar_query_cierra_recursos_si_execute_falla():
     cursor.execute.side_effect = RuntimeError('fallo simulado')
     with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
         with pytest.raises(RuntimeError, match='fallo simulado'):
-            modelo._ejecutar_query('SELECT 1')
+            modelo._ReporteExcelModel__ejecutar_query_db('SELECT 1')
     cursor.close.assert_called_once_with()
     conexion.close.assert_called_once_with()
 

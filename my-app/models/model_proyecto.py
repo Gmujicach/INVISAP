@@ -1,11 +1,96 @@
-from models.base_model import BaseModel
-import datetime
+"""
+ProyectoModel — Modelo SOLID/POO para gestión de proyectos.
+Implementa encapsulamiento, validaciones Regex, borrado lógico y relaciones.
+"""
+
+import re
 import json
+import datetime
+from models.base_model import BaseModel
 
 
 class ProyectoModel(BaseModel):
+    """Repositorio de proyectos con validación y encapsulamiento."""
+
+    _RE_CODIGO = re.compile(r'^[A-Za-z0-9\-_]{1,15}$')
+    _RE_TEXTO = re.compile(r'^[\w\s\.\,\-\#\/\(\)\:°º²ºáéíóúÁÉÍÓÚñÑ]{1,2500}$')
+    _RE_ESTIMACION = re.compile(r'^[\d\.,\s]{1,45}$')
+
     def __init__(self):
-        pass
+        # --- Atributos PRIVADOS para encapsulamiento (POO) ---
+        self.__codigo_proyecto = None
+        self.__fecha_planificacion = None
+        self.__descripcion_tecnica = None
+        self.__computos_metricos = []
+        self.__estimacion_costo = None
+        self.__proyecto_has_empleado = None
+        self.__estado = 1
+        self.__asegurar_descripcion_tecnica()
+
+    # ========== GETTERS Y SETTERS (Encapsulamiento) ==========
+
+    def get_codigo_proyecto(self):
+        return self.__codigo_proyecto
+
+    def set_codigo_proyecto(self, valor):
+        if not self._RE_CODIGO.match(str(valor or '').strip()):
+            raise ValueError("Código de proyecto inválido (máx 15 chars, alfanumérico, guiones).")
+        self.__codigo_proyecto = valor.strip()[:15]
+
+    def get_fecha_planificacion(self):
+        return self.__fecha_planificacion
+
+    def set_fecha_planificacion(self, valor):
+        fecha_raw = str(valor or '').strip()
+        if not fecha_raw:
+            self.__fecha_planificacion = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        elif len(fecha_raw) == 10:
+            ahora = datetime.datetime.now()
+            self.__fecha_planificacion = f"{fecha_raw} {ahora.strftime('%H:%M:%S')}"
+        else:
+            self.__fecha_planificacion = fecha_raw.replace('T', ' ')
+
+    def get_descripcion_tecnica(self):
+        return self.__descripcion_tecnica
+
+    def set_descripcion_tecnica(self, valor):
+        if not self._RE_TEXTO.match(str(valor or '')):
+            raise ValueError("Descripción técnica inválida.")
+        self.__descripcion_tecnica = self._limpiar_texto(valor, 2500)
+
+    def get_computos_metricos(self):
+        return self.__computos_metricos
+
+    def set_computos_metricos(self, valor):
+        self.__computos_metricos = self._parsear_computos_metricos(valor)
+
+    def get_estimacion_costo(self):
+        return self.__estimacion_costo
+
+    def set_estimacion_costo(self, valor):
+        if valor and not self._RE_ESTIMACION.match(str(valor)):
+            raise ValueError("Estimación de costo inválida.")
+        self.__estimacion_costo = str(valor or '')[:45]
+
+    def get_proyecto_has_empleado(self):
+        return self.__proyecto_has_empleado
+
+    def set_proyecto_has_empleado(self, valor):
+        if valor is not None:
+            try:
+                self.__proyecto_has_empleado = int(valor)
+            except (TypeError, ValueError):
+                self.__proyecto_has_empleado = None
+        else:
+            self.__proyecto_has_empleado = None
+
+    def get_estado(self):
+        return self.__estado
+
+    def set_estado(self, valor):
+        self.__estado = 1 if int(valor) else 0
+
+    # ========== MÉTODOS PRIVADOS DE UTILIDAD ==========
 
     @staticmethod
     def _parsear_computos_metricos(valor):
@@ -66,27 +151,44 @@ class ProyectoModel(BaseModel):
                 partes.append(texto.strip())
         return ', '.join(partes) if partes else ''
 
-    def _asegurar_descripcion_tecnica(self, conexion):
-        cursor = None
-        try:
+    def __asegurar_descripcion_tecnica(self, conexion=None):
+        if conexion is None:
+            conexion = self.obtener_conexion_estricta()
+            if not conexion:
+                return
             cursor = conexion.cursor()
-            cursor.execute("SHOW COLUMNS FROM proyecto LIKE 'descripcion_tecnica'")
-            columna = cursor.fetchone()
-            if columna and str(columna[1]).lower() != 'text':
-                cursor.execute("ALTER TABLE proyecto MODIFY COLUMN descripcion_tecnica TEXT NOT NULL")
-                conexion.commit()
-        except Exception as e:
-            print(f"Error al asegurar proyecto.descripcion_tecnica: {e}")
-        finally:
-            if cursor:
+            try:
+                cursor.execute("SHOW COLUMNS FROM proyecto LIKE 'descripcion_tecnica'")
+                columna = cursor.fetchone()
+                if columna and str(columna[1]).lower() != 'text':
+                    cursor.execute("ALTER TABLE proyecto MODIFY COLUMN descripcion_tecnica TEXT NOT NULL")
+                    conexion.commit()
+            finally:
+                cursor.close()
+        else:
+            cursor = conexion.cursor()
+            try:
+                cursor.execute("SHOW COLUMNS FROM proyecto LIKE 'descripcion_tecnica'")
+                columna = cursor.fetchone()
+                if columna and str(columna[1]).lower() != 'text':
+                    cursor.execute("ALTER TABLE proyecto MODIFY COLUMN descripcion_tecnica TEXT NOT NULL")
+                    conexion.commit()
+            finally:
                 cursor.close()
 
-    def validar_codigo_proyecto(self, codigo_proyecto):
-        conexion = None
+    # ========== MÉTODOS PRIVADOS DE BASE DE DATOS ==========
+
+    def __validar_codigo_proyecto_db(self, codigo_proyecto, excluir_id=None):
+        conexion = self.obtener_conexion_estricta()
         try:
-            conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor(dictionary=True)
-            cursor.execute("SELECT estado FROM proyecto WHERE codigo_proyecto = %s", (codigo_proyecto,))
+            if excluir_id:
+                cursor.execute(
+                    "SELECT estado FROM proyecto WHERE codigo_proyecto = %s AND codigo_proyecto != %s",
+                    (codigo_proyecto, excluir_id)
+                )
+            else:
+                cursor.execute("SELECT estado FROM proyecto WHERE codigo_proyecto = %s", (codigo_proyecto,))
             fila = cursor.fetchone()
             if fila:
                 if fila['estado'] == 0:
@@ -94,48 +196,45 @@ class ProyectoModel(BaseModel):
                 return {'existe_activo': True}
             return {'disponible': True}
         except Exception as e:
-            print(f"Error en ProyectoModel.validar_codigo_proyecto: {e}")
+            print(f"Error validando código proyecto: {e}")
             return {'error': True}
         finally:
-            if conexion: conexion.close()
+            cursor.close()
+            conexion.close()
 
-    def registrar_proyecto(self, datos):
+    def __registrar_proyecto_db(self, datos):
         conexion = None
-        valores = None
         try:
-            codigo_proy = datos.get('Codigo_p', '')[:15]
-            
-            val_result = self.validar_codigo_proyecto(codigo_proy)
+            self.set_codigo_proyecto(datos.get('Codigo_p', ''))
+            self.set_fecha_planificacion(datos.get('fecha_p'))
+            self.set_descripcion_tecnica(datos.get('observaciones', ''))
+            self.set_computos_metricos(datos.get('computos_p', []))
+            self.set_estimacion_costo(datos.get('estimacion_p', ''))
+            self.set_proyecto_has_empleado(datos.get('proyectista_p'))
+
+            val_result = self.__validar_codigo_proyecto_db(self.__codigo_proyecto)
             if val_result.get('existe_activo'):
-                raise Exception(f"El código {codigo_proy} ya existe en otro proyecto activo.")
+                raise Exception(f"El código {self.__codigo_proyecto} ya existe en otro proyecto activo.")
             if val_result.get('existe_eliminado'):
-                raise Exception(f"El código {codigo_proy} fue usado en un proyecto eliminado anteriormente. No se pueden reutilizar códigos.")
-            
+                raise Exception(f"El código {self.__codigo_proyecto} fue usado en un proyecto eliminado. No se pueden reutilizar códigos.")
+
             conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor(dictionary=True)
-            self._asegurar_descripcion_tecnica(conexion)
-            
-            sql = """INSERT INTO proyecto 
-          (codigo_proyecto, fecha_planificacion, descripcion_tecnica, 
-           computos_metricos, estimacion_costo, proyecto_has_empleado, estado) 
-          VALUES (%s, %s, %s, %s, %s, %s, 1)"""
-            
-            fecha_plan = datos.get('fecha_p')
-            if not fecha_plan:
-                fecha_plan = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            elif len(fecha_plan) == 10:
-                ahora = datetime.datetime.now()
-                fecha_plan = f"{fecha_plan} {ahora.strftime('%H:%M:%S')}"
+            self.__asegurar_descripcion_tecnica(conexion)
 
-            id_proyectista = datos.get('proyectista_p')
-            id_proyectista = int(id_proyectista) if id_proyectista and str(id_proyectista).isdigit() else None
+            sql = """INSERT INTO proyecto 
+              (codigo_proyecto, fecha_planificacion, descripcion_tecnica, 
+               computos_metricos, estimacion_costo, proyecto_has_empleado, estado) 
+              VALUES (%s, %s, %s, %s, %s, %s, 1)"""
+
+            id_proyectista = self.__proyecto_has_empleado
 
             valores = (
-                codigo_proy, 
-                fecha_plan,
-                datos.get('observaciones', '')[:2500], 
-                self._serializar_computos_metricos(datos.get('computos_p', [])),
-                datos.get('estimacion_p', '')[:45],
+                self.__codigo_proyecto,
+                self.__fecha_planificacion,
+                self.__descripcion_tecnica,
+                self._serializar_computos_metricos(self.__computos_metricos),
+                self.__estimacion_costo,
                 id_proyectista
             )
 
@@ -149,45 +248,142 @@ class ProyectoModel(BaseModel):
                     WHERE id_solicitudes = %s
                 """, (id_solicitud,))
                 resultado_solicitud = cursor.fetchone()
-                
+
                 if resultado_solicitud:
                     id_persona = resultado_solicitud['persona_id_persona']
                     id_prioridad = resultado_solicitud['prioridad_id_gestion_prioridad']
-                    
+
                     sql_solicitud = """INSERT INTO proyecto_has_solicitudes 
                         (proyecto_codigo_proyecto, solicitudes_id_solicitudes, 
                          solicitudes_persona_id_persona, solicitudes_prioridad_id_gestion_prioridad) 
                         VALUES (%s, %s, %s, %s)"""
-                    cursor.execute(sql_solicitud, (codigo_proy, id_solicitud, id_persona, id_prioridad))
-                    
-                    # Actualizar estado de la solicitud a 'En Proceso'
+                    cursor.execute(sql_solicitud, (self.__codigo_proyecto, id_solicitud, id_persona, id_prioridad))
+
                     cursor.execute("UPDATE solicitudes SET estatus_solicitud = %s WHERE id_solicitudes = %s", ('En Proceso', id_solicitud))
                 else:
-                    raise Exception(f"No se encontraron los datos compuestos para la solicitud ID: {id_solicitud}")
+                    raise Exception(f"No se encontraron datos compuestos para solicitud ID: {id_solicitud}")
 
-            # Procesar múltiples maquinarias (maquinaria_0, maquinaria_1, ...)
             sql_maquinaria = "INSERT INTO proyecto_has_maquinaria (proyecto_codigo_proyecto, maquinaria_id_maquinaria) VALUES (%s, %s)"
             for key, value in datos.items():
                 if key.startswith('maquinaria_') and value and str(value).isdigit():
-                    cursor.execute(sql_maquinaria, (codigo_proy, int(value)))
+                    cursor.execute(sql_maquinaria, (self.__codigo_proyecto, int(value)))
 
             conexion.commit()
             return cursor.rowcount
         except Exception as e:
-            if conexion: conexion.rollback() 
-            print(f"---------- ERROR CRÍTICO EN BD ----------")
-            print(f"Mensaje de MySQL: {e}")
-            print(f"-----------------------------------------")
+            if conexion:
+                conexion.rollback()
+            print(f"ERROR CRÍTICO EN BD: {e}")
             return False
         finally:
-            if conexion: conexion.close()
+            if conexion:
+                conexion.close()
 
-    def obtener_proyectos(self):
+    def __actualizar_proyecto_db(self, codigo_proyecto_actual, datos):
         conexion = None
         try:
             conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor(dictionary=True)
-            
+            self.__asegurar_descripcion_tecnica(conexion)
+
+            cursor.execute("SELECT fecha_planificacion FROM proyecto WHERE codigo_proyecto = %s", (codigo_proyecto_actual,))
+            fila = cursor.fetchone()
+            fecha_existente = fila['fecha_planificacion'] if fila else None
+
+            self.set_codigo_proyecto(datos.get('Codigo_p', ''))
+            self.set_fecha_planificacion(datos.get('fecha_p') or fecha_existente)
+            self.set_descripcion_tecnica(datos.get('observaciones_p') or datos.get('observaciones') or '')
+            self.set_computos_metricos(datos.get('computos_p', []))
+            self.set_estimacion_costo(datos.get('estimacion_p', ''))
+            self.set_proyecto_has_empleado(datos.get('proyectista_p'))
+
+            if self.__codigo_proyecto != codigo_proyecto_actual:
+                val_result = self.__validar_codigo_proyecto_db(self.__codigo_proyecto, excluir_id=codigo_proyecto_actual)
+                if val_result.get('existe_activo'):
+                    raise Exception(f"El código {self.__codigo_proyecto} ya existe en otro proyecto activo.")
+                if val_result.get('existe_eliminado'):
+                    raise Exception(f"El código {self.__codigo_proyecto} fue usado en un proyecto eliminado. No se pueden reutilizar códigos.")
+
+            sql = """UPDATE proyecto SET 
+                codigo_proyecto=%s, fecha_planificacion=%s, descripcion_tecnica=%s,
+                computos_metricos=%s, estimacion_costo=%s, proyecto_has_empleado=%s
+                WHERE codigo_proyecto=%s"""
+
+            valores = (
+                self.__codigo_proyecto,
+                self.__fecha_planificacion,
+                self.__descripcion_tecnica,
+                self._serializar_computos_metricos(self.__computos_metricos) if self.__computos_metricos else '',
+                self.__estimacion_costo,
+                self.__proyecto_has_empleado,
+                codigo_proyecto_actual
+            )
+            cursor.execute(sql, valores)
+
+            id_solicitud = datos.get('solicitud_id_p')
+            if id_solicitud:
+                cursor.execute("DELETE FROM proyecto_has_solicitudes WHERE proyecto_codigo_proyecto = %s", (codigo_proyecto_actual,))
+                cursor.execute("""
+                    SELECT persona_id_persona, prioridad_id_gestion_prioridad 
+                    FROM solicitudes 
+                    WHERE id_solicitudes = %s
+                """, (id_solicitud,))
+                res_sol = cursor.fetchone()
+                if res_sol:
+                    cursor.execute("""INSERT INTO proyecto_has_solicitudes 
+                        (proyecto_codigo_proyecto, solicitudes_id_solicitudes, 
+                         solicitudes_persona_id_persona, solicitudes_prioridad_id_gestion_prioridad) 
+                        VALUES (%s, %s, %s, %s)""",
+                        (self.__codigo_proyecto, id_solicitud, res_sol['persona_id_persona'], res_sol['prioridad_id_gestion_prioridad']))
+            else:
+                if self.__codigo_proyecto != codigo_proyecto_actual:
+                    cursor.execute("""
+                        UPDATE proyecto_has_solicitudes 
+                        SET proyecto_codigo_proyecto = %s 
+                        WHERE proyecto_codigo_proyecto = %s
+                    """, (self.__codigo_proyecto, codigo_proyecto_actual))
+
+            cursor.execute("DELETE FROM proyecto_has_maquinaria WHERE proyecto_codigo_proyecto = %s", (codigo_proyecto_actual,))
+            sql_maquinaria = "INSERT INTO proyecto_has_maquinaria (proyecto_codigo_proyecto, maquinaria_id_maquinaria) VALUES (%s, %s)"
+            for key, value in datos.items():
+                if key.startswith('maquinaria_') and value and str(value).isdigit():
+                    cursor.execute(sql_maquinaria, (self.__codigo_proyecto, int(value)))
+
+            conexion.commit()
+            return True
+        except Exception as e:
+            if conexion:
+                conexion.rollback()
+            print(f"Error actualizando proyecto: {e}")
+            return False
+        finally:
+            if conexion:
+                conexion.close()
+
+    def __eliminar_proyecto_db(self, codigo_proyecto):
+        conexion = None
+        try:
+            conexion = self.obtener_conexion_estricta()
+            cursor = conexion.cursor()
+            sql = "UPDATE proyecto SET estado = 0 WHERE codigo_proyecto = %s"
+            cursor.execute(sql, (codigo_proyecto,))
+            conexion.commit()
+            return cursor.rowcount > 0
+        except Exception as e:
+            if conexion:
+                conexion.rollback()
+            print(f"Error eliminando proyecto: {e}")
+            return False
+        finally:
+            if conexion:
+                conexion.close()
+
+    def __obtener_proyectos_db(self):
+        conexion = None
+        try:
+            conexion = self.obtener_conexion_estricta()
+            cursor = conexion.cursor(dictionary=True)
+
             sql = """SELECT 
                         p.codigo_proyecto, p.fecha_planificacion, p.descripcion_tecnica, 
                         p.computos_metricos, p.estimacion_costo, p.proyecto_has_empleado,
@@ -218,17 +414,18 @@ class ProyectoModel(BaseModel):
                 p['computos_metricos_texto'] = self._formatear_computos_metricos(p['computos_metricos'])
             return proyectos
         except Exception as e:
-            print(f"Error en ProyectoModel.obtener_proyectos: {e}")
+            print(f"Error obteniendo proyectos: {e}")
             return []
         finally:
-            if conexion: conexion.close()
+            if conexion:
+                conexion.close()
 
-    def obtener_proyecto_por_id(self, codigo_proyecto):
+    def __obtener_proyecto_por_id_db(self, codigo_proyecto):
         conexion = None
         try:
             conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor(dictionary=True)
-            
+
             sql = """SELECT 
                         p.codigo_proyecto, p.fecha_planificacion, p.descripcion_tecnica, 
                         p.computos_metricos, p.estimacion_costo, p.proyecto_has_empleado,
@@ -258,12 +455,13 @@ class ProyectoModel(BaseModel):
                 proyecto['computos_metricos_texto'] = self._formatear_computos_metricos(proyecto['computos_metricos'])
             return proyecto
         except Exception as e:
-            print(f"Error en ProyectoModel.obtener_proyecto_por_id: {e}")
+            print(f"Error obteniendo proyecto por ID: {e}")
             return None
         finally:
-            if conexion: conexion.close()
+            if conexion:
+                conexion.close()
 
-    def obtener_detalle_proyecto_por_codigo(self, codigo_proyecto):
+    def __obtener_detalle_proyecto_db(self, codigo_proyecto):
         conexion = None
         try:
             conexion = self.obtener_conexion_estricta()
@@ -306,137 +504,38 @@ class ProyectoModel(BaseModel):
                 'maquinaria': maquinaria
             }
         except Exception as e:
-            print(f"Error en ProyectoModel.obtener_detalle_proyecto_por_codigo: {e}")
+            print(f"Error obteniendo detalle proyecto: {e}")
             return None
         finally:
-            if conexion: conexion.close()
+            if conexion:
+                conexion.close()
 
-    def actualizar_proyecto(self, codigo_proyecto_actual, datos):
+    def __obtener_contadores_db(self):
         conexion = None
         try:
             conexion = self.obtener_conexion_estricta()
             cursor = conexion.cursor(dictionary=True)
-            self._asegurar_descripcion_tecnica(conexion)
-            
-            cursor.execute("SELECT fecha_planificacion FROM proyecto WHERE codigo_proyecto = %s", (codigo_proyecto_actual,))
-            fila = cursor.fetchone()
-            fecha_existente = fila['fecha_planificacion'] if fila else None
-            
-            sql = """UPDATE proyecto SET 
-                codigo_proyecto=%s, fecha_planificacion=%s, descripcion_tecnica=%s,
-                computos_metricos=%s, estimacion_costo=%s, proyecto_has_empleado=%s
-                WHERE codigo_proyecto=%s"""
-            
-            codigo_nuevo = datos.get('Codigo_p', '')[:15]
-            fecha_plan = datos.get('fecha_p')
-            if not fecha_plan:
-                fecha_plan = fecha_existente
-            elif len(fecha_plan) == 10:
-                ahora = datetime.datetime.now()
-                fecha_plan = f"{fecha_plan} {ahora.strftime('%H:%M:%S')}"
-           
-            descripcion = datos.get('observaciones_p') or datos.get('observaciones') or ''
 
-            id_proyectista = datos.get('proyectista_p')
-            id_proyectista = int(id_proyectista) if id_proyectista and str(id_proyectista).isdigit() else None
-
-            valores = (
-                codigo_nuevo,
-                fecha_plan,
-                descripcion[:2500],
-                datos.get('computos_p', []) and self._serializar_computos_metricos(datos.get('computos_p', [])) or '',
-                datos.get('estimacion_p', '')[:45],
-                id_proyectista,
-                codigo_proyecto_actual
-            )
-            cursor.execute(sql, valores)
-
-            id_solicitud = datos.get('solicitud_id_p')
-            if id_solicitud:
-                cursor.execute("DELETE FROM proyecto_has_solicitudes WHERE proyecto_codigo_proyecto = %s", (codigo_proyecto_actual,))
-                cursor.execute("""
-                    SELECT persona_id_persona, prioridad_id_gestion_prioridad 
-                    FROM solicitudes 
-                    WHERE id_solicitudes = %s
-                """, (id_solicitud,))
-                res_sol = cursor.fetchone()
-                if res_sol:
-                    cursor.execute("""INSERT INTO proyecto_has_solicitudes 
-                        (proyecto_codigo_proyecto, solicitudes_id_solicitudes, 
-                         solicitudes_persona_id_persona, solicitudes_prioridad_id_gestion_prioridad) 
-                        VALUES (%s, %s, %s, %s)""", 
-                        (codigo_nuevo, id_solicitud, res_sol['persona_id_persona'], res_sol['prioridad_id_gestion_prioridad']))
-            else:
-                if codigo_nuevo != codigo_proyecto_actual:
-                    cursor.execute("""
-                        UPDATE proyecto_has_solicitudes 
-                        SET proyecto_codigo_proyecto = %s 
-                        WHERE proyecto_codigo_proyecto = %s
-                    """, (codigo_nuevo, codigo_proyecto_actual))
-
-            # Procesar múltiples maquinarias (maquinaria_0, maquinaria_1, ...)
-            # Primero eliminar todas las maquinarias existentes del proyecto
-            cursor.execute("DELETE FROM proyecto_has_maquinaria WHERE proyecto_codigo_proyecto = %s", (codigo_proyecto_actual,))
-            # Luego insertar las nuevas
-            sql_maquinaria = "INSERT INTO proyecto_has_maquinaria (proyecto_codigo_proyecto, maquinaria_id_maquinaria) VALUES (%s, %s)"
-            for key, value in datos.items():
-                if key.startswith('maquinaria_') and value and str(value).isdigit():
-                    cursor.execute(sql_maquinaria, (codigo_nuevo, int(value)))
-
-            conexion.commit()
-
-            return True
-        except Exception as e:
-            if conexion: conexion.rollback()
-            print(f"Error en ProyectoModel.actualizar_proyecto: {e}")
-            return False
-        finally:
-            if conexion: conexion.close()
-
-    def eliminar_proyecto(self, codigo_proyecto):
-        conexion = None
-        try:
-            conexion = self.obtener_conexion_estricta()
-            cursor = conexion.cursor()
-            
-            sql = "UPDATE proyecto SET estado = 0 WHERE codigo_proyecto = %s"
-            cursor.execute(sql, (codigo_proyecto,))
-            
-            conexion.commit()
-            return cursor.rowcount > 0 
-        except Exception as e:
-            if conexion: conexion.rollback()
-            print(f"Error en ProyectoModel.eliminar_proyecto: {e}")
-            return False
-        finally:
-            if conexion: conexion.close()
-
-    def obtener_contadores_proyectos(self):
-        conexion = None
-        try:
-            conexion = self.obtener_conexion_estricta()
-            cursor = conexion.cursor(dictionary=True)
-            
             sql = """SELECT s.tipo_solicitud 
                      FROM proyecto p
                      INNER JOIN proyecto_has_solicitudes phs ON p.codigo_proyecto = phs.proyecto_codigo_proyecto
                      INNER JOIN solicitudes s ON phs.solicitudes_id_solicitudes = s.id_solicitudes
-                     WHERE p.estado = 1""" 
-            
+                     WHERE p.estado = 1"""
+
             cursor.execute(sql)
             proyectos_vinculados = cursor.fetchall()
-            
+
             total_registrados = len(proyectos_vinculados)
             en_proceso = 0
             completadas = 0
-            
+
             for item in proyectos_vinculados:
                 estado = str(item.get('tipo_solicitud', '')).lower()
                 if 'proceso' in estado:
                     en_proceso += 1
                 elif 'completa' in estado or 'finalizado' in estado:
                     completadas += 1
-            
+
             return {
                 'total_registrados': total_registrados,
                 'en_proceso': en_proceso,
@@ -444,7 +543,42 @@ class ProyectoModel(BaseModel):
                 'total': total_registrados
             }
         except Exception as e:
-            print(f"Error en ProyectoModel.obtener_contadores_proyectos: {e}")
+            print(f"Error obteniendo contadores: {e}")
             return {'total_registrados': 0, 'en_proceso': 0, 'completadas': 0, 'total': 0}
         finally:
-            if conexion: conexion.close()
+            if conexion:
+                conexion.close()
+
+    # ========== MÉTODOS PÚBLICOS (Fachada) ==========
+
+    def registrar(self, datos):
+        """Método público para registrar proyecto."""
+        return self.__registrar_proyecto_db(datos)
+
+    def actualizar(self, codigo_proyecto_actual, datos):
+        """Método público para actualizar proyecto."""
+        return self.__actualizar_proyecto_db(codigo_proyecto_actual, datos)
+
+    def eliminar(self, codigo_proyecto):
+        """Método público para borrado lógico de proyecto."""
+        return self.__eliminar_proyecto_db(codigo_proyecto)
+
+    def obtener_todos(self):
+        """Método público para obtener todos los proyectos."""
+        return self.__obtener_proyectos_db()
+
+    def obtener_por_id(self, codigo_proyecto):
+        """Método público para obtener proyecto por código."""
+        return self.__obtener_proyecto_por_id_db(codigo_proyecto)
+
+    def obtener_detalle(self, codigo_proyecto):
+        """Método público para obtener detalle completo de proyecto."""
+        return self.__obtener_detalle_proyecto_db(codigo_proyecto)
+
+    def obtener_contadores(self):
+        """Método público para obtener contadores de proyectos."""
+        return self.__obtener_contadores_db()
+
+    def validar_codigo(self, codigo_proyecto):
+        """Método público para validar código de proyecto."""
+        return self.__validar_codigo_proyecto_db(codigo_proyecto)

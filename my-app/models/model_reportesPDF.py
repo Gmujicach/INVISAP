@@ -2,10 +2,14 @@ from models.base_model import BaseModel
 
 
 class ReportePDFModel(BaseModel):
+    """Generador de reportes PDF con encapsulamiento estricto."""
+
     def __init__(self):
         pass
 
-    def _ejecutar_query(self, query, params=None, db_name=None):
+    # ========== MÉTODOS PRIVADOS DE BASE DE DATOS ==========
+
+    def __ejecutar_query(self, query, params=None, db_name=None):
         conexion = self.obtener_conexion_seguridad() if db_name == 'seguridad' else self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         try:
@@ -15,7 +19,7 @@ class ReportePDFModel(BaseModel):
             cursor.close()
             conexion.close()
 
-    def _aplicar_filtros(self, where_clauses, params, filtros, mapeo_columnas=None):
+    def __aplicar_filtros(self, where_clauses, params, filtros, mapeo_columnas=None):
         mapeo = mapeo_columnas or {}
         if not filtros:
             return
@@ -62,7 +66,7 @@ class ReportePDFModel(BaseModel):
                 where_clauses.append(f"{columna} LIKE %s")
                 params.append(f"%{val}%")
 
-    def obtener_solicitudes(self, filtros=None):
+    def __obtener_solicitudes_db(self, filtros=None):
         query = """
             SELECT 
                 s.id_solicitudes,
@@ -102,13 +106,13 @@ class ReportePDFModel(BaseModel):
             'sector': 'com.sector',
             'ambito': 'com.ambito',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY s.fecha DESC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query(query, params)
 
-    def obtener_solicitantes(self, filtros=None):
+    def __obtener_solicitantes_db(self, filtros=None):
         query = """
             SELECT 
                 pa.nombre,
@@ -130,13 +134,13 @@ class ReportePDFModel(BaseModel):
             'correo': 'p.correo',
             'correo_dominio': 'p.correo',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " GROUP BY pa.id_particular, pa.nombre, pa.apellido, p.cedula_persona, p.correo, p.telefono ORDER BY pa.nombre ASC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query(query, params)
 
-    def obtener_empleados(self, filtros=None):
+    def __obtener_empleados_db(self, filtros=None):
         query = """
             SELECT 
                 e.nombre_empleado,
@@ -166,13 +170,13 @@ class ReportePDFModel(BaseModel):
             'municipio': 'p.municipio',
             'gerencia_asignada': 'e.gerencia_asignada',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY e.nombre_empleado ASC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query(query, params)
 
-    def obtener_usuarios(self, filtros=None):
+    def __obtener_usuarios_db(self, filtros=None):
         query = """
             SELECT 
                 nombre,
@@ -191,13 +195,13 @@ class ReportePDFModel(BaseModel):
             'rol': 'rol',
             'estado': 'estado',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY nombre ASC"
-        return self._ejecutar_query(query, params, db_name='seguridad')
+        return self.__ejecutar_query(query, params, db_name='seguridad')
 
-    def obtener_contrataciones(self, filtros=None):
+    def __obtener_contrataciones_db(self, filtros=None):
         query = """
             SELECT 
                 c.empresa_ganadora AS nombre_empresa,
@@ -230,13 +234,13 @@ class ReportePDFModel(BaseModel):
             'fecha_adjudicacion_hasta': 'c.fecha_adjudicacion',
             'numero_contrato': 'c.numero_contrato',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY c.fecha_registro DESC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query(query, params)
 
-    def obtener_obras(self, filtros=None):
+    def __obtener_obras_db(self, filtros=None):
         query = """
             SELECT 
                 o.id_obra,
@@ -273,13 +277,13 @@ class ReportePDFModel(BaseModel):
             'nivel_gravedad': 'g.nivel_gravedad',
             'gerente': 'e.nombre_empleado',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " GROUP BY o.id_obra, o.titulo_obra, o.ubicacion_obra, o.porcentaje_avance_obra, s.estado, s.color, c.empresa_ganadora ORDER BY o.titulo_obra ASC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query(query, params)
 
-    def obtener_publicaciones_reporte(self, filtros=None):
+    def __obtener_publicaciones_reporte_db(self, filtros=None):
         query = """
             SELECT 
                 titulo_publicacion, 
@@ -299,8 +303,31 @@ class ReportePDFModel(BaseModel):
             'fecha_publicacion_desde': 'fecha_publicacion',
             'fecha_publicacion_hasta': 'fecha_publicacion',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY fecha_publicacion DESC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query(query, params)
+
+    # ========== MÉTODOS PÚBLICOS (Fachada) ==========
+
+    def obtener_solicitudes(self, filtros=None):
+        return self.__obtener_solicitudes_db(filtros)
+
+    def obtener_solicitantes(self, filtros=None):
+        return self.__obtener_solicitantes_db(filtros)
+
+    def obtener_empleados(self, filtros=None):
+        return self.__obtener_empleados_db(filtros)
+
+    def obtener_usuarios(self, filtros=None):
+        return self.__obtener_usuarios_db(filtros)
+
+    def obtener_contrataciones(self, filtros=None):
+        return self.__obtener_contrataciones_db(filtros)
+
+    def obtener_obras(self, filtros=None):
+        return self.__obtener_obras_db(filtros)
+
+    def obtener_publicaciones_reporte(self, filtros=None):
+        return self.__obtener_publicaciones_reporte_db(filtros)

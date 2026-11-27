@@ -1,11 +1,20 @@
+"""
+ReporteEstadisticoModel — Modelo SOLID/POO para reportes estadísticos.
+Implementa encapsulamiento y fachada pública sobre consultas de estadísticas.
+"""
+
 from models.base_model import BaseModel
 
 
 class ReporteEstadisticoModel(BaseModel):
+    """Modelo de reportes estadísticos con encapsulamiento (POO)."""
+
     def __init__(self):
         pass
 
-    def _ejecutar_query(self, query, params=None):
+    # ========== MÉTODOS PRIVADOS DE BASE DE DATOS ==========
+
+    def __ejecutar_query(self, query, params=None):
         conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         try:
@@ -15,7 +24,7 @@ class ReporteEstadisticoModel(BaseModel):
             cursor.close()
             conexion.close()
 
-    def _aplicar_filtros(self, where_clauses, params, filtros, mapeo_columnas=None):
+    def __aplicar_filtros(self, where_clauses, params, filtros, mapeo_columnas=None):
         mapeo = mapeo_columnas or {}
         if not filtros:
             return
@@ -62,16 +71,16 @@ class ReporteEstadisticoModel(BaseModel):
                 where_clauses.append(f"{columna} LIKE %s")
                 params.append(f"%{val}%")
 
-    def _build_query(self, base_query, where_clauses):
+    def __build_query(self, base_query, where_clauses):
         if where_clauses:
             return base_query + " WHERE " + " AND ".join(where_clauses)
         return base_query
 
-    def _execute_stat_query(self, cursor, query, params):
+    def __execute_stat_query(self, cursor, query, params):
         cursor.execute(query, params)
         return cursor.fetchall()
 
-    def obtener_estadisticas_solicitudes(self, filtros=None, agrupacion='dia'):
+    def __obtener_estadisticas_solicitudes_db(self, filtros=None, agrupacion='dia'):
         conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         params = []
@@ -93,7 +102,7 @@ class ReporteEstadisticoModel(BaseModel):
             'sector': 'com.sector',
             'ambito': 'com.ambito',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
 
         try:
             stats = {}
@@ -107,61 +116,61 @@ class ReporteEstadisticoModel(BaseModel):
             """
 
             if agrupacion == 'mes':
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE_FORMAT(s.fecha, '%%Y-%%m') as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE_FORMAT(s.fecha, '%%Y-%%m') ORDER BY label ASC"
-                stats['por_mes'] = self._execute_stat_query(cursor, query, params)
+                stats['por_mes'] = self.__execute_stat_query(cursor, query, params)
             elif agrupacion == 'semana':
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE_FORMAT(s.fecha, '%%x-W%%v') as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE_FORMAT(s.fecha, '%%x-W%%v') ORDER BY label ASC"
-                stats['por_semana'] = self._execute_stat_query(cursor, query, params)
+                stats['por_semana'] = self.__execute_stat_query(cursor, query, params)
             else:
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE(s.fecha) as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE(s.fecha) ORDER BY label ASC"
-                stats['por_fecha'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT s.tipo_solicitud as label, COUNT(*) as valor " + base_from,
                 where
             ) + " GROUP BY s.tipo_solicitud"
-            stats['por_tipo'] = self._execute_stat_query(cursor, query, params)
+            stats['por_tipo'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT s.estatus_solicitud as label, COUNT(*) as valor " + base_from,
                 where
             ) + " GROUP BY s.estatus_solicitud"
-            stats['por_estatus'] = self._execute_stat_query(cursor, query, params)
+            stats['por_estatus'] = self.__execute_stat_query(cursor, query, params)
 
             if filtros and any(k in filtros for k in ['municipio', 'parroquia', 'cedula', 'direccion', 'telefono', 'correo', 'sector', 'ambito']):
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT p.municipio as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY p.municipio"
-                stats['por_municipio'] = self._execute_stat_query(cursor, query, params)
+                stats['por_municipio'] = self.__execute_stat_query(cursor, query, params)
 
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT p.parroquia as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY p.parroquia"
-                stats['por_parroquia'] = self._execute_stat_query(cursor, query, params)
+                stats['por_parroquia'] = self.__execute_stat_query(cursor, query, params)
 
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT com.sector as label, COUNT(*) as valor " + base_from + " AND com.sector IS NOT NULL AND com.sector != ''",
                     where
                 ) + " GROUP BY com.sector"
-                stats['por_sector'] = self._execute_stat_query(cursor, query, params)
+                stats['por_sector'] = self.__execute_stat_query(cursor, query, params)
 
             return stats
         finally:
             cursor.close()
             conexion.close()
 
-    def obtener_estadisticas_obras(self, filtros=None, agrupacion='dia'):
+    def __obtener_estadisticas_obras_db(self, filtros=None, agrupacion='dia'):
         conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         params = []
@@ -179,7 +188,7 @@ class ReporteEstadisticoModel(BaseModel):
             'nivel_gravedad': 'g.nivel_gravedad',
             'gerente': 'e.nombre_empleado',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
 
         try:
             stats = {}
@@ -194,49 +203,49 @@ class ReporteEstadisticoModel(BaseModel):
             """
 
             if agrupacion == 'mes':
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%%Y-%%m') as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%%Y-%%m') ORDER BY label ASC"
-                stats['por_fecha'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha'] = self.__execute_stat_query(cursor, query, params)
             elif agrupacion == 'semana':
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%%x-W%%v') as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%%x-W%%v') ORDER BY label ASC"
-                stats['por_fecha'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha'] = self.__execute_stat_query(cursor, query, params)
             else:
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE(COALESCE(o.fecha_inicio, o.fecha_fin)) as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE(COALESCE(o.fecha_inicio, o.fecha_fin)) ORDER BY label ASC"
-                stats['por_fecha'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT s.estado as label, COUNT(*) as valor " + base_from,
                 where
             ) + " GROUP BY s.estado"
-            stats['por_estado'] = self._execute_stat_query(cursor, query, params)
+            stats['por_estado'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT c.empresa_ganadora as label, COUNT(*) as valor " + base_from,
                 where
             ) + " GROUP BY c.empresa_ganadora"
-            stats['por_contratista'] = self._execute_stat_query(cursor, query, params)
+            stats['por_contratista'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT o.ubicacion_obra as label, COUNT(*) as valor " + base_from,
                 where
             ) + " GROUP BY o.ubicacion_obra"
-            stats['por_ubicacion'] = self._execute_stat_query(cursor, query, params)
+            stats['por_ubicacion'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT s.color as label, COUNT(*) as valor " + base_from,
                 where
             ) + " GROUP BY s.color"
-            stats['por_semaforo_color'] = self._execute_stat_query(cursor, query, params)
+            stats['por_semaforo_color'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 """SELECT CASE
                     WHEN o.porcentaje_avance_obra < 25 THEN '0-25%%'
                     WHEN o.porcentaje_avance_obra < 50 THEN '25-50%%'
@@ -245,14 +254,14 @@ class ReporteEstadisticoModel(BaseModel):
                 END as label, COUNT(*) as valor """ + base_from,
                 where
             ) + " GROUP BY label"
-            stats['por_avance'] = self._execute_stat_query(cursor, query, params)
+            stats['por_avance'] = self.__execute_stat_query(cursor, query, params)
 
             return stats
         finally:
             cursor.close()
             conexion.close()
 
-    def obtener_estadisticas_empleados(self, filtros=None, agrupacion='dia'):
+    def __obtener_estadisticas_empleados_db(self, filtros=None, agrupacion='dia'):
         conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         params = []
@@ -271,56 +280,56 @@ class ReporteEstadisticoModel(BaseModel):
             'municipio': 'p.municipio',
             'gerencia_asignada': 'e.gerencia_asignada',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
 
         try:
             stats = {}
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT e.cargo as label, COUNT(*) as valor FROM empleados e",
                 where
             ) + " GROUP BY e.cargo"
-            stats['por_cargo'] = self._execute_stat_query(cursor, query, params)
+            stats['por_cargo'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT e.gerencia_asignada as label, COUNT(*) as valor FROM empleados e",
                 where
             ) + " GROUP BY e.gerencia_asignada"
-            stats['por_gerencia'] = self._execute_stat_query(cursor, query, params)
+            stats['por_gerencia'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT e.estado as label, COUNT(*) as valor FROM empleados e",
                 where
             ) + " GROUP BY e.estado"
-            stats['por_estado'] = self._execute_stat_query(cursor, query, params)
+            stats['por_estado'] = self.__execute_stat_query(cursor, query, params)
 
             base_from = "FROM empleados e"
 
             if agrupacion == 'mes':
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE_FORMAT(e.fecha_ingreso, '%%Y-%%m') as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE_FORMAT(e.fecha_ingreso, '%%Y-%%m') ORDER BY label ASC"
-                stats['por_fecha_ingreso'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha_ingreso'] = self.__execute_stat_query(cursor, query, params)
             elif agrupacion == 'semana':
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE_FORMAT(e.fecha_ingreso, '%%x-W%%v') as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE_FORMAT(e.fecha_ingreso, '%%x-W%%v') ORDER BY label ASC"
-                stats['por_fecha_ingreso'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha_ingreso'] = self.__execute_stat_query(cursor, query, params)
             else:
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE(e.fecha_ingreso) as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE(e.fecha_ingreso) ORDER BY label ASC"
-                stats['por_fecha_ingreso'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha_ingreso'] = self.__execute_stat_query(cursor, query, params)
 
             return stats
         finally:
             cursor.close()
             conexion.close()
 
-    def obtener_estadisticas_contrataciones(self, filtros=None, agrupacion='dia'):
+    def __obtener_estadisticas_contrataciones_db(self, filtros=None, agrupacion='dia'):
         conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         params = []
@@ -338,68 +347,68 @@ class ReporteEstadisticoModel(BaseModel):
             'fecha_adjudicacion_hasta': 'c.fecha_adjudicacion',
             'numero_contrato': 'c.numero_contrato',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
 
         try:
             stats = {}
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT c.tipo_contrato as label, COUNT(*) as valor FROM contratacion c",
                 where
             ) + " GROUP BY c.tipo_contrato"
-            stats['por_tipo'] = self._execute_stat_query(cursor, query, params)
+            stats['por_tipo'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT c.modalidad as label, COUNT(*) as valor FROM contratacion c",
                 where
             ) + " GROUP BY c.modalidad"
-            stats['por_modalidad'] = self._execute_stat_query(cursor, query, params)
+            stats['por_modalidad'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT c.objeto as label, COUNT(*) as valor FROM contratacion c",
                 where
             ) + " GROUP BY c.objeto"
-            stats['por_objeto'] = self._execute_stat_query(cursor, query, params)
+            stats['por_objeto'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT c.estado as label, COUNT(*) as valor FROM contratacion c",
                 where
             ) + " GROUP BY c.estado"
-            stats['por_estado'] = self._execute_stat_query(cursor, query, params)
+            stats['por_estado'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT c.empresa_ganadora as label, COUNT(*) as valor FROM contratacion c",
                 where
             ) + " GROUP BY c.empresa_ganadora"
-            stats['por_empresa'] = self._execute_stat_query(cursor, query, params)
+            stats['por_empresa'] = self.__execute_stat_query(cursor, query, params)
 
             base_from = "FROM contratacion c"
 
             if agrupacion == 'mes':
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE_FORMAT(c.fecha_registro, '%%Y-%%m') as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE_FORMAT(c.fecha_registro, '%%Y-%%m') ORDER BY label ASC"
-                stats['por_fecha'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha'] = self.__execute_stat_query(cursor, query, params)
             elif agrupacion == 'semana':
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE_FORMAT(c.fecha_registro, '%%x-W%%v') as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE_FORMAT(c.fecha_registro, '%%x-W%%v') ORDER BY label ASC"
-                stats['por_fecha'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha'] = self.__execute_stat_query(cursor, query, params)
             else:
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE(c.fecha_registro) as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE(c.fecha_registro) ORDER BY label ASC"
-                stats['por_fecha'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha'] = self.__execute_stat_query(cursor, query, params)
 
             return stats
         finally:
             cursor.close()
             conexion.close()
 
-    def obtener_estadisticas_publicaciones(self, filtros=None, agrupacion='dia'):
+    def __obtener_estadisticas_publicaciones_db(self, filtros=None, agrupacion='dia'):
         conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         params = []
@@ -411,45 +420,67 @@ class ReporteEstadisticoModel(BaseModel):
             'fecha_publicacion_desde': 'fecha_publicacion',
             'fecha_publicacion_hasta': 'fecha_publicacion',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
 
         try:
             stats = {}
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT tipo_publicacion as label, COUNT(*) as valor FROM publicacion",
                 where
             ) + " GROUP BY tipo_publicacion"
-            stats['por_tipo'] = self._execute_stat_query(cursor, query, params)
+            stats['por_tipo'] = self.__execute_stat_query(cursor, query, params)
 
-            query = self._build_query(
+            query = self.__build_query(
                 "SELECT nombre_responsable as label, COUNT(*) as valor FROM publicacion",
                 where
             ) + " GROUP BY nombre_responsable"
-            stats['por_autor'] = self._execute_stat_query(cursor, query, params)
+            stats['por_autor'] = self.__execute_stat_query(cursor, query, params)
 
             base_from = "FROM publicacion"
 
             if agrupacion == 'mes':
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE_FORMAT(fecha_publicacion, '%%Y-%%m') as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE_FORMAT(fecha_publicacion, '%%Y-%%m') ORDER BY label ASC"
-                stats['por_fecha'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha'] = self.__execute_stat_query(cursor, query, params)
             elif agrupacion == 'semana':
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE_FORMAT(fecha_publicacion, '%%x-W%%v') as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE_FORMAT(fecha_publicacion, '%%x-W%%v') ORDER BY label ASC"
-                stats['por_fecha'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha'] = self.__execute_stat_query(cursor, query, params)
             else:
-                query = self._build_query(
+                query = self.__build_query(
                     "SELECT DATE(fecha_publicacion) as label, COUNT(*) as valor " + base_from,
                     where
                 ) + " GROUP BY DATE(fecha_publicacion) ORDER BY label ASC"
-                stats['por_fecha'] = self._execute_stat_query(cursor, query, params)
+                stats['por_fecha'] = self.__execute_stat_query(cursor, query, params)
 
             return stats
         finally:
             cursor.close()
             conexion.close()
+
+    # ========== MÉTODOS PÚBLICOS (Fachada) ==========
+
+    def obtener_estadisticas_solicitudes(self, filtros=None, agrupacion='dia'):
+        """Método público fachada para estadísticas de solicitudes."""
+        return self.__obtener_estadisticas_solicitudes_db(filtros, agrupacion)
+
+    def obtener_estadisticas_obras(self, filtros=None, agrupacion='dia'):
+        """Método público fachada para estadísticas de obras."""
+        return self.__obtener_estadisticas_obras_db(filtros, agrupacion)
+
+    def obtener_estadisticas_empleados(self, filtros=None, agrupacion='dia'):
+        """Método público fachada para estadísticas de empleados."""
+        return self.__obtener_estadisticas_empleados_db(filtros, agrupacion)
+
+    def obtener_estadisticas_contrataciones(self, filtros=None, agrupacion='dia'):
+        """Método público fachada para estadísticas de contrataciones."""
+        return self.__obtener_estadisticas_contrataciones_db(filtros, agrupacion)
+
+    def obtener_estadisticas_publicaciones(self, filtros=None, agrupacion='dia'):
+        """Método público fachada para estadísticas de publicaciones."""
+        return self.__obtener_estadisticas_publicaciones_db(filtros, agrupacion)

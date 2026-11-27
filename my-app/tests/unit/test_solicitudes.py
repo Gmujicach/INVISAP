@@ -76,7 +76,7 @@ def test_problematica_incluye_categoria_valida():
     # FIN DE ASERCIÓN
 
 
-def test_constructor_getters_y_fecha_por_defecto():
+def test_SolicitudModel__constructor_getters_y_fecha_por_defecto():
     solicitud = SolicitudModel(42)
 
     # INICIO DE ASERCIÓN: Verificar que el constructor inicializa todos los campos correctamente
@@ -98,7 +98,7 @@ def test_fecha_acepta_formato_iso_y_reemplaza_separador():
     # FIN DE ASERCIÓN
 
 
-def test_fecha_vacia_genera_fecha_actual_con_formato_sql():
+def test_fecha_vacia_genera_fecha_actual_SolicitudModel__con_formato_sql():
     solicitud = SolicitudModel()
 
     solicitud.set_fecha('')
@@ -126,9 +126,9 @@ def test_datos_de_solicitante_validos_por_tipo(tipo):
     solicitud.set_solicitante_data(_datos_solicitante(tipo))
 
     # INICIO DE ASERCIÓN: Verificar que datos del solicitante se almacenan correctamente por tipo
-    assert solicitud._solicitante_data['tipo_solicitante'] == tipo
-    assert solicitud._solicitante_data['cedula_persona'] == '12345678'
-    assert solicitud._solicitante_data['parroquia'] == 'Concepcion'
+    assert solicitud._SolicitudModel__solicitante_data['tipo_solicitante'] == tipo
+    assert solicitud._SolicitudModel__solicitante_data['cedula_persona'] == '12345678'
+    assert solicitud._SolicitudModel__solicitante_data['parroquia'] == 'Concepcion'
     # FIN DE ASERCIÓN
 
 
@@ -151,25 +151,25 @@ def test_datos_de_solicitante_rechazan_cedula_invalida():
     # FIN DE MOCK
 
 
-def test_conexion_delegada_a_conexion_compartida():
+def test_SolicitudModel__conexion_delegada_a_SolicitudModel__conexion_compartida():
     # INICIO DE MOCK: Crear objeto de conexión simulado
     conexion = Mock()
 
     # INICIO DE MOCK: Parchear obtener_conexion para devolver conexión simulada
     with patch.object(SolicitudModel, 'obtener_conexion', return_value=conexion):
-        # INICIO DE ASERCIÓN: Verificar que _con devuelve la conexión simulada
-        assert SolicitudModel._con() is conexion
+        # INICIO DE ASERCIÓN: Verificar que _SolicitudModel__con devuelve la conexión simulada
+        assert SolicitudModel._SolicitudModel__con() is conexion
         # FIN DE ASERCIÓN
     # FIN DE MOCK
 
 
-def test_cerrar_cierra_cursor_y_conexion():
+def test_SolicitudModel__cerrar_cierra_cursor_y_SolicitudModel__conexion():
     # INICIO DE MOCK: Crear cursor y conexión simulados
     cursor = Mock()
     conexion = Mock()
 
-    # INICIO DE MOCK: Llamar _cerrar con mocks
-    SolicitudModel._cerrar(conexion, cursor)
+    # INICIO DE MOCK: Llamar _SolicitudModel__cerrar con mocks
+    SolicitudModel._SolicitudModel__cerrar(conexion, cursor)
 
     # INICIO DE ASERCIÓN: Verificar que métodos close se llaman una vez
     cursor.close.assert_called_once()
@@ -179,8 +179,8 @@ def test_cerrar_cierra_cursor_y_conexion():
 
 def test_limpia_texto_y_respeta_longitud_maxima():
     # INICIO DE ASERCIÓN: Verificar limpieza de texto y manejo de longitud máxima
-    assert SolicitudModel._limpiar(" O'Neil <ok> ", 20) == 'ONeil ok'
-    assert SolicitudModel._limpiar('abcdef', 3) == 'abc'
+    assert SolicitudModel._SolicitudModel__limpiar(" O'Neil <ok> ", 20) == 'ONeil ok'
+    assert SolicitudModel._SolicitudModel__limpiar('abcdef', 3) == 'abc'
     # FIN DE ASERCIÓN
 
 
@@ -195,8 +195,8 @@ def test_limpia_texto_y_respeta_longitud_maxima():
     ],
 )
 def test_formatea_fecha_segun_tipo_de_entrada(fecha, esperada):
-    # INICIO DE ASERCIÓN: Verificar que _formatear_fecha maneja varios tipos de entrada
-    assert SolicitudModel()._formatear_fecha(fecha) == esperada
+    # INICIO DE ASERCIÓN: Verificar que _SolicitudModel__formatear_fecha maneja varios tipos de entrada
+    assert SolicitudModel()._SolicitudModel__formatear_fecha(fecha) == esperada
     # FIN DE ASERCIÓN
 
 
@@ -209,8 +209,8 @@ def test_busca_persona_admite_filas_diccionario_y_tupla(fila, esperado):
     cursor = Mock()
     cursor.fetchone.return_value = fila
 
-    # INICIO DE MOCK: Llamar _sql_buscar_persona con cursor simulado
-    resultado = SolicitudModel()._sql_buscar_persona(cursor, '12345678')
+    # INICIO DE MOCK: Llamar _SolicitudModel__sql_buscar_persona con cursor simulado
+    resultado = SolicitudModel()._SolicitudModel__sql_buscar_persona(cursor, '12345678')
 
     # INICIO DE ASERCIÓN: Verificar que resultado coincide con esperado y execute llamado una vez
     assert resultado == esperado
@@ -231,8 +231,8 @@ def test_inserta_persona_y_devuelve_id_siguiente():
         'correo': 'persona@example.com',
     }
 
-    # INICIO DE MOCK: Llamar _sql_insertar_persona con cursor simulado
-    resultado = SolicitudModel()._sql_insertar_persona(cursor, datos)
+    # INICIO DE MOCK: Llamar _SolicitudModel__sql_insertar_persona con cursor simulado
+    resultado = SolicitudModel()._SolicitudModel__sql_insertar_persona(cursor, datos)
 
     # INICIO DE ASERCIÓN: Verificar ID devuelto y llamadas execute
     assert resultado == 9
@@ -258,8 +258,8 @@ def test_inserta_subtipo_segun_categoria(tipo, tabla):
     solicitud.set_tipo_solicitud(tipo)
     solicitud.set_solicitante_data(datos)
 
-    # INICIO DE MOCK: Llamar _sql_insertar_subtipo con cursor simulado
-    solicitud._sql_insertar_subtipo(cursor, 12, solicitud._solicitante_data)
+    # INICIO DE MOCK: Llamar _SolicitudModel__sql_insertar_subtipo con cursor simulado
+    solicitud._SolicitudModel__sql_insertar_subtipo(cursor, 12, solicitud._SolicitudModel__solicitante_data)
 
     # INICIO DE ASERCIÓN: Verificar llamadas execute y nombre de tabla en consulta
     assert cursor.execute.call_count == 2
@@ -275,8 +275,8 @@ def test_crea_prioridad_pendiente_y_devuelve_id():
     solicitud = SolicitudModel()
     solicitud.set_fecha('2026-11-12 10:30:00')
 
-    # INICIO DE MOCK: Llamar _sql_crear_prioridad_pendiente con cursor simulado
-    resultado = solicitud._sql_crear_prioridad_pendiente(cursor)
+    # INICIO DE MOCK: Llamar _SolicitudModel__sql_crear_prioridad_pendiente con cursor simulado
+    resultado = solicitud._SolicitudModel__sql_crear_prioridad_pendiente(cursor)
 
     # INICIO DE ASERCIÓN: Verificar ID devuelto y llamada execute con estado pendiente
     assert resultado == 21
@@ -286,17 +286,17 @@ def test_crea_prioridad_pendiente_y_devuelve_id():
 
 
 def test_asegura_columna_problematica_ampliando_esquema_antiguo():
-    SolicitudModel._columna_problematica_verificada = False
+    SolicitudModel._SolicitudModel__columna_problematica_verificada = False
     # INICIO DE MOCK: Crear conexión y cursor simulados
     conexion = Mock()
     cursor = conexion.cursor.return_value
     cursor.fetchone.return_value = {'Type': 'varchar(255)'}
 
     try:
-        # INICIO DE MOCK: Llamar _asegurar_columna_problematica con conexión simulada
-        SolicitudModel._asegurar_columna_problematica(conexion)
+        # INICIO DE MOCK: Llamar _SolicitudModel__asegurar_columna_problematica con conexión simulada
+        SolicitudModel._SolicitudModel__asegurar_columna_problematica(conexion)
     finally:
-        SolicitudModel._columna_problematica_verificada = False
+        SolicitudModel._SolicitudModel__columna_problematica_verificada = False
 
     # INICIO DE ASERCIÓN: Verificar ALTER TABLE ejecutado y commit/close llamados
     assert any('ALTER TABLE solicitudes' in call.args[0] for call in cursor.execute.call_args_list)
@@ -311,12 +311,12 @@ def test_guardar_retorna_false_si_faltan_datos_obligatorios():
     # FIN DE ASERCIÓN
 
 
-def test_guardar_registra_solicitud_y_confirma_transaccion():
+def test_guardar_registra_solicitud_y_SolicitudModel__confirma_transaccion():
     solicitud = SolicitudModel()
     solicitud.set_tipo_solicitud('Comunidad')
     solicitud.set_problematica('La vía requiere reparación urgente')
     solicitud.set_fecha('2026-11-12 10:30:00')
-    solicitud._solicitante_data = {'cedula_persona': '12345678'}
+    solicitud._SolicitudModel__solicitante_data = {'cedula_persona': '12345678'}
     # INICIO DE MOCK: Crear conexión y cursor simulados
     conexion = Mock()
     cursor = conexion.cursor.return_value
@@ -324,10 +324,10 @@ def test_guardar_registra_solicitud_y_confirma_transaccion():
 
     # INICIO DE MOCK: Parchear múltiples métodos para prueba de guardar
     with (
-        patch.object(SolicitudModel, '_con', return_value=conexion),
-        patch.object(SolicitudModel, '_asegurar_columna_problematica'),
-        patch.object(solicitud, '_sql_buscar_persona', return_value=18),
-        patch.object(solicitud, '_sql_crear_prioridad_pendiente', return_value=24),
+        patch.object(SolicitudModel, '_SolicitudModel__con', return_value=conexion),
+        patch.object(SolicitudModel, '_SolicitudModel__asegurar_columna_problematica'),
+        patch.object(solicitud, '_SolicitudModel__sql_buscar_persona', return_value=18),
+        patch.object(solicitud, '_SolicitudModel__sql_crear_prioridad_pendiente', return_value=24),
     ):
         # INICIO DE MOCK: Llamar guardar con métodos parcheados
         resultado = solicitud.guardar()
@@ -346,7 +346,7 @@ def test_actualizar_retorna_false_sin_identificador():
     # FIN DE ASERCIÓN
 
 
-def test_actualizar_modifica_campos_y_confirma():
+def test_actualizar_modifica_campos_y_SolicitudModel__confirma():
     solicitud = SolicitudModel(7)
     solicitud.set_estatus_solicitud('Completada')
     solicitud.set_problematica('La vía requiere reparación urgente')
@@ -354,10 +354,10 @@ def test_actualizar_modifica_campos_y_confirma():
     conexion = Mock()
     conexion.cursor.return_value.rowcount = 1
 
-    # INICIO DE MOCK: Parchear _con y _asegurar_columna_problematica
+    # INICIO DE MOCK: Parchear _SolicitudModel__con y _SolicitudModel__asegurar_columna_problematica
     with (
-        patch.object(SolicitudModel, '_con', return_value=conexion),
-        patch.object(SolicitudModel, '_asegurar_columna_problematica'),
+        patch.object(SolicitudModel, '_SolicitudModel__con', return_value=conexion),
+        patch.object(SolicitudModel, '_SolicitudModel__asegurar_columna_problematica'),
     ):
         # INICIO DE MOCK: Llamar actualizar con métodos parcheados
         assert solicitud.actualizar() is True
@@ -372,8 +372,8 @@ def test_actualizar_estatus_ejecuta_update():
     conexion = Mock()
     conexion.cursor.return_value.rowcount = 1
 
-    # INICIO DE MOCK: Parchear _con para actualizar_estatus
-    with patch.object(SolicitudModel, '_con', return_value=conexion):
+    # INICIO DE MOCK: Parchear _SolicitudModel__con para actualizar_estatus
+    with patch.object(SolicitudModel, '_SolicitudModel__con', return_value=conexion):
         # INICIO DE MOCK: Llamar actualizar_estatus con conexión parcheada
         resultado = SolicitudModel.actualizar_estatus(5, 'En Proceso')
 
@@ -395,8 +395,8 @@ def test_eliminar_borra_registro_existente():
     conexion = Mock()
     conexion.cursor.return_value.rowcount = 1
 
-    # INICIO DE MOCK: Parchear _con para eliminar
-    with patch.object(SolicitudModel, '_con', return_value=conexion):
+    # INICIO DE MOCK: Parchear _SolicitudModel__con para eliminar
+    with patch.object(SolicitudModel, '_SolicitudModel__con', return_value=conexion):
         # INICIO DE MOCK: Llamar eliminar con conexión parcheada
         resultado = solicitud.eliminar()
 
@@ -412,8 +412,8 @@ def test_obtener_todas_formatea_fechas():
     cursor = conexion.cursor.return_value
     cursor.fetchall.return_value = [{'fecha': datetime(2026, 11, 12, 10, 30)}]
 
-    # INICIO DE MOCK: Parchear _con para obtener_todas
-    with patch.object(SolicitudModel, '_con', return_value=conexion):
+    # INICIO DE MOCK: Parchear _SolicitudModel__con para obtener_todas
+    with patch.object(SolicitudModel, '_SolicitudModel__con', return_value=conexion):
         # INICIO DE MOCK: Llamar obtener_todas con conexión parcheada
         resultado = SolicitudModel.obtener_todas()
 
@@ -422,7 +422,7 @@ def test_obtener_todas_formatea_fechas():
     # FIN DE ASERCIÓN
 
 
-def test_buscar_por_id_consulta_y_formatea_fecha():
+def test_buscar_por_id_SolicitudModel__consulta_y_formatea_fecha():
     # INICIO DE MOCK: Crear conexión y cursor simulados con valor de retorno fetchone
     conexion = Mock()
     cursor = conexion.cursor.return_value
@@ -431,8 +431,8 @@ def test_buscar_por_id_consulta_y_formatea_fecha():
         'fecha': '2026-11-12 10:30:00',
     }
 
-    # INICIO DE MOCK: Parchear _con para buscar_por_id
-    with patch.object(SolicitudModel, '_con', return_value=conexion):
+    # INICIO DE MOCK: Parchear _SolicitudModel__con para buscar_por_id
+    with patch.object(SolicitudModel, '_SolicitudModel__con', return_value=conexion):
         # INICIO DE MOCK: Llamar buscar_por_id con conexión parcheada
         resultado = SolicitudModel.buscar_por_id(8)
 
@@ -455,8 +455,8 @@ def test_obtiene_estadisticas_agrupadas(metodo, fila, esperado):
     conexion = Mock()
     conexion.cursor.return_value.fetchall.return_value = [fila]
 
-    # INICIO DE MOCK: Parchear _con para métodos de estadísticas
-    with patch.object(SolicitudModel, '_con', return_value=conexion):
+    # INICIO DE MOCK: Parchear _SolicitudModel__con para métodos de estadísticas
+    with patch.object(SolicitudModel, '_SolicitudModel__con', return_value=conexion):
         # INICIO DE MOCK: Llamar método de estadísticas con conexión parcheada
         resultado = getattr(SolicitudModel, metodo)()
 
@@ -471,8 +471,8 @@ def test_obtener_estadisticas_por_parroquia_devuelve_filas():
     filas = [{'parroquia': 'Concepcion', 'total': 4}]
     conexion.cursor.return_value.fetchall.return_value = filas
 
-    # INICIO DE MOCK: Parchear _con para obtener_estadisticas_por_parroquia
-    with patch.object(SolicitudModel, '_con', return_value=conexion):
+    # INICIO DE MOCK: Parchear _SolicitudModel__con para obtener_estadisticas_por_parroquia
+    with patch.object(SolicitudModel, '_SolicitudModel__con', return_value=conexion):
         # INICIO DE MOCK: Llamar obtener_estadisticas_por_parroquia con conexión parcheada
         assert SolicitudModel.obtener_estadisticas_por_parroquia() == filas
         # FIN DE ASERCIÓN: Resultado verificado en assert anterior
@@ -484,8 +484,8 @@ def test_obtener_solicitudes_priorizadas_aplica_limite_y_formatea_fecha():
     cursor = conexion.cursor.return_value
     cursor.fetchall.return_value = [{'fecha': '2026-11-12 10:30:00'}]
 
-    # INICIO DE MOCK: Parchear _con para obtener_solicitudes_priorizadas
-    with patch.object(SolicitudModel, '_con', return_value=conexion):
+    # INICIO DE MOCK: Parchear _SolicitudModel__con para obtener_solicitudes_priorizadas
+    with patch.object(SolicitudModel, '_SolicitudModel__con', return_value=conexion):
         # INICIO DE MOCK: Llamar obtener_solicitudes_priorizadas con conexión parcheada
         resultado = SolicitudModel.obtener_solicitudes_priorizadas(5)
 
@@ -501,8 +501,8 @@ def test_obtener_solicitudes_pendientes_filtra_y_formatea_fecha():
     cursor = conexion.cursor.return_value
     cursor.fetchall.return_value = [{'fecha': '2026-11-12 10:30:00'}]
 
-    # INICIO DE MOCK: Parchear _con para obtener_solicitudes_pendientes
-    with patch.object(SolicitudModel, '_con', return_value=conexion):
+    # INICIO DE MOCK: Parchear _SolicitudModel__con para obtener_solicitudes_pendientes
+    with patch.object(SolicitudModel, '_SolicitudModel__con', return_value=conexion):
         # INICIO DE MOCK: Llamar obtener_solicitudes_pendientes con conexión parcheada
         resultado = SolicitudModel.obtener_solicitudes_pendientes()
 

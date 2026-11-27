@@ -11,7 +11,7 @@ CARPETA_RESPALDOS = os.path.join('static', 'respaldos_bd')
 
 def _serializar_respaldo(r):
     r = dict(r)
-    r['tamano_formateado'] = modelo_respaldo._formatear_tamano(r.get('tamano', 0) or 0)
+    r['tamano_formateado'] = modelo_respaldo.formatear_tamano(r.get('tamano', 0) or 0)
     if r.get('fecha_respaldo'):
         r['fecha_respaldo'] = r['fecha_respaldo'].isoformat()
     return r

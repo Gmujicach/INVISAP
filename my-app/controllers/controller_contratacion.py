@@ -13,7 +13,7 @@ def viewFormContratacion():
 def gestionar_contrataciones():
     if 'conectado' in session:
         modelo = ContratacionModel()
-        lista = modelo.obtener_todas_las_contrataciones()
+        lista = modelo.obtener_todas()
         return render_template('contratacion/form_contratacion.html', contrataciones=lista)
     return redirect(url_for('login_bp.inicio'))
 
@@ -21,7 +21,7 @@ def gestionar_contrataciones():
 def vista_editar(id):
     if 'conectado' in session:
         modelo = ContratacionModel()
-        contratacion_data = modelo.obtener_contratacion_por_id(id)
+        contratacion_data = modelo.obtener_por_id(id)
         
         if contratacion_data:
             campos_fecha = ['fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro']
@@ -49,7 +49,7 @@ def obtener_empresas_json():
 def procesar_registro():
     if 'conectado' in session:
         modelo = ContratacionModel()
-        exito, mensaje = modelo.registrar_contrataciones(request.form)
+        exito, mensaje = modelo.registrar(request.form)
         if exito:
             return jsonify({'status': 'success', 'message': mensaje})
         return jsonify({'status': 'error', 'message': mensaje})
@@ -59,7 +59,7 @@ def procesar_registro():
 def procesar_actualizacion():
     if 'conectado' in session:
         modelo = ContratacionModel()
-        exito, mensaje = modelo.actualizar_contratacion(request.form) 
+        exito, mensaje = modelo.actualizar(request.form) 
         if exito:
             return jsonify({'status': 'success', 'message': mensaje, 'redirect': url_for('contrataciones_bp.gestionar_contrataciones')})
         return jsonify({'status': 'error', 'message': mensaje})
@@ -69,7 +69,7 @@ def procesar_actualizacion():
 def eliminar_contratacion(id):
     if 'conectado' in session:
         modelo = ContratacionModel()
-        if modelo.eliminar_contratacion(id):
+        if modelo.eliminar(id):
             return jsonify({'exito': True, 'mensaje': 'Contratación eliminada correctamente.'})
         return jsonify({'exito': False, 'mensaje': 'Error al intentar eliminar el registro.'})
     return jsonify({'exito': False, 'mensaje': 'Sesión expirada.'}), 401

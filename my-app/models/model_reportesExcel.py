@@ -2,10 +2,14 @@ from models.base_model import BaseModel
 
 
 class ReporteExcelModel(BaseModel):
+    """Repositorio de reportes Excel con encapsulamiento y validaciones."""
+
     def __init__(self):
         pass
 
-    def _ejecutar_query(self, query, params=None, db_name=None):
+    # ========== MÉTODOS PRIVADOS DE BASE DE DATOS ==========
+
+    def __ejecutar_query_db(self, query, params=None, db_name=None):
         conexion = self.obtener_conexion_seguridad() if db_name == 'seguridad' else self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         try:
@@ -15,7 +19,7 @@ class ReporteExcelModel(BaseModel):
             cursor.close()
             conexion.close()
 
-    def _aplicar_filtros(self, where_clauses, params, filtros, mapeo_columnas=None):
+    def __aplicar_filtros(self, where_clauses, params, filtros, mapeo_columnas=None):
         mapeo = mapeo_columnas or {}
         if not filtros:
             return
@@ -62,7 +66,7 @@ class ReporteExcelModel(BaseModel):
                 where_clauses.append(f"{columna} LIKE %s")
                 params.append(f"%{val}%")
 
-    def obtener_solicitudes_reporte(self, filtros=None):
+    def __obtener_solicitudes_reporte_db(self, filtros=None):
         query = """
             SELECT 
                 s.id_solicitudes,
@@ -102,13 +106,13 @@ class ReporteExcelModel(BaseModel):
             'sector': 'com.sector',
             'ambito': 'com.ambito',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY s.fecha DESC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query_db(query, params)
 
-    def obtener_solicitantes_reporte(self, filtros=None):
+    def __obtener_solicitantes_reporte_db(self, filtros=None):
         query = """
             SELECT 
                 pa.nombre,
@@ -130,13 +134,13 @@ class ReporteExcelModel(BaseModel):
             'correo': 'p.correo',
             'correo_dominio': 'p.correo',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " GROUP BY pa.id_particular, pa.nombre, pa.apellido, p.cedula_persona, p.correo, p.telefono ORDER BY pa.nombre ASC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query_db(query, params)
 
-    def obtener_empleados_reporte(self, filtros=None):
+    def __obtener_empleados_reporte_db(self, filtros=None):
         query = """
             SELECT 
                 e.nombre_empleado,
@@ -166,13 +170,13 @@ class ReporteExcelModel(BaseModel):
             'municipio': 'p.municipio',
             'gerencia_asignada': 'e.gerencia_asignada',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY e.nombre_empleado ASC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query_db(query, params)
 
-    def obtener_usuarios_reporte(self, filtros=None):
+    def __obtener_usuarios_reporte_db(self, filtros=None):
         query = """
             SELECT 
                 nombre,
@@ -191,13 +195,13 @@ class ReporteExcelModel(BaseModel):
             'rol': 'rol',
             'estado': 'estado',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY nombre ASC"
-        return self._ejecutar_query(query, params, db_name='seguridad')
+        return self.__ejecutar_query_db(query, params, db_name='seguridad')
 
-    def obtener_contrataciones_reporte(self, filtros=None):
+    def __obtener_contrataciones_reporte_db(self, filtros=None):
         query = """
             SELECT 
                 c.empresa_ganadora AS nombre_empresa,
@@ -230,13 +234,13 @@ class ReporteExcelModel(BaseModel):
             'fecha_adjudicacion_hasta': 'c.fecha_adjudicacion',
             'numero_contrato': 'c.numero_contrato',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY c.fecha_registro DESC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query_db(query, params)
 
-    def obtener_obras_reporte(self, filtros=None):
+    def __obtener_obras_reporte_db(self, filtros=None):
         query = """
             SELECT 
                 o.id_obra,
@@ -273,13 +277,13 @@ class ReporteExcelModel(BaseModel):
             'nivel_gravedad': 'g.nivel_gravedad',
             'gerente': 'e.nombre_empleado',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " GROUP BY o.id_obra, o.titulo_obra, o.ubicacion_obra, o.porcentaje_avance_obra, s.estado, s.color, c.empresa_ganadora ORDER BY o.titulo_obra ASC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query_db(query, params)
 
-    def obtener_publicaciones_reporte(self, filtros=None):
+    def __obtener_publicaciones_reporte_db(self, filtros=None):
         query = """
             SELECT 
                 titulo_publicacion, 
@@ -298,13 +302,13 @@ class ReporteExcelModel(BaseModel):
             'fecha_publicacion_desde': 'fecha_publicacion',
             'fecha_publicacion_hasta': 'fecha_publicacion',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY fecha_publicacion DESC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query_db(query, params)
 
-    def obtener_avances_reporte(self, filtros=None):
+    def __obtener_avances_reporte_db(self, filtros=None):
         query = """
             SELECT 
                 a.id_avance,
@@ -328,13 +332,13 @@ class ReporteExcelModel(BaseModel):
             'titulo_obra': 'o.titulo_obra',
             'gerente': 'e.nombre_empleado',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY a.fecha_avance DESC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query_db(query, params)
 
-    def obtener_inspecciones_reporte(self, filtros=None):
+    def __obtener_inspecciones_reporte_db(self, filtros=None):
         query = """
             SELECT 
                 i.id_inspeccion,
@@ -357,13 +361,13 @@ class ReporteExcelModel(BaseModel):
             'titulo_obra': 'o.titulo_obra',
             'inspector': 'e.nombre_empleado',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY i.fecha_inspeccion DESC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query_db(query, params)
 
-    def obtener_evidencias_reporte(self, filtros=None):
+    def __obtener_evidencias_reporte_db(self, filtros=None):
         query = """
             SELECT 
                 ev.id_evidencia,
@@ -385,13 +389,13 @@ class ReporteExcelModel(BaseModel):
             'fecha_registro_hasta': 'ev.fecha_registro',
             'titulo_obra': 'o.titulo_obra',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY ev.fecha_registro DESC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query_db(query, params)
 
-    def obtener_gravedades_reporte(self, filtros=None):
+    def __obtener_gravedades_reporte_db(self, filtros=None):
         query = """
             SELECT 
                 g.id_gravedad,
@@ -409,13 +413,13 @@ class ReporteExcelModel(BaseModel):
             'criticidad': 'g.criticidad',
             'titulo_obra': 'o.titulo_obra',
         }
-        self._aplicar_filtros(where, params, filtros, mapeo)
+        self.__aplicar_filtros(where, params, filtros, mapeo)
         if where:
             query += " AND " + " AND ".join(where)
         query += " ORDER BY g.criticidad DESC"
-        return self._ejecutar_query(query, params)
+        return self.__ejecutar_query_db(query, params)
 
-    def obtener_estadisticas_generales(self):
+    def __obtener_estadisticas_generales_db(self):
         conexion = self.obtener_conexion_estricta()
         cursor = conexion.cursor(dictionary=True)
         try:
@@ -442,3 +446,41 @@ class ReporteExcelModel(BaseModel):
         finally:
             cursor.close()
             conexion.close()
+
+    # ========== MÉTODOS PÚBLICOS (Fachada) ==========
+
+    def obtener_solicitudes_reporte(self, filtros=None):
+        return self.__obtener_solicitudes_reporte_db(filtros)
+
+    def obtener_solicitantes_reporte(self, filtros=None):
+        return self.__obtener_solicitantes_reporte_db(filtros)
+
+    def obtener_empleados_reporte(self, filtros=None):
+        return self.__obtener_empleados_reporte_db(filtros)
+
+    def obtener_usuarios_reporte(self, filtros=None):
+        return self.__obtener_usuarios_reporte_db(filtros)
+
+    def obtener_contrataciones_reporte(self, filtros=None):
+        return self.__obtener_contrataciones_reporte_db(filtros)
+
+    def obtener_obras_reporte(self, filtros=None):
+        return self.__obtener_obras_reporte_db(filtros)
+
+    def obtener_publicaciones_reporte(self, filtros=None):
+        return self.__obtener_publicaciones_reporte_db(filtros)
+
+    def obtener_avances_reporte(self, filtros=None):
+        return self.__obtener_avances_reporte_db(filtros)
+
+    def obtener_inspecciones_reporte(self, filtros=None):
+        return self.__obtener_inspecciones_reporte_db(filtros)
+
+    def obtener_evidencias_reporte(self, filtros=None):
+        return self.__obtener_evidencias_reporte_db(filtros)
+
+    def obtener_gravedades_reporte(self, filtros=None):
+        return self.__obtener_gravedades_reporte_db(filtros)
+
+    def obtener_estadisticas_generales(self):
+        return self.__obtener_estadisticas_generales_db()

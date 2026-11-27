@@ -8,7 +8,7 @@ from models.model_ReporteEstadistico import ReporteEstadisticoModel
 def test_filtro_estadistico_acepta_columna_mapeada():
     where, params = [], []
 
-    ReporteEstadisticoModel()._aplicar_filtros(
+    ReporteEstadisticoModel()._ReporteEstadisticoModel__aplicar_filtros(
         where, params, {'nombre': 'Ana'}, {'nombre': 'e.nombre'}
     )
 
@@ -18,7 +18,7 @@ def test_filtro_estadistico_acepta_columna_mapeada():
 
 def test_filtros_estadisticos_aplican_condiciones_especiales_y_ignoran_no_mapeadas():
     where, params = [], []
-    ReporteEstadisticoModel()._aplicar_filtros(
+    ReporteEstadisticoModel()._ReporteEstadisticoModel__aplicar_filtros(
         where, params,
         {
             'correo_dominio': 'ejemplo.test',
@@ -65,7 +65,7 @@ def test_ejecutar_query_retorna_filas_y_cierra_recursos_tras_error():
     cursor = conexion.cursor.return_value
     cursor.fetchall.return_value = [{'id': 5}]
     with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
-        assert modelo._ejecutar_query('SELECT id FROM datos', [5]) == [{'id': 5}]
+        assert modelo._ReporteEstadisticoModel__ejecutar_query('SELECT id FROM datos', [5]) == [{'id': 5}]
     cursor.execute.assert_called_once_with('SELECT id FROM datos', [5])
     cursor.close.assert_called_once_with()
     conexion.close.assert_called_once_with()
@@ -75,7 +75,7 @@ def test_ejecutar_query_retorna_filas_y_cierra_recursos_tras_error():
     cursor.execute.side_effect = RuntimeError('fallo simulado')
     with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
         with pytest.raises(RuntimeError, match='fallo simulado'):
-            modelo._ejecutar_query('SELECT 1')
+            modelo._ReporteEstadisticoModel__ejecutar_query('SELECT 1')
     cursor.close.assert_called_once_with()
     conexion.close.assert_called_once_with()
 
@@ -92,8 +92,8 @@ def _modelo_estadistico_con_cursor():
     ('agrupacion', 'campo', 'sql_fragment'),
     [
         ('dia', 'por_fecha', 'GROUP BY DATE(s.fecha)'),
-        ('mes', 'por_mes', "GROUP BY DATE_FORMAT(s.fecha, '%Y-%m')"),
-        ('semana', 'por_semana', "GROUP BY DATE_FORMAT(s.fecha, '%x-W%v')"),
+        ('mes', 'por_mes', "GROUP BY DATE_FORMAT(s.fecha, '%%Y-%%m')"),
+        ('semana', 'por_semana', "GROUP BY DATE_FORMAT(s.fecha, '%%x-W%%v')"),
     ],
 )
 def test_estadisticas_solicitudes_cambian_agrupacion_y_agregan_filtros(
@@ -133,8 +133,8 @@ def test_estadisticas_solicitudes_incluyen_dimensiones_geograficas_si_hay_filtro
     ('agrupacion', 'sql_fragment'),
     [
         ('dia', 'GROUP BY DATE(COALESCE(o.fecha_inicio, o.fecha_fin))'),
-        ('mes', "GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%Y-%m')"),
-        ('semana', "GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%x-W%v')"),
+        ('mes', "GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%%Y-%%m')"),
+        ('semana', "GROUP BY DATE_FORMAT(COALESCE(o.fecha_inicio, o.fecha_fin), '%%x-W%%v')"),
     ],
 )
 def test_estadisticas_obras_agregan_fechas_estado_avance_y_filtro(
@@ -159,8 +159,8 @@ def test_estadisticas_obras_agregan_fechas_estado_avance_y_filtro(
     ('agrupacion', 'sql_fragment'),
     [
         ('dia', 'GROUP BY DATE(e.fecha_ingreso)'),
-        ('mes', "GROUP BY DATE_FORMAT(e.fecha_ingreso, '%Y-%m')"),
-        ('semana', "GROUP BY DATE_FORMAT(e.fecha_ingreso, '%x-W%v')"),
+        ('mes', "GROUP BY DATE_FORMAT(e.fecha_ingreso, '%%Y-%%m')"),
+        ('semana', "GROUP BY DATE_FORMAT(e.fecha_ingreso, '%%x-W%%v')"),
     ],
 )
 def test_estadisticas_empleados_incluyen_dimensiones_y_fecha_ingreso(
@@ -181,8 +181,8 @@ def test_estadisticas_empleados_incluyen_dimensiones_y_fecha_ingreso(
     ('agrupacion', 'sql_fragment'),
     [
         ('dia', 'GROUP BY DATE(c.fecha_registro)'),
-        ('mes', "GROUP BY DATE_FORMAT(c.fecha_registro, '%Y-%m')"),
-        ('semana', "GROUP BY DATE_FORMAT(c.fecha_registro, '%x-W%v')"),
+        ('mes', "GROUP BY DATE_FORMAT(c.fecha_registro, '%%Y-%%m')"),
+        ('semana', "GROUP BY DATE_FORMAT(c.fecha_registro, '%%x-W%%v')"),
     ],
 )
 def test_estadisticas_contrataciones_resumenes_y_agrupacion(
@@ -205,8 +205,8 @@ def test_estadisticas_contrataciones_resumenes_y_agrupacion(
     ('agrupacion', 'sql_fragment'),
     [
         ('dia', 'GROUP BY DATE(fecha_publicacion)'),
-        ('mes', "GROUP BY DATE_FORMAT(fecha_publicacion, '%Y-%m')"),
-        ('semana', "GROUP BY DATE_FORMAT(fecha_publicacion, '%x-W%v')"),
+        ('mes', "GROUP BY DATE_FORMAT(fecha_publicacion, '%%Y-%%m')"),
+        ('semana', "GROUP BY DATE_FORMAT(fecha_publicacion, '%%x-W%%v')"),
     ],
 )
 def test_estadisticas_publicaciones_resumen_por_tipo_autor_y_fecha(

@@ -10,11 +10,11 @@ from models.base_model import BaseModel
 class SolicitudModel(BaseModel):
     """Repositorio y entidad de solicitudes."""
 
-    _RE_CEDULA = re.compile(r'^\d{7,10}$')
-    _RE_TELEFONO = re.compile(r'^(0414|0424|0412|0416|0426|0251)-?\d{7}$')
-    _RE_CORREO = re.compile(r'^[\w._%+\-]+@[\w.\-]+\.[a-zA-Z]{2,}$')
-    _RE_TEXTO = re.compile(r'^[\w\s\.,\-áéíóúÁÉÍÓÚñÑ]{2,100}$', re.UNICODE)
-    _RE_PROBLEMATICA = re.compile(r'^[\w\s\.,\!\?\-áéíóúÁÉÍÓÚñÑ]{15,500}$', re.UNICODE)
+    __RE_CEDULA = re.compile(r'^\d{7,10}$')
+    __RE_TELEFONO = re.compile(r'^(0414|0424|0412|0416|0426|0251)-?\d{7}$')
+    __RE_CORREO = re.compile(r'^[\w._%+\-]+@[\w.\-]+\.[a-zA-Z]{2,}$')
+    __RE_TEXTO = re.compile(r'^[\w\s\.,\-áéíóúÁÉÍÓÚñÑ]{2,100}$', re.UNICODE)
+    __RE_PROBLEMATICA = re.compile(r'^[\w\s\.,\!\?\-áéíóúÁÉÍÓÚñÑ]{15,500}$', re.UNICODE)
 
     TIPOS_SOLICITANTE_VALIDOS = {'Comunidad', 'Institucion', 'Particular'}
     ESTATUS_VALIDOS = {'Pendiente', 'En Proceso', 'Completada', 'Procesada', 'PENDIENTE'}
@@ -31,43 +31,43 @@ class SolicitudModel(BaseModel):
     # Límite de caracteres de la columna `solicitudes.problematica`, contando
     # el prefijo "[Categoría] " que se antepone al texto del solicitante.
     LIMITE_PROBLEMATICA = 512
-    _columna_problematica_verificada = False
+    __columna_problematica_verificada = False
 
     def __init__(self, id_solicitudes=None):
-        self._id_solicitudes = id_solicitudes
-        self._tipo_solicitud = None
-        self._estatus_solicitud = 'Pendiente'
-        self._problematica = None
-        self._fecha = None
-        self._solicitante_data = {} # Almacena datos del solicitante
+        self.__id_solicitudes = id_solicitudes
+        self.__tipo_solicitud = None
+        self.__estatus_solicitud = 'Pendiente'
+        self.__problematica = None
+        self.__fecha = None
+        self.__solicitante_data = {} # Almacena datos del solicitante
 
     # --- GETTERS Y SETTERS CON VALIDACIÓN (ENCAPSULAMIENTO) ---
     def get_id(self):
-        return self._id_solicitudes
+        return self.__id_solicitudes
 
     def get_tipo_solicitud(self):
-        return self._tipo_solicitud
+        return self.__tipo_solicitud
 
     def set_tipo_solicitud(self, valor):
         valor = str(valor or '').strip()
         if valor not in self.TIPOS_SOLICITANTE_VALIDOS:
             raise ValueError(f"Tipo de solicitud '{valor}' inválido.")
-        self._tipo_solicitud = valor
+        self.__tipo_solicitud = valor
 
     def get_estatus_solicitud(self):
-        return self._estatus_solicitud
+        return self.__estatus_solicitud
 
     def set_estatus_solicitud(self, valor):
-        valor = self._limpiar(valor, 20)
+        valor = self.__limpiar(valor, 20)
         if valor not in self.ESTATUS_VALIDOS:
             valor = 'Pendiente'
-        self._estatus_solicitud = valor
+        self.__estatus_solicitud = valor
 
     def get_problematica(self):
-        return self._problematica
+        return self.__problematica
 
     def set_problematica(self, valor, tipo_problematica=None):
-        tipo_prob = self._limpiar(tipo_problematica, 50) if tipo_problematica else ""
+        tipo_prob = self.__limpiar(tipo_problematica, 50) if tipo_problematica else ""
 
         if tipo_prob and tipo_prob not in self.TIPOS_PROBLEMATICA_VALIDOS:
             raise ValueError(f"Categoría de problemática '{tipo_prob}' inválida.")
@@ -76,27 +76,27 @@ class SolicitudModel(BaseModel):
         # El texto libre se recorta para que prefijo + descripción nunca
         # superen el tamaño real de la columna en la base de datos.
         limite_texto = max(15, self.LIMITE_PROBLEMATICA - len(prefijo))
-        problematica_libre = self._limpiar(valor, limite_texto)
+        problematica_libre = self.__limpiar(valor, limite_texto)
 
         if not problematica_libre and not tipo_prob:
             raise ValueError("Debe describir la problemática de la solicitud.")
 
         problematica_final = f"{prefijo}{problematica_libre}".strip()
 
-        if not self._RE_PROBLEMATICA.match(problematica_final) and len(problematica_final.strip()) < 15:
+        if not self.__RE_PROBLEMATICA.match(problematica_final) and len(problematica_final.strip()) < 15:
             raise ValueError("La problemática debe tener al menos 15 caracteres válidos y evitar inyecciones.")
-        self._problematica = problematica_final[:self.LIMITE_PROBLEMATICA]
+        self.__problematica = problematica_final[:self.LIMITE_PROBLEMATICA]
 
     def get_fecha(self):
-        return self._fecha
+        return self.__fecha
 
     def set_fecha(self, valor=None):
         fecha_raw = str(valor or '').strip()
-        self._fecha = fecha_raw.replace('T', ' ') if fecha_raw else datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        self.__fecha = fecha_raw.replace('T', ' ') if fecha_raw else datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     def set_solicitante_data(self, datos: dict):
         """Asigna y valida los datos del solicitante dependiendo del tipo."""
-        tipo = self._tipo_solicitud
+        tipo = self.__tipo_solicitud
         if not tipo:
             raise ValueError("Debe establecer el tipo de solicitud primero.")
         
@@ -125,53 +125,53 @@ class SolicitudModel(BaseModel):
         else:
             raise ValueError("Tipo de solicitud desconocido.")
 
-        if not self._RE_CEDULA.match(str(cedula)):
+        if not self.__RE_CEDULA.match(str(cedula)):
             raise ValueError("Cédula inválida. Debe tener entre 7 y 10 dígitos numéricos sin puntos ni guiones.")
             
-        if not self._RE_CORREO.match(correo):
+        if not self.__RE_CORREO.match(correo):
             raise ValueError("Formato de correo electrónico inválido.")
             
-        if not self._RE_TELEFONO.match(telefono):
+        if not self.__RE_TELEFONO.match(telefono):
             raise ValueError("Formato de teléfono inválido (ej: 04121234567 o 0412-1234567).")
             
-        municipio = self._limpiar(municipio, 45)
+        municipio = self.__limpiar(municipio, 45)
         if municipio and municipio not in self.MUNICIPIOS_VALIDOS:
             raise ValueError(f"El municipio '{municipio}' no es válido.")
             
-        parroquia = self._limpiar(parroquia, 45)
+        parroquia = self.__limpiar(parroquia, 45)
         if not parroquia:
             raise ValueError("Debe seleccionar una parroquia válida.")
 
-        self._solicitante_data = {
+        self.__solicitante_data = {
             'tipo_solicitante': tipo,
-            'cedula_persona': self._limpiar(cedula, 10),
-            'direccion': self._limpiar(direccion, 200),
+            'cedula_persona': self.__limpiar(cedula, 10),
+            'direccion': self.__limpiar(direccion, 200),
             'parroquia': parroquia,
             'municipio': municipio,
-            'telefono': self._limpiar(telefono, 12),
-            'correo': self._limpiar(correo, 45)
+            'telefono': self.__limpiar(telefono, 12),
+            'correo': self.__limpiar(correo, 45)
         }
 
         # Campos específicos por tipo
         if tipo == 'Comunidad':
-            self._solicitante_data['nombre_comunidad'] = self._limpiar(datos.get('com_nombre', ''), 100)
-            self._solicitante_data['ambito'] = self._limpiar(datos.get('com_ambito', ''), 45)
-            self._solicitante_data['sector'] = self._limpiar(datos.get('com_sector', ''), 45)
+            self.__solicitante_data['nombre_comunidad'] = self.__limpiar(datos.get('com_nombre', ''), 100)
+            self.__solicitante_data['ambito'] = self.__limpiar(datos.get('com_ambito', ''), 45)
+            self.__solicitante_data['sector'] = self.__limpiar(datos.get('com_sector', ''), 45)
         elif tipo == 'Institucion':
-            self._solicitante_data['nombre_representante'] = self._limpiar(datos.get('inst_director_nombre', ''), 45)
-            self._solicitante_data['razon_social'] = self._limpiar(datos.get('inst_nombre', ''), 120)
+            self.__solicitante_data['nombre_representante'] = self.__limpiar(datos.get('inst_director_nombre', ''), 45)
+            self.__solicitante_data['razon_social'] = self.__limpiar(datos.get('inst_nombre', ''), 120)
         elif tipo == 'Particular':
-            self._solicitante_data['nombre'] = self._limpiar(datos.get('part_nombre', ''), 45)
-            self._solicitante_data['apellido'] = self._limpiar(datos.get('part_apellido', ''), 45)
+            self.__solicitante_data['nombre'] = self.__limpiar(datos.get('part_nombre', ''), 45)
+            self.__solicitante_data['apellido'] = self.__limpiar(datos.get('part_apellido', ''), 45)
 
 
     # --- MÉTODOS PRIVADOS (Base de Datos) ---
     @staticmethod
-    def _con():
+    def __con():
         return SolicitudModel.obtener_conexion()
 
     @staticmethod
-    def _cerrar(conn, cursor):
+    def __cerrar(conn, cursor):
         try:
             if cursor: cursor.close()
         except Exception: pass
@@ -180,12 +180,12 @@ class SolicitudModel(BaseModel):
         except Exception: pass
 
     @staticmethod
-    def _limpiar(valor: str, max_len: int = 255) -> str:
+    def __limpiar(valor: str, max_len: int = 255) -> str:
         if not isinstance(valor, str):
             valor = str(valor or '')
         return re.sub(r'[<>\'";\\]', '', valor).strip()[:max_len]
 
-    def _formatear_fecha(self, fecha):
+    def __formatear_fecha(self, fecha):
         if fecha is None: return ''
         if isinstance(fecha, datetime): return fecha.strftime('%a %d-%m-%Y %I:%M:%S %p')
         if isinstance(fecha, str):
@@ -195,13 +195,13 @@ class SolicitudModel(BaseModel):
             return fecha
         return str(fecha)
 
-    def _sql_buscar_persona(self, cursor, cedula: str):
+    def __sql_buscar_persona(self, cursor, cedula: str):
         sql = "SELECT id_persona FROM persona WHERE cedula_persona = %s LIMIT 1"
         cursor.execute(sql, (cedula,))
         row = cursor.fetchone()
         return row['id_persona'] if isinstance(row, dict) else (row[0] if row else None)
 
-    def _sql_insertar_persona(self, cursor, datos: dict) -> int:
+    def __sql_insertar_persona(self, cursor, datos: dict) -> int:
         for _ in range(3):
             cursor.execute("SELECT COALESCE(MAX(id_persona), 0) + 1 AS siguiente_id FROM persona")
             fila = cursor.fetchone()
@@ -229,7 +229,7 @@ class SolicitudModel(BaseModel):
 
         raise ValueError("No se pudo reservar un ID único para persona tras 3 intentos")
 
-    def _sql_insertar_subtipo(self, cursor, persona_id: int, datos: dict):
+    def __sql_insertar_subtipo(self, cursor, persona_id: int, datos: dict):
         tipo = datos['tipo_solicitante']
         if tipo == 'Particular':
             for _ in range(3):
@@ -286,24 +286,24 @@ class SolicitudModel(BaseModel):
                         cursor.connection.rollback()
             raise ValueError("No se pudo reservar un ID único para institucion tras 3 intentos")
 
-    def _sql_crear_prioridad_pendiente(self, cursor) -> int:
+    def __sql_crear_prioridad_pendiente(self, cursor) -> int:
         cursor.execute(
             """INSERT INTO prioridad
                (rango_prioridad, origen, fecha_asignacion, responsable_ajuste,
                 justificacion_cambio, estado)
                VALUES (%s, %s, %s, %s, %s, %s)""",
-            (1.0, 'pendiente', self._fecha, 'Sistema', 'Pendiente de clasificación IA', 0),
+            (1.0, 'pendiente', self.__fecha, 'Sistema', 'Pendiente de clasificación IA', 0),
         )
         return cursor.lastrowid
 
     @staticmethod
-    def _asegurar_columna_problematica(conn):
+    def __asegurar_columna_problematica(conn):
         """Amplía `solicitudes.problematica` si el esquema es menor que el límite del modelo.
 
         Evita el error MySQL 1406 (Data too long) cuando el prefijo de categoría
         y la descripción supera el VARCHAR definido en instalaciones antiguas.
         """
-        if SolicitudModel._columna_problematica_verificada:
+        if SolicitudModel.__columna_problematica_verificada:
             return
         cursor = None
         try:
@@ -326,7 +326,7 @@ class SolicitudModel(BaseModel):
                     )
                     conn.commit()
                     print(f"[SolicitudModel] Columna solicitudes.problematica ampliada a VARCHAR({SolicitudModel.LIMITE_PROBLEMATICA}).")
-            SolicitudModel._columna_problematica_verificada = True
+            SolicitudModel.__columna_problematica_verificada = True
         except Exception as e:
             print(f"[SolicitudModel] No se pudo verificar solicitudes.problematica: {e}")
         finally:
@@ -336,24 +336,24 @@ class SolicitudModel(BaseModel):
     # --- MÉTODOS PÚBLICOS (API del Modelo) ---
     def guardar(self) -> int | bool:
         """Guarda la nueva solicitud usando los atributos instanciados."""
-        if not self._tipo_solicitud or not self._problematica or not self._solicitante_data:
+        if not self.__tipo_solicitud or not self.__problematica or not self.__solicitante_data:
             return False
 
         conn = cursor = None
         try:
-            conn = self._con()
+            conn = self.__con()
             if not conn: return False
-            self._asegurar_columna_problematica(conn)
+            self.__asegurar_columna_problematica(conn)
             cursor = conn.cursor(dictionary=True)
 
-            persona_id = self._sql_buscar_persona(cursor, self._solicitante_data['cedula_persona'])
+            persona_id = self.__sql_buscar_persona(cursor, self.__solicitante_data['cedula_persona'])
             if not persona_id:
-                persona_id = self._sql_insertar_persona(cursor, self._solicitante_data)
-                self._sql_insertar_subtipo(cursor, persona_id, self._solicitante_data)
+                persona_id = self.__sql_insertar_persona(cursor, self.__solicitante_data)
+                self.__sql_insertar_subtipo(cursor, persona_id, self.__solicitante_data)
 
             if not persona_id: return False
 
-            prioridad_id = self._sql_crear_prioridad_pendiente(cursor)
+            prioridad_id = self.__sql_crear_prioridad_pendiente(cursor)
 
             sql_solicitud = """
                 INSERT INTO solicitudes (fecha, tipo_solicitud, estatus_solicitud, problematica,
@@ -361,33 +361,33 @@ class SolicitudModel(BaseModel):
                 VALUES (%s, %s, %s, %s, %s, %s)
             """
             cursor.execute(sql_solicitud, (
-                self._fecha, self._tipo_solicitud, self._estatus_solicitud,
-                self._problematica, persona_id, prioridad_id
+                self.__fecha, self.__tipo_solicitud, self.__estatus_solicitud,
+                self.__problematica, persona_id, prioridad_id
             ))
 
-            self._id_solicitudes = cursor.lastrowid
+            self.__id_solicitudes = cursor.lastrowid
             conn.commit()
-            return self._id_solicitudes
+            return self.__id_solicitudes
         except Exception as e:
             print(f"Error guardar: {e}")
             if conn: conn.rollback()
             return False
         finally:
-            self._cerrar(conn, cursor)
+            self.__cerrar(conn, cursor)
 
     def actualizar(self) -> bool:
         """Actualiza la solicitud actual (solo estatus y problemática)."""
-        if not self._id_solicitudes:
+        if not self.__id_solicitudes:
             return False
             
         conn = cursor = None
         try:
-            conn = self._con()
+            conn = self.__con()
             if not conn: return False
-            self._asegurar_columna_problematica(conn)
+            self.__asegurar_columna_problematica(conn)
             cursor = conn.cursor()
             sql = "UPDATE solicitudes SET estatus_solicitud = %s, problematica = %s WHERE id_solicitudes = %s"
-            cursor.execute(sql, (self._estatus_solicitud, self._problematica, self._id_solicitudes))
+            cursor.execute(sql, (self.__estatus_solicitud, self.__problematica, self.__id_solicitudes))
             conn.commit()
             return cursor.rowcount > 0
         except Exception as e:
@@ -395,14 +395,14 @@ class SolicitudModel(BaseModel):
             if conn: conn.rollback()
             return False
         finally:
-            self._cerrar(conn, cursor)
+            self.__cerrar(conn, cursor)
 
     @classmethod
     def actualizar_estatus(cls, id_solicitud: int, nuevo_estatus: str) -> bool:
         """Actualiza el estatus de una solicitud específica."""
         conn = cursor = None
         try:
-            conn = cls._con()
+            conn = cls.__con()
             if not conn: return False
             cursor = conn.cursor()
             sql = "UPDATE solicitudes SET estatus_solicitud = %s WHERE id_solicitudes = %s"
@@ -414,34 +414,34 @@ class SolicitudModel(BaseModel):
             if conn: conn.rollback()
             return False
         finally:
-            cls._cerrar(conn, cursor)
+            cls.__cerrar(conn, cursor)
 
     def eliminar(self) -> bool:
         """Elimina la solicitud actual de la BD."""
-        if not self._id_solicitudes:
+        if not self.__id_solicitudes:
             return False
             
         conn = cursor = None
         try:
-            conn = self._con()
+            conn = self.__con()
             if not conn: return False
             cursor = conn.cursor()
             sql = "DELETE FROM solicitudes WHERE id_solicitudes = %s"
-            cursor.execute(sql, (self._id_solicitudes,))
+            cursor.execute(sql, (self.__id_solicitudes,))
             conn.commit()
             return cursor.rowcount > 0
         except Exception:
             if conn: conn.rollback()
             return False
         finally:
-            self._cerrar(conn, cursor)
+            self.__cerrar(conn, cursor)
 
     # --- MÉTODOS DE BÚSQUEDA ---
     @classmethod
     def obtener_todas(cls) -> list:
         conn = cursor = None
         try:
-            conn = cls._con()
+            conn = cls.__con()
             if not conn: return []
             cursor = conn.cursor(dictionary=True)
             sql = """
@@ -462,19 +462,19 @@ class SolicitudModel(BaseModel):
             # Instanciar temporalmente para formatear la fecha
             instancia_temp = cls()
             for row in rows: 
-                row['fecha_formateada'] = instancia_temp._formatear_fecha(row.get('fecha'))
+                row['fecha_formateada'] = instancia_temp.__formatear_fecha(row.get('fecha'))
             return rows
         except Exception as e:
             print(f"Error obtener_todas: {e}")
             return []
         finally:
-            cls._cerrar(conn, cursor)
+            cls.__cerrar(conn, cursor)
 
     @classmethod
     def buscar_por_id(cls, id_solicitud: int):
         conn = cursor = None
         try:
-            conn = cls._con()
+            conn = cls.__con()
             if not conn: return None
             cursor = conn.cursor(dictionary=True)
             sql = """
@@ -492,45 +492,45 @@ class SolicitudModel(BaseModel):
             cursor.execute(sql, (id_solicitud,))
             row = cursor.fetchone()
             if row: 
-                row['fecha_formateada'] = cls()._formatear_fecha(row.get('fecha'))
+                row['fecha_formateada'] = cls().__formatear_fecha(row.get('fecha'))
             return row
         except Exception as e:
             print(f"Error buscar_por_id: {e}")
             return None
         finally:
-            cls._cerrar(conn, cursor)
+            cls.__cerrar(conn, cursor)
 
     @classmethod
     def obtener_estadisticas(cls) -> dict:
         conn = cursor = None
         try:
-            conn = cls._con()
+            conn = cls.__con()
             if not conn: return {}
             cursor = conn.cursor(dictionary=True)
             sql = "SELECT estatus_solicitud, COUNT(*) as total FROM solicitudes GROUP BY estatus_solicitud"
             cursor.execute(sql)
             return {r['estatus_solicitud']: r['total'] for r in cursor.fetchall()}
         except Exception: return {}
-        finally: cls._cerrar(conn, cursor)
+        finally: cls.__cerrar(conn, cursor)
 
     @classmethod
     def obtener_estadisticas_por_tipo(cls) -> dict:
         conn = cursor = None
         try:
-            conn = cls._con()
+            conn = cls.__con()
             if not conn: return {}
             cursor = conn.cursor(dictionary=True)
             sql = "SELECT tipo_solicitud, COUNT(*) as total FROM solicitudes GROUP BY tipo_solicitud"
             cursor.execute(sql)
             return {r['tipo_solicitud']: r['total'] for r in cursor.fetchall()}
         except Exception: return {}
-        finally: cls._cerrar(conn, cursor)
+        finally: cls.__cerrar(conn, cursor)
 
     @classmethod
     def obtener_estadisticas_por_parroquia(cls) -> list:
         conn = cursor = None
         try:
-            conn = cls._con()
+            conn = cls.__con()
             if not conn: return []
             cursor = conn.cursor(dictionary=True)
             sql = """
@@ -543,13 +543,13 @@ class SolicitudModel(BaseModel):
             cursor.execute(sql)
             return cursor.fetchall()
         except Exception: return []
-        finally: cls._cerrar(conn, cursor)
+        finally: cls.__cerrar(conn, cursor)
 
     @classmethod
     def obtener_solicitudes_priorizadas(cls, limite=10) -> list:
         conn = cursor = None
         try:
-            conn = cls._con()
+            conn = cls.__con()
             if not conn: return []
             cursor = conn.cursor(dictionary=True)
             sql = """
@@ -575,16 +575,16 @@ class SolicitudModel(BaseModel):
             rows = cursor.fetchall()
             instancia = cls()
             for row in rows:
-                row['fecha_formateada'] = instancia._formatear_fecha(row.get('fecha'))
+                row['fecha_formateada'] = instancia.__formatear_fecha(row.get('fecha'))
             return rows
         except Exception: return []
-        finally: cls._cerrar(conn, cursor)
+        finally: cls.__cerrar(conn, cursor)
 
     @classmethod
     def obtener_solicitudes_pendientes(cls) -> list:
         conn = cursor = None
         try:
-            conn = cls._con()
+            conn = cls.__con()
             if not conn: return []
             cursor = conn.cursor(dictionary=True)
             sql = """
@@ -604,10 +604,10 @@ class SolicitudModel(BaseModel):
             rows = cursor.fetchall()
             instancia_temp = cls()
             for row in rows:
-                row['fecha_formateada'] = instancia_temp._formatear_fecha(row.get('fecha'))
+                row['fecha_formateada'] = instancia_temp.__formatear_fecha(row.get('fecha'))
             return rows
         except Exception as e:
             print(f"Error obtener_solicitudes_pendientes: {e}")
             return []
         finally:
-            cls._cerrar(conn, cursor)
+            cls.__cerrar(conn, cursor)

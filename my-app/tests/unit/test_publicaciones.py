@@ -27,7 +27,7 @@ def _mock_publicacion_model():
     return modelo, conexion, cursor
 
 
-def test_listado_publicaciones_y_listado_informes_devuelven_filas_y_cierran():
+def test_listado_publicaciones_y_listado_informes_devuelven_filas_y_cierren():
     modelo, conexion, cursor = _mock_publicacion_model()
     cursor.fetchall.side_effect = [[{'id_publicacion': 3}], [{'id_informe': 6}]]
 
@@ -53,7 +53,7 @@ def test_registrar_publicacion_construye_datos_confirma_y_reintenta_id_duplicado
     datos = {
         'titulo_publicacion': 'Avance de obra',
         'nombre_responsable': 'Ana Pérez',
-        'tipo_publicacion': 'Informativa',
+        'tipo_publicacion': 'Informe',
         'fecha_publicacion': '2025-03-01',
         'informe_avance_obra_id_informe': 9,
     }
@@ -63,8 +63,8 @@ def test_registrar_publicacion_construye_datos_confirma_y_reintenta_id_duplicado
 
     inserts = [call for call in cursor.execute.call_args_list if 'INSERT INTO publicacion' in call.args[0]]
     assert [call.args[1] for call in inserts] == [
-        (4, 'Avance de obra', 'Ana Pérez', 'Informativa', '2025-03-01', 9, 1, 'Contenido pendiente'),
-        (5, 'Avance de obra', 'Ana Pérez', 'Informativa', '2025-03-01', 9, 1, 'Contenido pendiente'),
+        (4, 'Avance de obra', 'Ana Pérez', 'Informe', '2025-03-01', 9, 1, 'Contenido pendiente'),
+        (5, 'Avance de obra', 'Ana Pérez', 'Informe', '2025-03-01', 9, 1, 'Contenido pendiente'),
     ]
     conexion.rollback.assert_called_once_with()
     conexion.commit.assert_called_once_with()
@@ -78,7 +78,8 @@ def test_actualizar_y_eliminar_publicacion_verifican_sql_transaccion_y_rowcount(
     datos = {
         'titulo_publicacion': 'Actualización de obra',
         'nombre_responsable': 'Ana Pérez',
-        'tipo_publicacion': 'General',
+        'tipo_publicacion': 'Obra',
+        'fecha_publicacion': '2025-03-01',
         'informe_avance_obra_id_informe': 2,
     }
 
@@ -87,7 +88,7 @@ def test_actualizar_y_eliminar_publicacion_verifican_sql_transaccion_y_rowcount(
         assert modelo.eliminar_publicacion(7) == 1
 
     assert cursor.execute.call_args_list[0].args[1] == (
-        'Actualización de obra', 'Ana Pérez', 'General', 2, 'Contenido pendiente', 7
+        'Actualización de obra', 'Ana Pérez', 'Obra', 2, 'Contenido pendiente', 7
     )
     cursor.execute.assert_any_call('DELETE FROM publicacion WHERE id_publicacion = %s', (7,))
     assert conexion.commit.call_count == 2
@@ -110,26 +111,23 @@ def test_validar_informe_activo_distingue_existe_y_ausente():
     assert conexion.close.call_count == 2
 
 
-def test_metodos_publicacion_capturan_error_de_bd_y_cierran_recursos():
+def test_metodos_publicacion_capturan_error_de_bd_y_cierren_recursos():
     modelo, conexion, cursor = _mock_publicacion_model()
     cursor.execute.side_effect = RuntimeError('fallo simulado')
 
+    datos = {
+        'titulo_publicacion': 'Avance de obra',
+        'nombre_responsable': 'Ana Pérez',
+        'tipo_publicacion': 'Obra',
+        'fecha_publicacion': '2025-03-01',
+        'informe_avance_obra_id_informe': 1,
+    }
+
     with patch.object(modelo, 'obtener_conexion', return_value=conexion):
         assert modelo.obtener_todas_las_publicaciones() == []
-        assert modelo.registrar_publicacion({
-            'titulo_publicacion': 'Avance de obra',
-            'nombre_responsable': 'Ana Pérez',
-            'tipo_publicacion': 'General',
-            'fecha_publicacion': '2025-03-01',
-            'informe_avance_obra_id_informe': 1,
-        }) == 0
+        assert modelo.registrar_publicacion(datos) == 0
         assert modelo.obtener_publicacion_por_id(1) is None
-        assert modelo.actualizar_publicacion(1, {
-            'titulo_publicacion': 'Avance de obra',
-            'nombre_responsable': 'Ana Pérez',
-            'tipo_publicacion': 'General',
-            'informe_avance_obra_id_informe': 1,
-        }) == 0
+        assert modelo.actualizar_publicacion(1, datos) == 0
         assert modelo.eliminar_publicacion(1) == 0
         assert modelo.obtener_informes_para_publicaciones() == []
         assert modelo.validar_informe_activo(1) is False

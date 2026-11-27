@@ -15,7 +15,7 @@ class _EmpresaDatabase(ConexionBD):
 
 
 def obtener_todas_las_empresas():
-    return EmpresaModel().obtener_todas_las_empresas()
+    return EmpresaModel().obtener_todas()
 
 def obtener_empresa_por_rif(rif):
     conexion = None
@@ -63,7 +63,7 @@ def procesar_registro_empresa(formulario):
         'domicilio_fiscal': domicilio_fiscal.strip()
     }
 
-    resultado_db = EmpresaModel().registrar_Empresas(datos_limpios)
+    resultado_db = EmpresaModel().registrar(datos_limpios)
 
     if resultado_db == True:
         BitacoraService.registrar_accion(
@@ -77,7 +77,7 @@ def procesar_registro_empresa(formulario):
         return False, 'Error interno del servidor al intentar guardar la empresa.', 'error'
 
 def update_empresa(datos):
-    resultado = EmpresaModel().update_empresa(datos)
+    resultado = EmpresaModel().actualizar(datos)
     if resultado:
         BitacoraService.registrar_accion(
             session, 'Empresas', 'EDITAR',
@@ -87,7 +87,7 @@ def update_empresa(datos):
 
 def eliminar_empresa_por_rif(rif):
     try:
-        resultado = EmpresaModel().eliminar_empresa(rif)
+        resultado = EmpresaModel().eliminar(rif)
         if resultado:
             BitacoraService.registrar_accion(
                 session, 'Empresas', 'ELIMINAR',

@@ -4,7 +4,7 @@ from flask import session
 
 def registrar_maquinaria_controller(datos):
     modelo = MaquinariaModel()
-    resultado = modelo.registrar_maquinaria(
+    resultado = modelo.registrar(
         datos.get('nombre_maquinaria'),
         datos.get('tipo_maquinaria')
     )
@@ -17,27 +17,27 @@ def registrar_maquinaria_controller(datos):
 
 def listar_maquinarias_controller(page=1, per_page=10):
     modelo = MaquinariaModel()
-    return modelo.obtener_maquinarias(page, per_page)
+    return modelo.obtener_todos(page, per_page)
 
 def contar_maquinarias_controller():
     modelo = MaquinariaModel()
-    return modelo.contar_maquinarias()
+    return modelo.contar()
 
 def obtener_maquinaria_controller(id_maquinaria):
     modelo = MaquinariaModel()
-    return modelo.obtener_maquinaria_por_id(id_maquinaria)
+    return modelo.obtener_por_id(id_maquinaria)
 
 def listar_maquinarias_eliminadas_controller():
     modelo = MaquinariaModel()
-    return modelo.obtener_maquinarias_eliminadas()
+    return modelo.obtener_eliminadas()
 
 def restaurar_maquinaria_controller(id_maquinaria):
     modelo = MaquinariaModel()
-    return modelo.restaurar_maquinaria(id_maquinaria)
+    return modelo.restaurar(id_maquinaria)
 
 def actualizar_maquinaria_controller(id_maquinaria, datos):
     modelo = MaquinariaModel()
-    resultado = modelo.actualizar_maquinaria(
+    resultado = modelo.actualizar(
         id_maquinaria,
         datos.get('nombre_maquinaria'),
         datos.get('tipo_maquinaria')
@@ -51,7 +51,7 @@ def actualizar_maquinaria_controller(id_maquinaria, datos):
 
 def eliminar_maquinaria_controller(id_maquinaria):
     modelo = MaquinariaModel()
-    resultado = modelo.eliminar_maquinaria(id_maquinaria)
+    resultado = modelo.eliminar(id_maquinaria)
     if resultado:
         BitacoraService.registrar_accion(
             session, 'Maquinaria', 'ELIMINAR',

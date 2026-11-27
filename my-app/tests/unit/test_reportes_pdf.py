@@ -8,7 +8,7 @@ from models.model_reportesPDF import ReportePDFModel
 def test_filtro_pdf_usa_parametro_y_no_interpola_valor():
     where, params = [], []
 
-    ReportePDFModel()._aplicar_filtros(
+    ReportePDFModel()._ReportePDFModel__aplicar_filtros(
         where, params, {'cedula': "123' OR 1=1 --"}, {'cedula': 'p.cedula_persona'}
     )
 
@@ -40,7 +40,7 @@ def test_generadores_pdf_aplican_filtros_retorno_y_contexto_bd(
 ):
     modelo = ReportePDFModel()
     rows = [{'id': 42}]
-    with patch.object(modelo, '_ejecutar_query', return_value=rows) as ejecutar:
+    with patch.object(modelo, '_ReportePDFModel__ejecutar_query', return_value=rows) as ejecutar:
         assert getattr(modelo, method_name)(filters) is rows
 
     query = ejecutar.call_args.args[0]
@@ -52,7 +52,7 @@ def test_generadores_pdf_aplican_filtros_retorno_y_contexto_bd(
 
 def test_filtros_pdf_cubre_casos_especiales_y_descarta_estado_invalido():
     where, params = [], []
-    ReportePDFModel()._aplicar_filtros(
+    ReportePDFModel()._ReportePDFModel__aplicar_filtros(
         where, params,
         {
             'nombre_solicitante': 'Ana',
@@ -92,7 +92,7 @@ def test_ejecutar_query_elige_conexion_y_limpia_recursos():
     cursor = conexion.cursor.return_value
     cursor.fetchall.return_value = [{'id': 1}]
     with patch.object(modelo, 'obtener_conexion_seguridad', return_value=conexion) as seguridad:
-        assert modelo._ejecutar_query('SELECT id FROM usuarios', None, 'seguridad') == [{'id': 1}]
+        assert modelo._ReportePDFModel__ejecutar_query('SELECT id FROM usuarios', None, 'seguridad') == [{'id': 1}]
     seguridad.assert_called_once_with()
     cursor.execute.assert_called_once_with('SELECT id FROM usuarios', ())
     cursor.close.assert_called_once_with()
@@ -106,6 +106,6 @@ def test_ejecutar_query_libera_recursos_si_consulta_falla():
     cursor.execute.side_effect = RuntimeError('fallo simulado')
     with patch.object(modelo, 'obtener_conexion_estricta', return_value=conexion):
         with pytest.raises(RuntimeError, match='fallo simulado'):
-            modelo._ejecutar_query('SELECT 1')
+            modelo._ReportePDFModel__ejecutar_query('SELECT 1')
     cursor.close.assert_called_once_with()
     conexion.close.assert_called_once_with()

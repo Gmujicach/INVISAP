@@ -27,7 +27,7 @@ def registrar_proyecto_controller(datos, session_flask):
 
     modelo = ProyectoModel()
     try:
-        resultado = modelo.registrar_proyecto(datos)
+        resultado = modelo.registrar(datos)
         if resultado:
             codigo_proy = datos.get('Codigo_p')
             BitacoraService.registrar_accion(
@@ -41,8 +41,8 @@ def registrar_proyecto_controller(datos, session_flask):
 
 def listar_proyectos_controller(session_flask):
     modelo = ProyectoModel()
-    proyectos = modelo.obtener_proyectos()
-    contadores = modelo.obtener_contadores_proyectos()
+    proyectos = modelo.obtener_todos()
+    contadores = modelo.obtener_contadores()
     
     if session_flask.get('ignorar_proximo_ver'):
         session_flask.pop('ignorar_proximo_ver', None)
@@ -61,7 +61,7 @@ def actualizar_proyecto_controller(codigo_proyecto_actual, datos, session_flask)
         return False
         
     modelo = ProyectoModel()
-    resultado = modelo.actualizar_proyecto(codigo_proyecto_actual, datos)
+    resultado = modelo.actualizar(codigo_proyecto_actual, datos)
     
     if resultado:
         codigo_nuevo = datos.get('Codigo_p', codigo_proyecto_actual)
@@ -79,7 +79,7 @@ def eliminar_proyecto_controller(codigo_proyecto, session_flask):
         return False
         
     modelo = ProyectoModel()
-    resultado = modelo.eliminar_proyecto(codigo_proyecto)
+    resultado = modelo.eliminar(codigo_proyecto)
     
     if resultado:
         BitacoraService.registrar_accion(

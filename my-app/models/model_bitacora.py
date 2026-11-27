@@ -19,34 +19,37 @@ from models.base_model import BaseModel
 class BitacoraModel(BaseModel):
     """
     Repositorio de la tabla bitacora.
-    Métodos privados (_): contienen SQL directamente.
+    Métodos privados (__): contienen SQL directamente.
     Métodos públicos:     fachada con validación de entrada.
     """
     # -----------------------------------------------------------------
     _RE_TEXTO_SEGURO = re.compile(r"^[\w\s\.\,\-\#áéíóúÁÉÍÓÚñÑ]{1,100}$", re.UNICODE)
     _RE_USUARIO = re.compile(r"^[\w\s\-áéíóúÁÉÍÓÚñÑ]{1,15}$", re.UNICODE)
 
+    # -----------------------------------------------------------------
+    # Métodos privados — Validación y conexión
+    # -----------------------------------------------------------------
     @staticmethod
-    def _es_texto_valido(texto: str) -> bool:
+    def __es_texto_valido(texto: str) -> bool:
         return bool(BitacoraModel._RE_TEXTO_SEGURO.match(str(texto or '').strip()))
 
     @staticmethod
-    def _es_usuario_valido(usuario: str) -> bool:
+    def __es_usuario_valido(usuario: str) -> bool:
         return bool(BitacoraModel._RE_USUARIO.match(str(usuario or '').strip()))
 
     @staticmethod
-    def _con():
+    def __con():
         """Abre y retorna una conexión nueva."""
         return BitacoraModel.obtener_conexion_seguridad()
 
     # -----------------------------------------------------------------
     # Métodos privados — SQL
     # -----------------------------------------------------------------
-    def _sql_insertar(self, usuario: str, id_usuario: int, modulo: str,
-                      accion: str, descripcion: str) -> bool:
+    def __sql_insertar(self, usuario: str, id_usuario: int, modulo: str,
+                       accion: str, descripcion: str) -> bool:
         conn = cursor = None
         try:
-            conn = self._con()
+            conn = self.__con()
             if conn is None:
                 return False
             cursor = conn.cursor()
@@ -84,10 +87,10 @@ class BitacoraModel(BaseModel):
                         raise
                     conn.rollback()
 
-            print("[BitacoraModel._sql_insertar] No se pudo reservar un ID único tras 3 intentos")
+            print("[BitacoraModel.__sql_insertar] No se pudo reservar un ID único tras 3 intentos")
             return False
         except Exception as e:
-            print(f"[BitacoraModel._sql_insertar] Error: {e}")
+            print(f"[BitacoraModel.__sql_insertar] Error: {e}")
             return False
         finally:
             if cursor:
@@ -98,10 +101,10 @@ class BitacoraModel(BaseModel):
                 except Exception:
                     pass
 
-    def _sql_obtener_todos(self, limit: int | None = None) -> list:
+    def __sql_obtener_todos(self, limit: int | None = None) -> list:
         conn = cursor = None
         try:
-            conn = self._con()
+            conn = self.__con()
             if conn is None:
                 return []
             cursor = conn.cursor(dictionary=True)
@@ -119,7 +122,7 @@ class BitacoraModel(BaseModel):
                 cursor.execute(sql)
             return cursor.fetchall()
         except Exception as e:
-            print(f"[BitacoraModel._sql_obtener_todos] Error: {e}")
+            print(f"[BitacoraModel.__sql_obtener_todos] Error: {e}")
             return []
         finally:
             if cursor:
@@ -130,10 +133,10 @@ class BitacoraModel(BaseModel):
                 except Exception:
                     pass
 
-    def _sql_filtrar_por_usuario(self, usuario: str) -> list:
+    def __sql_filtrar_por_usuario(self, usuario: str) -> list:
         conn = cursor = None
         try:
-            conn = self._con()
+            conn = self.__con()
             if conn is None:
                 return []
             cursor = conn.cursor(dictionary=True)
@@ -148,7 +151,7 @@ class BitacoraModel(BaseModel):
             cursor.execute(sql, (f"%{usuario}%",))
             return cursor.fetchall()
         except Exception as e:
-            print(f"[BitacoraModel._sql_filtrar_por_usuario] Error: {e}")
+            print(f"[BitacoraModel.__sql_filtrar_por_usuario] Error: {e}")
             return []
         finally:
             if cursor:
@@ -159,10 +162,10 @@ class BitacoraModel(BaseModel):
                 except Exception:
                     pass
 
-    def _sql_filtrar_por_modulo(self, modulo: str) -> list:
+    def __sql_filtrar_por_modulo(self, modulo: str) -> list:
         conn = cursor = None
         try:
-            conn = self._con()
+            conn = self.__con()
             if conn is None:
                 return []
             cursor = conn.cursor(dictionary=True)
@@ -177,7 +180,7 @@ class BitacoraModel(BaseModel):
             cursor.execute(sql, (modulo,))
             return cursor.fetchall()
         except Exception as e:
-            print(f"[BitacoraModel._sql_filtrar_por_modulo] Error: {e}")
+            print(f"[BitacoraModel.__sql_filtrar_por_modulo] Error: {e}")
             return []
         finally:
             if cursor:
@@ -188,10 +191,10 @@ class BitacoraModel(BaseModel):
                 except Exception:
                     pass
 
-    def _sql_filtrar_por_accion(self, accion: str) -> list:
+    def __sql_filtrar_por_accion(self, accion: str) -> list:
         conn = cursor = None
         try:
-            conn = self._con()
+            conn = self.__con()
             if conn is None:
                 return []
             cursor = conn.cursor(dictionary=True)
@@ -206,7 +209,7 @@ class BitacoraModel(BaseModel):
             cursor.execute(sql, (accion,))
             return cursor.fetchall()
         except Exception as e:
-            print(f"[BitacoraModel._sql_filtrar_por_accion] Error: {e}")
+            print(f"[BitacoraModel.__sql_filtrar_por_accion] Error: {e}")
             return []
         finally:
             if cursor:
@@ -217,14 +220,14 @@ class BitacoraModel(BaseModel):
                 except Exception:
                     pass
 
-    def _sql_filtrar_por_criterios(self, usuario: str = None,
-                                   modulo: str = None,
-                                   accion: str = None,
-                                   limit: int = 500,
-                                   offset: int = 0) -> list:
+    def __sql_filtrar_por_criterios(self, usuario: str = None,
+                                    modulo: str = None,
+                                    accion: str = None,
+                                    limit: int = 500,
+                                    offset: int = 0) -> list:
         conn = cursor = None
         try:
-            conn = self._con()
+            conn = self.__con()
             if conn is None:
                 return []
             cursor = conn.cursor(dictionary=True)
@@ -243,7 +246,7 @@ class BitacoraModel(BaseModel):
                 params.append(accion)
 
             if not condiciones:
-                return self._sql_obtener_todos(limit=limit)
+                return self.__sql_obtener_todos(limit=limit)
 
             params.extend([limit, offset])
             sql = f"""
@@ -258,7 +261,7 @@ class BitacoraModel(BaseModel):
             cursor.execute(sql, tuple(params))
             return cursor.fetchall()
         except Exception as e:
-            print(f"[BitacoraModel._sql_filtrar_por_criterios] Error: {e}")
+            print(f"[BitacoraModel.__sql_filtrar_por_criterios] Error: {e}")
             return []
         finally:
             if cursor:
@@ -269,10 +272,10 @@ class BitacoraModel(BaseModel):
                 except Exception:
                     pass
 
-    def _sql_contar_por_accion(self) -> dict:
+    def __sql_contar_por_accion(self) -> dict:
         conn = cursor = None
         try:
-            conn = self._con()
+            conn = self.__con()
             if conn is None:
                 return {}
             cursor = conn.cursor(dictionary=True)
@@ -281,7 +284,7 @@ class BitacoraModel(BaseModel):
             rows = cursor.fetchall()
             return {row['accion']: row['total'] for row in rows}
         except Exception as e:
-            print(f"[BitacoraModel._sql_contar_por_accion] Error: {e}")
+            print(f"[BitacoraModel.__sql_contar_por_accion] Error: {e}")
             return {}
         finally:
             if cursor:
@@ -292,12 +295,12 @@ class BitacoraModel(BaseModel):
                 except Exception:
                     pass
 
-    def _sql_contar_filtrados(self, usuario: str = None,
-                              modulo: str = None,
-                              accion: str = None) -> int:
+    def __sql_contar_filtrados(self, usuario: str = None,
+                               modulo: str = None,
+                               accion: str = None) -> int:
         conn = cursor = None
         try:
-            conn = self._con()
+            conn = self.__con()
             if conn is None:
                 return 0
             cursor = conn.cursor()
@@ -325,7 +328,7 @@ class BitacoraModel(BaseModel):
             row = cursor.fetchone()
             return row[0] if row else 0
         except Exception as e:
-            print(f"[BitacoraModel._sql_contar_filtrados] Error: {e}")
+            print(f"[BitacoraModel.__sql_contar_filtrados] Error: {e}")
             return 0
         finally:
             if cursor:
@@ -337,50 +340,41 @@ class BitacoraModel(BaseModel):
                     pass
 
     # -----------------------------------------------------------------
-    # Métodos públicos — Fachada con validación
+    # Métodos privados — Fachada con validación
     # -----------------------------------------------------------------
-    def registrar(self, usuario: str, id_usuario: int,
-                  modulo: str, accion: str, descripcion: str = '') -> bool:
-        """Inserta un nuevo registro en la bitácora."""
+    def __registrar(self, usuario: str, id_usuario: int,
+                    modulo: str, accion: str, descripcion: str = '') -> bool:
         # Validaciones básicas de entrada
         usuario = str(usuario or 'Sistema').strip()[:15]
         modulo = str(modulo or 'General').strip()[:20]
         accion = str(accion or 'VER').upper().strip()[:45]
         id_usuario = int(id_usuario) if str(id_usuario).isdigit() else 1
-        return self._sql_insertar(usuario, id_usuario, modulo, accion, descripcion)
+        return self.__sql_insertar(usuario, id_usuario, modulo, accion, descripcion)
 
-    def obtener_todos(self, limit: int | None = None) -> list:
-        """Retorna los registros de la bitácora, sin limitar artificialmente el total."""
-        return self._sql_obtener_todos(limit=limit)
-
-    def filtrar_por_usuario(self, usuario: str) -> list:
-        """Filtra registros de bitácora por nombre de usuario."""
+    def __filtrar_por_usuario(self, usuario: str) -> list:
         if not usuario or len(usuario.strip()) < 2:
             return []
         usuario_limpio = re.sub(r'[<>\'";\\]', '', usuario)[:15]
-        return self._sql_filtrar_por_usuario(usuario_limpio)
+        return self.__sql_filtrar_por_usuario(usuario_limpio)
 
-    def filtrar_por_modulo(self, modulo: str) -> list:
-        """Filtra registros de bitácora por módulo del sistema."""
+    def __filtrar_por_modulo(self, modulo: str) -> list:
         if not modulo:
             return []
         modulo_limpio = re.sub(r'[<>\'";\\]', '', modulo)[:20]
-        return self._sql_filtrar_por_modulo(modulo_limpio)
+        return self.__sql_filtrar_por_modulo(modulo_limpio)
 
-    def filtrar_por_accion(self, accion: str) -> list:
-        """Filtra registros por tipo de acción (CREAR, EDITAR, ELIMINAR, VER)."""
+    def __filtrar_por_accion(self, accion: str) -> list:
         acciones_validas = {'CREAR', 'EDITAR', 'ELIMINAR', 'VER', 'LOGIN', 'LOGOUT'}
         accion = accion.upper().strip() if accion else ''
         if accion not in acciones_validas:
             return []
-        return self._sql_filtrar_por_accion(accion)
+        return self.__sql_filtrar_por_accion(accion)
 
-    def filtrar_por_criterios(self, usuario: str = None,
-                               modulo: str = None,
-                               accion: str = None,
-                               page: int = 1,
-                               per_page: int = 10) -> list:
-        """Filtra por uno o más criterios combinados con AND."""
+    def __filtrar_por_criterios(self, usuario: str = None,
+                                modulo: str = None,
+                                accion: str = None,
+                                page: int = 1,
+                                per_page: int = 10) -> list:
         usuario_limpio = None
         modulo_limpio = None
         accion_limpia = None
@@ -397,10 +391,10 @@ class BitacoraModel(BaseModel):
                 accion_limpia = accion_upper
 
         if not usuario_limpio and not modulo_limpio and not accion_limpia:
-            return self.obtener_todos()
+            return self.__sql_obtener_todos()
 
         offset = (page - 1) * per_page
-        return self._sql_filtrar_por_criterios(
+        return self.__sql_filtrar_por_criterios(
             usuario=usuario_limpio,
             modulo=modulo_limpio,
             accion=accion_limpia,
@@ -408,14 +402,9 @@ class BitacoraModel(BaseModel):
             offset=offset
         )
 
-    def estadisticas_por_accion(self) -> dict:
-        """Retorna conteo de registros agrupados por acción."""
-        return self._sql_contar_por_accion()
-
-    def contar_filtrados(self, usuario: str = None,
-                              modulo: str = None,
-                              accion: str = None) -> int:
-        """Retorna el total de registros que coinciden con los filtros."""
+    def __contar_filtrados(self, usuario: str = None,
+                           modulo: str = None,
+                           accion: str = None) -> int:
         usuario_limpio = None
         modulo_limpio = None
         accion_limpia = None
@@ -431,8 +420,60 @@ class BitacoraModel(BaseModel):
             if accion_upper in acciones_validas:
                 accion_limpia = accion_upper
 
-        return self._sql_contar_filtrados(
+        return self.__sql_contar_filtrados(
             usuario=usuario_limpio,
             modulo=modulo_limpio,
             accion=accion_limpia
+        )
+
+    # -----------------------------------------------------------------
+    # Métodos públicos — Fachada
+    # -----------------------------------------------------------------
+    def registrar(self, usuario: str, id_usuario: int,
+                  modulo: str, accion: str, descripcion: str = '') -> bool:
+        """Inserta un nuevo registro en la bitácora."""
+        return self.__registrar(usuario, id_usuario, modulo, accion, descripcion)
+
+    def obtener_todos(self, limit: int | None = None) -> list:
+        """Retorna los registros de la bitácora, sin limitar artificialmente el total."""
+        return self.__sql_obtener_todos(limit=limit)
+
+    def filtrar_por_usuario(self, usuario: str) -> list:
+        """Filtra registros de bitácora por nombre de usuario."""
+        return self.__filtrar_por_usuario(usuario)
+
+    def filtrar_por_modulo(self, modulo: str) -> list:
+        """Filtra registros de bitácora por módulo del sistema."""
+        return self.__filtrar_por_modulo(modulo)
+
+    def filtrar_por_accion(self, accion: str) -> list:
+        """Filtra registros por tipo de acción (CREAR, EDITAR, ELIMINAR, VER)."""
+        return self.__filtrar_por_accion(accion)
+
+    def filtrar_por_criterios(self, usuario: str = None,
+                               modulo: str = None,
+                               accion: str = None,
+                               page: int = 1,
+                               per_page: int = 10) -> list:
+        """Filtra por uno o más criterios combinados con AND."""
+        return self.__filtrar_por_criterios(
+            usuario=usuario,
+            modulo=modulo,
+            accion=accion,
+            page=page,
+            per_page=per_page
+        )
+
+    def estadisticas_por_accion(self) -> dict:
+        """Retorna conteo de registros agrupados por acción."""
+        return self.__sql_contar_por_accion()
+
+    def contar_filtrados(self, usuario: str = None,
+                         modulo: str = None,
+                         accion: str = None) -> int:
+        """Retorna el total de registros que coinciden con los filtros."""
+        return self.__contar_filtrados(
+            usuario=usuario,
+            modulo=modulo,
+            accion=accion
         )

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
+from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for, flash
 from models.model_obra import ObraModel
 from models.model_bitacora import BitacoraModel
 from models.model_notificacion import notificar_a_roles
@@ -54,7 +54,7 @@ def vista_editar_obra(id_obra):
         return redirect(url_for('obra_bp.vista_gestionar_obras'))
 
     modelo = ObraModel()
-    obra = modelo.obtener_obra_por_id(id_obra)
+    obra = modelo.obtener_por_id(id_obra)
     if not obra:
         return redirect(url_for('obra_bp.vista_gestionar_obras'))
 
@@ -100,7 +100,7 @@ def registrar_obra():
         if not ok:
             return jsonify({'status': 'error', 'message': msg}), 400
 
-        resultado, extra = modelo.registrar_obra(datos_insertar)
+        resultado, extra = modelo.registrar(datos_insertar)
         if resultado:
             id_obra = extra
             BitacoraModel().registrar(
@@ -126,7 +126,7 @@ def api_obtener_obra(id_obra):
 
     try:
         modelo = ObraModel()
-        obra = modelo.obtener_obra_por_id(id_obra)
+        obra = modelo.obtener_por_id(id_obra)
         if obra:
             return jsonify({'status': 'success', 'data': obra})
         return jsonify({'status': 'error', 'message': f'Obra ID {id_obra} no encontrada.'}), 404
@@ -212,7 +212,7 @@ def detalle_obra(id_obra):
         return redirect(url_for('login_bp.inicio'))
 
     modelo = ObraModel()
-    obra = modelo.obtener_obra_por_id(id_obra)
+    obra = modelo.obtener_por_id(id_obra)
     if not obra:
         flash('La obra no existe o fue eliminada.', 'error')
         return redirect(url_for('obra_bp.vista_gestionar_obras'))
@@ -221,7 +221,7 @@ def detalle_obra(id_obra):
 
     proyecto = None
     if obra.get('gestionar_proyectos_codigo_proyecto'):
-        proyecto_detalle = ProyectoModel().obtener_detalle_proyecto_por_codigo(obra['gestionar_proyectos_codigo_proyecto'])
+        proyecto_detalle = ProyectoModel().obtener_detalle(obra['gestionar_proyectos_codigo_proyecto'])
         if proyecto_detalle:
             proyecto = proyecto_detalle
 
@@ -236,7 +236,7 @@ def editar_obra(id_obra):
         return jsonify({'status': 'error', 'message': 'No tienes permiso para editar obras.'}), 403
 
     modelo = ObraModel()
-    obra = modelo.obtener_obra_por_id(id_obra)
+    obra = modelo.obtener_por_id(id_obra)
     if not obra:
         return jsonify({'status': 'error', 'message': 'La obra no existe o fue eliminada.'}), 404
 
@@ -314,11 +314,11 @@ def actualizar_obra(id_obra):
             return jsonify({'status': 'error', 'message': msg}), 400
 
         # Valores previos para detectar cambios en porcentaje y fecha de culminación
-        obra_previa = modelo.obtener_obra_por_id(id_obra) or {}
+        obra_previa = modelo.obtener_por_id(id_obra) or {}
         porcentaje_previo = int(obra_previa.get('porcentaje_avance_obra') or 0)
         fecha_previa = str(obra_previa.get('fecha_fin') or '')
 
-        resultado, extra = modelo.actualizar_obra(id_obra, datos_actualizar)
+        resultado, extra = modelo.actualizar(id_obra, datos_actualizar)
         if resultado:
             BitacoraModel().registrar(
                 usuario=session.get('usuario', 'Sistema'),
@@ -381,13 +381,13 @@ def eliminar_obra(id_obra):
 
     try:
         modelo = ObraModel()
-        obra = modelo.obtener_obra_por_id(id_obra)
+        obra = modelo.obtener_por_id(id_obra)
         if not obra:
             return jsonify({'status': 'error', 'message': 'Obra no encontrada.'}), 404
 
         titulo = obra.get('titulo_obra', 'Desconocida')
 
-        resultado, msg = modelo.eliminar_obra(id_obra)
+        resultado, msg = modelo.eliminar(id_obra)
         if resultado:
             BitacoraModel().registrar(
                 usuario=session.get('usuario', 'Sistema'),

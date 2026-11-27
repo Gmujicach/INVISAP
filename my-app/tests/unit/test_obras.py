@@ -66,8 +66,7 @@ def test_validadores_estaticos_fechas_y_conexion_controlada(monkeypatch):
     conexion, cursor = _obra_db()
     # INICIO DE MOCK: Parchear obtener_conexion_estricta
     monkeypatch.setattr(ObraModel, 'obtener_conexion_estricta', staticmethod(lambda: conexion))
-    # INICIO DE MOCK: Llamar _con
-    assert ObraModel._con() is conexion
+    # INICIO DE MOCK: Llamar _eliminar_trigger_semaforo
     ObraModel._eliminar_trigger_semaforo()
     # INICIO DE ASERCIÓN: Verificar ejecución de trigger y commit/close
     cursor.execute.assert_called_once_with('DROP TRIGGER IF EXISTS actualizar_semaforo_obra')
@@ -76,26 +75,26 @@ def test_validadores_estaticos_fechas_y_conexion_controlada(monkeypatch):
     # FIN DE ASERCIÓN
 
 
-def test_lecturas_validaciones_duplicados_y_listas_cierran_recursos():
+def test_lecturas_validaciones_duplicados_y_listas_cierran_recursos(monkeypatch):
     modelo = ObraModel()
     conexion, cursor = _obra_db()
     cursor.fetchall.return_value = [{'id_obra': 3}]
     cursor.fetchone.side_effect = [
         {'id_obra': 4}, (1,), None, (1,), None, (1,),
     ]
-    # INICIO DE MOCK: Parchear _con
-    with patch.object(modelo, '_con', return_value=conexion):
-        # INICIO DE MOCK: Llamar métodos SQL
-        assert modelo._sql_obtener_todas() == [{'id_obra': 3}]
-        assert modelo._sql_obtener_por_id(4) == {'id_obra': 4}
-        assert modelo._sql_validar_estado(2) is True
-        assert modelo._sql_validar_contratacion(5) is False
-        assert modelo._sql_validar_proyecto('P1') is True
-        assert modelo._sql_validar_numero_contrato_duplicado('CTR-1') is False
-        assert modelo._sql_validar_numero_contrato_duplicado('NA') is False
-        assert modelo._sql_listar_estados() == [{'id_obra': 3}]
-        assert modelo._sql_listar_contrataciones() == [{'id_obra': 3}]
-        assert modelo._sql_listar_proyectos() == [{'id_obra': 3}]
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
+    monkeypatch.setattr(ObraModel, 'obtener_conexion_estricta', staticmethod(lambda: conexion))
+    # INICIO DE MOCK: Llamar métodos públicos (fachada)
+    assert modelo.obtener_todas() == [{'id_obra': 3}]
+    assert modelo.obtener_por_id(4) == {'id_obra': 4}
+    assert modelo.validar_estado(2) is True
+    assert modelo.validar_contratacion(5) is False
+    assert modelo.validar_proyecto('P1') is True
+    assert modelo.validar_numero_contrato('CTR-1') is False
+    assert modelo.validar_numero_contrato('NA') is False
+    assert modelo.listar_estados() == [{'id_obra': 3}]
+    assert modelo.listar_contrataciones() == [{'id_obra': 3}]
+    assert modelo.listar_proyectos() == [{'id_obra': 3}]
     # INICIO DE ASERCIÓN: Verificar llamadas y cierre de recursos
     assert any(call.args[1] == (4,) for call in cursor.execute.call_args_list if len(call.args) > 1)
     assert any(call.args[1] == (2,) for call in cursor.execute.call_args_list if len(call.args) > 1)
@@ -104,15 +103,15 @@ def test_lecturas_validaciones_duplicados_y_listas_cierran_recursos():
     # FIN DE ASERCIÓN
 
 
-def test_numero_contrato_duplicado_filtra_edicion_y_no_consulta_placeholders():
+def test_numero_contrato_duplicado_filtra_edicion_y_no_consulta_placeholders(monkeypatch):
     modelo = ObraModel()
     conexion, cursor = _obra_db()
     cursor.fetchone.return_value = (1,)
-    # INICIO DE MOCK: Parchear _con
-    with patch.object(modelo, '_con', return_value=conexion):
-        # INICIO DE MOCK: Llamar _sql_validar_numero_contrato_duplicado
-        assert modelo._sql_validar_numero_contrato_duplicado('CTR-5', excluir_id_obra=10) is True
-        assert modelo._sql_validar_numero_contrato_duplicado('S/N') is False
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
+    monkeypatch.setattr(ObraModel, 'obtener_conexion_estricta', staticmethod(lambda: conexion))
+    # INICIO DE MOCK: Llamar validar_numero_contrato (fachada)
+    assert modelo.validar_numero_contrato('CTR-5', excluir_id=10) is True
+    assert modelo.validar_numero_contrato('S/N') is False
     # INICIO DE ASERCIÓN: Verificar consulta y cierre de recursos
     cursor.execute.assert_called_once_with(
         'SELECT 1 FROM obra WHERE numero_contrato = %s AND id_obra != %s AND estado = 1 LIMIT 1',
@@ -130,32 +129,33 @@ def test_numero_contrato_duplicado_filtra_edicion_y_no_consulta_placeholders():
         ('numero_contrato', "El campo 'numero_contrato' es obligatorio."),
     ],
 )
-def test_insertar_obra_rechaza_campos_requeridos_antes_de_conectar(field, expected):
+def test_insertar_obra_rechaza_campos_requeridos_antes_de_conectar(field, expected, monkeypatch):
     modelo = ObraModel()
     datos = _datos_obra()
     datos.pop(field)
-    # INICIO DE MOCK: Parchear _con
-    with patch.object(modelo, '_con') as conectar:
-        # INICIO DE MOCK: Llamar _sql_insertar
-        assert modelo._sql_insertar(datos) == (False, expected)
+    # INICIO DE MOCK: Parchear obtener_conexion_estricta
+    conectar = MagicMock(return_value=MagicMock())
+    monkeypatch.setattr(ObraModel, 'obtener_conexion_estricta', staticmethod(conectar))
+    # INICIO DE MOCK: Llamar registrar (fachada)
+    assert modelo.registrar(datos) == (False, expected)
     # INICIO DE ASERCIÓN: Verificar que no se llama a la BD
     conectar.assert_not_called()
     # FIN DE ASERCIÓN
 
 
-def test_insertar_obra_valida_datos_transacciona_y_deriva_semaforo():
+def test_insertar_obra_valida_datos_transacciona_y_deriva_semaforo(monkeypatch):
     modelo = ObraModel()
     datos = _datos_obra()
     conexion, cursor = _obra_db()
     cursor.lastrowid = 41
-    # INICIO DE MOCK: Parchear métodos de validación y conexión
-    with patch.object(modelo, '_sql_validar_numero_contrato_duplicado', return_value=False), \
-            patch.object(modelo, '_sql_validar_estado', return_value=True) as estado, \
-            patch.object(modelo, '_sql_validar_contratacion', return_value=True), \
-            patch.object(modelo, '_sql_validar_proyecto', return_value=True), \
-            patch.object(modelo, '_con', return_value=conexion):
-        # INICIO DE MOCK: Llamar _sql_insertar
-        assert modelo._sql_insertar(datos) == (True, 41)
+    # INICIO DE MOCK: Parchear métodos privados de validación y conexión
+    monkeypatch.setattr(ObraModel, 'obtener_conexion_estricta', staticmethod(lambda: conexion))
+    with patch.object(modelo, '_ObraModel__sql_validar_numero_contrato_duplicado', return_value=False), \
+            patch.object(modelo, '_ObraModel__sql_validar_estado', return_value=True) as estado, \
+            patch.object(modelo, '_ObraModel__sql_validar_contratacion', return_value=True), \
+            patch.object(modelo, '_ObraModel__sql_validar_proyecto', return_value=True):
+        # INICIO DE MOCK: Llamar registrar (fachada)
+        assert modelo.registrar(datos) == (True, 41)
     # INICIO DE ASERCIÓN: Verificar validaciones, transacción, SQL y commit/close
     estado.assert_called_once_with(1)
     conexion.start_transaction.assert_called_once_with()
@@ -172,12 +172,12 @@ def test_insertar_obra_valida_datos_transacciona_y_deriva_semaforo():
     # FIN DE ASERCIÓN
 
 
-def test_insertar_obra_rechaza_validacion_y_revierte_error_sql():
+def test_insertar_obra_rechaza_validacion_y_revierte_error_sql(monkeypatch):
     modelo = ObraModel()
     datos = _datos_obra()
     datos['porcentaje_avance_obra'] = '101'
     # INICIO DE ASERCIÓN: Verificar rechazo por porcentaje inválido
-    assert modelo._sql_insertar(datos) == (
+    assert modelo.registrar(datos) == (
         False, 'Porcentaje de avance debe estar entre 0 y 100.'
     )
     # FIN DE ASERCIÓN
@@ -186,13 +186,13 @@ def test_insertar_obra_rechaza_validacion_y_revierte_error_sql():
     conexion, cursor = _obra_db()
     cursor.execute.side_effect = RuntimeError('fallo de inserción')
     # INICIO DE MOCK: Parchear métodos de validación y conexión con error
-    with patch.object(modelo, '_sql_validar_numero_contrato_duplicado', return_value=False), \
-            patch.object(modelo, '_sql_validar_estado', return_value=True), \
-            patch.object(modelo, '_sql_validar_contratacion', return_value=True), \
-            patch.object(modelo, '_sql_validar_proyecto', return_value=True), \
-            patch.object(modelo, '_con', return_value=conexion):
-        # INICIO DE MOCK: Llamar _sql_insertar con error SQL
-        resultado = modelo._sql_insertar(datos)
+    monkeypatch.setattr(ObraModel, 'obtener_conexion_estricta', staticmethod(lambda: conexion))
+    with patch.object(modelo, '_ObraModel__sql_validar_numero_contrato_duplicado', return_value=False), \
+            patch.object(modelo, '_ObraModel__sql_validar_estado', return_value=True), \
+            patch.object(modelo, '_ObraModel__sql_validar_contratacion', return_value=True), \
+            patch.object(modelo, '_ObraModel__sql_validar_proyecto', return_value=True):
+        # INICIO DE MOCK: Llamar registrar (fachada) con error SQL
+        resultado = modelo.registrar(datos)
     # INICIO DE ASERCIÓN: Verificar rollback y cierre
     assert resultado == (False, 'Error al registrar obra: fallo de inserción')
     conexion.rollback.assert_called_once_with()
@@ -201,21 +201,21 @@ def test_insertar_obra_rechaza_validacion_y_revierte_error_sql():
     # FIN DE ASERCIÓN
 
 
-def test_actualizar_obra_verifica_existencia_y_guarda_valores_con_transaccion():
+def test_actualizar_obra_verifica_existencia_y_guarda_valores_con_transaccion(monkeypatch):
     modelo = ObraModel()
     datos = _datos_obra()
     conexion, cursor = _obra_db()
     cursor.rowcount = 1
     # INICIO DE MOCK: Parchear métodos de validación, trigger y conexión
-    with patch.object(modelo, '_sql_obtener_por_id', return_value={'id_obra': 9}), \
-            patch.object(modelo, '_sql_validar_numero_contrato_duplicado', return_value=False), \
-            patch.object(modelo, '_sql_validar_estado', return_value=True), \
-            patch.object(modelo, '_sql_validar_contratacion', return_value=True), \
-            patch.object(modelo, '_sql_validar_proyecto', return_value=True), \
-            patch.object(ObraModel, '_eliminar_trigger_semaforo'), \
-            patch.object(modelo, '_con', return_value=conexion):
-        # INICIO DE MOCK: Llamar _sql_actualizar
-        assert modelo._sql_actualizar(9, datos) == (True, 1)
+    monkeypatch.setattr(ObraModel, 'obtener_conexion_estricta', staticmethod(lambda: conexion))
+    with patch.object(modelo, '_ObraModel__sql_obtener_por_id', return_value={'id_obra': 9}), \
+            patch.object(modelo, '_ObraModel__sql_validar_numero_contrato_duplicado', return_value=False), \
+            patch.object(modelo, '_ObraModel__sql_validar_estado', return_value=True), \
+            patch.object(modelo, '_ObraModel__sql_validar_contratacion', return_value=True), \
+            patch.object(modelo, '_ObraModel__sql_validar_proyecto', return_value=True), \
+            patch.object(ObraModel, '_eliminar_trigger_semaforo'):
+        # INICIO DE MOCK: Llamar actualizar (fachada)
+        assert modelo.actualizar(9, datos) == (True, 1)
     # INICIO DE ASERCIÓN: Verificar transacción, SQL, commit y cierre
     conexion.start_transaction.assert_called_once_with()
     assert 'UPDATE obra SET' in cursor.execute.call_args.args[0]
@@ -226,16 +226,16 @@ def test_actualizar_obra_verifica_existencia_y_guarda_valores_con_transaccion():
     # FIN DE ASERCIÓN
 
 
-def test_eliminar_obra_solo_actualiza_registro_activo():
+def test_eliminar_obra_solo_actualiza_registro_activo(monkeypatch):
     modelo = ObraModel()
     conexion, cursor = _obra_db()
     cursor.fetchone.return_value = (9,)
     cursor.rowcount = 1
     # INICIO DE MOCK: Parchear trigger y conexión
-    with patch.object(ObraModel, '_eliminar_trigger_semaforo'), \
-            patch.object(modelo, '_con', return_value=conexion):
-        # INICIO DE MOCK: Llamar _sql_eliminar
-        assert modelo._sql_eliminar(9) == (True, 1)
+    monkeypatch.setattr(ObraModel, 'obtener_conexion_estricta', staticmethod(lambda: conexion))
+    with patch.object(ObraModel, '_eliminar_trigger_semaforo'):
+        # INICIO DE MOCK: Llamar eliminar (fachada)
+        assert modelo.eliminar(9) == (True, 1)
     # INICIO DE ASERCIÓN: Verificar SELECT y UPDATE, commit
     assert cursor.execute.call_args_list[0].args == (
         'SELECT id_obra FROM obra WHERE id_obra = %s AND estado = 1', (9,)
@@ -250,17 +250,17 @@ def test_eliminar_obra_solo_actualiza_registro_activo():
 def test_metodos_publicos_de_obra_encaminan_a_sql_helpers():
     modelo = ObraModel()
     mapping = [
-        ('obtener_obra_por_id', '_sql_obtener_por_id', (1,), {'id_obra': 1}),
-        ('obtener_todas', '_sql_obtener_todas', (), []),
-        ('registrar_obra', '_sql_insertar', ({},), (False, 'inválido')),
-        ('actualizar_obra', '_sql_actualizar', (1, {}), (False, 'inválido')),
-        ('eliminar_obra', '_sql_eliminar', (1,), (False, 'inválido')),
-        ('validar_estado', '_sql_validar_estado', (1,), True),
-        ('validar_contratacion', '_sql_validar_contratacion', (1,), True),
-        ('validar_proyecto', '_sql_validar_proyecto', ('P1',), True),
-        ('listar_estados', '_sql_listar_estados', (), []),
-        ('listar_contrataciones', '_sql_listar_contrataciones', (), []),
-        ('listar_proyectos', '_sql_listar_proyectos', (), []),
+        ('obtener_por_id', '_ObraModel__sql_obtener_por_id', (1,), {'id_obra': 1}),
+        ('obtener_todas', '_ObraModel__sql_obtener_todas', (), []),
+        ('registrar', '_ObraModel__sql_insertar', ({},), (False, 'inválido')),
+        ('actualizar', '_ObraModel__sql_actualizar', (1, {}), (False, 'inválido')),
+        ('eliminar', '_ObraModel__sql_eliminar', (1,), (False, 'inválido')),
+        ('validar_estado', '_ObraModel__sql_validar_estado', (1,), True),
+        ('validar_contratacion', '_ObraModel__sql_validar_contratacion', (1,), True),
+        ('validar_proyecto', '_ObraModel__sql_validar_proyecto', ('P1',), True),
+        ('listar_estados', '_ObraModel__sql_listar_estados', (), []),
+        ('listar_contrataciones', '_ObraModel__sql_listar_contrataciones', (), []),
+        ('listar_proyectos', '_ObraModel__sql_listar_proyectos', (), []),
     ]
     for public_name, sql_name, args, expected in mapping:
         # INICIO DE MOCK: Parchear método SQL
@@ -272,14 +272,12 @@ def test_metodos_publicos_de_obra_encaminan_a_sql_helpers():
         # FIN DE ASERCIÓN
 
 
-def test_asegurar_tabla_obra_agrega_columna_solo_si_falta(monkeypatch):
-    from models import model_obra
-
+def test_construccion_asegura_columna_activo_solo_si_falta(monkeypatch):
     conexion, cursor = _obra_db()
     cursor.fetchone.return_value = None
-    monkeypatch.setattr(ObraModel, 'obtener_conexion', staticmethod(lambda: conexion))
-    # INICIO DE MOCK: Llamar asegurar_tabla_obra
-    model_obra.asegurar_tabla_obra()
+    monkeypatch.setattr(ObraModel, 'obtener_conexion_estricta', staticmethod(lambda: conexion))
+    # INICIO DE MOCK: Construir ObraModel (ejecuta __asegurar_tabla_obra en __init__)
+    ObraModel()
     # INICIO DE ASERCIÓN: Verificar SHOW COLUMNS y ALTER TABLE, commit/close
     cursor.execute.assert_any_call("SHOW COLUMNS FROM obra LIKE 'activo'")
     assert 'ALTER TABLE obra ADD COLUMN activo' in cursor.execute.call_args_list[1].args[0]

@@ -527,7 +527,7 @@ def formRegistrarProyecto():
     
     if resultado.get('success'):
         modelo = ProyectoModel()
-        nuevo_proyecto = modelo.obtener_proyecto_por_id(request.form.get('Codigo_p'))
+        nuevo_proyecto = modelo.obtener_por_id(request.form.get('Codigo_p'))
         
         return jsonify({
             'success': True, 
@@ -543,7 +543,7 @@ def api_validar_codigo_proyecto(codigo):
         return jsonify({'error': 'No autorizado'}), 401
     
     modelo = ProyectoModel()
-    resultado = modelo.validar_codigo_proyecto(codigo)
+    resultado = modelo.validar_codigo(codigo)
     return jsonify(resultado)
 
 @home_bp.route('/api/proyecto/detalle/<string:codigo>', methods=['GET'])
@@ -552,7 +552,7 @@ def api_detalle_proyecto(codigo):
         return jsonify({'error': 'No autorizado'}), 401
 
     modelo = ProyectoModel()
-    detalle = modelo.obtener_detalle_proyecto_por_codigo(codigo)
+    detalle = modelo.obtener_detalle(codigo)
     if not detalle:
         return jsonify({'error': 'Proyecto no encontrado'}), 404
 
@@ -570,7 +570,7 @@ def viewEditarProyecto(codigo_proyecto):
     if 'conectado' in session:
         from models.model_proyecto import ProyectoModel
         modelo = ProyectoModel()
-        proyecto = modelo.obtener_proyecto_por_id(codigo_proyecto)
+        proyecto = modelo.obtener_por_id(codigo_proyecto)
         maquinarias = listar_maquinarias_controller()
         if proyecto:
             return render_template(f'{PATH_URL_PROY}/form_proyecto_update.html', proyecto=proyecto, maquinarias=maquinarias)
@@ -772,7 +772,7 @@ def viewFormContratacion():
 def gestionar_contrataciones():
     if 'conectado' in session:
         modelo = ContratacionModel()
-        lista = modelo.obtener_todas_las_contrataciones()
+        lista = modelo.obtener_todas()
         return render_template('contratacion/form_contratacion.html', contrataciones=lista)
     return redirect(url_for('login_bp.inicio'))
 
@@ -780,7 +780,7 @@ def gestionar_contrataciones():
 def vista_editar(id):
     if 'conectado' in session:
         modelo = ContratacionModel()
-        contratacion_data = modelo.obtener_contratacion_por_id(id)
+        contratacion_data = modelo.obtener_por_id(id)
         
         if contratacion_data:
             campos_fecha = ['fecha_inicio_procedimiento', 'fecha_adjudicacion', 'fecha_registro']
@@ -809,7 +809,7 @@ def obtener_empresas_json():
 def procesar_registro():
     if 'conectado' in session:
         modelo = ContratacionModel()
-        exito, mensaje = modelo.registrar_contrataciones(request.form)
+        exito, mensaje = modelo.registrar(request.form)
         
         if exito:
             return jsonify({'status': 'success', 'message': mensaje})
@@ -822,7 +822,7 @@ def procesar_actualizacion():
     if 'conectado' in session:
         modelo = ContratacionModel()
         
-        exito, mensaje = modelo.actualizar_contratacion(request.form) 
+        exito, mensaje = modelo.actualizar(request.form) 
         
         if exito:
             return jsonify({
@@ -838,7 +838,7 @@ def procesar_actualizacion():
 def eliminar_contratacion(id):
     if 'conectado' in session:
         modelo = ContratacionModel()
-        if modelo.eliminar_contratacion(id):
+        if modelo.eliminar(id):
             return jsonify({'exito': True, 'mensaje': 'Contratación eliminada correctamente.'})
         return jsonify({'exito': False, 'mensaje': 'Error al intentar eliminar el registro.'})
             

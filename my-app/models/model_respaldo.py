@@ -1,8 +1,9 @@
 """
-RespaldoModel — Modelo SOLID para respaldo y restauración de base de datos MySQL.
+RespaldoModel — Modelo SOLID/POO para respaldo y restauración de base de datos MySQL.
 Genera dumps con mysqldump, importa archivos .sql y registra metadatos en
 `administracion_respaldos` de la base de datos de seguridad (invilara_seguridad).
 """
+
 import os
 import re
 import subprocess
@@ -19,16 +20,22 @@ class RespaldoModel(BaseModel):
     CARPETA_RESPALDOS = os.path.join('static', 'respaldos_bd')
 
     def __init__(self):
-        if not os.path.exists(self.CARPETA_RESPALDOS):
-            os.makedirs(self.CARPETA_RESPALDOS, exist_ok=True)
+        self.__carpeta_respaldos = self.CARPETA_RESPALDOS
+        if not os.path.exists(self.__carpeta_respaldos):
+            os.makedirs(self.__carpeta_respaldos, exist_ok=True)
+        self.__asegurar_tabla_seguridad()
 
-    def _asegurar_tabla_seguridad(self):
-        """Crea (o migra) la tabla administracion_respaldos en invilara_seguridad.
+    # ========== GETTERS Y SETTERS (Encapsulamiento) ==========
 
-        La tabla real de producción vive en la BD de seguridad; aquí nos aseguramos
-        de que exista y de que tenga las columnas que usa la interfaz
-        (nombre_archivo, descripcion) y un tamaño adecuado para tamaño_respaldo.
-        """
+    def get_carpeta_respaldos(self):
+        return self.__carpeta_respaldos
+
+    def set_carpeta_respaldos(self, valor):
+        self.__carpeta_respaldos = valor
+
+    # ========== MÉTODOS PRIVADOS DE BASE DE DATOS ==========
+
+    def __asegurar_tabla_seguridad(self):
         conn = self.obtener_conexion_seguridad_segura()
         if not conn:
             return False
@@ -47,8 +54,6 @@ class RespaldoModel(BaseModel):
                 COMMENT='Tabla de administracion de respaldos.'
             """)
 
-            # Migración: añadir columnas que la interfaz necesita y que la
-            # tabla original de seguridad no tenía.
             cur.execute("SHOW COLUMNS FROM `administracion_respaldos` LIKE 'nombre_archivo'")
             if cur.fetchone() is None:
                 cur.execute(
@@ -63,7 +68,6 @@ class RespaldoModel(BaseModel):
                     "ADD COLUMN `descripcion` varchar(255) DEFAULT ''"
                 )
 
-            # Ensanchar tamaño_respaldo si todavía es muy pequeño (decimal(4,2)).
             cur.execute("SHOW COLUMNS FROM `administracion_respaldos` WHERE Field='tamaño_respaldo'")
             col = cur.fetchone()
             if col and 'decimal(4' in str(col[1]).lower():
@@ -81,8 +85,7 @@ class RespaldoModel(BaseModel):
             cur.close()
             conn.close()
 
-    def _siguiente_id(self):
-        """Calcula el siguiente id_respaldo disponible en la BD de seguridad."""
+    def __siguiente_id(self):
         conn = self.obtener_conexion_seguridad_segura()
         if not conn:
             raise RuntimeError('No se pudo conectar a la base de datos de seguridad.')
@@ -98,8 +101,7 @@ class RespaldoModel(BaseModel):
             cur.close()
             conn.close()
 
-    def _guardar_en_seguridad(self, id_respaldo, nombre_archivo, tamano_bytes, descripcion, id_usuario):
-        """Inserta/actualiza el registro del respaldo en invilara_seguridad."""
+    def __guardar_en_seguridad(self, id_respaldo, nombre_archivo, tamano_bytes, descripcion, id_usuario):
         tamano_mb = Decimal(str(round(tamano_bytes / (1024 * 1024), 2)))
         tamano_mb = min(tamano_mb, Decimal('99999999.99'))
         id_usuario = id_usuario or 1
@@ -110,7 +112,7 @@ class RespaldoModel(BaseModel):
         db_actual = conn.database
         cur = conn.cursor()
         try:
-            self._asegurar_tabla_seguridad()
+            self.__asegurar_tabla_seguridad()
             columnas = (
                 "`id_respaldo`, `fecha_respaldo`, `tamaño_respaldo`, "
                 "`usuarios_id_usuarios`, `estado`, `nombre_archivo`, `descripcion`"
@@ -137,11 +139,11 @@ class RespaldoModel(BaseModel):
         return db_actual
 
     @staticmethod
-    def _limpiar_nombre(nombre):
+    def __limpiar_nombre(nombre):
         return re.sub(r'[^A-Za-z0-9_\-]', '_', nombre.strip())[:100]
 
     @staticmethod
-    def _formatear_tamano(bytes_size):
+    def __formatear_tamano(bytes_size):
         for unit in ['B', 'KB', 'MB', 'GB']:
             if bytes_size < 1024:
                 return f"{bytes_size:.1f} {unit}"
@@ -149,7 +151,12 @@ class RespaldoModel(BaseModel):
         return f"{bytes_size:.1f} GB"
 
     @staticmethod
-    def _obtener_config_bd():
+    def formatear_tamano(bytes_size):
+        """Método público para formatear un tamaño en bytes a texto legible."""
+        return RespaldoModel.__formatear_tamano(bytes_size)
+
+    @staticmethod
+    def __obtener_config_bd():
         cfg = RespaldoModel.configuracion_db()
         host = cfg['host']
         user = cfg['user']
@@ -201,8 +208,8 @@ class RespaldoModel(BaseModel):
             'mysql': mysql
         }
 
-    def _exportar_dump(self, ruta_salida):
-        cfg = self._obtener_config_bd()
+    def __exportar_dump(self, ruta_salida):
+        cfg = self.__obtener_config_bd()
         comando = [
             cfg['mysqldump'],
             f"--host={cfg['host']}",
@@ -227,8 +234,8 @@ class RespaldoModel(BaseModel):
                 raise RuntimeError(error)
         return os.path.exists(ruta_salida) and os.path.getsize(ruta_salida) > 0
 
-    def _importar_sql(self, ruta_archivo):
-        cfg = self._obtener_config_bd()
+    def __importar_sql(self, ruta_archivo):
+        cfg = self.__obtener_config_bd()
         comando = [
             cfg['mysql'],
             f"--host={cfg['host']}",
@@ -246,21 +253,21 @@ class RespaldoModel(BaseModel):
             raise RuntimeError(resultado.stderr or 'Error al ejecutar importación mysql.')
         return True
 
-    def crear_respaldo(self, descripcion='', id_usuario=None, nombre_archivo=''):
-        if not os.path.exists(self.CARPETA_RESPALDOS):
-            os.makedirs(self.CARPETA_RESPALDOS, exist_ok=True)
+    def __crear_respaldo(self, descripcion='', id_usuario=None, nombre_archivo=''):
+        if not os.path.exists(self.__carpeta_respaldos):
+            os.makedirs(self.__carpeta_respaldos, exist_ok=True)
 
         if nombre_archivo:
-            nombre_archivo = self._limpiar_nombre(nombre_archivo)
+            nombre_archivo = self.__limpiar_nombre(nombre_archivo)
             if not nombre_archivo.lower().endswith('.sql'):
                 nombre_archivo += '.sql'
         else:
             timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
             nombre_archivo = f"respaldo_{timestamp}.sql"
-        ruta_salida = os.path.join(self.CARPETA_RESPALDOS, nombre_archivo)
+        ruta_salida = os.path.join(self.__carpeta_respaldos, nombre_archivo)
 
         try:
-            exito = self._exportar_dump(ruta_salida)
+            exito = self.__exportar_dump(ruta_salida)
             if not exito:
                 raise RuntimeError('No se pudo generar el archivo SQL de respaldo.')
         except FileNotFoundError:
@@ -271,14 +278,14 @@ class RespaldoModel(BaseModel):
         tamano = os.path.getsize(ruta_salida)
         descripcion = re.sub(r'[<\'";\\]', '', descripcion).strip()[:255]
 
-        self._asegurar_tabla_seguridad()
+        self.__asegurar_tabla_seguridad()
         try:
-            siguiente_id = self._siguiente_id()
+            siguiente_id = self.__siguiente_id()
         except Exception as e:
             raise RuntimeError(f"Error al obtener el siguiente ID de respaldo: {e}")
 
         try:
-            self._guardar_en_seguridad(siguiente_id, nombre_archivo, tamano, descripcion, id_usuario)
+            self.__guardar_en_seguridad(siguiente_id, nombre_archivo, tamano, descripcion, id_usuario)
         except Exception as e:
             logger.error("[Respaldo] Error al registrar en BD seguridad:\n%s", traceback.format_exc())
             raise RuntimeError(f"Error al registrar respaldo en la base de datos de seguridad: {e}")
@@ -293,21 +300,20 @@ class RespaldoModel(BaseModel):
         }
 
     @staticmethod
-    def _normalizar_fila(r):
-        """Convierte una fila de la BD de seguridad a lo que espera la interfaz."""
+    def __normalizar_fila(r):
         tamano_mb = r.get('tamaño_respaldo') or 0
         try:
             tamano_bytes = int(round(float(tamano_mb) * 1024 * 1024))
         except (TypeError, ValueError):
             tamano_bytes = 0
         r['tamano'] = tamano_bytes
-        r['tamano_formateado'] = RespaldoModel._formatear_tamano(tamano_bytes)
+        r['tamano_formateado'] = RespaldoModel.formatear_tamano(tamano_bytes)
         r['nombre_archivo'] = r.get('nombre_archivo') or ''
         r['descripcion'] = r.get('descripcion') or ''
         return r
 
-    def listar_respaldos(self):
-        self._asegurar_tabla_seguridad()
+    def __listar_respaldos(self):
+        self.__asegurar_tabla_seguridad()
         conn = self.obtener_conexion_seguridad_segura()
         if not conn:
             return []
@@ -318,7 +324,7 @@ class RespaldoModel(BaseModel):
                 "WHERE `estado`=1 ORDER BY `fecha_respaldo` DESC"
             )
             respaldos = cur.fetchall() or []
-            return [self._normalizar_fila(dict(r)) for r in respaldos]
+            return [self.__normalizar_fila(dict(r)) for r in respaldos]
         except Exception as e:
             print(f"[Respaldo] Error al listar respaldos: {e}")
             return []
@@ -326,8 +332,8 @@ class RespaldoModel(BaseModel):
             cur.close()
             conn.close()
 
-    def obtener_por_id(self, id_respaldo):
-        self._asegurar_tabla_seguridad()
+    def __obtener_por_id(self, id_respaldo):
+        self.__asegurar_tabla_seguridad()
         conn = self.obtener_conexion_seguridad_segura()
         if not conn:
             return None
@@ -339,19 +345,19 @@ class RespaldoModel(BaseModel):
                 (id_respaldo,)
             )
             fila = cur.fetchone()
-            return self._normalizar_fila(dict(fila)) if fila else None
+            return self.__normalizar_fila(dict(fila)) if fila else None
         except Exception:
             return None
         finally:
             cur.close()
             conn.close()
 
-    def eliminar_respaldo(self, id_respaldo):
-        self._asegurar_tabla_seguridad()
-        respaldo = self.obtener_por_id(id_respaldo)
+    def __eliminar_respaldo(self, id_respaldo):
+        self.__asegurar_tabla_seguridad()
+        respaldo = self.__obtener_por_id(id_respaldo)
         if not respaldo:
             return False
-        ruta = os.path.join(self.CARPETA_RESPALDOS, respaldo['nombre_archivo'])
+        ruta = os.path.join(self.__carpeta_respaldos, respaldo['nombre_archivo'])
         try:
             if respaldo['nombre_archivo'] and os.path.exists(ruta):
                 os.remove(ruta)
@@ -378,26 +384,26 @@ class RespaldoModel(BaseModel):
 
         return afectados > 0
 
-    def importar_respaldo(self, ruta_archivo, descripcion='', id_usuario=None):
+    def __importar_respaldo(self, ruta_archivo, descripcion='', id_usuario=None):
         try:
-            self._importar_sql(ruta_archivo)
+            self.__importar_sql(ruta_archivo)
         except Exception as e:
             raise RuntimeError(f"Error al importar respaldo: {e}")
 
         tamano = os.path.getsize(ruta_archivo)
         descripcion = re.sub(r'[<\'";\\]', '', descripcion).strip()[:255] or 'Respaldo importado'
         nombre_archivo = os.path.basename(ruta_archivo)
-        self._asegurar_tabla_seguridad()
+        self.__asegurar_tabla_seguridad()
 
         try:
-            siguiente_id = self._siguiente_id()
+            siguiente_id = self.__siguiente_id()
         except Exception as e:
             raise RuntimeError(f"Error al obtener el siguiente ID de respaldo: {e}")
 
         advertencia = None
         db_seguridad = None
         try:
-            db_seguridad = self._guardar_en_seguridad(
+            db_seguridad = self.__guardar_en_seguridad(
                 siguiente_id, nombre_archivo, tamano, descripcion, id_usuario
             )
         except Exception as e:
@@ -406,3 +412,20 @@ class RespaldoModel(BaseModel):
             print(f"[Respaldo] Error al registrar importación en BD seguridad: {e}")
 
         return {'id_respaldo': siguiente_id, 'advertencia': advertencia, 'db_seguridad': db_seguridad}
+
+    # ========== MÉTODOS PÚBLICOS (Fachada) ==========
+
+    def crear_respaldo(self, descripcion='', id_usuario=None, nombre_archivo=''):
+        return self.__crear_respaldo(descripcion, id_usuario, nombre_archivo)
+
+    def listar_respaldos(self):
+        return self.__listar_respaldos()
+
+    def obtener_por_id(self, id_respaldo):
+        return self.__obtener_por_id(id_respaldo)
+
+    def eliminar_respaldo(self, id_respaldo):
+        return self.__eliminar_respaldo(id_respaldo)
+
+    def importar_respaldo(self, ruta_archivo, descripcion='', id_usuario=None):
+        return self.__importar_respaldo(ruta_archivo, descripcion, id_usuario)
