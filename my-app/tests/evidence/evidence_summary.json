@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-11-27T01:33:29.455746",
-  "exit_status": 0,
+  "timestamp": "2026-11-27T02:20:06.316240",
+  "exit_status": 4,
   "evidence_dirs": {
     "unit": "C:\\laragon\\www\\INVISAP\\my-app\\tests\\evidence\\unit",
     "integration": "C:\\laragon\\www\\INVISAP\\my-app\\tests\\evidence\\integration",
